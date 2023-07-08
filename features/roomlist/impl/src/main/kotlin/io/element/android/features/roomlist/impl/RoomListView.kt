@@ -139,7 +139,7 @@ fun RoomListContent(
         onRoomClicked(room.roomId)
     }
 
-    val appBarState = rememberTopAppBarState()
+    //val appBarState = rememberTopAppBarState()
     val lazyListState = rememberLazyListState()
 
     val visibleRange by remember {
@@ -150,7 +150,9 @@ fun RoomListContent(
             firstItemIndex until firstItemIndex + size
         }
     }
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(appBarState)
+    //val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(appBarState)
+    // SC: never expand, always collapse
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior().also { it.state.heightOffset = -10000f }
     LogCompositions(
         tag = "RoomListScreen",
         msg = "Content"

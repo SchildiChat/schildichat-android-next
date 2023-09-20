@@ -33,6 +33,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import chat.schildi.theme.scdMaterialColorScheme
+import chat.schildi.theme.scdSemanticColors
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import io.element.android.libraries.theme.compound.compoundColorsDark
@@ -94,9 +96,12 @@ fun ElementTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     lightStatusBar: Boolean = !darkTheme,
     dynamicColor: Boolean = false, /* true to enable MaterialYou */
-    compoundColors: SemanticColors = if (darkTheme) compoundColorsDark else compoundColorsLight,
+    //compoundColors: SemanticColors = if (darkTheme) compoundColorsDark else compoundColorsLight,
+    //materialLightColors: ColorScheme = materialColorSchemeLight,
+    //materialDarkColors: ColorScheme = materialColorSchemeDark,
+    compoundColors: SemanticColors = if (darkTheme) scdSemanticColors else compoundColorsLight,
     materialLightColors: ColorScheme = materialColorSchemeLight,
-    materialDarkColors: ColorScheme = materialColorSchemeDark,
+    materialDarkColors: ColorScheme = scdMaterialColorScheme,
     typography: Typography = compoundTypography,
     content: @Composable () -> Unit,
 ) {

@@ -16,11 +16,14 @@
 
 package io.element.android.libraries.theme.compound
 
+import chat.schildi.theme.elementDarkScExposures
+import chat.schildi.theme.elementLightScExposures
 import io.element.android.libraries.theme.compound.generated.internal.DarkDesignTokens
 import io.element.android.libraries.theme.compound.generated.internal.LightDesignTokens
 import io.element.android.libraries.theme.compound.generated.SemanticColors
 
 internal val compoundColorsLight = SemanticColors(
+    scThemeExposures = elementLightScExposures,
     textPrimary = LightDesignTokens.colorGray1400,
     textSecondary = LightDesignTokens.colorGray900,
     textPlaceholder = LightDesignTokens.colorGray800,
@@ -77,6 +80,7 @@ internal val compoundColorsLight = SemanticColors(
 )
 
 internal val compoundColorsDark = SemanticColors(
+    scThemeExposures = elementDarkScExposures,
     textPrimary = DarkDesignTokens.colorGray1400,
     textSecondary = DarkDesignTokens.colorGray900,
     textPlaceholder = DarkDesignTokens.colorGray800,

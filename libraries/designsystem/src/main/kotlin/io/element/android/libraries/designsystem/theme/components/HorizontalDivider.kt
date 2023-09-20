@@ -28,11 +28,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.element.android.libraries.designsystem.preview.ElementThemedPreview
 import io.element.android.libraries.designsystem.preview.PreviewGroup
+import io.element.android.libraries.theme.ElementTheme
 
 @Composable
 fun HorizontalDivider(
     modifier: Modifier = Modifier,
-    thickness: Dp = ElementDividerDefaults.thickness,
+    thickness: Dp = ElementTheme.colors.scThemeExposures.horizontalDividerThickness,
     color: Color = DividerDefaults.color,
 ) {
     androidx.compose.material3.HorizontalDivider(
@@ -42,9 +43,12 @@ fun HorizontalDivider(
     )
 }
 
+/* SC: please use ElementTheme.colors.scThemeExposures.horizontalDividerThickness instead
 object ElementDividerDefaults {
+    // SC change thickness
     val thickness = 0.5.dp
 }
+ */
 
 @Preview(group = PreviewGroup.Dividers)
 @Composable

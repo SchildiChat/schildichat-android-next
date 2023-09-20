@@ -22,8 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
-
-
+import chat.schildi.theme.ScThemeExposures
 
 // Do not edit directly
 // Generated on Tue, 27 Jun 2023 11:49:05 GMT
@@ -90,7 +89,11 @@ class SemanticColors(
     textSecondary: Color,
     textSuccessPrimary: Color,
     isLight: Boolean,
+    scThemeExposures: ScThemeExposures,
 ) {
+    /** SC exposures */
+    var scThemeExposures by mutableStateOf(scThemeExposures)
+        private set
     var isLight by mutableStateOf(isLight)
         private set
     /** Background colour for primary actions. State: Disabled. */
@@ -254,6 +257,7 @@ Elevation: Default (Level 1). */
         private set
 
     fun copy(
+        scThemeExposures: ScThemeExposures = this.scThemeExposures,
         bgActionPrimaryDisabled: Color = this.bgActionPrimaryDisabled,
         bgActionPrimaryHovered: Color = this.bgActionPrimaryHovered,
         bgActionPrimaryPressed: Color = this.bgActionPrimaryPressed,
@@ -308,6 +312,7 @@ Elevation: Default (Level 1). */
         textSuccessPrimary: Color = this.textSuccessPrimary,
         isLight: Boolean = this.isLight,
     ) = SemanticColors(
+        scThemeExposures = scThemeExposures.copy(),
         bgActionPrimaryDisabled = bgActionPrimaryDisabled,
         bgActionPrimaryHovered = bgActionPrimaryHovered,
         bgActionPrimaryPressed = bgActionPrimaryPressed,
@@ -364,6 +369,7 @@ Elevation: Default (Level 1). */
     )
 
     fun updateColorsFrom(other: SemanticColors) {
+        scThemeExposures.updateColorsFrom(other.scThemeExposures)
         bgActionPrimaryDisabled = other.bgActionPrimaryDisabled
         bgActionPrimaryHovered = other.bgActionPrimaryHovered
         bgActionPrimaryPressed = other.bgActionPrimaryPressed

@@ -18,7 +18,7 @@ package io.element.android.services.analyticsproviders.sentry
 
 object SentryConfig {
     const val name = "Sentry"
-    const val dns = "https://32f7ff6a6e724f90838b7654042b2e81@sentry.tools.element.io/59"
+    const val dns = "localhost" // SC disable - SC-TODO is this enough?
     const val envDebug = "DEBUG"
     const val envRelease = "RELEASE"
 }

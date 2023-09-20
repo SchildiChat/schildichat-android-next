@@ -147,6 +147,47 @@ android {
     }
 }
 
+// SC: downstream package name and versioning, overriding Element default config while reducing merge conflicts
+android {
+    // Use a flavor for common things that the upstream config will not override by the build type
+    flavorDimensions += "package"
+    productFlavors {
+        create("sc") {
+            dimension = "package"
+            applicationId = "chat.schildi.next"
+            versionCode = 1
+            versionName = Versions.versionName + ".sc1"
+            isDefault = true
+        }
+    }
+    // Build types to override some more upstream values
+    buildTypes {
+        register("debug_sc") {
+            initWith(buildTypes["debug"])
+            matchingFallbacks += listOf("debug")
+
+            resValue("string", "app_name", "SchildiNext dbg")
+        }
+        register("release_sc") {
+            initWith(buildTypes["release"])
+            matchingFallbacks += listOf("release")
+            postprocessing {
+                initWith(buildTypes["release"].postprocessing)
+            }
+
+            resValue("string", "app_name", "SchildiNext")
+        }
+    }
+}
+// SC: Disable unused upstream configs
+androidComponents {
+    beforeVariants { variantBuilder ->
+        if (variantBuilder.buildType in listOf("debug", "release", "nightly")) {
+            variantBuilder.enable = false
+        }
+    }
+}
+
 androidComponents {
     // map for the version codes last digit
     // x86 must have greater values than arm

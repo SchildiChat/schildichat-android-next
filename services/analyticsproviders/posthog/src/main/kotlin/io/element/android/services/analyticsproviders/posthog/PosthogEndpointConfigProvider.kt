@@ -25,6 +25,12 @@ class PosthogEndpointConfigProvider @Inject constructor(
 ) {
     fun provide(): PosthogEndpointConfig {
         return when (buildMeta.buildType) {
+            // Disable analytics for SC builds
+            BuildType.RELEASE_SC,
+            BuildType.DEBUG_SC -> PosthogEndpointConfig(
+                host = "localhost",
+                apiKey = "",
+            )
             BuildType.RELEASE -> PosthogEndpointConfig(
                 host = "https://posthog.element.io",
                 apiKey = "phc_Jzsm6DTm6V2705zeU5dcNvQDlonOR68XvX2sh1sEOHO",

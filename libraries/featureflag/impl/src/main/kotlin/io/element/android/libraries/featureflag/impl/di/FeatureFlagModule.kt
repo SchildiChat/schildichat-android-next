@@ -40,10 +40,12 @@ object FeatureFlagModule {
     ): Set<FeatureFlagProvider> {
         val providers = HashSet<FeatureFlagProvider>()
         when (buildType) {
+            BuildType.RELEASE_SC,
             BuildType.RELEASE -> {
                 providers.add(staticFeatureFlagProvider)
             }
             BuildType.NIGHTLY,
+            BuildType.DEBUG_SC,
             BuildType.DEBUG -> {
                 providers.add(mutableFeatureFlagProvider)
             }

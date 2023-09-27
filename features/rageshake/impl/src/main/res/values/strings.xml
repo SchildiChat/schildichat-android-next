@@ -18,8 +18,8 @@
 <resources>
 
     <!-- Rageshake configuration -->
-    <string name="bug_report_url" translatable="false">https://riot.im/bugreports/submit</string>
-    <string name="bug_report_app_name" translatable="false">element-x-android</string>
-    <string name="bug_report_auto_uisi_app_name" translatable="false">element-auto-uisi</string>
+    <string name="bug_report_url" translatable="false">https://rageshake.schildi.chat/api/submit</string>
+    <string name="bug_report_app_name" translatable="false">schildichat-android-next</string>
+    <string name="bug_report_auto_uisi_app_name" translatable="false">schildichat-android-next-uisi</string>
 
 </resources>

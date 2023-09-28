@@ -29,4 +29,7 @@ data class BuildMeta(
     val gitBranchName: String,
     val flavorDescription: String,
     val flavorShortDescription: String,
-)
+) {
+    // SC
+    val isInternalBuild: Boolean = isDebuggable || gitBranchName == "sm_fdroid"
+}

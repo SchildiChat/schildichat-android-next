@@ -58,6 +58,8 @@ import java.io.File
 import java.io.IOException
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Provider
@@ -254,6 +256,36 @@ class DefaultBugReporter @Inject constructor(
                                 addFormDataPart(name, value)
                             }
                         }
+
+                    // SC additions
+                    val reportTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZ", Locale.US).format(Date())
+                    /*
+                    val enabledDebugSettings = DbgUtil.ALL_PREFS.filter { DbgUtil.isDbgEnabled(it) }
+                    builder.addFormDataPart("enabledDebugSettings", enabledDebugSettings.joinToString().ensureNonEmpty())
+                        .addFormDataPart("experimentalSettingsEnabled", vectorPreferences.getEnabledExperimentalSettings().joinToString().ensureNonEmpty())
+                        .addFormDataPart("experimentalSettingsDisabled", vectorPreferences.getDisabledExperimentalSettings().joinToString().ensureNonEmpty())
+                     */
+                    builder
+                        .addFormDataPart("reportTime", reportTime)
+                        .addFormDataPart("packageName", buildMeta.applicationId)
+                        .addFormDataPart("is_debug_build", buildMeta.isDebuggable.toString())
+                    if (buildMeta.isDebuggable) {
+                        builder.addFormDataPart("label", "debug_build")
+                    }
+                    if (canContact) {
+                        builder.addFormDataPart("label", "can contact")
+                    }
+                    builder.addFormDataPart("label", "hs:${userId.substringAfter(":")}")
+                    builder.addFormDataPart("label", "mxid:$userId")
+                    // Device characteristics
+                    context.resources.displayMetrics.apply {
+                        builder.addFormDataPart("device_density", density.toString())
+                            .addFormDataPart("device_width_px", widthPixels.toString())
+                            .addFormDataPart("device_height_px", heightPixels.toString())
+                            .addFormDataPart("device_width_dp", (widthPixels/density).toString())
+                            .addFormDataPart("device_height_dp", (heightPixels/density).toString())
+                    }
+
 
                     // add the gzipped files, don't cancel the whole upload if only some file failed to upload
                     var uploadedSomeLogs = false
@@ -601,5 +633,14 @@ class DefaultBugReporter @Inject constructor(
         } catch (e: IOException) {
             Timber.e(e, "getLog fails")
         }
+    }
+}
+
+fun String?.ensureNonEmpty(fallback: String = "∅"): String {
+    return if (isNullOrEmpty()) {
+        // GitHub markdown format doesn't like empty code blocks
+        fallback
+    } else {
+        this
     }
 }

@@ -3,4 +3,6 @@
     <!-- SchildiChat settings -->
     <string name="sc_pref_tweaks_title">Turtle tweaks</string>
     <string name="sc_pref_sc_themes_title">Schildi theme</string>
+    <string name="sc_pref_fast_transitions_title">Fast transitions</string>
+    <string name="sc_pref_fast_transitions_summary">Speed up window animation</string>
 </resources>

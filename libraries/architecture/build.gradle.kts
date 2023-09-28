@@ -22,6 +22,8 @@ android {
 }
 
 dependencies {
+    implementation(projects.schildilib)
+
     api(projects.libraries.di)
     api(libs.dagger)
     api(libs.appyx.core)

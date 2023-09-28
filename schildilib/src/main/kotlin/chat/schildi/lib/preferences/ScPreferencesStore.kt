@@ -23,10 +23,12 @@ class ScPreferencesStore(context: Context) {
     private val store = context.dataStore
 
     val SC_THEME = ScPref.ScBoolPref("SC_THEMES", true, R.string.sc_pref_sc_themes_title)
+    val FAST_TRANSITIONS = ScPref.ScBoolPref("FAST_TRANSITIONS", true, R.string.sc_pref_fast_transitions_title, R.string.sc_pref_fast_transitions_summary)
     val SC_TEST = ScPref.ScStringListPref("TEST", "A", arrayOf("A", "B", "C"), arrayOf("a", "b", "c"), R.string.sc_pref_sc_themes_title)
 
     val scTweaks = listOf(
         SC_THEME,
+        FAST_TRANSITIONS,
         SC_TEST,
     )
 

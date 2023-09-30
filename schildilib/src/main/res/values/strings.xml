@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- SchildiChat settings -->
+    <string name="sc_pref_tweaks_title">Turtle tweaks</string>
+    <string name="sc_pref_sc_themes_title">Schildi theme</string>
+</resources>

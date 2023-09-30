@@ -48,6 +48,7 @@ class PreferencesRootNode @AssistedInject constructor(
         fun onOpenDeveloperSettings()
         fun onOpenNotificationSettings()
         fun onOpenAdvancedSettings()
+        fun onOpenScTweaks()
         fun onOpenUserProfile(matrixUser: MatrixUser)
     }
 
@@ -65,6 +66,10 @@ class PreferencesRootNode @AssistedInject constructor(
 
     private fun onOpenAdvancedSettings() {
         plugins<Callback>().forEach { it.onOpenAdvancedSettings() }
+    }
+
+    private fun onOpenScTweaks() {
+        plugins<Callback>().forEach { it.onOpenScTweaks() }
     }
 
     private fun onOpenAnalytics() {
@@ -112,6 +117,7 @@ class PreferencesRootNode @AssistedInject constructor(
             onVerifyClicked = this::onVerifyClicked,
             onOpenDeveloperSettings = this::onOpenDeveloperSettings,
             onOpenAdvancedSettings = this::onOpenAdvancedSettings,
+            onOpenScTweaks = this::onOpenScTweaks,
             onSuccessLogout = { onSuccessLogout(activity, it) },
             onManageAccountClicked = { onManageAccountClicked(activity, it, isDark) },
             onOpenNotificationSettings = this::onOpenNotificationSettings,

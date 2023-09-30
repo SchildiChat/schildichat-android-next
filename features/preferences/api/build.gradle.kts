@@ -23,5 +23,6 @@ android {
 
 dependencies {
     implementation(projects.libraries.architecture)
+    implementation(projects.schildilib)
     api(projects.libraries.matrix.api)
 }

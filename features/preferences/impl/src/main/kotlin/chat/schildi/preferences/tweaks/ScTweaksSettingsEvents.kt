@@ -14,24 +14,10 @@
  * limitations under the License.
  */
 
-plugins {
-    id("io.element.android-library")
-    alias(libs.plugins.anvil)
-}
+package chat.schildi.preferences.tweaks
 
-android {
-    namespace = "io.element.android.libraries.preferences.impl"
-}
+import chat.schildi.lib.preferences.ScPref
 
-anvil {
-    generateDaggerFactories.set(true)
-}
-
-dependencies {
-    implementation(projects.schildilib)
-    api(projects.libraries.preferences.api)
-    implementation(libs.dagger)
-    implementation(libs.androidx.datastore.preferences)
-    implementation(projects.libraries.di)
-    implementation(projects.libraries.core)
+sealed interface ScTweaksSettingsEvents {
+    data class SetScPref<T>(val scPref: ScPref<T>, val value: Any?) : ScTweaksSettingsEvents
 }

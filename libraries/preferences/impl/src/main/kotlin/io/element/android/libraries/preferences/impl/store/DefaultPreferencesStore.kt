@@ -22,6 +22,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
+import chat.schildi.lib.preferences.ScPreferencesStore
 import com.squareup.anvil.annotations.ContributesBinding
 import io.element.android.features.preferences.api.store.PreferencesStore
 import io.element.android.libraries.core.bool.orTrue
@@ -44,6 +45,8 @@ class DefaultPreferencesStore @Inject constructor(
     private val buildMeta: BuildMeta,
 ) : PreferencesStore {
     private val store = context.dataStore
+
+    private val scPreferencesStore = ScPreferencesStore(context)
 
     override suspend fun setRichTextEditorEnabled(enabled: Boolean) {
         store.edit { prefs ->
@@ -71,7 +74,10 @@ class DefaultPreferencesStore @Inject constructor(
         }
     }
 
+    override fun getScPreferenceStore(): ScPreferencesStore = scPreferencesStore
+
     override suspend fun reset() {
         store.edit { it.clear() }
+        scPreferencesStore.reset()
     }
 }

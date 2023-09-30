@@ -30,6 +30,7 @@ anvil {
 }
 
 dependencies {
+    implementation(projects.schildilib)
     implementation(projects.anvilannotations)
     anvil(projects.anvilcodegen)
     implementation(projects.libraries.androidutils)

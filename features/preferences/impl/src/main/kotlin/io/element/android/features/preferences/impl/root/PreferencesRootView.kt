@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.InsertChart
+import androidx.compose.material.icons.outlined.PrecisionManufacturing
 import androidx.compose.material.icons.outlined.VerifiedUser
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -56,6 +57,7 @@ fun PreferencesRootView(
     onOpenAbout: () -> Unit,
     onOpenDeveloperSettings: () -> Unit,
     onOpenAdvancedSettings: () -> Unit,
+    onOpenScTweaks: () -> Unit,
     onSuccessLogout: (logoutUrlResult: String?) -> Unit,
     onOpenNotificationSettings: () -> Unit,
     onOpenUserProfile: (MatrixUser) -> Unit,
@@ -92,6 +94,11 @@ fun PreferencesRootView(
             )
             HorizontalDivider()
         }
+        PreferenceText(
+            title = stringResource(id = chat.schildi.lib.R.string.sc_pref_tweaks_title),
+            icon = Icons.Outlined.PrecisionManufacturing,
+            onClick = onOpenScTweaks,
+        )
         if (state.showAnalyticsSettings) {
             PreferenceText(
                 title = stringResource(id = CommonStrings.common_analytics),
@@ -178,6 +185,7 @@ private fun ContentToPreview(matrixUser: MatrixUser) {
         onOpenRageShake = {},
         onOpenDeveloperSettings = {},
         onOpenAdvancedSettings = {},
+        onOpenScTweaks = {},
         onOpenAbout = {},
         onVerifyClicked = {},
         onSuccessLogout = {},

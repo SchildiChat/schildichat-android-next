@@ -16,6 +16,7 @@
 
 package io.element.android.features.preferences.api.store
 
+import chat.schildi.lib.preferences.ScPreferencesStore
 import kotlinx.coroutines.flow.Flow
 
 interface PreferencesStore {
@@ -24,6 +25,8 @@ interface PreferencesStore {
 
     suspend fun setDeveloperModeEnabled(enabled: Boolean)
     fun isDeveloperModeEnabledFlow(): Flow<Boolean>
+
+    fun getScPreferenceStore(): ScPreferencesStore
 
     suspend fun reset()
 }

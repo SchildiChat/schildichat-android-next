@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 
-plugins {
-    id("io.element.android-library")
-    alias(libs.plugins.anvil)
+package chat.schildi.preferences.tweaks
+
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+
+open class ScTweaksSettingsStateProvider : PreviewParameterProvider<ScTweaksSettingsState> {
+    override val values: Sequence<ScTweaksSettingsState>
+        get() = sequenceOf(
+            aScTweaksSettingsState(),
+        )
 }
 
-android {
-    namespace = "io.element.android.libraries.preferences.impl"
-}
-
-anvil {
-    generateDaggerFactories.set(true)
-}
-
-dependencies {
-    implementation(projects.schildilib)
-    api(projects.libraries.preferences.api)
-    implementation(libs.dagger)
-    implementation(libs.androidx.datastore.preferences)
-    implementation(projects.libraries.di)
-    implementation(projects.libraries.core)
-}
+fun aScTweaksSettingsState() = ScTweaksSettingsState(
+    scPrefs = emptyList(),
+    prefVals = emptyMap(), // TODO for preview?
+    eventSink = {}
+)

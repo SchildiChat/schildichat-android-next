@@ -26,6 +26,12 @@ fi
 if [ "$1" = "test" ]; then
     release_type="test"
     previousTestVersionCode="$2"
+    if echo "$previousTestVersionCode" | grep -q 0\$; then
+        previousTestVersionCode="${previousTestVersionCode::-1}"
+    else
+        echo "Previous version code not ending with 0, not supported"
+        exit 1
+    fi
 else
     release_type="normal"
 fi
@@ -100,7 +106,8 @@ fi
 new_tag="sc_v$version"
 
 if ((preview)); then
-    echo "versionCode $versionCode"
+    abiExtra=0
+    echo "versionCode $versionCode$abiExtra"
     echo "versionName $version"
     exit 0
 fi

@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -61,3 +63,11 @@ class ScPreferencesStore(context: Context) {
 fun <R>List<ScPref<out Any>>.prefValMap(v: @Composable (ScPref<out Any>) -> R) = associate { it.sKey to v(it) }
 @Composable
 fun List<ScPref<out Any>>.prefMap() = prefValMap { p -> p }
+
+@Composable
+fun scPrefs(): ScPreferencesStore {
+    val appContext = LocalContext.current.applicationContext
+    return remember {
+        ScPreferencesStore(appContext)
+    }
+}

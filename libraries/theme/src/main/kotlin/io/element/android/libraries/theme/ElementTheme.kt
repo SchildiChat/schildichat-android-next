@@ -33,7 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import chat.schildi.lib.preferences.ScPreferencesStore
+import chat.schildi.lib.preferences.scPrefs
 import chat.schildi.theme.scdMaterialColorScheme
 import chat.schildi.theme.scdSemanticColors
 import com.google.accompanist.systemuicontroller.SystemUiController
@@ -107,8 +107,7 @@ fun ElementTheme(
     content: @Composable () -> Unit,
 ) {
     // SC theming
-    val appContext = LocalContext.current.applicationContext
-    val scPrefs = remember { ScPreferencesStore(appContext) }
+    val scPrefs = scPrefs()
     val compoundColors: SemanticColors
     val materialLightColors: ColorScheme
     val materialDarkColors: ColorScheme

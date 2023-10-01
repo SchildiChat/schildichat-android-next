@@ -1,12 +1,9 @@
 package chat.schildi.lib.preferences
 
 import androidx.annotation.StringRes
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import io.element.android.libraries.designsystem.components.preferences.PreferenceSwitch
 import timber.log.Timber
 
 sealed interface ScPref<T> {
@@ -22,9 +19,6 @@ sealed interface ScPref<T> {
     val key: Preferences.Key<T>
 
     fun ensureType(value: Any?): T?
-
-    @Composable
-    fun Rendered(initial: Any, onChange: (T) -> Unit)
 
     interface ScListPref<T>: ScPref<T> {
         val itemKeys: Array<String>
@@ -48,20 +42,6 @@ sealed interface ScPref<T> {
             }
             return value
         }
-
-        @Composable
-        override fun Rendered(initial: Any, onChange: (Boolean) -> Unit) {
-            val v = ensureType(initial)
-            if (v == null) {
-                Timber.e("Invalid initial value $initial, should be boolean")
-            }
-            PreferenceSwitch(
-                title = stringResource(id = titleRes),
-                subtitle = summaryRes?.let { stringResource(id = it) },
-                isChecked = v ?: defaultValue,
-                onCheckedChange = { onChange(it) },
-            )
-        }
     }
 
     data class ScStringListPref(
@@ -82,11 +62,6 @@ sealed interface ScPref<T> {
                 return null
             }
             return value
-        }
-
-        @Composable
-        override fun Rendered(initial: Any, onChange: (String) -> Unit) {
-            // TODO
         }
     }
 }

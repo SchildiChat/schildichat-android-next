@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import chat.schildi.preferences.AutoRendered
 import io.element.android.libraries.designsystem.components.preferences.PreferenceView
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.preview.ElementPreview
@@ -45,7 +46,7 @@ fun ScTweaksSettingsView(
                 return@forEach
             }
 
-            scPref.Rendered(
+            scPref.AutoRendered(
                 initial = prefVal,
                 onChange = { newVal -> state.eventSink(ScTweaksSettingsEvents.SetScPref(scPref, newVal)) }
             )

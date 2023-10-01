@@ -8,6 +8,5 @@ android {
 }
 
 dependencies {
-    implementation(projects.libraries.designsystem)
     implementation(libs.androidx.datastore.preferences)
 }

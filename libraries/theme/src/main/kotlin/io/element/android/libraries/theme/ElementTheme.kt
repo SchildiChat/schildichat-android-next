@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.theme.scdMaterialColorScheme
 import chat.schildi.theme.scdSemanticColors
 import com.google.accompanist.systemuicontroller.SystemUiController
@@ -96,15 +97,33 @@ fun ElementTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     lightStatusBar: Boolean = !darkTheme,
     dynamicColor: Boolean = false, /* true to enable MaterialYou */
-    //compoundColors: SemanticColors = if (darkTheme) compoundColorsDark else compoundColorsLight,
-    //materialLightColors: ColorScheme = materialColorSchemeLight,
-    //materialDarkColors: ColorScheme = materialColorSchemeDark,
-    compoundColors: SemanticColors = if (darkTheme) scdSemanticColors else compoundColorsLight,
-    materialLightColors: ColorScheme = materialColorSchemeLight,
-    materialDarkColors: ColorScheme = scdMaterialColorScheme,
+    elCompoundColors: SemanticColors = if (darkTheme) compoundColorsDark else compoundColorsLight,
+    elMaterialLightColors: ColorScheme = materialColorSchemeLight,
+    elMaterialDarkColors: ColorScheme = materialColorSchemeDark,
+    scCompoundColors: SemanticColors = if (darkTheme) scdSemanticColors else compoundColorsLight,
+    scMaterialLightColors: ColorScheme = materialColorSchemeLight,
+    scMaterialDarkColors: ColorScheme = scdMaterialColorScheme,
     typography: Typography = compoundTypography,
     content: @Composable () -> Unit,
 ) {
+    // SC theming
+    val appContext = LocalContext.current.applicationContext
+    val scPrefs = remember { ScPreferencesStore(appContext) }
+    val compoundColors: SemanticColors
+    val materialLightColors: ColorScheme
+    val materialDarkColors: ColorScheme
+    val useScTheme = scPrefs.settingState(scPref = scPrefs.SC_THEME)
+    if (useScTheme.value) {
+        compoundColors = scCompoundColors
+        materialLightColors = scMaterialLightColors
+        materialDarkColors = scMaterialDarkColors
+    } else {
+        compoundColors = elCompoundColors
+        materialLightColors = elMaterialLightColors
+        materialDarkColors = elMaterialDarkColors
+    }
+    // SC theming end
+
     val systemUiController = rememberSystemUiController()
     val currentCompoundColor = remember(darkTheme) {
         compoundColors.copy()

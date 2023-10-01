@@ -163,19 +163,10 @@ android {
     }
     // Build types to override some more upstream values
     buildTypes {
-        register("debug_sc") {
-            initWith(buildTypes["debug"])
-            matchingFallbacks += listOf("debug")
-
+        named("debug") {
             resValue("string", "app_name", "SchildiNext dbg")
         }
-        register("release_sc") {
-            initWith(buildTypes["release"])
-            matchingFallbacks += listOf("release")
-            postprocessing {
-                initWith(buildTypes["release"].postprocessing)
-            }
-
+        named("release") {
             resValue("string", "app_name", "SchildiNext")
         }
     }
@@ -183,7 +174,7 @@ android {
 // SC: Disable unused upstream configs
 androidComponents {
     beforeVariants { variantBuilder ->
-        if (variantBuilder.buildType in listOf("debug", "release", "nightly")) {
+        if (variantBuilder.buildType in listOf("nightly")) {
             variantBuilder.enable = false
         }
     }

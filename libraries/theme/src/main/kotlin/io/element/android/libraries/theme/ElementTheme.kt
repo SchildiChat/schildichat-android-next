@@ -87,6 +87,11 @@ object ElementTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalCompoundColors.current.isLight
+
+    val isScTheme: Boolean
+        @Composable
+        @ReadOnlyComposable
+        get() = colors.scThemeExposures.isScTheme
 }
 
 /* Global variables (application level) */

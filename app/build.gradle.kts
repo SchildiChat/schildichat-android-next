@@ -148,6 +148,7 @@ android {
 }
 
 // SC: downstream package name and versioning, overriding Element default config while reducing merge conflicts
+val scVersion = 0
 android {
     // Use a flavor for common things that the upstream config will not override by the build type
     flavorDimensions += "package"
@@ -156,7 +157,7 @@ android {
             dimension = "package"
             applicationId = "chat.schildi.next"
             versionCode = 1
-            versionName = Versions.versionName + ".sc1"
+            versionName = Versions.versionName + ".sc" + scVersion
             isDefault = true
         }
     }

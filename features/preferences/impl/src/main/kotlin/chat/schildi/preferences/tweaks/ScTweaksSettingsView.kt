@@ -36,7 +36,7 @@ fun ScTweaksSettingsView(
     PreferenceView(
         modifier = modifier,
         onBackPressed = onBackPressed,
-        title = stringResource(id = CommonStrings.common_advanced_settings)
+        title = stringResource(id = chat.schildi.lib.R.string.sc_pref_tweaks_title)
     ) {
         Timber.e("SC_TWEAKS REDRAW") // TODO remove, just for debugging
         state.scPrefs.forEach { scPref ->

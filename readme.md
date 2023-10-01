@@ -26,11 +26,16 @@ when implementing original features or patching Element's behaviour.
 
 In particular (may change a bit while the project is still in alpha):
 - Put code into additional files (`chat.schildi.*` package names) if reasonable
-- Put Schildi-specific drawables and other resources into the `sc` build flavor
-    - This one is new for schildichat-android-next and needs some evaluation if it can fully replace the next point
-- Put new resources like strings in dedicated files suffixed with `_sc`, such as `strings_sc.xml`
-    - Never touch upstream strings! If we want to change Element's strings, we'll want a script that patches them,
-      so we can restore upstream strings before upstream merges and re-do our changes automatically after the merge
+    - Prefer `schildilib` module if it doesn't depend on element modules
+    - Otherwise, prefer element module where it makes most sense (or create a new module for bigger features, maybe)
+- Put Schildi-specific drawables and other xml resources into the `sc` build flavor
+    - This way, we can easily overwrite upstream resources as well, by using the same name
+    - Compare e.g. `libraries/designsystem`: we define the flavor `sc` and thus put drawables in the `sc` instead of `main` directory.
+      For new modules that do not feature a `sc` flavor yet, copy over the required `build.gradle.kts` content from a module that does.
+- Put Schildi-specific strings into `schildilib`
+    - Never touch upstream strings! If we want to change Element's strings, we'll either want a script that patches them,
+      so we can restore upstream strings before upstream merges and re-do our changes automatically after the merge,
+      or alternative put it into an `sc` build flavor, if we do not need to touch multiple translations.
 - Don't worry too much about code style if violating it can ease upstream merges
     - When putting upstream code into a new block (e.g., putting it in an `if`-statement), don't indent the upstream code, but rather add comments like
-        `// Wrong indention for upstream merges` and `// Wrong indention for upstream merges - end`
+        `// Wrong indention for merge-ability - start` and `// Wrong indention for merge-ability - end`

@@ -17,6 +17,7 @@
 package io.element.android.features.roomlist.impl.components
 
 enum class RoomListMenuAction {
+    Settings,
     InviteFriends,
     ReportBug
 }

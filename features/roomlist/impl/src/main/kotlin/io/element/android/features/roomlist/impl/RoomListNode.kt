@@ -79,6 +79,9 @@ class RoomListNode @AssistedInject constructor(
 
     private fun onMenuActionClicked(activity: Activity, roomListMenuAction: RoomListMenuAction) {
         when (roomListMenuAction) {
+            RoomListMenuAction.Settings -> {
+                onOpenSettings()
+            }
             RoomListMenuAction.InviteFriends -> {
                 inviteFriendsUseCase.execute(activity)
             }

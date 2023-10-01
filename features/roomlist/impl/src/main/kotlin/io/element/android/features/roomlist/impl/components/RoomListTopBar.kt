@@ -231,6 +231,20 @@ private fun DefaultRoomListTopBar(
                     DropdownMenuItem(
                         onClick = {
                             showMenu = false
+                            onMenuActionClicked(RoomListMenuAction.Settings)
+                        },
+                        text = { Text(stringResource(id = CommonStrings.common_settings)) },
+                        leadingIcon = {
+                            Icon(
+                                resourceId = CommonDrawables.ic_compound_settings,
+                                tint = ElementTheme.materialColors.secondary,
+                                contentDescription = null,
+                            )
+                        }
+                    )
+                    DropdownMenuItem(
+                        onClick = {
+                            showMenu = false
                             onMenuActionClicked(RoomListMenuAction.InviteFriends)
                         },
                         text = { Text(stringResource(id = CommonStrings.action_invite)) },

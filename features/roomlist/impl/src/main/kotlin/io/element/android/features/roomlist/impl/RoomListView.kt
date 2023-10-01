@@ -43,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
+import chat.schildi.lib.preferences.scPrefs
 import io.element.android.features.leaveroom.api.LeaveRoomView
 import io.element.android.features.networkmonitor.api.ui.ConnectivityIndicatorContainer
 import io.element.android.features.roomlist.impl.components.RequestVerificationHeader
@@ -139,7 +140,7 @@ fun RoomListContent(
         onRoomClicked(room.roomId)
     }
 
-    //val appBarState = rememberTopAppBarState()
+    val appBarState = rememberTopAppBarState()
     val lazyListState = rememberLazyListState()
 
     val visibleRange by remember {
@@ -150,9 +151,12 @@ fun RoomListContent(
             firstItemIndex until firstItemIndex + size
         }
     }
-    //val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(appBarState)
-    // SC: never expand, always collapse
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior().also { it.state.heightOffset = -10000f }
+    val forceCompact = scPrefs().settingState(scPrefs().COMPACT_APP_BAR).value
+    val scrollBehavior = if (forceCompact) {
+        TopAppBarDefaults.pinnedScrollBehavior().also { it.state.heightOffset = -10000f }
+    } else {
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(appBarState)
+    }
     LogCompositions(
         tag = "RoomListScreen",
         msg = "Content"

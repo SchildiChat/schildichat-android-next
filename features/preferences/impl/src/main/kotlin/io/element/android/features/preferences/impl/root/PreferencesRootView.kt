@@ -96,6 +96,7 @@ fun PreferencesRootView(
         }
         PreferenceText(
             title = stringResource(id = chat.schildi.lib.R.string.sc_pref_tweaks_title),
+            //iconResourceId = CommonDrawables.ic_notification_small,
             icon = Icons.Outlined.PrecisionManufacturing,
             onClick = onOpenScTweaks,
         )

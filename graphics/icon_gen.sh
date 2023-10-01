@@ -20,6 +20,17 @@ export_files() {
 }
 
 
+# Notification icon
+# UPDATE: use xml directly just like upstream
+
+#base_folder="$mydir/../libraries/designsystem/src/sc/res/drawable"
+#dpi=96
+#file="$mydir/materialdesignicons/ic_notification_small.svg"
+#export_files
+
+
+# Launcher icon
+
 base_folder="$mydir/../app/src/release_sc/res/mipmap"
 dpi=48 # 96/2
 file="$mydir/ic_launcher_foreground.svg"

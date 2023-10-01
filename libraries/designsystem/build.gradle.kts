@@ -51,3 +51,14 @@ android {
         testImplementation(libs.test.turbine)
     }
 }
+
+// SC resource override
+android {
+    // Use a flavor for common things that the upstream config will not override by the build type
+    flavorDimensions += "package"
+    productFlavors {
+        create("sc") {
+            dimension = "package"
+        }
+    }
+}

@@ -3,7 +3,7 @@ released under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-
 
 Listed below are the original icon names and authors:
 
-- ic\_status\_bar\_sc.svg
+- ic\_notification\_small.svg
     - Original name: tortoise
     - Author: Nick
 - bugle.svg

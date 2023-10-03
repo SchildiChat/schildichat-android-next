@@ -56,3 +56,14 @@ dependencies {
     testImplementation(projects.libraries.matrix.test)
     testImplementation(projects.tests.testutils)
 }
+
+// SC resource override
+android {
+    // Use a flavor for common things that the upstream config will not override by the build type
+    flavorDimensions += "package"
+    productFlavors {
+        create("sc") {
+            dimension = "package"
+        }
+    }
+}

@@ -49,7 +49,7 @@ dependencyResolutionManagement {
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-rootProject.name = "ElementX"
+rootProject.name = "SchildiNext"
 include(":app")
 include(":appnav")
 include(":schildilib")

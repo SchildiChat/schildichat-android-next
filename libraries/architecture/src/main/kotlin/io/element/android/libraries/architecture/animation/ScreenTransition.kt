@@ -27,7 +27,12 @@ import com.bumble.appyx.navmodel.backstack.transitionhandler.rememberBackstackSl
 @Composable
 fun <NavTarget> rememberDefaultTransitionHandler(): ModifierTransitionHandler<NavTarget, BackStack.State> {
     val fastTransitions = scPrefs().settingState(scPref = scPrefs().FAST_TRANSITIONS).value
-    return rememberBackstackSlider(
-        transitionSpec = { spring(stiffness = if (fastTransitions) Spring.StiffnessHigh else Spring.StiffnessMediumLow) },
+    // "remember()" will not re-compose on settings change, so remember both values
+    val upstreamSlider: ModifierTransitionHandler<NavTarget, BackStack.State> = rememberBackstackSlider(
+        transitionSpec = { spring(stiffness = Spring.StiffnessMediumLow) },
     )
+    val fastSlider: ModifierTransitionHandler<NavTarget, BackStack.State> = rememberBackstackSlider(
+        transitionSpec = { spring(stiffness = Spring.StiffnessHigh) },
+    )
+    return if (fastTransitions) fastSlider else upstreamSlider
 }

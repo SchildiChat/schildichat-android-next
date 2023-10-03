@@ -31,10 +31,10 @@ export_files() {
 
 # Launcher icon
 
-base_folder="$mydir/../app/src/release_sc/res/mipmap"
+base_folder="$mydir/../app/src/scRelease/res/mipmap"
 dpi=48 # 96/2
 file="$mydir/ic_launcher_foreground.svg"
 #extension=".webp"
 export_files
-base_folder="$mydir/../app/src/debug_sc/res/mipmap"
+base_folder="$mydir/../app/src/scDebug/res/mipmap"
 export_files

@@ -104,9 +104,9 @@ if [ "$release_type" = "test" ]; then
 fi
 
 new_tag="sc_v$version"
+abiExtra=0
 
 if ((preview)); then
-    abiExtra=0
     echo "versionCode $versionCode$abiExtra"
     echo "versionName $version"
     exit 0
@@ -143,7 +143,7 @@ git_changelog() {
 }
 
 changelog_dir=.fastlane/metadata/android/en-US/changelogs
-changelog_file="$changelog_dir/$versionCode.txt"
+changelog_file="$changelog_dir/$versionCode$abiExtra.txt"
 mkdir -p "$changelog_dir"
 if [ "$release_type" = "test" ]; then
     git_changelog > "$changelog_file"

@@ -7,6 +7,8 @@ which was based on the now deprecated Element Android codebase.
 Similarly to Element X, this SchildiChat Android rewrite is still in alpha state and lacks most original features,
 and hasn't even been entirely rebranded yet.
 
+<a href="https://s2.spiritcroc.de/testing/fdroid/repo/" alt="Get it on F-Droid" target="_blank"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" height="50"></a>
+
 
 ## Translations
 

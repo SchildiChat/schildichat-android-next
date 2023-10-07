@@ -34,6 +34,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import chat.schildi.lib.preferences.scPrefs
+import chat.schildi.theme.scTypography
 import chat.schildi.theme.scdMaterialColorScheme
 import chat.schildi.theme.scdSemanticColors
 import com.google.accompanist.systemuicontroller.SystemUiController
@@ -108,7 +109,7 @@ fun ElementTheme(
     scCompoundColors: SemanticColors = if (darkTheme) scdSemanticColors else compoundColorsLight,
     scMaterialLightColors: ColorScheme = materialColorSchemeLight,
     scMaterialDarkColors: ColorScheme = scdMaterialColorScheme,
-    typography: Typography = compoundTypography,
+    elTypography: Typography = compoundTypography,
     content: @Composable () -> Unit,
 ) {
     // SC theming
@@ -116,8 +117,8 @@ fun ElementTheme(
     val compoundColors: SemanticColors
     val materialLightColors: ColorScheme
     val materialDarkColors: ColorScheme
-    val useScTheme = scPrefs.settingState(scPref = scPrefs.SC_THEME)
-    if (useScTheme.value) {
+    val useScTheme = scPrefs.settingState(scPrefs.SC_THEME).value
+    if (useScTheme) {
         compoundColors = scCompoundColors
         materialLightColors = scMaterialLightColors
         materialDarkColors = scMaterialDarkColors
@@ -126,6 +127,8 @@ fun ElementTheme(
         materialLightColors = elMaterialLightColors
         materialDarkColors = elMaterialDarkColors
     }
+    val useElTypography = scPrefs.settingState(scPrefs.EL_TYPOGRAPHY).value
+    val typography = if (useElTypography) elTypography else scTypography
     // SC theming end
 
     val systemUiController = rememberSystemUiController()

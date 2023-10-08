@@ -21,7 +21,7 @@ import io.element.android.libraries.ui.strings.CommonStrings
 
 private const val COPYRIGHT_URL = "https://element.io/copyright"
 private const val USE_POLICY_URL = "https://element.io/acceptable-use-policy-terms"
-private const val PRIVACY_URL = "https://element.io/privacy"
+private const val PRIVACY_URL = "https://schildi.chat/android/privacy"
 
 sealed class ElementLegal(
     @StringRes val titleRes: Int,

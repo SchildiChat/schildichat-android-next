@@ -34,12 +34,17 @@ export_files() {
 
 # Launcher icon
 
-base_folder="$mydir/../app/src/scRelease/res/mipmap"
-dpi=48 # 96/2
-file="$mydir/ic_launcher_foreground.svg"
+# Upstream uses webp for launcher icons but inkscape doesn't like that, so we don't
 #extension=".webp"
+dpi=48 # 96/2
+
+file="$mydir/ic_launcher_foreground.svg"
+base_folder="$mydir/../app/src/scRelease/res/mipmap"
 export_files
 base_folder="$mydir/../app/src/scDebug/res/mipmap"
+export_files
+file="$mydir/ic_launcher_monochrome.svg"
+base_folder="$mydir/../app/src/sc/res/mipmap"
 export_files
 
 
@@ -47,6 +52,7 @@ export_files
 # - remove adaptive-icon extra-padding by reducing export area by a factor of 2/3
 # - fix size to 512x512
 # - apply background manually with imagemagick
+file="$mydir/ic_launcher_foreground.svg"
 store_icon="$mydir/../.fastlane/metadata/android/en-US/images/icon.png"
 inkscape "$file" --export-filename="$store_icon.tmp.png" --export-area=36:36:180:180 -w 512 -h 512
 # Read gradient from actual vector drawable
@@ -57,7 +63,8 @@ get_bg_prop() {
 bg_angle=`get_bg_prop angle`
 bg_startColor=`get_bg_prop startColor`
 bg_endColor=`get_bg_prop endColor`
-magick -size 512x512 -define gradient:angle=$bg_angle gradient:$bg_startColor-$bg_endColor "$store_icon.bg.png"
-magick composite -gravity center "$store_icon.tmp.png" "$store_icon.bg.png" "$store_icon"
+# Exclude chunks for reproducible generation (no update to git if re-running the script on same sources)
+magick -define png:exclude-chunks=date,time -size 512x512 -define gradient:angle=$bg_angle gradient:$bg_startColor-$bg_endColor "$store_icon.bg.png"
+magick composite -define png:exclude-chunks=date,time -gravity center "$store_icon.tmp.png" "$store_icon.bg.png" "$store_icon"
 rm "$store_icon.tmp.png"
 rm "$store_icon.bg.png"

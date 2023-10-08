@@ -101,7 +101,7 @@ class RustMatrixAuthenticationService @Inject constructor(
     override suspend fun login(username: String, password: String): Result<SessionId> =
         withContext(coroutineDispatchers.io) {
             runCatching {
-                val client = authService.login(username, password, "Element X Android", null)
+                val client = authService.login(username, password, "SchildiNext (Android)", null)
                 val sessionData = client.use { it.session().toSessionData() }
                 sessionStore.storeData(sessionData)
                 SessionId(sessionData.userId)

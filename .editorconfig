@@ -287,8 +287,8 @@ ij_xml_text_wrap = normal
 ij_xml_use_custom_settings = true
 
 [{*.bash,*.sh,*.zsh}]
-indent_size = 2
-tab_width = 2
+indent_size = 4
+tab_width = 4
 ij_shell_binary_ops_start_line = false
 ij_shell_keep_column_alignment_padding = false
 ij_shell_minify_program = false

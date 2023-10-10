@@ -22,10 +22,12 @@ else
     require_clean_git
 fi
 
+last_tag=
 
 if [ "$1" = "test" ]; then
     release_type="test"
     previousTestVersionCode="$2"
+    last_tag="$3"
     if echo "$previousTestVersionCode" | grep -q 0\$; then
         previousTestVersionCode="${previousTestVersionCode::-1}"
     else
@@ -54,7 +56,9 @@ if ((should_merge_translations_for_release)); then
     fi
 fi
 
-last_tag=`downstream_latest_tag`
+if [ -z "$last_tag" ]; then
+    last_tag=`downstream_latest_tag`
+fi
 
 
 # Legacy versioning, based on Element's version codes
@@ -123,7 +127,7 @@ set_prop "versionName" "\"$version\""
 #
 
 git_changelog() {
-    git_args="$1"
+    local git_args="$1"
 
     git log $git_args --pretty=format:"- %s" "$last_tag".. --committer="$(git config user.name)" \
         | sed "s|Merge tag '\\(.*\\)' into .*|Update codebase to Element \1|" \

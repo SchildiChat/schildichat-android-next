@@ -130,7 +130,7 @@ git_changelog() {
     local git_args="$1"
 
     git log $git_args --pretty=format:"- %s" "$last_tag".. --committer="$(git config user.name)" \
-        | sed "s|Merge tag '\\(.*\\)' into .*|Update codebase to Element \1|" \
+        | sed "s|Merge tag '\\(.*\\)'.*|Update codebase to Element X \1|" \
         | grep -v "Merge .*branch" \
         | grep -v "Automatic" \
         | grep -v 'merge_helpers\|README\|increment_version' \

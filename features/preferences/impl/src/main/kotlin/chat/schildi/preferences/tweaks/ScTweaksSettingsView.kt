@@ -20,7 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import chat.schildi.lib.preferences.AbstractScPref
+import chat.schildi.lib.preferences.ScCategory
+import chat.schildi.lib.preferences.ScPref
+import chat.schildi.lib.preferences.ScPrefContainer
 import chat.schildi.preferences.AutoRendered
+import chat.schildi.preferences.Rendered
 import io.element.android.libraries.designsystem.components.preferences.PreferencePage
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.preview.ElementPreview
@@ -38,17 +43,35 @@ fun ScTweaksSettingsView(
         title = stringResource(id = chat.schildi.lib.R.string.sc_pref_tweaks_title)
     ) {
         Timber.e("SC_TWEAKS REDRAW") // TODO remove, just for debugging
-        state.scPrefs.forEach { scPref ->
-            val prefVal = state.prefVals[scPref.sKey]
-            if (prefVal == null) {
-                Timber.e("Missing value for ${scPref.sKey}")
-                return@forEach
-            }
+        RecursiveScPrefsView(state = state, prefs = state.scPrefs)
+    }
+}
 
-            scPref.AutoRendered(
-                initial = prefVal,
-                onChange = { newVal -> state.eventSink(ScTweaksSettingsEvents.SetScPref(scPref, newVal)) }
-            )
+@Composable
+fun RecursiveScPrefsView(
+    state: ScTweaksSettingsState,
+    prefs: List<AbstractScPref>,
+) {
+    prefs.forEach { scPref ->
+        when (scPref) {
+            is ScPref<*> -> {
+                val prefVal = state.prefVals[scPref.sKey]
+                if (prefVal == null) {
+                    Timber.e("Missing value for ${scPref.sKey}")
+                    return@forEach
+                }
+
+                scPref.AutoRendered(
+                    initial = prefVal,
+                    onChange = { newVal -> state.eventSink(ScTweaksSettingsEvents.SetScPref(scPref, newVal)) }
+                )
+            }
+            is ScCategory -> {
+                scPref.Rendered {
+                    RecursiveScPrefsView(state = state, prefs = scPref.prefs)
+                }
+            }
+            else -> Timber.e("Unhandled ScPref type ${scPref.javaClass.simpleName}")
         }
     }
 }

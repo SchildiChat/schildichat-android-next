@@ -14,6 +14,7 @@ import chat.schildi.lib.R
 import kotlinx.collections.immutable.immutableListOf
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
@@ -24,23 +25,30 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 class ScPreferencesStore(context: Context) {
     private val store = context.dataStore
 
-    val SC_THEME = ScPref.ScBoolPref("SC_THEMES", true, R.string.sc_pref_sc_themes_title)
-    val EL_TYPOGRAPHY = ScPref.ScBoolPref("EL_TYPOGRAPHY", false, R.string.sc_pref_el_typography_title, R.string.sc_pref_el_typography_summary)
-    val FAST_TRANSITIONS = ScPref.ScBoolPref("FAST_TRANSITIONS", true, R.string.sc_pref_fast_transitions_title, R.string.sc_pref_fast_transitions_summary)
-    val COMPACT_APP_BAR = ScPref.ScBoolPref("COMPACT_APP_BAR", true, R.string.sc_pref_compact_app_bar_title, R.string.sc_pref_compact_app_bar_summary)
-    //val SC_TEST = ScPref.ScStringListPref("TEST", "B", persistentListOf("A", "B", "C"), persistentListOf("a", "b", "c"), null, R.string.sc_pref_sc_themes_title)
+    val SC_THEME = ScBoolPref("SC_THEMES", true, R.string.sc_pref_sc_themes_title)
+    val EL_TYPOGRAPHY = ScBoolPref("EL_TYPOGRAPHY", false, R.string.sc_pref_el_typography_title, R.string.sc_pref_el_typography_summary)
+    val FAST_TRANSITIONS = ScBoolPref("FAST_TRANSITIONS", true, R.string.sc_pref_fast_transitions_title, R.string.sc_pref_fast_transitions_summary)
+    val COMPACT_APP_BAR = ScBoolPref("COMPACT_APP_BAR", true, R.string.sc_pref_compact_app_bar_title, R.string.sc_pref_compact_app_bar_summary)
+    val SC_TEST = ScStringListPref("TEST", "b", persistentListOf("a", "b", "c"), persistentListOf("A", "B", "C"), null, R.string.test)
 
-    val scTweaks = listOf<ScPref<out Any>>(
-        SC_THEME,
-        EL_TYPOGRAPHY,
-        COMPACT_APP_BAR,
-        FAST_TRANSITIONS,
-        //SC_TEST,
+    val scTweaks = listOf<AbstractScPref>(
+        ScCategory(R.string.sc_pref_category_general_appearance, null, listOf(
+            SC_THEME,
+            EL_TYPOGRAPHY,
+        )),
+        ScCategory(R.string.sc_pref_category_general_behaviour, null, listOf(
+            FAST_TRANSITIONS,
+        )),
+        ScCategory(R.string.sc_pref_category_chat_overview, null, listOf(
+            COMPACT_APP_BAR,
+        )),
+        ScCategory(R.string.test, null, listOf(SC_TEST)),
     )
 
     suspend fun <T>setSetting(scPref: ScPref<T>, value: T) {
+        val key = scPref.key ?: return
         store.edit { prefs ->
-            prefs[scPref.key] = value
+            prefs[key] = value
         }
     }
 
@@ -54,8 +62,9 @@ class ScPreferencesStore(context: Context) {
     }
 
     fun <T> settingFlow(scPref: ScPref<T>): Flow<T> {
+        val key = scPref.key ?: return emptyFlow()
         return store.data.map { prefs ->
-            prefs[scPref.key] ?: scPref.defaultValue
+            prefs[key] ?: scPref.defaultValue
         }
     }
 
@@ -67,8 +76,15 @@ class ScPreferencesStore(context: Context) {
     }
 }
 
+fun List<AbstractScPref>.collectScPrefs(): List<ScPref<*>> = this.flatMap { pref ->
+    when (pref) {
+        is ScPrefContainer -> pref.prefs.collectScPrefs()
+        is ScPref<*> -> listOf(pref)
+    }
+}
+
 @Composable
-fun <R>List<ScPref<out Any>>.prefValMap(v: @Composable (ScPref<out Any>) -> R) = associate { it.sKey to v(it) }
+fun <R>List<ScPref<*>>.prefValMap(v: @Composable (ScPref<*>) -> R) = associate { it.sKey to v(it) }
 @Composable
 fun List<ScPref<out Any>>.prefMap() = prefValMap { p -> p }
 

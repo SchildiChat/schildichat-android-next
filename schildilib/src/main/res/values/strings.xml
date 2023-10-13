@@ -9,4 +9,11 @@
     <string name="sc_pref_fast_transitions_summary">Speed up window animation</string>
     <string name="sc_pref_compact_app_bar_title">Compact app bar</string>
     <string name="sc_pref_compact_app_bar_summary">Never expand the top app bar</string>
+
+    <string name="sc_pref_category_general_appearance">Appearance</string>
+    <string name="sc_pref_category_general_behaviour">Behaviour</string>
+    <string name="sc_pref_category_chat_overview">Chat overview</string>
+
+    <!-- TODO remove -->
+    <string name="test">Test</string>
 </resources>

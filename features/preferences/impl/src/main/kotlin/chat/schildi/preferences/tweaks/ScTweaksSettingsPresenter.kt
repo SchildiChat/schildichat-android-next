@@ -18,6 +18,7 @@ package chat.schildi.preferences.tweaks
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import chat.schildi.lib.preferences.collectScPrefs
 import chat.schildi.lib.preferences.prefValMap
 import io.element.android.features.preferences.api.store.PreferencesStore
 import io.element.android.libraries.architecture.Presenter
@@ -36,7 +37,7 @@ class ScTweaksSettingsPresenter @Inject constructor(
         val localCoroutineScope = rememberCoroutineScope()
 
         val prefs = scPreferencesStore.scTweaks
-        val prefVals = prefs.prefValMap {
+        val prefVals = prefs.collectScPrefs().prefValMap {
             scPreferencesStore.settingState(scPref = it).value
         }
 

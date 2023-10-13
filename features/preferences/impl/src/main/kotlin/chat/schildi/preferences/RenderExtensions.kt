@@ -1,14 +1,18 @@
 package chat.schildi.preferences
 
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
+import chat.schildi.lib.preferences.ScBoolPref
+import chat.schildi.lib.preferences.ScCategory
+import chat.schildi.lib.preferences.ScListPref
 import chat.schildi.lib.preferences.ScPref
 import io.element.android.libraries.designsystem.components.dialogs.ListOption
 import io.element.android.libraries.designsystem.components.dialogs.SingleSelectionDialog
+import io.element.android.libraries.designsystem.components.preferences.PreferenceCategory
 import io.element.android.libraries.designsystem.components.preferences.PreferenceSwitch
 import io.element.android.libraries.designsystem.components.preferences.PreferenceText
 import kotlinx.collections.immutable.toImmutableList
@@ -16,14 +20,24 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @Composable
-fun <T : Any>ScPref<T>.AutoRendered(initial: Any, onChange: (Any) -> Unit) {
+fun <T>ScPref<T>.AutoRendered(initial: Any, onChange: (Any) -> Unit) {
     when (this) {
-        is ScPref.ScBoolPref -> return Rendered(initial, onChange)
-        is ScPref.ScListPref -> return Rendered(initial, onChange)
+        is ScBoolPref -> return Rendered(initial, onChange)
+        is ScListPref -> return Rendered(initial, onChange)
         else -> {
             Timber.e("Not supported to render ScPref ${this.javaClass} for $sKey")
         }
     }
+}
+
+@Composable
+fun ScCategory.Rendered(
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    PreferenceCategory(
+        title = stringResource(id = titleRes),
+        content = content
+    )
 }
 
 @Composable
@@ -40,7 +54,7 @@ fun ScPref<Boolean>.Rendered(initial: Any, onChange: (Boolean) -> Unit) {
     )
 }
 @Composable
-fun <T : Any>ScPref.ScListPref<T>.Rendered(initial: Any, onChange: (Any) -> Unit) {
+fun <T>ScListPref<T>.Rendered(initial: Any, onChange: (Any) -> Unit) {
     val v = ensureType(initial)
     if (v == null) {
         Timber.e("Invalid initial value $initial")
@@ -64,7 +78,9 @@ fun <T : Any>ScPref.ScListPref<T>.Rendered(initial: Any, onChange: (Any) -> Unit
             }.toImmutableList(),
             onOptionSelected = { index ->
                 if (index != selectedIndex) {
-                    onChange(itemKeys[index])
+                    itemKeys[index]?.let {  k ->
+                        onChange(k)
+                    }
                 }
                 coroutineScope.launch {
                     openDialog.value = false

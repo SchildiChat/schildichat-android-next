@@ -19,7 +19,7 @@ package chat.schildi.preferences.tweaks
 import chat.schildi.lib.preferences.ScPref
 
 data class ScTweaksSettingsState constructor(
-    val scPrefs: List<ScPref<*>>,
+    val scPrefs: List<ScPref<out Any>>,
     val prefVals: Map<String, Any>,
     val eventSink: (ScTweaksSettingsEvents) -> Unit
 )

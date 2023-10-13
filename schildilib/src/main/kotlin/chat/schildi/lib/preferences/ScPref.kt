@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import kotlinx.collections.immutable.ImmutableList
 import timber.log.Timber
 
 sealed interface ScPref<T> {
@@ -21,8 +22,9 @@ sealed interface ScPref<T> {
     fun ensureType(value: Any?): T?
 
     interface ScListPref<T>: ScPref<T> {
-        val itemKeys: Array<String>
-        val itemNames: Array<T>
+        val itemKeys: ImmutableList<T>
+        val itemNames: ImmutableList<String>
+        val itemSummaries: ImmutableList<String?>?
     }
 
     data class ScBoolPref(
@@ -47,8 +49,9 @@ sealed interface ScPref<T> {
     data class ScStringListPref(
         override val sKey: String,
         override val defaultValue: String,
-        override val itemKeys: Array<String>,
-        override val itemNames: Array<String>,
+        override val itemKeys: ImmutableList<String>,
+        override val itemNames: ImmutableList<String>,
+        override val itemSummaries: ImmutableList<String?>?,
         @StringRes
         override val titleRes: Int,
         @StringRes

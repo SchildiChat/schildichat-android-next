@@ -11,6 +11,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import chat.schildi.lib.R
+import kotlinx.collections.immutable.immutableListOf
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
@@ -26,14 +28,14 @@ class ScPreferencesStore(context: Context) {
     val EL_TYPOGRAPHY = ScPref.ScBoolPref("EL_TYPOGRAPHY", false, R.string.sc_pref_el_typography_title, R.string.sc_pref_el_typography_summary)
     val FAST_TRANSITIONS = ScPref.ScBoolPref("FAST_TRANSITIONS", true, R.string.sc_pref_fast_transitions_title, R.string.sc_pref_fast_transitions_summary)
     val COMPACT_APP_BAR = ScPref.ScBoolPref("COMPACT_APP_BAR", true, R.string.sc_pref_compact_app_bar_title, R.string.sc_pref_compact_app_bar_summary)
-    val SC_TEST = ScPref.ScStringListPref("TEST", "A", arrayOf("A", "B", "C"), arrayOf("a", "b", "c"), R.string.sc_pref_sc_themes_title)
+    //val SC_TEST = ScPref.ScStringListPref("TEST", "B", persistentListOf("A", "B", "C"), persistentListOf("a", "b", "c"), null, R.string.sc_pref_sc_themes_title)
 
-    val scTweaks = listOf(
+    val scTweaks = listOf<ScPref<out Any>>(
         SC_THEME,
         EL_TYPOGRAPHY,
         COMPACT_APP_BAR,
         FAST_TRANSITIONS,
-        SC_TEST,
+        //SC_TEST,
     )
 
     suspend fun <T>setSetting(scPref: ScPref<T>, value: T) {

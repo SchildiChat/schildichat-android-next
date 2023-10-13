@@ -1,19 +1,24 @@
 package chat.schildi.lib.preferences
 
+import android.os.Parcelable
 import androidx.annotation.StringRes
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import kotlinx.collections.immutable.ImmutableList
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 
-sealed interface AbstractScPref {
+@Parcelize
+sealed interface AbstractScPref : Parcelable {
     @get:StringRes
     val titleRes: Int
 
     @get:StringRes
     val summaryRes: Int?
 }
+
+@Parcelize
 sealed interface ScPref<T> : AbstractScPref {
     val sKey: String
     val defaultValue: T
@@ -24,22 +29,26 @@ sealed interface ScPref<T> : AbstractScPref {
     fun ensureType(value: Any?): T?
 }
 
+@Parcelize
 sealed interface ScPrefContainer : AbstractScPref {
     val prefs: List<AbstractScPref>
 }
 
-sealed interface ScListPref<T>: ScPref<T> {
-    val itemKeys: ImmutableList<T>
-    val itemNames: ImmutableList<String>
-    val itemSummaries: ImmutableList<String?>?
-}
-
-data class ScCategory(
+@Parcelize
+data class ScPrefScreen(
     override val titleRes: Int,
     override val summaryRes: Int?,
     override val prefs: List<AbstractScPref>,
 ) : ScPrefContainer
 
+@Parcelize
+data class ScPrefCategory(
+    override val titleRes: Int,
+    override val summaryRes: Int?,
+    override val prefs: List<AbstractScPref>,
+) : ScPrefContainer
+
+@Parcelize
 data class ScBoolPref(
     override val sKey: String,
     override val defaultValue: Boolean,
@@ -49,7 +58,7 @@ data class ScBoolPref(
     override val summaryRes: Int? = null,
     override val authorsChoice: Boolean? = null,
 ): ScPref<Boolean> {
-    override val key = booleanPreferencesKey(sKey)
+    @IgnoredOnParcel override val key = booleanPreferencesKey(sKey)
     override fun ensureType(value: Any?): Boolean? {
         if (value !is Boolean) {
             Timber.e("Parse boolean failed of $sKey for ${value?.javaClass?.simpleName}")
@@ -59,12 +68,20 @@ data class ScBoolPref(
     }
 }
 
+@Parcelize
+sealed interface ScListPref<T>: ScPref<T> {
+    val itemKeys: Array<T>
+    val itemNames: Array<String>
+    val itemSummaries: Array<String?>?
+}
+
+@Parcelize
 data class ScStringListPref(
     override val sKey: String,
     override val defaultValue: String,
-    override val itemKeys: ImmutableList<String>,
-    override val itemNames: ImmutableList<String>,
-    override val itemSummaries: ImmutableList<String?>?,
+    override val itemKeys: Array<String>,
+    override val itemNames: Array<String>,
+    override val itemSummaries: Array<String?>?,
     @StringRes
     override val titleRes: Int,
     @StringRes

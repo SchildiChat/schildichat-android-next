@@ -26,6 +26,7 @@ open class ScTweaksSettingsStateProvider : PreviewParameterProvider<ScTweaksSett
 }
 
 fun aScTweaksSettingsState() = ScTweaksSettingsState(
+    titleRes = 0, // TODO
     scPrefs = emptyList(),
     prefVals = emptyMap(), // TODO for preview?
     eventSink = {}

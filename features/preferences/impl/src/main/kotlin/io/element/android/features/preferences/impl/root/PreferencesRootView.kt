@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import chat.schildi.lib.preferences.ScPrefScreen
 import io.element.android.features.logout.api.LogoutPreferenceView
 import io.element.android.features.preferences.impl.user.UserPreferences
 import io.element.android.libraries.designsystem.components.preferences.PreferenceText
@@ -57,7 +58,7 @@ fun PreferencesRootView(
     onOpenAbout: () -> Unit,
     onOpenDeveloperSettings: () -> Unit,
     onOpenAdvancedSettings: () -> Unit,
-    onOpenScTweaks: () -> Unit,
+    onOpenScTweaks: (ScPrefScreen?) -> Unit,
     onSuccessLogout: (logoutUrlResult: String?) -> Unit,
     onOpenNotificationSettings: () -> Unit,
     onOpenUserProfile: (MatrixUser) -> Unit,
@@ -98,7 +99,7 @@ fun PreferencesRootView(
             title = stringResource(id = chat.schildi.lib.R.string.sc_pref_tweaks_title),
             //iconResourceId = CommonDrawables.ic_notification_small,
             icon = Icons.Outlined.PrecisionManufacturing,
-            onClick = onOpenScTweaks,
+            onClick = { onOpenScTweaks(null) },
         )
         if (state.showAnalyticsSettings) {
             PreferenceText(

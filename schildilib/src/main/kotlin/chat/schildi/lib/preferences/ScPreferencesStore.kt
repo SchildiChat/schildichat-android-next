@@ -11,8 +11,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import chat.schildi.lib.R
-import kotlinx.collections.immutable.immutableListOf
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
@@ -29,21 +27,25 @@ class ScPreferencesStore(context: Context) {
     val EL_TYPOGRAPHY = ScBoolPref("EL_TYPOGRAPHY", false, R.string.sc_pref_el_typography_title, R.string.sc_pref_el_typography_summary)
     val FAST_TRANSITIONS = ScBoolPref("FAST_TRANSITIONS", true, R.string.sc_pref_fast_transitions_title, R.string.sc_pref_fast_transitions_summary)
     val COMPACT_APP_BAR = ScBoolPref("COMPACT_APP_BAR", true, R.string.sc_pref_compact_app_bar_title, R.string.sc_pref_compact_app_bar_summary)
-    val SC_TEST = ScStringListPref("TEST", "b", persistentListOf("a", "b", "c"), persistentListOf("A", "B", "C"), null, R.string.test)
+    val SC_TEST = ScStringListPref("TEST", "b", arrayOf("a", "b", "c"), arrayOf("A", "B", "C"), null, R.string.test)
 
-    val scTweaks = listOf<AbstractScPref>(
-        ScCategory(R.string.sc_pref_category_general_appearance, null, listOf(
+    val scTweaks = ScPrefScreen(R.string.sc_pref_tweaks_title, null, listOf<AbstractScPref>(
+        ScPrefCategory(R.string.sc_pref_category_general_appearance, null, listOf(
             SC_THEME,
             EL_TYPOGRAPHY,
         )),
-        ScCategory(R.string.sc_pref_category_general_behaviour, null, listOf(
+        ScPrefCategory(R.string.sc_pref_category_general_behaviour, null, listOf(
             FAST_TRANSITIONS,
         )),
-        ScCategory(R.string.sc_pref_category_chat_overview, null, listOf(
+        ScPrefCategory(R.string.sc_pref_category_chat_overview, null, listOf(
             COMPACT_APP_BAR,
         )),
-        ScCategory(R.string.test, null, listOf(SC_TEST)),
-    )
+        ScPrefCategory(R.string.test, null, listOf(
+            ScPrefScreen(R.string.test, null, listOf(
+                SC_TEST
+            )),
+        )),
+    ))
 
     suspend fun <T>setSetting(scPref: ScPref<T>, value: T) {
         val key = scPref.key ?: return

@@ -18,26 +18,35 @@ package chat.schildi.preferences.tweaks
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import chat.schildi.lib.preferences.ScPrefScreen
 import chat.schildi.lib.preferences.collectScPrefs
 import chat.schildi.lib.preferences.prefValMap
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import io.element.android.features.preferences.api.store.PreferencesStore
 import io.element.android.libraries.architecture.Presenter
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
-class ScTweaksSettingsPresenter @Inject constructor(
+class ScTweaksSettingsPresenter @AssistedInject constructor(
     preferencesStore: PreferencesStore,
+    @Assisted prefScreen: ScPrefScreen?,
 ) : Presenter<ScTweaksSettingsState> {
 
     private val scPreferencesStore = preferencesStore.getScPreferenceStore()
+    private val prefScreen = prefScreen ?: scPreferencesStore.scTweaks
+
+    @AssistedFactory
+    interface Factory {
+        fun create(prefScreen: ScPrefScreen?): ScTweaksSettingsPresenter
+    }
 
     @Composable
     override fun present(): ScTweaksSettingsState {
         val localCoroutineScope = rememberCoroutineScope()
 
-        val prefs = scPreferencesStore.scTweaks
-        val prefVals = prefs.collectScPrefs().prefValMap {
+        val prefVals = prefScreen.prefs.collectScPrefs().prefValMap {
             scPreferencesStore.settingState(scPref = it).value
         }
 
@@ -51,7 +60,8 @@ class ScTweaksSettingsPresenter @Inject constructor(
         }
 
         return ScTweaksSettingsState(
-            scPrefs = prefs,
+            titleRes = prefScreen.titleRes,
+            scPrefs = prefScreen.prefs,
             prefVals = prefVals,
             eventSink = ::handleEvents
         )

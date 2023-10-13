@@ -7,9 +7,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
 import chat.schildi.lib.preferences.ScBoolPref
-import chat.schildi.lib.preferences.ScCategory
+import chat.schildi.lib.preferences.ScPrefCategory
 import chat.schildi.lib.preferences.ScListPref
 import chat.schildi.lib.preferences.ScPref
+import chat.schildi.lib.preferences.ScPrefScreen
 import io.element.android.libraries.designsystem.components.dialogs.ListOption
 import io.element.android.libraries.designsystem.components.dialogs.SingleSelectionDialog
 import io.element.android.libraries.designsystem.components.preferences.PreferenceCategory
@@ -31,12 +32,22 @@ fun <T>ScPref<T>.AutoRendered(initial: Any, onChange: (Any) -> Unit) {
 }
 
 @Composable
-fun ScCategory.Rendered(
+fun ScPrefCategory.Rendered(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     PreferenceCategory(
         title = stringResource(id = titleRes),
         content = content
+    )
+}
+
+@Composable
+fun ScPrefScreen.Rendered(
+    onClick: () -> Unit
+) {
+    PreferenceText(
+        title = stringResource(id = titleRes),
+        onClick = onClick,
     )
 }
 

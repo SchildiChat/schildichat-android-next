@@ -20,6 +20,7 @@ import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import chat.schildi.lib.preferences.ScPrefScreen
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
@@ -48,7 +49,7 @@ class PreferencesRootNode @AssistedInject constructor(
         fun onOpenDeveloperSettings()
         fun onOpenNotificationSettings()
         fun onOpenAdvancedSettings()
-        fun onOpenScTweaks()
+        fun onOpenScTweaks(scPrefScreen: ScPrefScreen?)
         fun onOpenUserProfile(matrixUser: MatrixUser)
     }
 
@@ -68,8 +69,8 @@ class PreferencesRootNode @AssistedInject constructor(
         plugins<Callback>().forEach { it.onOpenAdvancedSettings() }
     }
 
-    private fun onOpenScTweaks() {
-        plugins<Callback>().forEach { it.onOpenScTweaks() }
+    private fun onOpenScTweaks(scPrefScreen: ScPrefScreen?) {
+        plugins<Callback>().forEach { it.onOpenScTweaks(scPrefScreen) }
     }
 
     private fun onOpenAnalytics() {

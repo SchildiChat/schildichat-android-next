@@ -19,6 +19,7 @@ package io.element.android.features.preferences.impl
 import android.os.Parcelable
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import chat.schildi.lib.preferences.ScPrefScreen
 import chat.schildi.preferences.tweaks.ScTweaksSettingsNode
 import com.bumble.appyx.core.composable.Children
 import com.bumble.appyx.core.modality.BuildContext
@@ -71,7 +72,7 @@ class PreferencesFlowNode @AssistedInject constructor(
         data object AdvancedSettings : NavTarget
 
         @Parcelize
-        data object ScTweaks : NavTarget
+        data class ScTweaks(val prefScreen: ScPrefScreen?) : NavTarget
 
         @Parcelize
         data object ConfigureTracing : NavTarget
@@ -124,8 +125,8 @@ class PreferencesFlowNode @AssistedInject constructor(
                         backstack.push(NavTarget.AdvancedSettings)
                     }
 
-                    override fun onOpenScTweaks() {
-                        backstack.push(NavTarget.ScTweaks)
+                    override fun onOpenScTweaks(scPrefScreen: ScPrefScreen?) {
+                        backstack.push(NavTarget.ScTweaks(scPrefScreen))
                     }
 
                     override fun onOpenUserProfile(matrixUser: MatrixUser) {
@@ -166,8 +167,14 @@ class PreferencesFlowNode @AssistedInject constructor(
             NavTarget.AdvancedSettings -> {
                 createNode<AdvancedSettingsNode>(buildContext)
             }
-            NavTarget.ScTweaks -> {
-                createNode<ScTweaksSettingsNode>(buildContext)
+            is NavTarget.ScTweaks -> {
+                val input = ScTweaksSettingsNode.Inputs(navTarget.prefScreen)
+                val callback = object : ScTweaksSettingsNode.Callback {
+                    override fun onOpenScTweaks(scPrefScreen: ScPrefScreen) {
+                        backstack.push(NavTarget.ScTweaks(scPrefScreen))
+                    }
+                }
+                createNode<ScTweaksSettingsNode>(buildContext, plugins = listOf(input, callback))
             }
             is NavTarget.UserProfile -> {
                 val inputs = EditUserProfileNode.Inputs(navTarget.matrixUser)

@@ -118,7 +118,11 @@ fun ElementTheme(
     val materialDarkColors: ColorScheme
     val useScTheme = scPrefs.settingState(scPrefs.SC_THEME).value
     if (useScTheme) {
-        compoundColors = scCompoundColors
+        compoundColors = scCompoundColors.let {
+            it.copy(scThemeExposures = it.scThemeExposures.copy(
+                bubbleBgOutgoing = Color(scPrefs.settingState(scPref = if (darkTheme) scPrefs.SC_BUBBLE_BG_DARK_OUT else scPrefs.SC_BUBBLE_BG_LIGHT_OUT).value)
+            ))
+        }
         materialLightColors = scMaterialLightColors
         materialDarkColors = scMaterialDarkColors
     } else {

@@ -31,6 +31,7 @@ anvil {
 
 dependencies {
     api(projects.schildilib)
+    implementation(libs.skydoves.colorpicker)
     implementation(projects.anvilannotations)
     anvil(projects.anvilcodegen)
     implementation(projects.libraries.androidutils)

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-rootProject.name = "ElementX_plugins"
+rootProject.name = "SchildiNext_plugins"
 
 dependencyResolutionManagement {
     repositories {

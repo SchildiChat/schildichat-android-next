@@ -28,6 +28,8 @@ class ScPreferencesStore(context: Context) {
     val FAST_TRANSITIONS = ScBoolPref("FAST_TRANSITIONS", true, R.string.sc_pref_fast_transitions_title, R.string.sc_pref_fast_transitions_summary)
     val COMPACT_APP_BAR = ScBoolPref("COMPACT_APP_BAR", true, R.string.sc_pref_compact_app_bar_title, R.string.sc_pref_compact_app_bar_summary)
     val SC_TEST = ScStringListPref("TEST", "b", arrayOf("a", "b", "c"), arrayOf("A", "B", "C"), null, R.string.test)
+    val SC_BUBBLE_BG_DARK_OUT = ScColorPref("SC_BUBBLE_BG_DARK_OUT", 0x008bc34a, R.string.test)
+    val SC_BUBBLE_BG_LIGHT_OUT = ScColorPref("SC_BUBBLE_BG_LIGHT_OUT", 0x008bc34a, R.string.test)
 
     val scTweaks = ScPrefScreen(R.string.sc_pref_tweaks_title, null, listOf<AbstractScPref>(
         ScPrefCategory(R.string.sc_pref_category_general_appearance, null, listOf(
@@ -42,7 +44,9 @@ class ScPreferencesStore(context: Context) {
         )),
         ScPrefCategory(R.string.test, null, listOf(
             ScPrefScreen(R.string.test, null, listOf(
-                SC_TEST
+                SC_TEST,
+                SC_BUBBLE_BG_DARK_OUT,
+                SC_BUBBLE_BG_LIGHT_OUT,
             )),
         )),
     ))

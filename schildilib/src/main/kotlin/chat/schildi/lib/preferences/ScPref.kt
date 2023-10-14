@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.annotation.StringRes
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
@@ -88,10 +89,30 @@ data class ScStringListPref(
     override val summaryRes: Int? = null,
     override val authorsChoice: String? = null,
 ): ScListPref<String> {
-    override val key = stringPreferencesKey(sKey)
+    @IgnoredOnParcel override val key = stringPreferencesKey(sKey)
     override fun ensureType(value: Any?): String? {
         if (value !is String) {
             Timber.e("Parse string failed of $sKey for ${value?.javaClass?.simpleName}")
+            return null
+        }
+        return value
+    }
+}
+
+@Parcelize
+data class ScColorPref(
+    override val sKey: String,
+    override val defaultValue: Int,
+    @StringRes
+    override val titleRes: Int,
+    @StringRes
+    override val summaryRes: Int? = null,
+    override val authorsChoice: Int? = null,
+): ScPref<Int> {
+    @IgnoredOnParcel override val key = intPreferencesKey(sKey)
+    override fun ensureType(value: Any?): Int? {
+        if (value !is Int) {
+            Timber.e("Parse Int failed of $sKey for ${value?.javaClass?.simpleName}")
             return null
         }
         return value

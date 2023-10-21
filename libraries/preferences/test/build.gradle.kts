@@ -22,7 +22,7 @@ android {
     namespace = "io.element.android.libraries.preferences.test"
 
     dependencies {
-        implementation(projects.schildilib)
+        implementation(projects.schildi.lib)
         api(projects.libraries.preferences.api)
         implementation(libs.coroutines.core)
     }

@@ -43,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
+import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.scPrefs
 import io.element.android.features.leaveroom.api.LeaveRoomView
 import io.element.android.features.networkmonitor.api.ui.ConnectivityIndicatorContainer
@@ -151,7 +152,7 @@ private fun RoomListContent(
             firstItemIndex until firstItemIndex + size
         }
     }
-    val forceCompact = scPrefs().settingState(scPrefs().COMPACT_APP_BAR).value
+    val forceCompact = scPrefs().settingState(ScPrefs.COMPACT_APP_BAR).value
     val scrollBehavior = if (forceCompact) {
         TopAppBarDefaults.pinnedScrollBehavior().also { it.state.heightOffset = -10000f }
     } else {

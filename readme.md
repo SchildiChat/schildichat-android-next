@@ -28,13 +28,14 @@ when implementing original features or patching Element's behaviour.
 
 In particular (may change a bit while the project is still in alpha):
 - Put code into additional files (`chat.schildi.*` package names) if reasonable
-    - Prefer `schildilib` module if it doesn't depend on element modules
+    - Prefer `schildi/lib` module if it doesn't depend on element modules (except maybe strings)
+    - Prefer `schildi/components` module if it depend on some of Element's Design/UI components but nothing else
     - Otherwise, prefer element module where it makes most sense (or create a new module for bigger features, maybe)
-- Put Schildi-specific drawables and other xml resources into the `sc` build flavor
-    - This way, we can easily overwrite upstream resources as well, by using the same name
+- Put Schildi-specific drawables and other xml resources that override upstream resources into the `sc` build flavor
+    - This way, we can use the same name and avoid merge conflicts
     - Compare e.g. `libraries/designsystem`: we define the flavor `sc` and thus put drawables in the `sc` instead of `main` directory.
       For new modules that do not feature a `sc` flavor yet, copy over the required `build.gradle.kts` content from a module that does.
-- Put Schildi-specific strings into `schildilib`
+- Put Schildi-specific strings into `schildi/lib`
     - Never touch upstream strings! If we want to change Element's strings, we'll either want a script that patches them,
       so we can restore upstream strings before upstream merges and re-do our changes automatically after the merge,
       or alternative put it into an `sc` build flavor, if we do not need to touch multiple translations.

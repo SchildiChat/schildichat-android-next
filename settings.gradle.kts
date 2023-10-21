@@ -52,7 +52,6 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 rootProject.name = "SchildiNext"
 include(":app")
 include(":appnav")
-include(":schildilib")
 include(":tests:uitests")
 include(":tests:testutils")
 include(":anvilannotations")
@@ -78,3 +77,4 @@ fun includeProjects(directory: File, path: String, maxDepth: Int = 1) {
 includeProjects(File(rootDir, "features"), ":features")
 includeProjects(File(rootDir, "libraries"), ":libraries")
 includeProjects(File(rootDir, "services"), ":services")
+includeProjects(File(rootDir, "schildi"), ":schildi")

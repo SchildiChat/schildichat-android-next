@@ -28,7 +28,7 @@ anvil {
 }
 
 dependencies {
-    implementation(projects.schildilib)
+    implementation(projects.schildi.lib)
     api(projects.libraries.preferences.api)
     implementation(libs.dagger)
     implementation(libs.androidx.datastore.preferences)

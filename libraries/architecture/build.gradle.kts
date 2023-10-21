@@ -22,7 +22,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.schildilib)
+    implementation(projects.schildi.lib)
 
     api(projects.libraries.di)
     api(libs.dagger)

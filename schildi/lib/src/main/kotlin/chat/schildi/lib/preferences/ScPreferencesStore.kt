@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import chat.schildi.lib.R
+import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
@@ -20,9 +21,8 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "schildinext-preferences")
 
-class ScPreferencesStore(context: Context) {
-    private val store = context.dataStore
-
+object ScPrefs {
+    val SC_DEV_QUICK_OPTIONS = ScBoolPref("SC_DEV_QUICK_OPTIONS", false, R.string.sc_pref_dev_quick_options)
     val SC_THEME = ScBoolPref("SC_THEMES", true, R.string.sc_pref_sc_themes_title)
     val EL_TYPOGRAPHY = ScBoolPref("EL_TYPOGRAPHY", false, R.string.sc_pref_el_typography_title, R.string.sc_pref_el_typography_summary)
     val FAST_TRANSITIONS = ScBoolPref("FAST_TRANSITIONS", true, R.string.sc_pref_fast_transitions_title, R.string.sc_pref_fast_transitions_summary)
@@ -42,6 +42,9 @@ class ScPreferencesStore(context: Context) {
         ScPrefCategory(R.string.sc_pref_category_chat_overview, null, listOf(
             COMPACT_APP_BAR,
         )),
+        ScPrefCategory(CommonStrings.common_developer_options, null, listOf(
+            SC_DEV_QUICK_OPTIONS,
+        )),
         ScPrefCategory(R.string.test, null, listOf(
             ScPrefScreen(R.string.test, null, listOf(
                 SC_TEST,
@@ -50,6 +53,22 @@ class ScPreferencesStore(context: Context) {
             )),
         )),
     ))
+
+    val devQuickTweaks = listOf(
+        ScPrefCategory(R.string.sc_pref_category_general_appearance, null, listOf(
+            SC_THEME,
+            EL_TYPOGRAPHY,
+        )),
+        FAST_TRANSITIONS,
+    )
+
+    val devQuickTweaksInRoom = devQuickTweaks + listOf(
+        // To be filled with some bubble design settings probably?
+    )
+}
+
+class ScPreferencesStore(context: Context) {
+    private val store = context.dataStore
 
     suspend fun <T>setSetting(scPref: ScPref<T>, value: T) {
         val key = scPref.key ?: return

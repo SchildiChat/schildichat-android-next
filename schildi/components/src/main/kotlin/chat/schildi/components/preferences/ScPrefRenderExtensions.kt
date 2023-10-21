@@ -1,4 +1,4 @@
-package chat.schildi.preferences
+package chat.schildi.components.preferences
 
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth

@@ -23,6 +23,6 @@ android {
 }
 
 dependencies {
-    implementation(projects.schildilib)
+    implementation(projects.schildi.lib)
     implementation(libs.coroutines.core)
 }

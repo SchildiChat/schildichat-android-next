@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.scPrefs
 import chat.schildi.theme.scTypography
 import chat.schildi.theme.scdMaterialColorScheme
@@ -116,11 +117,11 @@ fun ElementTheme(
     val compoundColors: SemanticColors
     val materialLightColors: ColorScheme
     val materialDarkColors: ColorScheme
-    val useScTheme = scPrefs.settingState(scPrefs.SC_THEME).value
+    val useScTheme = scPrefs.settingState(ScPrefs.SC_THEME).value
     if (useScTheme) {
         compoundColors = scCompoundColors.let {
             it.copy(scThemeExposures = it.scThemeExposures.copy(
-                bubbleBgOutgoing = Color(scPrefs.settingState(scPref = if (darkTheme) scPrefs.SC_BUBBLE_BG_DARK_OUT else scPrefs.SC_BUBBLE_BG_LIGHT_OUT).value)
+                bubbleBgOutgoing = Color(scPrefs.settingState(scPref = if (darkTheme) ScPrefs.SC_BUBBLE_BG_DARK_OUT else ScPrefs.SC_BUBBLE_BG_LIGHT_OUT).value)
             ))
         }
         materialLightColors = scMaterialLightColors
@@ -130,7 +131,7 @@ fun ElementTheme(
         materialLightColors = elMaterialLightColors
         materialDarkColors = elMaterialDarkColors
     }
-    val useElTypography = scPrefs.settingState(scPrefs.EL_TYPOGRAPHY).value
+    val useElTypography = scPrefs.settingState(ScPrefs.EL_TYPOGRAPHY).value
     val typography = if (useElTypography) elTypography else scTypography
     // SC theming end
 

@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -46,6 +48,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import chat.schildi.components.preferences.AutoRenderedDropdown
+import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.scPrefs
 import io.element.android.features.roomlist.impl.R
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
@@ -155,24 +160,25 @@ private fun DefaultRoomListTopBar(
                 .let {
                     if (ElementTheme.isScTheme) it.background(ElementTheme.colors.scThemeExposures.appBarBg) else it
                         // Wrong indention for merge-ability start
-                .avatarBloom(
-                    avatarData = avatarData,
-                    background = ElementTheme.colors.scThemeExposures.appBarBg, /*if (ElementTheme.isLightTheme) {
+                        .avatarBloom(
+                            avatarData = avatarData,
+                            background = ElementTheme.colors.scThemeExposures.appBarBg,
+                            /*if (ElementTheme.isLightTheme) {
                         // Workaround to display a very subtle bloom for avatars with very soft colors
                         Color(0xFFF9F9F9)
                     } else {
                         ElementTheme.materialColors.background
                     },*/
-                    blurSize = DpSize(avatarBloomSize, avatarBloomSize),
-                    offset = DpOffset(24.dp, 24.dp + statusBarPadding),
-                    clipToSize = if (appBarHeight > 0) DpSize(
-                        avatarBloomSize,
-                        appBarHeight.toDp()
-                    ) else DpSize.Unspecified,
-                    bottomSoftEdgeColor = ElementTheme.materialColors.background,
-                    bottomSoftEdgeAlpha = 1f - collapsedFraction,
-                    alpha = if (areSearchResultsDisplayed) 0f else 1f,
-                )
+                            blurSize = DpSize(avatarBloomSize, avatarBloomSize),
+                            offset = DpOffset(24.dp, 24.dp + statusBarPadding),
+                            clipToSize = if (appBarHeight > 0) DpSize(
+                                avatarBloomSize,
+                                appBarHeight.toDp()
+                            ) else DpSize.Unspecified,
+                            bottomSoftEdgeColor = ElementTheme.materialColors.background,
+                            bottomSoftEdgeAlpha = 1f - collapsedFraction,
+                            alpha = if (areSearchResultsDisplayed) 0f else 1f,
+                        )
                     // Wrong indention for merge-ability end
                 }
                 .statusBarsPadding(),
@@ -270,6 +276,23 @@ private fun DefaultRoomListTopBar(
                             )
                         }
                     )
+                    if (scPrefs().settingState(scPref = ScPrefs.SC_DEV_QUICK_OPTIONS).value) {
+                        HorizontalDivider()
+                        ScPrefs.devQuickTweaks.forEach {
+                            it.AutoRenderedDropdown(
+                                onClick = {
+                                    showMenu = false
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Tune,
+                                        tint = ElementTheme.materialColors.secondary,
+                                        contentDescription = null,
+                                    )
+                                }
+                            )
+                        }
+                    }
                 }
             },
             scrollBehavior = scrollBehavior,

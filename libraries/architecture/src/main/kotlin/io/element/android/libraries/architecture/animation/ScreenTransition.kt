@@ -19,6 +19,7 @@ package io.element.android.libraries.architecture.animation
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.runtime.Composable
+import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.scPrefs
 import com.bumble.appyx.core.navigation.transition.ModifierTransitionHandler
 import com.bumble.appyx.navmodel.backstack.BackStack
@@ -26,7 +27,7 @@ import com.bumble.appyx.navmodel.backstack.transitionhandler.rememberBackstackSl
 
 @Composable
 fun <NavTarget> rememberDefaultTransitionHandler(): ModifierTransitionHandler<NavTarget, BackStack.State> {
-    val fastTransitions = scPrefs().settingState(scPref = scPrefs().FAST_TRANSITIONS).value
+    val fastTransitions = scPrefs().settingState(scPref = ScPrefs.FAST_TRANSITIONS).value
     // "remember()" will not re-compose on settings change, so remember both values
     val upstreamSlider: ModifierTransitionHandler<NavTarget, BackStack.State> = rememberBackstackSlider(
         transitionSpec = { spring(stiffness = Spring.StiffnessMediumLow) },

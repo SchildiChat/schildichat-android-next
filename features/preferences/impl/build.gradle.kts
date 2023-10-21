@@ -30,8 +30,8 @@ anvil {
 }
 
 dependencies {
-    api(projects.schildilib)
-    implementation(libs.skydoves.colorpicker)
+    api(projects.schildi.lib)
+    api(projects.schildi.components)
     implementation(projects.anvilannotations)
     anvil(projects.anvilcodegen)
     implementation(projects.libraries.androidutils)

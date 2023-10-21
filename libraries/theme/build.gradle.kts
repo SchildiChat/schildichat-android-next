@@ -23,7 +23,7 @@ android {
     namespace = "io.element.android.libraries.theme"
 
     dependencies {
-        implementation(projects.schildilib)
+        implementation(projects.schildi.lib)
 
         api(libs.androidx.compose.material3)
 

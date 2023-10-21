@@ -2,7 +2,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- SchildiChat settings -->
     <string name="sc_pref_tweaks_title">Turtle tweaks</string>
-    <string name="sc_pref_dev_quick_options">Quick settings</string>
     <string name="sc_pref_sc_themes_title">Schildi theme</string>
     <string name="sc_pref_el_typography_title">Element typography</string>
     <string name="sc_pref_el_typography_summary">Use Element\'s font settings which occupy more space</string>
@@ -10,6 +9,11 @@
     <string name="sc_pref_fast_transitions_summary">Speed up window animation</string>
     <string name="sc_pref_compact_app_bar_title">Compact app bar</string>
     <string name="sc_pref_compact_app_bar_summary">Never expand the top app bar</string>
+
+    <string name="sc_pref_dev_quick_options">Quick settings</string>
+    <string name="sc_pref_restore_defaults">Restore defaults</string>
+    <string name="sc_pref_restore_element">Apply Element taste</string>
+    <string name="sc_pref_restore_authors_choice">Author\'s choice</string>
 
     <string name="sc_pref_category_general_appearance">Appearance</string>
     <string name="sc_pref_category_general_behaviour">Behaviour</string>

@@ -23,9 +23,11 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import chat.schildi.components.preferences.AutoRendered
 import chat.schildi.components.preferences.Rendered
 import chat.schildi.lib.preferences.AbstractScPref
+import chat.schildi.lib.preferences.ScActionablePref
 import chat.schildi.lib.preferences.ScPrefCategory
 import chat.schildi.lib.preferences.ScPref
 import chat.schildi.lib.preferences.ScPrefScreen
+import chat.schildi.lib.preferences.scPrefs
 import io.element.android.libraries.designsystem.components.preferences.PreferencePage
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.preview.ElementPreview
@@ -36,6 +38,7 @@ fun ScTweaksSettingsView(
     state: ScTweaksSettingsState,
     onBackPressed: () -> Unit,
     onOpenPrefScreen: (ScPrefScreen) -> Unit,
+    handleScPrefAction: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     PreferencePage(
@@ -48,6 +51,7 @@ fun ScTweaksSettingsView(
             state = state,
             prefs = state.scPrefs,
             onOpenPrefScreen = onOpenPrefScreen,
+            handleScPrefAction = handleScPrefAction,
         )
     }
 }
@@ -57,6 +61,7 @@ fun RecursiveScPrefsView(
     state: ScTweaksSettingsState,
     prefs: List<AbstractScPref>,
     onOpenPrefScreen: (ScPrefScreen) -> Unit,
+    handleScPrefAction: (String) -> Unit,
 ) {
     prefs.forEach { scPref ->
         when (scPref) {
@@ -78,6 +83,7 @@ fun RecursiveScPrefsView(
                         state = state,
                         prefs = scPref.prefs,
                         onOpenPrefScreen = onOpenPrefScreen,
+                        handleScPrefAction = handleScPrefAction,
                     )
                 }
             }
@@ -85,6 +91,9 @@ fun RecursiveScPrefsView(
                 scPref.Rendered {
                     onOpenPrefScreen(scPref)
                 }
+            }
+            is ScActionablePref -> {
+                scPref.Rendered(handleAction = handleScPrefAction)
             }
             else -> Timber.e("Unhandled ScPref type ${scPref.javaClass.simpleName}")
         }
@@ -95,5 +104,5 @@ fun RecursiveScPrefsView(
 @Composable
 internal fun ScTweaksSettingsViewPreview(@PreviewParameter(ScTweaksSettingsStateProvider::class) state: ScTweaksSettingsState) =
     ElementPreview {
-        ScTweaksSettingsView(state = state, onBackPressed = {}, onOpenPrefScreen = {})
+        ScTweaksSettingsView(state = state, onBackPressed = {}, onOpenPrefScreen = {}, handleScPrefAction = {})
     }

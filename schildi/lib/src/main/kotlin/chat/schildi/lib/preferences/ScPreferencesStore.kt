@@ -22,11 +22,24 @@ import kotlin.coroutines.EmptyCoroutineContext
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "schildinext-preferences")
 
 object ScPrefs {
-    val SC_DEV_QUICK_OPTIONS = ScBoolPref("SC_DEV_QUICK_OPTIONS", false, R.string.sc_pref_dev_quick_options)
-    val SC_THEME = ScBoolPref("SC_THEMES", true, R.string.sc_pref_sc_themes_title)
-    val EL_TYPOGRAPHY = ScBoolPref("EL_TYPOGRAPHY", false, R.string.sc_pref_el_typography_title, R.string.sc_pref_el_typography_summary)
-    val FAST_TRANSITIONS = ScBoolPref("FAST_TRANSITIONS", true, R.string.sc_pref_fast_transitions_title, R.string.sc_pref_fast_transitions_summary)
-    val COMPACT_APP_BAR = ScBoolPref("COMPACT_APP_BAR", true, R.string.sc_pref_compact_app_bar_title, R.string.sc_pref_compact_app_bar_summary)
+
+    // Appearance
+    val SC_THEME = ScBoolPref("SC_THEMES", true, R.string.sc_pref_sc_themes_title, upstreamChoice = false)
+    val EL_TYPOGRAPHY = ScBoolPref("EL_TYPOGRAPHY", false, R.string.sc_pref_el_typography_title, R.string.sc_pref_el_typography_summary, upstreamChoice = true)
+
+    // General behavior
+    val FAST_TRANSITIONS = ScBoolPref("FAST_TRANSITIONS", true, R.string.sc_pref_fast_transitions_title, R.string.sc_pref_fast_transitions_summary, upstreamChoice = false)
+
+    // Chat overview
+    val COMPACT_APP_BAR = ScBoolPref("COMPACT_APP_BAR", true, R.string.sc_pref_compact_app_bar_title, R.string.sc_pref_compact_app_bar_summary, upstreamChoice = false)
+
+    // Developer options
+    val SC_DEV_QUICK_OPTIONS = ScBoolPref("SC_DEV_QUICK_OPTIONS", false, R.string.sc_pref_dev_quick_options, authorsChoice = true)
+    val SC_RESTORE_DEFAULTS = ScActionablePref("SC_RESTORE_DEFAULTS", R.string.sc_pref_restore_defaults)
+    val SC_RESTORE_UPSTREAM = ScActionablePref("SC_RESTORE_UPSTREAM", R.string.sc_pref_restore_element)
+    val SC_RESTORE_AUTHORS_CHOICE = ScActionablePref("SC_RESTORE_AUTHORS_CHOICE", R.string.sc_pref_restore_authors_choice)
+
+    // Tests to be removed before release
     val SC_TEST = ScStringListPref("TEST", "b", arrayOf("a", "b", "c"), arrayOf("A", "B", "C"), null, R.string.test)
     val SC_BUBBLE_BG_DARK_OUT = ScColorPref("SC_BUBBLE_BG_DARK_OUT", 0x008bc34a, R.string.test)
     val SC_BUBBLE_BG_LIGHT_OUT = ScColorPref("SC_BUBBLE_BG_LIGHT_OUT", 0x008bc34a, R.string.test)
@@ -44,6 +57,9 @@ object ScPrefs {
         )),
         ScPrefCategory(CommonStrings.common_developer_options, null, listOf(
             SC_DEV_QUICK_OPTIONS,
+            SC_RESTORE_DEFAULTS,
+            SC_RESTORE_UPSTREAM,
+            SC_RESTORE_AUTHORS_CHOICE,
         )),
         ScPrefCategory(R.string.test, null, listOf(
             ScPrefScreen(R.string.test, null, listOf(
@@ -105,6 +121,7 @@ fun List<AbstractScPref>.collectScPrefs(): List<ScPref<*>> = this.flatMap { pref
     when (pref) {
         is ScPrefContainer -> pref.prefs.collectScPrefs()
         is ScPref<*> -> listOf(pref)
+        is ScActionablePref -> emptyList()
     }
 }
 
@@ -118,5 +135,16 @@ fun scPrefs(): ScPreferencesStore {
     val appContext = LocalContext.current.applicationContext
     return remember {
         ScPreferencesStore(appContext)
+    }
+}
+
+fun ScPrefContainer.forEachPreference(block: (ScPref<*>) -> Unit) {
+    prefs.forEach {
+        if (it is ScPrefContainer) {
+            it.forEachPreference(block)
+        }
+        if (it is ScPref<*>) {
+            block(it)
+        }
     }
 }

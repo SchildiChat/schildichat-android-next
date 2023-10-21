@@ -24,6 +24,7 @@ sealed interface ScPref<T> : AbstractScPref {
     val sKey: String
     val defaultValue: T
     val authorsChoice: T?
+    val upstreamChoice: T?
 
     val key: Preferences.Key<T>?
 
@@ -58,6 +59,7 @@ data class ScBoolPref(
     @StringRes
     override val summaryRes: Int? = null,
     override val authorsChoice: Boolean? = null,
+    override val upstreamChoice: Boolean? = null,
 ): ScPref<Boolean> {
     @IgnoredOnParcel override val key = booleanPreferencesKey(sKey)
     override fun ensureType(value: Any?): Boolean? {
@@ -88,6 +90,7 @@ data class ScStringListPref(
     @StringRes
     override val summaryRes: Int? = null,
     override val authorsChoice: String? = null,
+    override val upstreamChoice: String? = null,
 ): ScListPref<String> {
     @IgnoredOnParcel override val key = stringPreferencesKey(sKey)
     override fun ensureType(value: Any?): String? {
@@ -108,6 +111,7 @@ data class ScColorPref(
     @StringRes
     override val summaryRes: Int? = null,
     override val authorsChoice: Int? = null,
+    override val upstreamChoice: Int? = null,
 ): ScPref<Int> {
     @IgnoredOnParcel override val key = intPreferencesKey(sKey)
     override fun ensureType(value: Any?): Int? {
@@ -118,3 +122,10 @@ data class ScColorPref(
         return value
     }
 }
+
+@Parcelize
+data class ScActionablePref(
+    val key: String,
+    override val titleRes: Int,
+    override val summaryRes: Int? = null,
+) : AbstractScPref

@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import chat.schildi.lib.preferences.ScActionablePref
 import chat.schildi.lib.preferences.ScBoolPref
 import chat.schildi.lib.preferences.ScColorPref
 import chat.schildi.lib.preferences.ScPrefCategory
@@ -62,6 +63,18 @@ fun ScPrefScreen.Rendered(
     PreferenceText(
         title = stringResource(id = titleRes),
         onClick = onClick,
+    )
+}
+
+@Composable
+fun ScActionablePref.Rendered(
+    handleAction: (String) -> Unit
+) {
+    PreferenceText(
+        title = stringResource(id = titleRes),
+        onClick = {
+          handleAction(key)
+        },
     )
 }
 

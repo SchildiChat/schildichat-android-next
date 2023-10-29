@@ -20,6 +20,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BugReport
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.InsertChart
 import androidx.compose.material.icons.outlined.PrecisionManufacturing
 import androidx.compose.material.icons.outlined.VerifiedUser
@@ -117,12 +119,12 @@ fun PreferencesRootView(
         }
         PreferenceText(
             title = stringResource(id = CommonStrings.action_report_bug),
-            iconResourceId = CommonDrawables.ic_compound_chat_problem,
+            icon = Icons.Outlined.BugReport,
             onClick = onOpenRageShake
         )
         PreferenceText(
             title = stringResource(id = CommonStrings.common_about),
-            iconResourceId = CommonDrawables.ic_compound_info,
+            icon = Icons.Outlined.Info,
             onClick = onOpenAbout,
         )
         HorizontalDivider()

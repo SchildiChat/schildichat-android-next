@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
@@ -270,7 +271,7 @@ private fun DefaultRoomListTopBar(
                         text = { Text(stringResource(id = CommonStrings.common_report_a_bug)) },
                         leadingIcon = {
                             Icon(
-                                resourceId = CommonDrawables.ic_compound_chat_problem,
+                                imageVector = Icons.Outlined.BugReport,
                                 tint = ElementTheme.materialColors.secondary,
                                 contentDescription = null,
                             )

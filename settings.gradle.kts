@@ -52,6 +52,8 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 rootProject.name = "SchildiNext"
 include(":app")
 include(":appnav")
+include(":appconfig")
+include(":tests:konsist")
 include(":tests:uitests")
 include(":tests:testutils")
 include(":anvilannotations")

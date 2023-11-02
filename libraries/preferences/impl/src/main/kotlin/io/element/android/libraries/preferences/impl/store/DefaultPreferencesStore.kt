@@ -21,6 +21,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import chat.schildi.lib.preferences.ScPreferencesStore
 import com.squareup.anvil.annotations.ContributesBinding
@@ -38,6 +39,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 
 private val richTextEditorKey = booleanPreferencesKey("richTextEditor")
 private val developerModeKey = booleanPreferencesKey("developerMode")
+private val customElementCallBaseUrlKey = stringPreferencesKey("elementCallBaseUrl")
 
 @ContributesBinding(AppScope::class)
 class DefaultPreferencesStore @Inject constructor(
@@ -75,6 +77,22 @@ class DefaultPreferencesStore @Inject constructor(
     }
 
     override fun getScPreferenceStore(): ScPreferencesStore = scPreferencesStore
+
+    override suspend fun setCustomElementCallBaseUrl(string: String?) {
+        store.edit { prefs ->
+            if (string != null) {
+                prefs[customElementCallBaseUrlKey] = string
+            } else {
+                prefs.remove(customElementCallBaseUrlKey)
+            }
+        }
+    }
+
+    override fun getCustomElementCallBaseUrlFlow(): Flow<String?> {
+        return store.data.map { prefs ->
+            prefs[customElementCallBaseUrlKey]
+        }
+    }
 
     override suspend fun reset() {
         store.edit { it.clear() }

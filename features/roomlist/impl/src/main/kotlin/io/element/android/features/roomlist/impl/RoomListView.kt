@@ -47,14 +47,15 @@ import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.scPrefs
 import io.element.android.features.leaveroom.api.LeaveRoomView
 import io.element.android.features.networkmonitor.api.ui.ConnectivityIndicatorContainer
+import io.element.android.features.roomlist.impl.components.ConfirmRecoveryKeyBanner
 import io.element.android.features.roomlist.impl.components.RequestVerificationHeader
 import io.element.android.features.roomlist.impl.components.RoomListMenuAction
 import io.element.android.features.roomlist.impl.components.RoomListTopBar
 import io.element.android.features.roomlist.impl.components.RoomSummaryRow
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.features.roomlist.impl.search.RoomListSearchResultView
-import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.preview.ElementPreview
+import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.FloatingActionButton
 import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
 import io.element.android.libraries.designsystem.theme.components.Icon
@@ -179,6 +180,7 @@ private fun RoomListContent(
         topBar = {
             RoomListTopBar(
                 matrixUser = state.matrixUser,
+                showAvatarIndicator = state.showAvatarIndicator,
                 areSearchResultsDisplayed = state.displaySearchResults,
                 onFilterChanged = { state.eventSink(RoomListEvents.UpdateFilter(it)) },
                 onToggleSearch = { state.eventSink(RoomListEvents.ToggleSearchResults) },
@@ -195,12 +197,22 @@ private fun RoomListContent(
                     .nestedScroll(nestedScrollConnection),
                 state = lazyListState,
             ) {
-                if (state.displayVerificationPrompt) {
-                    item {
-                        RequestVerificationHeader(
-                            onVerifyClicked = onVerifyClicked,
-                            onDismissClicked = { state.eventSink(RoomListEvents.DismissRequestVerificationPrompt) }
-                        )
+                when {
+                    state.displayVerificationPrompt -> {
+                        item {
+                            RequestVerificationHeader(
+                                onVerifyClicked = onVerifyClicked,
+                                onDismissClicked = { state.eventSink(RoomListEvents.DismissRequestVerificationPrompt) }
+                            )
+                        }
+                    }
+                    state.displayRecoveryKeyPrompt -> {
+                        item {
+                            ConfirmRecoveryKeyBanner(
+                                onContinueClicked = onOpenSettings,
+                                onDismissClicked = { state.eventSink(RoomListEvents.DismissRecoveryKeyPrompt) }
+                            )
+                        }
                     }
                 }
 

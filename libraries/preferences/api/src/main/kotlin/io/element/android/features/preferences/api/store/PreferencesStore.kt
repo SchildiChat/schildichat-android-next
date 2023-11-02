@@ -28,5 +28,8 @@ interface PreferencesStore {
 
     fun getScPreferenceStore(): ScPreferencesStore
 
+    suspend fun setCustomElementCallBaseUrl(string: String?)
+    fun getCustomElementCallBaseUrlFlow(): Flow<String?>
+
     suspend fun reset()
 }

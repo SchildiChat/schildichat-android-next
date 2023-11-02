@@ -21,6 +21,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
@@ -53,11 +54,12 @@ import chat.schildi.components.preferences.AutoRenderedDropdown
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.scPrefs
 import io.element.android.features.roomlist.impl.R
+import io.element.android.libraries.designsystem.atomic.atoms.RedIndicatorAtom
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.components.avatarBloom
-import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.preview.ElementPreview
+import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.text.applyScaleDown
 import io.element.android.libraries.designsystem.text.roundToPx
 import io.element.android.libraries.designsystem.text.toDp
@@ -86,6 +88,7 @@ private val avatarBloomSize = 430.dp
 @Composable
 fun RoomListTopBar(
     matrixUser: MatrixUser?,
+    showAvatarIndicator: Boolean,
     areSearchResultsDisplayed: Boolean,
     onFilterChanged: (String) -> Unit,
     onToggleSearch: () -> Unit,
@@ -110,6 +113,7 @@ fun RoomListTopBar(
 
     DefaultRoomListTopBar(
         matrixUser = matrixUser,
+        showAvatarIndicator = showAvatarIndicator,
         areSearchResultsDisplayed = areSearchResultsDisplayed,
         onOpenSettings = onOpenSettings,
         onSearchClicked = onToggleSearch,
@@ -123,6 +127,7 @@ fun RoomListTopBar(
 @Composable
 private fun DefaultRoomListTopBar(
     matrixUser: MatrixUser?,
+    showAvatarIndicator: Boolean,
     areSearchResultsDisplayed: Boolean,
     scrollBehavior: TopAppBarScrollBehavior,
     onOpenSettings: () -> Unit,
@@ -211,6 +216,13 @@ private fun DefaultRoomListTopBar(
                             avatarData = it,
                             contentDescription = stringResource(CommonStrings.common_settings),
                         )
+                        if (showAvatarIndicator) {
+                            RedIndicatorAtom(
+                                modifier = Modifier
+                                    .padding(4.5.dp)
+                                    .align(Alignment.TopEnd)
+                            )
+                        }
                     }
                 }
             },
@@ -317,6 +329,22 @@ private fun DefaultRoomListTopBar(
 internal fun DefaultRoomListTopBarPreview() = ElementPreview {
     DefaultRoomListTopBar(
         matrixUser = MatrixUser(UserId("@id:domain"), "Alice"),
+        showAvatarIndicator = false,
+        areSearchResultsDisplayed = false,
+        scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState()),
+        onOpenSettings = {},
+        onSearchClicked = {},
+        onMenuActionClicked = {},
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@PreviewsDayNight
+@Composable
+internal fun DefaultRoomListTopBarWithIndicatorPreview() = ElementPreview {
+    DefaultRoomListTopBar(
+        matrixUser = MatrixUser(UserId("@id:domain"), "Alice"),
+        showAvatarIndicator = true,
         areSearchResultsDisplayed = false,
         scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState()),
         onOpenSettings = {},

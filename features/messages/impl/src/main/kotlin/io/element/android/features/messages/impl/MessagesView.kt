@@ -41,10 +41,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -59,9 +56,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import chat.schildi.components.preferences.AutoRenderedDropdown
-import chat.schildi.lib.preferences.ScPrefs
-import chat.schildi.lib.preferences.scPrefs
 import io.element.android.features.messages.impl.actionlist.ActionListEvents
 import io.element.android.features.messages.impl.actionlist.ActionListView
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemAction
@@ -111,6 +105,7 @@ import io.element.android.libraries.theme.ElementTheme
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.ImmutableList
 import timber.log.Timber
+import kotlin.random.Random
 import androidx.compose.material3.Button as Material3Button
 
 @Composable
@@ -346,6 +341,16 @@ private fun MessagesViewContent(
             )
         }
 
+        // This key is used to force the sheet to be remeasured when the content changes.
+        // Any state change that should trigger a height size should be added to the list of remembered values here.
+        val sheetResizeContentKey = remember(
+            state.composerState.mode.relatedEventId,
+            state.composerState.richTextEditorState.lineCount,
+            state.composerState.memberSuggestions.size
+        ) {
+            Random.nextInt()
+        }
+
         ExpandableBottomSheetScaffold(
             sheetDragHandle = if (state.composerState.showTextFormatting) {
                 @Composable { BottomSheetDragHandle() }
@@ -378,7 +383,7 @@ private fun MessagesViewContent(
                     state = state,
                 )
             },
-            sheetContentKey = state.composerState.richTextEditorState.lineCount + state.composerState.memberSuggestions.size,
+            sheetContentKey = sheetResizeContentKey,
             sheetTonalElevation = 0.dp,
             sheetShadowElevation = if (state.composerState.memberSuggestions.isNotEmpty()) 16.dp else 0.dp,
         )

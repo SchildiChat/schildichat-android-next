@@ -25,7 +25,6 @@ import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.InsertChart
 import androidx.compose.material.icons.outlined.PrecisionManufacturing
-import androidx.compose.material.icons.outlined.VerifiedUser
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -34,12 +33,15 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import chat.schildi.lib.preferences.ScPrefScreen
 import io.element.android.features.preferences.impl.user.UserPreferences
+import io.element.android.libraries.designsystem.components.list.ListItemContent
 import io.element.android.libraries.designsystem.components.preferences.PreferencePage
-import io.element.android.libraries.designsystem.components.preferences.PreferenceText
 import io.element.android.libraries.designsystem.preview.ElementPreviewDark
 import io.element.android.libraries.designsystem.preview.ElementPreviewLight
 import io.element.android.libraries.designsystem.preview.PreviewWithLargeHeight
 import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
+import io.element.android.libraries.designsystem.theme.components.IconSource
+import io.element.android.libraries.designsystem.theme.components.ListItem
+import io.element.android.libraries.designsystem.theme.components.ListItemStyle
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.utils.CommonDrawables
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarHost
@@ -84,17 +86,17 @@ fun PreferencesRootView(
             user = state.myUser,
         )
         if (state.showCompleteVerification) {
-            PreferenceText(
-                title = stringResource(id = CommonStrings.action_complete_verification),
-                icon = Icons.Outlined.VerifiedUser,
-                onClick = onVerifyClicked,
+            ListItem(
+                headlineContent = { Text(text = stringResource(CommonStrings.common_verify_device)) },
+                leadingContent = ListItemContent.Icon(IconSource.Resource(CommonDrawables.ic_compound_check_circle)),
+                onClick = onVerifyClicked
             )
         }
         if (state.showSecureBackup) {
-            PreferenceText(
-                title = stringResource(id = CommonStrings.common_chat_backup),
-                iconResourceId = CommonDrawables.ic_key_filled,
-                showEndBadge = state.showSecureBackupBadge,
+            ListItem(
+                headlineContent = { Text(stringResource(id = CommonStrings.common_chat_backup)) },
+                leadingContent = ListItemContent.Icon(IconSource.Resource(CommonDrawables.ic_key_filled),),
+                trailingContent = ListItemContent.Badge.takeIf { state.showSecureBackupBadge },
                 onClick = onSecureBackupClicked,
             )
         }
@@ -102,71 +104,73 @@ fun PreferencesRootView(
             HorizontalDivider()
         }
         if (state.accountManagementUrl != null) {
-            PreferenceText(
-                title = stringResource(id = CommonStrings.action_manage_account),
-                iconResourceId = CommonDrawables.ic_compound_pop_out,
+            ListItem(
+                headlineContent = { Text(stringResource(id = CommonStrings.action_manage_account)) },
+                leadingContent = ListItemContent.Icon(IconSource.Resource(CommonDrawables.ic_compound_user)),
+                trailingContent = ListItemContent.Icon(IconSource.Resource(CommonDrawables.ic_compound_pop_out)),
                 onClick = { onManageAccountClicked(state.accountManagementUrl) },
             )
             HorizontalDivider()
         }
-        PreferenceText(
-            title = stringResource(id = chat.schildi.lib.R.string.sc_pref_tweaks_title),
-            //iconResourceId = CommonDrawables.ic_notification_small,
-            icon = Icons.Outlined.PrecisionManufacturing,
+        ListItem(
+            headlineContent = { Text(stringResource(id = chat.schildi.lib.R.string.sc_pref_tweaks_title)) },
+            leadingContent = ListItemContent.Icon(IconSource.Vector(Icons.Outlined.PrecisionManufacturing)),
             onClick = { onOpenScTweaks(null) },
         )
         if (state.showAnalyticsSettings) {
-            PreferenceText(
-                title = stringResource(id = CommonStrings.common_analytics),
-                icon = Icons.Outlined.InsertChart,
+            ListItem(
+                headlineContent = { Text(stringResource(id = CommonStrings.common_analytics)) },
+                leadingContent = ListItemContent.Icon(IconSource.Vector(Icons.Outlined.InsertChart)),
                 onClick = onOpenAnalytics,
             )
         }
         if (state.showNotificationSettings) {
-            PreferenceText(
-                title = stringResource(id = CommonStrings.screen_notification_settings_title),
-                iconResourceId = CommonDrawables.ic_compound_notifications,
+            ListItem(
+                headlineContent = { Text(stringResource(id = CommonStrings.screen_notification_settings_title)) },
+                leadingContent = ListItemContent.Icon(IconSource.Resource(CommonDrawables.ic_compound_notifications)),
                 onClick = onOpenNotificationSettings,
             )
         }
-        PreferenceText(
-            title = stringResource(id = CommonStrings.action_report_bug),
-            icon = Icons.Outlined.BugReport,
+        ListItem(
+            headlineContent = { Text(stringResource(id = CommonStrings.common_report_a_problem)) },
+            leadingContent = ListItemContent.Icon(IconSource.Vector(Icons.Outlined.BugReport)),
             onClick = onOpenRageShake
         )
-        PreferenceText(
-            title = stringResource(id = CommonStrings.common_about),
-            icon = Icons.Outlined.Info,
+        ListItem(
+            headlineContent = { Text(stringResource(id = CommonStrings.common_about)) },
+            leadingContent = ListItemContent.Icon(IconSource.Vector(Icons.Outlined.Info)),
             onClick = onOpenAbout,
         )
         if (state.showLockScreenSettings) {
-            PreferenceText(
-                title = stringResource(id = CommonStrings.common_screen_lock),
-                icon = Icons.Default.Lock,
+            ListItem(
+                headlineContent = { Text(stringResource(id = CommonStrings.common_screen_lock)) },
+                leadingContent = ListItemContent.Icon(IconSource.Vector(Icons.Default.Lock)),
                 onClick = onOpenLockScreenSettings,
             )
         }
         HorizontalDivider()
         if (state.devicesManagementUrl != null) {
-            PreferenceText(
-                title = stringResource(id = CommonStrings.action_manage_devices),
-                iconResourceId = CommonDrawables.ic_compound_pop_out,
+            ListItem(
+                headlineContent = { Text(stringResource(id = CommonStrings.action_manage_devices)) },
+                leadingContent = ListItemContent.Icon(IconSource.Resource(CommonDrawables.ic_devices)),
+                trailingContent = ListItemContent.Icon(IconSource.Resource(CommonDrawables.ic_compound_pop_out)),
                 onClick = { onManageAccountClicked(state.devicesManagementUrl) },
             )
             HorizontalDivider()
         }
-        PreferenceText(
-            title = stringResource(id = CommonStrings.common_advanced_settings),
-            iconResourceId = CommonDrawables.ic_compound_settings,
+        ListItem(
+            headlineContent = { Text(stringResource(id = CommonStrings.common_advanced_settings)) },
+            leadingContent = ListItemContent.Icon(IconSource.Resource(CommonDrawables.ic_compound_settings)),
             onClick = onOpenAdvancedSettings,
         )
         if (state.showDeveloperSettings) {
             DeveloperPreferencesView(onOpenDeveloperSettings)
         }
         HorizontalDivider()
-        PreferenceText(
-            title = stringResource(id = CommonStrings.action_signout),
-            iconResourceId = CommonDrawables.ic_compound_leave,
+        ListItem(
+            headlineContent = { Text(stringResource(id = CommonStrings.action_signout)) },
+            leadingContent = ListItemContent.Icon(IconSource.Resource(CommonDrawables.ic_sign_out)),
+            style = ListItemStyle.Destructive,
             onClick = onSignOutClicked,
         )
         Text(
@@ -183,9 +187,9 @@ fun PreferencesRootView(
 
 @Composable
 private fun DeveloperPreferencesView(onOpenDeveloperSettings: () -> Unit) {
-    PreferenceText(
-        title = stringResource(id = CommonStrings.common_developer_options),
-        iconResourceId = CommonDrawables.ic_developer_mode,
+    ListItem(
+        headlineContent = { Text(stringResource(id = CommonStrings.common_developer_options)) },
+        leadingContent = ListItemContent.Icon(IconSource.Resource(CommonDrawables.ic_developer_options)),
         onClick = onOpenDeveloperSettings
     )
 }

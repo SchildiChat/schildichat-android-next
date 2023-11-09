@@ -42,14 +42,3 @@ In particular (may change a bit while the project is still in alpha):
 - Don't worry too much about code style if violating it can ease upstream merges
     - When putting upstream code into a new block (e.g., putting it in an `if`-statement), don't indent the upstream code, but rather add comments like
         `// Wrong indention for merge-ability - start` and `// Wrong indention for merge-ability - end`
-
-
-### Git LFS
-
-Element uses [Git LFS](https://git-lfs.com/) for uploading large files such as test databases or screenshots to GitHub.  
-At SchildiChat, we do not want to mess with LFS, which can be an annoying process when multiple git remotes and replication.  
-Accordingly, we [override the LFS url](https://github.com/SchildiChat/schildichat-android-next/blob/main/.lfsconfig) to just point to upstream.  
-This means:
-- We're always up-to-date with all LFS files that upstream adds
-- No GitHub storage quota from our accounts is wasted to duplicate upstream files
-- `git push` might complain when forking. To fix, `export GIT_LFS_SKIP_PUSH=1`.

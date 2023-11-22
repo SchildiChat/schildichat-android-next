@@ -35,6 +35,7 @@ dependencies {
     implementation(projects.anvilannotations)
     anvil(projects.anvilcodegen)
     api(projects.features.messages.api)
+    implementation(projects.appconfig)
     implementation(projects.features.call)
     implementation(projects.features.location.api)
     implementation(projects.features.poll.api)

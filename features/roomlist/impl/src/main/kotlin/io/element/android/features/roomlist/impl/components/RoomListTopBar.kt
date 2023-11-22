@@ -280,7 +280,7 @@ private fun DefaultRoomListTopBar(
                             showMenu = false
                             onMenuActionClicked(RoomListMenuAction.ReportBug)
                         },
-                        text = { Text(stringResource(id = CommonStrings.common_report_a_bug)) },
+                        text = { Text(stringResource(id = CommonStrings.common_report_a_problem)) },
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Outlined.BugReport,

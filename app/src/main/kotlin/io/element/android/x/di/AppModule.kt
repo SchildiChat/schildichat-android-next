@@ -72,7 +72,12 @@ object AppModule {
     @Provides
     @SingleIn(AppScope::class)
     fun providesBuildType(): BuildType {
-        return BuildType.valueOf(BuildConfig.BUILD_TYPE.uppercase())
+        return when (val type = BuildType.valueOf(BuildConfig.BUILD_TYPE.uppercase())) {
+            BuildType.NIGHTLY,
+            BuildType.RELEASE -> BuildType.RELEASE_SC
+            BuildType.DEBUG -> BuildType.DEBUG_SC
+            else -> type
+        }
     }
 
     @Provides

@@ -178,6 +178,11 @@ while [ "$(wc -m "$changelog_file"|sed 's| .*||')" -gt "$max_changelog_len" ]; d
     read -p "Press enter when changelog is done"
 done
 
+for changelogAbi in 1 2 3 4; do
+    changelog_copy="$changelog_dir/$versionCode$changelogAbi.txt"
+    cp "$changelog_file" "$changelog_copy"
+done
+
 git add -A
 if [ "$release_type" = "test" ]; then
     git commit -m "Test version $versionCode"

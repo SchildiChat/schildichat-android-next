@@ -23,7 +23,7 @@ fun getLocalProperty(key: String, file: String = "local.properties"): Any? {
         java.io.InputStreamReader(java.io.FileInputStream(localProperties), Charsets.UTF_8).use { reader ->
             properties.load(reader)
         }
-    } else error("File from not found")
+    } else null
 
     return try { properties.getProperty(key) } catch (e: Exception) { null }
 }

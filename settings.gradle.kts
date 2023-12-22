@@ -16,6 +16,18 @@ import java.net.URI
  * limitations under the License.
  */
 
+fun getLocalProperty(key: String, file: String = "local.properties"): Any? {
+    val properties = java.util.Properties()
+    val localProperties = File(file)
+    if (localProperties.isFile) {
+        java.io.InputStreamReader(java.io.FileInputStream(localProperties), Charsets.UTF_8).use { reader ->
+            properties.load(reader)
+        }
+    } else error("File from not found")
+
+    return try { properties.getProperty(key) } catch (e: Exception) { null }
+}
+
 pluginManagement {
     repositories {
         includeBuild("plugins")
@@ -40,6 +52,17 @@ dependencyResolutionManagement {
         // To have immediate access to Rust SDK versions
         maven {
             url = URI("https://s01.oss.sonatype.org/content/repositories/releases")
+        }
+        // SC fork of the Rust-SDK
+        maven {
+            url = URI("https://maven.pkg.github.com/SchildiChat/matrix-rust-components-kotlin")
+            content {
+                includeModule("chat.schildi.rustcomponents", "sdk-android")
+            }
+            credentials {
+                username = getLocalProperty("gpr.user") as String? ?: System.getenv("GPR_USER")
+                password = getLocalProperty("gpr.token") as String? ?: System.getenv("GPR_TOKEN")
+            }
         }
         flatDir {
             dirs("libraries/matrix/libs")

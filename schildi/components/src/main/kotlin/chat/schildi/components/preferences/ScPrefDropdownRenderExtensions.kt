@@ -17,12 +17,12 @@ import chat.schildi.lib.preferences.ScBoolPref
 import chat.schildi.lib.preferences.ScPref
 import chat.schildi.lib.preferences.ScPrefContainer
 import chat.schildi.lib.preferences.scPrefs
+import io.element.android.compound.theme.ElementTheme
 import io.element.android.libraries.designsystem.theme.components.Checkbox
 import io.element.android.libraries.designsystem.theme.components.DropdownMenu
 import io.element.android.libraries.designsystem.theme.components.DropdownMenuItem
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.Text
-import io.element.android.libraries.theme.ElementTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
 

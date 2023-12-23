@@ -35,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.messages.impl.timeline.model.TimelineItemGroupPosition
 import io.element.android.features.messages.impl.timeline.model.bubble.BubbleState
@@ -100,8 +101,8 @@ fun MessageEventBubble(
 
     // Ignore state.isHighlighted for now, we need a design decision on it.
     val backgroundBubbleColor = when {
-        state.isMine -> ElementTheme.colors.messageFromMeBackground
-        else -> ElementTheme.colors.messageFromOtherBackground
+        state.isMine -> ScTheme.exposures.bubbleBgOutgoing ?: ElementTheme.colors.messageFromMeBackground
+        else -> ScTheme.exposures.bubbleBgIncoming ?: ElementTheme.colors.messageFromOtherBackground
     }
     val bubbleShape = bubbleShape()
     Box(

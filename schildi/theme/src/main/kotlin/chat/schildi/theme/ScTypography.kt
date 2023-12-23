@@ -3,8 +3,6 @@ package chat.schildi.theme
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.sp
-import io.element.android.libraries.theme.compound.*
 
 private fun TextStyle.schildify(fontSizeOverride: TextUnit? = null): TextStyle {
     return copy(
@@ -13,7 +11,8 @@ private fun TextStyle.schildify(fontSizeOverride: TextUnit? = null): TextStyle {
         fontSize = fontSizeOverride ?: fontSize
     )
 }
-internal val scTypography = Typography(
+internal val scTypography = Typography()
+/* TODO?
     headlineLarge = compoundHeadingXlRegular.schildify(),
     headlineMedium = compoundHeadingLgRegular.schildify(),
     headlineSmall = defaultHeadlineSmall.schildify(),
@@ -27,3 +26,4 @@ internal val scTypography = Typography(
     labelMedium = compoundBodySmMedium.schildify(),
     labelSmall = compoundBodyXsMedium.schildify()
 )
+ */

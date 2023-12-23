@@ -18,6 +18,7 @@ package io.element.android.libraries.mediaviewer.api.viewer
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import chat.schildi.theme.ForcedDarkScTheme
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
@@ -52,7 +53,7 @@ open class MediaViewerNode @AssistedInject constructor(
 
     @Composable
     override fun View(modifier: Modifier) {
-        ForcedDarkElementTheme {
+        ForcedDarkScTheme {
             val state = presenter.present()
             MediaViewerView(
                 state = state,

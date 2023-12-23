@@ -46,8 +46,6 @@ val SemanticColors.placeholderBackground
 
 // This color is not present in Semantic color, so put hard-coded value for now
 val SemanticColors.messageFromMeBackground
-    get() = scThemeExposures.bubbleBgOutgoing
-    /*
     get() = if (isLight) {
         // We want LightDesignTokens.colorGray400
         Color(0xFFE1E6EC)
@@ -55,12 +53,9 @@ val SemanticColors.messageFromMeBackground
         // We want DarkDesignTokens.colorGray500
         Color(0xFF323539)
     }
-     */
 
 // This color is not present in Semantic color, so put hard-coded value for now
 val SemanticColors.messageFromOtherBackground
-    get() = scThemeExposures.bubbleBgIncoming
-    /*
     get() = if (isLight) {
         // We want LightDesignTokens.colorGray300
         Color(0xFFF0F2F5)
@@ -68,7 +63,6 @@ val SemanticColors.messageFromOtherBackground
         // We want DarkDesignTokens.colorGray400
         Color(0xFF26282D)
     }
-     */
 
 // This color is not present in Semantic color, so put hard-coded value for now
 val SemanticColors.progressIndicatorTrackColor

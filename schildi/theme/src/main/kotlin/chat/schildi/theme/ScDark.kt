@@ -2,8 +2,16 @@ package chat.schildi.theme
 
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.darkColorScheme
-import io.element.android.libraries.theme.compound.generated.SemanticColors
-import io.element.android.libraries.theme.compound.generated.internal.DarkDesignTokens
+import io.element.android.compound.annotations.CoreColorToken
+import io.element.android.compound.tokens.generated.SemanticColors
+import io.element.android.compound.tokens.generated.internal.DarkColorTokens.colorBlue200
+import io.element.android.compound.tokens.generated.internal.DarkColorTokens.colorBlue500
+import io.element.android.compound.tokens.generated.internal.DarkColorTokens.colorBlue900
+import io.element.android.compound.tokens.generated.internal.DarkColorTokens.colorRed1000
+import io.element.android.compound.tokens.generated.internal.DarkColorTokens.colorRed200
+import io.element.android.compound.tokens.generated.internal.DarkColorTokens.colorRed300
+import io.element.android.compound.tokens.generated.internal.DarkColorTokens.colorRed500
+import io.element.android.compound.tokens.generated.internal.DarkColorTokens.colorRed900
 
 val scd_fgPrimary = ScColors.colorWhite
 val scd_fgSecondary = ScColors.colorWhiteAlpha_b3
@@ -16,6 +24,7 @@ val scd_bgDarker = ScColors.colorGray_21
 val scd_bgBlack = ScColors.colorBlack
 val scd_divider = ScColors.colorWhiteAlpha_1f
 val scd_accent = ScColors.colorAccentGreen
+val scd_icon_alpha = 0.5f
 
 internal val scdMaterialColorScheme = darkColorScheme(
     primary = scd_fgPrimary,
@@ -61,8 +70,8 @@ internal val scdExposures = ScThemeExposures(
     appBarBg = scd_bg,
 )
 
+@OptIn(CoreColorToken::class)
 internal val scdSemanticColors = SemanticColors(
-    scThemeExposures = scdExposures,
     textPrimary = scd_fgPrimary,
     textSecondary = scd_fgSecondary,
     textPlaceholder = scd_fgHint,
@@ -85,36 +94,35 @@ internal val scdSemanticColors = SemanticColors(
     bgActionSecondaryRest = scd_bg,
     bgActionSecondaryHovered = scd_bgFloating,
     bgActionSecondaryPressed = scd_bgFloating,
-    // TODO from here
-    bgCriticalPrimary = DarkDesignTokens.colorRed900,
-    bgCriticalHovered = DarkDesignTokens.colorRed1000,
-    bgCriticalSubtle = DarkDesignTokens.colorRed200,
-    bgCriticalSubtleHovered = DarkDesignTokens.colorRed300,
+    bgCriticalPrimary = colorRed900, // TODO
+    bgCriticalHovered = colorRed1000, // TODO
+    bgCriticalSubtle = colorRed200, // TODO
+    bgCriticalSubtleHovered = colorRed300, // TODO
     bgSuccessSubtle = ScColors.colorAccentGreen.copy(alpha=0.2f),
-    bgInfoSubtle = DarkDesignTokens.colorBlue200,
-    borderDisabled = DarkDesignTokens.colorGray500,
-    borderFocused = DarkDesignTokens.colorBlue900,
-    borderInteractivePrimary = DarkDesignTokens.colorGray800,
-    borderInteractiveSecondary = DarkDesignTokens.colorGray600,
-    borderInteractiveHovered = DarkDesignTokens.colorGray1100,
-    borderCriticalPrimary = DarkDesignTokens.colorRed900,
-    borderCriticalHovered = DarkDesignTokens.colorRed1000,
-    borderCriticalSubtle = DarkDesignTokens.colorRed500,
+    bgInfoSubtle = colorBlue200, // TODO
+    borderDisabled = scd_divider,
+    borderFocused = colorBlue900, // TODO
+    borderInteractivePrimary = scd_divider, // TODO?
+    borderInteractiveSecondary = scd_divider, // TODO?
+    borderInteractiveHovered = scd_divider, // TODO?
+    borderCriticalPrimary = colorRed900, // TODO
+    borderCriticalHovered = colorRed1000, // TODO
+    borderCriticalSubtle = colorRed500, // TODO
     borderSuccessSubtle = ScColors.colorAccentGreen,
-    borderInfoSubtle = DarkDesignTokens.colorBlue500,
-    iconPrimary = DarkDesignTokens.colorGray1400,
-    iconSecondary = DarkDesignTokens.colorGray900,
-    iconTertiary = DarkDesignTokens.colorGray800,
-    iconQuaternary = DarkDesignTokens.colorGray700,
-    iconDisabled = DarkDesignTokens.colorGray700,
-    iconPrimaryAlpha = DarkDesignTokens.colorAlphaGray1400,
-    iconSecondaryAlpha = DarkDesignTokens.colorAlphaGray900,
-    iconTertiaryAlpha = DarkDesignTokens.colorAlphaGray800,
-    iconQuaternaryAlpha = DarkDesignTokens.colorAlphaGray700,
+    borderInfoSubtle = colorBlue500, // TODO
+    iconPrimary = scd_fgPrimary,
+    iconSecondary = scd_fgSecondary,
+    iconTertiary = scd_fgTertiary,
+    iconQuaternary = scd_fgTertiary,
+    iconDisabled = scd_fgDisabled,
+    iconPrimaryAlpha = scd_fgPrimary.copy(alpha = scd_icon_alpha),
+    iconSecondaryAlpha = scd_fgSecondary.copy(alpha = scd_icon_alpha),
+    iconTertiaryAlpha = scd_fgTertiary.copy(alpha = scd_icon_alpha),
+    iconQuaternaryAlpha = scd_fgTertiary.copy(alpha = scd_icon_alpha),
     iconAccentTertiary = scd_accent,
-    iconCriticalPrimary = DarkDesignTokens.colorRed900,
-    iconSuccessPrimary = DarkDesignTokens.colorGreen900,
-    iconInfoPrimary = DarkDesignTokens.colorBlue900,
-    iconOnSolidPrimary = DarkDesignTokens.colorThemeBg,
+    iconCriticalPrimary = ScColors.colorAccentRed, // TODO align with other colorRed900?
+    iconSuccessPrimary = ScColors.colorAccentGreen,
+    iconInfoPrimary = ScColors.colorAccentBlue,
+    iconOnSolidPrimary = scd_fgPrimary,
     isLight = false,
 )

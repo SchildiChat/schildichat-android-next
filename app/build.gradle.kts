@@ -228,6 +228,7 @@ knit {
 }
 
 dependencies {
+    implementation(projects.schildi.theme)
     allLibrariesImpl()
     allServicesImpl()
     allFeaturesImpl(rootDir, logger)

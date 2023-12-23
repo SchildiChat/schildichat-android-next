@@ -20,5 +20,5 @@ object RoomListConfig {
     const val showInviteMenuItem = false
     const val showReportProblemMenuItem = false
 
-    const val hasDropdownMenu = showInviteMenuItem || showReportProblemMenuItem
+    const val hasDropdownMenu = true //showInviteMenuItem || showReportProblemMenuItem
 }

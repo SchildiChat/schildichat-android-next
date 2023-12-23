@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.core.content.IntentCompat
+import chat.schildi.theme.ScTheme
 import com.bumble.appyx.core.integrationpoint.NodeComponentActivity
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.theme.Theme
@@ -105,7 +106,7 @@ class ElementCallActivity : NodeComponentActivity(), CallScreenNavigator {
             }
                 .collectAsState(initial = Theme.System)
             val state = presenter.present()
-            ElementTheme(
+            ScTheme(
                 darkTheme = theme.isDark()
             ) {
                 CallScreenView(

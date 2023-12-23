@@ -49,6 +49,8 @@ dependencies {
     implementation(libs.serialization.json)
     ksp(libs.showkase.processor)
 
+    implementation(projects.schildi.theme)
+
     testImplementation(libs.coroutines.test)
     testImplementation(libs.molecule.runtime)
     testImplementation(libs.test.truth)

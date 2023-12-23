@@ -29,6 +29,7 @@ anvil {
 }
 
 dependencies {
+    implementation(projects.schildi.theme)
     anvil(projects.anvilcodegen)
     implementation(projects.anvilannotations)
 

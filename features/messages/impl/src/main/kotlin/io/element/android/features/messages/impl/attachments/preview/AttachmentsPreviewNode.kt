@@ -18,6 +18,7 @@ package io.element.android.features.messages.impl.attachments.preview
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import chat.schildi.theme.ForcedDarkScTheme
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
@@ -45,7 +46,7 @@ class AttachmentsPreviewNode @AssistedInject constructor(
 
     @Composable
     override fun View(modifier: Modifier) {
-        ForcedDarkElementTheme {
+        ForcedDarkScTheme {
             val state = presenter.present()
             AttachmentsPreviewView(
                 state = state,

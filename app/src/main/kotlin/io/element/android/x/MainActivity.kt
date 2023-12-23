@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import chat.schildi.theme.ScTheme
 import com.bumble.appyx.core.integration.NodeHost
 import com.bumble.appyx.core.integrationpoint.NodeActivity
 import com.bumble.appyx.core.plugin.NodeReadyObserver
@@ -87,7 +88,7 @@ class MainActivity : NodeActivity() {
             appBindings.preferencesStore().getThemeFlow().mapToTheme()
         }
             .collectAsState(initial = Theme.System)
-        ElementTheme(
+        ScTheme(
             darkTheme = theme.isDark()
         ) {
             CompositionLocalProvider(

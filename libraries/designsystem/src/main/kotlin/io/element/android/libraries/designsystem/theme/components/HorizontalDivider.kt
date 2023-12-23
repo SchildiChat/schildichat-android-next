@@ -26,14 +26,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import chat.schildi.theme.ScTheme
 import io.element.android.libraries.designsystem.preview.ElementThemedPreview
 import io.element.android.libraries.designsystem.preview.PreviewGroup
-import io.element.android.libraries.theme.ElementTheme
 
 @Composable
 fun HorizontalDivider(
     modifier: Modifier = Modifier,
-    thickness: Dp = ElementTheme.colors.scThemeExposures.horizontalDividerThickness,
+    thickness: Dp = ScTheme.exposures.horizontalDividerThickness,
     color: Color = DividerDefaults.color,
 ) {
     androidx.compose.material3.HorizontalDivider(

@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import chat.schildi.components.preferences.AutoRenderedDropdown
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.scPrefs
+import chat.schildi.theme.ScTheme
 import io.element.android.appconfig.RoomListConfig
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
@@ -177,7 +178,7 @@ private fun DefaultRoomListTopBar(
                         appBarHeight = it.height
                     }
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
-                    .let { if (ElementTheme.isScTheme) it.background(ElementTheme.colors.scThemeExposures.appBarBg) else it
+                    .let { ScTheme.exposures.appBarBg?.let { c -> it.background(c) } ?: it
                     .avatarBloom( // indention for merge start
                         avatarData = avatarData,
                         background = if (ElementTheme.isLightTheme) {
@@ -256,7 +257,7 @@ private fun DefaultRoomListTopBar(
                                 text = { Text(stringResource(id = CommonStrings.common_settings)) },
                                 leadingIcon = {
                                     Icon(
-                                        resourceId = CommonDrawables.ic_compound_settings,
+                                        imageVector = CompoundIcons.SettingsSolid,
                                         tint = ElementTheme.materialColors.secondary,
                                         contentDescription = null,
                                     )

@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import chat.schildi.theme.ScTheme
 import coil.compose.AsyncImage
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.libraries.designsystem.colors.AvatarColorsProvider
@@ -88,7 +89,7 @@ private fun InitialsAvatar(
     avatarData: AvatarData,
     modifier: Modifier = Modifier,
 ) {
-    val avatarColors = AvatarColorsProvider.provide(avatarData.id, ElementTheme.isLightTheme)
+    val avatarColors = AvatarColorsProvider.provide(avatarData.id, ElementTheme.isLightTheme, ScTheme.exposures.isScTheme)
     Box(
         modifier.background(color = avatarColors.background)
     ) {

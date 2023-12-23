@@ -95,6 +95,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.isSpecified
 import androidx.compose.ui.unit.toOffset
 import androidx.compose.ui.unit.toSize
+import chat.schildi.theme.ScTheme
 import coil.imageLoader
 import coil.request.DefaultRequestOptions
 import coil.request.ImageRequest
@@ -373,7 +374,7 @@ fun Modifier.avatarBloom(
         )
     } else {
         // There is no URL so we'll generate an avatar with the initials and use that as the bloom source
-        val avatarColors = AvatarColorsProvider.provide(avatarData.id, ElementTheme.isLightTheme)
+        val avatarColors = AvatarColorsProvider.provide(avatarData.id, ElementTheme.isLightTheme, ScTheme.exposures.isScTheme)
         val initialsBitmap = initialsBitmap(
             width = BloomDefaults.ENCODE_SIZE_PX.toDp(),
             height = BloomDefaults.ENCODE_SIZE_PX.toDp(),
@@ -547,7 +548,7 @@ class InitialsColorIntProvider : PreviewParameterProvider<Int> {
 @ShowkaseComposable(group = PreviewGroup.Bloom)
 internal fun BloomInitialsPreview(@PreviewParameter(InitialsColorIntProvider::class) color: Int) {
     ElementPreview {
-        val avatarColors = AvatarColorsProvider.provide("$color", ElementTheme.isLightTheme)
+        val avatarColors = AvatarColorsProvider.provide("$color", ElementTheme.isLightTheme, ScTheme.exposures.isScTheme)
         val bitmap = initialsBitmap(text = "F", backgroundColor = avatarColors.background, textColor = avatarColors.foreground)
         val hash = BlurHash.encode(
             bitmap = bitmap.asAndroidBitmap(),

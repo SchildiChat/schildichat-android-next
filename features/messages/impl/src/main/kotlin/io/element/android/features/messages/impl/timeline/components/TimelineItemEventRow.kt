@@ -61,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstrainScope
 import androidx.constraintlayout.compose.ConstraintLayout
+import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.messages.impl.timeline.TimelineEvents
@@ -369,7 +370,7 @@ private fun MessageSenderInformation(
 ) {
     val avatarStrokeColor = MaterialTheme.colorScheme.background
     val avatarSize = senderAvatar.size.dp
-    val avatarColors = AvatarColorsProvider.provide(senderAvatar.id, ElementTheme.isLightTheme)
+    val avatarColors = AvatarColorsProvider.provide(senderAvatar.id, ElementTheme.isLightTheme, ScTheme.exposures.isScTheme)
     Box(
         modifier = modifier
     ) {

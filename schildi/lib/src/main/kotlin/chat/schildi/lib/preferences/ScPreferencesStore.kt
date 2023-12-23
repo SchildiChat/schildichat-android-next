@@ -40,9 +40,11 @@ object ScPrefs {
     val SC_RESTORE_AUTHORS_CHOICE = ScActionablePref("SC_RESTORE_AUTHORS_CHOICE", R.string.sc_pref_restore_authors_choice)
 
     // Tests to be removed before release
+    /*
     val SC_TEST = ScStringListPref("TEST", "b", arrayOf("a", "b", "c"), arrayOf("A", "B", "C"), null, R.string.test)
     val SC_BUBBLE_BG_DARK_OUT = ScColorPref("SC_BUBBLE_BG_DARK_OUT", 0x008bc34a, R.string.test)
     val SC_BUBBLE_BG_LIGHT_OUT = ScColorPref("SC_BUBBLE_BG_LIGHT_OUT", 0x008bc34a, R.string.test)
+     */
 
     val scTweaks = ScPrefScreen(R.string.sc_pref_tweaks_title, null, listOf<AbstractScPref>(
         ScPrefCategory(R.string.sc_pref_category_general_appearance, null, listOf(
@@ -61,6 +63,7 @@ object ScPrefs {
             SC_RESTORE_UPSTREAM,
             SC_RESTORE_AUTHORS_CHOICE,
         )),
+        /*
         ScPrefCategory(R.string.test, null, listOf(
             ScPrefScreen(R.string.test, null, listOf(
                 SC_TEST,
@@ -68,6 +71,7 @@ object ScPrefs {
                 SC_BUBBLE_BG_LIGHT_OUT,
             )),
         )),
+         */
     ))
 
     val devQuickTweaks = listOf(

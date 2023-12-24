@@ -24,7 +24,7 @@ val scd_bgDarker = ScColors.colorGray_21
 val scd_bgBlack = ScColors.colorBlack
 val scd_divider = ScColors.colorWhiteAlpha_1f
 val scd_accent = ScColors.colorAccentGreen
-val scd_icon_alpha = 0.5f
+const val scd_icon_alpha = 0.5f
 
 internal val scdMaterialColorScheme = darkColorScheme(
     primary = scd_fgPrimary,

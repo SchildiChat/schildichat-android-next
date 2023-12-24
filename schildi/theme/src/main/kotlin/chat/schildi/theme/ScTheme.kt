@@ -7,6 +7,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.scPrefs
 import io.element.android.compound.theme.ElementTheme
@@ -25,7 +26,7 @@ internal val LocalScExposures = staticCompositionLocalOf { elementLightScExposur
 
 fun getThemeExposures(darkTheme: Boolean, useScTheme: Boolean) = when {
     darkTheme && useScTheme -> scdExposures
-    !darkTheme && useScTheme -> elementLightScExposures // TODO sclExposures
+    !darkTheme && useScTheme -> sclExposures
     darkTheme && !useScTheme -> elementDarkScExposures
     else -> elementLightScExposures
 }
@@ -43,8 +44,8 @@ fun ScTheme(
     val materialLightColors: ColorScheme
     val materialDarkColors: ColorScheme
     if (useScTheme) {
-        compoundColors = if (darkTheme) scdSemanticColors else elColorsLight
-        materialLightColors = elMaterialColorSchemeLight
+        compoundColors = if (darkTheme) scdSemanticColors else sclSemanticColors
+        materialLightColors = sclMaterialColorScheme
         materialDarkColors = scdMaterialColorScheme
     } else {
         compoundColors = if (darkTheme) elColorsDark else elColorsLight
@@ -108,3 +109,11 @@ fun ForcedDarkScTheme(
     ElementTheme(darkTheme = true, lightStatusBar = lightStatusBar, content = content)
      */
 }
+
+// Calculate the color as if with alpha on white background
+fun Color.fakeAlpha(alpha: Float) = Color(
+    1f - alpha * (1f - red),
+    1f - alpha * (1f - green),
+    1f - alpha * (1f - blue),
+    1f,
+)

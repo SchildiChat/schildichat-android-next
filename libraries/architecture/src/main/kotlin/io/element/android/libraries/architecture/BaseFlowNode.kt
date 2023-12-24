@@ -35,6 +35,7 @@ import com.bumble.appyx.core.plugin.Plugin
 import com.bumble.appyx.navmodel.backstack.BackStack
 import com.bumble.appyx.navmodel.backstack.transitionhandler.rememberBackstackFader
 import com.bumble.appyx.navmodel.backstack.transitionhandler.rememberBackstackSlider
+import io.element.android.libraries.architecture.animation.rememberDefaultTransitionHandler
 import io.element.android.libraries.architecture.overlay.Overlay
 
 /**
@@ -70,10 +71,8 @@ abstract class BaseFlowNode<NavTarget : Any>(
 @Composable
 inline fun <reified NavTarget : Any> BaseFlowNode<NavTarget>.BackstackView(
     modifier: Modifier = Modifier,
-    transitionHandler: TransitionHandler<NavTarget, BackStack.State> = rememberBackstackSlider(
-        transitionSpec = { spring(stiffness = Spring.StiffnessMediumLow) },
-    ),
 ) {
+    val transitionHandler: TransitionHandler<NavTarget, BackStack.State> = rememberDefaultTransitionHandler()
     Children(
         modifier = modifier,
         navModel = backstack,

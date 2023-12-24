@@ -49,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.platform.ViewConfiguration
@@ -62,6 +63,7 @@ import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstrainScope
 import androidx.constraintlayout.compose.ConstraintLayout
 import chat.schildi.theme.ScTheme
+import chat.schildi.theme.extensions.scOrElse
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.messages.impl.timeline.TimelineEvents
@@ -457,8 +459,14 @@ private fun MessageEventBubbleContent(
                         onClick = onTimestampClicked,
                         onLongClick = ::onTimestampLongClick,
                         modifier = Modifier
+                            .scOrElse(
+                                forSc = Modifier
+                                    .background(ScTheme.exposures.timestampOverlayBg,
+                                        RoundedCornerShape(ScTheme.exposures.timestampRadius, 0.dp, ScTheme.exposures.bubbleRadius, 0.dp))
+                            ) { this
                             .padding(horizontal = 4.dp, vertical = 4.dp) // Outer padding
                             .background(ElementTheme.colors.bgSubtleSecondary, RoundedCornerShape(10.0.dp))
+                            }
                             .align(Alignment.BottomEnd)
                             .padding(horizontal = 4.dp, vertical = 2.dp) // Inner padding
                     )

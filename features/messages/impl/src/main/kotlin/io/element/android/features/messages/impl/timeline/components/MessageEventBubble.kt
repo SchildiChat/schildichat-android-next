@@ -65,8 +65,9 @@ fun MessageEventBubble(
     content: @Composable () -> Unit = {},
 ) {
     val isScTheme = ScTheme.exposures.isScTheme
+    val bubbleRadius = ScTheme.exposures.bubbleRadius
     fun bubbleShape(): Shape {
-        if (isScTheme) return RoundedCornerShape(10.dp)
+        if (isScTheme) return RoundedCornerShape(bubbleRadius)
         return when (state.groupPosition) {
             TimelineItemGroupPosition.First -> if (state.isMine) {
                 RoundedCornerShape(BUBBLE_RADIUS, BUBBLE_RADIUS, 0.dp, BUBBLE_RADIUS)

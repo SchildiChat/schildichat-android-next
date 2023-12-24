@@ -20,6 +20,7 @@ internal object ScColors {
     val colorBlack = Color(0xff000000)
     val colorBlackAlpha_de = Color(0xde000000)
     val colorBlackAlpha_8a = Color(0x8a000000)
+    val colorBlackAlpha_80 = Color(0x80000000)
     val colorBlackAlpha_61 = Color(0x61000000)
     val colorBlackAlpha_4c = Color(0x4c000000)
     val colorBlackAlpha_1f = Color(0x1f000000)

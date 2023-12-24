@@ -2,6 +2,7 @@ package chat.schildi.theme
 
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.ui.unit.dp
 import io.element.android.compound.annotations.CoreColorToken
 import io.element.android.compound.tokens.generated.SemanticColors
 import io.element.android.compound.tokens.generated.internal.LightColorTokens
@@ -61,6 +62,9 @@ internal val sclExposures = ScThemeExposures(
     bubbleBgIncoming = ScColors.colorWhite_ee,
     bubbleBgOutgoing = scl_accent.fakeAlpha(0.12f),
     appBarBg = scl_bg,
+    bubbleRadius = 10.dp,
+    timestampRadius = 6.dp,
+    timestampOverlayBg = ScColors.colorWhiteAlpha_b3,
 )
 
 @OptIn(CoreColorToken::class)

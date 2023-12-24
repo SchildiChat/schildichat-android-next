@@ -18,6 +18,9 @@ class ScThemeExposures(
     bubbleBgIncoming: Color?,
     bubbleBgOutgoing: Color?,
     appBarBg: Color?,
+    bubbleRadius: Dp,
+    timestampRadius: Dp,
+    timestampOverlayBg: Color,
 ) {
     var isScTheme by mutableStateOf(isScTheme)
         private set
@@ -29,6 +32,12 @@ class ScThemeExposures(
         private set
     var appBarBg by mutableStateOf(appBarBg)
         private set
+    var bubbleRadius by mutableStateOf(bubbleRadius)
+        private set
+    var timestampRadius by mutableStateOf(timestampRadius)
+        private set
+    var timestampOverlayBg by mutableStateOf(timestampOverlayBg)
+        private set
 
     fun copy(
         isScTheme: Boolean = this.isScTheme,
@@ -36,12 +45,18 @@ class ScThemeExposures(
         bubbleBgIncoming: Color? = this.bubbleBgIncoming,
         bubbleBgOutgoing: Color? = this.bubbleBgOutgoing,
         appBarBg: Color? = this.appBarBg,
+        bubbleRadius: Dp = this.bubbleRadius,
+        timestampRadius: Dp = this.timestampRadius,
+        timestampOverlayBg: Color = this.timestampOverlayBg,
     ) = ScThemeExposures(
         isScTheme = isScTheme,
         horizontalDividerThickness = horizontalDividerThickness,
         bubbleBgIncoming = bubbleBgIncoming,
         bubbleBgOutgoing = bubbleBgOutgoing,
         appBarBg = appBarBg,
+        bubbleRadius = bubbleRadius,
+        timestampRadius = timestampRadius,
+        timestampOverlayBg = timestampOverlayBg,
     )
 
     fun updateColorsFrom(other: ScThemeExposures) {
@@ -50,6 +65,9 @@ class ScThemeExposures(
         bubbleBgIncoming = other.bubbleBgIncoming
         bubbleBgOutgoing = other.bubbleBgOutgoing
         appBarBg = other.appBarBg
+        bubbleRadius = other.bubbleRadius
+        timestampRadius = other.timestampRadius
+        timestampOverlayBg = other.timestampOverlayBg
     }
 }
 
@@ -59,6 +77,9 @@ internal val elementLightScExposures = ScThemeExposures(
     bubbleBgIncoming = null,
     bubbleBgOutgoing = null,
     appBarBg = null,
+    bubbleRadius = 12.dp,
+    timestampRadius = 10.0.dp,
+    timestampOverlayBg = Color.Magenta, // unused for non-SC themes
 )
 
 internal val elementDarkScExposures = ScThemeExposures(
@@ -67,4 +88,7 @@ internal val elementDarkScExposures = ScThemeExposures(
     bubbleBgIncoming = null,
     bubbleBgOutgoing = null,
     appBarBg = null,
+    bubbleRadius = 12.dp,
+    timestampRadius = 10.0.dp,
+    timestampOverlayBg = Color.Magenta, // unused for non-SC themes
 )

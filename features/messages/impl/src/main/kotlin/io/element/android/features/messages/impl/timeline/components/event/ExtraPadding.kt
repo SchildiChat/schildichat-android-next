@@ -51,7 +51,7 @@ fun TimelineItem.Event.toExtraPadding(): ExtraPadding {
     val formattedTime = sentTime
     val hasMessageSendingFailed = localSendState is LocalEventSendState.SendingFailed
     val isMessageEdited = (content as? TimelineItemTextBasedContent)?.isEdited.orFalse()
-    val hasScIcon = !hasMessageSendingFailed && ScTheme.yes && localSendState is LocalEventSendState.NotSentYet
+    val hasScIcon = !hasMessageSendingFailed && ScTheme.scTimeline && localSendState is LocalEventSendState.NotSentYet
 
     val textMeasurer = rememberTextMeasurer(cacheSize = 128)
     val density = LocalDensity.current

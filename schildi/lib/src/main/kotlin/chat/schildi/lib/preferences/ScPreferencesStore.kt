@@ -25,6 +25,7 @@ object ScPrefs {
 
     // Appearance
     val SC_THEME = ScBoolPref("SC_THEMES", true, R.string.sc_pref_sc_themes_title, upstreamChoice = false)
+    val SC_TIMELINE_LAYOUT = ScBoolPref("SC_TIMELINE_LAYOUT", true, R.string.sc_pref_sc_timeline_layout_title, upstreamChoice = false)
     val EL_TYPOGRAPHY = ScBoolPref("EL_TYPOGRAPHY", false, R.string.sc_pref_el_typography_title, R.string.sc_pref_el_typography_summary, upstreamChoice = true)
 
     // General behavior
@@ -49,6 +50,7 @@ object ScPrefs {
     val scTweaks = ScPrefScreen(R.string.sc_pref_tweaks_title, null, listOf<AbstractScPref>(
         ScPrefCategory(R.string.sc_pref_category_general_appearance, null, listOf(
             SC_THEME,
+            SC_TIMELINE_LAYOUT,
             EL_TYPOGRAPHY,
         )),
         ScPrefCategory(R.string.sc_pref_category_general_behaviour, null, listOf(
@@ -77,6 +79,7 @@ object ScPrefs {
     val devQuickTweaks = listOf(
         ScPrefCategory(R.string.sc_pref_category_general_appearance, null, listOf(
             SC_THEME,
+            SC_TIMELINE_LAYOUT,
             EL_TYPOGRAPHY,
         )),
         FAST_TRANSITIONS,

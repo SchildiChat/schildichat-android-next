@@ -97,7 +97,7 @@ fun TimelineEventTimestampView(
                 tint = tint,
                 modifier = Modifier.size(15.dp, 18.dp),
             )
-        } else if (ScTheme.yes && event.localSendState is LocalEventSendState.NotSentYet) {
+        } else if (ScTheme.scTimeline && event.localSendState is LocalEventSendState.NotSentYet) {
             Spacer(modifier = Modifier.width(2.dp))
             Icon(
                 modifier = Modifier.size(15.dp),

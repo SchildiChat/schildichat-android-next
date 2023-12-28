@@ -77,7 +77,7 @@ fun TimelineItemReadReceiptView(
                 )
             }
         }
-    } else if (ScTheme.yes) {
+    } else if (ScTheme.scTimeline) {
         // Nothing
     } else when (state.sendState) {
         LocalEventSendState.NotSentYet -> {
@@ -119,8 +119,8 @@ private fun ReadReceiptsRow(
         modifier = modifier
             .fillMaxWidth()
             .height(AvatarSize.TimelineReadReceipt.dp + 8.dp)
-            .padding(horizontal = if (ScTheme.yes) 12.dp else 18.dp),
-        horizontalArrangement = if (ScTheme.yes) Arrangement.Start else Arrangement.End,
+            .padding(horizontal = if (ScTheme.scTimeline) 12.dp else 18.dp),
+        horizontalArrangement = if (ScTheme.scTimeline) Arrangement.Start else Arrangement.End,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(

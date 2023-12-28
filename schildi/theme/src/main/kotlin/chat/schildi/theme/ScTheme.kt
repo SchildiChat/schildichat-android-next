@@ -24,6 +24,10 @@ object ScTheme {
         @Composable
         @ReadOnlyComposable
         get() = exposures.isScTheme
+
+    val scTimeline: Boolean
+        @Composable
+        get() = scPrefs().settingState(scPref = ScPrefs.SC_TIMELINE_LAYOUT).value
 }
 
 // Element defaults to light compound colors, so follow that as fallback default for exposures as well

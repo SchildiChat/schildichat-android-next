@@ -26,6 +26,7 @@ import io.element.android.features.messages.impl.timeline.model.TimelineItemReac
 import io.element.android.features.messages.impl.timeline.model.TimelineItemReadReceipts
 import io.element.android.features.messages.impl.timeline.model.map
 import io.element.android.libraries.core.bool.orTrue
+import io.element.android.libraries.dateformatter.api.DaySeparatorFormatter
 import io.element.android.libraries.dateformatter.api.LastMessageTimestampFormatter
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
@@ -42,6 +43,7 @@ class TimelineItemEventFactory @Inject constructor(
     private val contentFactory: TimelineItemContentFactory,
     private val matrixClient: MatrixClient,
     private val lastMessageTimestampFormatter: LastMessageTimestampFormatter,
+    private val daySeparatorFormatter: DaySeparatorFormatter,
 ) {
 
     suspend fun create(
@@ -90,6 +92,7 @@ class TimelineItemEventFactory @Inject constructor(
             isMine = currentTimelineItem.event.isOwn,
             isEditable = currentTimelineItem.event.isEditable,
             sentTime = sentTime,
+            sentDate = daySeparatorFormatter.format(currentTimelineItem.event.timestamp),
             groupPosition = groupPosition,
             reactionsState = currentTimelineItem.computeReactionsState(),
             readReceiptState = currentTimelineItem.computeReadReceiptState(roomMembers),

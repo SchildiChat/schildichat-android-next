@@ -34,6 +34,9 @@ object ScPrefs {
     // Chat overview
     val COMPACT_APP_BAR = ScBoolPref("COMPACT_APP_BAR", true, R.string.sc_pref_compact_app_bar_title, R.string.sc_pref_compact_app_bar_summary, upstreamChoice = false)
 
+    // Timeline
+    val FLOATING_DATE = ScBoolPref("FLOATING_DATE", true, R.string.sc_pref_sc_floating_date_title, R.string.sc_pref_sc_floating_date_summary, upstreamChoice = false)
+
     // Developer options
     val SC_DEV_QUICK_OPTIONS = ScBoolPref("SC_DEV_QUICK_OPTIONS", false, R.string.sc_pref_dev_quick_options, authorsChoice = true)
     private val SC_DANGER_ZONE = ScBoolPref("SC_DANGER_ZONE", false, R.string.sc_pref_danger_zone, authorsChoice = true)
@@ -51,7 +54,6 @@ object ScPrefs {
     val scTweaks = ScPrefScreen(R.string.sc_pref_tweaks_title, null, listOf<AbstractScPref>(
         ScPrefCategory(R.string.sc_pref_category_general_appearance, null, listOf(
             SC_THEME,
-            SC_TIMELINE_LAYOUT,
             EL_TYPOGRAPHY,
         )),
         ScPrefCategory(R.string.sc_pref_category_general_behaviour, null, listOf(
@@ -59,6 +61,10 @@ object ScPrefs {
         )),
         ScPrefCategory(R.string.sc_pref_category_chat_overview, null, listOf(
             COMPACT_APP_BAR,
+        )),
+        ScPrefCategory(R.string.sc_pref_category_timeline, null, listOf(
+            SC_TIMELINE_LAYOUT,
+            FLOATING_DATE,
         )),
         ScPrefCategory(CommonStrings.common_developer_options, null, listOf(
             SC_DEV_QUICK_OPTIONS,

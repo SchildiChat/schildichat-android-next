@@ -50,6 +50,9 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import chat.schildi.lib.preferences.ScPrefs.FLOATING_DATE
+import chat.schildi.lib.preferences.value
+import chat.schildi.timeline.FloatingDateHeader
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.messages.impl.timeline.components.TimelineItemRow
@@ -160,6 +163,10 @@ fun TimelineView(
             newEventState = state.newEventState,
             onScrollFinishedAt = ::onScrollFinishedAt
         )
+
+        if (FLOATING_DATE.value()) {
+            FloatingDateHeader(lazyListState, state.timelineItems)
+        }
     }
 }
 

@@ -61,6 +61,7 @@ sealed interface TimelineItem {
         val senderAvatar: AvatarData,
         val content: TimelineItemEventContent,
         val sentTime: String = "",
+        val sentDate: String? = null,
         val isMine: Boolean = false,
         val isEditable: Boolean,
         val groupPosition: TimelineItemGroupPosition = TimelineItemGroupPosition.None,

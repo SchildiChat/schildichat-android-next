@@ -36,9 +36,10 @@ object ScPrefs {
 
     // Developer options
     val SC_DEV_QUICK_OPTIONS = ScBoolPref("SC_DEV_QUICK_OPTIONS", false, R.string.sc_pref_dev_quick_options, authorsChoice = true)
-    val SC_RESTORE_DEFAULTS = ScActionablePref("SC_RESTORE_DEFAULTS", R.string.sc_pref_restore_defaults)
-    val SC_RESTORE_UPSTREAM = ScActionablePref("SC_RESTORE_UPSTREAM", R.string.sc_pref_restore_element)
-    val SC_RESTORE_AUTHORS_CHOICE = ScActionablePref("SC_RESTORE_AUTHORS_CHOICE", R.string.sc_pref_restore_authors_choice)
+    private val SC_DANGER_ZONE = ScBoolPref("SC_DANGER_ZONE", false, R.string.sc_pref_danger_zone, authorsChoice = true)
+    val SC_RESTORE_DEFAULTS = ScActionablePref("SC_RESTORE_DEFAULTS", R.string.sc_pref_restore_defaults, dependencies = SC_DANGER_ZONE.asDependencies())
+    val SC_RESTORE_UPSTREAM = ScActionablePref("SC_RESTORE_UPSTREAM", R.string.sc_pref_restore_element, dependencies = SC_DANGER_ZONE.asDependencies())
+    val SC_RESTORE_AUTHORS_CHOICE = ScActionablePref("SC_RESTORE_AUTHORS_CHOICE", R.string.sc_pref_restore_authors_choice, dependencies = SC_DANGER_ZONE.asDependencies())
 
     // Tests to be removed before release
     /*
@@ -61,6 +62,7 @@ object ScPrefs {
         )),
         ScPrefCategory(CommonStrings.common_developer_options, null, listOf(
             SC_DEV_QUICK_OPTIONS,
+            SC_DANGER_ZONE,
             SC_RESTORE_DEFAULTS,
             SC_RESTORE_UPSTREAM,
             SC_RESTORE_AUTHORS_CHOICE,
@@ -113,12 +115,31 @@ class ScPreferencesStore(context: Context) {
     fun <T> settingFlow(scPref: ScPref<T>): Flow<T> {
         val key = scPref.key ?: return emptyFlow()
         return store.data.map { prefs ->
-            prefs[key] ?: scPref.defaultValue
+            if (isEnabled(prefs, scPref)) {
+                prefs[key] ?: scPref.defaultValue
+            } else {
+                scPref.defaultValue
+            }
+        }
+    }
+
+    fun isEnabledFlow(scPref: AbstractScPref): Flow<Boolean> {
+        return store.data.map { prefs ->
+            isEnabled(prefs, scPref)
+        }
+    }
+
+    private fun isEnabled(prefs: Preferences, scPref: AbstractScPref): Boolean {
+        return scPref.dependencies.all {
+            it.fulfilledFor(prefs)
         }
     }
 
     @Composable
     fun <T>settingState(scPref: ScPref<T>, context: CoroutineContext = EmptyCoroutineContext): State<T> = settingFlow(scPref).collectAsState(scPref.defaultValue, context)
+
+    @Composable
+    fun enabledState(scPref: AbstractScPref, context: CoroutineContext = EmptyCoroutineContext): State<Boolean> = isEnabledFlow(scPref).collectAsState(true, context)
 
     suspend fun reset() {
         store.edit { it.clear() }

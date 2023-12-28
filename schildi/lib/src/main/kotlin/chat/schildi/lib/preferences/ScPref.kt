@@ -17,6 +17,8 @@ sealed interface AbstractScPref : Parcelable {
 
     @get:StringRes
     val summaryRes: Int?
+
+    val dependencies: List<ScPrefDependency<*>>
 }
 
 @Parcelize
@@ -41,6 +43,7 @@ data class ScPrefScreen(
     override val titleRes: Int,
     override val summaryRes: Int?,
     override val prefs: List<AbstractScPref>,
+    override val dependencies: List<ScPrefDependency<*>> = emptyList(),
 ) : ScPrefContainer
 
 @Parcelize
@@ -48,6 +51,7 @@ data class ScPrefCategory(
     override val titleRes: Int,
     override val summaryRes: Int?,
     override val prefs: List<AbstractScPref>,
+    override val dependencies: List<ScPrefDependency<*>> = emptyList(),
 ) : ScPrefContainer
 
 @Parcelize
@@ -60,6 +64,7 @@ data class ScBoolPref(
     override val summaryRes: Int? = null,
     override val authorsChoice: Boolean? = null,
     override val upstreamChoice: Boolean? = null,
+    override val dependencies: List<ScPrefDependency<*>> = emptyList(),
 ): ScPref<Boolean> {
     @IgnoredOnParcel override val key = booleanPreferencesKey(sKey)
     override fun ensureType(value: Any?): Boolean? {
@@ -91,6 +96,7 @@ data class ScStringListPref(
     override val summaryRes: Int? = null,
     override val authorsChoice: String? = null,
     override val upstreamChoice: String? = null,
+    override val dependencies: List<ScPrefDependency<*>> = emptyList(),
 ): ScListPref<String> {
     @IgnoredOnParcel override val key = stringPreferencesKey(sKey)
     override fun ensureType(value: Any?): String? {
@@ -112,6 +118,7 @@ data class ScColorPref(
     override val summaryRes: Int? = null,
     override val authorsChoice: Int? = null,
     override val upstreamChoice: Int? = null,
+    override val dependencies: List<ScPrefDependency<*>> = emptyList(),
 ): ScPref<Int> {
     @IgnoredOnParcel override val key = intPreferencesKey(sKey)
     override fun ensureType(value: Any?): Int? {
@@ -128,4 +135,5 @@ data class ScActionablePref(
     val key: String,
     override val titleRes: Int,
     override val summaryRes: Int? = null,
+    override val dependencies: List<ScPrefDependency<*>> = emptyList(),
 ) : AbstractScPref

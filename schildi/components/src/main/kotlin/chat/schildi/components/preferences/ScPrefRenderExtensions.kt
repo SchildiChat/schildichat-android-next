@@ -22,6 +22,7 @@ import chat.schildi.lib.preferences.ScPrefCategory
 import chat.schildi.lib.preferences.ScListPref
 import chat.schildi.lib.preferences.ScPref
 import chat.schildi.lib.preferences.ScPrefScreen
+import chat.schildi.lib.preferences.scPrefs
 import com.github.skydoves.colorpicker.compose.ColorEnvelope
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
@@ -52,7 +53,7 @@ fun ScPrefCategory.Rendered(
 ) {
     PreferenceCategory(
         title = stringResource(id = titleRes),
-        content = content
+        content = content,
     )
 }
 
@@ -70,11 +71,15 @@ fun ScPrefScreen.Rendered(
 fun ScActionablePref.Rendered(
     handleAction: (String) -> Unit
 ) {
+    val enabled = scPrefs().enabledState(this).value
     PreferenceText(
         title = stringResource(id = titleRes),
         onClick = {
-          handleAction(key)
+            if (enabled) {
+                handleAction(key)
+            }
         },
+        enabled = enabled,
     )
 }
 
@@ -89,6 +94,7 @@ fun ScPref<Boolean>.Rendered(initial: Any, onChange: (Boolean) -> Unit) {
         subtitle = summaryRes?.let { stringResource(id = it) },
         isChecked = v ?: defaultValue,
         onCheckedChange = { onChange(it) },
+        enabled = scPrefs().enabledState(this).value,
     )
 }
 @Composable
@@ -103,10 +109,13 @@ fun <T>ScListPref<T>.Rendered(initial: Any, onChange: (Any) -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     val openDialog = remember { mutableStateOf(false) }
 
+    val enabled = scPrefs().enabledState(this).value
+
     PreferenceText(
         title = stringResource(id = titleRes),
         subtitle = summaryRes?.let { stringResource(id = it) } ?: selectedName,
-        onClick = { openDialog.value = true }
+        onClick = { if (enabled) openDialog.value = true },
+        enabled = enabled,
     )
     if (openDialog.value) {
         SingleSelectionDialog(
@@ -141,10 +150,13 @@ fun ScColorPref.Rendered(initial: Any, onChange: (Any) -> Unit) {
     val openDialog = remember { mutableStateOf(false) }
     val controller = rememberColorPickerController()
 
+    val enabled = scPrefs().enabledState(this).value
+
     PreferenceText(
         title = stringResource(id = titleRes),
         subtitle = summaryRes?.let { stringResource(id = it) } ?: v?.let{ String.format("#%08X", it) },
-        onClick = { openDialog.value = true }
+        onClick = { if (enabled) openDialog.value = true },
+        enabled = enabled,
     )
     if (openDialog.value) {
         AlertDialog(

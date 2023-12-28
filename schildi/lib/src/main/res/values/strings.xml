@@ -13,6 +13,7 @@
     <string name="sc_pref_compact_app_bar_summary">Never expand the top app bar</string>
 
     <string name="sc_pref_dev_quick_options">Quick settings</string>
+    <string name="sc_pref_danger_zone">Danger zone</string>
     <string name="sc_pref_restore_defaults">Restore defaults</string>
     <string name="sc_pref_restore_element">Apply Element taste</string>
     <string name="sc_pref_restore_authors_choice">Author\'s choice</string>

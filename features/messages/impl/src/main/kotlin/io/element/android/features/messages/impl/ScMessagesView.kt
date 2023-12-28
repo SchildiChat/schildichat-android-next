@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import chat.schildi.components.preferences.AutoRenderedDropdown
 import chat.schildi.lib.preferences.ScPrefs
-import chat.schildi.lib.preferences.scPrefs
+import chat.schildi.lib.preferences.value
 import io.element.android.libraries.designsystem.icons.CompoundDrawables
 import io.element.android.libraries.designsystem.theme.components.DropdownMenu
 import io.element.android.libraries.designsystem.theme.components.Icon
@@ -20,7 +20,7 @@ import io.element.android.libraries.designsystem.theme.components.IconButton
 
 @Composable
 internal fun RowScope.scMessagesViewTopBarActions() {
-    if (scPrefs().settingState(scPref = ScPrefs.SC_DEV_QUICK_OPTIONS).value) {
+    if (ScPrefs.SC_DEV_QUICK_OPTIONS.value()) {
         var showMenu by remember { mutableStateOf(false) }
         IconButton(
             onClick = { showMenu = !showMenu }

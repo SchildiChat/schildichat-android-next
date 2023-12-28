@@ -10,6 +10,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.scPrefs
+import chat.schildi.lib.preferences.value
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.theme.ForcedDarkElementTheme
 import io.element.android.compound.tokens.generated.SemanticColors
@@ -27,7 +28,7 @@ object ScTheme {
 
     val scTimeline: Boolean
         @Composable
-        get() = scPrefs().settingState(scPref = ScPrefs.SC_TIMELINE_LAYOUT).value
+        get() = ScPrefs.SC_TIMELINE_LAYOUT.value()
 }
 
 // Element defaults to light compound colors, so follow that as fallback default for exposures as well
@@ -45,8 +46,8 @@ fun ScTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     lightStatusBar: Boolean = !darkTheme,
     dynamicColor: Boolean = false, /* true to enable MaterialYou */
-    useScTheme: Boolean = scPrefs().settingState(ScPrefs.SC_THEME).value,
-    useElTypography: Boolean = scPrefs().settingState(ScPrefs.EL_TYPOGRAPHY).value,
+    useScTheme: Boolean = ScPrefs.SC_THEME.value(),
+    useElTypography: Boolean = ScPrefs.EL_TYPOGRAPHY.value(),
     content: @Composable () -> Unit,
 ) {
     val compoundColors: SemanticColors
@@ -91,7 +92,7 @@ fun ScTheme(
 @Composable
 fun ForcedDarkScTheme(
     lightStatusBar: Boolean = false,
-    useScTheme: Boolean = scPrefs().settingState(ScPrefs.SC_THEME).value,
+    useScTheme: Boolean = ScPrefs.SC_THEME.value(),
     content: @Composable () -> Unit,
 ) {
     val currentExposures = remember {

@@ -84,7 +84,7 @@ fun ScPref<Boolean>.RenderedDropdown(
     val scPrefs = scPrefs()
     val pref = this
     val coroutineScope = rememberCoroutineScope()
-    val currentValue = scPrefs.settingState(scPref = this).value
+    val currentValue = scPrefs.settingState(this).value
     DropdownMenuItem(
         onClick = {
             coroutineScope.launch {

@@ -53,7 +53,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import chat.schildi.components.preferences.AutoRenderedDropdown
 import chat.schildi.lib.preferences.ScPrefs
-import chat.schildi.lib.preferences.scPrefs
+import chat.schildi.lib.preferences.value
 import chat.schildi.theme.ScTheme
 import io.element.android.appconfig.RoomListConfig
 import io.element.android.compound.theme.ElementTheme
@@ -295,7 +295,7 @@ private fun DefaultRoomListTopBar(
                                     }
                                 )
                             }
-                            if (scPrefs().settingState(scPref = ScPrefs.SC_DEV_QUICK_OPTIONS).value) {
+                            if (ScPrefs.SC_DEV_QUICK_OPTIONS.value()) {
                                 HorizontalDivider()
                                 ScPrefs.devQuickTweaks.forEach {
                                     it.AutoRenderedDropdown(

@@ -79,14 +79,15 @@ object ScPrefs {
     val devQuickTweaks = listOf(
         ScPrefCategory(R.string.sc_pref_category_general_appearance, null, listOf(
             SC_THEME,
-            SC_TIMELINE_LAYOUT,
             EL_TYPOGRAPHY,
         )),
         FAST_TRANSITIONS,
     )
 
-    val devQuickTweaksInRoom = devQuickTweaks + listOf(
-        // To be filled with some bubble design settings probably?
+    val devQuickTweaksInRoom = listOf(
+        SC_THEME,
+        EL_TYPOGRAPHY,
+        SC_TIMELINE_LAYOUT.copy(titleRes = R.string.sc_pref_sc_layout_title),
     )
 }
 

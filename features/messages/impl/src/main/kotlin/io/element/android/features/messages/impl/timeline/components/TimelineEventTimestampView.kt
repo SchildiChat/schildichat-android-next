@@ -24,6 +24,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -33,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
@@ -93,6 +96,14 @@ fun TimelineEventTimestampView(
                 contentDescription = stringResource(id = CommonStrings.common_sending_failed),
                 tint = tint,
                 modifier = Modifier.size(15.dp, 18.dp),
+            )
+        } else if (ScTheme.yes && event.localSendState is LocalEventSendState.NotSentYet) {
+            Spacer(modifier = Modifier.width(2.dp))
+            Icon(
+                modifier = Modifier.size(15.dp),
+                imageVector = Icons.Outlined.AccessTime,
+                contentDescription = stringResource(id = CommonStrings.common_sending),
+                tint = MaterialTheme.colorScheme.secondary,
             )
         }
     }

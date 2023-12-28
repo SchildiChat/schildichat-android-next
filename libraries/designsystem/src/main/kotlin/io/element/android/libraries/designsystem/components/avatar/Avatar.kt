@@ -89,7 +89,7 @@ private fun InitialsAvatar(
     avatarData: AvatarData,
     modifier: Modifier = Modifier,
 ) {
-    val avatarColors = AvatarColorsProvider.provide(avatarData.id, ElementTheme.isLightTheme, ScTheme.exposures.isScTheme)
+    val avatarColors = AvatarColorsProvider.provide(avatarData.id, ElementTheme.isLightTheme, ScTheme.yes)
     Box(
         modifier.background(color = avatarColors.background)
     ) {

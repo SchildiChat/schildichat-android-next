@@ -52,7 +52,7 @@ fun TimelineItemTextView(
         val extraPaddingText = extraPadding.getStr()
 
         Box(modifier) {
-            val textWithPadding = remember(body) {
+            val textWithPadding = remember(body, extraPaddingText) {
                 buildSpannedString {
                     append(body)
                     append(extraPaddingText)

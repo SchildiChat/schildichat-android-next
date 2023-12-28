@@ -9,7 +9,7 @@ inline fun Modifier.scOrElse(
     forSc: Modifier,
     crossinline forEl: @Composable Modifier.() -> Modifier,
 ) =
-    if (ScTheme.exposures.isScTheme) {
+    if (ScTheme.yes) {
         then(forSc)
     } else {
         this.forEl()

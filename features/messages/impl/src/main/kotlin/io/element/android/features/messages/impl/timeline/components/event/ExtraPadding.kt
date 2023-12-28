@@ -27,6 +27,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContent
@@ -50,6 +51,7 @@ fun TimelineItem.Event.toExtraPadding(): ExtraPadding {
     val formattedTime = sentTime
     val hasMessageSendingFailed = localSendState is LocalEventSendState.SendingFailed
     val isMessageEdited = (content as? TimelineItemTextBasedContent)?.isEdited.orFalse()
+    val hasScIcon = !hasMessageSendingFailed && ScTheme.yes && localSendState is LocalEventSendState.NotSentYet
 
     val textMeasurer = rememberTextMeasurer(cacheSize = 128)
     val density = LocalDensity.current
@@ -68,6 +70,9 @@ fun TimelineItem.Event.toExtraPadding(): ExtraPadding {
         if (isMessageEdited) {
             strLen += 2.dp
         }
+    }
+    if (hasScIcon) {
+        strLen += 19.dp
     }
     return ExtraPadding(strLen)
 }

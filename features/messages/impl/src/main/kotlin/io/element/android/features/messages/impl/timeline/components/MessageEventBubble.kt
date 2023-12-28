@@ -64,7 +64,7 @@ fun MessageEventBubble(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit = {},
 ) {
-    val isScTheme = ScTheme.exposures.isScTheme
+    val isScTheme = ScTheme.yes
     val bubbleRadius = ScTheme.exposures.bubbleRadius
     fun bubbleShape(): Shape {
         if (isScTheme) return RoundedCornerShape(bubbleRadius)

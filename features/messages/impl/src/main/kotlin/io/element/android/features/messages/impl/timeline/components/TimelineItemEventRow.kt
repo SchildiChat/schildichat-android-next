@@ -102,6 +102,7 @@ import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.permalink.PermalinkData
 import io.element.android.libraries.matrix.api.permalink.PermalinkParser
 import io.element.android.libraries.matrix.api.room.Mention
+import io.element.android.libraries.matrix.api.timeline.item.event.LocalEventSendState
 import io.element.android.libraries.matrix.ui.components.AttachmentThumbnail
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.coroutines.launch
@@ -372,7 +373,7 @@ private fun MessageSenderInformation(
 ) {
     val avatarStrokeColor = MaterialTheme.colorScheme.background
     val avatarSize = senderAvatar.size.dp
-    val avatarColors = AvatarColorsProvider.provide(senderAvatar.id, ElementTheme.isLightTheme, ScTheme.exposures.isScTheme)
+    val avatarColors = AvatarColorsProvider.provide(senderAvatar.id, ElementTheme.isLightTheme, ScTheme.yes)
     Box(
         modifier = modifier
     ) {

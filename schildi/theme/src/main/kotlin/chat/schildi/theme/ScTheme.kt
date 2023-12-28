@@ -19,6 +19,11 @@ object ScTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalScExposures.current
+
+    val yes: Boolean
+        @Composable
+        @ReadOnlyComposable
+        get() = exposures.isScTheme
 }
 
 // Element defaults to light compound colors, so follow that as fallback default for exposures as well

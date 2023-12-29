@@ -63,6 +63,7 @@ fun ScPrefScreen.Rendered(
 ) {
     PreferenceText(
         title = stringResource(id = titleRes),
+        subtitle = summaryRes?.let { stringResource(id = it) },
         onClick = onClick,
     )
 }
@@ -74,6 +75,7 @@ fun ScActionablePref.Rendered(
     val enabled = scPrefs().enabledState(this).value
     PreferenceText(
         title = stringResource(id = titleRes),
+        subtitle = summaryRes?.let { stringResource(id = it) },
         onClick = {
             if (enabled) {
                 handleAction(key)
@@ -120,6 +122,7 @@ fun <T>ScListPref<T>.Rendered(initial: Any, onChange: (Any) -> Unit) {
     if (openDialog.value) {
         SingleSelectionDialog(
             title = stringResource(id = titleRes),
+            subtitle = summaryRes?.let { stringResource(id = it) },
             options = itemNames.mapIndexed { index, name ->
                 ListOption(name, itemSummaries?.get(index))
             }.toImmutableList(),

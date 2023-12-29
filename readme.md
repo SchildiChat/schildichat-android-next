@@ -4,8 +4,10 @@ Matrix client based on [Element Android X](https://github.com/vector-im/element-
 in the tradition of the original [SchildiChat for Android](https://github.com/SchildiChat/SchildiChat-android)
 which was based on the now deprecated Element Android codebase.
 
-Similarly to Element X, this SchildiChat Android rewrite is still in alpha state and lacks most original features,
+Similarly to Element X, this SchildiChat Android rewrite is still in alpha state and lacks many original features,
 and hasn't even been entirely rebranded yet.
+
+An overview over changes compared to Element X can be found [here](FEATURES.md).
 
 <a href="https://s2.spiritcroc.de/testing/fdroid/repo/" alt="Get it on F-Droid" target="_blank"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" height="50"></a>
 

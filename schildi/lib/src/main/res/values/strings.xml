@@ -7,6 +7,8 @@
     <string name="sc_pref_sc_timeline_layout_title">SC conversation layout</string>
     <string name="sc_pref_sc_floating_date_title">Floating date</string>
     <string name="sc_pref_sc_floating_date_summary">Show the date on top of messages while scrolling</string>
+    <string name="sc_pref_pl_display_name_title">Name colors by power level</string>
+    <string name="sc_pref_pl_display_name_summary_warning">Does not work reliably when member list was not fully fetched yet</string>
     <string name="sc_pref_el_typography_title">Element typography</string>
     <string name="sc_pref_el_typography_summary">Use Element\'s font settings</string>
     <string name="sc_pref_fast_transitions_title">Fast transitions</string>
@@ -24,6 +26,9 @@
     <string name="sc_pref_category_general_behaviour">Behaviour</string>
     <string name="sc_pref_category_chat_overview">Chat overview</string>
     <string name="sc_pref_category_timeline">Conversation screen</string>
+
+    <string name="sc_pref_screen_experimental_title">Experimental</string>
+    <string name="sc_pref_screen_experimental_summary">Unstable features, expect bugs</string>
 
     <!-- TODO remove -->
     <string name="test">Test</string>

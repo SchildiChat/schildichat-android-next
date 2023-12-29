@@ -24,6 +24,7 @@ data class AvatarData(
     val name: String?,
     val url: String? = null,
     val size: AvatarSize,
+    val powerLevel: Long? = null,
 ) {
 
     val initial by lazy {

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowRight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -82,11 +83,14 @@ fun ScPref<Boolean>.RenderedDropdown(
     leadingIcon: @Composable (() -> Unit)? = null,
 ) {
     val scPrefs = scPrefs()
+    val enabled = scPrefs.enabledState(this).value
     val pref = this
     val coroutineScope = rememberCoroutineScope()
     val currentValue = scPrefs.settingState(this).value
     DropdownMenuItem(
+        enabled = enabled,
         onClick = {
+            if (!enabled) return@DropdownMenuItem
             coroutineScope.launch {
                 scPrefs.setSetting(pref, !currentValue)
             }
@@ -102,6 +106,7 @@ fun ScPref<Boolean>.RenderedDropdown(
             Checkbox(
                 checked = currentValue,
                 onCheckedChange = {
+                    if (!enabled) return@Checkbox
                     coroutineScope.launch {
                         scPrefs.setSetting(pref, it)
                     }

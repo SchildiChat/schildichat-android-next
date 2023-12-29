@@ -74,11 +74,13 @@ class TimelineItemEventFactory @Inject constructor(
         val timeFormatter = DateFormat.getTimeInstance(DateFormat.SHORT)
         val sentTime = timeFormatter.format(Date(currentTimelineItem.event.timestamp))
 
+        val senderMember = roomMembers.find { it.userId == currentSender }
         val senderAvatarData = AvatarData(
             id = currentSender.value,
             name = senderDisplayName ?: currentSender.value,
             url = senderAvatarUrl,
-            size = AvatarSize.TimelineSender
+            size = AvatarSize.TimelineSender,
+            powerLevel = senderMember?.powerLevel,
         )
         currentTimelineItem.event
         return TimelineItem.Event(

@@ -31,3 +31,13 @@ internal object ScColors {
     val colorGray_42 = Color(0xff424242)
     val colorGray_61 = Color(0xff616161)
 }
+
+object ScPowerLevelColors {
+    val pl_100 = Color(0xfff44336)
+    val pl_95 = Color(0xffff5722)
+    val pl_51 = Color(0xff03a9f4)
+    val pl_50 = Color(0xff2196f3)
+    val pl_1 = Color(0xffcddc39)
+    val pl_0 = Color(0xff8bc34a)
+    val pl_null = pl_0
+}

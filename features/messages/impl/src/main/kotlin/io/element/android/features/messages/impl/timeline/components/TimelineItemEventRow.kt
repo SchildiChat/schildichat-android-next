@@ -62,6 +62,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstrainScope
 import androidx.constraintlayout.compose.ConstraintLayout
+import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.value
 import chat.schildi.theme.ScTheme
 import chat.schildi.theme.extensions.scOrElse
 import io.element.android.compound.theme.ElementTheme
@@ -87,6 +89,7 @@ import io.element.android.features.messages.impl.timeline.model.event.aTimelineI
 import io.element.android.features.messages.impl.timeline.model.metadata
 import io.element.android.libraries.androidutils.system.openUrlInExternalApp
 import io.element.android.libraries.designsystem.colors.AvatarColorsProvider
+import io.element.android.libraries.designsystem.colors.powerLevelToAvatarColors
 import io.element.android.libraries.designsystem.components.EqualWidthColumn
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
@@ -102,7 +105,6 @@ import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.permalink.PermalinkData
 import io.element.android.libraries.matrix.api.permalink.PermalinkParser
 import io.element.android.libraries.matrix.api.room.Mention
-import io.element.android.libraries.matrix.api.timeline.item.event.LocalEventSendState
 import io.element.android.libraries.matrix.ui.components.AttachmentThumbnail
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.coroutines.launch
@@ -373,7 +375,11 @@ private fun MessageSenderInformation(
 ) {
     val avatarStrokeColor = MaterialTheme.colorScheme.background
     val avatarSize = senderAvatar.size.dp
-    val avatarColors = AvatarColorsProvider.provide(senderAvatar.id, ElementTheme.isLightTheme, ScTheme.yes)
+    val avatarColors = if (ScPrefs.PL_DISPLAY_NAME.value()) {
+        powerLevelToAvatarColors(senderAvatar.powerLevel, ElementTheme.materialColors)
+    } else {
+        AvatarColorsProvider.provide(senderAvatar.id, ElementTheme.isLightTheme, ScTheme.yes)
+    }
     Box(
         modifier = modifier
     ) {

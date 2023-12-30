@@ -131,6 +131,15 @@ class RoomGroupMessageCreator @Inject constructor(
                         }
                     }
                     addMessage(message)
+
+                    // Add additional message for captions
+                    if (event.imageUri != null && event.caption != null) {
+                        addMessage(NotificationCompat.MessagingStyle.Message(
+                            event.caption,
+                            event.timestamp,
+                            senderPerson,
+                        ))
+                    }
                 }
             }
         }

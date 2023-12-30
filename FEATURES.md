@@ -16,6 +16,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 ## Conversation screen
 
 - Floating date header while scrolling †
+- Render media captions ([MSC2530](https://github.com/matrix-org/matrix-spec-proposals/pull/2530)) ‡
 
 
 ## Experimental/unstable features
@@ -31,5 +32,5 @@ Note that following list of changes compared to Element X is likely incomplete, 
 
 
 †: Can be enabled or disabled by user setting  
-‡: Powered by [our own rust-sdk fork](https://github.com/SchildiChat/matrix-rust-sdk) until its possible to control upstream  
+‡: Powered by [our own rust-sdk fork](https://github.com/SchildiChat/matrix-rust-sdk)
 ⸸: Work in progress  

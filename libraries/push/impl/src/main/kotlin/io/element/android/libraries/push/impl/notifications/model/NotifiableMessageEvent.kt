@@ -38,6 +38,7 @@ data class NotifiableMessageEvent(
     val timestamp: Long,
     val senderName: String?,
     val body: String?,
+    val caption: String?,
     // We cannot use Uri? type here, as that could trigger a
     // NotSerializableException when persisting this to storage
     val imageUriString: String?,

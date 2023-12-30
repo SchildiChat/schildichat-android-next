@@ -41,6 +41,7 @@ import io.element.android.libraries.matrix.api.timeline.item.event.OtherMessageT
 import io.element.android.libraries.matrix.api.timeline.item.event.TextMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.VideoMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.VoiceMessageType
+import io.element.android.libraries.matrix.api.timeline.item.event.caption
 import io.element.android.libraries.matrix.ui.messages.toPlainText
 import io.element.android.libraries.push.impl.R
 import io.element.android.libraries.push.impl.notifications.model.FallbackNotifiableEvent
@@ -106,6 +107,7 @@ class NotifiableEventResolver @Inject constructor(
                     timestamp = this.timestamp,
                     senderName = senderDisplayName,
                     body = notificationBody,
+                    caption = content.messageType.caption(),
                     imageUriString = fetchImageIfPresent(client)?.toString(),
                     roomName = roomDisplayName,
                     roomIsDirect = isDirect,
@@ -290,6 +292,7 @@ private fun buildNotifiableMessageEvent(
     timestamp: Long,
     senderName: String?,
     body: String?,
+    caption: String? = null,
     // We cannot use Uri? type here, as that could trigger a
     // NotSerializableException when persisting this to storage
     imageUriString: String? = null,
@@ -315,6 +318,7 @@ private fun buildNotifiableMessageEvent(
     timestamp = timestamp,
     senderName = senderName,
     body = body,
+    caption = caption,
     imageUriString = imageUriString,
     threadId = threadId,
     roomName = roomName,

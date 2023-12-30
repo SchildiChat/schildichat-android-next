@@ -32,5 +32,5 @@ Note that following list of changes compared to Element X is likely incomplete, 
 
 
 †: Can be enabled or disabled by user setting  
-‡: Powered by [our own rust-sdk fork](https://github.com/SchildiChat/matrix-rust-sdk)
+‡: Powered by [our own rust-sdk fork](https://github.com/SchildiChat/matrix-rust-sdk)  
 ⸸: Work in progress  

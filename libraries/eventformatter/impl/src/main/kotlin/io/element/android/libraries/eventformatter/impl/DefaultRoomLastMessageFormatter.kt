@@ -49,6 +49,7 @@ import io.element.android.libraries.matrix.api.timeline.item.event.UnableToDecry
 import io.element.android.libraries.matrix.api.timeline.item.event.UnknownContent
 import io.element.android.libraries.matrix.api.timeline.item.event.VideoMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.VoiceMessageType
+import io.element.android.libraries.matrix.api.timeline.item.event.caption
 import io.element.android.libraries.matrix.ui.messages.toPlainText
 import io.element.android.libraries.ui.strings.CommonStrings
 import io.element.android.services.toolbox.api.strings.StringProvider
@@ -115,22 +116,22 @@ class DefaultRoomLastMessageFormatter @Inject constructor(
                 messageType.toPlainText()
             }
             is VideoMessageType -> {
-                sp.getString(CommonStrings.common_video)
+                messageType.caption() ?: sp.getString(CommonStrings.common_video)
             }
             is ImageMessageType -> {
-                sp.getString(CommonStrings.common_image)
+                messageType.caption() ?: sp.getString(CommonStrings.common_image)
             }
             is LocationMessageType -> {
                 sp.getString(CommonStrings.common_shared_location)
             }
             is FileMessageType -> {
-                sp.getString(CommonStrings.common_file)
+                messageType.caption() ?: sp.getString(CommonStrings.common_file)
             }
             is AudioMessageType -> {
-                sp.getString(CommonStrings.common_audio)
+                messageType.caption() ?: sp.getString(CommonStrings.common_audio)
             }
             is VoiceMessageType -> {
-                sp.getString(CommonStrings.common_voice_message)
+                messageType.caption() ?: sp.getString(CommonStrings.common_voice_message)
             }
             is OtherMessageType -> {
                 messageType.body

@@ -152,6 +152,7 @@ private fun ReactionContent(
 ) {
     Text(
         text = reaction.displayKey,
+        color = MaterialTheme.colorScheme.primary, // Prefer text color without alpha for emojis!
         style = ElementTheme.typography.fontBodyMdRegular.copy(
             fontSize = 15.sp,
             lineHeight = reactionEmojiLineHeight,

@@ -34,6 +34,8 @@ import io.element.android.features.messages.impl.timeline.model.event.TimelineIt
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemUnknownContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemVideoContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemVoiceContent
+import io.element.android.features.messages.impl.timeline.model.event.caption
+import io.element.android.features.messages.impl.timeline.model.event.isEdited
 import io.element.android.features.messages.impl.voicemessages.timeline.VoiceMessageState
 import io.element.android.libraries.architecture.Presenter
 
@@ -72,14 +74,14 @@ fun TimelineItemEventContentView(
             content = content,
             modifier = modifier
         )
-        is TimelineItemImageContent -> TimelineItemImageView(
+        is TimelineItemImageContent -> ScCaptionWrapper(content.caption(), content.isEdited(), extraPadding, onLinkClicked, modifier) { modifier -> TimelineItemImageView(
             content = content,
             modifier = modifier,
-        )
-        is TimelineItemVideoContent -> TimelineItemVideoView(
+        )}
+        is TimelineItemVideoContent -> ScCaptionWrapper(content.caption(), content.isEdited(), extraPadding, onLinkClicked, modifier) { modifier -> TimelineItemVideoView(
             content = content,
             modifier = modifier
-        )
+        )}
         is TimelineItemFileContent -> TimelineItemFileView(
             content = content,
             extraPadding = extraPadding,

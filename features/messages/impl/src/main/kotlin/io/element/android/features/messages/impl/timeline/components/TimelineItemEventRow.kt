@@ -86,6 +86,7 @@ import io.element.android.features.messages.impl.timeline.model.event.TimelineIt
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemVideoContent
 import io.element.android.features.messages.impl.timeline.model.event.aTimelineItemImageContent
 import io.element.android.features.messages.impl.timeline.model.event.aTimelineItemTextContent
+import io.element.android.features.messages.impl.timeline.model.event.timestampPosition
 import io.element.android.features.messages.impl.timeline.model.metadata
 import io.element.android.libraries.androidutils.system.openUrlInExternalApp
 import io.element.android.libraries.designsystem.colors.AvatarColorsProvider
@@ -520,7 +521,7 @@ private fun MessageEventBubbleContent(
             inReplyToDetails != null -> {
                 if (timestampPosition == TimestampPosition.Overlay) {
                     timestampLayoutModifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
-                    contentModifier = Modifier.clip(RoundedCornerShape(12.dp))
+                    contentModifier = Modifier.clip(RoundedCornerShape(ScTheme.exposures.bubbleRadius))
                 } else {
                     contentModifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 0.dp, bottom = 8.dp)
                     timestampLayoutModifier = Modifier
@@ -596,8 +597,8 @@ private fun MessageEventBubbleContent(
     }
 
     val timestampPosition = when (event.content) {
-        is TimelineItemImageContent,
-        is TimelineItemVideoContent,
+        is TimelineItemImageContent -> event.content.timestampPosition()
+        is TimelineItemVideoContent -> event.content.timestampPosition()
         is TimelineItemLocationContent -> TimestampPosition.Overlay
         is TimelineItemPollContent -> TimestampPosition.Below
         else -> TimestampPosition.Default

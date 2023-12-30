@@ -81,6 +81,8 @@ class EventMessageMapper {
                 null -> {
                     AudioMessageType(
                         body = type.content.body,
+                        formatted = type.content.formatted?.map(),
+                        filename = type.content.filename,
                         source = type.content.source.map(),
                         info = type.content.info?.map(),
                     )
@@ -88,6 +90,8 @@ class EventMessageMapper {
                 else -> {
                     VoiceMessageType(
                         body = type.content.body,
+                        formatted = type.content.formatted?.map(),
+                        filename = type.content.filename,
                         source = type.content.source.map(),
                         info = type.content.info?.map(),
                         details = type.content.audio?.map(),
@@ -96,10 +100,10 @@ class EventMessageMapper {
             }
         }
         is RustMessageType.File -> {
-            FileMessageType(type.content.body, type.content.source.map(), type.content.info?.map())
+            FileMessageType(type.content.body, type.content.formatted?.map(), type.content.filename, type.content.source.map(), type.content.info?.map())
         }
         is RustMessageType.Image -> {
-            ImageMessageType(type.content.body, type.content.source.map(), type.content.info?.map())
+            ImageMessageType(type.content.body, type.content.formatted?.map(), type.content.filename, type.content.source.map(), type.content.info?.map())
         }
         is RustMessageType.Notice -> {
             NoticeMessageType(type.content.body, type.content.formatted?.map())
@@ -111,7 +115,7 @@ class EventMessageMapper {
             EmoteMessageType(type.content.body, type.content.formatted?.map())
         }
         is RustMessageType.Video -> {
-            VideoMessageType(type.content.body, type.content.source.map(), type.content.info?.map())
+            VideoMessageType(type.content.body, type.content.formatted?.map(), type.content.filename, type.content.source.map(), type.content.info?.map())
         }
         is RustMessageType.Location -> {
             LocationMessageType(type.content.body, type.content.geoUri, type.content.description)

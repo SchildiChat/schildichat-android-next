@@ -32,6 +32,7 @@ open class TimelineItemAudioContentProvider : PreviewParameterProvider<TimelineI
 
 fun aTimelineItemAudioContent(fileName: String = "A sound.mp3") = TimelineItemAudioContent(
     body = fileName,
+    filename = fileName,
     mimeType = MimeTypes.Pdf,
     formattedFileSize = "100kB",
     fileExtension = "mp3",

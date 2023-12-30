@@ -21,6 +21,7 @@ import io.element.android.libraries.matrix.api.media.MediaSource
 
 data class TimelineItemImageContent(
     val body: String,
+    val filename: String?,
     val mediaSource: MediaSource,
     val thumbnailSource: MediaSource?,
     val formattedFileSize: String,

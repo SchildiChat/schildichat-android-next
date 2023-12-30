@@ -21,6 +21,7 @@ import io.element.android.libraries.mediaviewer.api.helper.formatFileExtensionAn
 
 data class TimelineItemFileContent(
     val body: String,
+    val filename: String?,
     val fileSource: MediaSource,
     val thumbnailSource: MediaSource?,
     val formattedFileSize: String,

@@ -53,6 +53,7 @@ fun aTimelineItemVoiceContent(
 ) = TimelineItemVoiceContent(
     eventId = eventId?.let { EventId(it) },
     body = body,
+    filename = null,
     duration = duration,
     mediaSource = MediaSource(contentUri),
     mimeType = mimeType,

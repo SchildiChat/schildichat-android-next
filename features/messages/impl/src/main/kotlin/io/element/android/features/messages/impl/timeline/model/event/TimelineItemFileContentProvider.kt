@@ -31,6 +31,7 @@ open class TimelineItemFileContentProvider : PreviewParameterProvider<TimelineIt
 
 fun aTimelineItemFileContent(fileName: String = "A file.pdf") = TimelineItemFileContent(
     body = fileName,
+    filename = fileName,
     thumbnailSource = null,
     fileSource = MediaSource(url = ""),
     mimeType = MimeTypes.Pdf,

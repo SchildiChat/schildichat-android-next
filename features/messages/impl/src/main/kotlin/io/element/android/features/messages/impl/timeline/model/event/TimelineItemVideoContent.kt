@@ -21,6 +21,7 @@ import kotlin.time.Duration
 
 data class TimelineItemVideoContent(
     val body: String,
+    val filename: String?,
     val duration: Duration,
     val videoSource: MediaSource,
     val thumbnailSource: MediaSource?,

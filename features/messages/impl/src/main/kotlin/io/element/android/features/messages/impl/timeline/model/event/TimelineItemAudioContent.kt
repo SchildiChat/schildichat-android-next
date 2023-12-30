@@ -21,6 +21,7 @@ import kotlin.time.Duration
 
 data class TimelineItemAudioContent(
     val body: String,
+    val filename: String?,
     val duration: Duration,
     val mediaSource: MediaSource,
     val mimeType: String,

@@ -34,7 +34,7 @@ internal fun RowScope.scMessagesViewTopBarActions() {
             expanded = showMenu,
             onDismissRequest = { showMenu = false }
         ) {
-            ScPrefs.devQuickTweaksInRoom.forEach {
+            ScPrefs.devQuickTweaksTimeline.forEach {
                 it.AutoRenderedDropdown(
                     onClick = { showMenu = false }
                 )

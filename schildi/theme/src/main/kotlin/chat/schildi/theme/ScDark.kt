@@ -66,6 +66,7 @@ internal val scdMaterialColorScheme = darkColorScheme(
 internal val scdExposures = ScThemeExposures(
     isScTheme = true,
     horizontalDividerThickness = DividerDefaults.Thickness,
+    colorOnAccent = ScColors.colorWhite,
     bubbleBgIncoming = scd_bgFloating,
     bubbleBgOutgoing = scd_bg,
     appBarBg = scd_bg,

@@ -44,6 +44,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.ScPrefs.SC_OVERVIEW_LAYOUT
 import chat.schildi.lib.preferences.value
 import io.element.android.features.leaveroom.api.LeaveRoomView
 import io.element.android.features.networkmonitor.api.ui.ConnectivityIndicatorContainer
@@ -52,6 +53,7 @@ import io.element.android.features.roomlist.impl.components.RequestVerificationH
 import io.element.android.features.roomlist.impl.components.RoomListMenuAction
 import io.element.android.features.roomlist.impl.components.RoomListTopBar
 import io.element.android.features.roomlist.impl.components.RoomSummaryRow
+import io.element.android.features.roomlist.impl.components.ScRoomSummaryRow
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.features.roomlist.impl.search.RoomListSearchResultView
 import io.element.android.libraries.designsystem.preview.ElementPreview
@@ -226,6 +228,15 @@ private fun RoomListContent(
                     items = state.roomList,
                     contentType = { _, room -> room.contentType() },
                 ) { index, room ->
+                    if (SC_OVERVIEW_LAYOUT.value()) {
+                        ScRoomSummaryRow(
+                            room = room,
+                            onClick = ::onRoomClicked,
+                            onLongClick = onRoomLongClicked,
+                            isLastIndex = index == state.roomList.lastIndex,
+                        )
+                        return@itemsIndexed
+                    }
                     RoomSummaryRow(
                         room = room,
                         onClick = ::onRoomClicked,

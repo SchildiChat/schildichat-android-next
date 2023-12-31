@@ -72,6 +72,7 @@ internal fun aRoomListRoomSummaryList(): ImmutableList<RoomListRoomSummary> {
         RoomListRoomSummary(
             name = "Room",
             hasUnread = true,
+            notificationCount = 4,
             timestamp = "14:18",
             lastMessage = "A very very very very long message which suites on two lines",
             avatarData = AvatarData("!id", "R", size = AvatarSize.RoomListItem),

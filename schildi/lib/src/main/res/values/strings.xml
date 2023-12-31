@@ -4,6 +4,7 @@
     <string name="sc_pref_tweaks_title">Turtle tweaks</string>
     <string name="sc_pref_sc_themes_title">SC theme</string>
     <string name="sc_pref_sc_layout_title">SC layout</string>
+    <string name="sc_pref_sc_overview_layout_title">SC overview layout</string>
     <string name="sc_pref_sc_timeline_layout_title">SC conversation layout</string>
     <string name="sc_pref_sc_floating_date_title">Floating date</string>
     <string name="sc_pref_sc_floating_date_summary">Show the date on top of messages while scrolling</string>

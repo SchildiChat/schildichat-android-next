@@ -30,7 +30,7 @@ open class RoomListRoomSummaryProvider : PreviewParameterProvider<RoomListRoomSu
             aRoomListRoomSummary().copy(hasUnread = true, notificationMode = RoomNotificationMode.MENTIONS_AND_KEYWORDS_ONLY),
             aRoomListRoomSummary().copy(timestamp = "88:88", notificationMode = RoomNotificationMode.MENTIONS_AND_KEYWORDS_ONLY),
             aRoomListRoomSummary().copy(timestamp = "88:88", notificationMode = RoomNotificationMode.MUTE),
-            aRoomListRoomSummary().copy(timestamp = "88:88", hasUnread = true),
+            aRoomListRoomSummary().copy(timestamp = "88:88", hasUnread = true, notificationCount = 4),
             aRoomListRoomSummary().copy(isPlaceholder = true, timestamp = "88:88"),
             aRoomListRoomSummary().copy(
                 name = "A very long room name that should be truncated",
@@ -39,8 +39,9 @@ open class RoomListRoomSummaryProvider : PreviewParameterProvider<RoomListRoomSu
                     "modo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
                 timestamp = "yesterday",
                 hasUnread = true,
+                notificationCount = 87347,
             ),
-            aRoomListRoomSummary().copy(hasUnread = true, hasOngoingCall = true),
+            aRoomListRoomSummary().copy(hasUnread = true, notificationCount = 1, hasOngoingCall = true),
         )
 }
 

@@ -28,6 +28,8 @@ data class RoomListRoomSummary(
     val roomId: RoomId,
     val name: String = "",
     val hasUnread: Boolean = false,
+    val notificationCount: Int = 0,
+    val highlightCount: Int = 0,
     val timestamp: String? = null,
     val lastMessage: CharSequence? = null,
     val avatarData: AvatarData = AvatarData(id, name, size = AvatarSize.RoomListItem),

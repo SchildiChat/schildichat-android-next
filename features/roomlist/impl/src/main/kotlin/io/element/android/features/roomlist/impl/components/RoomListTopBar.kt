@@ -297,7 +297,7 @@ private fun DefaultRoomListTopBar(
                             }
                             if (ScPrefs.SC_DEV_QUICK_OPTIONS.value()) {
                                 HorizontalDivider()
-                                ScPrefs.devQuickTweaks.forEach {
+                                ScPrefs.devQuickTweaksOverview.forEach {
                                     it.AutoRenderedDropdown(
                                         onClick = {
                                             showMenu = false

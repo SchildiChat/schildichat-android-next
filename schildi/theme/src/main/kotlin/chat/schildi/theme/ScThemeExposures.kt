@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 class ScThemeExposures(
     isScTheme: Boolean,
     horizontalDividerThickness: Dp,
+    colorOnAccent: Color,
     bubbleBgIncoming: Color?,
     bubbleBgOutgoing: Color?,
     appBarBg: Color?,
@@ -25,6 +26,8 @@ class ScThemeExposures(
     var isScTheme by mutableStateOf(isScTheme)
         private set
     var horizontalDividerThickness by mutableStateOf(horizontalDividerThickness)
+        private set
+    var colorOnAccent by mutableStateOf(colorOnAccent)
         private set
     var bubbleBgIncoming by mutableStateOf(bubbleBgIncoming)
         private set
@@ -42,6 +45,7 @@ class ScThemeExposures(
     fun copy(
         isScTheme: Boolean = this.isScTheme,
         horizontalDividerThickness: Dp = this.horizontalDividerThickness,
+        colorOnAccent: Color = this.colorOnAccent,
         bubbleBgIncoming: Color? = this.bubbleBgIncoming,
         bubbleBgOutgoing: Color? = this.bubbleBgOutgoing,
         appBarBg: Color? = this.appBarBg,
@@ -51,6 +55,7 @@ class ScThemeExposures(
     ) = ScThemeExposures(
         isScTheme = isScTheme,
         horizontalDividerThickness = horizontalDividerThickness,
+        colorOnAccent = colorOnAccent,
         bubbleBgIncoming = bubbleBgIncoming,
         bubbleBgOutgoing = bubbleBgOutgoing,
         appBarBg = appBarBg,
@@ -62,6 +67,7 @@ class ScThemeExposures(
     fun updateColorsFrom(other: ScThemeExposures) {
         isScTheme = other.isScTheme
         horizontalDividerThickness = other.horizontalDividerThickness
+        colorOnAccent = other.colorOnAccent
         bubbleBgIncoming = other.bubbleBgIncoming
         bubbleBgOutgoing = other.bubbleBgOutgoing
         appBarBg = other.appBarBg
@@ -74,6 +80,7 @@ class ScThemeExposures(
 internal val elementLightScExposures = ScThemeExposures(
     isScTheme = false,
     horizontalDividerThickness = 0.5.dp, /** [io.element.android.libraries.designsystem.theme.components.HorizontalDivider] */
+    colorOnAccent = Color.White,
     bubbleBgIncoming = null,
     bubbleBgOutgoing = null,
     appBarBg = null,
@@ -85,6 +92,7 @@ internal val elementLightScExposures = ScThemeExposures(
 internal val elementDarkScExposures = ScThemeExposures(
     isScTheme = false,
     horizontalDividerThickness = 0.5.dp, /** [io.element.android.libraries.designsystem.theme.components.HorizontalDivider] */
+    colorOnAccent = Color.White,
     bubbleBgIncoming = null,
     bubbleBgOutgoing = null,
     appBarBg = null,

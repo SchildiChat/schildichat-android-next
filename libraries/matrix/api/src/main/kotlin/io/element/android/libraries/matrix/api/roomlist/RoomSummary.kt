@@ -42,6 +42,7 @@ data class RoomSummaryDetails(
     val lastMessage: RoomMessage?,
     val lastMessageTimestamp: Long?,
     val unreadNotificationCount: Int,
+    val highlightCount: Int = 0,
     val inviter: RoomMember? = null,
     val notificationMode: RoomNotificationMode? = null,
     val hasOngoingCall: Boolean = false,

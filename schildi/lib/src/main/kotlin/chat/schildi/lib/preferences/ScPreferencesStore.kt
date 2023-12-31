@@ -32,6 +32,7 @@ object ScPrefs {
 
     // Chat overview
     val COMPACT_APP_BAR = ScBoolPref("COMPACT_APP_BAR", true, R.string.sc_pref_compact_app_bar_title, R.string.sc_pref_compact_app_bar_summary, upstreamChoice = false)
+    val SC_OVERVIEW_LAYOUT = ScBoolPref("SC_OVERVIEW_LAYOUT", true, R.string.sc_pref_sc_overview_layout_title, upstreamChoice = false)
 
     // Timeline
     val SC_TIMELINE_LAYOUT = ScBoolPref("SC_TIMELINE_LAYOUT", true, R.string.sc_pref_sc_timeline_layout_title, upstreamChoice = false)
@@ -61,6 +62,7 @@ object ScPrefs {
             FAST_TRANSITIONS,
         )),
         ScPrefCategory(R.string.sc_pref_category_chat_overview, null, listOf(
+            SC_OVERVIEW_LAYOUT,
             COMPACT_APP_BAR,
         )),
         ScPrefCategory(R.string.sc_pref_category_timeline, null, listOf(
@@ -88,15 +90,13 @@ object ScPrefs {
          */
     ))
 
-    val devQuickTweaks = listOf(
-        ScPrefCategory(R.string.sc_pref_category_general_appearance, null, listOf(
-            SC_THEME,
-            EL_TYPOGRAPHY,
-        )),
-        FAST_TRANSITIONS,
+    val devQuickTweaksOverview = listOf(
+        SC_THEME,
+        SC_OVERVIEW_LAYOUT.copy(titleRes = R.string.sc_pref_sc_layout_title),
+        EL_TYPOGRAPHY,
     )
 
-    val devQuickTweaksInRoom = listOf(
+    val devQuickTweaksTimeline = listOf(
         SC_THEME,
         EL_TYPOGRAPHY,
         SC_TIMELINE_LAYOUT.copy(titleRes = R.string.sc_pref_sc_layout_title),

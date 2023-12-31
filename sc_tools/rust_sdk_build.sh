@@ -37,4 +37,4 @@ echo "JAVA_HOME=$JAVA_HOME"
 echo "ANDROID_NDK_HOME=$ANDROID_NDK_HOME"
 
 cd "$COMPONENTS_DIR"
-./scripts/build.sh -p "$SDK_DIR" -r -m sdk -o "$GIT_ROOT"/libraries/rustsdk/matrix-rust-sdk.aar
+./scripts/build.sh -p "$SDK_DIR" -m sdk -o "$GIT_ROOT"/libraries/rustsdk/matrix-rust-sdk.aar "$@"

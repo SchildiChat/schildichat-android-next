@@ -213,7 +213,11 @@ private fun ScUnreadCounter(room: RoomListRoomSummary) {
             count = room.highlightCount
             badgeColor = ElementTheme.colors.bgCriticalPrimary
         }
-        // TODO (muted) unread_count + marked_as_unread once we have that in the SDK
+        room.unreadCount > 0 -> {
+            count = room.unreadCount
+            badgeColor = ScTheme.exposures.unreadBadgeColor
+        }
+        // TODO marked_as_unread once we have that in the SDK
         else -> {
             // No badge to show
             return

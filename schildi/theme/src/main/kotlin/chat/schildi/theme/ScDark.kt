@@ -69,6 +69,7 @@ internal val scdExposures = ScThemeExposures(
     colorOnAccent = ScColors.colorWhite,
     bubbleBgIncoming = scd_bgFloating,
     bubbleBgOutgoing = scd_bg,
+    unreadBadgeColor = scd_bgFloating,
     appBarBg = scd_bg,
     bubbleRadius = 10.dp,
     timestampRadius = 6.dp,

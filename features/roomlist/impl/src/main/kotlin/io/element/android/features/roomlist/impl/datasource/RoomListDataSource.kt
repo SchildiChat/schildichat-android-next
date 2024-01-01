@@ -157,6 +157,7 @@ class RoomListDataSource @Inject constructor(
                     hasUnread = roomSummary.details.unreadNotificationCount > 0,
                     notificationCount = roomSummary.details.unreadNotificationCount,
                     highlightCount = roomSummary.details.highlightCount,
+                    unreadCount = roomSummary.details.unreadCount,
                     timestamp = lastMessageTimestampFormatter.format(roomSummary.details.lastMessageTimestamp),
                     lastMessage = roomSummary.details.lastMessage?.let { message ->
                         roomLastMessageFormatter.format(message.event, roomSummary.details.isDirect)

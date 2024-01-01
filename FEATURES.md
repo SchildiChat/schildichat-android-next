@@ -8,9 +8,14 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Schildi theme with more neutral colors and some design tweaks †
 - Schildi layout tweaks †
 - Faster screen transitions †
-- Non-expanding compact app bar in the chat overview †
-- Sort room list by unread first ‡
 - App icon & branding ⸸
+
+
+## Chat overview ("room list")
+
+- Sort room list by unread first ‡
+- Non-expanding compact app bar in the chat overview †
+- Show unread counts ([MSC2654](https://github.com/matrix-org/matrix-spec-proposals/pull/2654)) ‡[^1]
 
 
 ## Conversation screen
@@ -34,3 +39,5 @@ Note that following list of changes compared to Element X is likely incomplete, 
 †: Can be enabled or disabled by user setting  
 ‡: Powered by [our own rust-sdk fork](https://github.com/SchildiChat/matrix-rust-sdk)  
 ⸸: Work in progress  
+
+[^1]: Unread counts for muted chats require `msc2654_enabled: true` in your synapse's `experimental_features` config and a [patched sliding-sync-proxy](https://github.com/SpiritCroc/matrix-sliding-sync/commit/785ce8ca4cac1a17509e3e611d117c1f6860ef2b)

@@ -38,6 +38,7 @@ class RoomSummaryDetailsFactory(private val roomMessageFactory: RoomMessageFacto
             avatarURLString = roomInfo.avatarUrl,
             unreadNotificationCount = roomInfo.notificationCount.toInt(),
             highlightCount = roomInfo.highlightCount.toInt(),
+            unreadCount = roomInfo.unreadCount.toInt(),
             lastMessage = latestRoomMessage,
             lastMessageTimestamp = latestRoomMessage?.originServerTs,
             inviter = roomInfo.inviter?.let(RoomMemberMapper::map),

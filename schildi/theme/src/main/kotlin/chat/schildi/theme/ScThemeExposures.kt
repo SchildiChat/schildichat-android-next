@@ -18,6 +18,7 @@ class ScThemeExposures(
     colorOnAccent: Color,
     bubbleBgIncoming: Color?,
     bubbleBgOutgoing: Color?,
+    unreadBadgeColor: Color,
     appBarBg: Color?,
     bubbleRadius: Dp,
     timestampRadius: Dp,
@@ -32,6 +33,8 @@ class ScThemeExposures(
     var bubbleBgIncoming by mutableStateOf(bubbleBgIncoming)
         private set
     var bubbleBgOutgoing by mutableStateOf(bubbleBgOutgoing)
+        private set
+    var unreadBadgeColor by mutableStateOf(unreadBadgeColor)
         private set
     var appBarBg by mutableStateOf(appBarBg)
         private set
@@ -48,6 +51,7 @@ class ScThemeExposures(
         colorOnAccent: Color = this.colorOnAccent,
         bubbleBgIncoming: Color? = this.bubbleBgIncoming,
         bubbleBgOutgoing: Color? = this.bubbleBgOutgoing,
+        unreadBadgeColor: Color = this.unreadBadgeColor,
         appBarBg: Color? = this.appBarBg,
         bubbleRadius: Dp = this.bubbleRadius,
         timestampRadius: Dp = this.timestampRadius,
@@ -58,6 +62,7 @@ class ScThemeExposures(
         colorOnAccent = colorOnAccent,
         bubbleBgIncoming = bubbleBgIncoming,
         bubbleBgOutgoing = bubbleBgOutgoing,
+        unreadBadgeColor = unreadBadgeColor,
         appBarBg = appBarBg,
         bubbleRadius = bubbleRadius,
         timestampRadius = timestampRadius,
@@ -70,6 +75,7 @@ class ScThemeExposures(
         colorOnAccent = other.colorOnAccent
         bubbleBgIncoming = other.bubbleBgIncoming
         bubbleBgOutgoing = other.bubbleBgOutgoing
+        unreadBadgeColor = other.unreadBadgeColor
         appBarBg = other.appBarBg
         bubbleRadius = other.bubbleRadius
         timestampRadius = other.timestampRadius
@@ -83,6 +89,7 @@ internal val elementLightScExposures = ScThemeExposures(
     colorOnAccent = Color.White,
     bubbleBgIncoming = null,
     bubbleBgOutgoing = null,
+    unreadBadgeColor = Color(0xffa9b2bc),
     appBarBg = null,
     bubbleRadius = 12.dp,
     timestampRadius = 10.0.dp,
@@ -95,6 +102,7 @@ internal val elementDarkScExposures = ScThemeExposures(
     colorOnAccent = Color.White,
     bubbleBgIncoming = null,
     bubbleBgOutgoing = null,
+    unreadBadgeColor = Color(0xff737d8c),
     appBarBg = null,
     bubbleRadius = 12.dp,
     timestampRadius = 10.0.dp,

@@ -46,15 +46,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import chat.schildi.lib.compose.removeFontPadding
-import chat.schildi.lib.compose.thenIf
 import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummaryProvider
 import io.element.android.libraries.core.extensions.orEmpty
-import io.element.android.libraries.designsystem.atomic.atoms.UnreadIndicatorAtom
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
@@ -65,7 +62,6 @@ import io.element.android.libraries.designsystem.theme.roomListRoomMessage
 import io.element.android.libraries.designsystem.theme.roomListRoomMessageDate
 import io.element.android.libraries.designsystem.theme.roomListRoomName
 import io.element.android.libraries.designsystem.theme.unreadIndicator
-import io.element.android.libraries.matrix.api.room.RoomNotificationMode
 
 internal val scRowMinHeight = 84.dp
 
@@ -156,11 +152,7 @@ private fun RowScope.ScNameAndTimestampRow(room: RoomListRoomSummary) {
     Text(
         text = room.timestamp ?: "",
         style = ElementTheme.typography.fontBodySmMedium,
-        color = if (room.hasUnread) {
-            ElementTheme.colors.unreadIndicator
-        } else {
-            MaterialTheme.roomListRoomMessageDate()
-        },
+        color = MaterialTheme.roomListRoomMessageDate(),
     )
 }
 
@@ -229,10 +221,10 @@ private fun ScUnreadCounter(room: RoomListRoomSummary) {
         Text(
             text = count.toString(),
             color = ScTheme.exposures.colorOnAccent,
-            style = MaterialTheme.typography.bodySmall.removeFontPadding(),
+            style = MaterialTheme.typography.bodySmall,
             maxLines = 1,
             textAlign = TextAlign.Center,
-            modifier = Modifier.align(Alignment.Center).padding(horizontal = 8.dp)
+            modifier = Modifier.align(Alignment.Center).padding(horizontal = 4.dp)
         )
     }
 }

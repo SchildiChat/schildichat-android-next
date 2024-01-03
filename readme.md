@@ -1,6 +1,6 @@
 # schildichat-android-next
 
-Matrix client based on [Element Android X](https://github.com/vector-im/element-x-android)
+Matrix client based on [Element Android X](https://github.com/element-hq/element-x-android)
 in the tradition of the original [SchildiChat for Android](https://github.com/SchildiChat/SchildiChat-android)
 which was based on the now deprecated Element Android codebase.
 

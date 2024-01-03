@@ -11,7 +11,7 @@
     <string name="sc_pref_pl_display_name_title">Name colors by power level</string>
     <string name="sc_pref_pl_display_name_summary_warning">Does not work reliably when member list was not fully fetched yet</string>
     <string name="sc_pref_el_typography_title">Element typography</string>
-    <string name="sc_pref_el_typography_summary">Use Element\'s font settings</string>
+    <string name="sc_pref_el_typography_summary">Use Element\'s font settings with larger message text</string>
     <string name="sc_pref_fast_transitions_title">Fast transitions</string>
     <string name="sc_pref_fast_transitions_summary">Speed up window animation</string>
     <string name="sc_pref_compact_app_bar_title">Compact app bar</string>

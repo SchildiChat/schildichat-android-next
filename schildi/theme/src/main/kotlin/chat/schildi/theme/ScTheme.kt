@@ -14,6 +14,7 @@ import chat.schildi.lib.preferences.value
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.theme.ForcedDarkElementTheme
 import io.element.android.compound.tokens.generated.SemanticColors
+import io.element.android.compound.tokens.sc.ElTypographyTokens
 
 object ScTheme {
     val exposures: ScThemeExposures
@@ -63,6 +64,7 @@ fun ScTheme(
         materialDarkColors = elMaterialColorSchemeDark
     }
     val typography = if (useElTypography) elTypography else scTypography
+    val typographyTokens = if (useElTypography) ElTypographyTokens else ScTypographyTokens
 
     val currentExposures = remember {
         // EleLight is default
@@ -80,6 +82,7 @@ fun ScTheme(
             materialLightColors = materialLightColors,
             materialDarkColors = materialDarkColors,
             typography = typography,
+            typographyTokens = typographyTokens,
             content = content,
         )
     }

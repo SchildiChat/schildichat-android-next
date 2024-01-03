@@ -27,6 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.core.text.buildSpannedString
+import chat.schildi.lib.preferences.ScPrefs.EL_TYPOGRAPHY
+import chat.schildi.lib.preferences.value
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContentProvider
@@ -44,7 +46,7 @@ fun TimelineItemTextView(
 ) {
     CompositionLocalProvider(
         LocalContentColor provides ElementTheme.colors.textPrimary,
-        LocalTextStyle provides ElementTheme.typography.fontBodyLgRegular
+        LocalTextStyle provides if (EL_TYPOGRAPHY.value()) ElementTheme.typography.fontBodyLgRegular else ElementTheme.typography.fontBodyMdRegular
     ) {
 
         val formattedBody = content.formattedBody

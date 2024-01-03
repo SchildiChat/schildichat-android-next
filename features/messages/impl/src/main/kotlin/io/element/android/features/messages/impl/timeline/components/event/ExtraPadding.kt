@@ -55,14 +55,15 @@ fun TimelineItem.Event.toExtraPadding(): ExtraPadding {
 
     val textMeasurer = rememberTextMeasurer(cacheSize = 128)
     val density = LocalDensity.current
+    val timestampTextStyle = ElementTheme.typography.fontBodyXsRegular
 
     var strLen = 2.dp // Extra space char
     if (isMessageEdited) {
         val editedText = stringResource(id = CommonStrings.common_edited_suffix)
-        val extraLen = remember(editedText, density) { textMeasurer.getExtraPadding(editedText, density) } + 10.dp // Text + spacing
+        val extraLen = remember(editedText, density) { textMeasurer.getExtraPadding(editedText, density, timestampTextStyle) } + 10.dp // Text + spacing
         strLen += extraLen
     }
-    strLen += remember(formattedTime, density) { textMeasurer.getExtraPadding(formattedTime, density) }
+    strLen += remember(formattedTime, density) { textMeasurer.getExtraPadding(formattedTime, density, timestampTextStyle) }
     if (hasMessageSendingFailed) {
         strLen += 19.dp // Image + spacing
         // I do not know why, but adding extra widths avoid overlapping when the
@@ -77,8 +78,8 @@ fun TimelineItem.Event.toExtraPadding(): ExtraPadding {
     return ExtraPadding(strLen)
 }
 
-private fun TextMeasurer.getExtraPadding(text: String, density: Density): Dp {
-    val timestampTextStyle = ElementTheme.typography.fontBodyXsRegular
+private fun TextMeasurer.getExtraPadding(text: String, density: Density, timestampTextStyle: TextStyle): Dp {
+    //val timestampTextStyle = ElementTheme.typography.fontBodyXsRegular
     val textWidth = measure(text = text, style = timestampTextStyle).size.width
     return (textWidth/density.density).dp
 }

@@ -18,6 +18,8 @@ package io.element.android.features.messages.impl.timeline.components.event
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import chat.schildi.lib.compose.thenIf
 import io.element.android.features.messages.impl.timeline.TimelineEvents
 import io.element.android.features.messages.impl.timeline.di.LocalTimelineItemPresenterFactories
 import io.element.android.features.messages.impl.timeline.di.rememberPresenter
@@ -27,6 +29,7 @@ import io.element.android.features.messages.impl.timeline.model.event.TimelineIt
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemFileContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemImageContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemLocationContent
+import io.element.android.features.messages.impl.timeline.model.event.TimelineItemNoticeContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemPollContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemRedactedContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemStateContent
@@ -62,7 +65,7 @@ fun TimelineItemEventContentView(
         is TimelineItemTextBasedContent -> TimelineItemTextView(
             content = content,
             extraPadding = extraPadding,
-            modifier = modifier,
+            modifier = modifier.thenIf(content is TimelineItemNoticeContent) { alpha(0.65f) },
             onLinkClicked = onLinkClicked,
         )
         is TimelineItemUnknownContent -> TimelineItemUnknownView(

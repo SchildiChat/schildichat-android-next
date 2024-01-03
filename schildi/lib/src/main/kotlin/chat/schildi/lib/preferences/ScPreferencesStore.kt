@@ -69,11 +69,13 @@ object ScPrefs {
             SC_TIMELINE_LAYOUT,
             FLOATING_DATE,
         )),
-        ScPrefCategory(CommonStrings.common_developer_options, null, listOf(
-            SC_DEV_QUICK_OPTIONS,
+        ScPrefCategory(R.string.sc_pref_category_misc, null, listOf(
             ScPrefScreen(R.string.sc_pref_screen_experimental_title, R.string.sc_pref_screen_experimental_summary, listOf(
                 PL_DISPLAY_NAME
             )),
+        )),
+        ScPrefCategory(CommonStrings.common_developer_options, null, listOf(
+            SC_DEV_QUICK_OPTIONS,
             SC_DANGER_ZONE,
             SC_RESTORE_DEFAULTS,
             SC_RESTORE_UPSTREAM,

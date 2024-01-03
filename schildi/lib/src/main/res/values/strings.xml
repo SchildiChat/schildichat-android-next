@@ -27,6 +27,7 @@
     <string name="sc_pref_category_general_behaviour">Behaviour</string>
     <string name="sc_pref_category_chat_overview">Chat overview</string>
     <string name="sc_pref_category_timeline">Conversation screen</string>
+    <string name="sc_pref_category_misc">Misc</string>
 
     <string name="sc_pref_screen_experimental_title">Experimental</string>
     <string name="sc_pref_screen_experimental_summary">Unstable features, expect bugs</string>

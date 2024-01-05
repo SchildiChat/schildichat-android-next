@@ -43,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
+import chat.schildi.features.roomlist.SpacesPager
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.ScPrefs.SC_OVERVIEW_LAYOUT
 import chat.schildi.lib.preferences.value
@@ -54,6 +55,7 @@ import io.element.android.features.roomlist.impl.components.RoomListMenuAction
 import io.element.android.features.roomlist.impl.components.RoomListTopBar
 import io.element.android.features.roomlist.impl.components.RoomSummaryRow
 import io.element.android.features.roomlist.impl.components.ScRoomSummaryRow
+import io.element.android.features.roomlist.impl.datasource.SpaceListDataSource
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.features.roomlist.impl.search.RoomListSearchResultView
 import io.element.android.libraries.designsystem.preview.ElementPreview
@@ -187,15 +189,20 @@ private fun RoomListContent(
                 onFilterChanged = { state.eventSink(RoomListEvents.UpdateFilter(it)) },
                 onToggleSearch = { state.eventSink(RoomListEvents.ToggleSearchResults) },
                 onMenuActionClicked = onMenuActionClicked,
+                onCreateRoomClicked = onCreateRoomClicked,
                 onOpenSettings = onOpenSettings,
                 scrollBehavior = scrollBehavior,
             )
         },
         content = { padding ->
+            SpacesPager(
+                spacesList = state.spacesList,
+                onSpaceSelected = { selection -> state.eventSink(RoomListEvents.UpdateSpaceFilter(selection)) },
+                modifier = Modifier.padding(padding).consumeWindowInsets(padding)) { modifier ->
             LazyColumn(
-                modifier = Modifier
-                    .padding(padding)
-                    .consumeWindowInsets(padding)
+                modifier = modifier
+                    //.padding(padding)
+                    //.consumeWindowInsets(padding)
                     .nestedScroll(nestedScrollConnection),
                 state = lazyListState,
             ) {
@@ -249,11 +256,13 @@ private fun RoomListContent(
                 // Add a last Spacer item to ensure that the FAB does not hide the last room item
                 // FAB height is 56dp, bottom padding is 16dp, we add 8dp as extra margin -> 56+16+8 = 80
                 item {
+                    if (ScPrefs.SPACE_NAV.value()) return@item
                     Spacer(modifier = Modifier.height(80.dp))
                 }
-            }
+            }}
         },
         floatingActionButton = {
+            if (ScPrefs.SPACE_NAV.value()) return@Scaffold
             FloatingActionButton(
                 // FIXME align on Design system theme
                 containerColor = MaterialTheme.colorScheme.primary,

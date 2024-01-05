@@ -33,6 +33,7 @@ object ScPrefs {
     // Chat overview
     val COMPACT_APP_BAR = ScBoolPref("COMPACT_APP_BAR", true, R.string.sc_pref_compact_app_bar_title, R.string.sc_pref_compact_app_bar_summary, upstreamChoice = false)
     val SC_OVERVIEW_LAYOUT = ScBoolPref("SC_OVERVIEW_LAYOUT", true, R.string.sc_pref_sc_overview_layout_title, upstreamChoice = false)
+    val SPACE_NAV = ScBoolPref("SPACE_NAV", false, R.string.sc_space_nav_title, R.string.sc_space_nav_summary, upstreamChoice = false, authorsChoice = true)
 
     // Timeline
     val SC_TIMELINE_LAYOUT = ScBoolPref("SC_TIMELINE_LAYOUT", true, R.string.sc_pref_sc_timeline_layout_title, upstreamChoice = false)
@@ -71,7 +72,8 @@ object ScPrefs {
         )),
         ScPrefCategory(R.string.sc_pref_category_misc, null, listOf(
             ScPrefScreen(R.string.sc_pref_screen_experimental_title, R.string.sc_pref_screen_experimental_summary, listOf(
-                PL_DISPLAY_NAME
+                SPACE_NAV,
+                PL_DISPLAY_NAME,
             )),
         )),
         ScPrefCategory(CommonStrings.common_developer_options, null, listOf(
@@ -96,6 +98,7 @@ object ScPrefs {
         SC_THEME,
         SC_OVERVIEW_LAYOUT.copy(titleRes = R.string.sc_pref_sc_layout_title),
         EL_TYPOGRAPHY,
+        SPACE_NAV,
     )
 
     val devQuickTweaksTimeline = listOf(

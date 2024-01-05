@@ -57,6 +57,13 @@ internal class RustRoomListService(
         innerRoomListService.invites()
     }
 
+    override val allSpaces: RoomList = roomListFactory.createRoomList(
+        pageSize = Int.MAX_VALUE,
+        initialFilter = DynamicRoomList.Filter.AllNonLeft,
+    ) {
+        innerRoomListService.allSpaces()
+    }
+
     init {
         allRooms.loadAllIncrementally(sessionCoroutineScope)
     }

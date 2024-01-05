@@ -96,6 +96,7 @@ fun RoomListTopBar(
     onFilterChanged: (String) -> Unit,
     onToggleSearch: () -> Unit,
     onMenuActionClicked: (RoomListMenuAction) -> Unit,
+    onCreateRoomClicked: () -> Unit,
     onOpenSettings: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
     modifier: Modifier = Modifier,
@@ -118,6 +119,7 @@ fun RoomListTopBar(
         matrixUser = matrixUser,
         showAvatarIndicator = showAvatarIndicator,
         areSearchResultsDisplayed = areSearchResultsDisplayed,
+        onCreateRoomClicked = onCreateRoomClicked,
         onOpenSettings = onOpenSettings,
         onSearchClicked = onToggleSearch,
         onMenuActionClicked = onMenuActionClicked,
@@ -133,6 +135,7 @@ private fun DefaultRoomListTopBar(
     showAvatarIndicator: Boolean,
     areSearchResultsDisplayed: Boolean,
     scrollBehavior: TopAppBarScrollBehavior,
+    onCreateRoomClicked: () -> Unit,
     onOpenSettings: () -> Unit,
     onSearchClicked: () -> Unit,
     onMenuActionClicked: (RoomListMenuAction) -> Unit,
@@ -249,20 +252,7 @@ private fun DefaultRoomListTopBar(
                             expanded = showMenu,
                             onDismissRequest = { showMenu = false }
                         ) {
-                            DropdownMenuItem(
-                                onClick = {
-                                    showMenu = false
-                                    onMenuActionClicked(RoomListMenuAction.Settings)
-                                },
-                                text = { Text(stringResource(id = CommonStrings.common_settings)) },
-                                leadingIcon = {
-                                    Icon(
-                                        imageVector = CompoundIcons.SettingsSolid,
-                                        tint = ElementTheme.materialColors.secondary,
-                                        contentDescription = null,
-                                    )
-                                }
-                            )
+                            ScRoomListDropdownEntriesTop(onClick = { showMenu = false }, onMenuActionClicked = onMenuActionClicked, onCreateRoomClicked = onCreateRoomClicked)
                             if (RoomListConfig.showInviteMenuItem) {
                                 DropdownMenuItem(
                                     onClick = {
@@ -295,23 +285,7 @@ private fun DefaultRoomListTopBar(
                                     }
                                 )
                             }
-                            if (ScPrefs.SC_DEV_QUICK_OPTIONS.value()) {
-                                HorizontalDivider()
-                                ScPrefs.devQuickTweaksOverview.forEach {
-                                    it.AutoRenderedDropdown(
-                                        onClick = {
-                                            showMenu = false
-                                        },
-                                        leadingIcon = {
-                                            Icon(
-                                                imageVector = Icons.Outlined.Tune,
-                                                tint = ElementTheme.materialColors.secondary,
-                                                contentDescription = null,
-                                            )
-                                        }
-                                    )
-                                }
-                            }
+                            ScRoomListDropdownEntriesBottom(onClick = { showMenu = false }, onMenuActionClicked = onMenuActionClicked)
                         }
                     }
                 },
@@ -340,6 +314,7 @@ internal fun DefaultRoomListTopBarPreview() = ElementPreview {
         showAvatarIndicator = false,
         areSearchResultsDisplayed = false,
         scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState()),
+        onCreateRoomClicked = {},
         onOpenSettings = {},
         onSearchClicked = {},
         onMenuActionClicked = {},
@@ -355,6 +330,7 @@ internal fun DefaultRoomListTopBarWithIndicatorPreview() = ElementPreview {
         showAvatarIndicator = true,
         areSearchResultsDisplayed = false,
         scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState()),
+        onCreateRoomClicked = {},
         onOpenSettings = {},
         onSearchClicked = {},
         onMenuActionClicked = {},

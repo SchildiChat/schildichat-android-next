@@ -184,6 +184,9 @@ class RustMatrixRoom(
     override val isPublic: Boolean
         get() = innerRoom.isPublic()
 
+    override val spaceChildren: List<String>
+        get() = innerRoom.spaceChildren()
+
     override val isDirect: Boolean
         get() = innerRoom.isDirect()
 

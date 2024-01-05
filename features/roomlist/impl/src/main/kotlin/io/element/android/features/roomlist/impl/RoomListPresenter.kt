@@ -26,12 +26,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.value
 import io.element.android.features.leaveroom.api.LeaveRoomEvent
 import io.element.android.features.leaveroom.api.LeaveRoomPresenter
 import io.element.android.features.networkmonitor.api.NetworkMonitor
 import io.element.android.features.networkmonitor.api.NetworkStatus
 import io.element.android.features.roomlist.impl.datasource.InviteStateDataSource
 import io.element.android.features.roomlist.impl.datasource.RoomListDataSource
+import io.element.android.features.roomlist.impl.datasource.SpaceListDataSource
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarDispatcher
 import io.element.android.libraries.designsystem.utils.snackbar.collectSnackbarMessageAsState
@@ -44,6 +47,7 @@ import io.element.android.libraries.matrix.api.encryption.RecoveryState
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.api.user.getCurrentUser
 import io.element.android.libraries.matrix.api.verification.SessionVerificationService
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -58,6 +62,7 @@ class RoomListPresenter @Inject constructor(
     private val inviteStateDataSource: InviteStateDataSource,
     private val leaveRoomPresenter: LeaveRoomPresenter,
     private val roomListDataSource: RoomListDataSource,
+    private val spaceListDataSource: SpaceListDataSource,
     private val encryptionService: EncryptionService,
     private val featureFlagService: FeatureFlagService,
     private val indicatorService: IndicatorService,
@@ -69,13 +74,15 @@ class RoomListPresenter @Inject constructor(
         val matrixUser: MutableState<MatrixUser?> = rememberSaveable {
             mutableStateOf(null)
         }
-        val roomList by roomListDataSource.allRooms.collectAsState()
+        val roomList by (if (ScPrefs.SPACE_NAV.value()) roomListDataSource.spaceRooms else roomListDataSource.allRooms).collectAsState()
+        val spacesList by spaceListDataSource.allSpaces.collectAsState()
         val filteredRoomList by roomListDataSource.filteredRooms.collectAsState()
         val filter by roomListDataSource.filter.collectAsState()
         val networkConnectionStatus by networkMonitor.connectivity.collectAsState()
 
         LaunchedEffect(Unit) {
             roomListDataSource.launchIn(this)
+            spaceListDataSource.launchIn(this)
             initialLoad(matrixUser)
         }
 
@@ -108,6 +115,7 @@ class RoomListPresenter @Inject constructor(
         fun handleEvents(event: RoomListEvents) {
             when (event) {
                 is RoomListEvents.UpdateFilter -> roomListDataSource.updateFilter(event.newFilter)
+                is RoomListEvents.UpdateSpaceFilter -> { roomListDataSource.updateSpaceFilter(event.selectedSpace?.flattenedRooms) }
                 is RoomListEvents.UpdateVisibleRange -> updateVisibleRange(event.range)
                 RoomListEvents.DismissRequestVerificationPrompt -> verificationPromptDismissed = true
                 RoomListEvents.DismissRecoveryKeyPrompt -> recoveryKeyPromptDismissed = true
@@ -134,6 +142,7 @@ class RoomListPresenter @Inject constructor(
             matrixUser = matrixUser.value,
             showAvatarIndicator = showAvatarIndicator,
             roomList = roomList,
+            spacesList = spacesList.sortedBy { it.info.name }.toImmutableList(),
             filter = filter,
             filteredRoomList = filteredRoomList,
             displayVerificationPrompt = displayVerificationPrompt,

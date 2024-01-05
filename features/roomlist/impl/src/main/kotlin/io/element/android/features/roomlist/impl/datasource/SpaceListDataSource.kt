@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023 New Vector Ltd
+ * Copyright (c) 2024 SchildiChat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +17,7 @@
 
 package io.element.android.features.roomlist.impl.datasource
 
+import androidx.compose.runtime.Immutable
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummaryPlaceholders
 import io.element.android.libraries.androidutils.diff.DiffCacheUpdater
@@ -26,44 +28,35 @@ import io.element.android.libraries.dateformatter.api.LastMessageTimestampFormat
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.eventformatter.api.RoomLastMessageFormatter
+import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
-import io.element.android.libraries.matrix.api.notificationsettings.NotificationSettingsService
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
 import io.element.android.libraries.matrix.api.roomlist.RoomSummary
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 
-class RoomListDataSource @Inject constructor(
+/**
+ * More or less a copy of RoomListDataSource, but for spaces and without filter
+ */
+class SpaceListDataSource @Inject constructor(
+    private val client: MatrixClient,
     private val roomListService: RoomListService,
     private val lastMessageTimestampFormatter: LastMessageTimestampFormatter,
     private val roomLastMessageFormatter: RoomLastMessageFormatter,
     private val coroutineDispatchers: CoroutineDispatchers,
-    private val notificationSettingsService: NotificationSettingsService,
-    private val appScope: CoroutineScope,
 ) {
-    init {
-        observeNotificationSettings()
-    }
-
-    private val _filter = MutableStateFlow("")
-    private val _spaceChildFilter = MutableStateFlow<List<String>?>(null)
-    private val _allRooms = MutableStateFlow<ImmutableList<RoomListRoomSummary>>(persistentListOf())
-    private val _filteredRooms = MutableStateFlow<ImmutableList<RoomListRoomSummary>>(persistentListOf())
-    private val _spaceRooms = MutableStateFlow<ImmutableList<RoomListRoomSummary>>(persistentListOf())
+    private val _allSpaces = MutableStateFlow<ImmutableList<SpaceHierarchyItem>>(persistentListOf())
 
     private val lock = Mutex()
     private val diffCache = MutableListDiffCache<RoomListRoomSummary>()
@@ -73,77 +66,26 @@ class RoomListDataSource @Inject constructor(
 
     fun launchIn(coroutineScope: CoroutineScope) {
         roomListService
-            .allRooms
+            .allSpaces
             .summaries
             .onEach { roomSummaries ->
                 replaceWith(roomSummaries)
             }
             .launchIn(coroutineScope)
-
-        combine(
-            _filter,
-            _allRooms
-        ) { filterValue, allRoomsValue ->
-            when {
-                filterValue.isEmpty() -> emptyList()
-                else -> allRoomsValue.filter { it.name.contains(filterValue, ignoreCase = true) }
-            }.toImmutableList()
-        }
-            .onEach {
-                _filteredRooms.value = it
-            }
-            .launchIn(coroutineScope)
-
-        combine(
-            _spaceChildFilter,
-            _allRooms
-        ) { filterValue, allRoomsValue ->
-            when (filterValue) {
-                null -> allRoomsValue
-                else -> allRoomsValue.filter { filterValue.contains(it.roomId.value) }
-            }.toImmutableList()
-        }
-            .onEach {
-                _spaceRooms.value = it
-            }
-            .launchIn(coroutineScope)
     }
 
-    fun updateFilter(filterValue: String) {
-        _filter.value = filterValue
-    }
-
-    fun updateSpaceFilter(filterValue: List<String>?) {
-        _spaceChildFilter.value = filterValue
-    }
-
-    val filter: StateFlow<String> = _filter
-    val allRooms: StateFlow<ImmutableList<RoomListRoomSummary>> = _allRooms
-    val filteredRooms: StateFlow<ImmutableList<RoomListRoomSummary>> = _filteredRooms
-    val spaceRooms: StateFlow<ImmutableList<RoomListRoomSummary>> = _spaceRooms
-
-    @OptIn(FlowPreview::class)
-    private fun observeNotificationSettings() {
-        notificationSettingsService.notificationSettingsChangeFlow
-            .debounce(0.5.seconds)
-            .onEach {
-                roomListService.allRooms.rebuildSummaries()
-            }
-            .launchIn(appScope)
-    }
+    val allSpaces: StateFlow<ImmutableList<SpaceHierarchyItem>> = _allSpaces
 
     private suspend fun replaceWith(roomSummaries: List<RoomSummary>) = withContext(coroutineDispatchers.computation) {
         lock.withLock {
             diffCacheUpdater.updateWith(roomSummaries)
-            buildAndEmitAllRooms(roomSummaries)
+            buildAndEmitAllSpaces(roomSummaries)
         }
     }
 
-    private suspend fun buildAndEmitAllRooms(roomSummaries: List<RoomSummary>) {
+    private suspend fun buildAndEmitAllSpaces(roomSummaries: List<RoomSummary>) {
         if (diffCache.isEmpty()) {
-            _allRooms.emit(
-                RoomListRoomSummaryPlaceholders.createFakeList(16).toImmutableList()
-            )
+            _allSpaces.emit(persistentListOf())
         } else {
             val roomListRoomSummaries = ArrayList<RoomListRoomSummary>()
             for (index in diffCache.indices()) {
@@ -156,8 +98,65 @@ class RoomListDataSource @Inject constructor(
                     roomListRoomSummaries.add(cacheItem)
                 }
             }
-            _allRooms.emit(roomListRoomSummaries.toImmutableList())
+            _allSpaces.emit(buildSpaceHierarchy(roomListRoomSummaries))
         }
+    }
+
+    /**
+     * Build the space hierarchy and avoid loops
+     */
+    // TODO what can we cache something here?
+    private suspend fun buildSpaceHierarchy(spaceSummaries: List<RoomListRoomSummary>): ImmutableList<SpaceHierarchyItem> {
+        // Map spaceId -> list of child spaces
+        val spaceHierarchyMap = HashMap<String, MutableList<RoomListRoomSummary>>()
+        // Map spaceId -> list of regular child rooms
+        val regularChildren = HashMap<String, MutableList<String>>()
+        val rootSpaces = HashSet<RoomListRoomSummary>(spaceSummaries)
+        spaceSummaries.forEach { parentSpace ->
+            val spaceInfo = client.getRoom(parentSpace.roomId)
+            val spaceChildren = spaceInfo?.spaceChildren
+            spaceChildren?.forEach childLoop@{ childId ->
+                val child = spaceSummaries.find { it.roomId.value == childId }
+                if (child == null) {
+                    // Treat as regular child, since it doesn't appear to be a space (at least none known to us at this point)
+                    regularChildren[parentSpace.roomId.value] = regularChildren[parentSpace.roomId.value]?.apply { add(childId) } ?: mutableListOf(childId)
+                    return@childLoop
+                }
+                rootSpaces.removeAll { it.roomId.value == childId }
+                spaceHierarchyMap[parentSpace.roomId.value] = spaceHierarchyMap[parentSpace.roomId.value]?.apply { add(child) } ?: mutableListOf(child)
+            }
+        }
+
+        // Build the actual immutable recursive data structures that replicate the hierarchy
+        return rootSpaces.map { createSpaceHierarchyItem(it, spaceHierarchyMap, regularChildren) }.toImmutableList()
+    }
+
+    private fun createSpaceHierarchyItem(
+        spaceSummary: RoomListRoomSummary,
+        hierarchy: HashMap<String, MutableList<RoomListRoomSummary>>,
+        regularChildren: HashMap<String, MutableList<String>>,
+        forbiddenChildren: List<String> = emptyList(),
+    ): SpaceHierarchyItem {
+        val children = hierarchy[spaceSummary.id]?.mapNotNull {
+            if (it.roomId.value in forbiddenChildren) {
+                Timber.w("Detected space loop: ${spaceSummary.id} -> ${it.roomId.value}")
+                null
+            } else {
+                createSpaceHierarchyItem(it, hierarchy, regularChildren, forbiddenChildren + listOf(spaceSummary.roomId.value))
+            }
+        }?.toImmutableList() ?: persistentListOf()
+        return SpaceHierarchyItem(
+            info = spaceSummary,
+            spaces = children,
+            flattenedRooms = (
+                // All direct space children
+                regularChildren[spaceSummary.id].orEmpty()
+                    // All direct space children spaces - actually not needed/wanted here
+                    //+ hierarchy[spaceSummary.id].orEmpty().map {it.roomId.value} +
+                    // All indirect space children
+                    + children.flatMap { it.flattenedRooms }
+            ).toImmutableList(),
+        )
     }
 
     private fun buildAndCacheItem(roomSummaries: List<RoomSummary>, index: Int): RoomListRoomSummary? {
@@ -194,4 +193,11 @@ class RoomListDataSource @Inject constructor(
         diffCache[index] = roomListRoomSummary
         return roomListRoomSummary
     }
+
+    @Immutable
+    data class SpaceHierarchyItem(
+        val info: RoomListRoomSummary,
+        val spaces: ImmutableList<SpaceHierarchyItem>,
+        val flattenedRooms: ImmutableList<String>,
+    )
 }

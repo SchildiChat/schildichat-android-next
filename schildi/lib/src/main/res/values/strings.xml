@@ -16,6 +16,8 @@
     <string name="sc_pref_fast_transitions_summary">Speed up window animation</string>
     <string name="sc_pref_compact_app_bar_title">Compact app bar</string>
     <string name="sc_pref_compact_app_bar_summary">Never expand the top app bar</string>
+    <string name="sc_space_nav_title">Space navigation</string>
+    <string name="sc_space_nav_summary">Filter your chats by spaces</string>
 
     <string name="sc_pref_dev_quick_options">Quick settings</string>
     <string name="sc_pref_danger_zone">Danger zone</string>

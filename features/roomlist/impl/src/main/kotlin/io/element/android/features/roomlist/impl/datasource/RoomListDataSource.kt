@@ -16,6 +16,7 @@
 
 package io.element.android.features.roomlist.impl.datasource
 
+import chat.schildi.lib.preferences.ScAppStateStore
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummaryPlaceholders
 import io.element.android.libraries.androidutils.diff.DiffCacheUpdater
@@ -41,6 +42,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -61,7 +63,7 @@ class RoomListDataSource @Inject constructor(
     }
 
     private val _filter = MutableStateFlow("")
-    private val _spaceSelectionHierarchy = MutableStateFlow<ImmutableList<String>>(persistentListOf())
+    private val _spaceSelectionHierarchy = MutableStateFlow<ImmutableList<String>?>(null)
     private val _spaceChildFilter = MutableStateFlow<ImmutableList<String>?>(null)
     private val _allRooms = MutableStateFlow<ImmutableList<RoomListRoomSummary>>(persistentListOf())
     private val _filteredRooms = MutableStateFlow<ImmutableList<RoomListRoomSummary>>(persistentListOf())
@@ -73,7 +75,8 @@ class RoomListDataSource @Inject constructor(
         old?.identifier() == new?.identifier()
     }
 
-    fun launchIn(coroutineScope: CoroutineScope, spaceListDataSource: SpaceListDataSource) {
+    @OptIn(FlowPreview::class)
+    fun launchIn(coroutineScope: CoroutineScope, spaceListDataSource: SpaceListDataSource, scAppStateStore: ScAppStateStore) {
         roomListService
             .allRooms
             .summaries
@@ -96,18 +99,32 @@ class RoomListDataSource @Inject constructor(
             }
             .launchIn(coroutineScope)
 
+        // Restore previous space selection
+        coroutineScope.launch {
+            _spaceSelectionHierarchy.value = scAppStateStore.loadInitialSpaceSelection().toImmutableList()
+        }
+        // Persist space selection to restore on next app launch
+        _spaceSelectionHierarchy.debounce(2000).onEach { selection ->
+            if (selection == null) {
+                // Not initialized yet
+                return@onEach
+            }
+            scAppStateStore.persistSpaceSelection(selection)
+        }.launchIn(coroutineScope)
+
         // From life space list and current space selection, build the RoomId filter
         combine(
             _spaceSelectionHierarchy,
             spaceListDataSource.allSpaces,
         ) { spaceSelectionValue, allSpacesValue ->
-            // No space selected -> show all
-            if (spaceSelectionValue.isEmpty()) {
+            // No space selected or not initialized yet -> show all
+            if (spaceSelectionValue.isNullOrEmpty()) {
                 return@combine Pair(null, true)
             }
+            // Show all rooms while space list is not loaded yet, without clearing the space hierarchy
+            var spaceList = allSpacesValue?.takeIf { it.isNotEmpty() } ?: return@combine Pair(null, true)
             // Resolve actual space from space hierarchy
             var space: SpaceListDataSource.SpaceHierarchyItem? = null
-            var spaceList = allSpacesValue
             spaceSelectionValue.forEach { spaceId ->
                 space = spaceList.find { it.info.roomId.value == spaceId }
                 if (space == null) {
@@ -117,9 +134,9 @@ class RoomListDataSource @Inject constructor(
             }
             return@combine Pair(space?.flattenedRooms, true)
         }
-            .onEach { (roomIds, found) ->
+            .onEach { (roomIds, spaceFound) ->
                 _spaceChildFilter.value = roomIds
-                if (!found) {
+                if (!spaceFound) {
                     Timber.i("Selected space not found, clearing selection")
                     updateSpaceSelection(persistentListOf())
                 }
@@ -154,7 +171,7 @@ class RoomListDataSource @Inject constructor(
     val allRooms: StateFlow<ImmutableList<RoomListRoomSummary>> = _allRooms
     val filteredRooms: StateFlow<ImmutableList<RoomListRoomSummary>> = _filteredRooms
     val spaceRooms: StateFlow<ImmutableList<RoomListRoomSummary>> = _spaceRooms
-    val spaceSelectionHierarchy: StateFlow<ImmutableList<String>> = _spaceSelectionHierarchy
+    val spaceSelectionHierarchy: StateFlow<ImmutableList<String>?> = _spaceSelectionHierarchy
 
     @OptIn(FlowPreview::class)
     private fun observeNotificationSettings() {

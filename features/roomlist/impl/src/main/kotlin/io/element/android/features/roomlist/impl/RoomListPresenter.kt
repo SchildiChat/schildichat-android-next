@@ -26,6 +26,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import chat.schildi.lib.preferences.ScAppStateStore
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import io.element.android.features.leaveroom.api.LeaveRoomEvent
@@ -47,6 +49,7 @@ import io.element.android.libraries.matrix.api.encryption.RecoveryState
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.api.user.getCurrentUser
 import io.element.android.libraries.matrix.api.verification.SessionVerificationService
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -81,9 +84,10 @@ class RoomListPresenter @Inject constructor(
         val filter by roomListDataSource.filter.collectAsState()
         val networkConnectionStatus by networkMonitor.connectivity.collectAsState()
 
+        val scAppStateStore = ScAppStateStore(LocalContext.current)
         LaunchedEffect(Unit) {
             spaceListDataSource.launchIn(this)
-            roomListDataSource.launchIn(this, spaceListDataSource)
+            roomListDataSource.launchIn(this, spaceListDataSource, scAppStateStore)
             initialLoad(matrixUser)
         }
 
@@ -143,8 +147,8 @@ class RoomListPresenter @Inject constructor(
             matrixUser = matrixUser.value,
             showAvatarIndicator = showAvatarIndicator,
             roomList = roomList,
-            spacesList = spacesList.sortedBy { it.info.name }.toImmutableList(),
-            spaceSelectionHierarchy = spaceSelectionHierarchy,
+            spacesList = spacesList.orEmpty().sortedBy { it.info.name }.toImmutableList(),
+            spaceSelectionHierarchy = spaceSelectionHierarchy ?: persistentListOf(),
             filter = filter,
             filteredRoomList = filteredRoomList,
             displayVerificationPrompt = displayVerificationPrompt,

@@ -56,7 +56,7 @@ class SpaceListDataSource @Inject constructor(
     private val roomLastMessageFormatter: RoomLastMessageFormatter,
     private val coroutineDispatchers: CoroutineDispatchers,
 ) {
-    private val _allSpaces = MutableStateFlow<ImmutableList<SpaceHierarchyItem>>(persistentListOf())
+    private val _allSpaces = MutableStateFlow<ImmutableList<SpaceHierarchyItem>?>(null)
 
     private val lock = Mutex()
     private val diffCache = MutableListDiffCache<RoomListRoomSummary>()
@@ -74,7 +74,7 @@ class SpaceListDataSource @Inject constructor(
             .launchIn(coroutineScope)
     }
 
-    val allSpaces: StateFlow<ImmutableList<SpaceHierarchyItem>> = _allSpaces
+    val allSpaces: StateFlow<ImmutableList<SpaceHierarchyItem>?> = _allSpaces
 
     private suspend fun replaceWith(roomSummaries: List<RoomSummary>) = withContext(coroutineDispatchers.computation) {
         lock.withLock {

@@ -44,6 +44,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -60,7 +61,8 @@ class RoomListDataSource @Inject constructor(
     }
 
     private val _filter = MutableStateFlow("")
-    private val _spaceChildFilter = MutableStateFlow<List<String>?>(null)
+    private val _spaceSelectionHierarchy = MutableStateFlow<ImmutableList<String>>(persistentListOf())
+    private val _spaceChildFilter = MutableStateFlow<ImmutableList<String>?>(null)
     private val _allRooms = MutableStateFlow<ImmutableList<RoomListRoomSummary>>(persistentListOf())
     private val _filteredRooms = MutableStateFlow<ImmutableList<RoomListRoomSummary>>(persistentListOf())
     private val _spaceRooms = MutableStateFlow<ImmutableList<RoomListRoomSummary>>(persistentListOf())
@@ -71,7 +73,7 @@ class RoomListDataSource @Inject constructor(
         old?.identifier() == new?.identifier()
     }
 
-    fun launchIn(coroutineScope: CoroutineScope) {
+    fun launchIn(coroutineScope: CoroutineScope, spaceListDataSource: SpaceListDataSource) {
         roomListService
             .allRooms
             .summaries
@@ -94,6 +96,38 @@ class RoomListDataSource @Inject constructor(
             }
             .launchIn(coroutineScope)
 
+        // From life space list and current space selection, build the RoomId filter
+        combine(
+            _spaceSelectionHierarchy,
+            spaceListDataSource.allSpaces,
+        ) { spaceSelectionValue, allSpacesValue ->
+            // No space selected -> show all
+            if (spaceSelectionValue.isEmpty()) {
+                return@combine Pair(null, true)
+            }
+            // Resolve actual space from space hierarchy
+            var space: SpaceListDataSource.SpaceHierarchyItem? = null
+            var spaceList = allSpacesValue
+            spaceSelectionValue.forEach { spaceId ->
+                Timber.i("SC_DBG SPACE LIST ${spaceList.map { it.info.roomId.value }}")
+                space = spaceList.find { it.info.roomId.value == spaceId }
+                if (space == null) {
+                    return@combine Pair(null, false)
+                }
+                spaceList = space!!.spaces
+            }
+            return@combine Pair(space?.flattenedRooms, true)
+        }
+            .onEach { (roomIds, found) ->
+                _spaceChildFilter.value = roomIds
+                if (!found) {
+                    Timber.i("Selected space not found, clearing selection")
+                    updateSpaceSelection(persistentListOf())
+                }
+            }
+            .launchIn(coroutineScope)
+
+        // Filter by space with the room id list built in the previous flow
         combine(
             _spaceChildFilter,
             _allRooms
@@ -113,14 +147,15 @@ class RoomListDataSource @Inject constructor(
         _filter.value = filterValue
     }
 
-    fun updateSpaceFilter(filterValue: List<String>?) {
-        _spaceChildFilter.value = filterValue
+    fun updateSpaceSelection(spaceSelectionHierarchy: ImmutableList<String>) {
+        _spaceSelectionHierarchy.value = spaceSelectionHierarchy
     }
 
     val filter: StateFlow<String> = _filter
     val allRooms: StateFlow<ImmutableList<RoomListRoomSummary>> = _allRooms
     val filteredRooms: StateFlow<ImmutableList<RoomListRoomSummary>> = _filteredRooms
     val spaceRooms: StateFlow<ImmutableList<RoomListRoomSummary>> = _spaceRooms
+    val spaceSelectionHierarchy: StateFlow<ImmutableList<String>> = _spaceSelectionHierarchy
 
     @OptIn(FlowPreview::class)
     private fun observeNotificationSettings() {

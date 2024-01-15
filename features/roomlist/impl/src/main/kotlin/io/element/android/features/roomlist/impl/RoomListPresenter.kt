@@ -76,13 +76,14 @@ class RoomListPresenter @Inject constructor(
         }
         val roomList by (if (ScPrefs.SPACE_NAV.value()) roomListDataSource.spaceRooms else roomListDataSource.allRooms).collectAsState()
         val spacesList by spaceListDataSource.allSpaces.collectAsState()
+        val spaceSelectionHierarchy by roomListDataSource.spaceSelectionHierarchy.collectAsState()
         val filteredRoomList by roomListDataSource.filteredRooms.collectAsState()
         val filter by roomListDataSource.filter.collectAsState()
         val networkConnectionStatus by networkMonitor.connectivity.collectAsState()
 
         LaunchedEffect(Unit) {
-            roomListDataSource.launchIn(this)
             spaceListDataSource.launchIn(this)
+            roomListDataSource.launchIn(this, spaceListDataSource)
             initialLoad(matrixUser)
         }
 
@@ -115,7 +116,7 @@ class RoomListPresenter @Inject constructor(
         fun handleEvents(event: RoomListEvents) {
             when (event) {
                 is RoomListEvents.UpdateFilter -> roomListDataSource.updateFilter(event.newFilter)
-                is RoomListEvents.UpdateSpaceFilter -> { roomListDataSource.updateSpaceFilter(event.selectedSpace?.flattenedRooms) }
+                is RoomListEvents.UpdateSpaceFilter -> { roomListDataSource.updateSpaceSelection(event.spaceSelectionHierarchy.toImmutableList()) }
                 is RoomListEvents.UpdateVisibleRange -> updateVisibleRange(event.range)
                 RoomListEvents.DismissRequestVerificationPrompt -> verificationPromptDismissed = true
                 RoomListEvents.DismissRecoveryKeyPrompt -> recoveryKeyPromptDismissed = true
@@ -143,6 +144,7 @@ class RoomListPresenter @Inject constructor(
             showAvatarIndicator = showAvatarIndicator,
             roomList = roomList,
             spacesList = spacesList.sortedBy { it.info.name }.toImmutableList(),
+            spaceSelectionHierarchy = spaceSelectionHierarchy,
             filter = filter,
             filteredRoomList = filteredRoomList,
             displayVerificationPrompt = displayVerificationPrompt,

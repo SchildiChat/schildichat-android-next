@@ -32,6 +32,7 @@ data class RoomListState(
     val showAvatarIndicator: Boolean,
     val roomList: ImmutableList<RoomListRoomSummary>,
     val spacesList: ImmutableList<SpaceListDataSource.SpaceHierarchyItem> = persistentListOf(),
+    val spaceSelectionHierarchy: ImmutableList<String> = persistentListOf(),
     val filter: String?,
     val filteredRoomList: ImmutableList<RoomListRoomSummary>,
     val displayVerificationPrompt: Boolean,

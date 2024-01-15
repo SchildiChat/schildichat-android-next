@@ -1,6 +1,5 @@
 package chat.schildi.features.roomlist
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -35,7 +34,8 @@ private val SpaceAvatarSize = AvatarSize.BottomSpaceBar
 @Composable
 fun SpacesPager(
     spacesList: ImmutableList<SpaceListDataSource.SpaceHierarchyItem>,
-    onSpaceSelected: (SpaceListDataSource.SpaceHierarchyItem?) -> Unit,
+    onSpaceSelected: (List<String>) -> Unit,
+    spaceSelectionHierarchy: ImmutableList<String>,
     modifier: Modifier = Modifier,
     content: @Composable (Modifier) -> Unit,
 ) {
@@ -43,21 +43,17 @@ fun SpacesPager(
         content(modifier)
         return
     }
-    val spaceSelectionState = remember {
-        mutableStateOf<ImmutableList<String>>(persistentListOf())
-    }
     SpacesPager(
         spacesList = spacesList,
         selectSpace = { newSelection, parentSelection ->
             if (newSelection == null) {
-                spaceSelectionState.value = parentSelection
+                onSpaceSelected(parentSelection)
             } else {
-                spaceSelectionState.value = (parentSelection + listOf(newSelection.info.roomId.value)).toImmutableList()
+                onSpaceSelected(parentSelection + listOf(newSelection.info.roomId.value))
             }
-            onSpaceSelected(newSelection)
         },
         modifier = modifier,
-        spaceSelection = spaceSelectionState.value,
+        spaceSelection = spaceSelectionHierarchy,
         defaultSpace = null,
         parentSelection = persistentListOf(),
         content = content,
@@ -97,7 +93,7 @@ private fun SpacesPager(
         content(Modifier.weight(1f, fill = true))
 
         // Child spaces if expanded
-        var expandSpaceChildren by remember { mutableStateOf(false) }
+        var expandSpaceChildren by remember { mutableStateOf(childSelections.isNotEmpty()) }
         if (selectedSpaceIndex != -1 && expandSpaceChildren) {
             SpacesPager(
                 spacesList = spacesList[selectedSpaceIndex].spaces,

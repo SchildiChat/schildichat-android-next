@@ -55,7 +55,6 @@ import io.element.android.features.roomlist.impl.components.RoomListMenuAction
 import io.element.android.features.roomlist.impl.components.RoomListTopBar
 import io.element.android.features.roomlist.impl.components.RoomSummaryRow
 import io.element.android.features.roomlist.impl.components.ScRoomSummaryRow
-import io.element.android.features.roomlist.impl.datasource.SpaceListDataSource
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.features.roomlist.impl.search.RoomListSearchResultView
 import io.element.android.libraries.designsystem.preview.ElementPreview
@@ -198,6 +197,7 @@ private fun RoomListContent(
             SpacesPager(
                 spacesList = state.spacesList,
                 onSpaceSelected = { selection -> state.eventSink(RoomListEvents.UpdateSpaceFilter(selection)) },
+                spaceSelectionHierarchy = state.spaceSelectionHierarchy,
                 modifier = Modifier.padding(padding).consumeWindowInsets(padding)) { modifier ->
             LazyColumn(
                 modifier = modifier

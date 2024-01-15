@@ -109,7 +109,6 @@ class RoomListDataSource @Inject constructor(
             var space: SpaceListDataSource.SpaceHierarchyItem? = null
             var spaceList = allSpacesValue
             spaceSelectionValue.forEach { spaceId ->
-                Timber.i("SC_DBG SPACE LIST ${spaceList.map { it.info.roomId.value }}")
                 space = spaceList.find { it.info.roomId.value == spaceId }
                 if (space == null) {
                     return@combine Pair(null, false)

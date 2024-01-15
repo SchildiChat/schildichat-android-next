@@ -1,9 +1,12 @@
 package chat.schildi.features.roomlist
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
@@ -15,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -111,7 +115,7 @@ private fun SpacesPager(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
         ) {
             if (defaultSpace != null) {
-                SpaceTab(defaultSpace, selectedTab == 0, expandSpaceChildren) {
+                SpaceTab(defaultSpace, selectedTab == 0, expandSpaceChildren, false) {
                     expandSpaceChildren = false
                     selectSpace(defaultSpace, parentSelection)
                 }
@@ -122,7 +126,8 @@ private fun SpacesPager(
                 }
             }
             spacesList.forEachIndexed { index, space ->
-                SpaceTab(space, selectedSpaceIndex == index, expandSpaceChildren) {
+                val selected = selectedSpaceIndex == index
+                SpaceTab(space, selected, expandSpaceChildren, space.spaces.isNotEmpty() && (!selected || !expandSpaceChildren)) {
                     if (selectedSpaceIndex == index) {
                         if (expandSpaceChildren) {
                             expandSpaceChildren = false
@@ -140,14 +145,32 @@ private fun SpacesPager(
 }
 
 @Composable
-private fun AbstractSpaceTab(text: String, selected: Boolean, collapsed: Boolean, onClick: () -> Unit, icon: @Composable () -> Unit) {
+private fun AbstractSpaceTab(
+    text: String,
+    selected: Boolean,
+    collapsed: Boolean,
+    expandable: Boolean,
+    onClick: () -> Unit,
+    icon: @Composable () -> Unit
+) {
     Tab(
         text = {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.titleSmall,
-                color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
-            )
+            val color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+            Row {
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = color,
+                )
+                if (expandable && selected) {
+                    Icon(
+                        imageVector = Icons.Outlined.ChevronRight,
+                        contentDescription = null,
+                        modifier = Modifier.size(12.dp).align(Alignment.CenterVertically),
+                        tint = color,
+                    )
+                }
+            }
         },
         icon = icon.takeIf { !collapsed },
         selected = selected,
@@ -156,15 +179,21 @@ private fun AbstractSpaceTab(text: String, selected: Boolean, collapsed: Boolean
 }
 
 @Composable
-private fun SpaceTab(space: SpaceListDataSource.SpaceHierarchyItem, selected: Boolean, collapsed: Boolean, onClick: () -> Unit) {
-    AbstractSpaceTab(text = space.info.name, selected = selected, collapsed = collapsed, onClick = onClick) {
-        Avatar(space.info.avatarData.copy(size = SpaceAvatarSize))
+private fun SpaceTab(
+    space: SpaceListDataSource.SpaceHierarchyItem,
+    selected: Boolean,
+    collapsed: Boolean,
+    expandable: Boolean,
+    onClick: () -> Unit
+) {
+    AbstractSpaceTab(text = space.info.name, selected = selected, collapsed = collapsed, expandable = expandable, onClick = onClick) {
+        Avatar(space.info.avatarData.copy(size = SpaceAvatarSize), shape = RoundedCornerShape(4.dp))
     }
 }
 
 @Composable
 private fun ShowAllTab(selected: Boolean, collapsed: Boolean, onClick: () -> Unit) {
-    AbstractSpaceTab(text = stringResource(id = R.string.screen_roomlist_main_space_title), selected = selected, collapsed = collapsed, onClick = onClick) {
+    AbstractSpaceTab(text = stringResource(id = R.string.screen_roomlist_main_space_title), selected = selected, collapsed = collapsed, expandable = false, onClick = onClick) {
         Icon(
             imageVector = Icons.Filled.Home,
             contentDescription = null,

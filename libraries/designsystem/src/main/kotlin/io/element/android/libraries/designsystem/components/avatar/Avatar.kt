@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,10 +49,11 @@ fun Avatar(
     avatarData: AvatarData,
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
+    shape: Shape = CircleShape,
 ) {
     val commonModifier = modifier
         .size(avatarData.size.dp)
-        .clip(CircleShape)
+        .clip(shape)
     if (avatarData.url.isNullOrBlank()) {
         InitialsAvatar(
             avatarData = avatarData,

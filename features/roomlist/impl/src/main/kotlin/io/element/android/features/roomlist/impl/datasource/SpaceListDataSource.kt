@@ -144,7 +144,7 @@ class SpaceListDataSource @Inject constructor(
             } else {
                 createSpaceHierarchyItem(it, hierarchy, regularChildren, forbiddenChildren + listOf(spaceSummary.roomId.value))
             }
-        }?.toImmutableList() ?: persistentListOf()
+        }?.sortedBy{ it.info.name }?.toImmutableList() ?: persistentListOf()
         return SpaceHierarchyItem(
             info = spaceSummary,
             spaces = children,

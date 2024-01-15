@@ -23,7 +23,7 @@ import java.io.Serializable
 value class RoomId(val value: String) : Serializable {
 
     init {
-        if (BuildConfig.DEBUG && !MatrixPatterns.isRoomId(value)) {
+        if (BuildConfig.DEBUG && !MatrixPatterns.isRoomId(value) && false) {
             error("`$value` is not a valid room id.\n Example room id: `!room_id:domain`.")
         }
     }

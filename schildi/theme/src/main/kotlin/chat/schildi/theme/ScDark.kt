@@ -74,6 +74,8 @@ internal val scdExposures = ScThemeExposures(
     bubbleRadius = 10.dp,
     timestampRadius = 6.dp,
     timestampOverlayBg = ScColors.colorBlackAlpha_80,
+    unreadIndicatorLine = ScColors.colorAccentGreen,
+    unreadIndicatorThickness = 2.dp,
 )
 
 @OptIn(CoreColorToken::class)

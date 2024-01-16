@@ -23,6 +23,8 @@ class ScThemeExposures(
     bubbleRadius: Dp,
     timestampRadius: Dp,
     timestampOverlayBg: Color,
+    unreadIndicatorLine: Color?,
+    unreadIndicatorThickness: Dp,
 ) {
     var isScTheme by mutableStateOf(isScTheme)
         private set
@@ -44,6 +46,10 @@ class ScThemeExposures(
         private set
     var timestampOverlayBg by mutableStateOf(timestampOverlayBg)
         private set
+    var unreadIndicatorLine by mutableStateOf(unreadIndicatorLine)
+        private set
+    var unreadIndicatorThickness by mutableStateOf(unreadIndicatorThickness)
+        private set
 
     fun copy(
         isScTheme: Boolean = this.isScTheme,
@@ -56,6 +62,8 @@ class ScThemeExposures(
         bubbleRadius: Dp = this.bubbleRadius,
         timestampRadius: Dp = this.timestampRadius,
         timestampOverlayBg: Color = this.timestampOverlayBg,
+        unreadIndicatorLine: Color? = this.unreadIndicatorLine,
+        unreadIndicatorThickness: Dp = this.unreadIndicatorThickness,
     ) = ScThemeExposures(
         isScTheme = isScTheme,
         horizontalDividerThickness = horizontalDividerThickness,
@@ -67,6 +75,8 @@ class ScThemeExposures(
         bubbleRadius = bubbleRadius,
         timestampRadius = timestampRadius,
         timestampOverlayBg = timestampOverlayBg,
+        unreadIndicatorLine = unreadIndicatorLine,
+        unreadIndicatorThickness = unreadIndicatorThickness,
     )
 
     fun updateColorsFrom(other: ScThemeExposures) {
@@ -80,6 +90,8 @@ class ScThemeExposures(
         bubbleRadius = other.bubbleRadius
         timestampRadius = other.timestampRadius
         timestampOverlayBg = other.timestampOverlayBg
+        unreadIndicatorLine = other.unreadIndicatorLine
+        unreadIndicatorThickness = other.unreadIndicatorThickness
     }
 }
 
@@ -94,6 +106,8 @@ internal val elementLightScExposures = ScThemeExposures(
     bubbleRadius = 12.dp,
     timestampRadius = 10.0.dp,
     timestampOverlayBg = Color.Magenta, // unused for non-SC themes
+    unreadIndicatorLine = null,
+    unreadIndicatorThickness = 0.5.dp, // like horizontalDividerThickness
 )
 
 internal val elementDarkScExposures = ScThemeExposures(
@@ -107,4 +121,6 @@ internal val elementDarkScExposures = ScThemeExposures(
     bubbleRadius = 12.dp,
     timestampRadius = 10.0.dp,
     timestampOverlayBg = Color.Magenta, // unused for non-SC themes
+    unreadIndicatorLine = null,
+    unreadIndicatorThickness = 0.5.dp, // like horizontalDividerThickness
 )

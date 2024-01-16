@@ -219,13 +219,23 @@ private fun ScUnreadCounter(room: RoomListRoomSummary) {
         modifier = Modifier.background(badgeColor, RoundedCornerShape(30.dp)).sizeIn(minWidth = 24.dp, minHeight = 24.dp)
     ) {
         Text(
-            text = count.toString(),
+            text = formatUnreadCount(count),
             color = ScTheme.exposures.colorOnAccent,
             style = MaterialTheme.typography.bodySmall,
             maxLines = 1,
             textAlign = TextAlign.Center,
             modifier = Modifier.align(Alignment.Center).padding(horizontal = 4.dp)
         )
+    }
+}
+
+private fun formatUnreadCount(count: Int): String {
+    return if (count > 1_000_000) {
+        "%.1fM".format(count / 1_000_000f)
+    } else if (count > 1_000) {
+        "%.1fk".format(count / 1_000f)
+    } else {
+        count.toString()
     }
 }
 

@@ -41,7 +41,12 @@ fun BoxScope.FloatingDateHeader(
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastIndex }.distinctUntilChanged().collect { _ ->
             renderedDate = listState.layoutInfo.visibleItemsInfo.asReversed().firstNotNullOfOrNull { info ->
                 if (info.index >= 0 && info.index < timelineItems.size) {
-                    (timelineItems[info.index] as? TimelineItem.Event)?.sentDate
+                    val item = timelineItems[info.index]
+                    when (item) {
+                        is TimelineItem.Event -> item.sentDate
+                        is TimelineItem.GroupedEvents -> item.events.firstOrNull()?.sentDate
+                        else -> null
+                    }
                 } else {
                     null
                 }

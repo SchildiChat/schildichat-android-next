@@ -131,6 +131,10 @@ private fun SpacesPager(
                     if (selectedSpaceIndex == index) {
                         if (expandSpaceChildren) {
                             expandSpaceChildren = false
+                            // In case we selected a child, need to re-select this space
+                            if (childSelections.isNotEmpty()) {
+                                selectSpace(spacesList[index], parentSelection)
+                            }
                         } else if (space.spaces.isNotEmpty()) {
                             expandSpaceChildren = true
                         }

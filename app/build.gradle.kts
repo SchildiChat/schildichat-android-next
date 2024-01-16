@@ -152,13 +152,28 @@ val scVersion = 0
 android {
     // Use a flavor for common things that the upstream config will not override by the build type
     flavorDimensions += "package"
+    flavorDimensions += "sc-variant"
     productFlavors {
+        // Common upstream overrides across all sc variants - only one flavor for this dimension to ensure it's picked up!
         create("sc") {
             dimension = "package"
-            applicationId = "chat.schildi.next"
             versionCode = 1
             versionName = Versions.versionName + ".sc" + scVersion
             isDefault = true
+        }
+        // SC variants for different release tracks. Cannot do actual release types for those since fdroid build tools always want `release` builds.
+        create("default") {
+            dimension = "sc-variant"
+            applicationId = "chat.schildi.android"
+            isDefault = true
+        }
+        create("beta") {
+            dimension = "sc-variant"
+            applicationId = "chat.schildi.next"
+        }
+        create("internal") {
+            dimension = "sc-variant"
+            applicationId = "chat.schildi.next.internal"
         }
     }
     // Build types to override some more upstream values

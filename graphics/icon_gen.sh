@@ -39,10 +39,10 @@ export_files() {
 dpi=48 # 96/2
 
 file="$mydir/ic_launcher_foreground.svg"
-base_folder="$mydir/../app/src/scRelease/res/mipmap"
-export_files
-base_folder="$mydir/../app/src/scDebug/res/mipmap"
-export_files
+for variant in scBetaDebug scDefaultDebug scInternalRelease scBetaRelease scDefaultRelease; do
+    base_folder="$mydir/../app/src/$variant/res/mipmap"
+    export_files
+done
 file="$mydir/ic_launcher_monochrome.svg"
 base_folder="$mydir/../app/src/sc/res/mipmap"
 export_files
@@ -58,7 +58,7 @@ inkscape "$file" --export-filename="$store_icon.tmp.png" --export-area=36:36:180
 # Read gradient from actual vector drawable
 get_bg_prop() {
     local prop="$1"
-    cat "$mydir/../app/src/scRelease/res/drawable/ic_launcher_background.xml"|grep "$prop"=|sed 's|.*'"$prop"'=\"\([^\"]*\)".*|\1|'
+    cat "$mydir/../app/src/scDefaultRelease/res/drawable/ic_launcher_background.xml"|grep "$prop"=|sed 's|.*'"$prop"'=\"\([^\"]*\)".*|\1|'
 }
 bg_angle=`get_bg_prop angle`
 bg_startColor=`get_bg_prop startColor`

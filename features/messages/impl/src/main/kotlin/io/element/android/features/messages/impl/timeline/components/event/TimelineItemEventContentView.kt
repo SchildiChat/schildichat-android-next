@@ -79,7 +79,7 @@ fun TimelineItemEventContentView(
             content = content,
             modifier = modifier
         )
-        is TimelineItemImageContent -> ScCaptionWrapper(content.caption(), content.isEdited(), extraPadding, onLinkClicked, modifier) { modifier -> TimelineItemImageView(
+        is TimelineItemImageContent -> ScCaptionWrapper(content.caption(), content.isEdited(), onContentLayoutChanged, onLinkClicked, modifier) { modifier -> TimelineItemImageView(
             content = content,
             modifier = modifier,
         )}
@@ -87,7 +87,7 @@ fun TimelineItemEventContentView(
             content = content,
             modifier = modifier,
         )
-        is TimelineItemVideoContent -> ScCaptionWrapper(content.caption(), content.isEdited(), extraPadding, onLinkClicked, modifier) { modifier -> TimelineItemVideoView(
+        is TimelineItemVideoContent -> ScCaptionWrapper(content.caption(), content.isEdited(), onContentLayoutChanged, onLinkClicked, modifier) { modifier -> TimelineItemVideoView(
             content = content,
             modifier = modifier
         )}

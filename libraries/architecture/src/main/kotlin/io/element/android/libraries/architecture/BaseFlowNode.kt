@@ -71,8 +71,8 @@ abstract class BaseFlowNode<NavTarget : Any>(
 @Composable
 inline fun <reified NavTarget : Any> BaseFlowNode<NavTarget>.BackstackView(
     modifier: Modifier = Modifier,
+    transitionHandler: TransitionHandler<NavTarget, BackStack.State> = rememberDefaultTransitionHandler(),
 ) {
-    val transitionHandler: TransitionHandler<NavTarget, BackStack.State> = rememberDefaultTransitionHandler()
     Children(
         modifier = modifier,
         navModel = backstack,

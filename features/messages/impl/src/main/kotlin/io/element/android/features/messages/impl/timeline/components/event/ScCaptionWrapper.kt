@@ -8,13 +8,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import chat.schildi.theme.ScTheme
+import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayoutData
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextContent
 
 @Composable
 fun ScCaptionWrapper(
     caption: String?,
     isEdited: Boolean,
-    extraPadding: ExtraPadding,
+    onContentLayoutChanged: (ContentAvoidingLayoutData) -> Unit,
     onLinkClicked: (url: String) -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable (Modifier) -> Unit,
@@ -32,7 +33,7 @@ fun ScCaptionWrapper(
                     formattedBody = null,
                     isEdited = isEdited,
                 ),
-                extraPadding = extraPadding,
+                onContentLayoutChanged = onContentLayoutChanged,
                 onLinkClicked = onLinkClicked,
                 modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 8.dp),
             )

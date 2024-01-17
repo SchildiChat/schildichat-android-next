@@ -22,14 +22,13 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.dp
-import androidx.core.text.buildSpannedString
 import chat.schildi.lib.preferences.ScPrefs.EL_TYPOGRAPHY
 import chat.schildi.lib.preferences.value
 import io.element.android.compound.theme.ElementTheme
+import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayout
+import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayoutData
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContentProvider
 import io.element.android.libraries.designsystem.preview.ElementPreview
@@ -40,30 +39,24 @@ import io.element.android.wysiwyg.compose.EditorStyledText
 @Composable
 fun TimelineItemTextView(
     content: TimelineItemTextBasedContent,
-    extraPadding: ExtraPadding,
     onLinkClicked: (String) -> Unit,
     modifier: Modifier = Modifier,
+    onContentLayoutChanged: (ContentAvoidingLayoutData) -> Unit = {},
 ) {
     CompositionLocalProvider(
         LocalContentColor provides ElementTheme.colors.textPrimary,
         LocalTextStyle provides if (EL_TYPOGRAPHY.value()) ElementTheme.typography.fontBodyLgRegular else ElementTheme.typography.fontBodyMdRegular
     ) {
-
         val formattedBody = content.formattedBody
         val body = SpannableString(formattedBody ?: content.body)
-        val extraPaddingText = extraPadding.getStr()
 
         Box(modifier) {
-            val textWithPadding = remember(body, extraPaddingText) {
-                buildSpannedString {
-                    append(body)
-                    append(extraPaddingText)
-                }
-            }
             EditorStyledText(
-                text = textWithPadding,
+                text = body,
                 onLinkClickedListener = onLinkClicked,
                 style = ElementRichTextEditorStyle.textStyle(),
+                onTextLayout = ContentAvoidingLayout.measureLegacyLastTextLine(onContentLayoutChanged = onContentLayoutChanged),
+                releaseOnDetach = false,
             )
         }
     }
@@ -76,7 +69,6 @@ internal fun TimelineItemTextViewPreview(
 ) = ElementPreview {
     TimelineItemTextView(
         content = content,
-        extraPadding = ExtraPadding(extraWidth = 32.dp),
         onLinkClicked = {},
     )
 }

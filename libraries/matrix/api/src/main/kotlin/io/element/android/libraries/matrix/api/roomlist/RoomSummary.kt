@@ -47,4 +47,5 @@ data class RoomSummaryDetails(
     val inviter: RoomMember? = null,
     val notificationMode: RoomNotificationMode? = null,
     val hasOngoingCall: Boolean = false,
+    val isDm: Boolean = false,
 )

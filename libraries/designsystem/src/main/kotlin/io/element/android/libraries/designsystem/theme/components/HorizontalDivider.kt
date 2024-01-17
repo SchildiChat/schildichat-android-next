@@ -54,11 +54,6 @@ object ElementDividerDefaults {
 @Composable
 internal fun HorizontalDividerPreview() = ElementThemedPreview {
     Box(Modifier.padding(vertical = 10.dp), contentAlignment = Alignment.Center) {
-        ContentToPreview()
+        HorizontalDivider()
     }
-}
-
-@Composable
-private fun ContentToPreview() {
-    HorizontalDivider()
 }

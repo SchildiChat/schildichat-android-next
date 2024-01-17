@@ -81,7 +81,7 @@ fun TimelineItem.Event.toExtraPadding(): ExtraPadding {
 private fun TextMeasurer.getExtraPadding(text: String, density: Density, timestampTextStyle: TextStyle): Dp {
     //val timestampTextStyle = ElementTheme.typography.fontBodyXsRegular
     val textWidth = measure(text = text, style = timestampTextStyle).size.width
-    return (textWidth/density.density).dp
+    return (textWidth / density.density).dp
 }
 
 /**

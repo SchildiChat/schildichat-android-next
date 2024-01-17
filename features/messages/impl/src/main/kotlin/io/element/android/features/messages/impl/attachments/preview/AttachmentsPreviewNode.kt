@@ -37,7 +37,6 @@ class AttachmentsPreviewNode @AssistedInject constructor(
     @Assisted plugins: List<Plugin>,
     presenterFactory: AttachmentsPreviewPresenter.Factory,
 ) : Node(buildContext, plugins = plugins) {
-
     data class Inputs(val attachment: Attachment) : NodeInputs
 
     private val inputs: Inputs = inputs()

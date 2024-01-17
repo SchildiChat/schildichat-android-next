@@ -26,7 +26,6 @@ data class AvatarData(
     val size: AvatarSize,
     val powerLevel: Long? = null,
 ) {
-
     val initial by lazy {
         (name?.takeIf { it.isNotBlank() } ?: id)
             .let { dn ->

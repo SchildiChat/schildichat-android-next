@@ -37,4 +37,5 @@ data class RoomListRoomSummary(
     val isPlaceholder: Boolean = false,
     val notificationMode: RoomNotificationMode? = null,
     val hasOngoingCall: Boolean = false,
+    val isDm: Boolean = false,
 )

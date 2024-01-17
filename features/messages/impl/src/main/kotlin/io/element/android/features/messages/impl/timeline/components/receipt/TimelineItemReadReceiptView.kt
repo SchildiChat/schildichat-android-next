@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import chat.schildi.theme.ScTheme
 import io.element.android.appconfig.TimelineConfig
+import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.messages.impl.timeline.model.ReadReceiptData
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
@@ -51,7 +52,6 @@ import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.utils.CommonDrawables
 import io.element.android.libraries.matrix.api.timeline.item.event.LocalEventSendState
-import io.element.android.compound.theme.ElementTheme
 import io.element.android.libraries.ui.strings.CommonPlurals
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.ImmutableList
@@ -59,51 +59,50 @@ import kotlinx.collections.immutable.ImmutableList
 @Composable
 fun TimelineItemReadReceiptView(
     state: ReadReceiptViewState,
-    showReadReceipts: Boolean,
     onReadReceiptsClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (state.receipts.isNotEmpty()) {
-        if (showReadReceipts) {
-            ReadReceiptsRow(modifier = modifier) {
-                ReadReceiptsAvatars(
-                    receipts = state.receipts,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(4.dp))
-                        .clickable {
-                            onReadReceiptsClicked()
-                        }
-                        .padding(2.dp)
-                )
-            }
+        ReadReceiptsRow(modifier = modifier) {
+            ReadReceiptsAvatars(
+                receipts = state.receipts,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(4.dp))
+                    .clickable {
+                        onReadReceiptsClicked()
+                    }
+                    .padding(2.dp)
+            )
         }
     } else if (ScTheme.scTimeline) {
         // Nothing
-    } else when (state.sendState) {
-        LocalEventSendState.NotSentYet -> {
-            ReadReceiptsRow(modifier) {
-                Icon(
-                    modifier = Modifier.padding(2.dp),
-                    resourceId = CommonDrawables.ic_sending,
-                    contentDescription = stringResource(id = CommonStrings.common_sending),
-                    tint = ElementTheme.colors.iconSecondary
-                )
-            }
-        }
-        LocalEventSendState.Canceled -> Unit
-        is LocalEventSendState.SendingFailed -> {
-            // Error? The timestamp is already displayed in red
-        }
-        null,
-        is LocalEventSendState.Sent -> {
-            if (state.isLastOutgoingMessage) {
-                ReadReceiptsRow(modifier = modifier) {
+    } else {
+        when (state.sendState) {
+            LocalEventSendState.NotSentYet -> {
+                ReadReceiptsRow(modifier) {
                     Icon(
                         modifier = Modifier.padding(2.dp),
-                        resourceId = CommonDrawables.ic_sent,
-                        contentDescription = stringResource(id = CommonStrings.common_sent),
+                        resourceId = CommonDrawables.ic_sending,
+                        contentDescription = stringResource(id = CommonStrings.common_sending),
                         tint = ElementTheme.colors.iconSecondary
                     )
+                }
+            }
+            LocalEventSendState.Canceled -> Unit
+            is LocalEventSendState.SendingFailed -> {
+                // Error? The timestamp is already displayed in red
+            }
+            null,
+            is LocalEventSendState.Sent -> {
+                if (state.isLastOutgoingMessage) {
+                    ReadReceiptsRow(modifier = modifier) {
+                        Icon(
+                            modifier = Modifier.padding(2.dp),
+                            resourceId = CommonDrawables.ic_sent,
+                            contentDescription = stringResource(id = CommonStrings.common_sent),
+                            tint = ElementTheme.colors.iconSecondary
+                        )
+                    }
                 }
             }
         }
@@ -153,7 +152,7 @@ private fun ReadReceiptsAvatars(
             contentAlignment = Alignment.CenterEnd,
         ) {
             receipts
-                .take(TimelineConfig.maxReadReceiptToDisplay)
+                .take(TimelineConfig.MAX_READ_RECEIPT_TO_DISPLAY)
                 .reversed()
                 .forEachIndexed { index, readReceiptData ->
                     Box(
@@ -171,9 +170,9 @@ private fun ReadReceiptsAvatars(
                     }
                 }
         }
-        if (receipts.size > TimelineConfig.maxReadReceiptToDisplay) {
+        if (receipts.size > TimelineConfig.MAX_READ_RECEIPT_TO_DISPLAY) {
             Text(
-                text = "+" + (receipts.size - TimelineConfig.maxReadReceiptToDisplay),
+                text = "+" + (receipts.size - TimelineConfig.MAX_READ_RECEIPT_TO_DISPLAY),
                 style = ElementTheme.typography.fontBodyXsRegular,
                 color = ElementTheme.colors.textSecondary,
             )
@@ -210,7 +209,6 @@ internal fun TimelineItemReactionsViewPreview(
 ) = ElementPreview {
     TimelineItemReadReceiptView(
         state = state,
-        showReadReceipts = true,
         onReadReceiptsClicked = {},
     )
 }

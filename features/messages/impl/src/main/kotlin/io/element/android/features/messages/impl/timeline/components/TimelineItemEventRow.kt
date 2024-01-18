@@ -316,6 +316,7 @@ private fun TimelineItemEventRowContent(
             groupPosition = event.groupPosition,
             isMine = event.isMine,
             isHighlighted = isHighlighted,
+            scIsBgLess = event.isSticker,
             timelineRoomInfo = timelineRoomInfo,
         )
         MessageEventBubble(

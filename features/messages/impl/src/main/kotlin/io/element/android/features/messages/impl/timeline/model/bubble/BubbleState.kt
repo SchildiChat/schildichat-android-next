@@ -23,5 +23,6 @@ data class BubbleState(
     val groupPosition: TimelineItemGroupPosition,
     val isMine: Boolean,
     val isHighlighted: Boolean,
+    val scIsBgLess: Boolean = false,
     val timelineRoomInfo: TimelineRoomInfo,
 )

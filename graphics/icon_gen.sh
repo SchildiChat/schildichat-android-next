@@ -8,18 +8,27 @@ mydir="$(dirname "$(realpath "$0")")"
 
 extension=".png"
 
+# In order to convert adaptive icon foreground to regular icon,
+# reduce export area by 2/3
+non_adaptive_area="36:36:180:180"
+
 export_files() {
     newfile="$(basename "$file" .svg)$extension"
+    export_files_custom "$newfile" -C "$@"
+}
+export_files_custom() {
+    newfile="$1"
+    shift
     mkdir -p $base_folder-mdpi
     mkdir -p $base_folder-hdpi
     mkdir -p $base_folder-xhdpi
     mkdir -p $base_folder-xxhdpi
     mkdir -p $base_folder-xxxhdpi
-    inkscape "$file" --export-filename="$base_folder-mdpi/$newfile" -C --export-dpi=$dpi
-    inkscape "$file" --export-filename="$base_folder-hdpi/$newfile" -C --export-dpi=$(($dpi*3/2))
-    inkscape "$file" --export-filename="$base_folder-xhdpi/$newfile" -C --export-dpi=$(($dpi*2))
-    inkscape "$file" --export-filename="$base_folder-xxhdpi/$newfile" -C --export-dpi=$(($dpi*3))
-    inkscape "$file" --export-filename="$base_folder-xxxhdpi/$newfile" -C --export-dpi=$(($dpi*4))
+    inkscape "$file" --export-filename="$base_folder-mdpi/$newfile" --export-dpi=$dpi "$@"
+    inkscape "$file" --export-filename="$base_folder-hdpi/$newfile" --export-dpi=$(($dpi*3/2)) "$@"
+    inkscape "$file" --export-filename="$base_folder-xhdpi/$newfile" --export-dpi=$(($dpi*2)) "$@"
+    inkscape "$file" --export-filename="$base_folder-xxhdpi/$newfile" --export-dpi=$(($dpi*3)) "$@"
+    inkscape "$file" --export-filename="$base_folder-xxxhdpi/$newfile" --export-dpi=$(($dpi*4)) "$@"
 }
 
 
@@ -43,9 +52,13 @@ for variant in scBetaDebug scDefaultDebug scInternalRelease scBetaRelease scDefa
     base_folder="$mydir/../app/src/$variant/res/mipmap"
     export_files
 done
-file="$mydir/ic_launcher_monochrome.svg"
+# Monochrome and non-adaptive icons aren't handled per release type upstream, so suffices to overwrite once here
 base_folder="$mydir/../app/src/sc/res/mipmap"
+file="$mydir/ic_launcher_monochrome.svg"
 export_files
+file="$mydir/ic_launcher_foreground.svg"
+dpi=32
+export_files_custom "ic_launcher.png" --export-area="$non_adaptive_area"
 
 
 # Store icon:
@@ -54,7 +67,7 @@ export_files
 # - apply background manually with imagemagick
 file="$mydir/ic_launcher_foreground.svg"
 store_icon="$mydir/../.fastlane/metadata/android/en-US/images/icon.png"
-inkscape "$file" --export-filename="$store_icon.tmp.png" --export-area=36:36:180:180 -w 512 -h 512
+inkscape "$file" --export-filename="$store_icon.tmp.png" --export-area="$non_adaptive_area" -w 512 -h 512
 # Read gradient from actual vector drawable
 get_bg_prop() {
     local prop="$1"

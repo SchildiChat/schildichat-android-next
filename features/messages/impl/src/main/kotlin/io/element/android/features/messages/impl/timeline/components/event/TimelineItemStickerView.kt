@@ -19,6 +19,7 @@ package io.element.android.features.messages.impl.timeline.components.event
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,7 +32,7 @@ import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.matrix.ui.media.MediaRequestData
 
-private const val STICKER_SIZE_IN_DP = 128
+//private const val STICKER_SIZE_IN_DP = 120
 private const val DEFAULT_ASPECT_RATIO = 1.33f
 
 @Composable
@@ -42,7 +43,8 @@ fun TimelineItemStickerView(
     val safeAspectRatio = content.aspectRatio ?: DEFAULT_ASPECT_RATIO
     Box(
         modifier = modifier
-            .heightIn(min = STICKER_SIZE_IN_DP.dp, max = STICKER_SIZE_IN_DP.dp)
+            .heightIn(min = 120.dp, max = 192.dp)
+            .widthIn(max = 216.dp)
             .aspectRatio(safeAspectRatio, false),
         contentAlignment = Alignment.TopStart,
     ) {

@@ -27,6 +27,7 @@ import io.element.android.libraries.dateformatter.api.LastMessageTimestampFormat
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.eventformatter.api.RoomLastMessageFormatter
+import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.notificationsettings.NotificationSettingsService
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
@@ -51,6 +52,7 @@ import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 class RoomListDataSource @Inject constructor(
+    private val client: MatrixClient,
     private val roomListService: RoomListService,
     private val lastMessageTimestampFormatter: LastMessageTimestampFormatter,
     private val roomLastMessageFormatter: RoomLastMessageFormatter,
@@ -132,6 +134,10 @@ class RoomListDataSource @Inject constructor(
                 }
                 spaceList = space!!.spaces
             }
+            // Tell SDK we filter the sliding sync window by spaces
+            space?.let {
+                client.roomListService.updateVisibleSpaces(it.flattenedSpaces)
+            }
             return@combine Pair(space?.flattenedRooms, true)
         }
             .onEach { (roomIds, spaceFound) ->
@@ -148,6 +154,7 @@ class RoomListDataSource @Inject constructor(
             _spaceChildFilter,
             _allRooms
         ) { filterValue, allRoomsValue ->
+            // Do the actual filtering
             when (filterValue) {
                 null -> allRoomsValue
                 else -> allRoomsValue.filter { filterValue.contains(it.roomId.value) }

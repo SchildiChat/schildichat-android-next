@@ -59,7 +59,9 @@ interface RoomListService {
      * Will set the visible range of all rooms.
      * This is useful to load more data when the user scrolls down.
      */
-    fun updateAllRoomsVisibleRange(range: IntRange)
+    fun updateAllRoomsVisibleRange(range: IntRange, withSpaceFilter: Boolean)
+
+    fun updateVisibleSpaces(spaces: List<String>?)
 
     /**
      * The sync indicator as a flow.

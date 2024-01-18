@@ -78,9 +78,11 @@ class FakeRoomListService : RoomListService {
         MutableStateFlow(DynamicRoomList.Filter.None)
     )
 
-    override fun updateAllRoomsVisibleRange(range: IntRange) {
+    override fun updateAllRoomsVisibleRange(range: IntRange, withSpaceFilter: Boolean) {
         latestSlidingSyncRange = range
     }
+
+    override fun updateVisibleSpaces(spaces: List<String>?) {}
 
     override val state: StateFlow<RoomListService.State> = roomListStateFlow
 

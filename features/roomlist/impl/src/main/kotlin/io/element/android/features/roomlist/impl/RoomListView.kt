@@ -168,10 +168,11 @@ private fun RoomListContent(
         msg = "Content"
     )
 
-    val nestedScrollConnection = remember {
+    val withSpaceFilter = state.spaceSelectionHierarchy.isNotEmpty()
+    val nestedScrollConnection = remember(withSpaceFilter) {
         object : NestedScrollConnection {
             override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-                state.eventSink(RoomListEvents.UpdateVisibleRange(visibleRange))
+                state.eventSink(RoomListEvents.UpdateVisibleRange(visibleRange, withSpaceFilter))
                 return super.onPostFling(consumed, available)
             }
         }

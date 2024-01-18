@@ -67,16 +67,31 @@ internal class RustRoomListService(
         allRooms.loadAllIncrementally(sessionCoroutineScope)
     }
 
-    override fun updateAllRoomsVisibleRange(range: IntRange) {
-        Timber.v("setVisibleRange=$range")
+    override fun updateAllRoomsVisibleRange(range: IntRange, withSpaceFilter: Boolean) {
+        Timber.v("setVisibleRange=$range withSpaceFilter=$withSpaceFilter")
         sessionCoroutineScope.launch {
             try {
                 val ranges = listOf(RoomListRange(range.first.toUInt(), range.last.toUInt()))
+                if (withSpaceFilter) {
+                    innerRoomListService.applyInputForSpace(RoomListInput.Viewport(ranges))
+                    return@launch
+                }
                 innerRoomListService.applyInput(
                     RoomListInput.Viewport(ranges)
                 )
             } catch (exception: RoomListException) {
-                Timber.e(exception, "Failed updating visible range")
+                Timber.e(exception, "Failed updating visible range, forSpace=$withSpaceFilter")
+            }
+        }
+    }
+
+    override fun updateVisibleSpaces(spaces: List<String>?) {
+        Timber.v("updateVisibleSpaces=${spaces?.size}")
+        sessionCoroutineScope.launch {
+            try {
+                innerRoomListService.applyVisibleSpaceFilter(spaces)
+            } catch (exception: RoomListException) {
+                Timber.e(exception, "Failed updating visible spaces")
             }
         }
     }

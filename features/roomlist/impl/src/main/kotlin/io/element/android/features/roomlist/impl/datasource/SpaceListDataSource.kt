@@ -149,13 +149,13 @@ class SpaceListDataSource @Inject constructor(
             info = spaceSummary,
             spaces = children,
             flattenedRooms = (
-                // All direct space children
+                // All direct children rooms
                 regularChildren[spaceSummary.id].orEmpty()
-                    // All direct space children spaces - actually not needed/wanted here
-                    //+ hierarchy[spaceSummary.id].orEmpty().map {it.roomId.value} +
-                    // All indirect space children
+                    // All indirect children rooms
                     + children.flatMap { it.flattenedRooms }
             ).toImmutableList(),
+            // This and all children spaces
+            flattenedSpaces = (listOf(spaceSummary.roomId.value) + children.flatMap { it.flattenedSpaces }).toImmutableList()
         )
     }
 
@@ -199,5 +199,6 @@ class SpaceListDataSource @Inject constructor(
         val info: RoomListRoomSummary,
         val spaces: ImmutableList<SpaceHierarchyItem>,
         val flattenedRooms: ImmutableList<String>,
+        val flattenedSpaces: ImmutableList<String>,
     )
 }

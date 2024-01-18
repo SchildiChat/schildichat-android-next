@@ -77,9 +77,10 @@ class RoomListPresenter @Inject constructor(
         val matrixUser: MutableState<MatrixUser?> = rememberSaveable {
             mutableStateOf(null)
         }
-        val roomList by (if (ScPrefs.SPACE_NAV.value()) roomListDataSource.spaceRooms else roomListDataSource.allRooms).collectAsState()
-        val spacesList by spaceListDataSource.allSpaces.collectAsState()
-        val spaceSelectionHierarchy by roomListDataSource.spaceSelectionHierarchy.collectAsState()
+        val spaceNavEnabled = ScPrefs.SPACE_NAV.value()
+        val roomList by (if (spaceNavEnabled) roomListDataSource.spaceRooms else roomListDataSource.allRooms).collectAsState()
+        val spacesList = if (spaceNavEnabled) spaceListDataSource.allSpaces.collectAsState().value else null
+        val spaceSelectionHierarchy = if (spaceNavEnabled) roomListDataSource.spaceSelectionHierarchy.collectAsState().value else persistentListOf()
         val filteredRoomList by roomListDataSource.filteredRooms.collectAsState()
         val filter by roomListDataSource.filter.collectAsState()
         val networkConnectionStatus by networkMonitor.connectivity.collectAsState()
@@ -122,7 +123,7 @@ class RoomListPresenter @Inject constructor(
             when (event) {
                 is RoomListEvents.UpdateFilter -> roomListDataSource.updateFilter(event.newFilter)
                 is RoomListEvents.UpdateSpaceFilter -> { roomListDataSource.updateSpaceSelection(event.spaceSelectionHierarchy.toImmutableList()) }
-                is RoomListEvents.UpdateVisibleRange -> updateVisibleRange(event.range)
+                is RoomListEvents.UpdateVisibleRange -> updateVisibleRange(event.range, event.withSpaceFilter)
                 RoomListEvents.DismissRequestVerificationPrompt -> verificationPromptDismissed = true
                 RoomListEvents.DismissRecoveryKeyPrompt -> recoveryKeyPromptDismissed = true
                 RoomListEvents.ToggleSearchResults -> {
@@ -169,13 +170,13 @@ class RoomListPresenter @Inject constructor(
         matrixUser.value = client.getCurrentUser()
     }
 
-    private fun updateVisibleRange(range: IntRange) {
+    private fun updateVisibleRange(range: IntRange, withSpaceFilter: Boolean) {
         if (range.isEmpty()) return
         val midExtendedRangeSize = EXTENDED_RANGE_SIZE / 2
         val extendedRangeStart = (range.first - midExtendedRangeSize).coerceAtLeast(0)
         // Safe to give bigger size than room list
         val extendedRangeEnd = range.last + midExtendedRangeSize
         val extendedRange = IntRange(extendedRangeStart, extendedRangeEnd)
-        client.roomListService.updateAllRoomsVisibleRange(extendedRange)
+        client.roomListService.updateAllRoomsVisibleRange(extendedRange, withSpaceFilter)
     }
 }

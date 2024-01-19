@@ -143,7 +143,7 @@ git_changelog() {
         | grep -v "Disable Android Auto supports" \
         | grep -v "Switch to alternative Schil" \
         | grep -v "\\[gplay-release\\]" \
-        || echo "No significant changes since the last stable release"
+        || echo "No significant changes since the last release"
 }
 
 changelog_dir=.fastlane/metadata/android/en-US/changelogs

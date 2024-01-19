@@ -117,7 +117,7 @@ private fun SpacesPager(
             if (defaultSpace != null) {
                 SpaceTab(defaultSpace, selectedTab == 0, expandSpaceChildren, false) {
                     expandSpaceChildren = false
-                    selectSpace(defaultSpace, parentSelection)
+                    selectSpace(null, parentSelection)
                 }
             } else {
                 ShowAllTab(selected = selectedTab == 0, expandSpaceChildren) {

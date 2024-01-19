@@ -8,6 +8,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Schildi theme with more neutral colors and some design tweaks †
 - Schildi layout tweaks †
 - Faster screen transitions †
+- Show avatar placeholders instead of blank space for avatars that failed to load
 - App icon & branding ⸸
 
 

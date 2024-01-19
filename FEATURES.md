@@ -16,7 +16,6 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Sort room list by unread first ‡
 - Non-expanding compact app bar in the chat overview †
 - Show unread counts ([MSC2654](https://github.com/matrix-org/matrix-spec-proposals/pull/2654)) ‡[^1]
-- Filter for spaces, including support for hierarchical spaces †‡
 
 
 ## Conversation screen
@@ -24,10 +23,12 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Floating date header while scrolling †
 - Render media captions ([MSC2530](https://github.com/matrix-org/matrix-spec-proposals/pull/2530)) ‡
 - Bigger stickers
+- Differentiate notices from normal text messages by adding some transparency
 
 
 ## Experimental/unstable features
 
+- Filter for spaces, including support for hierarchical spaces †‡
 - Color usernames in rooms by member powerlevel †
 
 

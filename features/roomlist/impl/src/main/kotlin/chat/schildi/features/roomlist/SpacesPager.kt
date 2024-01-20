@@ -17,20 +17,26 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import chat.schildi.lib.preferences.ScAppStateStore
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import io.element.android.features.roomlist.impl.R
+import io.element.android.features.roomlist.impl.datasource.RoomListDataSource
 import io.element.android.features.roomlist.impl.datasource.SpaceListDataSource
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
+import io.element.android.libraries.designsystem.utils.OnLifecycleEvent
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 private val SpaceAvatarSize = AvatarSize.BottomSpaceBar
@@ -170,7 +176,9 @@ private fun AbstractSpaceTab(
                     Icon(
                         imageVector = Icons.Outlined.ChevronRight,
                         contentDescription = null,
-                        modifier = Modifier.size(12.dp).align(Alignment.CenterVertically),
+                        modifier = Modifier
+                            .size(12.dp)
+                            .align(Alignment.CenterVertically),
                         tint = color,
                     )
                 }
@@ -204,5 +212,16 @@ private fun ShowAllTab(selected: Boolean, collapsed: Boolean, onClick: () -> Uni
             modifier = Modifier.size(SpaceAvatarSize.dp),
             tint = MaterialTheme.colorScheme.primary,
         )
+    }
+}
+
+@Composable
+fun PersistSpaceOnPause(scAppStateStore: ScAppStateStore, roomListDataSource: RoomListDataSource) {
+    val scope = rememberCoroutineScope()
+    OnLifecycleEvent { _, event ->
+        when (event) {
+            Lifecycle.Event.ON_PAUSE -> roomListDataSource.spaceSelectionHierarchy.value?.let { scope.launch { scAppStateStore.persistSpaceSelection(it) } }
+            else -> Unit
+        }
     }
 }

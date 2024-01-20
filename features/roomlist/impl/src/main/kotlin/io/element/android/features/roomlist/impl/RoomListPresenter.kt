@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import chat.schildi.features.roomlist.PersistSpaceOnPause
 import chat.schildi.lib.preferences.ScAppStateStore
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
@@ -89,6 +90,7 @@ class RoomListPresenter @Inject constructor(
             roomListDataSource.launchIn(this, spaceListDataSource, scAppStateStore)
             initialLoad(matrixUser)
         }
+        PersistSpaceOnPause(scAppStateStore, roomListDataSource)
 
         // Session verification status (unknown, not verified, verified)
         val canVerifySession by sessionVerificationService.canVerifySessionFlow.collectAsState(initial = false)

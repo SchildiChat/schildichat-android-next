@@ -35,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -67,6 +68,7 @@ import io.element.android.libraries.designsystem.utils.LogCompositions
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarHost
 import io.element.android.libraries.designsystem.utils.snackbar.rememberSnackbarHostState
 import io.element.android.libraries.matrix.api.core.RoomId
+import kotlinx.coroutines.launch
 
 @Composable
 fun RoomListView(
@@ -177,6 +179,8 @@ private fun RoomListContent(
 
     val snackbarHostState = rememberSnackbarHostState(snackbarMessage = state.snackbarMessage)
 
+    val coroutineScope = rememberCoroutineScope()
+
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -195,7 +199,10 @@ private fun RoomListContent(
         content = { padding ->
             SpacesPager(
                 spacesList = state.spacesList,
-                onSpaceSelected = { selection -> state.eventSink(RoomListEvents.UpdateSpaceFilter(selection)) },
+                onSpaceSelected = { selection ->
+                    state.eventSink(RoomListEvents.UpdateSpaceFilter(selection))
+                    coroutineScope.launch { lazyListState.scrollToItem(0) }
+                                  },
                 spaceSelectionHierarchy = state.spaceSelectionHierarchy,
                 modifier = Modifier.padding(padding).consumeWindowInsets(padding)) { modifier ->
             LazyColumn(

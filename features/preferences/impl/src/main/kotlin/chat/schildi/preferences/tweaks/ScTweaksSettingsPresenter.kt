@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class ScTweaksSettingsPresenter @AssistedInject constructor(
-    preferencesStore: PreferencesStore,
+    private val preferencesStore: PreferencesStore,
     @Assisted prefScreen: ScPrefScreen?,
 ) : Presenter<ScTweaksSettingsState> {
 

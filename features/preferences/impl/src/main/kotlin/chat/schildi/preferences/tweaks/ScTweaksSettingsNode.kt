@@ -42,7 +42,7 @@ class ScTweaksSettingsNode @AssistedInject constructor(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
     presenterFactory: ScTweaksSettingsPresenter.Factory,
-    preferencesStore: PreferencesStore,
+    private val preferencesStore: PreferencesStore,
     private val appCoroutineScope: CoroutineScope,
 ) : Node(buildContext, plugins = plugins) {
 
@@ -79,9 +79,17 @@ class ScTweaksSettingsNode @AssistedInject constructor(
 
     private fun handleScPrefAction(key: String) {
         when (key) {
-            ScPrefs.SC_RESTORE_DEFAULTS.key -> batchSetScPrefs { it.defaultValue }
-            ScPrefs.SC_RESTORE_UPSTREAM.key -> batchSetScPrefs { it.upstreamChoice }
-            ScPrefs.SC_RESTORE_AUTHORS_CHOICE.key -> batchSetScPrefs { it.authorsChoice ?: it.defaultValue }
+            ScPrefs.SC_RESTORE_DEFAULTS.key -> {
+                batchSetScPrefs { it.defaultValue }
+                setUpstreamSettingsToPreset(false)
+            }
+            ScPrefs.SC_RESTORE_UPSTREAM.key -> {
+                batchSetScPrefs { it.upstreamChoice }
+            }
+            ScPrefs.SC_RESTORE_AUTHORS_CHOICE.key -> {
+                batchSetScPrefs { it.authorsChoice ?: it.defaultValue }
+                setUpstreamSettingsToPreset(true)
+            }
             else -> Timber.e("Unhandled actionable pref $key")
         }
     }
@@ -94,5 +102,10 @@ class ScTweaksSettingsNode @AssistedInject constructor(
                 }
             }
         }
+    }
+
+    private fun setUpstreamSettingsToPreset(authorsChoice: Boolean) = appCoroutineScope.launch {
+        // "View source" setting
+        preferencesStore.setDeveloperModeEnabled(authorsChoice)
     }
 }

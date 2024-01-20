@@ -52,7 +52,7 @@ class OnBoardingNode @AssistedInject constructor(
     @Composable
     override fun View(modifier: Modifier) {
         val state = presenter.present()
-        OnBoardingView(
+        ScOnBoardingView(
             state = state,
             modifier = modifier,
             onSignIn = ::onSignIn,

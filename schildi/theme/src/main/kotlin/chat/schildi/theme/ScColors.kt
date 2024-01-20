@@ -42,3 +42,18 @@ object ScPowerLevelColors {
     val pl_0 = Color(0xff8bc34a)
     val pl_null = pl_0
 }
+
+object ScBrandingColors {
+    val onboardingGradientLight = listOf(
+        //Color(0xffE3F2FD), Color(0xff90CAF9)
+        Color(0xffffffff), Color(0xffe2f0d2)
+    )
+    val onboardingGradientDark = listOf(
+        Color(0xff0a5c7c), Color(0xff001a2a)
+    )
+    val onboardingIconBgColors = listOf(
+        Color(0xff0a5c7c), Color(0xff001a2a)
+        //Color(0xff0D47A1), Color(0xff06234f)
+    )
+    val onboardingLogoOutlineDark = ScColors.colorWhiteAlpha_b3
+}

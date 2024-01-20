@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Onboarding -->
+    <string name="sc_onboarding_welcome_title">Welcome to SchildiChat</string>
+    <string name="sc_onboarding_welcome_summary">Bringing turtles into the Matrix</string>
+
     <!-- SchildiChat settings -->
     <string name="sc_pref_tweaks_title">Turtle tweaks</string>
     <string name="sc_pref_sc_themes_title">SC theme</string>

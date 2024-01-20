@@ -34,7 +34,7 @@ class AndroidWelcomeScreenState @Inject constructor(
     }
 
     override fun isWelcomeScreenNeeded(): Boolean {
-        return sharedPreferences.getBoolean(IS_WELCOME_SCREEN_SHOWN, false).not()
+        return false// sharedPreferences.getBoolean(IS_WELCOME_SCREEN_SHOWN, false).not()
     }
 
     override fun setWelcomeScreenShown() {

@@ -35,6 +35,7 @@ android {
     }
 
     dependencies {
+        implementation(projects.schildi.lib)
         implementation(projects.schildi.theme)
         api(libs.compound)
         // Should not be there, but this is a POC

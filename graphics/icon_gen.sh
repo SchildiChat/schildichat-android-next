@@ -59,6 +59,9 @@ export_files
 file="$mydir/ic_launcher_foreground.svg"
 dpi=32
 export_files_custom "ic_launcher.png" --export-area="$non_adaptive_area"
+dpi=96
+base_folder="$mydir/../schildi/lib/src/main/res/drawable"
+export_files_custom "sc_logo_atom.png" --export-area="$non_adaptive_area"
 
 
 # Store icon:

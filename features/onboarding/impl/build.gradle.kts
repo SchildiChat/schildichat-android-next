@@ -30,6 +30,7 @@ anvil {
 }
 
 dependencies {
+    implementation(projects.schildi.lib)
     implementation(projects.anvilannotations)
     anvil(projects.anvilcodegen)
     implementation(projects.libraries.core)

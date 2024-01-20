@@ -115,7 +115,9 @@ import io.element.android.libraries.matrix.ui.components.AttachmentThumbnail
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.coroutines.launch
 import kotlin.math.abs
+import kotlin.math.min
 import kotlin.math.roundToInt
+import kotlin.math.sign
 
 @Composable
 fun TimelineItemEventRow(
@@ -164,7 +166,8 @@ fun TimelineItemEventRow(
         val canReply = timelineRoomInfo.userHasPermissionToSendMessage && event.content.canBeRepliedTo()
         if (canReply) {
             val state: SwipeableActionsState = rememberSwipeableActionsState()
-            val offset = state.offset.floatValue
+            val maxOffset = 90.dp.toPx()
+            val offset = state.offset.floatValue.let { it.sign * min(abs(it), maxOffset) }
             val swipeThresholdPx = 40.dp.toPx()
             val thresholdCrossed = abs(offset) > swipeThresholdPx
             SwipeSensitivity(3f) {

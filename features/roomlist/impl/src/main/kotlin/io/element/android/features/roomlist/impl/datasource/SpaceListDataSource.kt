@@ -133,11 +133,15 @@ class SpaceListDataSource @Inject constructor(
         }
 
         // Build the actual immutable recursive data structures that replicate the hierarchy
-        return rootSpaces.map { createSpaceHierarchyItem(it, spaceHierarchyMap, regularChildren) }.toImmutableList()
+        return rootSpaces.map {
+            val order = client.getRoom(it.roomId)?.rootSpaceOrder
+            createSpaceHierarchyItem(it, order, spaceHierarchyMap, regularChildren)
+        }.sortedWith(SpaceComparator).toImmutableList()
     }
 
     private fun createSpaceHierarchyItem(
         spaceSummary: RoomListRoomSummary,
+        order: String?,
         hierarchy: HashMap<String, MutableList<RoomListRoomSummary>>,
         regularChildren: HashMap<String, MutableList<String>>,
         forbiddenChildren: List<String> = emptyList(),
@@ -147,11 +151,12 @@ class SpaceListDataSource @Inject constructor(
                 Timber.w("Detected space loop: ${spaceSummary.id} -> ${it.roomId.value}")
                 null
             } else {
-                createSpaceHierarchyItem(it, hierarchy, regularChildren, forbiddenChildren + listOf(spaceSummary.roomId.value))
+                createSpaceHierarchyItem(it, null, hierarchy, regularChildren, forbiddenChildren + listOf(spaceSummary.roomId.value))
             }
-        }?.sortedBy{ it.info.name }?.toImmutableList() ?: persistentListOf()
+        }?.sortedWith(SpaceComparator)?.toImmutableList() ?: persistentListOf()
         return SpaceHierarchyItem(
             info = spaceSummary,
+            order = order,
             spaces = children,
             flattenedRooms = (
                 // All direct children rooms
@@ -202,6 +207,7 @@ class SpaceListDataSource @Inject constructor(
     @Immutable
     data class SpaceHierarchyItem(
         val info: RoomListRoomSummary,
+        val order: String?,
         val spaces: ImmutableList<SpaceHierarchyItem>,
         val flattenedRooms: ImmutableList<String>,
         val flattenedSpaces: ImmutableList<String>,

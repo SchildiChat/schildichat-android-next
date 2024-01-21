@@ -37,6 +37,7 @@ anvil {
 
 dependencies {
     implementation(projects.schildi.lib)
+    implementation(projects.schildi.matrixsdk)
     implementation(projects.schildi.components)
     implementation(projects.schildi.theme)
 

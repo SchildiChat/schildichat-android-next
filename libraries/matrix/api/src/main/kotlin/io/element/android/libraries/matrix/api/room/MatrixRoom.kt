@@ -50,6 +50,7 @@ interface MatrixRoom : Closeable {
     val isDirect: Boolean
     val isPublic: Boolean
     val spaceChildren: List<String>
+    val rootSpaceOrder: String?
     val activeMemberCount: Long
     val joinedMemberCount: Long
 

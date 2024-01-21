@@ -150,7 +150,7 @@ class RoomListPresenter @Inject constructor(
             matrixUser = matrixUser.value,
             showAvatarIndicator = showAvatarIndicator,
             roomList = roomList,
-            spacesList = spacesList.orEmpty().sortedBy { it.info.name }.toImmutableList(),
+            spacesList = spacesList.orEmpty().toImmutableList(),
             spaceSelectionHierarchy = spaceSelectionHierarchy ?: persistentListOf(),
             filter = filter,
             filteredRoomList = filteredRoomList,

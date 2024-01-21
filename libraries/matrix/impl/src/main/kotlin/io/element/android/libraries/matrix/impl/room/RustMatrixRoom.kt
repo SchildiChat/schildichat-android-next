@@ -16,6 +16,8 @@
 
 package io.element.android.libraries.matrix.impl.room
 
+import chat.schildi.matrixsdk.ROOM_ACCOUNT_DATA_SPACE_ORDER
+import chat.schildi.matrixsdk.SpaceOrderSerializer
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.core.coroutine.childScope
 import io.element.android.libraries.core.coroutine.parallelMap
@@ -194,6 +196,9 @@ class RustMatrixRoom(
 
     override val activeMemberCount: Long
         get() = innerRoom.activeMembersCount().toLong()
+
+    override val rootSpaceOrder: String?
+        get() = innerRoom.accountData(ROOM_ACCOUNT_DATA_SPACE_ORDER)?.let { SpaceOrderSerializer.deserialize(it) }?.getOrNull()?.content?.order
 
     override suspend fun updateMembers(): Result<Unit> = withContext(roomMembersDispatcher) {
         val currentState = _membersStateFlow.value

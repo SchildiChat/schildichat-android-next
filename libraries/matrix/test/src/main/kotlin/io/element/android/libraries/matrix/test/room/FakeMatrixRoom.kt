@@ -73,6 +73,7 @@ class FakeMatrixRoom(
     override val alternativeAliases: List<String> = emptyList(),
     override val isPublic: Boolean = true,
     override val spaceChildren: List<String> = emptyList(),
+    override val rootSpaceOrder: String? = null,
     override val isDirect: Boolean = false,
     override val isOneToOne: Boolean = false,
     override val joinedMemberCount: Long = 123L,

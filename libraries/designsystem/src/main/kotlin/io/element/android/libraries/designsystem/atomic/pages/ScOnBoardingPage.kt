@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -64,7 +65,6 @@ fun ScOnBoardingPage(
             if (ElementTheme.isLightTheme) {
                 ScBrandingColors.onboardingGradientLight
             } else {
-
                 ScBrandingColors.onboardingGradientDark
             }
         )
@@ -91,6 +91,15 @@ fun ScOnBoardingPage(
             }
         }
     }
+}
+
+@Composable
+fun ScSunsetBackground(
+    modifier: Modifier = Modifier,
+) {
+    // Sunset is forced-dark theme
+    val bgBrush = Brush.linearGradient(ScBrandingColors.onboardingGradientDark)
+    Box(modifier = modifier.fillMaxSize().background(bgBrush))
 }
 
 @PreviewsDayNight

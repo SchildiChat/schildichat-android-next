@@ -37,6 +37,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.theme.ForcedDarkElementTheme
 import io.element.android.libraries.designsystem.R
@@ -111,6 +112,10 @@ fun SunsetPage(
 private fun SunsetBackground(
     modifier: Modifier = Modifier,
 ) {
+    if (ScTheme.yes) {
+        ScSunsetBackground(modifier)
+        return
+    }
     Column(modifier = modifier.fillMaxSize()) {
         Box(
             modifier = Modifier

@@ -18,6 +18,7 @@ package io.element.android.libraries.designsystem.preview
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.libraries.designsystem.theme.components.Surface
 
@@ -28,7 +29,7 @@ fun ElementPreview(
     showBackground: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    ElementTheme(darkTheme = darkTheme) {
+    ScTheme(darkTheme = darkTheme) {
         if (showBackground) {
             // If we have a proper contentColor applied we need a Surface instead of a Box
             Surface(content = content)

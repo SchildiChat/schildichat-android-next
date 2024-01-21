@@ -25,6 +25,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.schildi.theme)
     implementation(projects.libraries.uiStrings)
     implementation(projects.libraries.androidutils)
     implementation(projects.libraries.core)

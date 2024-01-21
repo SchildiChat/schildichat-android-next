@@ -76,6 +76,9 @@ internal val scdExposures = ScThemeExposures(
     timestampOverlayBg = ScColors.colorBlackAlpha_80,
     unreadIndicatorLine = ScColors.colorAccentGreen,
     unreadIndicatorThickness = 2.dp,
+    mentionFg = ScColors.colorWhite,
+    mentionBg = ScColors.colorAccentRed,
+    mentionBgOther = ScColors.colorGray_61,
 )
 
 @OptIn(CoreColorToken::class)

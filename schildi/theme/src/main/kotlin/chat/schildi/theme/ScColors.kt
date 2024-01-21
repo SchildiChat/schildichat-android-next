@@ -14,6 +14,7 @@ internal object ScColors {
     val colorWhite_f5 = Color(0xfff5f5f5)
     val colorWhite_ee = Color(0xffeeeeee)
     val colorWhite_e0 = Color(0xffe0e0e0)
+    val colorWhite_cf = Color(0xffcfcfcf)
     val colorWhiteAlpha_b3 = Color(0xb3ffffff)
     val colorWhiteAlpha_80 = Color(0x80ffffff)
     val colorWhiteAlpha_1f = Color(0x1fffffff)

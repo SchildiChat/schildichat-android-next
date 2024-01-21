@@ -25,6 +25,9 @@ class ScThemeExposures(
     timestampOverlayBg: Color,
     unreadIndicatorLine: Color?,
     unreadIndicatorThickness: Dp,
+    mentionFg: Color?,
+    mentionBg: Color?,
+    mentionBgOther: Color?,
 ) {
     var isScTheme by mutableStateOf(isScTheme)
         private set
@@ -50,6 +53,12 @@ class ScThemeExposures(
         private set
     var unreadIndicatorThickness by mutableStateOf(unreadIndicatorThickness)
         private set
+    var mentionFg by mutableStateOf(mentionFg)
+        private set
+    var mentionBg by mutableStateOf(mentionBg)
+        private set
+    var mentionBgOther by mutableStateOf(mentionBgOther)
+        private set
 
     fun copy(
         isScTheme: Boolean = this.isScTheme,
@@ -64,6 +73,9 @@ class ScThemeExposures(
         timestampOverlayBg: Color = this.timestampOverlayBg,
         unreadIndicatorLine: Color? = this.unreadIndicatorLine,
         unreadIndicatorThickness: Dp = this.unreadIndicatorThickness,
+        mentionFg: Color? = this.mentionFg,
+        mentionBg: Color? = this.mentionBg,
+        mentionBgOther: Color? = this.mentionBgOther,
     ) = ScThemeExposures(
         isScTheme = isScTheme,
         horizontalDividerThickness = horizontalDividerThickness,
@@ -77,6 +89,9 @@ class ScThemeExposures(
         timestampOverlayBg = timestampOverlayBg,
         unreadIndicatorLine = unreadIndicatorLine,
         unreadIndicatorThickness = unreadIndicatorThickness,
+        mentionFg = mentionFg,
+        mentionBg = mentionBg,
+        mentionBgOther = mentionBgOther,
     )
 
     fun updateColorsFrom(other: ScThemeExposures) {
@@ -92,6 +107,9 @@ class ScThemeExposures(
         timestampOverlayBg = other.timestampOverlayBg
         unreadIndicatorLine = other.unreadIndicatorLine
         unreadIndicatorThickness = other.unreadIndicatorThickness
+        mentionFg = other.mentionFg
+        mentionBg = other.mentionBg
+        mentionBgOther = other.mentionBgOther
     }
 }
 
@@ -108,6 +126,9 @@ internal val elementLightScExposures = ScThemeExposures(
     timestampOverlayBg = Color.Magenta, // unused for non-SC themes
     unreadIndicatorLine = null,
     unreadIndicatorThickness = 0.5.dp, // like horizontalDividerThickness
+    mentionFg = null,
+    mentionBg = null,
+    mentionBgOther = null,
 )
 
 internal val elementDarkScExposures = ScThemeExposures(
@@ -123,4 +144,7 @@ internal val elementDarkScExposures = ScThemeExposures(
     timestampOverlayBg = Color.Magenta, // unused for non-SC themes
     unreadIndicatorLine = null,
     unreadIndicatorThickness = 0.5.dp, // like horizontalDividerThickness
+    mentionFg = null,
+    mentionBg = null,
+    mentionBgOther = null,
 )

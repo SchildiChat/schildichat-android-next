@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
@@ -97,7 +96,6 @@ private fun ImageAvatar(
                 }
                 InitialsAvatar(avatarData = avatarData)
             }
-            is AsyncImagePainter.State.Loading -> Box(Modifier.background(MaterialTheme.colorScheme.surfaceVariant))
             else -> InitialsAvatar(avatarData = avatarData)
         }
     }

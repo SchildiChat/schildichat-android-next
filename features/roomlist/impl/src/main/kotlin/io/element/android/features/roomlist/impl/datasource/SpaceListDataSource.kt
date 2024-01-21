@@ -102,6 +102,11 @@ class SpaceListDataSource @Inject constructor(
         }
     }
 
+    // Force rebuilding a space filter. Only a workaround until we can do proper listener to m.space.child state events...
+    suspend fun forceRebuildSpaceFilter() {
+        replaceWith(roomListService.allSpaces.summaries.value)
+    }
+
     /**
      * Build the space hierarchy and avoid loops
      */

@@ -41,6 +41,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -148,6 +150,10 @@ class RoomListDataSource @Inject constructor(
                 }
             }
             .launchIn(coroutineScope)
+        // Workaround to refresh m.space.child relations without listening to every room's state
+        _spaceSelectionHierarchy.filter { !it.isNullOrEmpty() }.drop(1).debounce(500).onEach {
+            spaceListDataSource.forceRebuildSpaceFilter()
+        }.launchIn(coroutineScope)
 
         // Filter by space with the room id list built in the previous flow
         combine(

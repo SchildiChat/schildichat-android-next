@@ -32,6 +32,7 @@ object ScPrefs {
         R.string.sc_space_unread_counts_mode_title,
         dependencies = SPACE_NAV.asDependencies(),
     )
+    val SPACE_SWIPE = ScBoolPref("SPACE_SWIPE", false, R.string.sc_space_swipe_title, R.string.sc_space_swipe_summary, upstreamChoice = false, authorsChoice = true, dependencies = SPACE_NAV.asDependencies())
 
     // Timeline
     val SC_TIMELINE_LAYOUT = ScBoolPref("SC_TIMELINE_LAYOUT", true, R.string.sc_pref_sc_timeline_layout_title, upstreamChoice = false)
@@ -75,6 +76,7 @@ object ScPrefs {
         ScPrefCategory(R.string.sc_pref_category_misc, null, listOf(
             ScPrefScreen(R.string.sc_pref_screen_experimental_title, R.string.sc_pref_screen_experimental_summary, listOf(
                 PL_DISPLAY_NAME,
+                SPACE_SWIPE,
             )),
         )),
         ScPrefCategory(CommonStrings.common_developer_options, null, listOf(
@@ -100,6 +102,7 @@ object ScPrefs {
         SC_OVERVIEW_LAYOUT.copy(titleRes = R.string.sc_pref_sc_layout_title),
         EL_TYPOGRAPHY,
         SPACE_NAV,
+        SPACE_SWIPE,
     )
 
     val devQuickTweaksTimeline = listOf(

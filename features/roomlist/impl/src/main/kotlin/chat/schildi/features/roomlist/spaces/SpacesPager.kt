@@ -3,15 +3,21 @@ package chat.schildi.features.roomlist.spaces
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -24,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -33,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import chat.schildi.lib.preferences.ScAppStateStore
@@ -44,6 +52,7 @@ import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.roomlist.impl.R
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
+import io.element.android.libraries.designsystem.text.toPx
 import io.element.android.libraries.designsystem.theme.unreadIndicator
 import io.element.android.libraries.designsystem.utils.OnLifecycleEvent
 import kotlinx.collections.immutable.ImmutableList
@@ -52,8 +61,9 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 import timber.log.Timber
-
-private val SpaceAvatarSize = AvatarSize.BottomSpaceBar
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 @Composable
 fun SpacesPager(
@@ -64,44 +74,40 @@ fun SpacesPager(
     modifier: Modifier = Modifier,
     content: @Composable (Modifier) -> Unit,
 ) {
-    if (!ScPrefs.SPACE_NAV.value()) {
+    if (!ScPrefs.SPACE_NAV.value() || spacesList.isEmpty()) {
         content(modifier)
         return
     }
-    SpacesPager(
-        spacesList = spacesList,
-        spaceUnreadCounts = spaceUnreadCounts,
-        spaceSelection = spaceSelectionHierarchy,
-        defaultSpace = null,
-        parentSelection = persistentListOf(),
-        selectSpace = { newSelection, parentSelection ->
-            if (newSelection == null) {
-                onSpaceSelected(parentSelection)
-            } else {
-                onSpaceSelected(parentSelection + listOf(newSelection.info.roomId.value))
-            }
-        },
-        modifier = modifier,
-        content = content,
-    )
+    Column(modifier) {
+        SpacesPager(
+            spacesList = spacesList,
+            spaceUnreadCounts = spaceUnreadCounts,
+            spaceSelection = spaceSelectionHierarchy,
+            defaultSpace = null,
+            parentSelection = persistentListOf(),
+            selectSpace = { newSelection, parentSelection ->
+                if (newSelection == null) {
+                    onSpaceSelected(parentSelection)
+                } else {
+                    onSpaceSelected(parentSelection + listOf(newSelection.info.roomId.value))
+                }
+            },
+            content = content,
+        )
+    }
 }
 
 
 @Composable
-private fun SpacesPager(
+private fun ColumnScope.SpacesPager(
     spacesList: ImmutableList<SpaceListDataSource.SpaceHierarchyItem>,
     spaceUnreadCounts: ImmutableMap<String?, SpaceUnreadCountsDataSource.SpaceUnreadCounts>,
     spaceSelection: ImmutableList<String>,
     defaultSpace: SpaceListDataSource.SpaceHierarchyItem?,
     parentSelection: ImmutableList<String>,
     selectSpace: (SpaceListDataSource.SpaceHierarchyItem?, ImmutableList<String>) -> Unit,
-    modifier: Modifier = Modifier,
     content: @Composable (Modifier) -> Unit,
 ) {
-    if (spacesList.isEmpty()) {
-        content(modifier)
-        return
-    }
     val selectedSpaceIndex = if (spaceSelection.isEmpty()) {
         -1
     } else {
@@ -116,68 +122,151 @@ private fun SpacesPager(
         return
     }
     val selectedTab = selectedSpaceIndex + 1
-    Column(modifier = modifier) {
-        content(Modifier.weight(1f, fill = true))
 
-        // Child spaces if expanded
-        var expandSpaceChildren by remember { mutableStateOf(childSelections.isNotEmpty()) }
-        if (selectedSpaceIndex != -1 && expandSpaceChildren) {
-            SpacesPager(
-                spacesList = spacesList[selectedSpaceIndex].spaces,
-                spaceUnreadCounts = spaceUnreadCounts,
-                selectSpace = selectSpace,
-                spaceSelection = childSelections,
-                defaultSpace = spacesList[selectedSpaceIndex],
-                parentSelection = (parentSelection + listOf(spacesList[selectedSpaceIndex].info.roomId.value)).toImmutableList(),
-            ) {}
-        }
+    // Child spaces if expanded
+    var expandSpaceChildren by remember { mutableStateOf(childSelections.isNotEmpty()) }
 
-        // Actual space tabs
-        ScrollableTabRow(
-            selectedTabIndex = selectedTab,
-            edgePadding = 0.dp,
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-        ) {
-            if (defaultSpace != null) {
-                SpaceTab(defaultSpace, spaceUnreadCounts[defaultSpace.info.roomId.value], selectedTab == 0, expandSpaceChildren, false) {
-                    expandSpaceChildren = false
-                    if (selectedTab != 0) {
-                        selectSpace(null, parentSelection)
-                    }
-                }
-            } else {
-                ShowAllTab(spaceUnreadCounts[null], selectedTab == 0, expandSpaceChildren) {
-                    expandSpaceChildren = false
-                    if (selectedTab != 0) {
-                        selectSpace(null, parentSelection)
-                    }
-                }
+    // Child spaces if expanded
+    if (selectedSpaceIndex != -1 && expandSpaceChildren) {
+        SpacesPager(
+            spacesList = spacesList[selectedSpaceIndex].spaces,
+            spaceUnreadCounts = spaceUnreadCounts,
+            selectSpace = selectSpace,
+            spaceSelection = childSelections,
+            defaultSpace = spacesList[selectedSpaceIndex],
+            parentSelection = (parentSelection + listOf(spacesList[selectedSpaceIndex].info.roomId.value)).toImmutableList(),
+            content = content,
+        )
+    } else {
+        if (ScPrefs.SPACE_SWIPE.value()) {
+            // Swipable content
+            var offsetX by remember { mutableFloatStateOf(0f) }
+            val draggableState = rememberDraggableState {
+                offsetX += it
             }
-            spacesList.forEachIndexed { index, space ->
-                val selected = selectedSpaceIndex == index
-                SpaceTab(
-                    space,
-                    spaceUnreadCounts[space.info.roomId.value],
-                    selected,
-                    expandSpaceChildren,
-                    space.spaces.isNotEmpty() && (!selected || !expandSpaceChildren)
-                ) {
-                    if (selectedSpaceIndex == index) {
-                        if (expandSpaceChildren) {
-                            expandSpaceChildren = false
-                            // In case we selected a child, need to re-select this space
-                            if (childSelections.isNotEmpty()) {
-                                selectSpace(spacesList[index], parentSelection)
+            val swipeThreshold = 40.dp.toPx()
+            val indicatorThreshold = 72.dp.toPx()
+            // Note: we have spacesList.size+1 tabs
+            val canSwipeUp = selectedTab < spacesList.size
+            val canSwipeDown = selectedTab > 0
+            Box(
+                Modifier
+                    .weight(1f, fill = true)
+                    .draggable(
+                        orientation = Orientation.Horizontal,
+                        enabled = spacesList.isNotEmpty(),
+                        onDragStopped = {
+                            // Note: we have spacesList.size+1 tabs, index 0 is always default/parent
+                            if (offsetX < -swipeThreshold && canSwipeUp) {
+                                selectSpaceIndex(selectedTab + 1, spacesList, selectSpace, parentSelection)
+                            } else if (offsetX > swipeThreshold && canSwipeDown) {
+                                selectSpaceIndex(selectedTab - 1, spacesList, selectSpace, parentSelection)
                             }
-                        } else if (space.spaces.isNotEmpty()) {
-                            expandSpaceChildren = true
-                        }
-                    } else {
-                        expandSpaceChildren = false
-                        selectSpace(spacesList[index], parentSelection)
-                    }
+                            offsetX = 0f
+                        },
+                        state = draggableState,
+                    )
+            ) {
+                content(Modifier.fillMaxWidth())
+                // Swipe down indicator
+                if (canSwipeDown) {
+                    SwipeIndicator(
+                        if (selectedTab > 1) spacesList[selectedSpaceIndex-1] else defaultSpace,
+                        Modifier
+                            .align(Alignment.CenterStart)
+                            .offset {
+                                val x = max(offsetX, 0f) - indicatorThreshold
+                                IntOffset(x.roundToInt(), 0)
+                            }
+                    )
+                }
+                // Swipe up indicator
+                if (canSwipeUp) {
+                    SwipeIndicator(
+                        spacesList[selectedSpaceIndex+1],
+                        Modifier
+                            .align(Alignment.CenterEnd)
+                            .offset {
+                                val x = min(offsetX, 0f) + indicatorThreshold
+                                IntOffset(x.roundToInt(), 0)
+                            }
+                    )
                 }
             }
+        } else {
+            content(Modifier.weight(1f, fill = true))
+        }
+    }
+
+    // Actual space tabs
+    ScrollableTabRow(
+        selectedTabIndex = selectedTab,
+        edgePadding = 0.dp,
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+    ) {
+        if (defaultSpace != null) {
+            SpaceTab(defaultSpace, spaceUnreadCounts[defaultSpace.info.roomId.value], selectedTab == 0, expandSpaceChildren, false) {
+                expandSpaceChildren = false
+                if (selectedTab != 0) {
+                    selectSpace(null, parentSelection)
+                }
+            }
+        } else {
+            ShowAllTab(spaceUnreadCounts[null], selectedTab == 0, expandSpaceChildren) {
+                expandSpaceChildren = false
+                if (selectedTab != 0) {
+                    selectSpace(null, parentSelection)
+                }
+            }
+        }
+        spacesList.forEachIndexed { index, space ->
+            val selected = selectedSpaceIndex == index
+            SpaceTab(
+                space,
+                spaceUnreadCounts[space.info.roomId.value],
+                selected,
+                expandSpaceChildren,
+                space.spaces.isNotEmpty() && (!selected || !expandSpaceChildren)
+            ) {
+                if (selectedSpaceIndex == index) {
+                    if (expandSpaceChildren) {
+                        expandSpaceChildren = false
+                        // In case we selected a child, need to re-select this space
+                        if (childSelections.isNotEmpty()) {
+                            selectSpace(spacesList[index], parentSelection)
+                        }
+                    } else if (space.spaces.isNotEmpty()) {
+                        expandSpaceChildren = true
+                    }
+                } else {
+                    expandSpaceChildren = false
+                    selectSpace(spacesList[index], parentSelection)
+                }
+            }
+        }
+    }
+}
+
+private fun selectSpaceIndex(
+    index: Int,
+    spacesList: ImmutableList<SpaceListDataSource.SpaceHierarchyItem>,
+    selectSpace: (SpaceListDataSource.SpaceHierarchyItem?, ImmutableList<String>) -> Unit,
+    parentSelection: ImmutableList<String>
+) {
+    if (index == 0) {
+        selectSpace(null, parentSelection)
+    } else {
+        selectSpace(spacesList[index-1], parentSelection)
+    }
+}
+
+@Composable
+private fun SwipeIndicator(space: SpaceListDataSource.SpaceHierarchyItem?, modifier: Modifier) {
+    Box(modifier.background(MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.65f), CircleShape).padding(8.dp)) {
+        if (space == null) {
+            ShowAllIcon(AvatarSize.SpaceSwipeIndicator, color = MaterialTheme.colorScheme.inverseOnSurface)
+        } else {
+            Avatar(space.info.avatarData.copy(size = AvatarSize.SpaceSwipeIndicator), shape = CircleShape)
         }
     }
 }
@@ -205,7 +294,10 @@ private fun AbstractSpaceTab(
                     color = color,
                 )
                 if (expandable) {
-                    Box(Modifier.width(12.dp).align(Alignment.CenterVertically)) {
+                    Box(
+                        Modifier
+                            .width(12.dp)
+                            .align(Alignment.CenterVertically)) {
                         androidx.compose.animation.AnimatedVisibility(visible = selected, enter = fadeIn(), exit = fadeOut()) {
                             Icon(
                                 imageVector = Icons.Outlined.ChevronRight,
@@ -242,9 +334,19 @@ private fun SpaceTab(
         onClick = onClick,
     ) {
         UnreadCountBox(unreadCounts) {
-            Avatar(space.info.avatarData.copy(size = SpaceAvatarSize), shape = RoundedCornerShape(4.dp))
+            Avatar(space.info.avatarData.copy(size = AvatarSize.BottomSpaceBar), shape = RoundedCornerShape(4.dp))
         }
     }
+}
+
+@Composable
+private fun ShowAllIcon(size: AvatarSize, color: Color = MaterialTheme.colorScheme.primary) {
+    Icon(
+        imageVector = Icons.Filled.Home,
+        contentDescription = null,
+        modifier = Modifier.size(size.dp),
+        tint = color,
+    )
 }
 
 @Composable
@@ -262,12 +364,7 @@ private fun ShowAllTab(
         onClick = onClick,
     ) {
         UnreadCountBox(unreadCounts) {
-            Icon(
-                imageVector = Icons.Filled.Home,
-                contentDescription = null,
-                modifier = Modifier.size(SpaceAvatarSize.dp),
-                tint = MaterialTheme.colorScheme.primary,
-            )
+            ShowAllIcon(AvatarSize.BottomSpaceBar)
         }
     }
 }
@@ -322,7 +419,11 @@ private fun UnreadCountBox(unreadCounts: SpaceUnreadCountsDataSource.SpaceUnread
             )
         }
         // Keep icon centered
-        Spacer(Modifier.width(8.dp).offset((-8).dp, (-8).dp).align(Alignment.TopStart))
+        Spacer(
+            Modifier
+                .width(8.dp)
+                .offset((-8).dp, (-8).dp)
+                .align(Alignment.TopStart))
     }
 }
 

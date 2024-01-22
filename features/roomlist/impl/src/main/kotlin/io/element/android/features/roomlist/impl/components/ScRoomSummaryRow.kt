@@ -46,6 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import chat.schildi.lib.util.formatUnreadCount
 import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
@@ -226,16 +227,6 @@ private fun ScUnreadCounter(room: RoomListRoomSummary) {
             textAlign = TextAlign.Center,
             modifier = Modifier.align(Alignment.Center).padding(horizontal = 4.dp)
         )
-    }
-}
-
-private fun formatUnreadCount(count: Int): String {
-    return if (count > 1_000_000) {
-        "%.1fM".format(count / 1_000_000f)
-    } else if (count > 1_000) {
-        "%.1fk".format(count / 1_000f)
-    } else {
-        count.toString()
     }
 }
 

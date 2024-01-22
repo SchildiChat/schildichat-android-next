@@ -1,9 +1,16 @@
 package chat.schildi.lib.preferences
 
+import androidx.compose.ui.res.stringArrayResource
 import chat.schildi.lib.R
 import io.element.android.libraries.ui.strings.CommonStrings
 
 object ScPrefs {
+
+    object SpaceUnreadCountMode {
+        const val MESSAGES = "MESSAGES"
+        const val CHATS = "CHATS"
+        const val HIDE = "HIDE"
+    }
 
     // Appearance
     val SC_THEME = ScBoolPref("SC_THEMES", true, R.string.sc_pref_sc_themes_title, upstreamChoice = false)
@@ -16,6 +23,15 @@ object ScPrefs {
     val COMPACT_APP_BAR = ScBoolPref("COMPACT_APP_BAR", true, R.string.sc_pref_compact_app_bar_title, R.string.sc_pref_compact_app_bar_summary, upstreamChoice = false)
     val SC_OVERVIEW_LAYOUT = ScBoolPref("SC_OVERVIEW_LAYOUT", true, R.string.sc_pref_sc_overview_layout_title, upstreamChoice = false)
     val SPACE_NAV = ScBoolPref("SPACE_NAV", false, R.string.sc_space_nav_title, R.string.sc_space_nav_summary, upstreamChoice = false, authorsChoice = true)
+    val SPACE_UNREAD_COUNTS = ScStringListPref(
+        "SPACE_UNREAD_COUNTS",
+        SpaceUnreadCountMode.MESSAGES,
+        arrayOf(SpaceUnreadCountMode.MESSAGES, SpaceUnreadCountMode.CHATS, SpaceUnreadCountMode.HIDE),
+        R.array.sc_space_unread_counts_names,
+        null,
+        R.string.sc_space_unread_counts_mode_title,
+        dependencies = SPACE_NAV.asDependencies(),
+    )
 
     // Timeline
     val SC_TIMELINE_LAYOUT = ScBoolPref("SC_TIMELINE_LAYOUT", true, R.string.sc_pref_sc_timeline_layout_title, upstreamChoice = false)
@@ -48,13 +64,16 @@ object ScPrefs {
             SC_OVERVIEW_LAYOUT,
             COMPACT_APP_BAR,
         )),
+        ScPrefCategory(R.string.sc_pref_category_spaces, null, listOf(
+            SPACE_NAV,
+            SPACE_UNREAD_COUNTS,
+        )),
         ScPrefCategory(R.string.sc_pref_category_timeline, null, listOf(
             SC_TIMELINE_LAYOUT,
             FLOATING_DATE,
         )),
         ScPrefCategory(R.string.sc_pref_category_misc, null, listOf(
             ScPrefScreen(R.string.sc_pref_screen_experimental_title, R.string.sc_pref_screen_experimental_summary, listOf(
-                SPACE_NAV,
                 PL_DISPLAY_NAME,
             )),
         )),

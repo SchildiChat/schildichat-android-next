@@ -13,6 +13,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import chat.schildi.lib.preferences.ScActionablePref
@@ -105,8 +106,10 @@ fun <T>ScListPref<T>.Rendered(initial: Any, onChange: (Any) -> Unit) {
     if (v == null) {
         Timber.e("Invalid initial value $initial")
     }
+    val names = stringArrayResource(itemNames)
+    val summaries = itemSummaries?.let { stringArrayResource(it) }
     val selectedIndex = itemKeys.indexOf(v).takeIf { it >= 0 } ?: itemKeys.indexOf(defaultValue)
-    val selectedName = itemNames[selectedIndex]
+    val selectedName = names[selectedIndex]
 
     val coroutineScope = rememberCoroutineScope()
     val openDialog = remember { mutableStateOf(false) }
@@ -123,8 +126,8 @@ fun <T>ScListPref<T>.Rendered(initial: Any, onChange: (Any) -> Unit) {
         SingleSelectionDialog(
             title = stringResource(id = titleRes),
             subtitle = summaryRes?.let { stringResource(id = it) },
-            options = itemNames.mapIndexed { index, name ->
-                ListOption(name, itemSummaries?.get(index))
+            options = names.mapIndexed { index, name ->
+                ListOption(name, summaries?.get(index))
             }.toImmutableList(),
             onOptionSelected = { index ->
                 if (index != selectedIndex) {

@@ -19,12 +19,15 @@ package io.element.android.features.roomlist.impl
 import androidx.compose.runtime.Immutable
 import io.element.android.features.leaveroom.api.LeaveRoomState
 import chat.schildi.features.roomlist.spaces.SpaceListDataSource
+import chat.schildi.features.roomlist.spaces.SpaceUnreadCountsDataSource
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarMessage
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
 
 @Immutable
 data class RoomListState(
@@ -33,6 +36,7 @@ data class RoomListState(
     val roomList: ImmutableList<RoomListRoomSummary>,
     val spacesList: ImmutableList<SpaceListDataSource.SpaceHierarchyItem> = persistentListOf(),
     val spaceSelectionHierarchy: ImmutableList<String> = persistentListOf(),
+    val spaceUnreadCounts: ImmutableMap<String?, SpaceUnreadCountsDataSource.SpaceUnreadCounts> = persistentMapOf(),
     val filter: String?,
     val filteredRoomList: ImmutableList<RoomListRoomSummary>,
     val displayVerificationPrompt: Boolean,

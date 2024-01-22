@@ -3,10 +3,7 @@ package chat.schildi.features.roomlist.spaces
 import chat.schildi.lib.preferences.ScAppStateStore
 import io.element.android.features.roomlist.impl.datasource.RoomListDataSource
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
-import io.element.android.libraries.androidutils.diff.DiffCacheUpdater
-import io.element.android.libraries.androidutils.diff.MutableListDiffCache
 import io.element.android.libraries.matrix.api.MatrixClient
-import io.element.android.libraries.matrix.api.roomlist.RoomSummary
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -21,7 +18,6 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -61,21 +57,14 @@ class SpaceAwareRoomListDataSource @Inject constructor(
                 return@combine Pair(null, true)
             }
             // Show all rooms while space list is not loaded yet, without clearing the space hierarchy
-            var spaceList = allSpacesValue?.takeIf { it.isNotEmpty() } ?: return@combine Pair(null, true)
+            val spaceList = allSpacesValue?.takeIf { it.isNotEmpty() } ?: return@combine Pair(null, true)
             // Resolve actual space from space hierarchy
-            var space: SpaceListDataSource.SpaceHierarchyItem? = null
-            spaceSelectionValue.forEach { spaceId ->
-                space = spaceList.find { it.info.roomId.value == spaceId }
-                if (space == null) {
-                    return@combine Pair(null, false)
-                }
-                spaceList = space!!.spaces
-            }
+            val space = spaceList.resolveSelection(spaceSelectionValue) ?: return@combine Pair(null, false)
             // Tell SDK we filter the sliding sync window by spaces
-            space?.let {
+            space.let {
                 client.roomListService.updateVisibleSpaces(it.flattenedSpaces)
             }
-            return@combine Pair(space?.flattenedRooms, true)
+            return@combine Pair(space.flattenedRooms, true)
         }
             .onEach { (roomIds, spaceFound) ->
                 _spaceChildFilter.value = roomIds

@@ -1,6 +1,7 @@
 package chat.schildi.lib.preferences
 
 import android.os.Parcelable
+import androidx.annotation.ArrayRes
 import androidx.annotation.StringRes
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -79,8 +80,10 @@ data class ScBoolPref(
 @Parcelize
 sealed interface ScListPref<T>: ScPref<T> {
     val itemKeys: Array<T>
-    val itemNames: Array<String>
-    val itemSummaries: Array<String?>?
+    @get: ArrayRes
+    val itemNames: Int
+    @get: ArrayRes
+    val itemSummaries: Int?
 }
 
 @Parcelize
@@ -88,8 +91,10 @@ data class ScStringListPref(
     override val sKey: String,
     override val defaultValue: String,
     override val itemKeys: Array<String>,
-    override val itemNames: Array<String>,
-    override val itemSummaries: Array<String?>?,
+    @ArrayRes
+    override val itemNames: Int,
+    @ArrayRes
+    override val itemSummaries: Int?,
     @StringRes
     override val titleRes: Int,
     @StringRes

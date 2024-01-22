@@ -190,3 +190,16 @@ class SpaceListDataSource @Inject constructor(
         val flattenedSpaces: ImmutableList<String>,
     )
 }
+
+fun List<SpaceListDataSource.SpaceHierarchyItem>.resolveSelection(selection: List<String>): SpaceListDataSource.SpaceHierarchyItem? {
+    var space: SpaceListDataSource.SpaceHierarchyItem? = null
+    var spaceList = this
+    selection.forEach { spaceId ->
+        space = spaceList.find { it.info.roomId.value == spaceId }
+        if (space == null) {
+            return null
+        }
+        spaceList = space!!.spaces
+    }
+    return space
+}

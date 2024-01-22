@@ -39,6 +39,7 @@ import io.element.android.features.networkmonitor.api.NetworkStatus
 import io.element.android.features.roomlist.impl.datasource.InviteStateDataSource
 import io.element.android.features.roomlist.impl.datasource.RoomListDataSource
 import chat.schildi.features.roomlist.spaces.SpaceListDataSource
+import chat.schildi.features.roomlist.spaces.SpaceUnreadCountsDataSource
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarDispatcher
 import io.element.android.libraries.designsystem.utils.snackbar.collectSnackbarMessageAsState
@@ -52,6 +53,7 @@ import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.api.user.getCurrentUser
 import io.element.android.libraries.matrix.api.verification.SessionVerificationService
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -69,6 +71,7 @@ class RoomListPresenter @Inject constructor(
     private val roomListDataSource: RoomListDataSource,
     private val spaceAwareRoomListDataSource: SpaceAwareRoomListDataSource,
     private val spaceListDataSource: SpaceListDataSource,
+    private val spaceUnreadCountsDataSource: SpaceUnreadCountsDataSource,
     private val encryptionService: EncryptionService,
     private val featureFlagService: FeatureFlagService,
     private val indicatorService: IndicatorService,
@@ -83,6 +86,7 @@ class RoomListPresenter @Inject constructor(
         val roomList by (if (spaceNavEnabled) spaceAwareRoomListDataSource.spaceRooms else roomListDataSource.allRooms).collectAsState()
         val spacesList = if (spaceNavEnabled) spaceListDataSource.allSpaces.collectAsState().value else null
         val spaceSelectionHierarchy = if (spaceNavEnabled) spaceAwareRoomListDataSource.spaceSelectionHierarchy.collectAsState().value else persistentListOf()
+        val spaceUnreadCounts = if (spaceNavEnabled) spaceUnreadCountsDataSource.spaceUnreadCounts.collectAsState().value else persistentMapOf()
         val filteredRoomList by roomListDataSource.filteredRooms.collectAsState()
         val filter by roomListDataSource.filter.collectAsState()
         val networkConnectionStatus by networkMonitor.connectivity.collectAsState()
@@ -92,6 +96,7 @@ class RoomListPresenter @Inject constructor(
             spaceListDataSource.launchIn(this)
             roomListDataSource.launchIn(this)
             spaceAwareRoomListDataSource.launchIn(this, roomListDataSource, spaceListDataSource, scAppStateStore)
+            spaceUnreadCountsDataSource.launchIn(this, roomListDataSource, spaceAwareRoomListDataSource, spaceListDataSource)
             initialLoad(matrixUser)
         }
         PersistSpaceOnPause(scAppStateStore, spaceAwareRoomListDataSource)
@@ -155,6 +160,7 @@ class RoomListPresenter @Inject constructor(
             roomList = roomList,
             spacesList = spacesList.orEmpty().toImmutableList(),
             spaceSelectionHierarchy = spaceSelectionHierarchy ?: persistentListOf(),
+            spaceUnreadCounts = spaceUnreadCounts,
             filter = filter,
             filteredRoomList = filteredRoomList,
             displayVerificationPrompt = displayVerificationPrompt,

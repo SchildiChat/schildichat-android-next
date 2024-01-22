@@ -200,11 +200,12 @@ private fun RoomListContent(
         content = { padding ->
             SpacesPager(
                 spacesList = state.spacesList,
+                spaceUnreadCounts = state.spaceUnreadCounts,
+                spaceSelectionHierarchy = state.spaceSelectionHierarchy,
                 onSpaceSelected = { selection ->
                     state.eventSink(RoomListEvents.UpdateSpaceFilter(selection))
                     coroutineScope.launch { lazyListState.scrollToItem(0) }
                                   },
-                spaceSelectionHierarchy = state.spaceSelectionHierarchy,
                 modifier = Modifier.padding(padding).consumeWindowInsets(padding)) { modifier ->
             LazyColumn(
                 modifier = modifier

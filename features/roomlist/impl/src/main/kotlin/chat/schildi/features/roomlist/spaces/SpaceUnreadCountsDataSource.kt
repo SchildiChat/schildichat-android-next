@@ -1,0 +1,92 @@
+package chat.schildi.features.roomlist.spaces
+
+import androidx.compose.runtime.Immutable
+import io.element.android.features.roomlist.impl.datasource.RoomListDataSource
+import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.toImmutableMap
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
+
+class SpaceUnreadCountsDataSource @Inject constructor() {
+
+    private val _spaceUnreadCounts = MutableStateFlow<ImmutableMap<String?, SpaceUnreadCounts>>(persistentMapOf())
+    val spaceUnreadCounts: StateFlow<ImmutableMap<String?, SpaceUnreadCounts>> = _spaceUnreadCounts
+
+    fun launchIn(
+        coroutineScope: CoroutineScope,
+        roomListDataSource: RoomListDataSource,
+        spaceAwareRoomListDataSource: SpaceAwareRoomListDataSource,
+        spaceListDataSource: SpaceListDataSource
+    ) {
+        combine(
+            roomListDataSource.allRooms,
+            spaceListDataSource.allSpaces,
+            spaceAwareRoomListDataSource.spaceSelectionHierarchy,
+        ) { allRoomsValue, allSpacesValue, spaceSelectionValue ->
+            allSpacesValue ?: return@combine mapOf()
+            spaceSelectionValue ?: return@combine mapOf()
+            val visibleSpaces = if (spaceSelectionValue.isEmpty()) {
+                // Nothing selected, only root spaces visible
+                allSpacesValue
+            } else {
+                // When a space is selected, both its children and siblings can be visible
+                val children = allSpacesValue.resolveSelection(spaceSelectionValue)?.spaces.orEmpty()
+                val siblings = allSpacesValue.resolveSelection(spaceSelectionValue.subList(0, spaceSelectionValue.size-1))?.spaces ?: allSpacesValue
+                siblings + children
+            }
+            val result = mutableMapOf<String?, SpaceUnreadCounts>(
+                // Total count
+                null to getAggregatedUnreadCounts(allRoomsValue)
+            )
+            visibleSpaces.forEach { result[it.info.roomId.value] = getUnreadCountsForSpace(it, allRoomsValue) }
+            result
+        }.onEach {
+            _spaceUnreadCounts.emit(it.toImmutableMap())
+        }.launchIn(coroutineScope)
+    }
+
+    private fun getUnreadCountsForSpace(
+        space: SpaceListDataSource.SpaceHierarchyItem,
+        allRooms: List<RoomListRoomSummary>,
+    ) = getAggregatedUnreadCounts(
+        allRooms.filter { space.flattenedRooms.contains(it.roomId.value) }
+    )
+
+    private fun getAggregatedUnreadCounts(rooms: List<RoomListRoomSummary>): SpaceUnreadCounts {
+        var unread = SpaceUnreadCounts()
+        for (room in rooms) {
+            unread = unread.add(
+                room.highlightCount,
+                room.notificationCount,
+                room.unreadCount,
+            )
+        }
+        return unread
+    }
+
+    private fun SpaceUnreadCounts.add(mentions: Int, notifications: Int, unread: Int): SpaceUnreadCounts = SpaceUnreadCounts(
+        this.mentionedMessages + mentions,
+        this.notifiedMessages + notifications,
+        this.unreadMessages + unread,
+        this.mentionedChats + if (mentions > 0) 1 else 0,
+        this.notifiedChats + if (notifications > 0) 1 else 0,
+        this.unreadChats + if (unread > 0) 1 else 0,
+    )
+
+    @Immutable
+    data class SpaceUnreadCounts(
+        val mentionedMessages: Int = 0,
+        val notifiedMessages: Int = 0,
+        val unreadMessages: Int = 0,
+        val mentionedChats: Int = 0,
+        val notifiedChats: Int = 0,
+        val unreadChats: Int = 0,
+    )
+}

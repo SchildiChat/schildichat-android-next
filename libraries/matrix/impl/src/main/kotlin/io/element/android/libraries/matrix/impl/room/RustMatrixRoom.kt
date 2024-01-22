@@ -37,6 +37,7 @@ import io.element.android.libraries.matrix.api.room.MatrixRoom
 import io.element.android.libraries.matrix.api.room.MatrixRoomInfo
 import io.element.android.libraries.matrix.api.room.MatrixRoomMembersState
 import io.element.android.libraries.matrix.api.room.MatrixRoomNotificationSettingsState
+import io.element.android.libraries.matrix.api.room.MatrixSpaceChildInfo
 import io.element.android.libraries.matrix.api.room.Mention
 import io.element.android.libraries.matrix.api.room.MessageEventType
 import io.element.android.libraries.matrix.api.room.StateEventType
@@ -185,8 +186,8 @@ class RustMatrixRoom(
     override val isPublic: Boolean
         get() = innerRoom.isPublic()
 
-    override val spaceChildren: List<String>
-        get() = innerRoom.spaceChildren()
+    override val spaceChildren: List<MatrixSpaceChildInfo>
+        get() = innerRoom.spaceChildren().map(MatrixSpaceChildInfoMapper::map)
 
     override val isDirect: Boolean
         get() = innerRoom.isDirect()

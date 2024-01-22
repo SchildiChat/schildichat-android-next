@@ -30,6 +30,7 @@ import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.eventformatter.api.RoomLastMessageFormatter
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.room.MatrixSpaceChildInfo
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
 import io.element.android.libraries.matrix.api.roomlist.RoomSummary
 import kotlinx.collections.immutable.ImmutableList
@@ -113,22 +114,24 @@ class SpaceListDataSource @Inject constructor(
     // TODO what can we cache something here?
     private suspend fun buildSpaceHierarchy(spaceSummaries: List<RoomListRoomSummary>): ImmutableList<SpaceHierarchyItem> {
         // Map spaceId -> list of child spaces
-        val spaceHierarchyMap = HashMap<String, MutableList<RoomListRoomSummary>>()
+        val spaceHierarchyMap = HashMap<String, MutableList<Pair<MatrixSpaceChildInfo, RoomListRoomSummary>>>()
         // Map spaceId -> list of regular child rooms
-        val regularChildren = HashMap<String, MutableList<String>>()
+        val regularChildren = HashMap<String, MutableList<MatrixSpaceChildInfo>>()
         val rootSpaces = HashSet<RoomListRoomSummary>(spaceSummaries)
         spaceSummaries.forEach { parentSpace ->
             val spaceInfo = client.getRoom(parentSpace.roomId)
             val spaceChildren = spaceInfo?.spaceChildren
-            spaceChildren?.forEach childLoop@{ childId ->
-                val child = spaceSummaries.find { it.roomId.value == childId }
+            spaceChildren?.forEach childLoop@{ spaceChild ->
+                val child = spaceSummaries.find { it.roomId.value == spaceChild.roomId }
                 if (child == null) {
                     // Treat as regular child, since it doesn't appear to be a space (at least none known to us at this point)
-                    regularChildren[parentSpace.roomId.value] = regularChildren[parentSpace.roomId.value]?.apply { add(childId) } ?: mutableListOf(childId)
+                    regularChildren[parentSpace.roomId.value] = regularChildren[parentSpace.roomId.value]?.apply { add(spaceChild) } ?: mutableListOf(spaceChild)
                     return@childLoop
                 }
-                rootSpaces.removeAll { it.roomId.value == childId }
-                spaceHierarchyMap[parentSpace.roomId.value] = spaceHierarchyMap[parentSpace.roomId.value]?.apply { add(child) } ?: mutableListOf(child)
+                rootSpaces.removeAll { it.roomId.value == spaceChild.roomId }
+                spaceHierarchyMap[parentSpace.roomId.value] = spaceHierarchyMap[parentSpace.roomId.value]?.apply {
+                    add(Pair(spaceChild, child))
+                } ?: mutableListOf(Pair(spaceChild, child))
             }
         }
 
@@ -142,16 +145,16 @@ class SpaceListDataSource @Inject constructor(
     private fun createSpaceHierarchyItem(
         spaceSummary: RoomListRoomSummary,
         order: String?,
-        hierarchy: HashMap<String, MutableList<RoomListRoomSummary>>,
-        regularChildren: HashMap<String, MutableList<String>>,
+        hierarchy: HashMap<String, MutableList<Pair<MatrixSpaceChildInfo, RoomListRoomSummary>>>,
+        regularChildren: HashMap<String, MutableList<MatrixSpaceChildInfo>>,
         forbiddenChildren: List<String> = emptyList(),
     ): SpaceHierarchyItem {
-        val children = hierarchy[spaceSummary.id]?.mapNotNull {
-            if (it.roomId.value in forbiddenChildren) {
-                Timber.w("Detected space loop: ${spaceSummary.id} -> ${it.roomId.value}")
+        val children = hierarchy[spaceSummary.id]?.mapNotNull { (spaceChildInfo, child) ->
+            if (child.roomId.value in forbiddenChildren) {
+                Timber.w("Detected space loop: ${spaceSummary.id} -> ${child.roomId.value}")
                 null
             } else {
-                createSpaceHierarchyItem(it, null, hierarchy, regularChildren, forbiddenChildren + listOf(spaceSummary.roomId.value))
+                createSpaceHierarchyItem(child, spaceChildInfo.order, hierarchy, regularChildren, forbiddenChildren + listOf(spaceSummary.roomId.value))
             }
         }?.sortedWith(SpaceComparator)?.toImmutableList() ?: persistentListOf()
         return SpaceHierarchyItem(
@@ -160,7 +163,7 @@ class SpaceListDataSource @Inject constructor(
             spaces = children,
             flattenedRooms = (
                 // All direct children rooms
-                regularChildren[spaceSummary.id].orEmpty()
+                regularChildren[spaceSummary.id].orEmpty().map { it.roomId }
                     // All indirect children rooms
                     + children.flatMap { it.flattenedRooms }
             ).toImmutableList(),

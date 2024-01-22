@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package io.element.android.features.roomlist.impl.datasource
+package chat.schildi.features.roomlist.spaces
 
 // Can't use regular compare by because Null is considered less than any value, and for space order it's the opposite
 object SpaceComparator : Comparator<SpaceListDataSource.SpaceHierarchyItem> {

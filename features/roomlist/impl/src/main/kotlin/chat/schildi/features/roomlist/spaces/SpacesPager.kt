@@ -1,4 +1,4 @@
-package chat.schildi.features.roomlist
+package chat.schildi.features.roomlist.spaces
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,8 +28,6 @@ import chat.schildi.lib.preferences.ScAppStateStore
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import io.element.android.features.roomlist.impl.R
-import io.element.android.features.roomlist.impl.datasource.RoomListDataSource
-import io.element.android.features.roomlist.impl.datasource.SpaceListDataSource
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.utils.OnLifecycleEvent
@@ -220,11 +218,13 @@ private fun ShowAllTab(selected: Boolean, collapsed: Boolean, onClick: () -> Uni
 }
 
 @Composable
-fun PersistSpaceOnPause(scAppStateStore: ScAppStateStore, roomListDataSource: RoomListDataSource) {
+fun PersistSpaceOnPause(scAppStateStore: ScAppStateStore, spaceAwareRoomListDataSource: SpaceAwareRoomListDataSource) {
     val scope = rememberCoroutineScope()
     OnLifecycleEvent { _, event ->
         when (event) {
-            Lifecycle.Event.ON_PAUSE -> roomListDataSource.spaceSelectionHierarchy.value?.let { scope.launch { scAppStateStore.persistSpaceSelection(it) } }
+            Lifecycle.Event.ON_PAUSE -> spaceAwareRoomListDataSource.spaceSelectionHierarchy.value?.let {
+                scope.launch { scAppStateStore.persistSpaceSelection(it) }
+            }
             else -> Unit
         }
     }

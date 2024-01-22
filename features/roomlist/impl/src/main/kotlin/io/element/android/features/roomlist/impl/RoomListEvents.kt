@@ -16,7 +16,6 @@
 
 package io.element.android.features.roomlist.impl
 
-import io.element.android.features.roomlist.impl.datasource.SpaceListDataSource
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.libraries.matrix.api.core.RoomId
 

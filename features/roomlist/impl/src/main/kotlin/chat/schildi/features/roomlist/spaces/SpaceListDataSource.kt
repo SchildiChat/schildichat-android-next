@@ -1,21 +1,4 @@
-/*
- * Copyright (c) 2023 New Vector Ltd
- * Copyright (c) 2024 SchildiChat
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package io.element.android.features.roomlist.impl.datasource
+package chat.schildi.features.roomlist.spaces
 
 import androidx.compose.runtime.Immutable
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
@@ -24,10 +7,8 @@ import io.element.android.libraries.androidutils.diff.DiffCacheUpdater
 import io.element.android.libraries.androidutils.diff.MutableListDiffCache
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.core.extensions.orEmpty
-import io.element.android.libraries.dateformatter.api.LastMessageTimestampFormatter
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
-import io.element.android.libraries.eventformatter.api.RoomLastMessageFormatter
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.MatrixSpaceChildInfo
@@ -47,14 +28,9 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
-/**
- * More or less a copy of RoomListDataSource, but for spaces and without filter
- */
 class SpaceListDataSource @Inject constructor(
     private val client: MatrixClient,
     private val roomListService: RoomListService,
-    private val lastMessageTimestampFormatter: LastMessageTimestampFormatter,
-    private val roomLastMessageFormatter: RoomLastMessageFormatter,
     private val coroutineDispatchers: CoroutineDispatchers,
 ) {
     private val _allSpaces = MutableStateFlow<ImmutableList<SpaceHierarchyItem>?>(null)
@@ -187,17 +163,15 @@ class SpaceListDataSource @Inject constructor(
                     id = roomSummary.identifier(),
                     roomId = RoomId(roomIdentifier),
                     name = roomSummary.details.name,
-                    hasUnread = roomSummary.details.unreadNotificationCount > 0,
-                    notificationCount = roomSummary.details.unreadNotificationCount,
-                    highlightCount = roomSummary.details.highlightCount,
-                    unreadCount = roomSummary.details.unreadCount,
-                    timestamp = lastMessageTimestampFormatter.format(roomSummary.details.lastMessageTimestamp),
-                    lastMessage = roomSummary.details.lastMessage?.let { message ->
-                        roomLastMessageFormatter.format(message.event, roomSummary.details.isDirect)
-                    }.orEmpty(),
+                    hasUnread = false,
+                    notificationCount = 0,
+                    highlightCount = 0,
+                    unreadCount = 0,
+                    timestamp = null,
+                    lastMessage = null,
                     avatarData = avatarData,
-                    notificationMode = roomSummary.details.notificationMode,
-                    hasOngoingCall = roomSummary.details.hasOngoingCall,
+                    notificationMode = null,
+                    hasOngoingCall = false,
                 )
             }
             null -> null

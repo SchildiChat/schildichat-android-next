@@ -27,7 +27,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import chat.schildi.features.roomlist.PersistSpaceOnPause
+import chat.schildi.features.roomlist.spaces.PersistSpaceOnPause
+import chat.schildi.features.roomlist.spaces.SpaceAwareRoomListDataSource
 import chat.schildi.lib.preferences.ScAppStateStore
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
@@ -37,7 +38,7 @@ import io.element.android.features.networkmonitor.api.NetworkMonitor
 import io.element.android.features.networkmonitor.api.NetworkStatus
 import io.element.android.features.roomlist.impl.datasource.InviteStateDataSource
 import io.element.android.features.roomlist.impl.datasource.RoomListDataSource
-import io.element.android.features.roomlist.impl.datasource.SpaceListDataSource
+import chat.schildi.features.roomlist.spaces.SpaceListDataSource
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarDispatcher
 import io.element.android.libraries.designsystem.utils.snackbar.collectSnackbarMessageAsState
@@ -66,6 +67,7 @@ class RoomListPresenter @Inject constructor(
     private val inviteStateDataSource: InviteStateDataSource,
     private val leaveRoomPresenter: LeaveRoomPresenter,
     private val roomListDataSource: RoomListDataSource,
+    private val spaceAwareRoomListDataSource: SpaceAwareRoomListDataSource,
     private val spaceListDataSource: SpaceListDataSource,
     private val encryptionService: EncryptionService,
     private val featureFlagService: FeatureFlagService,
@@ -78,9 +80,9 @@ class RoomListPresenter @Inject constructor(
             mutableStateOf(null)
         }
         val spaceNavEnabled = ScPrefs.SPACE_NAV.value()
-        val roomList by (if (spaceNavEnabled) roomListDataSource.spaceRooms else roomListDataSource.allRooms).collectAsState()
+        val roomList by (if (spaceNavEnabled) spaceAwareRoomListDataSource.spaceRooms else roomListDataSource.allRooms).collectAsState()
         val spacesList = if (spaceNavEnabled) spaceListDataSource.allSpaces.collectAsState().value else null
-        val spaceSelectionHierarchy = if (spaceNavEnabled) roomListDataSource.spaceSelectionHierarchy.collectAsState().value else persistentListOf()
+        val spaceSelectionHierarchy = if (spaceNavEnabled) spaceAwareRoomListDataSource.spaceSelectionHierarchy.collectAsState().value else persistentListOf()
         val filteredRoomList by roomListDataSource.filteredRooms.collectAsState()
         val filter by roomListDataSource.filter.collectAsState()
         val networkConnectionStatus by networkMonitor.connectivity.collectAsState()
@@ -88,10 +90,11 @@ class RoomListPresenter @Inject constructor(
         val scAppStateStore = ScAppStateStore(LocalContext.current)
         LaunchedEffect(Unit) {
             spaceListDataSource.launchIn(this)
-            roomListDataSource.launchIn(this, spaceListDataSource, scAppStateStore)
+            roomListDataSource.launchIn(this)
+            spaceAwareRoomListDataSource.launchIn(this, roomListDataSource, spaceListDataSource, scAppStateStore)
             initialLoad(matrixUser)
         }
-        PersistSpaceOnPause(scAppStateStore, roomListDataSource)
+        PersistSpaceOnPause(scAppStateStore, spaceAwareRoomListDataSource)
 
         // Session verification status (unknown, not verified, verified)
         val canVerifySession by sessionVerificationService.canVerifySessionFlow.collectAsState(initial = false)
@@ -122,7 +125,7 @@ class RoomListPresenter @Inject constructor(
         fun handleEvents(event: RoomListEvents) {
             when (event) {
                 is RoomListEvents.UpdateFilter -> roomListDataSource.updateFilter(event.newFilter)
-                is RoomListEvents.UpdateSpaceFilter -> { roomListDataSource.updateSpaceSelection(event.spaceSelectionHierarchy.toImmutableList()) }
+                is RoomListEvents.UpdateSpaceFilter -> { spaceAwareRoomListDataSource.updateSpaceSelection(event.spaceSelectionHierarchy.toImmutableList()) }
                 is RoomListEvents.UpdateVisibleRange -> updateVisibleRange(event.range, event.withSpaceFilter)
                 RoomListEvents.DismissRequestVerificationPrompt -> verificationPromptDismissed = true
                 RoomListEvents.DismissRecoveryKeyPrompt -> recoveryKeyPromptDismissed = true

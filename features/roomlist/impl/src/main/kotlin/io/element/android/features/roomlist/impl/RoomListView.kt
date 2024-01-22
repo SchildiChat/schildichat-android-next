@@ -43,7 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
-import chat.schildi.features.roomlist.SpacesPager
+import chat.schildi.features.roomlist.spaces.SpacesPager
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.ScPrefs.SC_OVERVIEW_LAYOUT
 import chat.schildi.lib.preferences.value

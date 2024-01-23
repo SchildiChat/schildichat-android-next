@@ -36,10 +36,12 @@ class SpaceUnreadCountsDataSource @Inject constructor() {
                 // Nothing selected, only root spaces visible
                 allSpacesValue
             } else {
-                // When a space is selected, both its children and siblings can be visible
+                // When a space is selected, either its children or its siblings and parent can be visible.
+                // Here, the space's "siblings" contains the selected space itself as well.
                 val children = allSpacesValue.resolveSelection(spaceSelectionValue)?.spaces.orEmpty()
-                val siblings = allSpacesValue.resolveSelection(spaceSelectionValue.subList(0, spaceSelectionValue.size-1))?.spaces ?: allSpacesValue
-                siblings + children
+                val parent = allSpacesValue.resolveSelection(spaceSelectionValue.subList(0, spaceSelectionValue.size-1))
+                val siblings = parent?.spaces ?: allSpacesValue
+                siblings + children + parent?.let { listOf(it) }.orEmpty()
             }
             val result = mutableMapOf<String?, SpaceUnreadCounts>(
                 // Total count

@@ -4,10 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -191,6 +193,10 @@ private fun AbstractSpaceTab(
         text = {
             val color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
             Row {
+                if (expandable && selected) {
+                    // We want to keep the text centered despite having a expand-icon
+                    Spacer(Modifier.width(12.dp))
+                }
                 Text(
                     text = text,
                     style = MaterialTheme.typography.titleSmall,

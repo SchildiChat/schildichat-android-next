@@ -1,5 +1,7 @@
 package chat.schildi.features.roomlist.spaces
 
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -193,8 +195,8 @@ private fun AbstractSpaceTab(
         text = {
             val color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
             Row {
-                if (expandable && selected) {
-                    // We want to keep the text centered despite having a expand-icon
+                if (expandable) {
+                    // We want to keep the text centered despite having an expand-icon
                     Spacer(Modifier.width(12.dp))
                 }
                 Text(
@@ -202,15 +204,18 @@ private fun AbstractSpaceTab(
                     style = MaterialTheme.typography.titleSmall,
                     color = color,
                 )
-                if (expandable && selected) {
-                    Icon(
-                        imageVector = Icons.Outlined.ChevronRight,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(12.dp)
-                            .align(Alignment.CenterVertically),
-                        tint = color,
-                    )
+                if (expandable) {
+                    Box(Modifier.width(12.dp).align(Alignment.CenterVertically)) {
+                        androidx.compose.animation.AnimatedVisibility(visible = selected, enter = fadeIn(), exit = fadeOut()) {
+                            Icon(
+                                imageVector = Icons.Outlined.ChevronRight,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(12.dp),
+                                tint = color,
+                            )
+                        }
+                    }
                 }
             }
         },
@@ -316,6 +321,8 @@ private fun UnreadCountBox(unreadCounts: SpaceUnreadCountsDataSource.SpaceUnread
                     .padding(horizontal = 2.dp)
             )
         }
+        // Keep icon centered
+        Spacer(Modifier.width(8.dp).offset((-8).dp, (-8).dp).align(Alignment.TopStart))
     }
 }
 

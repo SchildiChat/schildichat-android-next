@@ -22,6 +22,7 @@ sealed interface TimelineEvents {
     data object LoadMore : TimelineEvents
     data class SetHighlightedEvent(val eventId: EventId?) : TimelineEvents
     data class OnScrollFinished(val firstIndex: Int) : TimelineEvents
+    data object OnUnreadLineVisible : TimelineEvents
     data class PollAnswerSelected(
         val pollStartId: EventId,
         val answerId: String

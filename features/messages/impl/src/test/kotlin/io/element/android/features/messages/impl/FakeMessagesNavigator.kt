@@ -48,4 +48,6 @@ class FakeMessagesNavigator : MessagesNavigator {
     override fun onEditPollClicked(eventId: EventId) {
         onEditPollClickedCount++
     }
+
+    override fun onBackPressed() {}
 }

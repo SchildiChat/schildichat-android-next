@@ -28,6 +28,10 @@
     <string name="sc_space_unread_counts_mode_messages">Count unread messages</string>
     <string name="sc_space_unread_counts_mode_chats">Count unread chats</string>
     <string name="sc_space_unread_counts_mode_hide">Hide</string>
+    <string name="sc_sync_read_receipt_and_marker_title">Keep read marker and receipt in sync</string>
+    <string name="sc_sync_read_receipt_and_marker_summary">Always set your read receipt (what others see and what calculates your unread messages count) to the same message like your fully read marker (the new messages line when viewing a chat)</string>
+    <string name="sc_set_read_marker_toast_start">Setting read marker to %s</string>
+    <string name="sc_set_read_marker_toast_end">Read marker set to %s</string>
 
     <string name="sc_pref_dev_quick_options">Quick settings</string>
     <string name="sc_pref_danger_zone">Danger zone</string>

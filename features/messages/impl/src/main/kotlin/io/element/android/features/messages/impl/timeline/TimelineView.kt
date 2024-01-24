@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import chat.schildi.lib.preferences.ScPrefs.FLOATING_DATE
 import chat.schildi.lib.preferences.value
 import chat.schildi.timeline.FloatingDateHeader
+import com.google.common.primitives.Ints.min
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.messages.impl.timeline.components.TimelineItemRow
@@ -64,6 +65,8 @@ import io.element.android.features.messages.impl.timeline.model.NewEventState
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemEventContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemEventContentProvider
+import io.element.android.features.messages.impl.timeline.model.virtual.TimelineItemReadMarkerModel
+import io.element.android.libraries.core.data.tryOrNull
 import io.element.android.libraries.designsystem.animation.alphaAnimation
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
@@ -71,6 +74,7 @@ import io.element.android.libraries.designsystem.theme.components.FloatingAction
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.UserId
+import io.element.android.libraries.matrix.api.timeline.item.virtual.VirtualTimelineItem
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.coroutines.launch
 
@@ -93,8 +97,14 @@ fun TimelineView(
         state.eventSink(TimelineEvents.LoadMore)
     }
 
-    fun onScrollFinishedAt(firstVisibleIndex: Int) {
+    fun onScrollFinishedAt(firstVisibleIndex: Int, visibleItemCount: Int) {
         state.eventSink(TimelineEvents.OnScrollFinished(firstVisibleIndex))
+        val timeline = state.timelineItems
+        if (firstVisibleIndex < timeline.size &&
+            timeline.subList(firstVisibleIndex, min(timeline.size-1, firstVisibleIndex+visibleItemCount))
+                .any { it.contentType() == "TimelineItemReadMarkerModel" }) {
+            state.eventSink(TimelineEvents.OnUnreadLineVisible)
+        }
     }
 
     val lazyListState = rememberLazyListState()
@@ -173,7 +183,7 @@ private fun BoxScope.TimelineScrollHelper(
     isTimelineEmpty: Boolean,
     lazyListState: LazyListState,
     newEventState: NewEventState,
-    onScrollFinishedAt: (Int) -> Unit,
+    onScrollFinishedAt: (Int, Int) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val isScrollFinished by remember { derivedStateOf { !lazyListState.isScrollInProgress } }
@@ -203,7 +213,7 @@ private fun BoxScope.TimelineScrollHelper(
     LaunchedEffect(isScrollFinished, isTimelineEmpty) {
         if (isScrollFinished && !isTimelineEmpty) {
             // Notify the parent composable about the first visible item index when scrolling finishes
-            onScrollFinishedAt(lazyListState.firstVisibleItemIndex)
+            onScrollFinishedAt(lazyListState.firstVisibleItemIndex, lazyListState.layoutInfo.visibleItemsInfo.size)
         }
     }
 

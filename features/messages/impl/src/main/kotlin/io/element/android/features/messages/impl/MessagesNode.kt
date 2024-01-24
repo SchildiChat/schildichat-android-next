@@ -112,6 +112,10 @@ class MessagesNode @AssistedInject constructor(
         callback?.onEditPollClicked(eventId)
     }
 
+    override fun onBackPressed() {
+        navigateUp()
+    }
+
     private fun onSendLocationClicked() {
         callback?.onSendLocationClicked()
     }

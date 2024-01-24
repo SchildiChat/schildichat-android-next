@@ -25,4 +25,5 @@ interface MessagesNavigator {
     fun onForwardEventClicked(eventId: EventId)
     fun onReportContentClicked(eventId: EventId, senderId: UserId)
     fun onEditPollClicked(eventId: EventId)
+    fun onBackPressed()
 }

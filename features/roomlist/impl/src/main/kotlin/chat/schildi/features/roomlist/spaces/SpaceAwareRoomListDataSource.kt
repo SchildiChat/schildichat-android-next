@@ -28,6 +28,7 @@ class SpaceAwareRoomListDataSource @Inject constructor(
     private val _spaceSelectionHierarchy = MutableStateFlow<ImmutableList<String>?>(null)
     private val _spaceChildFilter = MutableStateFlow<ImmutableList<String>?>(null)
     private val _spaceRooms = MutableStateFlow<ImmutableList<RoomListRoomSummary>>(persistentListOf())
+    private val _selectedSpaceItem = MutableStateFlow<SpaceListDataSource.SpaceHierarchyItem?>(null)
 
     val spaceRooms: StateFlow<ImmutableList<RoomListRoomSummary>> = _spaceRooms
     val spaceSelectionHierarchy: StateFlow<ImmutableList<String>?> = _spaceSelectionHierarchy
@@ -60,14 +61,11 @@ class SpaceAwareRoomListDataSource @Inject constructor(
             val spaceList = allSpacesValue?.takeIf { it.isNotEmpty() } ?: return@combine Pair(null, true)
             // Resolve actual space from space hierarchy
             val space = spaceList.resolveSelection(spaceSelectionValue) ?: return@combine Pair(null, false)
-            // Tell SDK we filter the sliding sync window by spaces
-            space.let {
-                client.roomListService.updateVisibleSpaces(it.flattenedSpaces)
-            }
-            return@combine Pair(space.flattenedRooms, true)
+            return@combine Pair(space, true)
         }
-            .onEach { (roomIds, spaceFound) ->
-                _spaceChildFilter.value = roomIds
+            .onEach { (space, spaceFound) ->
+                _selectedSpaceItem.value = space
+                _spaceChildFilter.value = space?.flattenedRooms
                 if (!spaceFound) {
                     Timber.i("Selected space not found, clearing selection")
                     updateSpaceSelection(persistentListOf())
@@ -77,6 +75,13 @@ class SpaceAwareRoomListDataSource @Inject constructor(
         // Workaround to refresh m.space.child relations without listening to every room's state
         _spaceSelectionHierarchy.filter { !it.isNullOrEmpty() }.drop(1).debounce(500).onEach {
             spaceListDataSource.forceRebuildSpaceFilter()
+        }.launchIn(coroutineScope)
+
+        // Tell SDK we filter the sliding sync window by spaces
+        _selectedSpaceItem.debounce(1000).onEach {
+            it ?: return@onEach
+            Timber.v("Pass space selection to SDK")
+            client.roomListService.updateVisibleSpaces(it.flattenedSpaces)
         }.launchIn(coroutineScope)
 
         // Filter by space with the room id list built in the previous flow

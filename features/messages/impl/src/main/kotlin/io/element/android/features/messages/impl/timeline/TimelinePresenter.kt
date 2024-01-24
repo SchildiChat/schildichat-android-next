@@ -123,6 +123,7 @@ class TimelinePresenter @AssistedInject constructor(
                 TimelineEvents.LoadMore -> localScope.paginateBackwards()
                 is TimelineEvents.SetHighlightedEvent -> highlightedEventId.value = event.eventId
                 is TimelineEvents.OnUnreadLineVisible -> scReadState.sawUnreadLine.value = true
+                is TimelineEvents.MarkAsRead -> forceSetReceipts(appScope, timeline, scReadState)
                 is TimelineEvents.OnScrollFinished -> {
                     if (event.firstIndex == 0) {
                         newItemState.value = NewEventState.None

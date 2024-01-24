@@ -27,6 +27,17 @@ data class ScReadState(
     val readMarkerToSet: MutableState<EventId?>,
     val sawUnreadLine: MutableState<Boolean>,
 )
+
+fun forceSetReceipts(appScope: CoroutineScope, timeline: MatrixTimeline, scReadState: ScReadState) {
+    scReadState.sawUnreadLine.value = true
+    scReadState.readMarkerToSet.value?.let { eventId ->
+        appScope.launch {
+            timeline.sendReadReceipt(eventId, ReceiptType.READ)
+            timeline.sendReadReceipt(eventId, ReceiptType.FULLY_READ)
+        }
+    }
+}
+
 @Composable
 fun ScReadTracker(appScope: CoroutineScope, timeline: MatrixTimeline, onBackPressed: () -> Unit): ScReadState {
     val lastReadMarkerIndex = rememberSaveable { mutableIntStateOf(Int.MAX_VALUE) }

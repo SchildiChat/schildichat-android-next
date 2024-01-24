@@ -49,6 +49,9 @@
     <string name="sc_pref_screen_experimental_title">Experimental</string>
     <string name="sc_pref_screen_experimental_summary">Unstable features, expect bugs</string>
 
+    <string name="sc_action_mark_as_read">Mark as read</string>
+    <string name="sc_action_mark_as_unread">Mark as unread</string>
+
     <!-- TODO remove -->
     <string name="test">Test</string>
 </resources>

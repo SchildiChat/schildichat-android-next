@@ -198,6 +198,7 @@ fun MessagesView(
                     onBackPressed = onBackPressed,
                     onRoomDetailsClicked = onRoomDetailsClicked,
                     onJoinCallClicked = onJoinCallClicked,
+                    state = state,
                 )
             }
         },
@@ -455,6 +456,7 @@ private fun MessagesViewTopBar(
     onRoomDetailsClicked: () -> Unit,
     onJoinCallClicked: () -> Unit,
     onBackPressed: () -> Unit,
+    state: MessagesState,
     modifier: Modifier = Modifier,
 ) {
     TopAppBar(
@@ -489,7 +491,7 @@ private fun MessagesViewTopBar(
                 }
             }
             Spacer(Modifier.width(8.dp))
-            scMessagesViewTopBarActions()
+            scMessagesViewTopBarActions(state)
         },
         windowInsets = WindowInsets(0.dp)
     )

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -20,6 +21,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBackIos
+import androidx.compose.material.icons.automirrored.outlined.ArrowForwardIos
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material3.Icon
@@ -37,7 +40,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
@@ -61,6 +66,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -144,8 +150,8 @@ private fun ColumnScope.SpacesPager(
             val draggableState = rememberDraggableState {
                 offsetX += it
             }
-            val swipeThreshold = 40.dp.toPx()
-            val indicatorThreshold = 72.dp.toPx()
+            val swipeThreshold = 144.dp.toPx()
+            val indicatorThreshold = 128.dp.toPx()
             // Note: we have spacesList.size+1 tabs
             val canSwipeUp = selectedTab < spacesList.size
             val canSwipeDown = selectedTab > 0
@@ -169,9 +175,10 @@ private fun ColumnScope.SpacesPager(
             ) {
                 content(Modifier.fillMaxWidth())
                 // Swipe down indicator
+                val swipeProgress = min(1f, offsetX.absoluteValue / swipeThreshold)
                 if (canSwipeDown) {
                     SwipeIndicator(
-                        if (selectedTab > 1) spacesList[selectedSpaceIndex-1] else defaultSpace,
+                        if (selectedTab > 1) spacesList[selectedSpaceIndex-1] else defaultSpace, false, swipeProgress,
                         Modifier
                             .align(Alignment.CenterStart)
                             .offset {
@@ -183,7 +190,7 @@ private fun ColumnScope.SpacesPager(
                 // Swipe up indicator
                 if (canSwipeUp) {
                     SwipeIndicator(
-                        spacesList[selectedSpaceIndex+1],
+                        spacesList[selectedSpaceIndex+1], true, swipeProgress,
                         Modifier
                             .align(Alignment.CenterEnd)
                             .offset {
@@ -261,14 +268,40 @@ private fun selectSpaceIndex(
 }
 
 @Composable
-private fun SwipeIndicator(space: SpaceListDataSource.SpaceHierarchyItem?, modifier: Modifier) {
-    Box(modifier.background(MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.65f), CircleShape).padding(8.dp)) {
-        if (space == null) {
-            ShowAllIcon(AvatarSize.SpaceSwipeIndicator, color = MaterialTheme.colorScheme.inverseOnSurface)
-        } else {
-            Avatar(space.info.avatarData.copy(size = AvatarSize.SpaceSwipeIndicator), shape = CircleShape)
+private fun SwipeIndicator(space: SpaceListDataSource.SpaceHierarchyItem?, upwards: Boolean, thresholdProgress: Float, modifier: Modifier) {
+    Row(modifier) {
+        if (upwards) {
+            SwipeIndicatorArrow(imageVector = Icons.AutoMirrored.Outlined.ArrowBackIos, thresholdProgress = thresholdProgress)
+        }
+        Box(
+            Modifier
+                .background(MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.65f), CircleShape)
+                .padding(8.dp)
+                .alpha(thresholdProgress)
+        ) {
+            if (space == null) {
+                ShowAllIcon(AvatarSize.SpaceSwipeIndicator, color = MaterialTheme.colorScheme.inverseOnSurface)
+            } else {
+                Avatar(space.info.avatarData.copy(size = AvatarSize.SpaceSwipeIndicator), shape = CircleShape)
+            }
+        }
+        if (!upwards) {
+            SwipeIndicatorArrow(imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos, thresholdProgress = thresholdProgress)
         }
     }
+}
+
+@Composable
+private fun RowScope.SwipeIndicatorArrow(imageVector: ImageVector, thresholdProgress: Float) {
+    Icon(
+        imageVector = imageVector,
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.65f),
+        modifier = Modifier
+            .size(48.dp)
+            .align(Alignment.CenterVertically)
+            .alpha(thresholdProgress)
+    )
 }
 
 @Composable

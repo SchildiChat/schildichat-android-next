@@ -68,6 +68,7 @@ object ScPrefs {
         ScPrefCategory(R.string.sc_pref_category_spaces, null, listOf(
             SPACE_NAV,
             SPACE_UNREAD_COUNTS,
+            SPACE_SWIPE,
         )),
         ScPrefCategory(R.string.sc_pref_category_timeline, null, listOf(
             SC_TIMELINE_LAYOUT,
@@ -76,7 +77,6 @@ object ScPrefs {
         ScPrefCategory(R.string.sc_pref_category_misc, null, listOf(
             ScPrefScreen(R.string.sc_pref_screen_experimental_title, R.string.sc_pref_screen_experimental_summary, listOf(
                 PL_DISPLAY_NAME,
-                SPACE_SWIPE,
             )),
         )),
         ScPrefCategory(CommonStrings.common_developer_options, null, listOf(
@@ -102,7 +102,6 @@ object ScPrefs {
         SC_OVERVIEW_LAYOUT.copy(titleRes = R.string.sc_pref_sc_layout_title),
         EL_TYPOGRAPHY,
         SPACE_NAV,
-        SPACE_SWIPE,
     )
 
     val devQuickTweaksTimeline = listOf(

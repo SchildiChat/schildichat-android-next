@@ -46,7 +46,6 @@ fun ScReadTracker(appScope: CoroutineScope, timeline: MatrixTimeline, onBackPres
                     timeline.sendReadReceipt(eventId, ReceiptType.READ)
                     timeline.sendReadReceipt(eventId, ReceiptType.FULLY_READ)
                     toast.cancel()
-                    Toast.makeText(context, context.getString(chat.schildi.lib.R.string.sc_set_read_marker_toast_end, eventId.value), Toast.LENGTH_SHORT).show()
                     onBackPressed()
                 }
             }

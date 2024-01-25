@@ -150,8 +150,9 @@ private fun ColumnScope.SpacesPager(
             val draggableState = rememberDraggableState {
                 offsetX += it
             }
-            val swipeThreshold = 144.dp.toPx()
-            val indicatorThreshold = 128.dp.toPx()
+            // Indicator width itself is 96dp
+            val swipeThreshold = 104.dp.toPx()
+            val indicatorThreshold = 104.dp.toPx()
             // Note: we have spacesList.size+1 tabs
             val canSwipeUp = selectedTab < spacesList.size
             val canSwipeDown = selectedTab > 0

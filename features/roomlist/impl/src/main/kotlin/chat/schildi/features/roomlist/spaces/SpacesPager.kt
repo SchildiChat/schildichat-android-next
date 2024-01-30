@@ -276,9 +276,9 @@ private fun SwipeIndicator(space: SpaceListDataSource.SpaceHierarchyItem?, upwar
         }
         Box(
             Modifier
+                .alpha(thresholdProgress)
                 .background(MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.65f), CircleShape)
                 .padding(8.dp)
-                .alpha(thresholdProgress)
         ) {
             if (space == null) {
                 ShowAllIcon(AvatarSize.SpaceSwipeIndicator, color = MaterialTheme.colorScheme.inverseOnSurface)

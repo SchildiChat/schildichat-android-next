@@ -48,7 +48,7 @@ export_files_custom() {
 dpi=48 # 96/2
 
 file="$mydir/ic_launcher_foreground.svg"
-for variant in scBetaDebug scDefaultDebug scInternalRelease scBetaRelease scDefaultRelease; do
+for variant in fdroidScBetaDebug fdroidScDefaultDebug fdroidScInternalRelease fdroidScBetaRelease fdroidScDefaultRelease; do
     base_folder="$mydir/../app/src/$variant/res/mipmap"
     export_files
 done
@@ -74,7 +74,7 @@ inkscape "$file" --export-filename="$store_icon.tmp.png" --export-area="$non_ada
 # Read gradient from actual vector drawable
 get_bg_prop() {
     local prop="$1"
-    cat "$mydir/../app/src/scDefaultRelease/res/drawable/ic_launcher_background.xml"|grep "$prop"=|sed 's|.*'"$prop"'=\"\([^\"]*\)".*|\1|'
+    cat "$mydir/../app/src/fdroidScDefaultRelease/res/drawable/ic_launcher_background.xml"|grep "$prop"=|sed 's|.*'"$prop"'=\"\([^\"]*\)".*|\1|'
 }
 bg_angle=`get_bg_prop angle`
 bg_startColor=`get_bg_prop startColor`

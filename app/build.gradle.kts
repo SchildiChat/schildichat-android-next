@@ -156,12 +156,13 @@ android {
     productFlavors {
         create("gplay") {
             dimension = "store"
-            isDefault = true
+            //isDefault = true
             buildConfigField("String", "SHORT_FLAVOR_DESCRIPTION", "\"G\"")
             buildConfigField("String", "FLAVOR_DESCRIPTION", "\"GooglePlay\"")
         }
         create("fdroid") {
             dimension = "store"
+            isDefault = true
             buildConfigField("String", "SHORT_FLAVOR_DESCRIPTION", "\"F\"")
             buildConfigField("String", "FLAVOR_DESCRIPTION", "\"FDroid\"")
         }

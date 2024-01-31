@@ -46,6 +46,7 @@ dependencyResolutionManagement {
             url = URI("https://www.jitpack.io")
             content {
                 includeModule("com.github.UnifiedPush", "android-connector")
+                includeModule("com.github.UnifiedPush", "android-foss_embedded_fcm_distributor")
                 includeModule("com.github.matrix-org", "matrix-analytics-events")
                 includeModule("com.github.SchildiChat", "element-compound-android")
             }

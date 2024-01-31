@@ -28,6 +28,7 @@ anvil {
 }
 
 dependencies {
+    implementation(projects.schildi.lib)
     implementation(libs.dagger)
     implementation(projects.libraries.androidutils)
     implementation(projects.libraries.core)
@@ -48,6 +49,7 @@ dependencies {
 
     // UnifiedPush library
     api(libs.unifiedpush)
+    api(libs.unifiedpush.fcm)
 
     testImplementation(libs.test.junit)
     testImplementation(libs.test.truth)

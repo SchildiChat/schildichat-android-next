@@ -203,6 +203,7 @@ appcompat = "androidx.appcompat:appcompat:1.6.1"
 
 # SC additions
 skydoves_colorpicker = "com.github.skydoves:colorpicker-compose:1.0.5"
+unifiedpush_fcm = "com.github.UnifiedPush:android-foss_embedded_fcm_distributor:1.0.0-beta5"
 
 [bundles]
 

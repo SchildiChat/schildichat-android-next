@@ -58,7 +58,8 @@ class UnifiedPushProvider @Inject constructor(
         return distributors.mapNotNull {
             if (it == context.packageName) {
                 // Exclude self
-                null
+                //null
+                Distributor(it, context.getString(chat.schildi.lib.R.string.sc_embedded_fcm_distributor_name))
             } else {
                 Distributor(it, context.getApplicationLabel(it))
             }

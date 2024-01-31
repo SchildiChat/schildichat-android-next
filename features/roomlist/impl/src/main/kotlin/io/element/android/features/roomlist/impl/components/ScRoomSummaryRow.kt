@@ -181,7 +181,7 @@ private fun RowScope.ScLastMessageAndIndicatorRow(room: RoomListRoomSummary) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         // Video call
-        if (room.hasOngoingCall) {
+        if (room.hasRoomCall) {
             Icon(
                 modifier = Modifier.size(16.dp),
                 imageVector = CompoundIcons.VideoCallSolid,

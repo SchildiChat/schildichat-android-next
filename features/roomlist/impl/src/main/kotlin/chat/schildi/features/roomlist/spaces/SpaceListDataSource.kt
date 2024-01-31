@@ -1,12 +1,11 @@
 package chat.schildi.features.roomlist.spaces
 
 import androidx.compose.runtime.Immutable
+import io.element.android.features.roomlist.impl.datasource.RoomListRoomSummaryFactory
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
-import io.element.android.features.roomlist.impl.model.RoomListRoomSummaryPlaceholders
 import io.element.android.libraries.androidutils.diff.DiffCacheUpdater
 import io.element.android.libraries.androidutils.diff.MutableListDiffCache
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
-import io.element.android.libraries.core.extensions.orEmpty
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.matrix.api.MatrixClient
@@ -31,6 +30,7 @@ import javax.inject.Inject
 class SpaceListDataSource @Inject constructor(
     private val client: MatrixClient,
     private val roomListService: RoomListService,
+    private val roomListRoomSummaryFactory: RoomListRoomSummaryFactory,
     private val coroutineDispatchers: CoroutineDispatchers,
 ) {
     private val _allSpaces = MutableStateFlow<ImmutableList<SpaceHierarchyItem>?>(null)
@@ -148,35 +148,13 @@ class SpaceListDataSource @Inject constructor(
         )
     }
 
+
     private fun buildAndCacheItem(roomSummaries: List<RoomSummary>, index: Int): RoomListRoomSummary? {
         val roomListRoomSummary = when (val roomSummary = roomSummaries.getOrNull(index)) {
-            is RoomSummary.Empty -> RoomListRoomSummaryPlaceholders.create(roomSummary.identifier)
-            is RoomSummary.Filled -> {
-                val avatarData = AvatarData(
-                    id = roomSummary.identifier(),
-                    name = roomSummary.details.name,
-                    url = roomSummary.details.avatarURLString,
-                    size = AvatarSize.RoomListItem,
-                )
-                val roomIdentifier = roomSummary.identifier()
-                RoomListRoomSummary(
-                    id = roomSummary.identifier(),
-                    roomId = RoomId(roomIdentifier),
-                    name = roomSummary.details.name,
-                    hasUnread = false,
-                    notificationCount = 0,
-                    highlightCount = 0,
-                    unreadCount = 0,
-                    timestamp = null,
-                    lastMessage = null,
-                    avatarData = avatarData,
-                    notificationMode = null,
-                    hasOngoingCall = false,
-                )
-            }
+            is RoomSummary.Empty -> roomListRoomSummaryFactory.createPlaceholder(roomSummary.identifier)
+            is RoomSummary.Filled -> roomListRoomSummaryFactory.create(roomSummary)
             null -> null
         }
-
         diffCache[index] = roomListRoomSummary
         return roomListRoomSummary
     }

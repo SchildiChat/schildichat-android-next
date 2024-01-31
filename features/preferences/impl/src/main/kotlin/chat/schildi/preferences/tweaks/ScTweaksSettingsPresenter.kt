@@ -25,17 +25,17 @@ import chat.schildi.lib.preferences.prefValMap
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import io.element.android.features.preferences.api.store.PreferencesStore
+import io.element.android.features.preferences.api.store.AppPreferencesStore
 import io.element.android.libraries.architecture.Presenter
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class ScTweaksSettingsPresenter @AssistedInject constructor(
-    private val preferencesStore: PreferencesStore,
+    appPreferencesStore: AppPreferencesStore,
     @Assisted prefScreen: ScPrefScreen?,
 ) : Presenter<ScTweaksSettingsState> {
 
-    private val scPreferencesStore = preferencesStore.getScPreferenceStore()
+    private val scPreferencesStore = appPreferencesStore.getScPreferenceStore()
     private val prefScreen = prefScreen ?: ScPrefs.scTweaks
 
     @AssistedFactory

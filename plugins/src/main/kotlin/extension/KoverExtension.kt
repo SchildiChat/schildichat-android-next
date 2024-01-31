@@ -97,8 +97,8 @@ fun Project.setupKover() {
 
         defaults {
             // add reports of both 'debug' and 'release' Android build variants to default reports
-            //mergeWith("debug")
-            //mergeWith("release")
+            //mergeWith("gplayDebug")
+            //mergeWith("gplayRelease")
 
             verify {
                 onCheck = true
@@ -202,7 +202,8 @@ fun Project.setupKover() {
             }
         }
 
-        androidReports("scDefaultRelease") {}
+        //androidReports("gplayRelease") {}
+        androidReports("fdroidScDefaultRelease") {}
     }
 }
 

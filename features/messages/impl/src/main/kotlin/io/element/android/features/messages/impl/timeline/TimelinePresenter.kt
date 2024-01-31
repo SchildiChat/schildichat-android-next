@@ -40,6 +40,7 @@ import io.element.android.features.messages.impl.timeline.session.SessionState
 import io.element.android.features.messages.impl.voicemessages.timeline.RedactedVoiceMessageManager
 import io.element.android.features.poll.api.actions.EndPollAction
 import io.element.android.features.poll.api.actions.SendPollResponseAction
+import io.element.android.features.preferences.api.store.SessionPreferencesStore
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.matrix.api.core.EventId
@@ -55,6 +56,7 @@ import io.element.android.libraries.matrix.api.verification.SessionVerifiedStatu
 import io.element.android.libraries.matrix.ui.room.canSendMessageAsState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -74,6 +76,7 @@ class TimelinePresenter @AssistedInject constructor(
     private val redactedVoiceMessageManager: RedactedVoiceMessageManager,
     private val sendPollResponseAction: SendPollResponseAction,
     private val endPollAction: EndPollAction,
+    private val sessionPreferencesStore: SessionPreferencesStore,
 ) : Presenter<TimelineState> {
     @AssistedFactory
     interface Factory {
@@ -104,6 +107,8 @@ class TimelinePresenter @AssistedInject constructor(
         val sessionVerifiedStatus by verificationService.sessionVerifiedStatus.collectAsState()
         val keyBackupState by encryptionService.backupStateStateFlow.collectAsState()
 
+        val isSendPublicReadReceiptsEnabled by sessionPreferencesStore.isSendPublicReadReceiptsEnabled().collectAsState(initial = true)
+
         val sessionState by remember {
             derivedStateOf {
                 SessionState(
@@ -112,8 +117,6 @@ class TimelinePresenter @AssistedInject constructor(
                 )
             }
         }
-
-        val membersState by room.membersStateFlow.collectAsState()
 
         val scReadState = ScReadTracker(appScope, timeline, navigator::onBackPressed)
         val syncReadReceiptAndMarker = ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.value()
@@ -141,7 +144,8 @@ class TimelinePresenter @AssistedInject constructor(
                         firstVisibleIndex = event.firstIndex,
                         timelineItems = timelineItems,
                         lastReadReceiptIndex = lastReadReceiptIndex,
-                        lastReadReceiptId = lastReadReceiptId
+                        lastReadReceiptId = lastReadReceiptId,
+                        readReceiptType = if (isSendPublicReadReceiptsEnabled) ReceiptType.READ else ReceiptType.READ_PRIVATE,
                     )
                 }
                 is TimelineEvents.PollAnswerSelected -> appScope.launch {
@@ -165,13 +169,12 @@ class TimelinePresenter @AssistedInject constructor(
         }
 
         LaunchedEffect(Unit) {
-            timeline
-                .timelineItems
-                .onEach {
+            combine(timeline.timelineItems, room.membersStateFlow) { items, membersState ->
                     timelineItemsFactory.replaceWith(
-                        timelineItems = it,
+                        timelineItems = items,
                         roomMembers = membersState.roomMembers().orEmpty()
                     )
+                    items
                 }
                 .onEach { timelineItems ->
                     if (timelineItems.isEmpty()) {
@@ -241,13 +244,14 @@ class TimelinePresenter @AssistedInject constructor(
         timelineItems: ImmutableList<TimelineItem>,
         lastReadReceiptIndex: MutableState<Int>,
         lastReadReceiptId: MutableState<EventId?>,
+        readReceiptType: ReceiptType,
     ) = launch(dispatchers.computation) {
         // Get last valid EventId seen by the user, as the first index might refer to a Virtual item
         val eventId = getLastEventIdBeforeOrAt(firstVisibleIndex, timelineItems)
         if (eventId != null && firstVisibleIndex <= lastReadReceiptIndex.value && eventId != lastReadReceiptId.value) {
             lastReadReceiptIndex.value = firstVisibleIndex
             lastReadReceiptId.value = eventId
-            timeline.sendReadReceipt(eventId = eventId, receiptType = ReceiptType.READ)
+            timeline.sendReadReceipt(eventId = eventId, receiptType = readReceiptType)
         }
     }
 

@@ -29,7 +29,7 @@ import com.bumble.appyx.core.plugin.plugins
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import io.element.android.anvilannotations.ContributesNode
-import io.element.android.features.preferences.api.store.PreferencesStore
+import io.element.android.features.preferences.api.store.AppPreferencesStore
 import io.element.android.libraries.architecture.NodeInputs
 import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.di.SessionScope
@@ -42,11 +42,11 @@ class ScTweaksSettingsNode @AssistedInject constructor(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
     presenterFactory: ScTweaksSettingsPresenter.Factory,
-    private val preferencesStore: PreferencesStore,
+    private val appPreferencesStore: AppPreferencesStore,
     private val appCoroutineScope: CoroutineScope,
 ) : Node(buildContext, plugins = plugins) {
 
-    private val scPreferencesStore = preferencesStore.getScPreferenceStore()
+    private val scPreferencesStore = appPreferencesStore.getScPreferenceStore()
 
     data class Inputs(
         val prefScreen: ScPrefScreen?
@@ -106,6 +106,6 @@ class ScTweaksSettingsNode @AssistedInject constructor(
 
     private fun setUpstreamSettingsToPreset(authorsChoice: Boolean) = appCoroutineScope.launch {
         // "View source" setting
-        preferencesStore.setDeveloperModeEnabled(authorsChoice)
+        appPreferencesStore.setDeveloperModeEnabled(authorsChoice)
     }
 }

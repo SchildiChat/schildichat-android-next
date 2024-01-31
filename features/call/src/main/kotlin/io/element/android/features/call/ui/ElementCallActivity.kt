@@ -46,7 +46,7 @@ import io.element.android.features.call.CallForegroundService
 import io.element.android.features.call.CallType
 import io.element.android.features.call.di.CallBindings
 import io.element.android.features.call.utils.CallIntentDataParser
-import io.element.android.features.preferences.api.store.PreferencesStore
+import io.element.android.features.preferences.api.store.AppPreferencesStore
 import io.element.android.libraries.architecture.bindings
 import javax.inject.Inject
 
@@ -68,7 +68,7 @@ class ElementCallActivity : NodeComponentActivity(), CallScreenNavigator {
 
     @Inject lateinit var callIntentDataParser: CallIntentDataParser
     @Inject lateinit var presenterFactory: CallScreenPresenter.Factory
-    @Inject lateinit var preferencesStore: PreferencesStore
+    @Inject lateinit var appPreferencesStore: AppPreferencesStore
 
     private lateinit var presenter: CallScreenPresenter
 
@@ -102,7 +102,7 @@ class ElementCallActivity : NodeComponentActivity(), CallScreenNavigator {
 
         setContent {
             val theme by remember {
-                preferencesStore.getThemeFlow().mapToTheme()
+                appPreferencesStore.getThemeFlow().mapToTheme()
             }
                 .collectAsState(initial = Theme.System)
             val state = presenter.present()

@@ -105,7 +105,7 @@ class VectorUnifiedPushMessagingReceiver : MessagingReceiver() {
      */
     override fun onUnregistered(context: Context, instance: String) {
         Timber.tag(loggerTag.value).d("Unifiedpush: Unregistered")
-        TODO()
+        //TODO()
         /*
         val mode = BackgroundSyncMode.FDROID_BACKGROUND_SYNC_MODE_FOR_REALTIME
         pushDataStore.setFdroidSyncBackgroundMode(mode)

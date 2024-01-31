@@ -25,6 +25,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Render media captions ([MSC2530](https://github.com/matrix-org/matrix-spec-proposals/pull/2530)) ‡
 - Bigger stickers
 - Differentiate notices from normal text messages by adding some transparency
+- Render collapsible `<details>` tags in messages
 
 
 ## Experimental/unstable features

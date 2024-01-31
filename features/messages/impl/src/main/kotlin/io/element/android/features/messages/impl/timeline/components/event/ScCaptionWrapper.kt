@@ -2,12 +2,9 @@ package io.element.android.features.messages.impl.timeline.components.event
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import chat.schildi.theme.ScTheme
 import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayoutData
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextContent
 
@@ -35,6 +32,7 @@ fun ScCaptionWrapper(
                 ),
                 onContentLayoutChanged = onContentLayoutChanged,
                 onLinkClicked = onLinkClicked,
+                onLongClick = {}, // onLongClick only required when formattedBody is set and contains a <details> tag
                 modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 8.dp),
             )
         }

@@ -48,6 +48,7 @@ import io.element.android.libraries.architecture.Presenter
 fun TimelineItemEventContentView(
     content: TimelineItemEventContent,
     onLinkClicked: (url: String) -> Unit,
+    onLongClick: () -> Unit,
     eventSink: (TimelineEvents) -> Unit,
     modifier: Modifier = Modifier,
     onContentLayoutChanged: (ContentAvoidingLayoutData) -> Unit = {},
@@ -68,6 +69,7 @@ fun TimelineItemEventContentView(
             content = content,
             modifier = modifier.thenIf(content is TimelineItemNoticeContent) { alpha(0.65f) },
             onLinkClicked = onLinkClicked,
+            onLongClick = onLongClick,
             onContentLayoutChanged = onContentLayoutChanged
         )
         is TimelineItemUnknownContent -> TimelineItemUnknownView(

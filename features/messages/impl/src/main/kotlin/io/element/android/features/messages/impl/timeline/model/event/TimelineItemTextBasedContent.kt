@@ -24,6 +24,7 @@ sealed interface TimelineItemTextBasedContent : TimelineItemEventContent {
     val body: String
     val htmlDocument: Document?
     val formattedBody: CharSequence?
+    val formattedCollapsedBody: CharSequence?
     val plainText: String
     val isEdited: Boolean
     val htmlBody: String?

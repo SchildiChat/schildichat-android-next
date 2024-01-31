@@ -17,11 +17,17 @@
 package io.element.android.features.messages.impl.timeline.components.event
 
 import android.text.SpannableString
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import chat.schildi.lib.preferences.ScPrefs.EL_TYPOGRAPHY
@@ -36,10 +42,12 @@ import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.textcomposer.ElementRichTextEditorStyle
 import io.element.android.wysiwyg.compose.EditorStyledText
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TimelineItemTextView(
     content: TimelineItemTextBasedContent,
     onLinkClicked: (String) -> Unit,
+    onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
     onContentLayoutChanged: (ContentAvoidingLayoutData) -> Unit = {},
 ) {
@@ -47,10 +55,12 @@ fun TimelineItemTextView(
         LocalContentColor provides ElementTheme.colors.textPrimary,
         LocalTextStyle provides if (EL_TYPOGRAPHY.value()) ElementTheme.typography.fontBodyLgRegular else ElementTheme.typography.fontBodyMdRegular
     ) {
-        val formattedBody = content.formattedBody
+        val canCollapse = content.formattedCollapsedBody != null
+        var collapsed by remember(canCollapse) { mutableStateOf(canCollapse) }
+        val formattedBody = if (collapsed && canCollapse) content.formattedCollapsedBody else content.formattedBody
         val body = SpannableString(formattedBody ?: content.body)
 
-        Box(modifier) {
+        Box(modifier.combinedClickable(canCollapse, onClick = { collapsed = !collapsed }, onLongClick = onLongClick)) {
             EditorStyledText(
                 text = body,
                 onLinkClickedListener = onLinkClicked,
@@ -70,5 +80,6 @@ internal fun TimelineItemTextViewPreview(
     TimelineItemTextView(
         content = content,
         onLinkClicked = {},
+        onLongClick = {},
     )
 }

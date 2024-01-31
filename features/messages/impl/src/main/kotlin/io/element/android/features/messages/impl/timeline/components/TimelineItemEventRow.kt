@@ -582,6 +582,7 @@ private fun MessageEventBubbleContent(
                             }
                         }
                     },
+                    onLongClick = onMessageLongClick,
                     eventSink = eventSink,
                     onContentLayoutChanged = onContentLayoutChanged,
                     modifier = contentModifier

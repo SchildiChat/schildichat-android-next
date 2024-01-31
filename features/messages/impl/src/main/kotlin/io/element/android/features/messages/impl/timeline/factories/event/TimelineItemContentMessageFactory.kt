@@ -76,6 +76,7 @@ class TimelineItemContentMessageFactory @Inject constructor(
                     body = emoteBody,
                     htmlDocument = messageType.formatted?.toHtmlDocument(prefix = "* $senderDisplayName"),
                     formattedBody = parseHtml(messageType.formatted, prefix = "* $senderDisplayName") ?: emoteBody.withLinks(),
+                    formattedCollapsedBody = parseHtmlCollapsed(messageType.formatted, prefix = "* $senderDisplayName"),
                     isEdited = content.isEdited,
                 )
             }
@@ -201,6 +202,7 @@ class TimelineItemContentMessageFactory @Inject constructor(
                     body = body,
                     htmlDocument = messageType.formatted?.toHtmlDocument(),
                     formattedBody = parseHtml(messageType.formatted) ?: body.withLinks(),
+                    formattedCollapsedBody = parseHtmlCollapsed(messageType.formatted),
                     isEdited = content.isEdited,
                 )
             }
@@ -210,6 +212,7 @@ class TimelineItemContentMessageFactory @Inject constructor(
                     body = body,
                     htmlDocument = messageType.formatted?.toHtmlDocument(),
                     formattedBody = parseHtml(messageType.formatted) ?: body.withLinks(),
+                    formattedCollapsedBody = parseHtmlCollapsed(messageType.formatted),
                     isEdited = content.isEdited,
                 )
             }
@@ -235,7 +238,7 @@ class TimelineItemContentMessageFactory @Inject constructor(
         return result?.takeIf { it.isFinite() }
     }
 
-    private fun parseHtml(formattedBody: FormattedBody?, prefix: String? = null): CharSequence? {
+    internal fun parseHtml(formattedBody: FormattedBody?, prefix: String? = null): CharSequence? {
         if (formattedBody == null || formattedBody.format != MessageFormat.HTML) return null
         val result = htmlConverterProvider.provide()
             .fromHtmlToSpans(formattedBody.body.trimEnd())

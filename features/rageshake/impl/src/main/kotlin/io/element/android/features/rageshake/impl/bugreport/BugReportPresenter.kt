@@ -32,6 +32,7 @@ import io.element.android.features.rageshake.api.screenshot.ScreenshotHolder
 import io.element.android.features.rageshake.impl.logs.VectorFileLogger
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
+import io.element.android.libraries.core.meta.BuildMeta
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,6 +42,7 @@ class BugReportPresenter @Inject constructor(
     private val crashDataStore: CrashDataStore,
     private val screenshotHolder: ScreenshotHolder,
     private val appCoroutineScope: CoroutineScope,
+    private val buildMeta: BuildMeta,
 ) : Presenter<BugReportState> {
     private class BugReporterUploadListener(
         private val sendingProgress: MutableFloatState,
@@ -113,6 +115,7 @@ class BugReportPresenter @Inject constructor(
         }
 
         return BugReportState(
+            isInternalBuild = buildMeta.isInternalBuild,
             hasCrashLogs = crashInfo.isNotEmpty(),
             sendingProgress = sendingProgress.floatValue,
             sending = sendingAction.value,

@@ -64,7 +64,7 @@ class UnifiedPushProvider @Inject constructor(
             }
         } +
             // SC: Append self at the end for our FOSS-FCM-Distributor - at the end is important to favor external distributors
-            listOf(Distributor(context.packageName, context.getString(chat.schildi.lib.R.string.sc_embedded_fcm_distributor_name)))
+            listOf(Distributor(context.packageName, "FCM"))
     }
 
     override suspend fun registerWith(matrixClient: MatrixClient, distributor: Distributor) {

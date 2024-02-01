@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import chat.schildi.lib.compose.thenIf
 import chat.schildi.lib.preferences.ScPrefs.EL_TYPOGRAPHY
 import chat.schildi.lib.preferences.value
 import io.element.android.compound.theme.ElementTheme
@@ -60,7 +61,7 @@ fun TimelineItemTextView(
         val formattedBody = if (collapsed && canCollapse) content.formattedCollapsedBody else content.formattedBody
         val body = SpannableString(formattedBody ?: content.body)
 
-        Box(modifier.combinedClickable(canCollapse, onClick = { collapsed = !collapsed }, onLongClick = onLongClick)) {
+        Box(modifier.thenIf(canCollapse) { combinedClickable(onClick = { collapsed = !collapsed }, onLongClick = onLongClick) }) {
             EditorStyledText(
                 text = body,
                 onLinkClickedListener = onLinkClicked,

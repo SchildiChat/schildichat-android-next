@@ -42,6 +42,7 @@ dependencies {
     implementation(libs.serialization.json)
     implementation(libs.coil)
 
+    implementation(projects.schildi.lib)
     implementation(projects.appconfig)
     implementation(projects.libraries.architecture)
     implementation(projects.libraries.core)

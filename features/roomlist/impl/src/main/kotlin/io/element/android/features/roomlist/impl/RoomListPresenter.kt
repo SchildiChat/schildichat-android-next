@@ -75,6 +75,7 @@ class RoomListPresenter @Inject constructor(
     private val encryptionService: EncryptionService,
     private val featureFlagService: FeatureFlagService,
     private val indicatorService: IndicatorService,
+    private val scAppStateStore: ScAppStateStore,
 ) : Presenter<RoomListState> {
     @Composable
     override fun present(): RoomListState {
@@ -91,7 +92,6 @@ class RoomListPresenter @Inject constructor(
         val filter by roomListDataSource.filter.collectAsState()
         val networkConnectionStatus by networkMonitor.connectivity.collectAsState()
 
-        val scAppStateStore = ScAppStateStore(LocalContext.current)
         LaunchedEffect(Unit) {
             spaceListDataSource.launchIn(this)
             roomListDataSource.launchIn(this)

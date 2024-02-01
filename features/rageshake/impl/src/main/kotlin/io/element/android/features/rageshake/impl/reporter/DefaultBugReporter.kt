@@ -21,6 +21,7 @@ import android.os.Build
 import android.text.format.DateUtils.DAY_IN_MILLIS
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import chat.schildi.lib.preferences.ScAppStateStore
 import com.squareup.anvil.annotations.ContributesBinding
 import io.element.android.features.rageshake.api.crash.CrashDataStore
 import io.element.android.features.rageshake.api.reporter.BugReporter
@@ -57,6 +58,7 @@ import java.io.File
 import java.io.IOException
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -80,6 +82,7 @@ class DefaultBugReporter @Inject constructor(
     private val sessionStore: SessionStore,
     private val buildMeta: BuildMeta,
     private val bugReporterUrlProvider: BugReporterUrlProvider,
+    private val scAppStateStore: ScAppStateStore,
 ) : BugReporter {
     companion object {
         // filenames
@@ -184,6 +187,13 @@ class DefaultBugReporter @Inject constructor(
                     }
                     builder.addFormDataPart("label", "hs:${userId.substringAfter(":")}")
                     builder.addFormDataPart("label", "mxid:$userId")
+                    builder.addFormDataPart("up_last_push", scAppStateStore.formatLastPushTs())
+                    builder.addFormDataPart("up_provider", scAppStateStore.lastPushProvider())
+                    builder.addFormDataPart("up_gateway", scAppStateStore.lastPushGateway())
+                    builder.addFormDataPart("up_distributor", scAppStateStore.lastPushDistributor().toString())
+                    val gatewayHost = tryOrNull { URL(scAppStateStore.lastPushGateway()).host }
+                    builder.addFormDataPart("label", "up:gateway:$gatewayHost")
+                    builder.addFormDataPart("label", "up:distributor:${scAppStateStore.lastPushDistributorName()}")
                     // Device characteristics
                     context.resources.displayMetrics.apply {
                         builder.addFormDataPart("device_density", density.toString())
@@ -233,7 +243,7 @@ class DefaultBugReporter @Inject constructor(
 
                     // add some github labels
                     builder.addFormDataPart("label", buildMeta.versionName)
-                    builder.addFormDataPart("label", buildMeta.flavorDescription)
+                    //builder.addFormDataPart("label", buildMeta.flavorDescription)
                     builder.addFormDataPart("branch_name", buildMeta.gitBranchName)
 
                     if (crashCallStack.isNotEmpty() && withCrashLogs) {

@@ -18,6 +18,7 @@ package io.element.android.libraries.push.impl.push
 
 import android.os.Handler
 import android.os.Looper
+import chat.schildi.lib.preferences.ScAppStateStore
 import com.squareup.anvil.annotations.ContributesBinding
 import io.element.android.libraries.core.log.logger.LoggerTag
 import io.element.android.libraries.core.meta.BuildMeta
@@ -47,6 +48,7 @@ class DefaultPushHandler @Inject constructor(
     private val notifiableEventResolver: NotifiableEventResolver,
     private val defaultPushDataStore: DefaultPushDataStore,
     private val userPushStoreFactory: UserPushStoreFactory,
+    private val scAppStateStore: ScAppStateStore,
     private val pushClientSecret: PushClientSecret,
     // private val actionIds: NotificationActionIds,
     private val buildMeta: BuildMeta,
@@ -127,6 +129,8 @@ class DefaultPushHandler @Inject constructor(
                 Timber.tag(loggerTag.value).i("Notification are disabled for this device, ignore push.")
                 return
             }
+
+            scAppStateStore.onPushReceived(userPushStore.getPushProviderName())
 
             defaultNotificationDrawerManager.onNotifiableEventReceived(notifiableEvent)
         } catch (e: Exception) {

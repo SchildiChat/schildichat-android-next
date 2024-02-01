@@ -16,6 +16,7 @@
 
 package io.element.android.libraries.pushproviders.unifiedpush
 
+import chat.schildi.lib.preferences.ScAppStateStore
 import io.element.android.libraries.core.log.logger.LoggerTag
 import io.element.android.libraries.matrix.api.auth.MatrixAuthenticationService
 import io.element.android.libraries.pushproviders.api.PusherSubscriber
@@ -34,6 +35,7 @@ class UnifiedPushNewGatewayHandler @Inject constructor(
     private val userPushStoreFactory: UserPushStoreFactory,
     private val pushClientSecret: PushClientSecret,
     private val matrixAuthenticationService: MatrixAuthenticationService,
+    private val scAppStateStore: ScAppStateStore,
 ) {
     suspend fun handle(endpoint: String, pushGateway: String, clientSecret: String) {
         // Register the pusher for the session with this client secret, if is it using UnifiedPush.
@@ -45,6 +47,7 @@ class UnifiedPushNewGatewayHandler @Inject constructor(
             matrixAuthenticationService.restoreSession(userId).getOrNull()?.use { client ->
                 pusherSubscriber.registerPusher(client, endpoint, pushGateway)
             }
+            scAppStateStore.setPushGateway(pushGateway)
         } else {
             Timber.tag(loggerTag.value).d("This session is not using UnifiedPush pusher")
         }

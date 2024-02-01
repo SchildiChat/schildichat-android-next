@@ -16,6 +16,7 @@
 
 package io.element.android.libraries.push.impl
 
+import chat.schildi.lib.preferences.ScAppStateStore
 import com.squareup.anvil.annotations.ContributesBinding
 import io.element.android.libraries.di.AppScope
 import io.element.android.libraries.matrix.api.MatrixClient
@@ -32,6 +33,7 @@ class DefaultPushService @Inject constructor(
     private val pushersManager: PushersManager,
     private val userPushStoreFactory: UserPushStoreFactory,
     private val pushProviders: Set<@JvmSuppressWildcards PushProvider>,
+    private val scAppStateStore: ScAppStateStore,
 ) : PushService {
     override fun notificationStyleChanged() {
         defaultNotificationDrawerManager.notificationStyleChanged()
@@ -56,6 +58,7 @@ class DefaultPushService @Inject constructor(
         pushProvider.registerWith(matrixClient, distributor)
         // Store new value
         userPushStore.setPushProviderName(pushProvider.name)
+        scAppStateStore.setPushDistributor(distributor.value, distributor.name)
     }
 
     override suspend fun testPush() {

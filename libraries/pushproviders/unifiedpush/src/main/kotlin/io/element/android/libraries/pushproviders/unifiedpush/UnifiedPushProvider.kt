@@ -58,12 +58,13 @@ class UnifiedPushProvider @Inject constructor(
         return distributors.mapNotNull {
             if (it == context.packageName) {
                 // Exclude self
-                //null
-                Distributor(it, context.getString(chat.schildi.lib.R.string.sc_embedded_fcm_distributor_name))
+                null
             } else {
                 Distributor(it, context.getApplicationLabel(it))
             }
-        }
+        } +
+            // SC: Append self at the end for our FOSS-FCM-Distributor - at the end is important to favor external distributors
+            listOf(Distributor(context.packageName, context.getString(chat.schildi.lib.R.string.sc_embedded_fcm_distributor_name)))
     }
 
     override suspend fun registerWith(matrixClient: MatrixClient, distributor: Distributor) {

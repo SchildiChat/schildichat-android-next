@@ -157,7 +157,7 @@ private fun ColumnScope.SpacesPager(
             // Indicator threshold: how much we move the indicator out of the screen before swiping
             // Swipe threshold: how much the user should swipe to trigger
             val indicatorThreshold = 104.dp.toPx()
-            val swipeThreshold = 104.dp.toPx()
+            val swipeThreshold = 74.dp.toPx()
             val decay: DecayAnimationSpec<Float> = rememberSplineBasedDecay()
             // Note: we have spacesList.size+1 tabs
             val canSwipeUp = selectedTab < spacesList.size

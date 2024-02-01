@@ -1,7 +1,10 @@
 package chat.schildi.features.roomlist.spaces
 
+import androidx.compose.animation.core.DecayAnimationSpec
+import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
@@ -150,9 +153,12 @@ private fun ColumnScope.SpacesPager(
             val draggableState = rememberDraggableState {
                 offsetX += it
             }
-            // Indicator width itself is 96dp
-            val swipeThreshold = 104.dp.toPx()
+            // Indicator width itself is 96dp.
+            // Indicator threshold: how much we move the indicator out of the screen before swiping
+            // Swipe threshold: how much the user should swipe to trigger
             val indicatorThreshold = 104.dp.toPx()
+            val swipeThreshold = 104.dp.toPx()
+            val decay: DecayAnimationSpec<Float> = rememberSplineBasedDecay()
             // Note: we have spacesList.size+1 tabs
             val canSwipeUp = selectedTab < spacesList.size
             val canSwipeDown = selectedTab > 0
@@ -162,11 +168,15 @@ private fun ColumnScope.SpacesPager(
                     .draggable(
                         orientation = Orientation.Horizontal,
                         enabled = spacesList.isNotEmpty(),
-                        onDragStopped = {
+                        onDragStopped = { velocity ->
+                            val targetOffsetX = decay.calculateTargetValue(
+                                offsetX,
+                                velocity
+                            )
                             // Note: we have spacesList.size+1 tabs, index 0 is always default/parent
-                            if (offsetX < -swipeThreshold && canSwipeUp) {
+                            if (targetOffsetX < -swipeThreshold && canSwipeUp) {
                                 selectSpaceIndex(selectedTab + 1, spacesList, selectSpace, parentSelection)
-                            } else if (offsetX > swipeThreshold && canSwipeDown) {
+                            } else if (targetOffsetX > swipeThreshold && canSwipeDown) {
                                 selectSpaceIndex(selectedTab - 1, spacesList, selectSpace, parentSelection)
                             }
                             offsetX = 0f
@@ -176,7 +186,7 @@ private fun ColumnScope.SpacesPager(
             ) {
                 content(Modifier.fillMaxWidth())
                 // Swipe down indicator
-                val swipeProgress = min(1f, offsetX.absoluteValue / swipeThreshold)
+                val swipeProgress = min(1f, offsetX.absoluteValue / indicatorThreshold)
                 if (canSwipeDown) {
                     SwipeIndicator(
                         if (selectedTab > 1) spacesList[selectedSpaceIndex-1] else defaultSpace, false, swipeProgress,

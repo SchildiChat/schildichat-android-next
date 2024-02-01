@@ -1,2 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="sc_pref_fast_transitions_summary">Rapidigi fenestran animacion</string>
+    <string name="sc_pref_el_typography_title">Element tipografio</string>
+    <string name="sc_pref_pl_display_name_summary_warning">Ne funkcias fidinde kiam membrolisto ankoraŭ ne estis plene prenita</string>
+    <string name="sc_onboarding_welcome_summary">Alportas testudojn en la Matrix</string>
+    <string name="sc_pref_sc_overview_layout_title">SC Superrigarda aranĝo</string>
+    <string name="sc_onboarding_welcome_title">Bonvenon al SchildiChat</string>
+    <string name="sc_pref_sc_floating_date_title">Flosanta dato</string>
+    <string name="sc_pref_fast_transitions_title">Rapidaj transpasoj</string>
+    <string name="sc_pref_tweaks_title">Testudaj alĝustigetoj</string>
+    <string name="sc_pref_sc_themes_title">SC Haŭto</string>
+    <string name="sc_pref_sc_layout_title">SC Aranĝo</string>
+    <string name="sc_pref_sc_floating_date_summary">Montri la daton sur la mesaĝoj dum rulumado</string>
+    <string name="sc_pref_pl_display_name_title">Nomi kolorojn laŭ potenco-nivelo</string>
+    <string name="sc_pref_sc_timeline_layout_title">SC Konversacia aranĝo</string>
+    <string name="sc_pref_el_typography_summary">Uzi la tiparajn agordojn de Element kun pli granda mesaĝa teksto</string>
+</resources>

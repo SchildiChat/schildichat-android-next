@@ -77,6 +77,7 @@ get_bg_prop() {
     cat "$mydir/../app/src/fdroidScDefaultRelease/res/drawable/ic_launcher_background.xml"|grep "$prop"=|sed 's|.*'"$prop"'=\"\([^\"]*\)".*|\1|'
 }
 bg_angle=`get_bg_prop angle`
+bg_angle=`echo "90 - $bg_angle" | bc`
 bg_startColor=`get_bg_prop startColor`
 bg_endColor=`get_bg_prop endColor`
 # Exclude chunks for reproducible generation (no update to git if re-running the script on same sources)

@@ -28,7 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import chat.schildi.lib.preferences.ScPrefs
-import chat.schildi.lib.preferences.value
+import chat.schildi.lib.preferences.state
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -118,20 +118,21 @@ class TimelinePresenter @AssistedInject constructor(
             }
         }
 
-        val scReadState = ScReadTracker(appScope, timeline, navigator::onBackPressed)
-        val syncReadReceiptAndMarker = ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.value()
+        val scReadState = createScReadState()
+        ScReadTracker(appScope, scReadState, isSendPublicReadReceiptsEnabled, timeline, navigator::onBackPressed)
+        val syncReadReceiptAndMarker = ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.state()
 
         fun handleEvents(event: TimelineEvents) {
             when (event) {
                 TimelineEvents.LoadMore -> localScope.paginateBackwards()
                 is TimelineEvents.SetHighlightedEvent -> highlightedEventId.value = event.eventId
                 is TimelineEvents.OnUnreadLineVisible -> scReadState.sawUnreadLine.value = true
-                is TimelineEvents.MarkAsRead -> forceSetReceipts(appScope, timeline, scReadState)
+                is TimelineEvents.MarkAsRead -> forceSetReceipts(appScope, timeline, scReadState, isSendPublicReadReceiptsEnabled)
                 is TimelineEvents.OnScrollFinished -> {
                     if (event.firstIndex == 0) {
                         newItemState.value = NewEventState.None
                     }
-                    if (syncReadReceiptAndMarker) {
+                    if (syncReadReceiptAndMarker.value) {
                         appScope.scOnScrollFinished(
                             dispatchers = dispatchers,
                             scReadState = scReadState,

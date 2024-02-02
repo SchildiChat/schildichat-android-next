@@ -28,33 +28,42 @@ data class ScReadState(
     val sawUnreadLine: MutableState<Boolean>,
 )
 
-fun forceSetReceipts(appScope: CoroutineScope, timeline: MatrixTimeline, scReadState: ScReadState) {
+fun forceSetReceipts(appScope: CoroutineScope, timeline: MatrixTimeline, scReadState: ScReadState, isSendPublicReadReceiptsEnabled: Boolean) {
     scReadState.sawUnreadLine.value = true
     scReadState.readMarkerToSet.value?.let { eventId ->
         appScope.launch {
-            timeline.sendReadReceipt(eventId, ReceiptType.READ)
+            timeline.sendReadReceipt(eventId, if (isSendPublicReadReceiptsEnabled) ReceiptType.READ else ReceiptType.READ_PRIVATE)
             timeline.sendReadReceipt(eventId, ReceiptType.FULLY_READ)
         }
     }
 }
 
 @Composable
-fun ScReadTracker(appScope: CoroutineScope, timeline: MatrixTimeline, onBackPressed: () -> Unit): ScReadState {
-    val lastReadMarkerIndex = rememberSaveable { mutableIntStateOf(Int.MAX_VALUE) }
-    val lastReadMarkerId = rememberSaveable { mutableStateOf<EventId?>(null) }
-    val readMarkerToSet = rememberSaveable { mutableStateOf<EventId?>(null) }
-    val sawUnreadLine = rememberSaveable { mutableStateOf(false) }
+fun createScReadState(): ScReadState {
+    val lastReadMarkerIndex = remember { mutableIntStateOf(Int.MAX_VALUE) }
+    val lastReadMarkerId = remember { mutableStateOf<EventId?>(null) }
+    val readMarkerToSet = remember { mutableStateOf<EventId?>(null) }
+    val sawUnreadLine = remember { mutableStateOf(false) }
+    return ScReadState(
+        lastReadMarkerIndex,
+        lastReadMarkerId,
+        readMarkerToSet,
+        sawUnreadLine,
+    )
+}
 
+@Composable
+fun ScReadTracker(appScope: CoroutineScope, scUnreadState: ScReadState, isSendPublicReadReceiptsEnabled: Boolean, timeline: MatrixTimeline, onBackPressed: () -> Unit) {
     val clickedBack = remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     if (ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.value()) {
-        BackHandler(enabled = !clickedBack.value && sawUnreadLine.value && readMarkerToSet.value != null) {
-            readMarkerToSet.value?.let { eventId ->
+        BackHandler(enabled = !clickedBack.value && scUnreadState.sawUnreadLine.value && scUnreadState.readMarkerToSet.value != null) {
+            scUnreadState.readMarkerToSet.value?.let { eventId ->
                 appScope.launch {
                     val toast = Toast.makeText(context, context.getString(chat.schildi.lib.R.string.sc_set_read_marker_toast_start, eventId.value), Toast.LENGTH_LONG)
                     toast.show()
-                    timeline.sendReadReceipt(eventId, ReceiptType.READ)
+                    timeline.sendReadReceipt(eventId, if (isSendPublicReadReceiptsEnabled) ReceiptType.READ else ReceiptType.READ_PRIVATE)
                     timeline.sendReadReceipt(eventId, ReceiptType.FULLY_READ)
                     toast.cancel()
                     onBackPressed()
@@ -69,7 +78,7 @@ fun ScReadTracker(appScope: CoroutineScope, timeline: MatrixTimeline, onBackPres
                 timber.log.Timber.i("SC_DBG SET ${readMarkerToSet.value}")
                 readMarkerToSet.value?.let { eventId ->
                     appScope.launch {
-                        timeline.sendReadReceipt(eventId, ReceiptType.READ)
+                        timeline.sendReadReceipt(eventId, if (isSendPublicReadReceiptsEnabled) ReceiptType.READ else ReceiptType.READ_PRIVATE)
                         timeline.sendReadReceipt(eventId, ReceiptType.FULLY_READ)
                         timber.log.Timber.i("SC_DBG SET DONE $eventId")
                     }
@@ -78,13 +87,6 @@ fun ScReadTracker(appScope: CoroutineScope, timeline: MatrixTimeline, onBackPres
         }
          */
     }
-
-    return ScReadState(
-        lastReadMarkerIndex,
-        lastReadMarkerId,
-        readMarkerToSet,
-        sawUnreadLine,
-    )
 }
 
 fun CoroutineScope.scOnScrollFinished(

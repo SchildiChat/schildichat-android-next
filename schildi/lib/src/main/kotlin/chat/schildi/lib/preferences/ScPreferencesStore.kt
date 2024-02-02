@@ -96,6 +96,9 @@ fun scPrefs(): ScPreferencesStore {
 @Composable
 fun <T>ScPref<T>.value(): T = scPrefs().settingState(this).value
 
+@Composable
+fun <T>ScPref<T>.state(): State<T> = scPrefs().settingState(this)
+
 fun ScPrefContainer.forEachPreference(block: (ScPref<*>) -> Unit) {
     prefs.forEach {
         if (it is ScPrefContainer) {

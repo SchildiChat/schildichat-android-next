@@ -99,6 +99,7 @@ fun TimelineView(
     }
 
     fun onScrollFinishedAt(firstVisibleIndex: Int, visibleItemCount: Int) {
+        timber.log.Timber.i("oncrollFinishedAt")
         state.eventSink(TimelineEvents.OnScrollFinished(firstVisibleIndex))
         val timeline = state.timelineItems
         if (firstVisibleIndex < timeline.size &&
@@ -211,11 +212,12 @@ private fun BoxScope.TimelineScrollHelper(
         }
     }
 
-    val latestOnScrollFinishedAt by rememberUpdatedState(onScrollFinishedAt)
+    //val latestOnScrollFinishedAt by rememberUpdatedState(onScrollFinishedAt)
     LaunchedEffect(isScrollFinished, isTimelineEmpty) {
         if (isScrollFinished && !isTimelineEmpty) {
             // Notify the parent composable about the first visible item index when scrolling finishes
-            latestOnScrollFinishedAt(lazyListState.firstVisibleItemIndex, lazyListState.layoutInfo.visibleItemsInfo.size)
+            //latestOnScrollFinishedAt(lazyListState.firstVisibleItemIndex, lazyListState.layoutInfo.visibleItemsInfo.size)
+            onScrollFinishedAt(lazyListState.firstVisibleItemIndex, lazyListState.layoutInfo.visibleItemsInfo.size)
         }
     }
 

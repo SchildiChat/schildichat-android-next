@@ -188,23 +188,29 @@ android {
             dimension = "sc-variant"
             applicationId = "chat.schildi.android"
             isDefault = true
+            resValue("string", "sc_app_name", "SchildiChat Next")
+            resValue("string", "sc_app_name_launcher", "SchildiNext")
         }
         create("beta") {
             dimension = "sc-variant"
             applicationId = "chat.schildi.next"
+            resValue("string", "sc_app_name", "SchildiChat Next (Beta)")
+            resValue("string", "sc_app_name_launcher", "SchildiNext β")
         }
         create("internal") {
             dimension = "sc-variant"
             applicationId = "chat.schildi.next.internal"
+            resValue("string", "sc_app_name", "SchildiChat Next (Internal)")
+            resValue("string", "sc_app_name_launcher", "SchildiNext[i]")
         }
     }
     // Build types to override some more upstream values
     buildTypes {
         named("debug") {
-            resValue("string", "app_name", "SchildiNext dbg")
+            resValue("string", "app_name", "SchildiChat Next dbg")
         }
         named("release") {
-            resValue("string", "app_name", "SchildiNext")
+            resValue("string", "app_name", "SchildiChat Next")
         }
     }
 }

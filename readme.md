@@ -14,12 +14,13 @@ An overview over changes compared to Element X can be found [here](FEATURES.md).
 
 ## Translations
 
-TODO
+If you want to translate SchildiChat, visit [our weblate](https://weblate.spiritcroc.de/projects/schildichat/schildichat-android-next/).  
+Translations that concern upstream Element code are best contributed directly to Element, who currently manage translations on [localazy](https://localazy.com/p/element).
 
 
 ## Screenshots
 
-TODO - I should look into fastlane or something to generate these automatically this time
+<img src="https://matrix.org/blog/img/NBYAUpxlauPpxooEBNVRPCor.png" height="500"/> <img src="https://matrix.org/blog/img/NXLBTXdPxiHZhdoJMkzKgWqC.png" height="500"/>
 
 
 ## Building

@@ -89,13 +89,12 @@ class MainActivity : NodeActivity() {
             appBindings.preferencesStore().getThemeFlow().mapToTheme()
         }
             .collectAsState(initial = Theme.System)
-        ScTheme(
+        CompositionLocalProvider(LocalScPreferencesStore provides appBindings.scPreferencesStore()) { ScTheme(
             darkTheme = theme.isDark()
         ) {
             CompositionLocalProvider(
                 LocalSnackbarDispatcher provides appBindings.snackbarDispatcher(),
                 LocalUriHandler provides SafeUriHandler(this),
-                LocalScPreferencesStore provides appBindings.scPreferencesStore(),
             ) {
                 LaunchedEffect(Unit) { appBindings.scPreferencesStore().prefetch() }
                 Box(
@@ -120,7 +119,7 @@ class MainActivity : NodeActivity() {
                     }
                 }
             }
-        }
+        } }
     }
 
     /**

@@ -31,11 +31,14 @@ import android.webkit.PermissionRequest
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.core.content.IntentCompat
+import chat.schildi.lib.preferences.DefaultScPreferencesStore
+import chat.schildi.lib.preferences.LocalScPreferencesStore
 import chat.schildi.theme.ScTheme
 import com.bumble.appyx.core.integrationpoint.NodeComponentActivity
 import io.element.android.compound.theme.ElementTheme
@@ -100,7 +103,7 @@ class ElementCallActivity : NodeComponentActivity(), CallScreenNavigator {
         audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
         requestAudioFocus()
 
-        setContent {
+        setContent { CompositionLocalProvider(LocalScPreferencesStore provides DefaultScPreferencesStore(applicationContext)) {
             val theme by remember {
                 appPreferencesStore.getThemeFlow().mapToTheme()
             }
@@ -117,7 +120,7 @@ class ElementCallActivity : NodeComponentActivity(), CallScreenNavigator {
                     }
                 )
             }
-        }
+        } }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

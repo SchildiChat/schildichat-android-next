@@ -46,6 +46,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.value
 import chat.schildi.lib.util.formatUnreadCount
 import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.ElementTheme
@@ -195,19 +197,31 @@ private fun RowScope.ScLastMessageAndIndicatorRow(room: RoomListRoomSummary) {
 
 @Composable
 private fun ScUnreadCounter(room: RoomListRoomSummary) {
+    val highlightCount: Int
+    val notificationCount: Int
+    val unreadCount: Int
+    if (ScPrefs.CLIENT_GENERATED_UNREAD_COUNTS.value()) {
+        highlightCount = room.numberOfUnreadMentions
+        notificationCount = room.numberOfUnreadNotifications
+        unreadCount = room.numberOfUnreadMessages
+    } else {
+        highlightCount = room.highlightCount
+        notificationCount = room.notificationCount
+        unreadCount = room.unreadCount
+    }
     val count: Int
     val badgeColor: Color
     when {
-        room.notificationCount > 0 -> {
-            count = room.notificationCount
-            badgeColor = if (room.highlightCount > 0) ElementTheme.colors.bgCriticalPrimary else ElementTheme.colors.unreadIndicator
+        notificationCount > 0 -> {
+            count = notificationCount
+            badgeColor = if (highlightCount > 0) ElementTheme.colors.bgCriticalPrimary else ElementTheme.colors.unreadIndicator
         }
-        room.highlightCount > 0 -> {
-            count = room.highlightCount
+        highlightCount > 0 -> {
+            count = highlightCount
             badgeColor = ElementTheme.colors.bgCriticalPrimary
         }
-        room.unreadCount > 0 -> {
-            count = room.unreadCount
+        unreadCount > 0 -> {
+            count = unreadCount
             badgeColor = ScTheme.exposures.unreadBadgeColor
         }
         // TODO marked_as_unread once we have that in the SDK
@@ -217,7 +231,9 @@ private fun ScUnreadCounter(room: RoomListRoomSummary) {
         }
     }
     Box (
-        modifier = Modifier.background(badgeColor, RoundedCornerShape(30.dp)).sizeIn(minWidth = 24.dp, minHeight = 24.dp)
+        modifier = Modifier
+            .background(badgeColor, RoundedCornerShape(30.dp))
+            .sizeIn(minWidth = 24.dp, minHeight = 24.dp)
     ) {
         Text(
             text = formatUnreadCount(count),
@@ -225,7 +241,9 @@ private fun ScUnreadCounter(room: RoomListRoomSummary) {
             style = MaterialTheme.typography.bodySmall,
             maxLines = 1,
             textAlign = TextAlign.Center,
-            modifier = Modifier.align(Alignment.Center).padding(horizontal = 4.dp)
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(horizontal = 4.dp)
         )
     }
 }

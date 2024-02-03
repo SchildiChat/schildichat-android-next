@@ -1,6 +1,8 @@
 package chat.schildi.features.roomlist.spaces
 
 import androidx.compose.runtime.Immutable
+import chat.schildi.lib.preferences.ScPreferencesStore
+import chat.schildi.lib.preferences.ScPrefs
 import io.element.android.features.roomlist.impl.datasource.RoomListDataSource
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import kotlinx.collections.immutable.ImmutableMap
@@ -14,7 +16,9 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
-class SpaceUnreadCountsDataSource @Inject constructor() {
+class SpaceUnreadCountsDataSource @Inject constructor(
+    private val scPreferencesStore: ScPreferencesStore
+) {
 
     private val _spaceUnreadCounts = MutableStateFlow<ImmutableMap<String?, SpaceUnreadCounts>>(persistentMapOf())
     val spaceUnreadCounts: StateFlow<ImmutableMap<String?, SpaceUnreadCounts>> = _spaceUnreadCounts
@@ -29,7 +33,8 @@ class SpaceUnreadCountsDataSource @Inject constructor() {
             roomListDataSource.allRooms,
             spaceListDataSource.allSpaces,
             spaceAwareRoomListDataSource.spaceSelectionHierarchy,
-        ) { allRoomsValue, allSpacesValue, spaceSelectionValue ->
+            scPreferencesStore.settingFlow(ScPrefs.CLIENT_GENERATED_UNREAD_COUNTS),
+        ) { allRoomsValue, allSpacesValue, spaceSelectionValue, useClientGeneratedCounts ->
             allSpacesValue ?: return@combine mapOf()
             spaceSelectionValue ?: return@combine mapOf()
             val visibleSpaces = if (spaceSelectionValue.isEmpty()) {
@@ -45,9 +50,9 @@ class SpaceUnreadCountsDataSource @Inject constructor() {
             }
             val result = mutableMapOf<String?, SpaceUnreadCounts>(
                 // Total count
-                null to getAggregatedUnreadCounts(allRoomsValue)
+                null to getAggregatedUnreadCounts(allRoomsValue, useClientGeneratedCounts)
             )
-            visibleSpaces.forEach { result[it.info.roomId.value] = getUnreadCountsForSpace(it, allRoomsValue) }
+            visibleSpaces.forEach { result[it.info.roomId.value] = getUnreadCountsForSpace(it, allRoomsValue, useClientGeneratedCounts) }
             result
         }.onEach {
             _spaceUnreadCounts.emit(it.toImmutableMap())
@@ -57,17 +62,19 @@ class SpaceUnreadCountsDataSource @Inject constructor() {
     private fun getUnreadCountsForSpace(
         space: SpaceListDataSource.SpaceHierarchyItem,
         allRooms: List<RoomListRoomSummary>,
+        useClientGeneratedUnreadCounts: Boolean,
     ) = getAggregatedUnreadCounts(
-        allRooms.filter { space.flattenedRooms.contains(it.roomId.value) }
+        allRooms.filter { space.flattenedRooms.contains(it.roomId.value) },
+        useClientGeneratedUnreadCounts,
     )
 
-    private fun getAggregatedUnreadCounts(rooms: List<RoomListRoomSummary>): SpaceUnreadCounts {
+    private fun getAggregatedUnreadCounts(rooms: List<RoomListRoomSummary>, useClientGeneratedUnreadCounts: Boolean): SpaceUnreadCounts {
         var unread = SpaceUnreadCounts()
         for (room in rooms) {
             unread = unread.add(
-                room.highlightCount,
-                room.notificationCount,
-                room.unreadCount,
+                if (useClientGeneratedUnreadCounts) room.numberOfUnreadMentions else room.highlightCount,
+                if (useClientGeneratedUnreadCounts) room.numberOfUnreadNotifications else room.notificationCount,
+                if (useClientGeneratedUnreadCounts) room.numberOfUnreadMessages else room.unreadCount,
             )
         }
         return unread

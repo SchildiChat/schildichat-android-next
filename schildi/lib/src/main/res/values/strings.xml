@@ -32,6 +32,8 @@
     <string name="sc_sync_read_receipt_and_marker_summary">Always set your read receipt (what others see and what calculates your unread messages count) to the same message like your fully read marker (the new messages line when viewing a chat)</string>
     <string name="sc_set_read_marker_toast_start">Setting read marker to %s</string>
     <string name="sc_set_read_marker_toast_end">Read marker set to %s</string>
+    <string name="sc_client_generated_unread_counts_title">Client-generated unread counts</string>
+    <string name="sc_client_generated_unread_counts_summary">Calculate unread counts on the device instead of trusting server-reported values</string>
 
     <string name="sc_pref_dev_quick_options">Quick settings</string>
     <string name="sc_pref_danger_zone">Danger zone</string>

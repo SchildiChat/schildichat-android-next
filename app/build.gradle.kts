@@ -217,7 +217,7 @@ android {
 // SC: Disable unused upstream configs
 androidComponents {
     beforeVariants { variantBuilder ->
-        if (variantBuilder.buildType in listOf("nightly")) {
+        if (variantBuilder.buildType in listOf("nightly") || variantBuilder.flavorName?.startsWith("gplay") == true) {
             variantBuilder.enable = false
         }
     }

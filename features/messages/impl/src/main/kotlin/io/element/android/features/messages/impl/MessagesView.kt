@@ -59,6 +59,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.value
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.messages.impl.actionlist.ActionListEvents
@@ -70,6 +72,7 @@ import io.element.android.features.messages.impl.messagecomposer.AttachmentsBott
 import io.element.android.features.messages.impl.messagecomposer.AttachmentsState
 import io.element.android.features.messages.impl.messagecomposer.MessageComposerEvents
 import io.element.android.features.messages.impl.messagecomposer.MessageComposerView
+import io.element.android.features.messages.impl.timeline.TimelineEvents
 import io.element.android.features.messages.impl.timeline.TimelineView
 import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionBottomSheet
 import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionEvents
@@ -373,6 +376,8 @@ private fun MessagesViewContent(
             sheetResizeContentKey.intValue = Random.nextInt()
         }
 
+        val syncReadMarkerAndReceipt = ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.value()
+
         ExpandableBottomSheetScaffold(
             sheetDragHandle = if (state.composerState.showTextFormatting) {
                 @Composable { BottomSheetDragHandle() }
@@ -405,6 +410,9 @@ private fun MessagesViewContent(
                 MessagesViewComposerBottomSheetContents(
                     subcomposing = subcomposing,
                     state = state,
+                    scBeforeSend = {
+                        state.timelineState.eventSink(TimelineEvents.MarkAsRead)
+                    }.takeIf { syncReadMarkerAndReceipt }
                 )
             },
             sheetContentKey = sheetResizeContentKey.intValue,
@@ -418,6 +426,7 @@ private fun MessagesViewContent(
 private fun MessagesViewComposerBottomSheetContents(
     subcomposing: Boolean,
     state: MessagesState,
+    scBeforeSend: (() -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
     if (state.userHasPermissionToSendMessage) {
@@ -446,6 +455,7 @@ private fun MessagesViewComposerBottomSheetContents(
                 enableTextFormatting = state.enableTextFormatting,
                 enableVoiceMessages = state.enableVoiceMessages,
                 modifier = Modifier.fillMaxWidth(),
+                scBeforeSend = scBeforeSend,
             )
         }
     } else {

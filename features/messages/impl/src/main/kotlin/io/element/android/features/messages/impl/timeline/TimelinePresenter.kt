@@ -29,7 +29,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.state
-import chat.schildi.lib.preferences.value
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

@@ -111,14 +111,22 @@ class DefaultScPreferencesStore @Inject constructor(
 }
 
 object FakeScPreferencesStore : ScPreferencesStore {
-    override suspend fun <T> setSetting(scPref: ScPref<T>, value: T) {}
-    override suspend fun <T> setSettingTypesafe(scPref: ScPref<T>, value: Any?) {}
-    override fun <T> settingFlow(scPref: ScPref<T>): Flow<T> = emptyFlow()
-    override fun isEnabledFlow(scPref: AbstractScPref): Flow<Boolean> = emptyFlow()
-    override fun <T> getCachedOrDefaultValue(scPref: ScPref<T>): T = scPref.defaultValue
+    private fun shouldNotUsedInProduction() {
+        val e = Exception("Should use CompositionLocalProvider with proper LocalScPreferencesStore")
+        if (false /* BuildConfig.DEBUG */) {
+            throw e
+        } else {
+            Timber.e(e, "No proper SC preferences store provided")
+        }
+    }
+    override suspend fun <T> setSetting(scPref: ScPref<T>, value: T) = shouldNotUsedInProduction()
+    override suspend fun <T> setSettingTypesafe(scPref: ScPref<T>, value: Any?) = shouldNotUsedInProduction()
+    override fun <T> settingFlow(scPref: ScPref<T>): Flow<T> = emptyFlow<T>().also { shouldNotUsedInProduction() }
+    override fun isEnabledFlow(scPref: AbstractScPref): Flow<Boolean> = emptyFlow<Boolean>().also { shouldNotUsedInProduction() }
+    override fun <T> getCachedOrDefaultValue(scPref: ScPref<T>): T = scPref.defaultValue.also { shouldNotUsedInProduction() }
 
-    override suspend fun reset() {}
-    override suspend fun prefetch() {}
+    override suspend fun reset() = shouldNotUsedInProduction()
+    override suspend fun prefetch() = shouldNotUsedInProduction()
 }
 
 @Composable

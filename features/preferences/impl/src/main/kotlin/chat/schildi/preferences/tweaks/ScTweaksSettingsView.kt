@@ -27,7 +27,6 @@ import chat.schildi.lib.preferences.ScActionablePref
 import chat.schildi.lib.preferences.ScPrefCategory
 import chat.schildi.lib.preferences.ScPref
 import chat.schildi.lib.preferences.ScPrefScreen
-import chat.schildi.lib.preferences.scPrefs
 import io.element.android.libraries.designsystem.components.preferences.PreferencePage
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.preview.ElementPreview
@@ -46,7 +45,6 @@ fun ScTweaksSettingsView(
         onBackPressed = onBackPressed,
         title = stringResource(id = state.titleRes)
     ) {
-        Timber.e("SC_TWEAKS REDRAW") // TODO remove, just for debugging
         RecursiveScPrefsView(
             state = state,
             prefs = state.scPrefs,

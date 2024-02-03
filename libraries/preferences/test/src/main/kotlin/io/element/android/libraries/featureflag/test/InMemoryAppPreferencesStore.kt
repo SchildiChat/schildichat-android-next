@@ -16,7 +16,6 @@
 
 package io.element.android.libraries.featureflag.test
 
-import chat.schildi.lib.preferences.ScPreferencesStore
 import io.element.android.features.preferences.api.store.AppPreferencesStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,10 +45,6 @@ class InMemoryAppPreferencesStore(
 
     override fun isDeveloperModeEnabledFlow(): Flow<Boolean> {
         return isDeveloperModeEnabled
-    }
-
-    override fun getScPreferenceStore(): ScPreferencesStore {
-        TODO("Not yet implemented")
     }
 
     override suspend fun setCustomElementCallBaseUrl(string: String?) {

@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import chat.schildi.lib.preferences.LocalScPreferencesStore
 import chat.schildi.theme.ScTheme
 import com.bumble.appyx.core.integration.NodeHost
 import com.bumble.appyx.core.integrationpoint.NodeActivity
@@ -93,7 +95,9 @@ class MainActivity : NodeActivity() {
             CompositionLocalProvider(
                 LocalSnackbarDispatcher provides appBindings.snackbarDispatcher(),
                 LocalUriHandler provides SafeUriHandler(this),
+                LocalScPreferencesStore provides appBindings.scPreferencesStore(),
             ) {
+                LaunchedEffect(Unit) { appBindings.scPreferencesStore().prefetch() }
                 Box(
                     modifier = Modifier
                         .fillMaxSize()

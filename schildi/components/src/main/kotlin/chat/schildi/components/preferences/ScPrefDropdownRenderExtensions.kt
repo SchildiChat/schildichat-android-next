@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowRight
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -14,10 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import chat.schildi.lib.preferences.AbstractScPref
+import chat.schildi.lib.preferences.LocalScPreferencesStore
 import chat.schildi.lib.preferences.ScBoolPref
 import chat.schildi.lib.preferences.ScPref
 import chat.schildi.lib.preferences.ScPrefContainer
-import chat.schildi.lib.preferences.scPrefs
+import chat.schildi.lib.preferences.enabledState
+import chat.schildi.lib.preferences.settingState
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.libraries.designsystem.theme.components.Checkbox
 import io.element.android.libraries.designsystem.theme.components.DropdownMenu
@@ -82,7 +83,7 @@ fun ScPrefContainer.RenderedDropdown(
 fun ScPref<Boolean>.RenderedDropdown(
     leadingIcon: @Composable (() -> Unit)? = null,
 ) {
-    val scPrefs = scPrefs()
+    val scPrefs = LocalScPreferencesStore.current
     val enabled = scPrefs.enabledState(this).value
     val pref = this
     val coroutineScope = rememberCoroutineScope()

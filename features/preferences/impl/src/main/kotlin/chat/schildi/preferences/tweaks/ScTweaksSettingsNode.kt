@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import chat.schildi.lib.preferences.ScPref
 import chat.schildi.lib.preferences.ScPrefScreen
+import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.forEachPreference
 import com.bumble.appyx.core.modality.BuildContext
@@ -43,10 +44,9 @@ class ScTweaksSettingsNode @AssistedInject constructor(
     @Assisted plugins: List<Plugin>,
     presenterFactory: ScTweaksSettingsPresenter.Factory,
     private val appPreferencesStore: AppPreferencesStore,
+    private val scPreferencesStore: ScPreferencesStore,
     private val appCoroutineScope: CoroutineScope,
 ) : Node(buildContext, plugins = plugins) {
-
-    private val scPreferencesStore = appPreferencesStore.getScPreferenceStore()
 
     data class Inputs(
         val prefScreen: ScPrefScreen?

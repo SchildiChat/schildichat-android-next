@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import chat.schildi.lib.preferences.LocalScPreferencesStore
 import chat.schildi.lib.preferences.ScActionablePref
 import chat.schildi.lib.preferences.ScBoolPref
 import chat.schildi.lib.preferences.ScColorPref
@@ -23,7 +24,7 @@ import chat.schildi.lib.preferences.ScPrefCategory
 import chat.schildi.lib.preferences.ScListPref
 import chat.schildi.lib.preferences.ScPref
 import chat.schildi.lib.preferences.ScPrefScreen
-import chat.schildi.lib.preferences.scPrefs
+import chat.schildi.lib.preferences.enabledState
 import com.github.skydoves.colorpicker.compose.ColorEnvelope
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
@@ -73,7 +74,7 @@ fun ScPrefScreen.Rendered(
 fun ScActionablePref.Rendered(
     handleAction: (String) -> Unit
 ) {
-    val enabled = scPrefs().enabledState(this).value
+    val enabled = LocalScPreferencesStore.current.enabledState(this).value
     PreferenceText(
         title = stringResource(id = titleRes),
         subtitle = summaryRes?.let { stringResource(id = it) },
@@ -97,7 +98,7 @@ fun ScPref<Boolean>.Rendered(initial: Any, onChange: (Boolean) -> Unit) {
         subtitle = summaryRes?.let { stringResource(id = it) },
         isChecked = v ?: defaultValue,
         onCheckedChange = { onChange(it) },
-        enabled = scPrefs().enabledState(this).value,
+        enabled = LocalScPreferencesStore.current.enabledState(this).value,
     )
 }
 @Composable
@@ -114,7 +115,7 @@ fun <T>ScListPref<T>.Rendered(initial: Any, onChange: (Any) -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     val openDialog = remember { mutableStateOf(false) }
 
-    val enabled = scPrefs().enabledState(this).value
+    val enabled = LocalScPreferencesStore.current.enabledState(this).value
 
     PreferenceText(
         title = stringResource(id = titleRes),
@@ -156,7 +157,7 @@ fun ScColorPref.Rendered(initial: Any, onChange: (Any) -> Unit) {
     val openDialog = remember { mutableStateOf(false) }
     val controller = rememberColorPickerController()
 
-    val enabled = scPrefs().enabledState(this).value
+    val enabled = LocalScPreferencesStore.current.enabledState(this).value
 
     PreferenceText(
         title = stringResource(id = titleRes),

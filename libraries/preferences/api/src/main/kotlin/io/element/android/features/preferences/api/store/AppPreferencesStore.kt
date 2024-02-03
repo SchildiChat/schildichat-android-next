@@ -16,7 +16,6 @@
 
 package io.element.android.features.preferences.api.store
 
-import chat.schildi.lib.preferences.ScPreferencesStore
 import kotlinx.coroutines.flow.Flow
 
 interface AppPreferencesStore {
@@ -25,8 +24,6 @@ interface AppPreferencesStore {
 
     suspend fun setDeveloperModeEnabled(enabled: Boolean)
     fun isDeveloperModeEnabledFlow(): Flow<Boolean>
-
-    fun getScPreferenceStore(): ScPreferencesStore
 
     suspend fun setCustomElementCallBaseUrl(string: String?)
     fun getCustomElementCallBaseUrlFlow(): Flow<String?>

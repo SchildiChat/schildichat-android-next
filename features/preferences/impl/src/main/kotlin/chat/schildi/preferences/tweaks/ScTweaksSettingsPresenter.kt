@@ -19,9 +19,11 @@ package chat.schildi.preferences.tweaks
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import chat.schildi.lib.preferences.ScPrefScreen
+import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.collectScPrefs
 import chat.schildi.lib.preferences.prefValMap
+import chat.schildi.lib.preferences.settingState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -31,11 +33,10 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class ScTweaksSettingsPresenter @AssistedInject constructor(
-    appPreferencesStore: AppPreferencesStore,
+    private val scPreferencesStore: ScPreferencesStore,
     @Assisted prefScreen: ScPrefScreen?,
 ) : Presenter<ScTweaksSettingsState> {
 
-    private val scPreferencesStore = appPreferencesStore.getScPreferenceStore()
     private val prefScreen = prefScreen ?: ScPrefs.scTweaks
 
     @AssistedFactory

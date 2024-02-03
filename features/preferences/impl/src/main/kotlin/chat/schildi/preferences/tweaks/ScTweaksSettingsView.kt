@@ -16,10 +16,20 @@
 
 package chat.schildi.preferences.tweaks
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.dp
 import chat.schildi.components.preferences.AutoRendered
 import chat.schildi.components.preferences.Rendered
 import chat.schildi.lib.preferences.AbstractScPref
@@ -27,9 +37,11 @@ import chat.schildi.lib.preferences.ScActionablePref
 import chat.schildi.lib.preferences.ScPrefCategory
 import chat.schildi.lib.preferences.ScPref
 import chat.schildi.lib.preferences.ScPrefScreen
+import chat.schildi.lib.preferences.ScPrefs
 import io.element.android.libraries.designsystem.components.preferences.PreferencePage
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.preview.ElementPreview
+import io.element.android.libraries.designsystem.theme.components.Surface
 import timber.log.Timber
 
 @Composable
@@ -40,6 +52,8 @@ fun ScTweaksSettingsView(
     handleScPrefAction: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var showPushInfoDialog = remember { mutableStateOf(false) }
+    PushInfoDialog(state.pushInfo, showPushInfoDialog)
     PreferencePage(
         modifier = modifier,
         onBackPressed = onBackPressed,
@@ -49,7 +63,13 @@ fun ScTweaksSettingsView(
             state = state,
             prefs = state.scPrefs,
             onOpenPrefScreen = onOpenPrefScreen,
-            handleScPrefAction = handleScPrefAction,
+            handleScPrefAction = { key ->
+                if (key == ScPrefs.SC_PUSH_INFO.key) {
+                    showPushInfoDialog.value = true
+                } else {
+                    handleScPrefAction(key)
+                }
+            },
         )
     }
 }
@@ -94,6 +114,23 @@ fun RecursiveScPrefsView(
                 scPref.Rendered(handleAction = handleScPrefAction)
             }
             else -> Timber.e("Unhandled ScPref type ${scPref.javaClass.simpleName}")
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PushInfoDialog(pushInfo: String, show: MutableState<Boolean>) {
+    if (show.value) {
+        BasicAlertDialog(onDismissRequest = { show.value = false }) {
+            Surface(shape = RoundedCornerShape(12.dp)) {
+                Text(
+                    pushInfo,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
         }
     }
 }

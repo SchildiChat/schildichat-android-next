@@ -19,10 +19,11 @@ package chat.schildi.preferences.tweaks
 import androidx.annotation.StringRes
 import chat.schildi.lib.preferences.AbstractScPref
 
-data class ScTweaksSettingsState constructor(
+data class ScTweaksSettingsState(
     @StringRes
     val titleRes: Int,
     val scPrefs: List<AbstractScPref>,
     val prefVals: Map<String, Any?>,
+    val pushInfo: String,
     val eventSink: (ScTweaksSettingsEvents) -> Unit
 )

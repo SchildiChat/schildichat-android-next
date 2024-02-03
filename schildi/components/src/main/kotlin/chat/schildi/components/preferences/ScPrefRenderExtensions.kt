@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -166,9 +166,7 @@ fun ScColorPref.Rendered(initial: Any, onChange: (Any) -> Unit) {
         enabled = enabled,
     )
     if (openDialog.value) {
-        AlertDialog(
-            onDismissRequest = { openDialog.value = false },
-        ) {
+        BasicAlertDialog(onDismissRequest = { openDialog.value = false }) {
             // TODO some buttons, inspired by SimpleAlertDialogContent?
             // - ok to apply
             // - cancel to abort

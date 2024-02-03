@@ -42,6 +42,7 @@ object ScPrefs {
     val SYNC_READ_RECEIPT_AND_MARKER = ScBoolPref("SYNC_READ_RECEIPT_AND_MARKER", false, R.string.sc_sync_read_receipt_and_marker_title, R.string.sc_sync_read_receipt_and_marker_summary, authorsChoice = true)
 
     // Developer options
+    val SC_PUSH_INFO = ScActionablePref("SC_PUSH_INFO", R.string.sc_push_info_title, R.string.sc_push_info_summary)
     val SC_DEV_QUICK_OPTIONS = ScBoolPref("SC_DEV_QUICK_OPTIONS", false, R.string.sc_pref_dev_quick_options, authorsChoice = true)
     private val SC_DANGER_ZONE = ScBoolPref("SC_DANGER_ZONE", false, R.string.sc_pref_danger_zone, authorsChoice = true)
     val SC_RESTORE_DEFAULTS = ScActionablePref("SC_RESTORE_DEFAULTS", R.string.sc_pref_restore_defaults, dependencies = SC_DANGER_ZONE.asDependencies())
@@ -84,6 +85,7 @@ object ScPrefs {
             )),
         )),
         ScPrefCategory(CommonStrings.common_developer_options, null, listOf(
+            SC_PUSH_INFO,
             SC_DEV_QUICK_OPTIONS,
             SC_DANGER_ZONE,
             SC_RESTORE_DEFAULTS,

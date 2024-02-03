@@ -1,6 +1,10 @@
 package chat.schildi.lib.preferences
 
 import android.content.Context
+import android.text.format.DateFormat
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -28,6 +32,7 @@ private val KEY_LAST_PUSH_DISTRIBUTOR = stringPreferencesKey("LAST_PUSH_DISTRIBU
 private val KEY_LAST_PUSH_DISTRIBUTOR_NAME = stringPreferencesKey("LAST_PUSH_DISTRIBUTOR_NAME")
 
 interface ScAppStateStore {
+    val store: DataStore<Preferences>
     suspend fun persistSpaceSelection(selection: List<String>)
     suspend fun loadInitialSpaceSelection(): List<String>
     suspend fun onPushReceived(provider: String?)
@@ -44,7 +49,7 @@ interface ScAppStateStore {
 class DefaultScAppStateStore @Inject constructor(
     @ApplicationContext context: Context,
 ) : ScAppStateStore {
-    private val store = context.scAppStateDataStore
+    override val store = context.scAppStateDataStore
 
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZ", Locale.US)
 
@@ -119,4 +124,21 @@ class DefaultScAppStateStore @Inject constructor(
     override suspend fun lastPushDistributorName(): String? {
         return store.data.firstOrNull()?.get(KEY_LAST_PUSH_DISTRIBUTOR_NAME)
     }
+}
+
+@Composable
+fun ScAppStateStore.formatPushInfoOverview(): String {
+    val data = store.data.collectAsState(null).value ?: return "No push info"
+    val result = StringBuilder("Last push provider: ${data[KEY_LAST_PUSH_PROVIDER]}")
+    val dateFormat = DateFormat.getLongDateFormat(LocalContext.current)
+    val timeFormat = DateFormat.getTimeFormat(LocalContext.current)
+    val formattedPushTs = data[KEY_LAST_PUSH_TS]?.let {
+        val d = Date(it)
+        "${dateFormat.format(d)} ${timeFormat.format(d)}"
+    } ?: "none"
+    result.append("\nLast push distributor: ${data[KEY_LAST_PUSH_DISTRIBUTOR_NAME]}")
+    result.append("\nLast push distributor package: ${data[KEY_LAST_PUSH_DISTRIBUTOR]}")
+    result.append("\nLast push gateway: ${data[KEY_LAST_PUSH_GATEWAY]}")
+    result.append("\nLast push: $formattedPushTs")
+    return result.toString()
 }

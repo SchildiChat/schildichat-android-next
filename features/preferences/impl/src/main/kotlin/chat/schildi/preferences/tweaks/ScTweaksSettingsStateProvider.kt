@@ -29,5 +29,6 @@ fun aScTweaksSettingsState() = ScTweaksSettingsState(
     titleRes = 0, // TODO
     scPrefs = emptyList(),
     prefVals = emptyMap(), // TODO for preview?
+    pushInfo = "No push",
     eventSink = {}
 )

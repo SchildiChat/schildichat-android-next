@@ -22,6 +22,8 @@
     <string name="sc_pref_compact_app_bar_summary">Never expand the top app bar</string>
     <string name="sc_space_nav_title">Space navigation</string>
     <string name="sc_space_nav_summary">Filter your chats by spaces</string>
+    <string name="sc_compact_root_spaces_title">Compact root spaces</string>
+    <string name="sc_compact_root_spaces_summary">Show icon without name for root spaces</string>
     <string name="sc_space_swipe_title">Swipe to switch spaces</string>
     <string name="sc_space_swipe_summary">Drag the chat overview horizontally to switch spaces</string>
     <string name="sc_space_unread_counts_mode_title">Aggregated unread counts</string>

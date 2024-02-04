@@ -24,6 +24,7 @@ object ScPrefs {
     val SC_OVERVIEW_LAYOUT = ScBoolPref("SC_OVERVIEW_LAYOUT", true, R.string.sc_pref_sc_overview_layout_title, upstreamChoice = false)
     val CLIENT_GENERATED_UNREAD_COUNTS = ScBoolPref("CLIENT_GENERATED_UNREAD_COUNTS", false, R.string.sc_client_generated_unread_counts_title, R.string.sc_client_generated_unread_counts_summary, upstreamChoice = true, authorsChoice = false)
     val SPACE_NAV = ScBoolPref("SPACE_NAV", false, R.string.sc_space_nav_title, R.string.sc_space_nav_summary, upstreamChoice = false, authorsChoice = true)
+    val COMPACT_ROOT_SPACES = ScBoolPref("COMPACT_ROOT_SPACES", false, R.string.sc_compact_root_spaces_title, R.string.sc_compact_root_spaces_summary, authorsChoice = true, dependencies = SPACE_NAV.asDependencies())
     val SPACE_UNREAD_COUNTS = ScStringListPref(
         "SPACE_UNREAD_COUNTS",
         SpaceUnreadCountMode.MESSAGES,
@@ -72,6 +73,7 @@ object ScPrefs {
             SPACE_NAV,
             SPACE_UNREAD_COUNTS,
             SPACE_SWIPE,
+            COMPACT_ROOT_SPACES,
         )),
         ScPrefCategory(R.string.sc_pref_category_timeline, null, listOf(
             SC_TIMELINE_LAYOUT,
@@ -108,6 +110,7 @@ object ScPrefs {
         SC_OVERVIEW_LAYOUT.copy(titleRes = R.string.sc_pref_sc_layout_title),
         EL_TYPOGRAPHY,
         SPACE_NAV,
+        COMPACT_ROOT_SPACES,
         ScPrefCategory(R.string.sc_pref_screen_experimental_title, null, listOf(
             SYNC_READ_RECEIPT_AND_MARKER,
             CLIENT_GENERATED_UNREAD_COUNTS,

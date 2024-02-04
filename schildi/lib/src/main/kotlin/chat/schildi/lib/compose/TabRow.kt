@@ -821,6 +821,7 @@ fun ScrollableTabRow(
     containerColor: Color = TabRowDefaults.primaryContainerColor,
     contentColor: Color = TabRowDefaults.primaryContentColor,
     edgePadding: Dp = TabRowDefaults.ScrollableTabRowEdgeStartPadding,
+    minTabWidth: Dp = ScrollableTabRowMinimumTabWidth,
     indicator: @Composable (tabPositions: List<TabPosition>) -> Unit = @Composable { tabPositions ->
         TabRowDefaults.SecondaryIndicator(
             Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex])
@@ -840,6 +841,7 @@ fun ScrollableTabRow(
         edgePadding = edgePadding,
         divider = divider,
         tabs = tabs,
+        minTabWidthDp = minTabWidth,
         scrollState = rememberScrollState()
     )
 }
@@ -857,6 +859,7 @@ private fun ScrollableTabRowImp(
     },
     tabs: @Composable () -> Unit,
     scrollState: ScrollState,
+    minTabWidthDp: Dp = ScrollableTabRowMinimumTabWidth,
 ) {
     Surface(
         modifier = modifier,
@@ -878,7 +881,7 @@ private fun ScrollableTabRowImp(
                 .selectableGroup()
                 .clipToBounds()
         ) { constraints ->
-            val minTabWidth = ScrollableTabRowMinimumTabWidth.roundToPx()
+            val minTabWidth = minTabWidthDp.roundToPx()
             val padding = edgePadding.roundToPx()
 
             val tabMeasurables = subcompose(TabSlots.Tabs, tabs)

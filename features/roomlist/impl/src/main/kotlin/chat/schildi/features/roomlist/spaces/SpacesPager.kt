@@ -8,6 +8,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,7 +35,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ScrollableTabRow
+import chat.schildi.lib.compose.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -52,9 +54,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
+import chat.schildi.lib.compose.TabRowDefaults.tabIndicatorOffset
 import chat.schildi.lib.preferences.ScAppStateStore
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
@@ -105,6 +109,7 @@ fun SpacesPager(
                     onSpaceSelected(parentSelection + listOf(newSelection.info.roomId.value))
                 }
             },
+            compactTabs = ScPrefs.COMPACT_ROOT_SPACES.value(),
             content = content,
         )
     }
@@ -119,6 +124,7 @@ private fun ColumnScope.SpacesPager(
     defaultSpace: SpaceListDataSource.SpaceHierarchyItem?,
     parentSelection: ImmutableList<String>,
     selectSpace: (SpaceListDataSource.SpaceHierarchyItem?, ImmutableList<String>) -> Unit,
+    compactTabs: Boolean,
     content: @Composable (Modifier) -> Unit,
 ) {
     val selectedSpaceIndex = if (spaceSelection.isEmpty()) {
@@ -148,6 +154,7 @@ private fun ColumnScope.SpacesPager(
             spaceSelection = childSelections,
             defaultSpace = spacesList[selectedSpaceIndex],
             parentSelection = (parentSelection + listOf(spacesList[selectedSpaceIndex].info.roomId.value)).toImmutableList(),
+            compactTabs = false,
             content = content,
         )
     } else {
@@ -221,20 +228,40 @@ private fun ColumnScope.SpacesPager(
     }
 
     // Actual space tabs
+    val canExpandSelectedTab = !spacesList.getOrNull(selectedSpaceIndex)?.spaces.isNullOrEmpty()
+    val renderExpandableIndicatorInTabs = !ScPrefs.COMPACT_ROOT_SPACES.value()
+    val tabIndicatorColor = animateColorAsState(
+        targetValue = if (expandSpaceChildren || (!canExpandSelectedTab && !renderExpandableIndicatorInTabs))
+            MaterialTheme.colorScheme.secondary
+        else
+            MaterialTheme.colorScheme.primary,
+        label = "tabIndicatorColor"
+    ).value
     ScrollableTabRow(
         selectedTabIndex = selectedTab,
         edgePadding = 0.dp,
+        minTabWidth = 0.dp,
         containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        indicator = { tabPositions ->
+            Box(
+                Modifier
+                    .tabIndicatorOffset(tabPositions[selectedTab])
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp)
+                    .height(3.dp)
+                    .background(color = tabIndicatorColor, shape = RoundedCornerShape(1.5.dp))
+            )
+        }
     ) {
         if (defaultSpace != null) {
-            SpaceTab(defaultSpace, spaceUnreadCounts[defaultSpace.info.roomId.value], selectedTab == 0, expandSpaceChildren, false) {
+            SpaceTab(defaultSpace, spaceUnreadCounts[defaultSpace.info.roomId.value], selectedTab == 0, expandSpaceChildren, false, compactTabs) {
                 expandSpaceChildren = false
                 if (selectedTab != 0) {
                     selectSpace(null, parentSelection)
                 }
             }
         } else {
-            ShowAllTab(spaceUnreadCounts[null], selectedTab == 0, expandSpaceChildren) {
+            ShowAllTab(spaceUnreadCounts[null], selectedTab == 0, expandSpaceChildren, compactTabs) {
                 expandSpaceChildren = false
                 if (selectedTab != 0) {
                     selectSpace(null, parentSelection)
@@ -248,7 +275,8 @@ private fun ColumnScope.SpacesPager(
                 spaceUnreadCounts[space.info.roomId.value],
                 selected,
                 expandSpaceChildren,
-                space.spaces.isNotEmpty() && (!selected || !expandSpaceChildren)
+                renderExpandableIndicatorInTabs && space.spaces.isNotEmpty(),
+                compactTabs,
             ) {
                 if (selectedSpaceIndex == index) {
                     if (expandSpaceChildren) {
@@ -320,55 +348,78 @@ private fun RowScope.SwipeIndicatorArrow(imageVector: ImageVector, thresholdProg
 }
 
 @Composable
+private fun SpaceTabText(text: String, selected: Boolean, expandable: Boolean, collapsed: Boolean) {
+    val color = animateColorAsState(
+        targetValue = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
+        label = "tabSelectedColor",
+    ).value
+    Row {
+        if (expandable) {
+            // We want to keep the text centered despite having an expand-icon
+            Spacer(Modifier.width(12.dp))
+        }
+        Text(
+            text = text,
+            style = MaterialTheme.typography.titleSmall,
+            color = color,
+            modifier = Modifier.widthIn(max = 192.dp),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+        if (expandable) {
+            ExpandableIndicator(selected && !collapsed, Modifier.align(Alignment.CenterVertically))
+        }
+    }
+}
+
+@Composable
+fun ExpandableIndicator(visible: Boolean, modifier: Modifier = Modifier) {
+    Box(modifier.width(12.dp)) {
+        androidx.compose.animation.AnimatedVisibility(visible = visible, enter = fadeIn(), exit = fadeOut()) {
+            Icon(
+                imageVector = Icons.Outlined.ChevronRight,
+                contentDescription = null,
+                modifier = Modifier.size(12.dp),
+                tint = MaterialTheme.colorScheme.primary,
+            )
+        }
+    }
+}
+
+@Composable
 private fun AbstractSpaceTab(
     text: String,
     selected: Boolean,
     collapsed: Boolean,
     expandable: Boolean,
+    compact: Boolean,
     onClick: () -> Unit,
     icon: @Composable () -> Unit,
 ) {
-    Tab(
-        text = {
-            val color = animateColorAsState(
-                targetValue = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
-                label = "tabSelectedColor",
-            ).value
-            Row {
-                if (expandable) {
-                    // We want to keep the text centered despite having an expand-icon
-                    Spacer(Modifier.width(12.dp))
-                }
-                Text(
-                    text = text,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = color,
-                    modifier = Modifier.widthIn(max = 192.dp),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+    if (compact) {
+        Box(
+            Modifier
+                .padding(vertical = 8.dp, horizontal = 16.dp)
+                .clickable(onClick = onClick)
+        ) {
+            icon()
+            /*
+            if (expandable) {
+                ExpandableIndicator(
+                    selected && !collapsed,
+                    Modifier.align(Alignment.CenterEnd).offset(14.dp, 0.dp)
                 )
-                if (expandable) {
-                    Box(
-                        Modifier
-                            .width(12.dp)
-                            .align(Alignment.CenterVertically)) {
-                        androidx.compose.animation.AnimatedVisibility(visible = selected, enter = fadeIn(), exit = fadeOut()) {
-                            Icon(
-                                imageVector = Icons.Outlined.ChevronRight,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(12.dp),
-                                tint = color,
-                            )
-                        }
-                    }
-                }
             }
-        },
-        icon = icon.takeIf { !collapsed },
-        selected = selected,
-        onClick = onClick,
-    )
+             */
+        }
+    } else {
+        Tab(
+            text = { SpaceTabText(text, selected, expandable, collapsed) },
+            icon = icon.takeIf { !collapsed },
+            selected = selected,
+            onClick = onClick,
+        )
+    }
 }
 
 @Composable
@@ -378,6 +429,7 @@ private fun SpaceTab(
     selected: Boolean,
     collapsed: Boolean,
     expandable: Boolean,
+    compact: Boolean,
     onClick: () -> Unit
 ) {
     AbstractSpaceTab(
@@ -385,10 +437,11 @@ private fun SpaceTab(
         selected = selected,
         collapsed = collapsed,
         expandable = expandable,
+        compact = compact,
         onClick = onClick,
     ) {
-        UnreadCountBox(unreadCounts) {
-            Avatar(space.info.avatarData.copy(size = AvatarSize.BottomSpaceBar), shape = RoundedCornerShape(4.dp))
+        UnreadCountBox(unreadCounts, spaceTabUnreadBadgeOffset(compact)) {
+            Avatar(space.info.avatarData.copy(size = spaceTabIconSize(compact)), shape = spaceTabIconShape(compact))
         }
     }
 }
@@ -408,6 +461,7 @@ private fun ShowAllTab(
     unreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts?,
     selected: Boolean,
     collapsed: Boolean,
+    compact: Boolean,
     onClick: () -> Unit
 ) {
     AbstractSpaceTab(
@@ -415,16 +469,17 @@ private fun ShowAllTab(
         selected = selected,
         collapsed = collapsed,
         expandable = false,
+        compact = compact,
         onClick = onClick,
     ) {
-        UnreadCountBox(unreadCounts) {
-            ShowAllIcon(AvatarSize.BottomSpaceBar)
+        UnreadCountBox(unreadCounts, spaceTabUnreadBadgeOffset(compact)) {
+            ShowAllIcon(spaceTabIconSize(compact))
         }
     }
 }
 
 @Composable
-private fun UnreadCountBox(unreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts?, content: @Composable () -> Unit) {
+private fun UnreadCountBox(unreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts?, offset: Dp, content: @Composable () -> Unit) {
     val mode = ScPrefs.SPACE_UNREAD_COUNTS.value()
     if (unreadCounts == null || mode == ScPrefs.SpaceUnreadCountMode.HIDE) {
         content()
@@ -462,10 +517,11 @@ private fun UnreadCountBox(unreadCounts: SpaceUnreadCountsDataSource.SpaceUnread
         content()
         Box(
             modifier = Modifier
-                .offset(8.dp, (-8).dp)
+                .offset(offset, -offset)
                 .let {
                     if (outlinedBadge)
-                        it.background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f), RoundedCornerShape(8.dp))
+                        it
+                            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f), RoundedCornerShape(8.dp))
                             .border(1.dp, badgeColor, RoundedCornerShape(8.dp))
                     else
                         it.background(badgeColor.copy(alpha = 0.9f), RoundedCornerShape(8.dp))
@@ -505,3 +561,7 @@ fun PersistSpaceOnPause(scAppStateStore: ScAppStateStore, spaceAwareRoomListData
         }
     }
 }
+
+private fun spaceTabIconSize(compact: Boolean) = if (compact) AvatarSize.CompactBottomSpaceBar else AvatarSize.BottomSpaceBar
+private fun spaceTabIconShape(compact: Boolean) = if (compact) RoundedCornerShape(8.dp) else RoundedCornerShape(4.dp)
+private fun spaceTabUnreadBadgeOffset(compact: Boolean) = if (compact) 6.dp else 8.dp

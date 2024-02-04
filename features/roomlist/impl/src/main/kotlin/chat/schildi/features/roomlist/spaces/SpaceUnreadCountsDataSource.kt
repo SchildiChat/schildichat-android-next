@@ -34,19 +34,20 @@ class SpaceUnreadCountsDataSource @Inject constructor(
             spaceListDataSource.allSpaces,
             spaceAwareRoomListDataSource.spaceSelectionHierarchy,
             scPreferencesStore.settingFlow(ScPrefs.CLIENT_GENERATED_UNREAD_COUNTS),
-        ) { allRoomsValue, allSpacesValue, spaceSelectionValue, useClientGeneratedCounts ->
-            allSpacesValue ?: return@combine mapOf()
+        ) { allRoomsValue, rootSpaces, spaceSelectionValue, useClientGeneratedCounts ->
+            rootSpaces ?: return@combine mapOf()
             spaceSelectionValue ?: return@combine mapOf()
             val visibleSpaces = if (spaceSelectionValue.isEmpty()) {
                 // Nothing selected, only root spaces visible
-                allSpacesValue
+                rootSpaces
             } else {
                 // When a space is selected, either its children or its siblings and parent can be visible.
                 // Here, the space's "siblings" contains the selected space itself as well.
-                val children = allSpacesValue.resolveSelection(spaceSelectionValue)?.spaces.orEmpty()
-                val parent = allSpacesValue.resolveSelection(spaceSelectionValue.subList(0, spaceSelectionValue.size-1))
-                val siblings = parent?.spaces ?: allSpacesValue
-                siblings + children + parent?.let { listOf(it) }.orEmpty()
+                // Root spaces can be visible as well in the case of compact app bar.
+                val children = rootSpaces.resolveSelection(spaceSelectionValue)?.spaces.orEmpty()
+                val parent = rootSpaces.resolveSelection(spaceSelectionValue.subList(0, spaceSelectionValue.size-1))
+                val siblings = parent?.spaces ?: emptyList()
+                rootSpaces + siblings + children + parent?.let { if (rootSpaces.contains(parent)) emptyList() else listOf(it) }.orEmpty()
             }
             val result = mutableMapOf<String?, SpaceUnreadCounts>(
                 // Total count

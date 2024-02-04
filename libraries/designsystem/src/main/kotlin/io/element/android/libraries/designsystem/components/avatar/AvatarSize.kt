@@ -27,6 +27,7 @@ enum class AvatarSize(val dp: Dp) {
 
     RoomSelectRoomListItem(36.dp),
     BottomSpaceBar(24.dp),
+    CompactBottomSpaceBar(32.dp),
     SpaceSwipeIndicator(48.dp),
 
     UserPreference(56.dp),

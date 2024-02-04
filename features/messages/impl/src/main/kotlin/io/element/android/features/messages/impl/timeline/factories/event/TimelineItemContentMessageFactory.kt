@@ -241,7 +241,7 @@ class TimelineItemContentMessageFactory @Inject constructor(
     internal fun parseHtml(formattedBody: FormattedBody?, prefix: String? = null): CharSequence? {
         if (formattedBody == null || formattedBody.format != MessageFormat.HTML) return null
         val result = htmlConverterProvider.provide()
-            .fromHtmlToSpans(formattedBody.body.trimEnd())
+            .fromHtmlToSpans(formattedBody.body.replace("<br>\n", "<br>").trimEnd())
             .withFixedURLSpans()
         return if (prefix != null) {
             buildSpannedString {

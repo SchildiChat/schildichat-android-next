@@ -30,6 +30,7 @@ import io.element.android.libraries.matrix.api.media.VideoInfo
 import io.element.android.libraries.matrix.api.poll.PollKind
 import io.element.android.libraries.matrix.api.room.location.AssetType
 import io.element.android.libraries.matrix.api.timeline.MatrixTimeline
+import io.element.android.libraries.matrix.api.timeline.ReceiptType
 import io.element.android.libraries.matrix.api.widget.MatrixWidgetDriver
 import io.element.android.libraries.matrix.api.widget.MatrixWidgetSettings
 import kotlinx.coroutines.flow.Flow
@@ -151,6 +152,12 @@ interface MatrixRoom : Closeable {
     suspend fun setTopic(topic: String): Result<Unit>
 
     suspend fun reportContent(eventId: EventId, reason: String, blockUserId: UserId?): Result<Unit>
+
+    // SC start
+    suspend fun markAsRead(): Result<Unit>
+    suspend fun markAsUnread(): Result<Unit>
+    suspend fun markAsReadAndSendReadReceipt(receiptType: ReceiptType): Result<Unit>
+    // SC end
 
     /**
      * Share a location message in the room.

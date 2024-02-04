@@ -43,6 +43,7 @@ import io.element.android.libraries.matrix.api.room.StateEventType
 import io.element.android.libraries.matrix.api.room.location.AssetType
 import io.element.android.libraries.matrix.api.room.roomNotificationSettings
 import io.element.android.libraries.matrix.api.timeline.MatrixTimeline
+import io.element.android.libraries.matrix.api.timeline.ReceiptType
 import io.element.android.libraries.matrix.api.widget.MatrixWidgetDriver
 import io.element.android.libraries.matrix.api.widget.MatrixWidgetSettings
 import io.element.android.libraries.matrix.impl.core.toProgressWatcher
@@ -55,6 +56,7 @@ import io.element.android.libraries.matrix.impl.room.location.toInner
 import io.element.android.libraries.matrix.impl.room.member.RoomMemberListFetcher
 import io.element.android.libraries.matrix.impl.timeline.AsyncMatrixTimeline
 import io.element.android.libraries.matrix.impl.timeline.RustMatrixTimeline
+import io.element.android.libraries.matrix.impl.timeline.toRustReceiptType
 import io.element.android.libraries.matrix.impl.util.mxCallbackFlow
 import io.element.android.libraries.matrix.impl.widget.RustWidgetDriver
 import io.element.android.libraries.matrix.impl.widget.generateWidgetWebViewUrl
@@ -432,6 +434,12 @@ class RustMatrixRoom(
             }
         }
     }
+
+    // SC start
+    override suspend fun markAsRead() = withContext(roomDispatcher) { runCatching { innerRoom.markAsRead() } }
+    override suspend fun markAsUnread() = withContext(roomDispatcher) { runCatching { innerRoom.markAsUnread() } }
+    override suspend fun markAsReadAndSendReadReceipt(receiptType: ReceiptType) = withContext(roomDispatcher) { runCatching { innerRoom.markAsReadAndSendReadReceipt(receiptType.toRustReceiptType()) } }
+    // SC end
 
     override suspend fun sendLocation(
         body: String,

@@ -42,6 +42,7 @@ import io.element.android.libraries.matrix.api.room.RoomNotificationMode
 import io.element.android.libraries.matrix.api.room.StateEventType
 import io.element.android.libraries.matrix.api.room.location.AssetType
 import io.element.android.libraries.matrix.api.timeline.MatrixTimeline
+import io.element.android.libraries.matrix.api.timeline.ReceiptType
 import io.element.android.libraries.matrix.api.timeline.item.event.EventTimelineItem
 import io.element.android.libraries.matrix.api.widget.MatrixWidgetDriver
 import io.element.android.libraries.matrix.api.widget.MatrixWidgetSettings
@@ -376,6 +377,12 @@ class FakeMatrixRoom(
         reportedContentCount++
         return reportContentResult
     }
+
+    // SC start
+    override suspend fun markAsRead() = Result.success(Unit)
+    override suspend fun markAsUnread() = Result.success(Unit)
+    override suspend fun markAsReadAndSendReadReceipt(receiptType: ReceiptType) = Result.success(Unit)
+    // SC end
 
     override suspend fun sendLocation(
         body: String,

@@ -108,7 +108,10 @@ object ScPrefs {
         SC_OVERVIEW_LAYOUT.copy(titleRes = R.string.sc_pref_sc_layout_title),
         EL_TYPOGRAPHY,
         SPACE_NAV,
-        CLIENT_GENERATED_UNREAD_COUNTS,
+        ScPrefCategory(R.string.sc_pref_screen_experimental_title, null, listOf(
+            SYNC_READ_RECEIPT_AND_MARKER,
+            CLIENT_GENERATED_UNREAD_COUNTS,
+        )),
     )
 
     val devQuickTweaksTimeline = listOf(

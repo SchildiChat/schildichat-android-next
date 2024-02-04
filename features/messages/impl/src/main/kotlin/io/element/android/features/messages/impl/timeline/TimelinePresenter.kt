@@ -119,7 +119,7 @@ class TimelinePresenter @AssistedInject constructor(
         }
 
         val scReadState = createScReadState()
-        ScReadTracker(appScope, scReadState, isSendPublicReadReceiptsEnabled, timeline, navigator::onBackPressed)
+        ScReadTracker(appScope, scReadState, isSendPublicReadReceiptsEnabled, timeline, room, navigator::onBackPressed)
         val syncReadReceiptAndMarker = ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.state()
 
         fun handleEvents(event: TimelineEvents) {
@@ -127,7 +127,7 @@ class TimelinePresenter @AssistedInject constructor(
                 TimelineEvents.LoadMore -> localScope.paginateBackwards()
                 is TimelineEvents.SetHighlightedEvent -> highlightedEventId.value = event.eventId
                 is TimelineEvents.OnUnreadLineVisible -> scReadState.sawUnreadLine.value = true
-                is TimelineEvents.MarkAsRead -> forceSetReceipts(appScope, timeline, scReadState, isSendPublicReadReceiptsEnabled)
+                is TimelineEvents.MarkAsRead -> forceSetReceipts(appScope, room, scReadState, isSendPublicReadReceiptsEnabled)
                 is TimelineEvents.OnScrollFinished -> {
                     if (event.firstIndex == 0) {
                         newItemState.value = NewEventState.None

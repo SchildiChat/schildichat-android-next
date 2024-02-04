@@ -3,18 +3,19 @@ package io.element.android.features.messages.impl.timeline
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.matrix.api.core.EventId
+import io.element.android.libraries.matrix.api.room.MatrixRoom
 import io.element.android.libraries.matrix.api.timeline.MatrixTimeline
 import io.element.android.libraries.matrix.api.timeline.ReceiptType
 import kotlinx.collections.immutable.ImmutableList
@@ -28,13 +29,11 @@ data class ScReadState(
     val sawUnreadLine: MutableState<Boolean>,
 )
 
-fun forceSetReceipts(appScope: CoroutineScope, timeline: MatrixTimeline, scReadState: ScReadState, isSendPublicReadReceiptsEnabled: Boolean) {
+fun forceSetReceipts(appScope: CoroutineScope, room: MatrixRoom, scReadState: ScReadState, isSendPublicReadReceiptsEnabled: Boolean) {
     scReadState.sawUnreadLine.value = true
-    scReadState.readMarkerToSet.value?.let { eventId ->
-        appScope.launch {
-            timeline.sendReadReceipt(eventId, if (isSendPublicReadReceiptsEnabled) ReceiptType.READ else ReceiptType.READ_PRIVATE)
-            timeline.sendReadReceipt(eventId, ReceiptType.FULLY_READ)
-        }
+    appScope.launch {
+        room.markAsReadAndSendReadReceipt(if (isSendPublicReadReceiptsEnabled) ReceiptType.READ else ReceiptType.READ_PRIVATE)
+        room.markAsReadAndSendReadReceipt(ReceiptType.FULLY_READ)
     }
 }
 
@@ -53,9 +52,20 @@ fun createScReadState(): ScReadState {
 }
 
 @Composable
-fun ScReadTracker(appScope: CoroutineScope, scUnreadState: ScReadState, isSendPublicReadReceiptsEnabled: Boolean, timeline: MatrixTimeline, onBackPressed: () -> Unit) {
+fun ScReadTracker(
+    appScope: CoroutineScope,
+    scUnreadState: ScReadState,
+    isSendPublicReadReceiptsEnabled: Boolean,
+    timeline: MatrixTimeline,
+    room: MatrixRoom,
+    onBackPressed: () -> Unit
+) {
     val clickedBack = remember { mutableStateOf(false) }
     val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        room.markAsRead()
+    }
 
     if (ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.value()) {
         BackHandler(enabled = !clickedBack.value && scUnreadState.sawUnreadLine.value && scUnreadState.readMarkerToSet.value != null) {

@@ -53,6 +53,7 @@ fun RoomListContextMenu(
                 eventSink(RoomListEvents.HideContextMenu)
                 onRoomSettingsClicked(it)
             },
+            onMarkAsReadClicked = { roomId, read -> eventSink(RoomListEvents.SetMarkedAsRead(roomId, read)) ; eventSink(RoomListEvents.HideContextMenu) },
             onLeaveRoomClicked = {
                 eventSink(RoomListEvents.HideContextMenu)
                 eventSink(RoomListEvents.LeaveRoom(contextMenu.roomId))
@@ -65,6 +66,7 @@ fun RoomListContextMenu(
 private fun RoomListModalBottomSheetContent(
     contextMenu: RoomListState.ContextMenu.Shown,
     onRoomSettingsClicked: (roomId: RoomId) -> Unit,
+    onMarkAsReadClicked: (roomId: RoomId, read: Boolean) -> Unit = { _, _ -> },
     onLeaveRoomClicked: (roomId: RoomId) -> Unit,
 ) {
     Column(
@@ -78,6 +80,7 @@ private fun RoomListModalBottomSheetContent(
                 )
             }
         )
+        MarkAsReadActionItems(onMarkAsReadClicked = { onMarkAsReadClicked(contextMenu.roomId, it) }, isUnread = contextMenu.isUnread)
         ListItem(
             headlineContent = {
                 Text(

@@ -183,7 +183,7 @@ private fun RowScope.LastMessageAndIndicatorRow(room: RoomListRoomSummary) {
         } else if (room.numberOfUnreadMentions > 0) {
             MentionIndicatorAtom()
         }
-        if (room.hasNewContent) {
+        if (room.hasNewContent || room.markedUnread) {
             UnreadIndicatorAtom(
                 color = tint
             )

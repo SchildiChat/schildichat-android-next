@@ -54,6 +54,7 @@ data class RoomListState(
         data class Shown(
             val roomId: RoomId,
             val roomName: String,
+            val isUnread: Boolean = false,
             val isDm: Boolean,
         ) : ContextMenu
     }

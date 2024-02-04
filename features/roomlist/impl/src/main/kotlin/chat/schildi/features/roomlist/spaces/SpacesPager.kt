@@ -1,5 +1,6 @@
 package chat.schildi.features.roomlist.spaces
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.DecayAnimationSpec
 import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.fadeIn
@@ -328,7 +329,10 @@ private fun AbstractSpaceTab(
 ) {
     Tab(
         text = {
-            val color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+            val color = animateColorAsState(
+                targetValue = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
+                label = "tabSelectedColor",
+            ).value
             Row {
                 if (expandable) {
                     // We want to keep the text centered despite having an expand-icon

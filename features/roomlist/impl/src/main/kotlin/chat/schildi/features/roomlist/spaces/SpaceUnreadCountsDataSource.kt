@@ -75,18 +75,20 @@ class SpaceUnreadCountsDataSource @Inject constructor(
                 if (useClientGeneratedUnreadCounts) room.numberOfUnreadMentions else room.highlightCount,
                 if (useClientGeneratedUnreadCounts) room.numberOfUnreadNotifications else room.notificationCount,
                 if (useClientGeneratedUnreadCounts) room.numberOfUnreadMessages else room.unreadCount,
+                room.markedUnread,
             )
         }
         return unread
     }
 
-    private fun SpaceUnreadCounts.add(mentions: Int, notifications: Int, unread: Int): SpaceUnreadCounts = SpaceUnreadCounts(
+    private fun SpaceUnreadCounts.add(mentions: Int, notifications: Int, unread: Int, markedUnread: Boolean): SpaceUnreadCounts = SpaceUnreadCounts(
         this.mentionedMessages + mentions,
         this.notifiedMessages + notifications,
         this.unreadMessages + unread,
         this.mentionedChats + if (mentions > 0) 1 else 0,
         this.notifiedChats + if (notifications > 0) 1 else 0,
         this.unreadChats + if (unread > 0) 1 else 0,
+        this.markedUnreadChats + if (markedUnread) 1 else 0
     )
 
     @Immutable
@@ -97,5 +99,6 @@ class SpaceUnreadCountsDataSource @Inject constructor(
         val mentionedChats: Int = 0,
         val notifiedChats: Int = 0,
         val unreadChats: Int = 0,
+        val markedUnreadChats: Int = 0,
     )
 }

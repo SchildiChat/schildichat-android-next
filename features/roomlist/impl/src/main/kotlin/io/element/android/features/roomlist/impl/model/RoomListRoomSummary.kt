@@ -33,6 +33,7 @@ data class RoomListRoomSummary(
     val notificationCount: Int = 0,
     val highlightCount: Int = 0,
     val unreadCount: Int = 0,
+    val markedUnread: Boolean = false,
     // SC end
     val timestamp: String?,
     val lastMessage: CharSequence?,

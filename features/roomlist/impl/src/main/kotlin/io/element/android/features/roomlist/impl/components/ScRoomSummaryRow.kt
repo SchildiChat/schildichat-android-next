@@ -19,6 +19,7 @@ package io.element.android.features.roomlist.impl.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -42,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -209,22 +211,27 @@ private fun ScUnreadCounter(room: RoomListRoomSummary) {
         notificationCount = room.notificationCount
         unreadCount = room.unreadCount
     }
-    val count: Int
+    val count: String
     val badgeColor: Color
+    var outlinedBadge = false
     when {
         notificationCount > 0 -> {
-            count = notificationCount
+            count = formatUnreadCount(notificationCount)
             badgeColor = if (highlightCount > 0) ElementTheme.colors.bgCriticalPrimary else ElementTheme.colors.unreadIndicator
         }
         highlightCount > 0 -> {
-            count = highlightCount
+            count = formatUnreadCount(highlightCount)
             badgeColor = ElementTheme.colors.bgCriticalPrimary
         }
+        room.markedUnread -> {
+            count = "!"
+            badgeColor = ElementTheme.colors.unreadIndicator
+            outlinedBadge = true
+        }
         unreadCount > 0 -> {
-            count = unreadCount
+            count = formatUnreadCount(unreadCount)
             badgeColor = ScTheme.exposures.unreadBadgeColor
         }
-        // TODO marked_as_unread once we have that in the SDK
         else -> {
             // No badge to show
             return
@@ -232,13 +239,18 @@ private fun ScUnreadCounter(room: RoomListRoomSummary) {
     }
     Box (
         modifier = Modifier
-            .background(badgeColor, RoundedCornerShape(30.dp))
+            .let {
+                if (outlinedBadge)
+                    it.border(2.dp, badgeColor, RoundedCornerShape(30.dp))
+                else
+                    it.background(badgeColor, RoundedCornerShape(30.dp))
+            }
             .sizeIn(minWidth = 24.dp, minHeight = 24.dp)
     ) {
         Text(
-            text = formatUnreadCount(count),
-            color = ScTheme.exposures.colorOnAccent,
-            style = MaterialTheme.typography.bodySmall,
+            text = count,
+            color = if (outlinedBadge) badgeColor else ScTheme.exposures.colorOnAccent,
+            style = MaterialTheme.typography.bodySmall.let { if (outlinedBadge) it.copy(fontWeight = FontWeight.Bold) else it },
             maxLines = 1,
             textAlign = TextAlign.Center,
             modifier = Modifier

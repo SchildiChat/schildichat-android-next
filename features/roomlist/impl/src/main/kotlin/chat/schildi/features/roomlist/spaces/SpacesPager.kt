@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -432,6 +433,7 @@ private fun UnreadCountBox(unreadCounts: SpaceUnreadCountsDataSource.SpaceUnread
     val countChats = mode == ScPrefs.SpaceUnreadCountMode.CHATS
     val count: Int
     val badgeColor: Color
+    var outlinedBadge = false
     when {
         unreadCounts.notifiedMessages > 0 -> {
             count = if (countChats) unreadCounts.notifiedChats else unreadCounts.notifiedMessages
@@ -440,6 +442,11 @@ private fun UnreadCountBox(unreadCounts: SpaceUnreadCountsDataSource.SpaceUnread
         unreadCounts.mentionedMessages > 0 -> {
             count = if (countChats) unreadCounts.mentionedChats else unreadCounts.mentionedMessages
             badgeColor = ElementTheme.colors.bgCriticalPrimary
+        }
+        unreadCounts.markedUnreadChats > 0 -> {
+            count = unreadCounts.markedUnreadChats
+            badgeColor = ElementTheme.colors.unreadIndicator
+            outlinedBadge = true
         }
         unreadCounts.unreadMessages > 0 -> {
             count = if (countChats) unreadCounts.unreadChats else unreadCounts.unreadMessages
@@ -456,13 +463,19 @@ private fun UnreadCountBox(unreadCounts: SpaceUnreadCountsDataSource.SpaceUnread
         Box(
             modifier = Modifier
                 .offset(8.dp, (-8).dp)
-                .background(badgeColor.copy(alpha = 0.9f), RoundedCornerShape(8.dp))
+                .let {
+                    if (outlinedBadge)
+                        it.background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f), RoundedCornerShape(8.dp))
+                            .border(1.dp, badgeColor, RoundedCornerShape(8.dp))
+                    else
+                        it.background(badgeColor.copy(alpha = 0.9f), RoundedCornerShape(8.dp))
+                }
                 .sizeIn(minWidth = 16.dp, minHeight = 16.dp)
                 .align(Alignment.TopEnd)
         ) {
             Text(
                 text = formatUnreadCount(count),
-                color = ScTheme.exposures.colorOnAccent,
+                color = if (outlinedBadge) badgeColor else ScTheme.exposures.colorOnAccent,
                 style = MaterialTheme.typography.labelSmall,
                 maxLines = 1,
                 textAlign = TextAlign.Center,

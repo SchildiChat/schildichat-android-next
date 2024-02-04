@@ -74,6 +74,7 @@ class RoomListRoomSummaryFactory @Inject constructor(
             notificationCount = roomSummary.details.unreadNotificationCount,
             highlightCount = roomSummary.details.highlightCount,
             unreadCount = roomSummary.details.unreadCount,
+            markedUnread = roomSummary.details.markedUnread,
             timestamp = lastMessageTimestampFormatter.format(roomSummary.details.lastMessageTimestamp),
             lastMessage = roomSummary.details.lastMessage?.let { message ->
                 roomLastMessageFormatter.format(message.event, roomSummary.details.isDirect)

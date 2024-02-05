@@ -22,6 +22,9 @@ import android.text.format.DateUtils.DAY_IN_MILLIS
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import chat.schildi.lib.preferences.ScAppStateStore
+import chat.schildi.lib.preferences.ScPreferencesStore
+import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.collectScPrefs
 import com.squareup.anvil.annotations.ContributesBinding
 import io.element.android.features.rageshake.api.crash.CrashDataStore
 import io.element.android.features.rageshake.api.reporter.BugReporter
@@ -83,6 +86,7 @@ class DefaultBugReporter @Inject constructor(
     private val buildMeta: BuildMeta,
     private val bugReporterUrlProvider: BugReporterUrlProvider,
     private val scAppStateStore: ScAppStateStore,
+    private val scPreferencesStore: ScPreferencesStore,
 ) : BugReporter {
     companion object {
         // filenames
@@ -202,6 +206,12 @@ class DefaultBugReporter @Inject constructor(
                             .addFormDataPart("device_width_dp", (widthPixels/density).toString())
                             .addFormDataPart("device_height_dp", (heightPixels/density).toString())
                     }
+                    // Non-default SC settings
+                    val changedScSettings = ScPrefs.scTweaks.prefs.collectScPrefs {
+                        scPreferencesStore.getCachedOrDefaultValue(it) != it.defaultValue
+                    }
+                    val scPrefsString = changedScSettings.joinToString(separator = ",") { "${it.sKey}=${scPreferencesStore.getCachedOrDefaultValue(it)}" }
+                    builder.addFormDataPart("sc_preferences", scPrefsString)
 
 
                     // add the gzipped files, don't cancel the whole upload if only some file failed to upload

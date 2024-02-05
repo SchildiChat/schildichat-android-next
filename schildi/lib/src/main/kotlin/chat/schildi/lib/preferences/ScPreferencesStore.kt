@@ -135,10 +135,10 @@ fun <T>ScPreferencesStore.settingState(scPref: ScPref<T>, context: CoroutineCont
 @Composable
 fun ScPreferencesStore.enabledState(scPref: AbstractScPref, context: CoroutineContext = EmptyCoroutineContext): State<Boolean> = isEnabledFlow(scPref).collectAsState(true, context)
 
-fun List<AbstractScPref>.collectScPrefs(): List<ScPref<*>> = this.flatMap { pref ->
+fun List<AbstractScPref>.collectScPrefs(predicate: (ScPref<*>) -> Boolean = { true }): List<ScPref<*>> = this.flatMap { pref ->
     when (pref) {
-        is ScPrefContainer -> pref.prefs.collectScPrefs()
-        is ScPref<*> -> listOf(pref)
+        is ScPrefContainer -> pref.prefs.collectScPrefs(predicate)
+        is ScPref<*> -> listOf(pref).filter(predicate)
         is ScActionablePref -> emptyList()
     }
 }

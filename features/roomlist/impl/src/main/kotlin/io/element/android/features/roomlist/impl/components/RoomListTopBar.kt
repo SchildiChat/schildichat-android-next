@@ -17,6 +17,7 @@
 package io.element.android.features.roomlist.impl.components
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -51,9 +52,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import chat.schildi.components.preferences.AutoRenderedDropdown
-import chat.schildi.lib.preferences.ScPrefs
-import chat.schildi.lib.preferences.value
 import chat.schildi.theme.ScTheme
 import io.element.android.appconfig.RoomListConfig
 import io.element.android.compound.theme.ElementTheme
@@ -93,6 +91,7 @@ fun RoomListTopBar(
     matrixUser: MatrixUser?,
     showAvatarIndicator: Boolean,
     areSearchResultsDisplayed: Boolean,
+    selectedSpaceName: String?,
     onFilterChanged: (String) -> Unit,
     onToggleSearch: () -> Unit,
     onMenuActionClicked: (RoomListMenuAction) -> Unit,
@@ -119,6 +118,7 @@ fun RoomListTopBar(
         matrixUser = matrixUser,
         showAvatarIndicator = showAvatarIndicator,
         areSearchResultsDisplayed = areSearchResultsDisplayed,
+        selectedSpaceName = selectedSpaceName,
         onCreateRoomClicked = onCreateRoomClicked,
         onOpenSettings = onOpenSettings,
         onSearchClicked = onToggleSearch,
@@ -134,6 +134,7 @@ private fun DefaultRoomListTopBar(
     matrixUser: MatrixUser?,
     showAvatarIndicator: Boolean,
     areSearchResultsDisplayed: Boolean,
+    selectedSpaceName: String? = null,
     scrollBehavior: TopAppBarScrollBehavior,
     onCreateRoomClicked: () -> Unit,
     onOpenSettings: () -> Unit,
@@ -211,7 +212,9 @@ private fun DefaultRoomListTopBar(
                     scrolledContainerColor = Color.Transparent,
                 ),
                 title = {
-                    Text(text = stringResource(id = R.string.screen_roomlist_main_space_title))
+                    Crossfade(targetState = selectedSpaceName ?: stringResource(id = R.string.screen_roomlist_main_space_title), label = "spaceText",) { text ->
+                        Text(text = text)
+                    }
                 },
                 navigationIcon = {
                     avatarData?.let {

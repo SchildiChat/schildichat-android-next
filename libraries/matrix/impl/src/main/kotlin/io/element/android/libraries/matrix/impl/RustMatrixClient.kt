@@ -247,6 +247,9 @@ class RustMatrixClient(
 
     private suspend fun pairOfRoom(roomId: RoomId): Pair<RoomListItem, Room>? {
         val cachedRoomListItem = innerRoomListService.roomOrNull(roomId.value)
+        if (cachedRoomListItem?.isTimelineInitialized() == false) {
+            cachedRoomListItem.initTimeline(null)
+        }
         val fullRoom = cachedRoomListItem?.fullRoom()
         return if (cachedRoomListItem == null || fullRoom == null) {
             Timber.d("No room cached for $roomId")

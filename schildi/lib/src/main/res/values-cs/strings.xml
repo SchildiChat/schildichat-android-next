@@ -1,2 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="sc_pref_category_timeline">Obrazovka konverzace</string>
+    <string name="sc_onboarding_welcome_title">Vítejte v SchildiChatu</string>
+    <string name="sc_onboarding_welcome_summary">Přináší želvy do Matrixu</string>
+    <string name="sc_pref_tweaks_title">Želví vylepšení</string>
+    <string name="sc_pref_sc_themes_title">SC téma</string>
+    <string name="sc_pref_sc_overview_layout_title">SC rozložení přehledu</string>
+    <string name="sc_pref_sc_layout_title">SC rozložení</string>
+    <string name="sc_pref_sc_timeline_layout_title">SC rozložení konverzace</string>
+    <string name="sc_pref_sc_floating_date_title">Plovoucí čas</string>
+    <string name="sc_pref_sc_floating_date_summary">Zobrazit datum v horní části zpráv při posouvání</string>
+    <string name="sc_pref_pl_display_name_title">Pojmenování barev podle úrovně oprávnění</string>
+    <string name="sc_pref_pl_display_name_summary_warning">Nefunguje spolehlivě, pokud seznam členů ještě nebyl plně načten</string>
+    <string name="sc_pref_el_typography_title">Element typografie</string>
+    <string name="sc_pref_el_typography_summary">Použít nastavení písma Elementu s větším textem zpráv</string>
+    <string name="sc_pref_fast_transitions_title">Rychlé přechody</string>
+    <string name="sc_pref_fast_transitions_summary">Zrychlené animace oken</string>
+    <string name="sc_pref_compact_app_bar_title">Kompaktní panel aplikace</string>
+    <string name="sc_pref_compact_app_bar_summary">Nikdy nerozbalovat horní panel aplikace</string>
+    <string name="sc_space_nav_title">Navigace prostorů</string>
+    <string name="sc_space_nav_summary">Filtrovat chaty podle prostorů</string>
+    <string name="sc_space_swipe_title">Prostory přepínat přejetím prstu</string>
+    <string name="sc_space_swipe_summary">Přetáhnout přehled chatu horizontálně pro přepnutí prostorů</string>
+    <string name="sc_space_unread_counts_mode_title">Souhrnné počty nepřečtených</string>
+    <string name="sc_space_unread_counts_mode_messages">Počítat nepřečtené zprávy</string>
+    <string name="sc_space_unread_counts_mode_chats">Počítat nepřečtené chaty</string>
+    <string name="sc_space_unread_counts_mode_hide">Skrýt</string>
+    <string name="sc_sync_read_receipt_and_marker_title">Udržovat značky přečtení synchronizované</string>
+    <string name="sc_sync_read_receipt_and_marker_summary">Vždy nastaví potvrzení o přečtení (to, co vidí ostatní a podle čeho se počítá počet nepřečtených zpráv) na stejnou zprávu jako značku úplného přečtení (řádek nových zpráv při prohlížení chatu)</string>
+    <string name="sc_set_read_marker_toast_start">Nastavit značku přečtení na %s</string>
+    <string name="sc_set_read_marker_toast_end">Značka přečtení nastavena na %s</string>
+    <string name="sc_pref_screen_experimental_title">Experimentální</string>
+    <string name="sc_pref_screen_experimental_summary">Nestabilní funkce, očekávejte chyby</string>
+    <string name="sc_action_mark_as_read">Označit jako přečtené</string>
+    <string name="sc_action_mark_as_unread">Označit jako nepřečtené</string>
+    <string name="test">Test</string>
+    <string name="sc_client_generated_unread_counts_title">Počty nepřečtených generované klientem</string>
+    <string name="sc_client_generated_unread_counts_summary">Vypočítat počty nepřečtených v zařízení namísto důvěřování hodnotám ze serveru</string>
+    <string name="sc_push_info_title">Push informace</string>
+    <string name="sc_push_info_summary">Zobrazit informace o ladění týkající se push oznámení</string>
+    <string name="sc_pref_dev_quick_options">Rychlá nastavení</string>
+    <string name="sc_pref_danger_zone">Nebezpečná zóna</string>
+    <string name="sc_pref_restore_defaults">Obnovit výchozí nastavení</string>
+    <string name="sc_pref_restore_element">Použít nastavení Elementu</string>
+    <string name="sc_pref_restore_authors_choice">Autorovy volby</string>
+    <string name="sc_pref_category_general_appearance">Vzhled</string>
+    <string name="sc_pref_category_general_behaviour">Chování</string>
+    <string name="sc_pref_category_spaces">Prostory</string>
+    <string name="sc_pref_category_misc">Různé</string>
+    <string name="sc_pref_category_chat_overview">Přehled chatu</string>
+</resources>

@@ -1,4 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="sc_pref_tweaks_title">Schildi Extras</string>
+    <string name="sc_pref_restore_defaults">Voreinstellungen wiederherstellen</string>
+    <string name="sc_pref_restore_authors_choice">Wahl des Autors</string>
+    <string name="sc_push_info_title">Push-Info</string>
+    <string name="sc_push_info_summary">Betrachte Debug-Informationen im Zusammenhang mit Push-Benachrichtigungen</string>
+    <string name="sc_pref_danger_zone">Gefahrenzone</string>
+    <string name="sc_pref_category_general_behaviour">Verhalten</string>
+    <string name="sc_pref_category_chat_overview">Unterhaltungsübersicht</string>
+    <string name="sc_pref_category_spaces">Spaces</string>
+    <string name="sc_pref_screen_experimental_summary">Funktionen instabil, rechne mit Bugs</string>
+    <string name="sc_action_mark_as_read">Als gelesen markieren</string>
+    <string name="sc_action_mark_as_unread">Als ungelesen markieren</string>
+    <string name="sc_client_generated_unread_counts_summary">Berechne die Anzahlen ungelesener Nachrichtem auf dem Gerät, anstatt auf die vom Server gemeldeten Werte zu vertrauen</string>
+    <string name="sc_pref_category_general_appearance">Erscheinungsbild</string>
+    <string name="sc_pref_screen_experimental_title">Experimentell</string>
+    <string name="sc_onboarding_welcome_title">Willkommen bei SchildiChat</string>
+    <string name="sc_space_unread_counts_mode_hide">Verstecken</string>
+    <string name="sc_pref_sc_layout_title">SC Layout</string>
+    <string name="sc_pref_sc_floating_date_title">Schwebendes Datum</string>
+    <string name="sc_pref_sc_floating_date_summary">Zeige das Datum über Nachrichten beim Scrollen</string>
+    <string name="sc_pref_pl_display_name_summary_warning">Funktioniert nicht zuverlässig, wenn die Mitgliederliste noch nicht vollständig geladen wurde</string>
+    <string name="sc_pref_el_typography_summary">Nutze Elements Schrifteinstellungen für größeren Nachrichtentext</string>
+    <string name="sc_space_unread_counts_mode_messages">Zähle ungelesene Nachrichten</string>
+    <string name="sc_space_unread_counts_mode_chats">Zähle ungelesene Unterhaltungen</string>
+    <string name="sc_set_read_marker_toast_start">Setze Gelesen-Markierung auf %s</string>
+    <string name="sc_set_read_marker_toast_end">Gelesen-Markierung auf %s gesetzt</string>
+    <string name="sc_pref_dev_quick_options">Schnelleinstellungen</string>
+    <string name="test">Test</string>
 </resources>

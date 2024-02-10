@@ -49,6 +49,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -213,7 +214,7 @@ private fun DefaultRoomListTopBar(
                 ),
                 title = {
                     Crossfade(targetState = selectedSpaceName ?: stringResource(id = R.string.screen_roomlist_main_space_title), label = "spaceText",) { text ->
-                        Text(text = text)
+                        Text(text = text, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                 },
                 navigationIcon = {

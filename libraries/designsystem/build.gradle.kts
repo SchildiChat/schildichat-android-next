@@ -35,8 +35,9 @@ android {
     }
 
     dependencies {
-        implementation(projects.schildi.lib)
-        implementation(projects.schildi.theme)
+        // SC lib and theme required as API for compose previews using ElementPreview
+        api(projects.schildi.lib)
+        api(projects.schildi.theme)
         api(libs.compound)
         // Should not be there, but this is a POC
         implementation(libs.coil.compose)

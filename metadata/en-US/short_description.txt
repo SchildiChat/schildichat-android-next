@@ -1,1 +1,1 @@
-Matrix messenger based on Element X with some extras and tweaks
+Next-generation SchildiChat Matrix messenger based on Element X (Preview)

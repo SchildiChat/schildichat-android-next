@@ -16,6 +16,7 @@
 
 package io.element.android.libraries.designsystem.components.avatar
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,17 +29,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.drawable.toBitmap
 import chat.schildi.theme.ScTheme
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
+import coil.compose.LocalImageLoader
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.libraries.designsystem.colors.AvatarColorsProvider
 import io.element.android.libraries.designsystem.preview.ElementThemedPreview
@@ -46,6 +54,7 @@ import io.element.android.libraries.designsystem.preview.PreviewGroup
 import io.element.android.libraries.designsystem.preview.debugPlaceholderAvatar
 import io.element.android.libraries.designsystem.text.toSp
 import io.element.android.libraries.designsystem.theme.components.Text
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 @Composable
@@ -78,6 +87,10 @@ private fun ImageAvatar(
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
 ) {
+    if (shouldDrawScPreviewAvatar(avatarData)) {
+        ScPreviewAvatar(avatarData, modifier)
+        return
+    }
     SubcomposeAsyncImage(
         model = avatarData,
         /*onError = {

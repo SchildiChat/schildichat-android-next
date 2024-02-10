@@ -4,8 +4,8 @@ Matrix client based on [Element Android X](https://github.com/element-hq/element
 in the tradition of the original [SchildiChat for Android](https://github.com/SchildiChat/SchildiChat-android)
 which was based on the now deprecated Element Android codebase.
 
-Similarly to Element X, this SchildiChat Android rewrite is still in alpha state and lacks many original features,
-and hasn't even been entirely rebranded yet.
+Similarly to Element X, this SchildiChat Android rewrite should still be considered beta,
+as it lacks some functionality which one might expect from a fully-featured chat app, compared to the old SchildiChat implementation.
 
 An overview over changes compared to Element X can be found [here](FEATURES.md).
 
@@ -20,7 +20,7 @@ Translations that concern upstream Element code are best contributed directly to
 
 ## Screenshots
 
-<img src="https://matrix.org/blog/img/NBYAUpxlauPpxooEBNVRPCor.png" height="500"/> <img src="https://matrix.org/blog/img/NXLBTXdPxiHZhdoJMkzKgWqC.png" height="500"/>
+<img src="https://raw.githubusercontent.com/SchildiChat/schildichat-android-next/main/metadata/en-US/images/phoneScreenshots/1_en-US.png" height="500"/> <img src="https://raw.githubusercontent.com/SchildiChat/schildichat-android-next/main/metadata/en-US/images/phoneScreenshots/2_en-US.png" height="500"/><img src="https://raw.githubusercontent.com/SchildiChat/schildichat-android-next/main/metadata/en-US/images/phoneScreenshots/3_en-US.png" height="500"/>
 
 
 ## Building

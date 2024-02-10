@@ -35,6 +35,7 @@ fun TimelineItemImageView(
         aspectRatio = content.aspectRatio,
         modifier = modifier,
     ) {
+        if (shouldDrawScPreviewMedia(content.preferredMediaSource)) { ScPreviewMedia(content.preferredMediaSource) ; return@TimelineItemAspectRatioBox }
         BlurHashAsyncImage(
             model = MediaRequestData(content.preferredMediaSource, MediaRequestData.Kind.File(content.body, content.mimeType)),
             blurHash = content.blurhash,

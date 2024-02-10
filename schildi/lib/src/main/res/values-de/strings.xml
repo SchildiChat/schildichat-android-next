@@ -27,5 +27,4 @@
     <string name="sc_set_read_marker_toast_start">Setze Gelesen-Markierung auf %s</string>
     <string name="sc_set_read_marker_toast_end">Gelesen-Markierung auf %s gesetzt</string>
     <string name="sc_pref_dev_quick_options">Schnelleinstellungen</string>
-    <string name="test">Test</string>
 </resources>

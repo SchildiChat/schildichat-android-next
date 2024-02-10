@@ -34,7 +34,6 @@
     <string name="sc_pref_screen_experimental_summary">Nestabilní funkce, očekávejte chyby</string>
     <string name="sc_action_mark_as_read">Označit jako přečtené</string>
     <string name="sc_action_mark_as_unread">Označit jako nepřečtené</string>
-    <string name="test">Test</string>
     <string name="sc_client_generated_unread_counts_title">Počty nepřečtených generované klientem</string>
     <string name="sc_client_generated_unread_counts_summary">Vypočítat počty nepřečtených v zařízení namísto důvěřování hodnotám ze serveru</string>
     <string name="sc_push_info_title">Push informace</string>

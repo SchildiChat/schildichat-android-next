@@ -188,7 +188,9 @@ if [ "$release_type" = "test" ]; then
     git commit -m "Test version $versionCode"
 else
     git commit -m "Increment version"
-    git tag "$new_tag"
+    git tag "$new_tag" -m "Version $version (${versionCode}0)
+
+$(cat "$changelog_file")"
 fi
 
 if ((do_translation_pull)); then

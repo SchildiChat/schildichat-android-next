@@ -25,6 +25,5 @@
     <string name="sc_space_unread_counts_mode_messages">Zähle ungelesene Nachrichten</string>
     <string name="sc_space_unread_counts_mode_chats">Zähle ungelesene Unterhaltungen</string>
     <string name="sc_set_read_marker_toast_start">Setze Gelesen-Markierung auf %s</string>
-    <string name="sc_set_read_marker_toast_end">Gelesen-Markierung auf %s gesetzt</string>
     <string name="sc_pref_dev_quick_options">Schnelleinstellungen</string>
 </resources>

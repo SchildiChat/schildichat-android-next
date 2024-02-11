@@ -1,5 +1,6 @@
 package io.element.android.features.messages.impl.timeline
 
+import android.content.Context
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
@@ -29,11 +30,14 @@ data class ScReadState(
     val sawUnreadLine: MutableState<Boolean>,
 )
 
-fun forceSetReceipts(appScope: CoroutineScope, room: MatrixRoom, scReadState: ScReadState, isSendPublicReadReceiptsEnabled: Boolean) {
+fun forceSetReceipts(context: Context, appScope: CoroutineScope, room: MatrixRoom, scReadState: ScReadState, isSendPublicReadReceiptsEnabled: Boolean) {
     scReadState.sawUnreadLine.value = true
     appScope.launch {
+        val toast = Toast.makeText(context, chat.schildi.lib.R.string.sc_set_read_marker_implicit_toast_start, Toast.LENGTH_LONG)
+        toast.show()
         room.markAsReadAndSendReadReceipt(if (isSendPublicReadReceiptsEnabled) ReceiptType.READ else ReceiptType.READ_PRIVATE)
         room.markAsReadAndSendReadReceipt(ReceiptType.FULLY_READ)
+        toast.cancel()
     }
 }
 
@@ -68,10 +72,18 @@ fun ScReadTracker(
     }
 
     if (ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.value()) {
+        val debug = ScPrefs.READ_MARKER_DEBUG.value()
         BackHandler(enabled = !clickedBack.value && scUnreadState.sawUnreadLine.value && scUnreadState.readMarkerToSet.value != null) {
             scUnreadState.readMarkerToSet.value?.let { eventId ->
                 appScope.launch {
-                    val toast = Toast.makeText(context, context.getString(chat.schildi.lib.R.string.sc_set_read_marker_toast_start, eventId.value), Toast.LENGTH_LONG)
+                    val toast = Toast.makeText(
+                        context,
+                        if (debug)
+                            context.getString(chat.schildi.lib.R.string.sc_set_read_marker_toast_start, eventId.value)
+                        else
+                            context.getString(chat.schildi.lib.R.string.sc_set_read_marker_implicit_toast_start),
+                        Toast.LENGTH_LONG
+                    )
                     toast.show()
                     timeline.sendReadReceipt(eventId, if (isSendPublicReadReceiptsEnabled) ReceiptType.READ else ReceiptType.READ_PRIVATE)
                     timeline.sendReadReceipt(eventId, ReceiptType.FULLY_READ)

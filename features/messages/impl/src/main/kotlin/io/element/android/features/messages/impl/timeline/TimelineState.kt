@@ -26,6 +26,7 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Immutable
 data class TimelineState(
+    val scReadState: ScReadState? = null,
     val timelineItems: ImmutableList<TimelineItem>,
     val timelineRoomInfo: TimelineRoomInfo,
     val highlightedEventId: EventId?,

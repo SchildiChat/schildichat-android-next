@@ -13,7 +13,6 @@
     <string name="sc_space_unread_counts_mode_hide">表示しない</string>
     <string name="sc_client_generated_unread_counts_title">クライアントで未読数を計算</string>
     <string name="sc_pref_danger_zone">危険な領域</string>
-    <string name="sc_set_read_marker_toast_end">既読マーカーを%sに設定しました</string>
     <string name="sc_pref_category_timeline">会話の画面</string>
     <string name="sc_pref_sc_overview_layout_title">SCの概要のレイアウト</string>
     <string name="sc_space_swipe_title">スワイプでスペースを切り替える</string>

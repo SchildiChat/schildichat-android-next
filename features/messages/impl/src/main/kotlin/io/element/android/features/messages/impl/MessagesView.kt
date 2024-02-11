@@ -206,6 +206,7 @@ fun MessagesView(
                     onJoinCallClicked = onJoinCallClicked,
                     state = state,
                 )
+                ScReadMarkerDebug(state.timelineState.scReadState)
             }
         },
         content = { padding ->

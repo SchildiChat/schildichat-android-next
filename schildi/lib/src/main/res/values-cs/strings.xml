@@ -29,7 +29,6 @@
     <string name="sc_sync_read_receipt_and_marker_title">Udržovat značky přečtení synchronizované</string>
     <string name="sc_sync_read_receipt_and_marker_summary">Vždy nastaví potvrzení o přečtení (to, co vidí ostatní a podle čeho se počítá počet nepřečtených zpráv) na stejnou zprávu jako značku úplného přečtení (řádek nových zpráv při prohlížení chatu)</string>
     <string name="sc_set_read_marker_toast_start">Nastavit značku přečtení na %s</string>
-    <string name="sc_set_read_marker_toast_end">Značka přečtení nastavena na %s</string>
     <string name="sc_pref_screen_experimental_title">Experimentální</string>
     <string name="sc_pref_screen_experimental_summary">Nestabilní funkce, očekávejte chyby</string>
     <string name="sc_action_mark_as_read">Označit jako přečtené</string>

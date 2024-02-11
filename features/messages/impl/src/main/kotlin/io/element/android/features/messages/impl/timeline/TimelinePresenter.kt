@@ -27,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalContext
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.state
 import dagger.assisted.Assisted
@@ -121,13 +122,14 @@ class TimelinePresenter @AssistedInject constructor(
         val scReadState = createScReadState()
         ScReadTracker(appScope, scReadState, isSendPublicReadReceiptsEnabled, timeline, room, navigator::onBackPressed)
         val syncReadReceiptAndMarker = ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.state()
+        val context = LocalContext.current
 
         fun handleEvents(event: TimelineEvents) {
             when (event) {
                 TimelineEvents.LoadMore -> localScope.paginateBackwards()
                 is TimelineEvents.SetHighlightedEvent -> highlightedEventId.value = event.eventId
                 is TimelineEvents.OnUnreadLineVisible -> scReadState.sawUnreadLine.value = true
-                is TimelineEvents.MarkAsRead -> forceSetReceipts(appScope, room, scReadState, isSendPublicReadReceiptsEnabled)
+                is TimelineEvents.MarkAsRead -> forceSetReceipts(context, appScope, room, scReadState, isSendPublicReadReceiptsEnabled)
                 is TimelineEvents.OnScrollFinished -> {
                     if (event.firstIndex == 0) {
                         newItemState.value = NewEventState.None
@@ -196,6 +198,7 @@ class TimelinePresenter @AssistedInject constructor(
             }
         }
         return TimelineState(
+            scReadState = scReadState,
             timelineRoomInfo = timelineRoomInfo,
             highlightedEventId = highlightedEventId.value,
             paginationState = paginationState,

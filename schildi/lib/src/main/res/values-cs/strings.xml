@@ -47,4 +47,8 @@
     <string name="sc_pref_category_spaces">Prostory</string>
     <string name="sc_pref_category_misc">Různé</string>
     <string name="sc_pref_category_chat_overview">Přehled chatu</string>
+    <string name="sc_compact_root_spaces_title">Kompaktní kořenové prostory</string>
+    <string name="sc_compact_root_spaces_summary">Zobrazit ikonu bez názvu pro kořenové prostory</string>
+    <string name="sc_set_read_marker_implicit_toast_start">Nastavení značky přečtení…</string>
+    <string name="sc_pref_debug_read_marker">Ladit značku přečtení</string>
 </resources>

@@ -9,7 +9,9 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
@@ -27,10 +29,10 @@ class SpaceAwareRoomListDataSource @Inject constructor(
 
     private val _spaceSelectionHierarchy = MutableStateFlow<ImmutableList<String>?>(null)
     private val _spaceChildFilter = MutableStateFlow<ImmutableList<String>?>(null)
-    private val _spaceRooms = MutableStateFlow<ImmutableList<RoomListRoomSummary>>(persistentListOf())
+    private val _spaceRooms = MutableSharedFlow<ImmutableList<RoomListRoomSummary>>(replay = 1)
     private val _selectedSpaceItem = MutableStateFlow<SpaceListDataSource.SpaceHierarchyItem?>(null)
 
-    val spaceRooms: StateFlow<ImmutableList<RoomListRoomSummary>> = _spaceRooms
+    val spaceRooms: SharedFlow<ImmutableList<RoomListRoomSummary>> = _spaceRooms
     val spaceSelectionHierarchy: StateFlow<ImmutableList<String>?> = _spaceSelectionHierarchy
 
     @OptIn(FlowPreview::class)
@@ -96,7 +98,7 @@ class SpaceAwareRoomListDataSource @Inject constructor(
             }.toImmutableList()
         }
             .onEach {
-                _spaceRooms.value = it
+                _spaceRooms.emit(it)
             }
             .launchIn(coroutineScope)
     }

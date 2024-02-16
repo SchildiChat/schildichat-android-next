@@ -3,6 +3,7 @@ package io.element.android.libraries.designsystem.colors
 import androidx.compose.material3.ColorScheme
 import androidx.compose.ui.graphics.Color
 import chat.schildi.theme.ScPowerLevelColors
+import io.element.android.compound.theme.AvatarColors
 
 fun powerLevelToColor(powerLevel: Long?, colorScheme: ColorScheme): Color {
     return when {

@@ -151,7 +151,7 @@ class SpaceListDataSource @Inject constructor(
 
     private fun buildAndCacheItem(roomSummaries: List<RoomSummary>, index: Int): RoomListRoomSummary? {
         val roomListRoomSummary = when (val roomSummary = roomSummaries.getOrNull(index)) {
-            is RoomSummary.Empty -> roomListRoomSummaryFactory.createPlaceholder(roomSummary.identifier)
+            is RoomSummary.Empty -> RoomListRoomSummaryFactory.createPlaceholder(roomSummary.identifier)
             is RoomSummary.Filled -> roomListRoomSummaryFactory.create(roomSummary)
             null -> null
         }

@@ -35,8 +35,9 @@ fun forceSetReceipts(context: Context, appScope: CoroutineScope, room: MatrixRoo
     appScope.launch {
         val toast = Toast.makeText(context, chat.schildi.lib.R.string.sc_set_read_marker_implicit_toast_start, Toast.LENGTH_LONG)
         toast.show()
-        room.markAsReadAndSendReadReceipt(if (isSendPublicReadReceiptsEnabled) ReceiptType.READ else ReceiptType.READ_PRIVATE)
-        room.markAsReadAndSendReadReceipt(ReceiptType.FULLY_READ)
+        room.markAsRead(if (isSendPublicReadReceiptsEnabled) ReceiptType.READ else ReceiptType.READ_PRIVATE)
+        room.markAsRead(ReceiptType.FULLY_READ)
+        room.setUnreadFlag(false)
         toast.cancel()
     }
 }
@@ -61,15 +62,10 @@ fun ScReadTracker(
     scUnreadState: ScReadState,
     isSendPublicReadReceiptsEnabled: Boolean,
     timeline: MatrixTimeline,
-    room: MatrixRoom,
     onBackPressed: () -> Unit
 ) {
     val clickedBack = remember { mutableStateOf(false) }
     val context = LocalContext.current
-
-    LaunchedEffect(Unit) {
-        room.markAsRead()
-    }
 
     if (ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.value()) {
         val debug = ScPrefs.READ_MARKER_DEBUG.value()

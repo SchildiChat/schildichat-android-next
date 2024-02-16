@@ -29,7 +29,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BugReport
-import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
@@ -177,7 +176,7 @@ private fun DefaultRoomListTopBar(
                 titleLarge = collapsedTitleTextStyle
             ),
         ) {
-            MediumTopAppBar(
+            ScRoomListTopAppBar(
                 modifier = Modifier
                     .onSizeChanged {
                         appBarHeight = it.height
@@ -302,8 +301,8 @@ private fun DefaultRoomListTopBar(
                                         }
                                     )
                                 }
+                                ScRoomListDropdownEntriesBottom(onClick = { showMenu = false }, onMenuActionClicked = onMenuActionClicked)
                             }
-                            ScRoomListDropdownEntriesBottom(onClick = { showMenu = false }, onMenuActionClicked = onMenuActionClicked)
                         }
                     }
                 },

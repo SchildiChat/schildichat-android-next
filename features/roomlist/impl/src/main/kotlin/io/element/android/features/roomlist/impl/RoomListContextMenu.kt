@@ -61,7 +61,6 @@ fun RoomListContextMenu(
                 eventSink(RoomListEvents.HideContextMenu)
                 onRoomSettingsClicked(contextMenu.roomId)
             },
-            onMarkAsReadClicked = { roomId, read -> eventSink(RoomListEvents.SetMarkedAsRead(roomId, read)) ; eventSink(RoomListEvents.HideContextMenu) },
             onLeaveRoomClicked = {
                 eventSink(RoomListEvents.HideContextMenu)
                 eventSink(RoomListEvents.LeaveRoom(contextMenu.roomId))

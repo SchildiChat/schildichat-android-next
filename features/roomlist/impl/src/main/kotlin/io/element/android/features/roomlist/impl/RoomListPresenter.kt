@@ -165,7 +165,6 @@ class RoomListPresenter @Inject constructor(
                     contextMenu = RoomListState.ContextMenu.Shown(
                         roomId = event.roomListRoomSummary.roomId,
                         roomName = event.roomListRoomSummary.name,
-                        isUnread = event.roomListRoomSummary.let { it.numberOfUnreadMessages > 0 || it.markedUnread },
                         isDm = event.roomListRoomSummary.isDm,
                         markAsUnreadFeatureFlagEnabled = markAsUnreadFeatureFlagEnabled == true,
                         hasNewContent = event.roomListRoomSummary.hasNewContent

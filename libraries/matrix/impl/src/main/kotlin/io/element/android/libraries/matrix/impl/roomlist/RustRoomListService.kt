@@ -59,7 +59,7 @@ internal class RustRoomListService(
 
     override val allSpaces: RoomList = roomListFactory.createRoomList(
         pageSize = Int.MAX_VALUE,
-        initialFilter = DynamicRoomList.Filter.AllNonLeft,
+        initialFilter = RoomListFilter.all(RoomListFilter.NonLeft),
     ) {
         innerRoomListService.allSpaces()
     }

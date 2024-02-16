@@ -62,6 +62,7 @@ import io.element.android.features.roomlist.impl.components.RoomListMenuAction
 import io.element.android.features.roomlist.impl.components.RoomListTopBar
 import io.element.android.features.roomlist.impl.components.RoomSummaryRow
 import io.element.android.features.roomlist.impl.components.ScRoomSummaryRow
+import io.element.android.features.roomlist.impl.components.scRoomListScrollBehavior
 import io.element.android.features.roomlist.impl.migration.MigrationScreenView
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.features.roomlist.impl.search.RoomListSearchResultView
@@ -143,9 +144,10 @@ fun RoomListView(
 @Composable
 private fun EmptyRoomListView(
     onCreateRoomClicked: () -> Unit,
+    modifier: Modifier,
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -197,12 +199,7 @@ private fun RoomListContent(
             firstItemIndex until firstItemIndex + size
         }
     }
-    val forceCompact = ScPrefs.COMPACT_APP_BAR.value()
-    val scrollBehavior = if (forceCompact) {
-        TopAppBarDefaults.pinnedScrollBehavior().also { it.state.heightOffset = -10000f }
-    } else {
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(appBarState)
-    }
+    val scrollBehavior = scRoomListScrollBehavior(appBarState)
     val withSpaceFilter = state.spaceSelectionHierarchy.isNotEmpty()
     val nestedScrollConnection = remember(withSpaceFilter) {
         object : NestedScrollConnection {
@@ -243,12 +240,14 @@ private fun RoomListContent(
                     state.eventSink(RoomListEvents.UpdateSpaceFilter(selection))
                     coroutineScope.launch { lazyListState.scrollToItem(0) }
                                   },
-                modifier = Modifier.padding(padding).consumeWindowInsets(padding)) { modifier ->
+                modifier = Modifier
+                    .padding(padding)
+                    .consumeWindowInsets(padding)) { modifier ->
             if (state.roomList is AsyncData.Success && state.roomList.data.isEmpty()) {
-                EmptyRoomListView(onCreateRoomClicked)
+                EmptyRoomListView(onCreateRoomClicked, modifier)
             } else {
                 LazyColumn(
-                    modifier = Modifier
+                    modifier = modifier
                         //.padding(padding)
                         //.consumeWindowInsets(padding)
                         .nestedScroll(nestedScrollConnection),
@@ -293,7 +292,7 @@ private fun RoomListContent(
                                 room = room,
                                 onClick = ::onRoomClicked,
                                 onLongClick = onRoomLongClicked,
-                                isLastIndex = index == state.roomList.lastIndex,
+                                isLastIndex = index == roomList.lastIndex,
                             )
                             return@itemsIndexed
                         }
@@ -310,7 +309,7 @@ private fun RoomListContent(
             }
 
             MigrationScreenView(isMigrating = state.displayMigrationStatus)
-        },
+        }},
         floatingActionButton = {
             if (!state.displayMigrationStatus && !ScPrefs.SPACE_NAV.value()) {
                 FloatingActionButton(

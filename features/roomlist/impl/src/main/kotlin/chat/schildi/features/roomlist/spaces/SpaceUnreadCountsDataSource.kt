@@ -76,7 +76,7 @@ class SpaceUnreadCountsDataSource @Inject constructor(
                 if (useClientGeneratedUnreadCounts) room.numberOfUnreadMentions else room.highlightCount,
                 if (useClientGeneratedUnreadCounts) room.numberOfUnreadNotifications else room.notificationCount,
                 if (useClientGeneratedUnreadCounts) room.numberOfUnreadMessages else room.unreadCount,
-                room.markedUnread,
+                room.isMarkedUnread,
             )
         }
         return unread

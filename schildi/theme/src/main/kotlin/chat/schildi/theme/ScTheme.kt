@@ -44,6 +44,7 @@ fun getThemeExposures(darkTheme: Boolean, useScTheme: Boolean) = when {
 @Composable
 fun ScTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    applySystemBarsUpdate: Boolean = true,
     lightStatusBar: Boolean = !darkTheme,
     dynamicColor: Boolean = false, /* true to enable MaterialYou */
     useScTheme: Boolean = ScPrefs.SC_THEME.value(),
@@ -51,16 +52,13 @@ fun ScTheme(
     content: @Composable () -> Unit,
 ) {
     val compoundColors: SemanticColors
-    val materialLightColors: ColorScheme
-    val materialDarkColors: ColorScheme
+    val materialColors: ColorScheme
     if (useScTheme) {
         compoundColors = if (darkTheme) scdSemanticColors else sclSemanticColors
-        materialLightColors = sclMaterialColorScheme
-        materialDarkColors = scdMaterialColorScheme
+        materialColors = if (darkTheme) scdMaterialColorScheme else sclMaterialColorScheme
     } else {
         compoundColors = if (darkTheme) elColorsDark else elColorsLight
-        materialLightColors = elMaterialColorSchemeLight
-        materialDarkColors = elMaterialColorSchemeDark
+        materialColors = if (darkTheme) elMaterialColorSchemeDark else elMaterialColorSchemeLight
     }
     val typography = if (useElTypography) elTypography else scTypography
     val typographyTokens = if (useElTypography) ElTypographyTokens else ScTypographyTokens
@@ -75,11 +73,11 @@ fun ScTheme(
     ) {
         ElementTheme(
             darkTheme = darkTheme,
+            applySystemBarsUpdate = applySystemBarsUpdate,
             lightStatusBar = lightStatusBar,
             dynamicColor = dynamicColor,
             compoundColors = compoundColors,
-            materialLightColors = materialLightColors,
-            materialDarkColors = materialDarkColors,
+            materialColors = materialColors,
             typography = typography,
             typographyTokens = typographyTokens,
             content = content,

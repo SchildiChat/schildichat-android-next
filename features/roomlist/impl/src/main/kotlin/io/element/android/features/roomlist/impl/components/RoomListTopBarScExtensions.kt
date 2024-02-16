@@ -13,7 +13,6 @@ import io.element.android.libraries.designsystem.theme.components.DropdownMenuIt
 import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.Text
-import io.element.android.libraries.designsystem.utils.CommonDrawables
 import io.element.android.libraries.ui.strings.CommonStrings
 
 @Composable
@@ -31,7 +30,7 @@ fun ScRoomListDropdownEntriesTop(
             text = { Text(stringResource(id = io.element.android.libraries.ui.strings.R.string.action_start_chat)) },
             leadingIcon = {
                 Icon(
-                    resourceId = CommonDrawables.ic_new_message,
+                    imageVector = CompoundIcons.Compose(),
                     tint = ElementTheme.materialColors.secondary,
                     contentDescription = null,
                 )
@@ -46,7 +45,7 @@ fun ScRoomListDropdownEntriesTop(
         text = { Text(stringResource(id = CommonStrings.common_settings)) },
         leadingIcon = {
             Icon(
-                imageVector = CompoundIcons.SettingsSolid,
+                imageVector = CompoundIcons.SettingsSolid(),
                 tint = ElementTheme.materialColors.secondary,
                 contentDescription = null,
             )

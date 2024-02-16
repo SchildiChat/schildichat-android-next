@@ -1,6 +1,5 @@
 package io.element.android.features.messages.impl
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -39,7 +38,7 @@ internal fun RowScope.scMessagesViewTopBarActions(state: MessagesState) {
             onClick = { showMenu = !showMenu }
         ) {
             Icon(
-                resourceId = CompoundDrawables.ic_overflow_vertical,
+                resourceId = CompoundDrawables.ic_compound_overflow_vertical,
                 contentDescription = null,
             )
         }

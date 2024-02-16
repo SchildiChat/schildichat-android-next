@@ -562,7 +562,6 @@ class RustMatrixRoom(
         )
     }
 
-    /*
     override fun pollHistory() = AsyncMatrixTimeline(
         coroutineScope = roomCoroutineScope,
         dispatcher = roomDispatcher
@@ -570,7 +569,6 @@ class RustMatrixRoom(
         val innerTimeline = innerRoom.pollHistory()
         createMatrixTimeline(innerTimeline)
     }
-     */
 
     private fun sendAttachment(files: List<File>, handle: () -> SendAttachmentJoinHandle): Result<MediaUploadHandler> {
         return runCatching {

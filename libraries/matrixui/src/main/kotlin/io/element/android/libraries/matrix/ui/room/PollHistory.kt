@@ -22,7 +22,6 @@ import androidx.compose.runtime.remember
 import io.element.android.libraries.matrix.api.room.MatrixRoom
 import io.element.android.libraries.matrix.api.timeline.MatrixTimeline
 
-/*
 @Composable
 fun MatrixRoom.rememberPollHistory(): MatrixTimeline {
     val pollHistory = remember {
@@ -35,4 +34,3 @@ fun MatrixRoom.rememberPollHistory(): MatrixTimeline {
     }
     return pollHistory
 }
- */

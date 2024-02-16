@@ -22,15 +22,15 @@ import kotlinx.parcelize.Parcelize
 
 data class BugReportState(
     val formState: BugReportFormState,
-    val isInternalBuild: Boolean = false,
     val hasCrashLogs: Boolean,
     val screenshotUri: String?,
     val sendingProgress: Float,
     val sending: AsyncAction<Unit>,
     val eventSink: (BugReportEvents) -> Unit
 ) {
-    val submitEnabled =
-        formState.description.length > (if (isInternalBuild) 3 else 10) && sending !is AsyncAction.Loading
+    val submitEnabled = sending !is AsyncAction.Loading
+    val isDescriptionInError = sending is AsyncAction.Failure &&
+        sending.error is BugReportFormError.DescriptionTooShort
 }
 
 @Parcelize

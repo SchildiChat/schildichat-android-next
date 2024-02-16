@@ -41,7 +41,7 @@ import io.element.android.libraries.ui.strings.CommonStrings
 @Composable
 fun RoomListContextMenu(
     contextMenu: RoomListState.ContextMenu.Shown,
-    eventSink: (RoomListEvents) -> Unit,
+    eventSink: (RoomListEvents.RoomListBottomSheetEvents) -> Unit,
     onRoomSettingsClicked: (roomId: RoomId) -> Unit,
 ) {
     ModalBottomSheet(
@@ -49,9 +49,17 @@ fun RoomListContextMenu(
     ) {
         RoomListModalBottomSheetContent(
             contextMenu = contextMenu,
+            onRoomMarkReadClicked = {
+                eventSink(RoomListEvents.HideContextMenu)
+                eventSink(RoomListEvents.MarkAsRead(contextMenu.roomId))
+            },
+            onRoomMarkUnreadClicked = {
+                eventSink(RoomListEvents.HideContextMenu)
+                eventSink(RoomListEvents.MarkAsUnread(contextMenu.roomId))
+            },
             onRoomSettingsClicked = {
                 eventSink(RoomListEvents.HideContextMenu)
-                onRoomSettingsClicked(it)
+                onRoomSettingsClicked(contextMenu.roomId)
             },
             onMarkAsReadClicked = { roomId, read -> eventSink(RoomListEvents.SetMarkedAsRead(roomId, read)) ; eventSink(RoomListEvents.HideContextMenu) },
             onLeaveRoomClicked = {
@@ -65,9 +73,10 @@ fun RoomListContextMenu(
 @Composable
 private fun RoomListModalBottomSheetContent(
     contextMenu: RoomListState.ContextMenu.Shown,
-    onRoomSettingsClicked: (roomId: RoomId) -> Unit,
-    onMarkAsReadClicked: (roomId: RoomId, read: Boolean) -> Unit = { _, _ -> },
-    onLeaveRoomClicked: (roomId: RoomId) -> Unit,
+    onRoomMarkReadClicked: () -> Unit,
+    onRoomMarkUnreadClicked: () -> Unit,
+    onRoomSettingsClicked: () -> Unit,
+    onLeaveRoomClicked: () -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -80,7 +89,38 @@ private fun RoomListModalBottomSheetContent(
                 )
             }
         )
-        MarkAsReadActionItems(onMarkAsReadClicked = { onMarkAsReadClicked(contextMenu.roomId, it) }, isUnread = contextMenu.isUnread)
+        if (contextMenu.markAsUnreadFeatureFlagEnabled) {
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = stringResource(
+                            id = if (contextMenu.hasNewContent) {
+                                R.string.screen_roomlist_mark_as_read
+                            } else {
+                                R.string.screen_roomlist_mark_as_unread
+                            }
+                        ),
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                },
+                modifier = Modifier.clickable {
+                    if (contextMenu.hasNewContent) {
+                        onRoomMarkReadClicked()
+                    } else {
+                        onRoomMarkUnreadClicked()
+                    }
+                },
+                /* TODO Design
+                leadingContent = ListItemContent.Icon(
+                    iconSource = IconSource.Vector(
+                        CompoundIcons.Settings,
+                        contentDescription = stringResource(id = CommonStrings.common_settings)
+                    )
+                ),
+                 */
+                style = ListItemStyle.Primary,
+            )
+        }
         ListItem(
             headlineContent = {
                 Text(
@@ -88,10 +128,10 @@ private fun RoomListModalBottomSheetContent(
                     style = MaterialTheme.typography.bodyLarge,
                 )
             },
-            modifier = Modifier.clickable { onRoomSettingsClicked(contextMenu.roomId) },
+            modifier = Modifier.clickable { onRoomSettingsClicked() },
             leadingContent = ListItemContent.Icon(
                 iconSource = IconSource.Vector(
-                    CompoundIcons.Settings,
+                    CompoundIcons.Settings(),
                     contentDescription = stringResource(id = CommonStrings.common_settings)
                 )
             ),
@@ -99,17 +139,19 @@ private fun RoomListModalBottomSheetContent(
         )
         ListItem(
             headlineContent = {
-                val leaveText = stringResource(id = if (contextMenu.isDm) {
-                    CommonStrings.action_leave_conversation
-                } else {
-                    CommonStrings.action_leave_room
-                })
+                val leaveText = stringResource(
+                    id = if (contextMenu.isDm) {
+                        CommonStrings.action_leave_conversation
+                    } else {
+                        CommonStrings.action_leave_room
+                    }
+                )
                 Text(text = leaveText)
             },
-            modifier = Modifier.clickable { onLeaveRoomClicked(contextMenu.roomId) },
+            modifier = Modifier.clickable { onLeaveRoomClicked() },
             leadingContent = ListItemContent.Icon(
                 iconSource = IconSource.Vector(
-                    CompoundIcons.Leave,
+                    CompoundIcons.Leave(),
                     contentDescription = stringResource(id = CommonStrings.action_leave_room)
                 )
             ),
@@ -125,11 +167,9 @@ private fun RoomListModalBottomSheetContent(
 @Composable
 internal fun RoomListModalBottomSheetContentPreview() = ElementPreview {
     RoomListModalBottomSheetContent(
-        contextMenu = RoomListState.ContextMenu.Shown(
-            roomId = RoomId(value = "!aRoom:aDomain"),
-            roomName = "aRoom",
-            isDm = false,
-        ),
+        contextMenu = aContextMenuShown(hasNewContent = true),
+        onRoomMarkReadClicked = {},
+        onRoomMarkUnreadClicked = {},
         onRoomSettingsClicked = {},
         onLeaveRoomClicked = {}
     )
@@ -139,11 +179,9 @@ internal fun RoomListModalBottomSheetContentPreview() = ElementPreview {
 @Composable
 internal fun RoomListModalBottomSheetContentForDmPreview() = ElementPreview {
     RoomListModalBottomSheetContent(
-        contextMenu = RoomListState.ContextMenu.Shown(
-            roomId = RoomId(value = "!aRoom:aDomain"),
-            roomName = "aRoom",
-            isDm = true,
-        ),
+        contextMenu = aContextMenuShown(isDm = true),
+        onRoomMarkReadClicked = {},
+        onRoomMarkUnreadClicked = {},
         onRoomSettingsClicked = {},
         onLeaveRoomClicked = {}
     )

@@ -24,16 +24,27 @@ sealed interface TimelineEvents {
     data class OnScrollFinished(val firstIndex: Int) : TimelineEvents
     data object OnUnreadLineVisible : TimelineEvents
     data object MarkAsRead : TimelineEvents
+
+    /**
+     * Events coming from a timeline item.
+     */
+    sealed interface EventFromTimelineItem : TimelineEvents
+
+    /**
+     * Events coming from a poll item.
+     */
+    sealed interface TimelineItemPollEvents : EventFromTimelineItem
+
     data class PollAnswerSelected(
         val pollStartId: EventId,
         val answerId: String
-    ) : TimelineEvents
+    ) : TimelineItemPollEvents
 
     data class PollEndClicked(
         val pollStartId: EventId,
-    ) : TimelineEvents
+    ) : TimelineItemPollEvents
 
     data class PollEditClicked(
         val pollStartId: EventId,
-    ) : TimelineEvents
+    ) : TimelineItemPollEvents
 }

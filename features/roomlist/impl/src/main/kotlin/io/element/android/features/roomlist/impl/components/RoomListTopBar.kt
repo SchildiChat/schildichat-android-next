@@ -23,8 +23,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.Tune
@@ -75,8 +77,8 @@ import io.element.android.libraries.designsystem.theme.components.HorizontalDivi
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconButton
 import io.element.android.libraries.designsystem.theme.components.MediumTopAppBar
+import io.element.android.libraries.designsystem.theme.components.Surface
 import io.element.android.libraries.designsystem.theme.components.Text
-import io.element.android.libraries.designsystem.utils.LogCompositions
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.ui.model.getAvatarData
@@ -99,13 +101,9 @@ fun RoomListTopBar(
     onCreateRoomClicked: () -> Unit,
     onOpenSettings: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
+    displayMenuItems: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    LogCompositions(
-        tag = "RoomListScreen",
-        msg = "TopBar"
-    )
-
     fun closeFilter() {
         onFilterChanged("")
     }
@@ -125,6 +123,7 @@ fun RoomListTopBar(
         onSearchClicked = onToggleSearch,
         onMenuActionClicked = onMenuActionClicked,
         scrollBehavior = scrollBehavior,
+        displayMenuItems = displayMenuItems,
         modifier = modifier,
     )
 }
@@ -141,6 +140,7 @@ private fun DefaultRoomListTopBar(
     onOpenSettings: () -> Unit,
     onSearchClicked: () -> Unit,
     onMenuActionClicked: (RoomListMenuAction) -> Unit,
+    displayMenuItems: Boolean,
     modifier: Modifier = Modifier,
 ) {
     // We need this to manually clip the top app bar in preview mode
@@ -218,80 +218,90 @@ private fun DefaultRoomListTopBar(
                     }
                 },
                 navigationIcon = {
-                    avatarData?.let {
-                        IconButton(
-                            modifier = Modifier.testTag(TestTags.homeScreenSettings),
-                            onClick = onOpenSettings
-                        ) {
+                    IconButton(
+                        modifier = Modifier.testTag(TestTags.homeScreenSettings),
+                        onClick = onOpenSettings
+                    ) {
+                        if (avatarData != null) {
                             Avatar(
-                                avatarData = it,
+                                avatarData = avatarData!!,
                                 contentDescription = stringResource(CommonStrings.common_settings),
                             )
-                            if (showAvatarIndicator) {
-                                RedIndicatorAtom(
-                                    modifier = Modifier
-                                        .padding(4.5.dp)
-                                        .align(Alignment.TopEnd)
-                                )
-                            }
+                        } else {
+                            // Placeholder avatar until the avatarData is available
+                            Surface(
+                                modifier = Modifier.size(AvatarSize.CurrentUserTopBar.dp),
+                                shape = CircleShape,
+                                color = ElementTheme.colors.iconSecondary,
+                                content = {}
+                            )
+                        }
+                        if (showAvatarIndicator) {
+                            RedIndicatorAtom(
+                                modifier = Modifier
+                                    .padding(4.5.dp)
+                                    .align(Alignment.TopEnd)
+                            )
                         }
                     }
                 },
                 actions = {
-                    IconButton(
-                        onClick = onSearchClicked,
-                    ) {
-                        Icon(
-                            imageVector = CompoundIcons.Search,
-                            contentDescription = stringResource(CommonStrings.action_search),
-                        )
-                    }
-                    if (RoomListConfig.HAS_DROP_DOWN_MENU) {
-                        var showMenu by remember { mutableStateOf(false) }
+                    if (displayMenuItems) {
                         IconButton(
-                            onClick = { showMenu = !showMenu }
+                            onClick = onSearchClicked,
                         ) {
                             Icon(
-                                imageVector = CompoundIcons.OverflowVertical,
-                                contentDescription = null,
+                                imageVector = CompoundIcons.Search(),
+                                contentDescription = stringResource(CommonStrings.action_search),
                             )
                         }
-                        DropdownMenu(
-                            expanded = showMenu,
-                            onDismissRequest = { showMenu = false }
-                        ) {
-                            ScRoomListDropdownEntriesTop(onClick = { showMenu = false }, onMenuActionClicked = onMenuActionClicked, onCreateRoomClicked = onCreateRoomClicked)
-                            if (RoomListConfig.SHOW_INVITE_MENU_ITEM) {
-                                DropdownMenuItem(
-                                    onClick = {
-                                        showMenu = false
-                                        onMenuActionClicked(RoomListMenuAction.InviteFriends)
-                                    },
-                                    text = { Text(stringResource(id = CommonStrings.action_invite)) },
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = CompoundIcons.ShareAndroid,
-                                            tint = ElementTheme.materialColors.secondary,
-                                            contentDescription = null,
-                                        )
-                                    }
+                        if (RoomListConfig.HAS_DROP_DOWN_MENU) {
+                            var showMenu by remember { mutableStateOf(false) }
+                            IconButton(
+                                onClick = { showMenu = !showMenu }
+                            ) {
+                                Icon(
+                                    imageVector = CompoundIcons.OverflowVertical(),
+                                    contentDescription = null,
                                 )
                             }
-                            if (RoomListConfig.SHOW_REPORT_PROBLEM_MENU_ITEM) {
-                                DropdownMenuItem(
-                                    onClick = {
-                                        showMenu = false
-                                        onMenuActionClicked(RoomListMenuAction.ReportBug)
-                                    },
-                                    text = { Text(stringResource(id = CommonStrings.common_report_a_problem)) },
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = Icons.Outlined.BugReport,
-                                            tint = ElementTheme.materialColors.secondary,
-                                            contentDescription = null,
-                                        )
-                                    }
-                                )
+                            DropdownMenu(
+                                expanded = showMenu,
+                                onDismissRequest = { showMenu = false }
+                            ) {
+                                ScRoomListDropdownEntriesTop(onClick = { showMenu = false }, onMenuActionClicked = onMenuActionClicked, onCreateRoomClicked = onCreateRoomClicked)
+                                if (RoomListConfig.SHOW_INVITE_MENU_ITEM) {
+                                    DropdownMenuItem(
+                                        onClick = {
+                                            showMenu = false
+                                            onMenuActionClicked(RoomListMenuAction.InviteFriends)
+                                        },
+                                        text = { Text(stringResource(id = CommonStrings.action_invite)) },
+                                        leadingIcon = {
+                                            Icon(
+                                                imageVector = CompoundIcons.ShareAndroid(),
+                                                tint = ElementTheme.materialColors.secondary,
+                                                contentDescription = null,
+                                            )
+                                        }
+                                    )
+                                }
+                                if (RoomListConfig.SHOW_REPORT_PROBLEM_MENU_ITEM) {
+                                    DropdownMenuItem(
+                                        onClick = {
+                                            showMenu = false
+                                            onMenuActionClicked(RoomListMenuAction.ReportBug)
+                                        },
+                                        text = { Text(stringResource(id = CommonStrings.common_report_a_problem)) },
+                                        leadingIcon = {
+                                            Icon(
+                                                imageVector = Icons.Outlined.BugReport,
+                                                tint = ElementTheme.materialColors.secondary,
+                                                contentDescription = null,
+                                            )
+                                        }
+                                    )
+                                }
                             }
                             ScRoomListDropdownEntriesBottom(onClick = { showMenu = false }, onMenuActionClicked = onMenuActionClicked)
                         }
@@ -325,6 +335,7 @@ internal fun DefaultRoomListTopBarPreview() = ElementPreview {
         onCreateRoomClicked = {},
         onOpenSettings = {},
         onSearchClicked = {},
+        displayMenuItems = true,
         onMenuActionClicked = {},
     )
 }
@@ -341,6 +352,7 @@ internal fun DefaultRoomListTopBarWithIndicatorPreview() = ElementPreview {
         onCreateRoomClicked = {},
         onOpenSettings = {},
         onSearchClicked = {},
+        displayMenuItems = true,
         onMenuActionClicked = {},
     )
 }

@@ -49,7 +49,7 @@ fun TimelineItemEventContentView(
     content: TimelineItemEventContent,
     onLinkClicked: (url: String) -> Unit,
     onLongClick: () -> Unit,
-    eventSink: (TimelineEvents) -> Unit,
+    eventSink: (TimelineEvents.EventFromTimelineItem) -> Unit,
     modifier: Modifier = Modifier,
     onContentLayoutChanged: (ContentAvoidingLayoutData) -> Unit = {},
 ) {

@@ -33,8 +33,8 @@ data class RoomListRoomSummary(
     val notificationCount: Int = 0,
     val highlightCount: Int = 0,
     val unreadCount: Int = 0,
-    val markedUnread: Boolean = false,
     // SC end
+    val isMarkedUnread: Boolean,
     val timestamp: String?,
     val lastMessage: CharSequence?,
     val avatarData: AvatarData,
@@ -44,9 +44,11 @@ data class RoomListRoomSummary(
     val isDm: Boolean,
 ) {
     val isHighlighted = userDefinedNotificationMode != RoomNotificationMode.MUTE &&
-        (numberOfUnreadNotifications > 0 || numberOfUnreadMentions > 0)
+        (numberOfUnreadNotifications > 0 || numberOfUnreadMentions > 0) ||
+        isMarkedUnread
 
     val hasNewContent = numberOfUnreadMessages > 0 ||
         numberOfUnreadMentions > 0 ||
-        numberOfUnreadNotifications > 0
+        numberOfUnreadNotifications > 0 ||
+        isMarkedUnread
 }

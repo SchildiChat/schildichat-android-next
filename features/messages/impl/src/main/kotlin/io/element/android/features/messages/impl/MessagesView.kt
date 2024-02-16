@@ -39,7 +39,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -105,7 +104,6 @@ import io.element.android.libraries.designsystem.theme.components.Scaffold
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TopAppBar
 import io.element.android.libraries.designsystem.utils.KeepScreenOn
-import io.element.android.libraries.designsystem.utils.LogCompositions
 import io.element.android.libraries.designsystem.utils.OnLifecycleEvent
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarHost
 import io.element.android.libraries.designsystem.utils.snackbar.rememberSnackbarHostState
@@ -129,9 +127,8 @@ fun MessagesView(
     onCreatePollClicked: () -> Unit,
     onJoinCallClicked: () -> Unit,
     modifier: Modifier = Modifier,
+    forceJumpToBottomVisibility: Boolean = false
 ) {
-    LogCompositions(tag = "MessagesScreen", msg = "Root")
-
     OnLifecycleEvent { _, event ->
         state.voiceMessageComposerState.eventSink(VoiceMessageComposerEvents.LifecycleEvent(event))
     }
@@ -148,8 +145,6 @@ fun MessagesView(
 
     // This is needed because the composer is inside an AndroidView that can't be affected by the FocusManager in Compose
     val localView = LocalView.current
-
-    LogCompositions(tag = "MessagesScreen", msg = "Content")
 
     fun onMessageClicked(event: TimelineItem.Event) {
         Timber.v("OnMessageClicked= ${event.id}")
@@ -201,7 +196,12 @@ fun MessagesView(
                     roomName = state.roomName.dataOrNull(),
                     roomAvatar = state.roomAvatar.dataOrNull(),
                     callState = state.callState,
-                    onBackPressed = onBackPressed,
+                    onBackPressed = {
+                        // Since the textfield is now based on an Android view, this is no longer done automatically.
+                        // We need to hide the keyboard when navigating out of this screen.
+                        localView.hideKeyboard()
+                        onBackPressed()
+                    },
                     onRoomDetailsClicked = onRoomDetailsClicked,
                     onJoinCallClicked = onJoinCallClicked,
                     state = state,
@@ -234,6 +234,7 @@ fun MessagesView(
                 onSwipeToReply = { targetEvent ->
                     state.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Reply, targetEvent))
                 },
+                forceJumpToBottomVisibility = forceJumpToBottomVisibility,
             )
         },
         snackbarHost = {
@@ -258,7 +259,6 @@ fun MessagesView(
         state = state.customReactionState,
         onEmojiSelected = { eventId, emoji ->
             state.eventSink(MessagesEvents.ToggleReaction(emoji.unicode, eventId))
-            state.customReactionState.eventSink(CustomReactionEvents.DismissCustomReactionSheet)
         }
     )
 
@@ -269,14 +269,6 @@ fun MessagesView(
         onUserDataClicked = onUserDataClicked,
     )
     ReinviteDialog(state = state)
-
-    // Since the textfield is now based on an Android view, this is no longer done automatically.
-    // We need to hide the keyboard automatically when navigating out of this screen.
-    DisposableEffect(Unit) {
-        onDispose {
-            localView.hideKeyboard()
-        }
-    }
 }
 
 @Composable
@@ -334,6 +326,7 @@ private fun MessagesViewContent(
     onTimestampClicked: (TimelineItem.Event) -> Unit,
     onSendLocationClicked: () -> Unit,
     onCreatePollClicked: () -> Unit,
+    forceJumpToBottomVisibility: Boolean,
     modifier: Modifier = Modifier,
     onSwipeToReply: (TimelineItem.Event) -> Unit,
 ) {
@@ -396,6 +389,7 @@ private fun MessagesViewContent(
                     modifier = Modifier.padding(paddingValues),
                     state = state.timelineState,
                     roomName = state.roomName.dataOrNull(),
+                    typingNotificationState = state.typingNotificationState,
                     onMessageClicked = onMessageClicked,
                     onMessageLongClicked = onMessageLongClicked,
                     onUserDataClicked = onUserDataClicked,
@@ -405,6 +399,7 @@ private fun MessagesViewContent(
                     onMoreReactionsClicked = onMoreReactionsClicked,
                     onReadReceiptClick = onReadReceiptClick,
                     onSwipeToReply = onSwipeToReply,
+                    forceJumpToBottomVisibility = forceJumpToBottomVisibility,
                 )
             },
             sheetContent = { subcomposing: Boolean ->
@@ -428,10 +423,9 @@ private fun MessagesViewComposerBottomSheetContents(
     subcomposing: Boolean,
     state: MessagesState,
     scBeforeSend: (() -> Unit)?,
-    modifier: Modifier = Modifier,
 ) {
     if (state.userHasPermissionToSendMessage) {
-        Column(modifier = modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.fillMaxWidth()) {
             MentionSuggestionsPickerView(
                 modifier = Modifier
                     .heightIn(max = 230.dp)
@@ -460,7 +454,7 @@ private fun MessagesViewComposerBottomSheetContents(
             )
         }
     } else {
-        CantSendMessageBanner(modifier = modifier)
+        CantSendMessageBanner()
     }
 }
 
@@ -474,10 +468,8 @@ private fun MessagesViewTopBar(
     onJoinCallClicked: () -> Unit,
     onBackPressed: () -> Unit,
     state: MessagesState,
-    modifier: Modifier = Modifier,
 ) {
     TopAppBar(
-        modifier = modifier,
         navigationIcon = {
             BackButton(onClick = onBackPressed)
         },
@@ -502,7 +494,7 @@ private fun MessagesViewTopBar(
             } else {
                 IconButton(onClick = onJoinCallClicked, enabled = callState != RoomCallState.DISABLED) {
                     Icon(
-                        imageVector = CompoundIcons.VideoCallSolid,
+                        imageVector = CompoundIcons.VideoCallSolid(),
                         contentDescription = stringResource(CommonStrings.a11y_start_call),
                     )
                 }
@@ -516,7 +508,6 @@ private fun MessagesViewTopBar(
 
 @Composable
 private fun JoinCallMenuItem(
-    modifier: Modifier = Modifier,
     onJoinCallClicked: () -> Unit,
 ) {
     Material3Button(
@@ -526,11 +517,11 @@ private fun JoinCallMenuItem(
             containerColor = ElementTheme.colors.iconAccentTertiary
         ),
         contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp),
-        modifier = modifier.heightIn(min = 36.dp),
+        modifier = Modifier.heightIn(min = 36.dp),
     ) {
         Icon(
             modifier = Modifier.size(20.dp),
-            imageVector = CompoundIcons.VideoCallSolid,
+            imageVector = CompoundIcons.VideoCallSolid(),
             contentDescription = null
         )
         Spacer(Modifier.width(8.dp))
@@ -564,11 +555,9 @@ private fun RoomAvatarAndNameRow(
 }
 
 @Composable
-private fun CantSendMessageBanner(
-    modifier: Modifier = Modifier,
-) {
+private fun CantSendMessageBanner() {
     Row(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.secondary)
             .padding(16.dp),
@@ -598,5 +587,6 @@ internal fun MessagesViewPreview(@PreviewParameter(MessagesStateProvider::class)
         onSendLocationClicked = {},
         onCreatePollClicked = {},
         onJoinCallClicked = {},
+        forceJumpToBottomVisibility = true,
     )
 }

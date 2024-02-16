@@ -59,6 +59,7 @@ interface MatrixRoom : Closeable {
     val isDm: Boolean get() = isDirect && isOneToOne
 
     val roomInfoFlow: Flow<MatrixRoomInfo>
+    val roomTypingMembersFlow: Flow<List<UserId>>
 
     /**
      * A one-to-one is a room with exactly 2 members.
@@ -158,6 +159,19 @@ interface MatrixRoom : Closeable {
     suspend fun markAsUnread(): Result<Unit>
     suspend fun markAsReadAndSendReadReceipt(receiptType: ReceiptType): Result<Unit>
     // SC end
+
+    /**
+     * Mark the room as read by trying to attach an unthreaded read receipt to the latest room event.
+     * @param receiptType The type of receipt to send.
+     */
+    suspend fun markAsRead(receiptType: ReceiptType): Result<Unit>
+
+    /**
+     * Sets a flag on the room to indicate that the user has explicitly marked it as unread, or reverts the flag.
+     * @param isUnread true to mark the room as unread, false to remove the flag.
+     *
+     */
+    suspend fun setUnreadFlag(isUnread: Boolean): Result<Unit>
 
     /**
      * Share a location message in the room.
@@ -260,8 +274,6 @@ interface MatrixRoom : Closeable {
      * @return The resulting [MatrixWidgetDriver], or a failure.
      */
     fun getWidgetDriver(widgetSettings: MatrixWidgetSettings): Result<MatrixWidgetDriver>
-
-    fun pollHistory(): MatrixTimeline
 
     override fun close() = destroy()
 }

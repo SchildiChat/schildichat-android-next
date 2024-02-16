@@ -52,8 +52,8 @@ internal fun SendButton(
         enabled = canSendMessage,
     ) {
         val iconVector = when (composerMode) {
-            is MessageComposerMode.Edit -> CompoundIcons.Check
-            else -> CompoundIcons.Send
+            is MessageComposerMode.Edit -> CompoundIcons.Check()
+            else -> CompoundIcons.Send()
         }
         val iconStartPadding = when (composerMode) {
             is MessageComposerMode.Edit -> 0.dp

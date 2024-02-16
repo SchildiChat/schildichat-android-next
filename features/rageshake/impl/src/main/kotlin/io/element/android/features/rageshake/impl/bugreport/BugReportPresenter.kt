@@ -33,6 +33,7 @@ import io.element.android.features.rageshake.impl.logs.VectorFileLogger
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.meta.BuildMeta
+import io.element.android.libraries.core.meta.minBugReportLength
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -93,7 +94,13 @@ class BugReportPresenter @Inject constructor(
 
         fun handleEvents(event: BugReportEvents) {
             when (event) {
-                BugReportEvents.SendBugReport -> appCoroutineScope.sendBugReport(formState.value, crashInfo.isNotEmpty(), uploadListener)
+                BugReportEvents.SendBugReport -> {
+                    if (formState.value.description.length < buildMeta.minBugReportLength) {
+                        sendingAction.value = AsyncAction.Failure(BugReportFormError.DescriptionTooShort)
+                    } else {
+                        appCoroutineScope.sendBugReport(formState.value, crashInfo.isNotEmpty(), uploadListener)
+                    }
+                }
                 BugReportEvents.ResetAll -> appCoroutineScope.resetAll()
                 is BugReportEvents.SetDescription -> updateFormState(formState) {
                     copy(description = event.description)
@@ -115,7 +122,6 @@ class BugReportPresenter @Inject constructor(
         }
 
         return BugReportState(
-            isInternalBuild = buildMeta.isInternalBuild,
             hasCrashLogs = crashInfo.isNotEmpty(),
             sendingProgress = sendingProgress.floatValue,
             sending = sendingAction.value,

@@ -23,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -30,6 +31,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import chat.schildi.features.roomlist.spaces.PersistSpaceOnPause
 import chat.schildi.features.roomlist.spaces.SpaceAwareRoomListDataSource
+import chat.schildi.features.roomlist.spaces.SpaceListDataSource
+import chat.schildi.features.roomlist.spaces.SpaceUnreadCountsDataSource
 import chat.schildi.lib.preferences.ScAppStateStore
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
@@ -37,10 +40,11 @@ import io.element.android.features.leaveroom.api.LeaveRoomEvent
 import io.element.android.features.leaveroom.api.LeaveRoomPresenter
 import io.element.android.features.networkmonitor.api.NetworkMonitor
 import io.element.android.features.networkmonitor.api.NetworkStatus
+import io.element.android.features.preferences.api.store.SessionPreferencesStore
 import io.element.android.features.roomlist.impl.datasource.InviteStateDataSource
 import io.element.android.features.roomlist.impl.datasource.RoomListDataSource
-import chat.schildi.features.roomlist.spaces.SpaceListDataSource
-import chat.schildi.features.roomlist.spaces.SpaceUnreadCountsDataSource
+import io.element.android.features.roomlist.impl.migration.MigrationScreenPresenter
+import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarDispatcher
 import io.element.android.libraries.designsystem.utils.snackbar.collectSnackbarMessageAsState
@@ -50,6 +54,7 @@ import io.element.android.libraries.indicator.api.IndicatorService
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.encryption.EncryptionService
 import io.element.android.libraries.matrix.api.encryption.RecoveryState
+import io.element.android.libraries.matrix.api.timeline.ReceiptType
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.api.user.getCurrentUser
 import io.element.android.libraries.matrix.api.verification.SessionVerificationService
@@ -57,7 +62,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -78,18 +83,27 @@ class RoomListPresenter @Inject constructor(
     private val featureFlagService: FeatureFlagService,
     private val indicatorService: IndicatorService,
     private val scAppStateStore: ScAppStateStore,
+    private val migrationScreenPresenter: MigrationScreenPresenter,
+    private val sessionPreferencesStore: SessionPreferencesStore,
 ) : Presenter<RoomListState> {
     @Composable
     override fun present(): RoomListState {
+        val coroutineScope = rememberCoroutineScope()
         val leaveRoomState = leaveRoomPresenter.present()
         val matrixUser: MutableState<MatrixUser?> = rememberSaveable {
             mutableStateOf(null)
         }
         val spaceNavEnabled = ScPrefs.SPACE_NAV.value()
-        val roomList by (if (spaceNavEnabled) spaceAwareRoomListDataSource.spaceRooms else roomListDataSource.allRooms).collectAsState()
         val spacesList = if (spaceNavEnabled) spaceListDataSource.allSpaces.collectAsState().value else null
         val spaceSelectionHierarchy = if (spaceNavEnabled) spaceAwareRoomListDataSource.spaceSelectionHierarchy.collectAsState().value else persistentListOf()
         val spaceUnreadCounts = if (spaceNavEnabled) spaceUnreadCountsDataSource.spaceUnreadCounts.collectAsState().value else persistentMapOf()
+        val roomList by produceState(initialValue = AsyncData.Loading()) {
+            if (spaceNavEnabled) {
+                spaceAwareRoomListDataSource.spaceRooms.collect { value = AsyncData.Success(it) }
+            } else {
+                roomListDataSource.allRooms.collect { value = AsyncData.Success(it) }
+            }
+        }
         val filteredRoomList by roomListDataSource.filteredRooms.collectAsState()
         val filter by roomListDataSource.filter.collectAsState()
         val networkConnectionStatus by networkMonitor.connectivity.collectAsState()
@@ -102,6 +116,8 @@ class RoomListPresenter @Inject constructor(
             initialLoad(matrixUser)
         }
         PersistSpaceOnPause(scAppStateStore, spaceAwareRoomListDataSource)
+
+        val isMigrating = migrationScreenPresenter.present().isMigrating
 
         // Session verification status (unknown, not verified, verified)
         val canVerifySession by sessionVerificationService.canVerifySessionFlow.collectAsState(initial = false)
@@ -122,14 +138,15 @@ class RoomListPresenter @Inject constructor(
             }
         }
 
+        val markAsUnreadFeatureFlagEnabled by featureFlagService.isFeatureEnabledFlow(FeatureFlags.MarkAsUnread)
+            .collectAsState(initial = null)
+
         // Avatar indicator
         val showAvatarIndicator by indicatorService.showRoomListTopBarIndicator()
 
         var displaySearchResults by rememberSaveable { mutableStateOf(false) }
 
         var contextMenu by remember { mutableStateOf<RoomListState.ContextMenu>(RoomListState.ContextMenu.Hidden) }
-
-        val coroutineScope = rememberCoroutineScope()
 
         fun handleEvents(event: RoomListEvents) {
             when (event) {
@@ -150,11 +167,28 @@ class RoomListPresenter @Inject constructor(
                         roomName = event.roomListRoomSummary.name,
                         isUnread = event.roomListRoomSummary.let { it.numberOfUnreadMessages > 0 || it.markedUnread },
                         isDm = event.roomListRoomSummary.isDm,
+                        markAsUnreadFeatureFlagEnabled = markAsUnreadFeatureFlagEnabled == true,
+                        hasNewContent = event.roomListRoomSummary.hasNewContent
                     )
                 }
                 is RoomListEvents.HideContextMenu -> contextMenu = RoomListState.ContextMenu.Hidden
                 is RoomListEvents.LeaveRoom -> leaveRoomState.eventSink(LeaveRoomEvent.ShowConfirmation(event.roomId))
-                is RoomListEvents.SetMarkedAsRead -> coroutineScope.launch { setMarkedAsRead(client, event) }
+                is RoomListEvents.MarkAsRead -> coroutineScope.launch {
+                    client.getRoom(event.roomId)?.use { room ->
+                        room.setUnreadFlag(isUnread = false)
+                        val receiptType = if (sessionPreferencesStore.isSendPublicReadReceiptsEnabled().first()) {
+                            ReceiptType.READ
+                        } else {
+                            ReceiptType.READ_PRIVATE
+                        }
+                        room.markAsRead(receiptType)
+                    }
+                }
+                is RoomListEvents.MarkAsUnread -> coroutineScope.launch {
+                    client.getRoom(event.roomId)?.use { room ->
+                        room.setUnreadFlag(isUnread = true)
+                    }
+                }
             }
         }
 
@@ -177,6 +211,7 @@ class RoomListPresenter @Inject constructor(
             displaySearchResults = displaySearchResults,
             contextMenu = contextMenu,
             leaveRoomState = leaveRoomState,
+            displayMigrationStatus = isMigrating,
             eventSink = ::handleEvents
         )
     }

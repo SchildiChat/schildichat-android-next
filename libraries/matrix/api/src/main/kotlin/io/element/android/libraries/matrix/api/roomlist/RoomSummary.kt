@@ -47,8 +47,8 @@ data class RoomSummaryDetails(
     val unreadNotificationCount: Int = 0,
     val highlightCount: Int = 0,
     val unreadCount: Int = 0,
-    val markedUnread: Boolean = false,
     // SC end
+    val isMarkedUnread: Boolean,
     val inviter: RoomMember?,
     val userDefinedNotificationMode: RoomNotificationMode?,
     val hasRoomCall: Boolean,

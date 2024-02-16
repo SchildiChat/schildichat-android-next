@@ -173,6 +173,9 @@ class FakeMatrixRoom(
     private val _roomInfoFlow: MutableSharedFlow<MatrixRoomInfo> = MutableSharedFlow(replay = 1)
     override val roomInfoFlow: Flow<MatrixRoomInfo> = _roomInfoFlow
 
+    private val _roomTypingMembersFlow: MutableSharedFlow<List<UserId>> = MutableSharedFlow(replay = 1)
+    override val roomTypingMembersFlow: Flow<List<UserId>> = _roomTypingMembersFlow
+
     override val membersStateFlow: MutableStateFlow<MatrixRoomMembersState> = MutableStateFlow(MatrixRoomMembersState.Unknown)
 
     override val roomNotificationSettingsStateFlow: MutableStateFlow<MatrixRoomNotificationSettingsState> =
@@ -379,10 +382,23 @@ class FakeMatrixRoom(
     }
 
     // SC start
-    override suspend fun markAsRead() = Result.success(Unit)
-    override suspend fun markAsUnread() = Result.success(Unit)
     override suspend fun markAsReadAndSendReadReceipt(receiptType: ReceiptType) = Result.success(Unit)
     // SC end
+
+    val markAsReadCalls = mutableListOf<ReceiptType>()
+
+    override suspend fun markAsRead(receiptType: ReceiptType): Result<Unit> {
+        markAsReadCalls.add(receiptType)
+        return Result.success(Unit)
+    }
+
+    var setUnreadFlagCalls = mutableListOf<Boolean>()
+        private set
+
+    override suspend fun setUnreadFlag(isUnread: Boolean): Result<Unit> {
+        setUnreadFlagCalls.add(isUnread)
+        return Result.success(Unit)
+    }
 
     override suspend fun sendLocation(
         body: String,
@@ -452,10 +468,6 @@ class FakeMatrixRoom(
     ): Result<String> = generateWidgetWebViewUrlResult
 
     override fun getWidgetDriver(widgetSettings: MatrixWidgetSettings): Result<MatrixWidgetDriver> = getWidgetDriverResult
-
-    override fun pollHistory(): MatrixTimeline {
-        return FakeMatrixTimeline()
-    }
 
     fun givenLeaveRoomError(throwable: Throwable?) {
         this.leaveRoomError = throwable
@@ -587,6 +599,10 @@ class FakeMatrixRoom(
 
     fun givenRoomInfo(roomInfo: MatrixRoomInfo) {
         _roomInfoFlow.tryEmit(roomInfo)
+    }
+
+    fun givenRoomTypingMembers(typingMembers: List<UserId>) {
+        _roomTypingMembersFlow.tryEmit(typingMembers)
     }
 }
 

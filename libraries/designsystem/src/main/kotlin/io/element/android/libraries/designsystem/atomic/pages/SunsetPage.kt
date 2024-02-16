@@ -39,8 +39,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import chat.schildi.theme.ForcedDarkScTheme
 import chat.schildi.theme.ScTheme
+import io.element.android.compound.annotations.CoreColorToken
 import io.element.android.compound.theme.ElementTheme
-import io.element.android.compound.theme.ForcedDarkElementTheme
+import io.element.android.compound.tokens.generated.internal.DarkColorTokens
+import io.element.android.compound.tokens.generated.internal.LightColorTokens
 import io.element.android.libraries.designsystem.R
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
@@ -56,6 +58,12 @@ fun SunsetPage(
     modifier: Modifier = Modifier,
     overallContent: @Composable () -> Unit,
 ) {
+    /*
+    ElementTheme(
+        // Always use the opposite value of the current theme
+        darkTheme = ElementTheme.isLightTheme,
+        applySystemBarsUpdate = false,
+    ) { */
     ForcedDarkScTheme(lightStatusBar = true) {
         Box(
             modifier = modifier.fillMaxSize()
@@ -109,25 +117,36 @@ fun SunsetPage(
     }
 }
 
+@OptIn(CoreColorToken::class)
 @Composable
-private fun SunsetBackground(
-    modifier: Modifier = Modifier,
-) {
+private fun SunsetBackground() {
     if (ScTheme.yes) {
-        ScSunsetBackground(modifier)
+        ScSunsetBackground()
         return
     }
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        // The top background colors are the opposite of the current theme ones
+        val topBackgroundColor = if (ElementTheme.isLightTheme) {
+            DarkColorTokens.colorThemeBg
+        } else {
+            LightColorTokens.colorThemeBg
+        }
+        // The bottom background colors follow the current theme
+        val bottomBackgroundColor = if (ElementTheme.isLightTheme) {
+            LightColorTokens.colorThemeBg
+        } else {
+            // The dark background color doesn't 100% match the image, so we use a custom color
+            Color(0xFF121418)
+        }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(0.3f)
-                .background(Color.White)
+                .background(topBackgroundColor)
         )
         Image(
-            modifier = Modifier
-                .fillMaxWidth(),
-            painter = painterResource(id = R.drawable.light_dark),
+            modifier = Modifier.fillMaxWidth(),
+            painter = painterResource(id = R.drawable.bg_migration),
             contentScale = ContentScale.Crop,
             contentDescription = null,
         )
@@ -135,7 +154,7 @@ private fun SunsetBackground(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(0.7f)
-                .background(Color(0xFF121418))
+                .background(bottomBackgroundColor)
         )
     }
 }

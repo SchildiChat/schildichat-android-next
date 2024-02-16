@@ -54,7 +54,6 @@ import io.element.android.libraries.matrix.impl.notificationsettings.RustNotific
 import io.element.android.libraries.matrix.impl.poll.toInner
 import io.element.android.libraries.matrix.impl.room.location.toInner
 import io.element.android.libraries.matrix.impl.room.member.RoomMemberListFetcher
-import io.element.android.libraries.matrix.impl.timeline.AsyncMatrixTimeline
 import io.element.android.libraries.matrix.impl.timeline.RustMatrixTimeline
 import io.element.android.libraries.matrix.impl.timeline.toRustReceiptType
 import io.element.android.libraries.matrix.impl.util.mxCallbackFlow
@@ -77,6 +76,7 @@ import org.matrix.rustcomponents.sdk.RoomInfoListener
 import org.matrix.rustcomponents.sdk.RoomListItem
 import org.matrix.rustcomponents.sdk.RoomMessageEventContentWithoutRelation
 import org.matrix.rustcomponents.sdk.SendAttachmentJoinHandle
+import org.matrix.rustcomponents.sdk.TypingNotificationsListener
 import org.matrix.rustcomponents.sdk.WidgetCapabilities
 import org.matrix.rustcomponents.sdk.WidgetCapabilitiesProvider
 import org.matrix.rustcomponents.sdk.messageEventContentFromHtml
@@ -113,6 +113,22 @@ class RustMatrixRoom(
         innerRoom.subscribeToRoomInfoUpdates(object : RoomInfoListener {
             override fun call(roomInfo: RoomInfo) {
                 channel.trySend(matrixRoomInfoMapper.map(roomInfo))
+            }
+        })
+    }
+
+    override val roomTypingMembersFlow: Flow<List<UserId>> = mxCallbackFlow {
+        launch {
+            val initial = emptyList<UserId>()
+            channel.trySend(initial)
+        }
+        innerRoom.subscribeToTypingNotifications(object : TypingNotificationsListener {
+            override fun call(typingUserIds: List<String>) {
+                channel.trySend(
+                    typingUserIds
+                        .filter { it != sessionData.userId }
+                        .map(::UserId)
+                )
             }
         })
     }
@@ -436,10 +452,20 @@ class RustMatrixRoom(
     }
 
     // SC start
-    override suspend fun markAsRead() = withContext(roomDispatcher) { runCatching { innerRoom.markAsRead() } }
-    override suspend fun markAsUnread() = withContext(roomDispatcher) { runCatching { innerRoom.markAsUnread() } }
     override suspend fun markAsReadAndSendReadReceipt(receiptType: ReceiptType) = withContext(roomDispatcher) { runCatching { innerRoom.markAsReadAndSendReadReceipt(receiptType.toRustReceiptType()) } }
     // SC end
+
+    override suspend fun markAsRead(receiptType: ReceiptType): Result<Unit> = withContext(roomDispatcher) {
+        runCatching {
+            innerRoom.markAsRead(receiptType.toRustReceiptType())
+        }
+    }
+
+    override suspend fun setUnreadFlag(isUnread: Boolean): Result<Unit> = withContext(roomDispatcher) {
+        runCatching {
+            innerRoom.setUnreadFlag(isUnread)
+        }
+    }
 
     override suspend fun sendLocation(
         body: String,
@@ -560,14 +586,6 @@ class RustMatrixRoom(
                 }
             },
         )
-    }
-
-    override fun pollHistory() = AsyncMatrixTimeline(
-        coroutineScope = roomCoroutineScope,
-        dispatcher = roomDispatcher
-    ) {
-        val innerTimeline = innerRoom.pollHistory()
-        createMatrixTimeline(innerTimeline)
     }
 
     private fun sendAttachment(files: List<File>, handle: () -> SendAttachmentJoinHandle): Result<MediaUploadHandler> {

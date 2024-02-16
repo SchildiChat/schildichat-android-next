@@ -57,6 +57,7 @@ dependencies {
     implementation(projects.features.analytics.api)
     implementation(projects.features.ftue.api)
     implementation(projects.features.logout.api)
+    implementation(projects.features.roomlist.api)
     implementation(projects.services.analytics.api)
     implementation(projects.services.toolbox.api)
     implementation(libs.datetime)

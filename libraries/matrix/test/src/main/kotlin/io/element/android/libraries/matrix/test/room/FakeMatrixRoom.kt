@@ -381,10 +381,6 @@ class FakeMatrixRoom(
         return reportContentResult
     }
 
-    // SC start
-    override suspend fun markAsReadAndSendReadReceipt(receiptType: ReceiptType) = Result.success(Unit)
-    // SC end
-
     val markAsReadCalls = mutableListOf<ReceiptType>()
 
     override suspend fun markAsRead(receiptType: ReceiptType): Result<Unit> {

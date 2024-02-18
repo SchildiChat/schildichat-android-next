@@ -76,7 +76,7 @@ class FakeRoomListService : RoomListService {
     override val allSpaces: RoomList = SimplePagedRoomList(
         allSpacesSummariesFlow,
         allSpacesLoadingStateFlow,
-        MutableStateFlow(DynamicRoomList.Filter.None)
+        MutableStateFlow(RoomListFilter.all())
     )
 
     override fun updateAllRoomsVisibleRange(range: IntRange, withSpaceFilter: Boolean) {

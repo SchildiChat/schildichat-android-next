@@ -64,7 +64,7 @@ fun SunsetPage(
         darkTheme = ElementTheme.isLightTheme,
         applySystemBarsUpdate = false,
     ) { */
-    ForcedDarkScTheme(lightStatusBar = true) {
+    ForcedDarkScTheme {
         Box(
             modifier = modifier.fillMaxSize()
         ) {

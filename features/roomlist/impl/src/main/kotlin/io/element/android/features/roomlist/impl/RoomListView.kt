@@ -217,6 +217,9 @@ private fun RoomListContent(
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
+            // SC: clear cache / setting up your account looks bad with top app bar showing
+            if (state.displayMigrationStatus) return@Scaffold
+
             RoomListTopBar(
                 matrixUser = state.matrixUser,
                 showAvatarIndicator = state.showAvatarIndicator,
@@ -306,10 +309,10 @@ private fun RoomListContent(
                         }
                     }
                 }
-            }
+            }}
 
             MigrationScreenView(isMigrating = state.displayMigrationStatus)
-        }},
+        },
         floatingActionButton = {
             if (!state.displayMigrationStatus && !ScPrefs.SPACE_NAV.value()) {
                 FloatingActionButton(

@@ -19,6 +19,9 @@ package io.element.android.features.roomlist.impl
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.NewReleases
+import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -109,6 +112,7 @@ private fun RoomListModalBottomSheetContent(
                         onRoomMarkUnreadClicked()
                     }
                 },
+                leadingContent = ListItemContent.Icon(iconSource = IconSource.Vector(if (contextMenu.hasNewContent) Icons.Default.RemoveRedEye else Icons.Default.NewReleases)),
                 /* TODO Design
                 leadingContent = ListItemContent.Icon(
                     iconSource = IconSource.Vector(

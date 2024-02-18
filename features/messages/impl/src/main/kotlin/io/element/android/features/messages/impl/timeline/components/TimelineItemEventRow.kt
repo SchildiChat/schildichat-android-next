@@ -389,7 +389,7 @@ private fun MessageSenderInformation(
     val avatarStrokeColor = MaterialTheme.colorScheme.background
     val avatarSize = senderAvatar.size.dp
     val avatarColors = if (ScPrefs.PL_DISPLAY_NAME.value()) {
-        powerLevelToAvatarColors(senderAvatar.powerLevel, ElementTheme.materialColors)
+        powerLevelToAvatarColors(senderAvatar.powerLevel)
     } else {
         AvatarColorsProvider.provide(senderAvatar.id, ElementTheme.isLightTheme, ScTheme.yes)
     }

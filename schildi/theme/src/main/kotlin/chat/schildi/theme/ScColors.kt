@@ -34,15 +34,35 @@ internal object ScColors {
     val colorGray_73 = Color(0xff737373)
 }
 
-object ScPowerLevelColors {
-    val pl_100 = Color(0xfff44336)
-    val pl_95 = Color(0xffff5722)
-    val pl_51 = Color(0xff03a9f4)
-    val pl_50 = Color(0xff2196f3)
-    val pl_1 = Color(0xffcddc39)
-    val pl_0 = Color(0xff8bc34a)
-    val pl_null = pl_0
+data class PowerLevelColors(
+    val pl_100: Color,
+    val pl_95: Color,
+    val pl_51: Color,
+    val pl_50: Color,
+    val pl_1: Color,
+    val pl_0: Color,
+) {
+    fun resolve(powerLevel: Long): Color {
+        return when {
+            powerLevel >= 100 -> pl_100
+            powerLevel >= 95 -> pl_95
+            powerLevel >= 51 -> pl_51
+            powerLevel >= 50 -> pl_50
+            powerLevel >= 1 -> pl_1
+            powerLevel == 0L -> pl_0
+            else -> pl_0
+        }
+    }
 }
+
+val ScPowerLevelColors = PowerLevelColors(
+    pl_100 = Color(0xfff44336),
+    pl_95 = Color(0xffff5722),
+    pl_51 = Color(0xff03a9f4),
+    pl_50 = Color(0xff2196f3),
+    pl_1 = Color(0xffcddc39),
+    pl_0 = Color(0xff8bc34a),
+)
 
 object ScBrandingColors {
     val onboardingGradientLight = listOf(

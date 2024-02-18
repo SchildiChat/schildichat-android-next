@@ -97,13 +97,10 @@ class RoomListPresenter @Inject constructor(
         val spacesList = if (spaceNavEnabled) spaceListDataSource.allSpaces.collectAsState().value else null
         val spaceSelectionHierarchy = if (spaceNavEnabled) spaceAwareRoomListDataSource.spaceSelectionHierarchy.collectAsState().value else persistentListOf()
         val spaceUnreadCounts = if (spaceNavEnabled) spaceUnreadCountsDataSource.spaceUnreadCounts.collectAsState().value else persistentMapOf()
-        val roomList by produceState(initialValue = AsyncData.Loading()) {
-            if (spaceNavEnabled) {
-                spaceAwareRoomListDataSource.spaceRooms.collect { value = AsyncData.Success(it) }
-            } else {
-                roomListDataSource.allRooms.collect { value = AsyncData.Success(it) }
-            }
-        }
+        val roomList = if (spaceNavEnabled)
+            produceState(initialValue = AsyncData.Loading()) { spaceAwareRoomListDataSource.spaceRooms.collect { value = AsyncData.Success(it) } }.value
+        else
+            produceState(initialValue = AsyncData.Loading()) { roomListDataSource.allRooms.collect { value = AsyncData.Success(it) } }.value
         val filteredRoomList by roomListDataSource.filteredRooms.collectAsState()
         val filter by roomListDataSource.filter.collectAsState()
         val networkConnectionStatus by networkMonitor.connectivity.collectAsState()

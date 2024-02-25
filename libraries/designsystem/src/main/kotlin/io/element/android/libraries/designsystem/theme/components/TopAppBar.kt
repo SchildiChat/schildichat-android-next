@@ -41,7 +41,7 @@ fun TopAppBar(
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
-    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(),
+    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors().toScTopAppBarColors(),
     scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     androidx.compose.material3.TopAppBar(

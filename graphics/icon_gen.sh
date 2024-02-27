@@ -85,3 +85,6 @@ magick -define png:exclude-chunks=date,time -size 512x512 -define gradient:angle
 magick composite -define png:exclude-chunks=date,time -gravity center "$store_icon.tmp.png" "$store_icon.bg.png" "$store_icon"
 rm "$store_icon.tmp.png"
 rm "$store_icon.bg.png"
+
+# Store feature graphic
+inkscape "$mydir/feature_image.svg" --export-filename="$mydir/../.fastlane/metadata/android/en-US/images/featureGraphic.png" -C --export-dpi=96

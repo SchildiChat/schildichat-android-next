@@ -1,2 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="sc_pref_sc_themes_title">SC izskats</string>
+    <string name="sc_pref_sc_floating_date_summary">Rādīt datumu virs ziņām, kad ritina</string>
+    <string name="sc_pref_sc_layout_title">SC izkārtojums</string>
+    <string name="sc_pref_sc_overview_layout_title">SC pārskata izkārtojums</string>
+    <string name="sc_pref_sc_timeline_layout_title">SC sarunu izkārtojums</string>
+    <string name="sc_pref_sc_floating_date_title">Peldošs datums</string>
+    <string name="sc_pref_pl_display_name_title">Vārdu krāsas pēc spēka līmeņa</string>
+    <string name="sc_onboarding_welcome_title">Laipni lūdzam SchildiChat!</string>
+</resources>

@@ -79,7 +79,7 @@ enum class FeatureFlags(
         key = "feature.roomlistfilters",
         title = "Room list filters",
         description = "Allow user to filter the room list",
-        defaultValue = true,
+        defaultValue = false,
         isFinished = false,
     ),
 }

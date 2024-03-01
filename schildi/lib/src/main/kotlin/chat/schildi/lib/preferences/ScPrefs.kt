@@ -2,6 +2,7 @@ package chat.schildi.lib.preferences
 
 import androidx.compose.ui.res.stringArrayResource
 import chat.schildi.lib.R
+import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.ui.strings.CommonStrings
 
 object ScPrefs {
@@ -108,15 +109,18 @@ object ScPrefs {
     ))
 
     val devQuickTweaksOverview = listOf(
-        SC_THEME,
-        SC_OVERVIEW_LAYOUT.copy(titleRes = R.string.sc_pref_sc_layout_title),
-        COMPACT_APP_BAR,
         CLIENT_GENERATED_UNREAD_COUNTS,
+        ScUpstreamFeatureFlagAliasPref(FeatureFlags.RoomListFilters, R.string.sc_upstream_feature_flag_room_list_filters),
+        ScPrefCategory(R.string.sc_pref_category_general_appearance, null, listOf(
+            SC_THEME,
+            SC_OVERVIEW_LAYOUT.copy(titleRes = R.string.sc_pref_sc_layout_title),
+            EL_TYPOGRAPHY,
+            COMPACT_APP_BAR,
+        )),
         ScPrefCategory(R.string.sc_pref_category_misc, null, listOf(
             SPACE_NAV,
             COMPACT_ROOT_SPACES,
             SYNC_READ_RECEIPT_AND_MARKER,
-            EL_TYPOGRAPHY,
         )),
     )
 

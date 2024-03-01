@@ -103,7 +103,7 @@ class ElementCallActivity : NodeComponentActivity(), CallScreenNavigator {
         audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
         requestAudioFocus()
 
-        setContent { CompositionLocalProvider(LocalScPreferencesStore provides DefaultScPreferencesStore(applicationContext)) {
+        setContent { CompositionLocalProvider(LocalScPreferencesStore provides DefaultScPreferencesStore(applicationContext, null)) {
             val theme by remember {
                 appPreferencesStore.getThemeFlow().mapToTheme()
             }

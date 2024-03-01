@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import io.element.android.libraries.featureflag.api.FeatureFlags
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import timber.log.Timber
@@ -142,3 +143,25 @@ data class ScActionablePref(
     override val summaryRes: Int? = null,
     override val dependencies: List<ScPrefDependency<*>> = emptyList(),
 ) : AbstractScPref
+
+@Parcelize
+data class ScUpstreamFeatureFlagAliasPref(
+    val featureFlag: FeatureFlags,
+    override val titleRes: Int,
+    override val summaryRes: Int? = null,
+    override val dependencies: List<ScPrefDependency<*>> = emptyList(),
+) : ScPref<Boolean> {
+    @IgnoredOnParcel override val sKey: String = featureFlag.key
+    @IgnoredOnParcel override val defaultValue: Boolean = featureFlag.defaultValue
+    @IgnoredOnParcel override val authorsChoice: Boolean? = null
+    @IgnoredOnParcel override val upstreamChoice: Boolean? = null
+    @IgnoredOnParcel override val key: Preferences.Key<Boolean>? = null
+
+    override fun ensureType(value: Any?): Boolean? {
+        if (value !is Boolean) {
+            Timber.e("Parse boolean failed of $sKey for ${value?.javaClass?.simpleName}")
+            return null
+        }
+        return value
+    }
+}

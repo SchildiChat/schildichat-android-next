@@ -134,6 +134,6 @@ internal val scdSemanticColors = SemanticColors(
     iconCriticalPrimary = ScColors.colorAccentRed, // TODO align with other colorRed900?
     iconSuccessPrimary = ScColors.colorAccentGreen,
     iconInfoPrimary = ScColors.colorAccentBlue,
-    iconOnSolidPrimary = scd_fgPrimary,
+    iconOnSolidPrimary = scl_fgPrimary,
     isLight = false,
 )

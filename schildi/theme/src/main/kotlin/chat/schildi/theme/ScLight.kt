@@ -86,7 +86,7 @@ internal val sclSemanticColors = SemanticColors(
     textCriticalPrimary = ScColors.colorAccentRed,
     textSuccessPrimary = ScColors.colorAccentGreen,
     textInfoPrimary = ScColors.colorAccentBlueLight,
-    textOnSolidPrimary = scl_fgPrimary,
+    textOnSolidPrimary = scd_fgPrimary,
     bgSubtlePrimary = scl_bgDarker,
     bgSubtleSecondary =  scl_bgBlack,
     bgCanvasDefault = scl_bg,
@@ -127,6 +127,6 @@ internal val sclSemanticColors = SemanticColors(
     iconCriticalPrimary = ScColors.colorAccentRed, // TODO align with other colorRed900?
     iconSuccessPrimary = ScColors.colorAccentGreen,
     iconInfoPrimary = ScColors.colorAccentBlue,
-    iconOnSolidPrimary = scl_fgPrimary,
+    iconOnSolidPrimary = scd_fgPrimary,
     isLight = true,
 )

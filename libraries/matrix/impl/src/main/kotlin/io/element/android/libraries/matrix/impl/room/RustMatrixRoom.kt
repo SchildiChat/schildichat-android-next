@@ -328,6 +328,12 @@ class RustMatrixRoom(
         }
     }
 
+    override suspend fun canUserBan(userId: UserId): Result<Boolean> {
+        return runCatching {
+            innerRoom.canUserBan(userId.value)
+        }
+    }
+
     override suspend fun canUserRedactOwn(userId: UserId): Result<Boolean> {
         return runCatching {
             innerRoom.canUserRedactOwn(userId.value)
@@ -448,6 +454,12 @@ class RustMatrixRoom(
             if (blockUserId != null) {
                 innerRoom.ignoreUser(blockUserId.value)
             }
+        }
+    }
+
+    override suspend fun setIsFavorite(isFavorite: Boolean): Result<Unit> = withContext(roomDispatcher) {
+        runCatching {
+            innerRoom.setIsFavourite(isFavorite, null)
         }
     }
 

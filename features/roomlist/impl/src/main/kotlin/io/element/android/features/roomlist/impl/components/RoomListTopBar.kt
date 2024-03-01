@@ -16,7 +16,6 @@
 
 package io.element.android.features.roomlist.impl.components
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -94,7 +93,6 @@ fun RoomListTopBar(
     showAvatarIndicator: Boolean,
     areSearchResultsDisplayed: Boolean,
     selectedSpaceName: String?,
-    onFilterChanged: (String) -> Unit,
     onToggleSearch: () -> Unit,
     onMenuActionClicked: (RoomListMenuAction) -> Unit,
     onCreateRoomClicked: () -> Unit,
@@ -103,15 +101,6 @@ fun RoomListTopBar(
     displayMenuItems: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    fun closeFilter() {
-        onFilterChanged("")
-    }
-
-    BackHandler(enabled = areSearchResultsDisplayed) {
-        closeFilter()
-        onToggleSearch()
-    }
-
     DefaultRoomListTopBar(
         matrixUser = matrixUser,
         showAvatarIndicator = showAvatarIndicator,

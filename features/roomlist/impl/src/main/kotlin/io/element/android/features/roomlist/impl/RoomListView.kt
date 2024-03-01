@@ -63,10 +63,10 @@ import io.element.android.features.roomlist.impl.components.RoomListTopBar
 import io.element.android.features.roomlist.impl.components.RoomSummaryRow
 import io.element.android.features.roomlist.impl.components.ScRoomSummaryRow
 import io.element.android.features.roomlist.impl.components.scRoomListScrollBehavior
+import io.element.android.features.roomlist.impl.filters.RoomListFiltersView
 import io.element.android.features.roomlist.impl.migration.MigrationScreenView
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
-import io.element.android.features.roomlist.impl.search.RoomListSearchResultView
-import io.element.android.libraries.architecture.AsyncData
+import io.element.android.features.roomlist.impl.search.RoomListSearchView
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.Button
@@ -88,6 +88,7 @@ fun RoomListView(
     onRoomClicked: (RoomId) -> Unit,
     onSettingsClicked: () -> Unit,
     onVerifyClicked: () -> Unit,
+    onConfirmRecoveryKeyClicked: () -> Unit,
     onCreateRoomClicked: () -> Unit,
     onInvitesClicked: () -> Unit,
     onRoomSettingsClicked: (roomId: RoomId) -> Unit,
@@ -119,6 +120,7 @@ fun RoomListView(
                 modifier = Modifier.padding(top = topPadding),
                 state = state,
                 onVerifyClicked = onVerifyClicked,
+                onConfirmRecoveryKeyClicked = onConfirmRecoveryKeyClicked,
                 onRoomClicked = onRoomClicked,
                 onRoomLongClicked = { onRoomLongClicked(it) },
                 onOpenSettings = onSettingsClicked,
@@ -127,8 +129,8 @@ fun RoomListView(
                 onMenuActionClicked = onMenuActionClicked,
             )
             // This overlaid view will only be visible when state.displaySearchResults is true
-            RoomListSearchResultView(
-                state = state,
+            RoomListSearchView(
+                state = state.searchState,
                 onRoomClicked = onRoomClicked,
                 onRoomLongClicked = { onRoomLongClicked(it) },
                 modifier = Modifier
@@ -144,7 +146,7 @@ fun RoomListView(
 @Composable
 private fun EmptyRoomListView(
     onCreateRoomClicked: () -> Unit,
-    modifier: Modifier,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -176,6 +178,7 @@ private fun EmptyRoomListView(
 private fun RoomListContent(
     state: RoomListState,
     onVerifyClicked: () -> Unit,
+    onConfirmRecoveryKeyClicked: () -> Unit,
     onRoomClicked: (RoomId) -> Unit,
     onRoomLongClicked: (RoomListRoomSummary) -> Unit,
     onOpenSettings: () -> Unit,
@@ -217,22 +220,26 @@ private fun RoomListContent(
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            // SC: clear cache / setting up your account looks bad with top app bar showing
-            if (state.displayMigrationStatus) return@Scaffold
+            Column {
+                // SC: clear cache / setting up your account looks bad with top app bar showing
+                if (state.displayMigrationStatus) return@Scaffold
 
-            RoomListTopBar(
-                matrixUser = state.matrixUser,
-                showAvatarIndicator = state.showAvatarIndicator,
-                areSearchResultsDisplayed = state.displaySearchResults,
-                selectedSpaceName = state.spacesList.resolveSelection(state.spaceSelectionHierarchy)?.info?.name,
-                onFilterChanged = { state.eventSink(RoomListEvents.UpdateFilter(it)) },
-                onToggleSearch = { state.eventSink(RoomListEvents.ToggleSearchResults) },
-                onMenuActionClicked = onMenuActionClicked,
-                onCreateRoomClicked = onCreateRoomClicked,
-                onOpenSettings = onOpenSettings,
-                scrollBehavior = scrollBehavior,
-                displayMenuItems = !state.displayMigrationStatus,
-            )
+                RoomListTopBar(
+                    matrixUser = state.matrixUser,
+                    showAvatarIndicator = state.showAvatarIndicator,
+                    areSearchResultsDisplayed = state.searchState.isSearchActive,
+                    selectedSpaceName = state.spacesList.resolveSelection(state.spaceSelectionHierarchy)?.info?.name,
+                    onCreateRoomClicked = onCreateRoomClicked,
+                    onToggleSearch = { state.eventSink(RoomListEvents.ToggleSearchResults) },
+                    onMenuActionClicked = onMenuActionClicked,
+                    onOpenSettings = onOpenSettings,
+                    scrollBehavior = scrollBehavior,
+                    displayMenuItems = !state.displayMigrationStatus,
+                )
+                if (state.displayFilters) {
+                    RoomListFiltersView(state = state.filtersState)
+                }
+            }
         },
         content = { padding ->
             SpacesPager(
@@ -246,71 +253,74 @@ private fun RoomListContent(
                 modifier = Modifier
                     .padding(padding)
                     .consumeWindowInsets(padding)) { modifier ->
-            if (state.roomList is AsyncData.Success && state.roomList.data.isEmpty()) {
-                EmptyRoomListView(onCreateRoomClicked, modifier)
-            } else {
-                LazyColumn(
-                    modifier = modifier
-                        //.padding(padding)
-                        //.consumeWindowInsets(padding)
-                        .nestedScroll(nestedScrollConnection),
-                    state = lazyListState,
-                    // FAB height is 56dp, bottom padding is 16dp, we add 8dp as extra margin -> 56+16+8 = 80
-                    contentPadding = PaddingValues(bottom = 80.dp).takeIf { !ScPrefs.SPACE_NAV.value() } ?: PaddingValues()
-                ) {
-                    when {
-                        state.displayVerificationPrompt -> {
-                            item {
-                                RequestVerificationHeader(
-                                    onVerifyClicked = onVerifyClicked,
-                                    onDismissClicked = { state.eventSink(RoomListEvents.DismissRequestVerificationPrompt) }
-                                )
-                            }
-                        }
-                        state.displayRecoveryKeyPrompt -> {
-                            item {
-                                ConfirmRecoveryKeyBanner(
-                                    onContinueClicked = onOpenSettings,
-                                    onDismissClicked = { state.eventSink(RoomListEvents.DismissRecoveryKeyPrompt) }
-                                )
-                            }
-                        }
-                    }
-
-                    if (state.invitesState != InvitesState.NoInvites) {
+            LazyColumn(
+                modifier = modifier
+                    //.padding(padding)
+                    //.consumeWindowInsets(padding)
+                    .nestedScroll(nestedScrollConnection),
+                state = lazyListState,
+                // FAB height is 56dp, bottom padding is 16dp, we add 8dp as extra margin -> 56+16+8 = 80
+                contentPadding = PaddingValues(bottom = 80.dp).takeIf { !ScPrefs.SPACE_NAV.value() } ?: PaddingValues()
+            ) {
+                when {
+                    state.displayEmptyState -> Unit
+                    state.securityBannerState == SecurityBannerState.SessionVerification -> {
                         item {
-                            InvitesEntryPointView(onInvitesClicked, state.invitesState)
+                            RequestVerificationHeader(
+                                onVerifyClicked = onVerifyClicked,
+                                onDismissClicked = { state.eventSink(RoomListEvents.DismissRequestVerificationPrompt) }
+                            )
                         }
                     }
-
-                    val roomList = state.roomList.dataOrNull().orEmpty()
-                    // Note: do not use a key for the LazyColumn, or the scroll will not behave as expected if a room
-                    // is moved to the top of the list.
-                    itemsIndexed(
-                        items = roomList,
-                        contentType = { _, room -> room.contentType() },
-                    ) { index, room ->
-                        if (SC_OVERVIEW_LAYOUT.value()) {
-                            ScRoomSummaryRow(
-                                room = room,
-                                onClick = ::onRoomClicked,
-                                onLongClick = onRoomLongClicked,
-                                isLastIndex = index == roomList.lastIndex,
+                    state.securityBannerState == SecurityBannerState.RecoveryKeyConfirmation -> {
+                        item {
+                            ConfirmRecoveryKeyBanner(
+                                onContinueClicked = onConfirmRecoveryKeyClicked,
+                                onDismissClicked = { state.eventSink(RoomListEvents.DismissRecoveryKeyPrompt) }
                             )
-                            return@itemsIndexed
-                        }
-                        RoomSummaryRow(
-                            room = room,
-                            onClick = ::onRoomClicked,
-                            onLongClick = onRoomLongClicked,
-                        )
-                        if (index != roomList.lastIndex) {
-                            HorizontalDivider()
                         }
                     }
                 }
-            }}
 
+                if (state.invitesState != InvitesState.NoInvites) {
+                    item {
+                        InvitesEntryPointView(onInvitesClicked, state.invitesState)
+                    }
+                }
+
+                val roomList = state.roomList.dataOrNull().orEmpty()
+                // Note: do not use a key for the LazyColumn, or the scroll will not behave as expected if a room
+                // is moved to the top of the list.
+                itemsIndexed(
+                    items = roomList,
+                    contentType = { _, room -> room.contentType() },
+                ) { index, room ->
+                    if (SC_OVERVIEW_LAYOUT.value()) {
+                        ScRoomSummaryRow(
+                            room = room,
+                            onClick = ::onRoomClicked,
+                            onLongClick = onRoomLongClicked,
+                            isLastIndex = index == roomList.lastIndex,
+                        )
+                        return@itemsIndexed
+                    }
+                    RoomSummaryRow(
+                        room = room,
+                        onClick = ::onRoomClicked,
+                        onLongClick = onRoomLongClicked,
+                    )
+                    if (index != roomList.lastIndex) {
+                        HorizontalDivider()
+                    }
+                }
+            }
+            if (state.displayEmptyState) {
+                if (state.filtersState.hasAnyFilterSelected) {
+                    // TODO add empty state for filtered rooms
+                } else {
+                    EmptyRoomListView(onCreateRoomClicked)
+                }
+            }}
             MigrationScreenView(isMigrating = state.displayMigrationStatus)
         },
         floatingActionButton = {
@@ -342,6 +352,7 @@ internal fun RoomListViewPreview(@PreviewParameter(RoomListStateProvider::class)
         onRoomClicked = {},
         onSettingsClicked = {},
         onVerifyClicked = {},
+        onConfirmRecoveryKeyClicked = {},
         onCreateRoomClicked = {},
         onInvitesClicked = {},
         onRoomSettingsClicked = {},

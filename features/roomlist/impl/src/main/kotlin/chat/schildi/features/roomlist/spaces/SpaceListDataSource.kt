@@ -19,6 +19,7 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.sync.Mutex
@@ -81,7 +82,7 @@ class SpaceListDataSource @Inject constructor(
 
     // Force rebuilding a space filter. Only a workaround until we can do proper listener to m.space.child state events...
     suspend fun forceRebuildSpaceFilter() {
-        replaceWith(roomListService.allSpaces.summaries.value)
+        roomListService.allSpaces.summaries.firstOrNull()?.let { replaceWith(it) }
     }
 
     /**

@@ -68,6 +68,7 @@ fun PreferencesRootView(
     onOpenScTweaks: (ScPrefScreen?) -> Unit,
     onOpenNotificationSettings: () -> Unit,
     onOpenUserProfile: (MatrixUser) -> Unit,
+    onOpenBlockedUsers: () -> Unit,
     onSignOutClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -132,6 +133,11 @@ fun PreferencesRootView(
                 onClick = onOpenNotificationSettings,
             )
         }
+        ListItem(
+            headlineContent = { Text(stringResource(id = CommonStrings.common_blocked_users)) },
+            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Block())),
+            onClick = onOpenBlockedUsers,
+        )
         ListItem(
             headlineContent = { Text(stringResource(id = CommonStrings.common_report_a_problem)) },
             leadingContent = ListItemContent.Icon(IconSource.Vector(Icons.Outlined.BugReport)),
@@ -242,6 +248,7 @@ private fun ContentToPreview(matrixUser: MatrixUser) {
         onOpenNotificationSettings = {},
         onOpenLockScreenSettings = {},
         onOpenUserProfile = {},
+        onOpenBlockedUsers = {},
         onSignOutClicked = {},
     )
 }

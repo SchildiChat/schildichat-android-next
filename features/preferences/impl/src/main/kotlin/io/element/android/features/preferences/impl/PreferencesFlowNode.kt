@@ -36,6 +36,7 @@ import io.element.android.features.preferences.api.PreferencesEntryPoint
 import io.element.android.features.preferences.impl.about.AboutNode
 import io.element.android.features.preferences.impl.advanced.AdvancedSettingsNode
 import io.element.android.features.preferences.impl.analytics.AnalyticsSettingsNode
+import io.element.android.features.preferences.impl.blockedusers.BlockedUsersNode
 import io.element.android.features.preferences.impl.developer.DeveloperSettingsNode
 import io.element.android.features.preferences.impl.developer.tracing.ConfigureTracingNode
 import io.element.android.features.preferences.impl.notifications.NotificationSettingsNode
@@ -99,6 +100,9 @@ class PreferencesFlowNode @AssistedInject constructor(
         data class UserProfile(val matrixUser: MatrixUser) : NavTarget
 
         @Parcelize
+        data object BlockedUsers : NavTarget
+
+        @Parcelize
         data object SignOut : NavTarget
     }
 
@@ -148,6 +152,10 @@ class PreferencesFlowNode @AssistedInject constructor(
 
                     override fun onOpenUserProfile(matrixUser: MatrixUser) {
                         backstack.push(NavTarget.UserProfile(matrixUser))
+                    }
+
+                    override fun onOpenBlockedUsers() {
+                        backstack.push(NavTarget.BlockedUsers)
                     }
 
                     override fun onSignOutClicked() {
@@ -210,6 +218,9 @@ class PreferencesFlowNode @AssistedInject constructor(
                 lockScreenEntryPoint.nodeBuilder(this, buildContext)
                     .target(LockScreenEntryPoint.Target.Settings)
                     .build()
+            }
+            NavTarget.BlockedUsers -> {
+                createNode<BlockedUsersNode>(buildContext)
             }
             NavTarget.SignOut -> {
                 val callBack: LogoutEntryPoint.Callback = object : LogoutEntryPoint.Callback {

@@ -17,10 +17,12 @@
 package io.element.android.features.roomlist.impl
 
 import androidx.compose.runtime.Immutable
-import io.element.android.features.leaveroom.api.LeaveRoomState
 import chat.schildi.features.roomlist.spaces.SpaceListDataSource
 import chat.schildi.features.roomlist.spaces.SpaceUnreadCountsDataSource
+import io.element.android.features.leaveroom.api.LeaveRoomState
+import io.element.android.features.roomlist.impl.filters.RoomListFiltersState
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
+import io.element.android.features.roomlist.impl.search.RoomListSearchState
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarMessage
 import io.element.android.libraries.matrix.api.core.RoomId
@@ -38,25 +40,27 @@ data class RoomListState(
     val spacesList: ImmutableList<SpaceListDataSource.SpaceHierarchyItem> = persistentListOf(),
     val spaceSelectionHierarchy: ImmutableList<String> = persistentListOf(),
     val spaceUnreadCounts: ImmutableMap<String?, SpaceUnreadCountsDataSource.SpaceUnreadCounts> = persistentMapOf(),
-    val filter: String?,
-    val filteredRoomList: ImmutableList<RoomListRoomSummary>,
-    val displayVerificationPrompt: Boolean,
-    val displayRecoveryKeyPrompt: Boolean,
+    val securityBannerState: SecurityBannerState,
     val hasNetworkConnection: Boolean,
     val snackbarMessage: SnackbarMessage?,
     val invitesState: InvitesState,
-    val displaySearchResults: Boolean,
     val contextMenu: ContextMenu,
     val leaveRoomState: LeaveRoomState,
+    val filtersState: RoomListFiltersState,
+    val searchState: RoomListSearchState,
     val displayMigrationStatus: Boolean,
     val eventSink: (RoomListEvents) -> Unit,
 ) {
+    val displayFilters = filtersState.isFeatureEnabled && !displayMigrationStatus
+    val displayEmptyState = roomList is AsyncData.Success && roomList.data.isEmpty()
+
     sealed interface ContextMenu {
         data object Hidden : ContextMenu
         data class Shown(
             val roomId: RoomId,
             val roomName: String,
             val isDm: Boolean,
+            val isFavorite: Boolean,
             val markAsUnreadFeatureFlagEnabled: Boolean,
             val hasNewContent: Boolean,
         ) : ContextMenu
@@ -67,4 +71,10 @@ enum class InvitesState {
     NoInvites,
     SeenInvites,
     NewInvites,
+}
+
+enum class SecurityBannerState {
+    None,
+    SessionVerification,
+    RecoveryKeyConfirmation,
 }

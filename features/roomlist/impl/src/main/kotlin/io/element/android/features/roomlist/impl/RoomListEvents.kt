@@ -20,7 +20,6 @@ import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.libraries.matrix.api.core.RoomId
 
 sealed interface RoomListEvents {
-    data class UpdateFilter(val newFilter: String) : RoomListEvents
     data class UpdateSpaceFilter(val spaceSelectionHierarchy: List<String>) : RoomListEvents
     data class UpdateVisibleRange(val range: IntRange, val withSpaceFilter: Boolean = false) : RoomListEvents
     data object DismissRequestVerificationPrompt : RoomListEvents
@@ -28,9 +27,10 @@ sealed interface RoomListEvents {
     data object ToggleSearchResults : RoomListEvents
     data class ShowContextMenu(val roomListRoomSummary: RoomListRoomSummary) : RoomListEvents
 
-    sealed interface RoomListBottomSheetEvents : RoomListEvents
-    data object HideContextMenu : RoomListBottomSheetEvents
-    data class LeaveRoom(val roomId: RoomId) : RoomListBottomSheetEvents
-    data class MarkAsRead(val roomId: RoomId) : RoomListBottomSheetEvents
-    data class MarkAsUnread(val roomId: RoomId) : RoomListBottomSheetEvents
+    sealed interface ContextMenuEvents : RoomListEvents
+    data object HideContextMenu : ContextMenuEvents
+    data class LeaveRoom(val roomId: RoomId) : ContextMenuEvents
+    data class MarkAsRead(val roomId: RoomId) : ContextMenuEvents
+    data class MarkAsUnread(val roomId: RoomId) : ContextMenuEvents
+    data class SetRoomIsFavorite(val roomId: RoomId, val isFavorite: Boolean) : ContextMenuEvents
 }

@@ -22,6 +22,11 @@ plugins {
 
 android {
     namespace = "io.element.android.libraries.mediaviewer.api"
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 anvil {
@@ -40,6 +45,7 @@ dependencies {
     implementation(libs.dagger)
     implementation(libs.telephoto.zoomableimage)
     implementation(libs.vanniktech.blurhash)
+    implementation(libs.telephoto.flick)
 
     implementation(projects.libraries.androidutils)
     implementation(projects.libraries.architecture)
@@ -60,6 +66,8 @@ dependencies {
     testImplementation(libs.test.turbine)
     testImplementation(libs.coroutines.core)
     testImplementation(libs.coroutines.test)
+    testImplementation(libs.androidx.compose.ui.test.junit)
+    testReleaseImplementation(libs.androidx.compose.ui.test.manifest)
 
     ksp(libs.showkase.processor)
 }

@@ -1,15 +1,14 @@
 package chat.schildi.features.roomlist.spaces
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.res.stringResource
 import io.element.android.features.roomlist.impl.datasource.RoomListRoomSummaryFactory
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.libraries.androidutils.diff.DiffCacheUpdater
 import io.element.android.libraries.androidutils.diff.MutableListDiffCache
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
-import io.element.android.libraries.designsystem.components.avatar.AvatarData
-import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.matrix.api.MatrixClient
-import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.MatrixSpaceChildInfo
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
 import io.element.android.libraries.matrix.api.roomlist.RoomSummary
@@ -181,4 +180,13 @@ fun List<SpaceListDataSource.SpaceHierarchyItem>.resolveSelection(selection: Lis
         spaceList = space!!.spaces
     }
     return space
+}
+
+@Composable
+fun List<SpaceListDataSource.SpaceHierarchyItem>.resolveSpaceName(selection: List<String>): String? {
+    // if this.isEmpty(), spaces are disabled, in which case we want to return null
+    if (isEmpty()) {
+        return null
+    }
+    return resolveSelection(selection)?.info?.name ?: stringResource(chat.schildi.lib.R.string.sc_space_all_rooms_title)
 }

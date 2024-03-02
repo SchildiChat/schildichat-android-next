@@ -58,6 +58,7 @@
 
     <string name="sc_action_mark_as_read">Mark as read</string>
     <string name="sc_action_mark_as_unread">Mark as unread</string>
+    <string name="sc_space_all_rooms_title">All chats</string>
 
     <!-- Upstream feature flags without proper string resource -->
     <string name="sc_upstream_feature_flag_room_list_filters">Room list filters</string>

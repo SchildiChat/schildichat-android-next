@@ -465,7 +465,7 @@ private fun ShowAllTab(
     onClick: () -> Unit
 ) {
     AbstractSpaceTab(
-        text = stringResource(id = R.string.screen_roomlist_main_space_title),
+        text = stringResource(id = chat.schildi.lib.R.string.sc_space_all_rooms_title),
         selected = selected,
         collapsed = collapsed,
         expandable = false,

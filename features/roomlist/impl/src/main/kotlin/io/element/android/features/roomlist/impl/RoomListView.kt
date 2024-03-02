@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import chat.schildi.features.roomlist.spaces.SpacesPager
 import chat.schildi.features.roomlist.spaces.resolveSelection
+import chat.schildi.features.roomlist.spaces.resolveSpaceName
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.ScPrefs.SC_OVERVIEW_LAYOUT
 import chat.schildi.lib.preferences.value
@@ -228,7 +229,7 @@ private fun RoomListContent(
                     matrixUser = state.matrixUser,
                     showAvatarIndicator = state.showAvatarIndicator,
                     areSearchResultsDisplayed = state.searchState.isSearchActive,
-                    selectedSpaceName = state.spacesList.resolveSelection(state.spaceSelectionHierarchy)?.info?.name,
+                    selectedSpaceName = state.spacesList.resolveSpaceName(state.spaceSelectionHierarchy),
                     onCreateRoomClicked = onCreateRoomClicked,
                     onToggleSearch = { state.eventSink(RoomListEvents.ToggleSearchResults) },
                     onMenuActionClicked = onMenuActionClicked,

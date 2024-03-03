@@ -18,7 +18,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <!-- To be able to install APK from the application -->
+    <!--
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    -->
 
     <!--  Do not enable enableOnBackInvokedCallback until https://issuetracker.google.com/issues/271303558 is fixed -->
     <application

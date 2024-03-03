@@ -46,7 +46,7 @@ android {
     namespace = "io.element.android.x"
 
     defaultConfig {
-        applicationId = "io.element.android.x"
+        applicationId = "chat.schildi.android"
         targetSdk = Versions.targetSdk
         versionCode = 741
         versionName = "0.4.5.sc1"

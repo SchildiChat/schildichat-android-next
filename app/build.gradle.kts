@@ -48,7 +48,7 @@ android {
     defaultConfig {
         applicationId = "chat.schildi.android"
         targetSdk = Versions.targetSdk
-        versionCode = 741
+        versionCode = 750
         versionName = "0.4.5.sc1"
 
         // Keep abiFilter for the universalApk
@@ -179,7 +179,7 @@ android {
         // Common upstream overrides across all sc variants - only one flavor for this dimension to ensure it's picked up!
         create("sc") {
             dimension = "package"
-            versionCode = 741
+            versionCode = 750
             versionName = "0.4.5.sc1"
             isDefault = true
         }

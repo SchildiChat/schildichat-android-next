@@ -92,6 +92,7 @@ else
     # Ensure the new version code is higher than the one of the last test version
     if [ -f "$reference_fdroid_metadata" ]; then
         lastTestVersionCode="$(cat "$reference_fdroid_metadata"|grep versionCode|tail -n 1|sed 's|.*: ||' || echo 0)"
+        lastTestVersionCode="$(echo "$lastTestVersionCode / 10" | bc)"
     else
         read -p "Enter versionCode of last test version: " lastTestVersionCode
     fi

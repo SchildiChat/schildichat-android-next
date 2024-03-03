@@ -7,7 +7,7 @@ mydir="$(dirname "$(realpath "$0")")"
 source "$mydir/merge_helpers.sh"
 
 version_kt="$mydir/plugins/src/main/kotlin/Versions.kt"
-reference_fdroid_metadata="$HOME/fdroid/sm/data/metadata/chat.schildi.next.yml"
+reference_fdroid_metadata="$HOME/fdroid/sm/data/metadata/chat.schildi.next.internal.yml"
 
 # https://f-droid.org/en/docs/All_About_Descriptions_Graphics_and_Screenshots/
 max_changelog_len=500
@@ -116,7 +116,7 @@ if ((preview)); then
     exit 0
 fi
 
-set_prop "ext.scVersion" "$scVersion"
+set_prop "scVersion" "$scVersion"
 set_prop "versionCode" "$versionCode"
 set_prop "versionName" "\"$version\""
 

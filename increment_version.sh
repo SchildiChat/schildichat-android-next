@@ -142,6 +142,7 @@ git_changelog() {
         | grep -v "\\[.*merge.*\\]" \
         | grep -v "Disable Android Auto supports" \
         | grep -v "Switch to alternative Schil" \
+        | grep -vi "fastlane" \
         | grep -v "\\[gplay-release\\]" \
         || echo "No significant changes since the last release"
 }

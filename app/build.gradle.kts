@@ -48,8 +48,8 @@ android {
     defaultConfig {
         applicationId = "io.element.android.x"
         targetSdk = Versions.targetSdk
-        versionCode = 731
-        versionName = Versions.versionName
+        versionCode = 741
+        versionName = "0.4.5.sc1"
 
         // Keep abiFilter for the universalApk
         ndk {
@@ -170,7 +170,7 @@ android {
 }
 
 // SC: downstream package name and versioning, overriding Element default config while reducing merge conflicts
-val scVersion = 0
+val scVersion = 1
 android {
     // Use a flavor for common things that the upstream config will not override by the build type
     flavorDimensions += "package"
@@ -179,8 +179,8 @@ android {
         // Common upstream overrides across all sc variants - only one flavor for this dimension to ensure it's picked up!
         create("sc") {
             dimension = "package"
-            versionCode = 731
-            versionName = Versions.versionName + ".sc" + scVersion
+            versionCode = 741
+            versionName = "0.4.5.sc1"
             isDefault = true
         }
         // SC variants for different release tracks. Cannot do actual release types for those since fdroid build tools always want `release` builds.

@@ -48,7 +48,7 @@ android {
     defaultConfig {
         applicationId = "io.element.android.x"
         targetSdk = Versions.targetSdk
-        versionCode = Versions.versionCode
+        versionCode = 731
         versionName = Versions.versionName
 
         // Keep abiFilter for the universalApk
@@ -179,7 +179,7 @@ android {
         // Common upstream overrides across all sc variants - only one flavor for this dimension to ensure it's picked up!
         create("sc") {
             dimension = "package"
-            versionCode = 1
+            versionCode = 731
             versionName = Versions.versionName + ".sc" + scVersion
             isDefault = true
         }

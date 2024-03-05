@@ -51,4 +51,6 @@
     <string name="sc_compact_root_spaces_summary">Zobrazit ikonu bez názvu pro kořenové prostory</string>
     <string name="sc_set_read_marker_implicit_toast_start">Nastavení značky přečtení…</string>
     <string name="sc_pref_debug_read_marker">Ladit značku přečtení</string>
+    <string name="sc_space_all_rooms_title">Všechny chaty</string>
+    <string name="sc_upstream_feature_flag_room_list_filters">Filtry seznamu místností</string>
 </resources>

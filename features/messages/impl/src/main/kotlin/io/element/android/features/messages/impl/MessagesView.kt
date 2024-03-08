@@ -491,7 +491,7 @@ private fun MessagesViewTopBar(
         actions = {
             if (callState == RoomCallState.ONGOING) {
                 JoinCallMenuItem(onJoinCallClicked = onJoinCallClicked)
-            } else {
+            } else if (!moveCallButtonToOverflow()) {
                 IconButton(onClick = onJoinCallClicked, enabled = callState != RoomCallState.DISABLED) {
                     Icon(
                         imageVector = CompoundIcons.VideoCallSolid(),
@@ -499,8 +499,8 @@ private fun MessagesViewTopBar(
                     )
                 }
             }
-            Spacer(Modifier.width(8.dp))
-            scMessagesViewTopBarActions(state)
+            //Spacer(Modifier.width(8.dp)) // SC: moved to scMessagesViewTopBarActions()
+            scMessagesViewTopBarActions(state, callState, onJoinCallClicked)
         },
         windowInsets = WindowInsets(0.dp)
     )

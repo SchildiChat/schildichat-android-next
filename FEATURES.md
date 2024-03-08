@@ -14,6 +14,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 
 ## Chat overview ("room list")
 
+- Filter for spaces, including support for hierarchical spaces †‡
 - Sort room list by unread first ‡
 - Non-expanding compact app bar in the chat overview †
 - Show unread counts ([MSC2654](https://github.com/matrix-org/matrix-spec-proposals/pull/2654)) ‡[^1]
@@ -30,7 +31,6 @@ Note that following list of changes compared to Element X is likely incomplete, 
 
 ## Experimental/unstable features
 
-- Filter for spaces, including support for hierarchical spaces †‡
 - Color usernames in rooms by member powerlevel †
 
 

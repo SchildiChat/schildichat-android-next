@@ -42,11 +42,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -78,7 +75,6 @@ import io.element.android.libraries.designsystem.theme.components.FloatingAction
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.UserId
-import io.element.android.libraries.matrix.api.timeline.item.virtual.VirtualTimelineItem
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.coroutines.launch
 
@@ -107,8 +103,9 @@ fun TimelineView(
         timber.log.Timber.i("oncrollFinishedAt")
         state.eventSink(TimelineEvents.OnScrollFinished(firstVisibleIndex))
         val timeline = state.timelineItems
-        if (firstVisibleIndex < timeline.size &&
-            timeline.subList(firstVisibleIndex, min(timeline.size-1, firstVisibleIndex+visibleItemCount))
+        val firstVisibleTimelineIndex = effectiveVisibleTimelineItemIndex(firstVisibleIndex)
+        if (firstVisibleTimelineIndex < timeline.size &&
+            timeline.subList(firstVisibleTimelineIndex, min(timeline.size-1, firstVisibleTimelineIndex+visibleItemCount))
                 .any { it.contentType() == "TimelineItemReadMarkerModel" }) {
             state.eventSink(TimelineEvents.OnUnreadLineVisible)
         }

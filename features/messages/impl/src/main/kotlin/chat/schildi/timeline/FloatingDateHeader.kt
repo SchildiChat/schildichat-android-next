@@ -21,7 +21,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
+import io.element.android.features.messages.impl.timeline.TimelineState
+import io.element.android.features.messages.impl.timeline.effectiveVisibleTimelineItemIndex
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
+import io.element.android.features.messages.impl.timeline.model.virtual.TimelineItemDaySeparatorModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
@@ -40,11 +43,14 @@ fun BoxScope.FloatingDateHeader(
     LaunchedEffect(listState, timelineItems) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastIndex }.distinctUntilChanged().collect { _ ->
             renderedDate = listState.layoutInfo.visibleItemsInfo.asReversed().firstNotNullOfOrNull { info ->
-                if (info.index >= 0 && info.index < timelineItems.size) {
-                    val item = timelineItems[info.index]
+                // Attention: TypingNotificationView lazy list item causes us an offset by one!
+                val index = effectiveVisibleTimelineItemIndex(info.index)
+                if (index >= 0 && index < timelineItems.size) {
+                    val item = timelineItems[index]
                     when (item) {
                         is TimelineItem.Event -> item.sentDate
                         is TimelineItem.GroupedEvents -> item.events.firstOrNull()?.sentDate
+                        //is TimelineItem.Virtual -> (item.model as? TimelineItemDaySeparatorModel)?.formattedDate
                         else -> null
                     }
                 } else {

@@ -4,7 +4,6 @@ import android.content.Context
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
@@ -22,6 +21,7 @@ import io.element.android.libraries.matrix.api.timeline.ReceiptType
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlin.math.max
 
 data class ScReadState(
     val lastReadMarkerIndex: MutableIntState,
@@ -107,19 +107,26 @@ fun ScReadTracker(
     }
 }
 
+// TypingNotificationView lazy list item causes us an offset by one!
+// Defining a function allows me to keep track of everywhere this may need updating in case of future changes.
+// Fortunately, the `item { }` definition is unconditional currently, so we can just always subtract one
+fun effectiveVisibleTimelineItemIndex(index: Int) = max(0, index-1)
+
 fun CoroutineScope.scOnScrollFinished(
     dispatchers: CoroutineDispatchers,
     scReadState: ScReadState,
     firstVisibleIndex: Int,
     timelineItems: ImmutableList<TimelineItem>,
 ) = launch(dispatchers.computation) {
+    // Attention: TypingNotificationView lazy list item causes us an offset by one!
+    val firstVisibleTimelineIndex = effectiveVisibleTimelineItemIndex(firstVisibleIndex)
     // Get last valid EventId seen by the user, as the first index might refer to a Virtual item
-    val eventId = getLastEventIdBeforeOrAt(firstVisibleIndex, timelineItems)
-    if (eventId != null && firstVisibleIndex <= scReadState.lastReadMarkerIndex.intValue && eventId != scReadState.lastReadMarkerId.value) {
+    val eventId = getLastEventIdBeforeOrAt(firstVisibleTimelineIndex, timelineItems)
+    if (eventId != null && firstVisibleTimelineIndex <= scReadState.lastReadMarkerIndex.intValue && eventId != scReadState.lastReadMarkerId.value) {
         // When we haven't seen unread line, allow moving readMarkerToSet into the past,
         // we only cache it until sawUnreadLine becomes true, in case user doesn't scroll after it becomes visible
         if (scReadState.sawUnreadLine.value) {
-            scReadState.lastReadMarkerIndex.intValue = firstVisibleIndex
+            scReadState.lastReadMarkerIndex.intValue = firstVisibleTimelineIndex
             scReadState.lastReadMarkerId.value = eventId
         }
         scReadState.readMarkerToSet.value = eventId

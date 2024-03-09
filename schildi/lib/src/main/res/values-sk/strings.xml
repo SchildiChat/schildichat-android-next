@@ -1,2 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="sc_pref_el_typography_summary">Použiť nastavenia písma Elementu s väčším textom správy</string>
+    <string name="sc_pref_screen_experimental_title">Pokusné</string>
+    <string name="sc_pref_screen_experimental_summary">Nestabilné funkcie, očakávajte bugy</string>
+    <string name="sc_action_mark_as_read">Označiť za prečítané</string>
+    <string name="sc_action_mark_as_unread">Označiť ako neprečítané</string>
+    <string name="sc_space_all_rooms_title">Všetky rozhovory</string>
+    <string name="sc_upstream_feature_flag_room_list_filters">Filtre zoznamu miestností</string>
+    <string name="sc_pref_category_misc">Rôzne</string>
+    <string name="sc_pref_tweaks_title">Korytnačie vyladenia</string>
+    <string name="sc_pref_sc_themes_title">SC téma</string>
+    <string name="sc_pref_sc_layout_title">SC rozloženie</string>
+    <string name="sc_pref_sc_overview_layout_title">SC rozloženie prehľadu</string>
+    <string name="sc_pref_sc_timeline_layout_title">SC rozloženie konverzácií</string>
+    <string name="sc_pref_sc_floating_date_title">Plávajúci dátum</string>
+    <string name="sc_pref_pl_display_name_title">Pomenovať farby podľa úrovne sily</string>
+    <string name="sc_pref_pl_display_name_summary_warning">Nefunguje spoľahlivo ak sa zoznam členov ešte plne nenatiahol</string>
+    <string name="sc_pref_el_typography_title">Typografia Elementu</string>
+    <string name="sc_pref_fast_transitions_title">Rýchle prechody</string>
+    <string name="sc_pref_fast_transitions_summary">Zrýchliť animácie okien</string>
+    <string name="sc_pref_compact_app_bar_title">Zhutnený aplikačný pruh</string>
+    <string name="sc_pref_compact_app_bar_summary">Nikdy nerozširovať vrchný pruh aplikácie</string>
+    <string name="sc_space_nav_title">Navádzanie v priestore</string>
+    <string name="sc_space_nav_summary">Filtrovať rozhovory podľa priestorov</string>
+    <string name="sc_compact_root_spaces_title">Zhutniť koreňové priestory</string>
+    <string name="sc_space_swipe_title">Potiahnutím prepínať priestory</string>
+    <string name="sc_space_swipe_summary">Pre prepnutie priestoru potiahnite prehľad rozhovoru vodorovne</string>
+    <string name="sc_space_unread_counts_mode_title">Súhrnné počítadlo neprečítaných</string>
+    <string name="sc_space_unread_counts_mode_messages">Počítať neprečítané správy</string>
+    <string name="sc_space_unread_counts_mode_chats">Počitať neprečítané rozhovory</string>
+    <string name="sc_space_unread_counts_mode_hide">Skryť</string>
+    <string name="sc_set_read_marker_toast_start">Nastavenie značky prečítané na %s</string>
+    <string name="sc_set_read_marker_implicit_toast_start">Nastavenie značky prečítané…</string>
+    <string name="sc_client_generated_unread_counts_title">Klientom vygenerovaný počet neprečítaných</string>
+    <string name="sc_client_generated_unread_counts_summary">Vypočítať počet neprečítaných v zariadení namiesto dôverovaniu serverom hlásených hodnôt</string>
+    <string name="sc_push_info_title">Push informácie</string>
+    <string name="sc_push_info_summary">Zobraziť debug informácie súvisiace s push upozorneniami</string>
+    <string name="sc_pref_dev_quick_options">Rýchle nastavenia</string>
+    <string name="sc_pref_debug_read_marker">Debugovať značkovač prečítaných</string>
+    <string name="sc_pref_danger_zone">Nebezpečná oblasť</string>
+    <string name="sc_pref_restore_defaults">Obnoviť predvolené</string>
+    <string name="sc_pref_restore_element">Použiť chuť Elementu</string>
+    <string name="sc_pref_restore_authors_choice">Voľba autora</string>
+    <string name="sc_pref_category_general_appearance">Vzhľad</string>
+    <string name="sc_pref_category_general_behaviour">Správanie</string>
+    <string name="sc_pref_category_chat_overview">Prehľad rozhovoru</string>
+    <string name="sc_pref_category_spaces">Priestory</string>
+    <string name="sc_onboarding_welcome_title">Vitajte v SchildiChate</string>
+    <string name="sc_onboarding_welcome_summary">Prinášame korytnačky do Matrixu</string>
+    <string name="sc_pref_sc_floating_date_summary">Pri rolovaní, zobraziť dátum nad správami</string>
+    <string name="sc_compact_root_spaces_summary">Pre koreňové priestory zobraziť ikonu bez mena</string>
+    <string name="sc_sync_read_receipt_and_marker_title">Udržiavať značku neprečítaných a prijatých v súlade</string>
+    <string name="sc_sync_read_receipt_and_marker_summary">Vždy nastavte svoje potvrdenie o prijatí (čo vidia ostatní a čo spočítava Vaše počítadlo neprečítaných správ) na rovnakú správu ako Vašu značku úplne prečítané (riadok s novými správami pri pohľade na rozhovor)</string>
+    <string name="sc_pref_category_timeline">Obrazovka konverzácie</string>
+</resources>

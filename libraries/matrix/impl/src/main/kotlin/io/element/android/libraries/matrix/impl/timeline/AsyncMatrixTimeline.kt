@@ -90,6 +90,11 @@ class AsyncMatrixTimeline(
         return timeline.await().fetchDetailsForEvent(eventId)
     }
 
+    // SC: like sendReadReceipt() but with force
+    override suspend fun forceSendReadReceipt(eventId: EventId, receiptType: ReceiptType): Result<Unit> {
+        return timeline.await().forceSendReadReceipt(eventId, receiptType)
+    }
+
     override suspend fun sendReadReceipt(eventId: EventId, receiptType: ReceiptType): Result<Unit> {
         return timeline.await().sendReadReceipt(eventId, receiptType)
     }

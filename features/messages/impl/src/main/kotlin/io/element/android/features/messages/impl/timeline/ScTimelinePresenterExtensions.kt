@@ -81,8 +81,9 @@ fun ScReadTracker(
                         Toast.LENGTH_LONG
                     )
                     toast.show()
-                    timeline.sendReadReceipt(eventId, if (isSendPublicReadReceiptsEnabled) ReceiptType.READ else ReceiptType.READ_PRIVATE)
-                    timeline.sendReadReceipt(eventId, ReceiptType.FULLY_READ)
+                    // TODO? force only necessary when latest message sent by self and unread-count is not zero?
+                    timeline.forceSendReadReceipt(eventId, if (isSendPublicReadReceiptsEnabled) ReceiptType.READ else ReceiptType.READ_PRIVATE)
+                    timeline.forceSendReadReceipt(eventId, ReceiptType.FULLY_READ)
                     toast.cancel()
                     onBackPressed()
                 }

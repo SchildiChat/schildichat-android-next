@@ -77,6 +77,8 @@ class FakeMatrixTimeline(
         Result.success(Unit)
     }
 
+    override suspend fun forceSendReadReceipt(eventId: EventId, receiptType: ReceiptType) = sendReadReceipt(eventId, receiptType)
+
     override suspend fun sendReadReceipt(
         eventId: EventId,
         receiptType: ReceiptType,

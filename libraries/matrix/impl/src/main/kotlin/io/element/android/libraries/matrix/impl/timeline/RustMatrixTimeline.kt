@@ -243,6 +243,20 @@ class RustMatrixTimeline(
         return isInit.get() && paginationState.value.canBackPaginate
     }
 
+
+    // SC addition: copy sendReadReceipt() but with force
+    override suspend fun forceSendReadReceipt(
+        eventId: EventId,
+        receiptType: ReceiptType,
+    ) = withContext(dispatcher) {
+        runCatching {
+            innerTimeline.forceSendReadReceipt(
+                receiptType = receiptType.toRustReceiptType(),
+                eventId = eventId.value,
+            )
+        }
+    }
+
     override suspend fun sendReadReceipt(
         eventId: EventId,
         receiptType: ReceiptType,

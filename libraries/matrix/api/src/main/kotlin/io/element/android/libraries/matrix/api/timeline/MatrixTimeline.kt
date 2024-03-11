@@ -42,6 +42,7 @@ interface MatrixTimeline : AutoCloseable {
 
     // SC addition: copy sendReadReceipt() but with force
     suspend fun forceSendReadReceipt(eventId: EventId, receiptType: ReceiptType): Result<Unit>
+    suspend fun scDbgFullyReadEventId(): String?
 
     suspend fun paginateBackwards(requestSize: Int): Result<Unit>
     suspend fun paginateBackwards(requestSize: Int, untilNumberOfItems: Int): Result<Unit>

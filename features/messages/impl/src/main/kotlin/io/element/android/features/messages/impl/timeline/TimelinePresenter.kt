@@ -118,7 +118,7 @@ class TimelinePresenter @AssistedInject constructor(
             }
         }
 
-        val scReadState = createScReadState()
+        val scReadState = createScReadState(timeline)
         ScReadTracker(appScope, scReadState, isSendPublicReadReceiptsEnabled, timeline, navigator::onBackPressed)
         val syncReadReceiptAndMarker = ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.state()
         val context = LocalContext.current

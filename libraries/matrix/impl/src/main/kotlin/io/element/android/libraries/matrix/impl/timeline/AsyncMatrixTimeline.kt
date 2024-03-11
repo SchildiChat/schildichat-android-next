@@ -91,9 +91,8 @@ class AsyncMatrixTimeline(
     }
 
     // SC: like sendReadReceipt() but with force
-    override suspend fun forceSendReadReceipt(eventId: EventId, receiptType: ReceiptType): Result<Unit> {
-        return timeline.await().forceSendReadReceipt(eventId, receiptType)
-    }
+    override suspend fun forceSendReadReceipt(eventId: EventId, receiptType: ReceiptType) = timeline.await().forceSendReadReceipt(eventId, receiptType)
+    override suspend fun scDbgFullyReadEventId() = timeline.await().scDbgFullyReadEventId()
 
     override suspend fun sendReadReceipt(eventId: EventId, receiptType: ReceiptType): Result<Unit> {
         return timeline.await().sendReadReceipt(eventId, receiptType)

@@ -257,6 +257,10 @@ class RustMatrixTimeline(
         }
     }
 
+    override suspend fun scDbgFullyReadEventId(): String? {
+        return runCatching { innerTimeline.scDbgFullyReadEventId() }.getOrNull()
+    }
+
     override suspend fun sendReadReceipt(
         eventId: EventId,
         receiptType: ReceiptType,

@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
@@ -28,6 +29,8 @@ data class ScReadState(
     val lastReadMarkerId: MutableState<EventId?>,
     val readMarkerToSet: MutableState<EventId?>,
     val sawUnreadLine: MutableState<Boolean>,
+    // For debugging
+    val fullyReadEventId: MutableState<String?>,
 )
 
 fun forceSetReceipts(context: Context, appScope: CoroutineScope, room: MatrixRoom, scReadState: ScReadState, isSendPublicReadReceiptsEnabled: Boolean) {
@@ -43,16 +46,21 @@ fun forceSetReceipts(context: Context, appScope: CoroutineScope, room: MatrixRoo
 }
 
 @Composable
-fun createScReadState(): ScReadState {
+fun createScReadState(timeline: MatrixTimeline): ScReadState {
     val lastReadMarkerIndex = remember { mutableIntStateOf(Int.MAX_VALUE) }
     val lastReadMarkerId = remember { mutableStateOf<EventId?>(null) }
     val readMarkerToSet = remember { mutableStateOf<EventId?>(null) }
     val sawUnreadLine = remember { mutableStateOf(false) }
+    val fullyReadEventId = remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(Unit) {
+        fullyReadEventId.value = timeline.scDbgFullyReadEventId()
+    }
     return ScReadState(
         lastReadMarkerIndex,
         lastReadMarkerId,
         readMarkerToSet,
         sawUnreadLine,
+        fullyReadEventId,
     )
 }
 

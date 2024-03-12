@@ -59,7 +59,8 @@ class NotificationCreator @Inject constructor(
         threadId: ThreadId?,
         largeIcon: Bitmap?,
         lastMessageTimestamp: Long,
-        tickerText: String
+        tickerText: String,
+        forceOnlyAlertOnce: Boolean = false,
     ): Notification {
         val accentColor = ContextCompat.getColor(context, R.color.notification_accent_color)
         // Build the pending intent for when the notification is clicked
@@ -72,7 +73,7 @@ class NotificationCreator @Inject constructor(
 
         val channelId = notificationChannels.getChannelIdForMessage(roomInfo.shouldBing)
         return NotificationCompat.Builder(context, channelId)
-            .setOnlyAlertOnce(roomInfo.isUpdated)
+            .setOnlyAlertOnce(roomInfo.isUpdated || forceOnlyAlertOnce)
             .setWhen(lastMessageTimestamp)
             // MESSAGING_STYLE sets title and content for API 16 and above devices.
             .setStyle(messageStyle)

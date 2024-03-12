@@ -38,6 +38,8 @@
     <string name="sc_client_generated_unread_counts_summary">Calculate unread counts on the device instead of trusting server-reported values</string>
     <string name="sc_push_info_title">Push info</string>
     <string name="sc_push_info_summary">View debug info related to push notifications</string>
+    <string name="sc_pref_notification_only_alert_once_title">Only alert once</string>
+    <string name="sc_pref_notification_only_alert_once_summary">Omit alert sounds for new messages if there is already an open notification for that chat</string>
 
     <string name="sc_pref_dev_quick_options">Quick settings</string>
     <string name="sc_pref_debug_read_marker">Debug read marker</string>

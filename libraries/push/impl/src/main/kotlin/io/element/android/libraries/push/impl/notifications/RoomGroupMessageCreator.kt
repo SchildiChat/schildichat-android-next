@@ -23,6 +23,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.Person
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
+import chat.schildi.lib.preferences.ScPreferencesStore
+import chat.schildi.lib.preferences.ScPrefs
 import coil.ImageLoader
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.user.MatrixUser
@@ -31,9 +33,11 @@ import io.element.android.libraries.push.impl.notifications.debug.annotateForDeb
 import io.element.android.libraries.push.impl.notifications.factories.NotificationCreator
 import io.element.android.libraries.push.impl.notifications.model.NotifiableMessageEvent
 import io.element.android.services.toolbox.api.strings.StringProvider
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class RoomGroupMessageCreator @Inject constructor(
+    private val scPreferencesStore: ScPreferencesStore,
     private val bitmapLoader: NotificationBitmapLoader,
     private val stringProvider: StringProvider,
     private val notificationCreator: NotificationCreator
@@ -77,6 +81,7 @@ class RoomGroupMessageCreator @Inject constructor(
             roomId = roomId,
             shouldBing = events.any { it.noisy }
         )
+        val forceOnlyAlertOnce = scPreferencesStore.settingFlow(ScPrefs.NOTIFICATION_ONLY_ALERT_ONCE).first()
         return RoomNotification.Message(
             notificationCreator.createMessagesListNotification(
                 style,
@@ -93,7 +98,8 @@ class RoomGroupMessageCreator @Inject constructor(
                 threadId = lastKnownRoomEvent.threadId,
                 largeIcon = largeBitmap,
                 lastMessageTimestamp,
-                tickerText
+                tickerText,
+                forceOnlyAlertOnce = forceOnlyAlertOnce,
             ),
             meta
         )

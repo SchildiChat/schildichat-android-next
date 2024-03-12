@@ -29,6 +29,11 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Render collapsible `<details>` tags in messages
 
 
+## Notifications
+
+- Setting to only alert once for successive messages in the same chat
+
+
 ## Experimental/unstable features
 
 - Color usernames in rooms by member powerlevel †

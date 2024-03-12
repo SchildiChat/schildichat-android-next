@@ -19,6 +19,7 @@ object ScPrefs {
 
     // General behavior
     val FAST_TRANSITIONS = ScBoolPref("FAST_TRANSITIONS", true, R.string.sc_pref_fast_transitions_title, R.string.sc_pref_fast_transitions_summary, upstreamChoice = false)
+    val NOTIFICATION_ONLY_ALERT_ONCE = ScBoolPref("NOTIFICATION_ONLY_ALERT_ONCE", false, R.string.sc_pref_notification_only_alert_once_title, R.string.sc_pref_notification_only_alert_once_summary, upstreamChoice = false)
 
     // Chat overview
     val COMPACT_APP_BAR = ScBoolPref("COMPACT_APP_BAR", true, R.string.sc_pref_compact_app_bar_title, R.string.sc_pref_compact_app_bar_summary, upstreamChoice = false)
@@ -82,6 +83,7 @@ object ScPrefs {
             FLOATING_DATE,
         )),
         ScPrefCategory(R.string.sc_pref_category_misc, null, listOf(
+            NOTIFICATION_ONLY_ALERT_ONCE,
             ScPrefScreen(R.string.sc_pref_screen_experimental_title, R.string.sc_pref_screen_experimental_summary, listOf(
                 PL_DISPLAY_NAME,
                 SYNC_READ_RECEIPT_AND_MARKER,

@@ -10,6 +10,9 @@ object SpaceOrderSerializer {
     fun deserialize(data: String): Result<SpaceOrder> {
         return runCatching { coder.decodeFromString(SpaceOrder.serializer(), data) }
     }
+    fun deserializeContent(data: String): Result<SpaceOrder.Content> {
+        return runCatching { coder.decodeFromString(SpaceOrder.Content.serializer(), data) }
+    }
     fun serialize(data: SpaceOrder): String {
         return coder.encodeToString(SpaceOrder.serializer(), data)
     }

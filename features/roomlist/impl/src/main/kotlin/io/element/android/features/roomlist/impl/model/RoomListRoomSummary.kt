@@ -19,6 +19,7 @@ package io.element.android.features.roomlist.impl.model
 import androidx.compose.runtime.Immutable
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.room.MatrixSpaceChildInfo
 import io.element.android.libraries.matrix.api.room.RoomNotificationMode
 
 @Immutable
@@ -29,6 +30,8 @@ data class RoomListRoomSummary(
     val numberOfUnreadMessages: Int,
     val numberOfUnreadMentions: Int,
     val numberOfUnreadNotifications: Int,
+    // SC: spaces
+    val spaceChildren: List<MatrixSpaceChildInfo> = emptyList(),
     // SC: server-reported values compared to client-generated above
     val notificationCount: Int = 0,
     val highlightCount: Int = 0,

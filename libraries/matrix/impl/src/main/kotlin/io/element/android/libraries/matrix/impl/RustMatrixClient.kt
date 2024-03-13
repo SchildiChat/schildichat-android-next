@@ -306,6 +306,13 @@ class RustMatrixClient(
         }
     }
 
+    // SC addition
+    override suspend fun getRoomAccountData(roomId: RoomId, eventType: String): String? {
+        return runCatching {
+            client.roomAccountData(roomId.value, eventType)
+        }.getOrNull()
+    }
+
     override suspend fun findDM(userId: UserId): RoomId? {
         return client.getDmRoom(userId.value)?.use { RoomId(it.id()) }
     }

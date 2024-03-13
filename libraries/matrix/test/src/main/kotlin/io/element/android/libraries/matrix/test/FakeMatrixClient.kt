@@ -93,6 +93,9 @@ class FakeMatrixClient(
         return getRoomResults[roomId]
     }
 
+    // SC addition
+    override suspend fun getRoomAccountData(roomId: RoomId, eventType: String): String? = null
+
     override suspend fun findDM(userId: UserId): RoomId? {
         return findDmResult
     }

@@ -16,8 +16,6 @@
 
 package io.element.android.libraries.matrix.impl.room
 
-import chat.schildi.matrixsdk.ROOM_ACCOUNT_DATA_SPACE_ORDER
-import chat.schildi.matrixsdk.SpaceOrderSerializer
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.core.coroutine.childScope
 import io.element.android.libraries.matrix.api.core.EventId
@@ -36,7 +34,6 @@ import io.element.android.libraries.matrix.api.room.MatrixRoom
 import io.element.android.libraries.matrix.api.room.MatrixRoomInfo
 import io.element.android.libraries.matrix.api.room.MatrixRoomMembersState
 import io.element.android.libraries.matrix.api.room.MatrixRoomNotificationSettingsState
-import io.element.android.libraries.matrix.api.room.MatrixSpaceChildInfo
 import io.element.android.libraries.matrix.api.room.Mention
 import io.element.android.libraries.matrix.api.room.MessageEventType
 import io.element.android.libraries.matrix.api.room.StateEventType
@@ -197,12 +194,6 @@ class RustMatrixRoom(
 
     override val isPublic: Boolean
         get() = innerRoom.isPublic()
-
-    override val rootSpaceOrder: String?
-        get() = innerRoom.accountData(ROOM_ACCOUNT_DATA_SPACE_ORDER)?.let { SpaceOrderSerializer.deserialize(it) }?.getOrNull()?.content?.order
-
-    override val spaceChildren: List<MatrixSpaceChildInfo>
-        get() = innerRoom.spaceChildren().map(MatrixSpaceChildInfoMapper::map)
 
     override val isDirect: Boolean
         get() = innerRoom.isDirect()

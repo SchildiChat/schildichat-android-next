@@ -72,6 +72,7 @@ class RoomListRoomSummaryFactory @Inject constructor(
             id = roomIdentifier,
             roomId = RoomId(roomIdentifier),
             name = roomSummary.details.name,
+            spaceChildren = roomSummary.details.spaceChildren,
             numberOfUnreadMessages = roomSummary.details.numUnreadMessages,
             numberOfUnreadMentions = roomSummary.details.numUnreadMentions,
             numberOfUnreadNotifications = roomSummary.details.numUnreadNotifications,

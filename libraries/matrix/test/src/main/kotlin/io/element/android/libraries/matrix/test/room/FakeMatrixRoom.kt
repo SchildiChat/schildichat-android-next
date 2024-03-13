@@ -34,7 +34,6 @@ import io.element.android.libraries.matrix.api.room.MatrixRoom
 import io.element.android.libraries.matrix.api.room.MatrixRoomInfo
 import io.element.android.libraries.matrix.api.room.MatrixRoomMembersState
 import io.element.android.libraries.matrix.api.room.MatrixRoomNotificationSettingsState
-import io.element.android.libraries.matrix.api.room.MatrixSpaceChildInfo
 import io.element.android.libraries.matrix.api.room.Mention
 import io.element.android.libraries.matrix.api.room.MessageEventType
 import io.element.android.libraries.matrix.api.room.RoomMember
@@ -74,8 +73,6 @@ class FakeMatrixRoom(
     override val alias: String? = null,
     override val alternativeAliases: List<String> = emptyList(),
     override val isPublic: Boolean = true,
-    override val spaceChildren: List<MatrixSpaceChildInfo> = emptyList(),
-    override val rootSpaceOrder: String? = null,
     override val isDirect: Boolean = false,
     override val isOneToOne: Boolean = false,
     override val joinedMemberCount: Long = 123L,

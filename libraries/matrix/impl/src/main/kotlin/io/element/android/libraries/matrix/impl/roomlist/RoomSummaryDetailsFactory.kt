@@ -19,6 +19,7 @@ package io.element.android.libraries.matrix.impl.roomlist
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.roomlist.RoomSummaryDetails
 import io.element.android.libraries.matrix.impl.notificationsettings.RoomNotificationSettingsMapper
+import io.element.android.libraries.matrix.impl.room.MatrixSpaceChildInfoMapper
 import io.element.android.libraries.matrix.impl.room.member.RoomMemberMapper
 import io.element.android.libraries.matrix.impl.room.message.RoomMessageFactory
 import org.matrix.rustcomponents.sdk.RoomInfo
@@ -35,6 +36,7 @@ class RoomSummaryDetailsFactory(private val roomMessageFactory: RoomMessageFacto
             canonicalAlias = roomInfo.canonicalAlias,
             isDirect = roomInfo.isDirect,
             avatarUrl = roomInfo.avatarUrl,
+            spaceChildren = roomInfo.spaceChildren.map(MatrixSpaceChildInfoMapper::map),
             numUnreadMentions = roomInfo.numUnreadMentions.toInt(),
             numUnreadMessages = roomInfo.numUnreadMessages.toInt(),
             numUnreadNotifications = roomInfo.numUnreadNotifications.toInt(),

@@ -17,6 +17,7 @@
 package io.element.android.libraries.matrix.api.roomlist
 
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.room.MatrixSpaceChildInfo
 import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.matrix.api.room.RoomNotificationMode
 import io.element.android.libraries.matrix.api.room.message.RoomMessage
@@ -43,6 +44,8 @@ data class RoomSummaryDetails(
     val numUnreadMessages: Int,
     val numUnreadMentions: Int,
     val numUnreadNotifications: Int,
+    // SC: spaces
+    val spaceChildren: List<MatrixSpaceChildInfo> = emptyList(),
     // SC: server-reported variants compared to SDK-generated above
     val unreadNotificationCount: Int = 0,
     val highlightCount: Int = 0,

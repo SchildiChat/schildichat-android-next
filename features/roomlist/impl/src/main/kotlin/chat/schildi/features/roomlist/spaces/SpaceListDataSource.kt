@@ -3,6 +3,8 @@ package chat.schildi.features.roomlist.spaces
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.res.stringResource
+import chat.schildi.matrixsdk.ROOM_ACCOUNT_DATA_SPACE_ORDER
+import chat.schildi.matrixsdk.SpaceOrderSerializer
 import io.element.android.features.roomlist.impl.datasource.RoomListRoomSummaryFactory
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.libraries.androidutils.diff.DiffCacheUpdater
@@ -95,9 +97,7 @@ class SpaceListDataSource @Inject constructor(
         val regularChildren = HashMap<String, MutableList<MatrixSpaceChildInfo>>()
         val rootSpaces = HashSet<RoomListRoomSummary>(spaceSummaries)
         spaceSummaries.forEach { parentSpace ->
-            val spaceInfo = client.getRoom(parentSpace.roomId)
-            val spaceChildren = spaceInfo?.spaceChildren
-            spaceChildren?.forEach childLoop@{ spaceChild ->
+            parentSpace.spaceChildren.forEach childLoop@{ spaceChild ->
                 val child = spaceSummaries.find { it.roomId.value == spaceChild.roomId }
                 if (child == null) {
                     // Treat as regular child, since it doesn't appear to be a space (at least none known to us at this point)
@@ -113,7 +113,8 @@ class SpaceListDataSource @Inject constructor(
 
         // Build the actual immutable recursive data structures that replicate the hierarchy
         return rootSpaces.map {
-            val order = client.getRoom(it.roomId)?.rootSpaceOrder
+            val order = client.getRoomAccountData(it.roomId, ROOM_ACCOUNT_DATA_SPACE_ORDER)
+                ?.let { SpaceOrderSerializer.deserializeContent(it) }?.getOrNull()?.order
             createSpaceHierarchyItem(it, order, spaceHierarchyMap, regularChildren)
         }.sortedWith(SpaceComparator).toImmutableList()
     }

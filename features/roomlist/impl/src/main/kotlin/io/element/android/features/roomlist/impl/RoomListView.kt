@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import chat.schildi.lib.compose.thenIf
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import io.element.android.compound.tokens.generated.CompoundIcons
@@ -168,8 +169,11 @@ private fun RoomListScaffold(
                 onCreateRoomClicked = onCreateRoomClicked,
                 onInvitesClicked = onInvitesClicked,
                 modifier = Modifier
+                    // SC: go to edge for migration screen
+                    .thenIf(state.contentState !is RoomListContentState.Migration) { this
                     .padding(padding)
                     .consumeWindowInsets(padding)
+                    }
             )
         },
         floatingActionButton = {

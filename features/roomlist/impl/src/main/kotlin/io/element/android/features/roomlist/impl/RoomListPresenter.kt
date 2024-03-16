@@ -224,16 +224,16 @@ class RoomListPresenter @Inject constructor(
             produceState(initialValue = AsyncData.Loading()) { roomListDataSource.allRooms.collect { value = AsyncData.Success(it) } }.value
         val loadingState by roomListDataSource.loadingState.collectAsState()
         val showMigration = migrationScreenPresenter.present().isMigrating
-        val showEmpty by remember {
-            derivedStateOf {
+        val showEmpty = //by remember {
+            //derivedStateOf {
                 (loadingState as? RoomList.LoadingState.Loaded)?.numberOfRooms == 0
-            }
-        }
-        val showSkeleton by remember {
-            derivedStateOf {
+            //}
+        //}
+        val showSkeleton = //by remember {
+            //derivedStateOf {
                 loadingState == RoomList.LoadingState.NotLoaded || roomSummaries is AsyncData.Loading
-            }
-        }
+            //}
+        //}
         return when {
             showMigration -> RoomListContentState.Migration
             showEmpty -> {

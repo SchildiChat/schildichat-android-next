@@ -16,6 +16,11 @@
 
 package io.element.android.features.roomdetails.impl.members
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,7 +28,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -34,6 +38,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,17 +47,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.roomdetails.impl.R
-import io.element.android.libraries.architecture.AsyncData
+import io.element.android.features.roomdetails.impl.members.moderation.RoomMembersModerationView
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.components.button.BackButton
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.aliasScreenTitle
-import io.element.android.libraries.designsystem.theme.components.CircularProgressIndicator
+import io.element.android.libraries.designsystem.theme.components.LinearProgressIndicator
 import io.element.android.libraries.designsystem.theme.components.Scaffold
 import io.element.android.libraries.designsystem.theme.components.SearchBar
 import io.element.android.libraries.designsystem.theme.components.SearchBarResultState
@@ -60,7 +66,6 @@ import io.element.android.libraries.designsystem.theme.components.SegmentedButto
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TextButton
 import io.element.android.libraries.designsystem.theme.components.TopAppBar
-import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.ui.components.MatrixUserRow
@@ -76,14 +81,12 @@ private enum class SelectedSection {
 @Composable
 fun RoomMemberListView(
     state: RoomMemberListState,
-    onBackPressed: () -> Unit,
-    onInvitePressed: () -> Unit,
-    onMemberSelected: (UserId) -> Unit,
+    navigator: RoomMemberListNavigator,
     modifier: Modifier = Modifier,
     initialSelectedSectionIndex: Int = 0,
 ) {
     fun onUserSelected(roomMember: RoomMember) {
-        onMemberSelected(roomMember.userId)
+        state.eventSink(RoomMemberListEvents.RoomMemberSelected(roomMember))
     }
 
     Scaffold(
@@ -92,13 +95,18 @@ fun RoomMemberListView(
             if (!state.isSearchActive) {
                 RoomMemberListTopBar(
                     canInvite = state.canInvite,
-                    onBackPressed = onBackPressed,
-                    onInvitePressed = onInvitePressed,
+                    onBackPressed = navigator::exitRoomMemberList,
+                    onInvitePressed = navigator::openInviteMembers,
                 )
             }
         }
     ) { padding ->
         var selectedSection by remember { mutableStateOf(SelectedSection.entries[initialSelectedSectionIndex]) }
+        if (!state.moderationState.canDisplayBannedUsers && selectedSection == SelectedSection.BANNED) {
+            SideEffect {
+                selectedSection = SelectedSection.MEMBERS
+            }
+        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -119,28 +127,29 @@ fun RoomMemberListView(
             )
 
             if (!state.isSearchActive) {
-                if (state.roomMembers is AsyncData.Success) {
-                    RoomMemberList(
-                        roomMembers = state.roomMembers.data,
-                        showMembersCount = true,
-                        canDisplayBannedUsersControls = state.canDisplayBannedUsers,
-                        selectedSection = selectedSection,
-                        onSelectedSectionChanged = { selectedSection = it },
-                        onUserSelected = ::onUserSelected,
-                    )
-                } else if (state.roomMembers.isLoading()) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
-                    }
-                }
+                RoomMemberList(
+                    isLoading = state.roomMembers.isLoading,
+                    roomMembers = state.roomMembers,
+                    showMembersCount = true,
+                    canDisplayBannedUsersControls = state.moderationState.canDisplayBannedUsers,
+                    selectedSection = selectedSection,
+                    onSelectedSectionChanged = { selectedSection = it },
+                    onUserSelected = ::onUserSelected,
+                )
             }
         }
     }
+
+    RoomMembersModerationView(
+        state = state.moderationState,
+        onDisplayMemberProfile = navigator::openRoomMemberDetails
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun RoomMemberList(
+    isLoading: Boolean,
     roomMembers: RoomMembers,
     showMembersCount: Boolean,
     selectedSection: SelectedSection,
@@ -149,27 +158,36 @@ private fun RoomMemberList(
     onUserSelected: (RoomMember) -> Unit,
 ) {
     LazyColumn(modifier = Modifier.fillMaxWidth(), state = rememberLazyListState()) {
-        if (canDisplayBannedUsersControls) {
-            stickyHeader {
-                val segmentedButtonTitles = persistentListOf(
-                    stringResource(id = R.string.screen_room_member_list_mode_members),
-                    stringResource(id = R.string.screen_room_member_list_mode_banned),
-                )
-                SingleChoiceSegmentedButtonRow(
-                    modifier = Modifier
-                        .background(ElementTheme.colors.bgCanvasDefault)
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                ) {
-                    for ((index, title) in segmentedButtonTitles.withIndex()) {
-                        SegmentedButton(
-                            index = index,
-                            count = segmentedButtonTitles.size,
-                            selected = selectedSection.ordinal == index,
-                            onClick = { onSelectedSectionChanged(SelectedSection.entries[index]) },
-                            text = title,
-                        )
+        stickyHeader {
+            Column {
+                if (canDisplayBannedUsersControls) {
+                    val segmentedButtonTitles = persistentListOf(
+                        stringResource(id = R.string.screen_room_member_list_mode_members),
+                        stringResource(id = R.string.screen_room_member_list_mode_banned),
+                    )
+                    SingleChoiceSegmentedButtonRow(
+                        modifier = Modifier
+                            .background(ElementTheme.colors.bgCanvasDefault)
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                    ) {
+                        for ((index, title) in segmentedButtonTitles.withIndex()) {
+                            SegmentedButton(
+                                index = index,
+                                count = segmentedButtonTitles.size,
+                                selected = selectedSection.ordinal == index,
+                                onClick = { onSelectedSectionChanged(SelectedSection.entries[index]) },
+                                text = title,
+                            )
+                        }
                     }
+                }
+                AnimatedVisibility(
+                    visible = isLoading,
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically(),
+                ) {
+                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                 }
             }
         }
@@ -198,11 +216,24 @@ private fun RoomMemberList(
                 }
             }
             SelectedSection.BANNED -> { // Banned users
-                roomMemberListSection(
-                    headerText = null,
-                    members = roomMembers.banned,
-                    onMemberSelected = { onUserSelected(it) }
-                )
+                if (roomMembers.banned.isNotEmpty()) {
+                    roomMemberListSection(
+                        headerText = null,
+                        members = roomMembers.banned,
+                        onMemberSelected = { onUserSelected(it) }
+                    )
+                } else {
+                    item {
+                        Box(Modifier.fillParentMaxSize().padding(horizontal = 16.dp)) {
+                            Text(
+                                modifier = Modifier.padding(bottom = 56.dp).align(Alignment.Center),
+                                text = stringResource(id = R.string.screen_room_member_list_banned_empty),
+                                color = ElementTheme.colors.textSecondary,
+                                textAlign = TextAlign.Center,
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -312,6 +343,7 @@ private fun RoomMemberSearchBar(
         resultState = state,
         resultHandler = { results ->
             RoomMemberList(
+                isLoading = false,
                 roomMembers = results,
                 showMembersCount = false,
                 onUserSelected = { onUserSelected(it) },
@@ -328,33 +360,16 @@ private fun RoomMemberSearchBar(
 internal fun RoomMemberListPreview(@PreviewParameter(RoomMemberListStateProvider::class) state: RoomMemberListState) = ElementPreview {
     RoomMemberListView(
         state = state,
-        onBackPressed = {},
-        onMemberSelected = {},
-        onInvitePressed = {},
+        navigator = object : RoomMemberListNavigator {},
     )
 }
 
 @PreviewsDayNight
 @Composable
-internal fun RoomMemberBannedListPreview() = ElementPreview {
+internal fun RoomMemberBannedListPreview(@PreviewParameter(RoomMemberListStateBannedProvider::class) state: RoomMemberListState) = ElementPreview {
     RoomMemberListView(
         initialSelectedSectionIndex = 1,
-        state = aRoomMemberListState(
-            roomMembers = AsyncData.Success(
-                RoomMembers(
-                    invited = persistentListOf(),
-                    joined = persistentListOf(),
-                    banned = persistentListOf(
-                        aRoomMember(userId = UserId("@alice:example.com"), displayName = "Alice"),
-                        aRoomMember(userId = UserId("@bob:example.com"), displayName = "Bob"),
-                        aRoomMember(userId = UserId("@charlie:example.com"), displayName = "Charlie"),
-                    ),
-                )
-            ),
-            canDisplayBannedUsers = true,
-        ),
-        onBackPressed = {},
-        onMemberSelected = {},
-        onInvitePressed = {},
+        state = state,
+        navigator = object : RoomMemberListNavigator {},
     )
 }

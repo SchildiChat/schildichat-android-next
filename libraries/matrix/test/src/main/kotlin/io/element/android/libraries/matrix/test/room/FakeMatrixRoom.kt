@@ -40,6 +40,8 @@ import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.matrix.api.room.RoomNotificationMode
 import io.element.android.libraries.matrix.api.room.StateEventType
 import io.element.android.libraries.matrix.api.room.location.AssetType
+import io.element.android.libraries.matrix.api.room.powerlevels.MatrixRoomPowerLevels
+import io.element.android.libraries.matrix.api.room.powerlevels.UserRoleChange
 import io.element.android.libraries.matrix.api.timeline.MatrixTimeline
 import io.element.android.libraries.matrix.api.timeline.ReceiptType
 import io.element.android.libraries.matrix.api.timeline.item.event.EventTimelineItem
@@ -54,6 +56,8 @@ import io.element.android.libraries.matrix.test.notificationsettings.FakeNotific
 import io.element.android.libraries.matrix.test.timeline.FakeMatrixTimeline
 import io.element.android.libraries.matrix.test.widget.FakeWidgetDriver
 import io.element.android.tests.testutils.simulateLongTask
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -86,10 +90,12 @@ class FakeMatrixRoom(
     private var unignoreResult: Result<Unit> = Result.success(Unit)
     private var userDisplayNameResult = Result.success<String?>(null)
     private var userAvatarUrlResult = Result.success<String?>(null)
+    private var userRoleResult = Result.success(RoomMember.Role.USER)
     private var updateMembersResult: Result<Unit> = Result.success(Unit)
     private var joinRoomResult = Result.success(Unit)
     private var inviteUserResult = Result.success(Unit)
     private var canInviteResult = Result.success(true)
+    private var canKickResult = Result.success(false)
     private var canBanResult = Result.success(false)
     private var canRedactOwnResult = Result.success(canRedactOwn)
     private var canRedactOtherResult = Result.success(canRedactOther)
@@ -100,11 +106,15 @@ class FakeMatrixRoom(
     private var setTopicResult = Result.success(Unit)
     private var updateAvatarResult = Result.success(Unit)
     private var removeAvatarResult = Result.success(Unit)
+    private var updateUserRoleResult = Result.success(Unit)
     private var toggleReactionResult = Result.success(Unit)
     private var retrySendMessageResult = Result.success(Unit)
     private var cancelSendResult = Result.success(Unit)
     private var forwardEventResult = Result.success(Unit)
     private var reportContentResult = Result.success(Unit)
+    private var kickUserResult = Result.success(Unit)
+    private var banUserResult = Result.success(Unit)
+    private var unBanUserResult = Result.success(Unit)
     private var sendLocationResult = Result.success(Unit)
     private var createPollResult = Result.success(Unit)
     private var editPollResult = Result.success(Unit)
@@ -116,6 +126,9 @@ class FakeMatrixRoom(
     private var canUserTriggerRoomNotificationResult: Result<Boolean> = Result.success(true)
     private var canUserJoinCallResult: Result<Boolean> = Result.success(true)
     private var setIsFavoriteResult = Result.success(Unit)
+    private var powerLevelsResult = Result.success(defaultRoomPowerLevels())
+    private var updatePowerLevelsResult = Result.success(Unit)
+    private var resetPowerLevelsResult = Result.success(defaultRoomPowerLevels())
     var sendMessageMentions = emptyList<Mention>()
     val editMessageCalls = mutableListOf<Pair<String, String?>>()
     private val _typingRecord = mutableListOf<Boolean>()
@@ -195,6 +208,17 @@ class FakeMatrixRoom(
     override suspend fun subscribeToSync() = Unit
 
     override suspend fun unsubscribeFromSync() = Unit
+    override suspend fun powerLevels(): Result<MatrixRoomPowerLevels> {
+        return powerLevelsResult
+    }
+
+    override suspend fun updatePowerLevels(matrixRoomPowerLevels: MatrixRoomPowerLevels): Result<Unit> = simulateLongTask {
+        updatePowerLevelsResult
+    }
+
+    override suspend fun resetPowerLevels(): Result<MatrixRoomPowerLevels> = simulateLongTask {
+        resetPowerLevelsResult
+    }
 
     override fun destroy() = Unit
 
@@ -204,6 +228,14 @@ class FakeMatrixRoom(
 
     override suspend fun userAvatarUrl(userId: UserId): Result<String?> = simulateLongTask {
         userAvatarUrlResult
+    }
+
+    override suspend fun userRole(userId: UserId): Result<RoomMember.Role> {
+        return userRoleResult
+    }
+
+    override suspend fun updateUsersRoles(changes: List<UserRoleChange>): Result<Unit> {
+        return updateUserRoleResult
     }
 
     override suspend fun sendMessage(body: String, htmlBody: String?, mentions: List<Mention>) = simulateLongTask {
@@ -283,6 +315,10 @@ class FakeMatrixRoom(
 
     override suspend fun canUserBan(userId: UserId): Result<Boolean> {
         return canBanResult
+    }
+
+    override suspend fun canUserKick(userId: UserId): Result<Boolean> {
+        return canKickResult
     }
 
     override suspend fun canUserInvite(userId: UserId): Result<Boolean> {
@@ -382,6 +418,18 @@ class FakeMatrixRoom(
     ): Result<Unit> = simulateLongTask {
         reportedContentCount++
         return reportContentResult
+    }
+
+    override suspend fun kickUser(userId: UserId, reason: String?): Result<Unit> {
+        return kickUserResult
+    }
+
+    override suspend fun banUser(userId: UserId, reason: String?): Result<Unit> {
+        return banUserResult
+    }
+
+    override suspend fun unbanUser(userId: UserId, reason: String?): Result<Unit> {
+        return unBanUserResult
     }
 
     val setIsFavoriteCalls = mutableListOf<Boolean>()
@@ -496,8 +544,20 @@ class FakeMatrixRoom(
         userAvatarUrlResult = avatarUrl
     }
 
+    fun givenUserRoleResult(role: Result<RoomMember.Role>) {
+        userRoleResult = role
+    }
+
+    fun givenUpdateUserRoleResult(result: Result<Unit>) {
+        updateUserRoleResult = result
+    }
+
     fun givenJoinRoomResult(result: Result<Unit>) {
         joinRoomResult = result
+    }
+
+    fun givenCanKickResult(result: Result<Boolean>) {
+        canKickResult = result
     }
 
     fun givenCanBanResult(result: Result<Boolean>) {
@@ -576,6 +636,18 @@ class FakeMatrixRoom(
         reportContentResult = result
     }
 
+    fun givenKickUserResult(result: Result<Unit>) {
+        kickUserResult = result
+    }
+
+    fun givenBanUserResult(result: Result<Unit>) {
+        banUserResult = result
+    }
+
+    fun givenUnbanUserResult(result: Result<Unit>) {
+        unBanUserResult = result
+    }
+
     fun givenSendLocationResult(result: Result<Unit>) {
         sendLocationResult = result
     }
@@ -618,6 +690,18 @@ class FakeMatrixRoom(
 
     fun givenRoomTypingMembers(typingMembers: List<UserId>) {
         _roomTypingMembersFlow.tryEmit(typingMembers)
+    }
+
+    fun givenPowerLevelsResult(result: Result<MatrixRoomPowerLevels>) {
+        powerLevelsResult = result
+    }
+
+    fun givenUpdatePowerLevelsResult(result: Result<Unit>) {
+        updatePowerLevelsResult = result
+    }
+
+    fun givenResetPowerLevelsResult(result: Result<MatrixRoomPowerLevels>) {
+        resetPowerLevelsResult = result
     }
 }
 
@@ -668,6 +752,7 @@ fun aRoomInfo(
     notificationCount: Long = 0,
     userDefinedNotificationMode: RoomNotificationMode? = null,
     hasRoomCall: Boolean = false,
+    userPowerLevels: ImmutableMap<UserId, Long> = persistentMapOf(),
     activeRoomCallParticipants: List<String> = emptyList()
 ) = MatrixRoomInfo(
     id = id,
@@ -691,5 +776,17 @@ fun aRoomInfo(
     notificationCount = notificationCount,
     userDefinedNotificationMode = userDefinedNotificationMode,
     hasRoomCall = hasRoomCall,
+    userPowerLevels = userPowerLevels,
     activeRoomCallParticipants = activeRoomCallParticipants.toImmutableList(),
+)
+
+fun defaultRoomPowerLevels() = MatrixRoomPowerLevels(
+    ban = 50,
+    invite = 0,
+    kick = 50,
+    sendEvents = 0,
+    redactEvents = 50,
+    roomName = 100,
+    roomAvatar = 100,
+    roomTopic = 100
 )

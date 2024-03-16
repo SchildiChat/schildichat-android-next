@@ -23,33 +23,46 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import io.element.android.libraries.architecture.AsyncData
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import io.element.android.features.roomdetails.impl.members.moderation.RoomMembersModerationEvents
+import io.element.android.features.roomdetails.impl.members.moderation.RoomMembersModerationPresenter
 import io.element.android.libraries.architecture.Presenter
-import io.element.android.libraries.core.bool.orFalse
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.designsystem.theme.components.SearchBarResultState
+import io.element.android.libraries.featureflag.api.FeatureFlagService
+import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.matrix.api.room.MatrixRoom
 import io.element.android.libraries.matrix.api.room.MatrixRoomMembersState
 import io.element.android.libraries.matrix.api.room.RoomMembershipState
-import io.element.android.libraries.matrix.api.room.powerlevels.canBan
 import io.element.android.libraries.matrix.api.room.powerlevels.canInvite
 import io.element.android.libraries.matrix.api.room.roomMembers
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-class RoomMemberListPresenter @Inject constructor(
+class RoomMemberListPresenter @AssistedInject constructor(
     private val room: MatrixRoom,
     private val roomMemberListDataSource: RoomMemberListDataSource,
     private val coroutineDispatchers: CoroutineDispatchers,
+    private val featureFlagService: FeatureFlagService,
+    private val roomMembersModerationPresenter: RoomMembersModerationPresenter,
+    @Assisted private val navigator: RoomMemberListNavigator,
 ) : Presenter<RoomMemberListState> {
+    @AssistedFactory
+    interface Factory {
+        fun create(navigator: RoomMemberListNavigator): RoomMemberListPresenter
+    }
+
     @Composable
     override fun present(): RoomMemberListState {
-        var roomMembers by remember { mutableStateOf<AsyncData<RoomMembers>>(AsyncData.Loading()) }
+        val coroutineScope = rememberCoroutineScope()
+        var roomMembers by remember { mutableStateOf(RoomMembers.loading()) }
         var searchQuery by rememberSaveable { mutableStateOf("") }
         var searchResults by remember {
             mutableStateOf<SearchBarResultState<RoomMembers>>(SearchBarResultState.Initial())
@@ -61,18 +74,14 @@ class RoomMemberListPresenter @Inject constructor(
             value = room.canInvite().getOrElse { false }
         }
 
-        val canDisplayBannedUsers by produceState(initialValue = false) {
-            val roomIsNotDmAndUserCanBan = !room.isDm && room.canBan().getOrElse { false }
-            if (roomIsNotDmAndUserCanBan) {
-                room.membersStateFlow
-                    .onEach { members ->
-                        val hasBannedUsers = members.roomMembers()?.any { it.membership == RoomMembershipState.BAN }.orFalse()
-                        value = hasBannedUsers
-                    }
-                    .collect()
-            } else {
-                value = false
-            }
+        val isRoomModerationEnabled by produceState(initialValue = false) {
+            value = featureFlagService.isFeatureEnabled(FeatureFlags.RoomModeration)
+        }
+
+        val roomModerationState = if (isRoomModerationEnabled) {
+            roomMembersModerationPresenter.present()
+        } else {
+            remember { roomMembersModerationPresenter.dummyState() }
         }
 
         LaunchedEffect(membersState) {
@@ -81,21 +90,26 @@ class RoomMemberListPresenter @Inject constructor(
             }
             withContext(coroutineDispatchers.io) {
                 val members = membersState.roomMembers().orEmpty().groupBy { it.membership }
-                roomMembers = AsyncData.Success(
-                    RoomMembers(
-                        invited = members.getOrDefault(RoomMembershipState.INVITE, emptyList()).toImmutableList(),
-                        joined = members.getOrDefault(RoomMembershipState.JOIN, emptyList())
-                            .sortedWith(PowerLevelRoomMemberComparator())
-                            .toImmutableList(),
-                        banned = members.getOrDefault(RoomMembershipState.BAN, emptyList()).sortedBy { it.userId.value }.toImmutableList(),
-                    )
+                val info = room.roomInfoFlow.first()
+                if (members.getOrDefault(RoomMembershipState.JOIN, emptyList()).size < info.joinedMembersCount / 2) {
+                    // Don't display initial room member list if we have less than half of the joined members:
+                    // This result will come from the timeline loading membership events and it'll be wrong.
+                    return@withContext
+                }
+                roomMembers = RoomMembers(
+                    invited = members.getOrDefault(RoomMembershipState.INVITE, emptyList()).toImmutableList(),
+                    joined = members.getOrDefault(RoomMembershipState.JOIN, emptyList())
+                        .sortedWith(PowerLevelRoomMemberComparator())
+                        .toImmutableList(),
+                    banned = members.getOrDefault(RoomMembershipState.BAN, emptyList()).sortedBy { it.userId.value }.toImmutableList(),
+                    isLoading = membersState is MatrixRoomMembersState.Pending,
                 )
             }
         }
 
-        LaunchedEffect(searchQuery) {
+        LaunchedEffect(membersState, searchQuery, isSearchActive) {
             withContext(coroutineDispatchers.io) {
-                searchResults = if (searchQuery.isEmpty()) {
+                searchResults = if (searchQuery.isEmpty() || !isSearchActive) {
                     SearchBarResultState.Initial()
                 } else {
                     val results = roomMemberListDataSource.search(searchQuery).groupBy { it.membership }
@@ -109,8 +123,23 @@ class RoomMemberListPresenter @Inject constructor(
                                     .sortedWith(PowerLevelRoomMemberComparator())
                                     .toImmutableList(),
                                 banned = results.getOrDefault(RoomMembershipState.BAN, emptyList()).sortedBy { it.userId.value }.toImmutableList(),
+                                isLoading = membersState is MatrixRoomMembersState.Pending,
                             )
                         )
+                    }
+                }
+            }
+        }
+
+        fun handleEvents(event: RoomMemberListEvents) {
+            when (event) {
+                is RoomMemberListEvents.OnSearchActiveChanged -> isSearchActive = event.active
+                is RoomMemberListEvents.UpdateSearchQuery -> searchQuery = event.query
+                is RoomMemberListEvents.RoomMemberSelected -> coroutineScope.launch {
+                    if (roomMembersModerationPresenter.canDisplayModerationActions()) {
+                        roomModerationState.eventSink(RoomMembersModerationEvents.SelectRoomMember(event.roomMember))
+                    } else {
+                        navigator.openRoomMemberDetails(event.roomMember.userId)
                     }
                 }
             }
@@ -122,13 +151,8 @@ class RoomMemberListPresenter @Inject constructor(
             searchResults = searchResults,
             isSearchActive = isSearchActive,
             canInvite = canInvite,
-            canDisplayBannedUsers = canDisplayBannedUsers,
-            eventSink = { event ->
-                when (event) {
-                    is RoomMemberListEvents.OnSearchActiveChanged -> isSearchActive = event.active
-                    is RoomMemberListEvents.UpdateSearchQuery -> searchQuery = event.query
-                }
-            },
+            moderationState = roomModerationState,
+            eventSink = { handleEvents(it) },
         )
     }
 }

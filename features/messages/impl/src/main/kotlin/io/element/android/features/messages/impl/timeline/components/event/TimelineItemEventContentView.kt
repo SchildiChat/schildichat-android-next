@@ -29,6 +29,7 @@ import io.element.android.features.messages.impl.timeline.model.event.TimelineIt
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemEventContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemFileContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemImageContent
+import io.element.android.features.messages.impl.timeline.model.event.TimelineItemLegacyCallInviteContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemLocationContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemNoticeContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemPollContent
@@ -103,6 +104,7 @@ fun TimelineItemEventContentView(
             onContentLayoutChanged = onContentLayoutChanged,
             modifier = modifier
         )
+        is TimelineItemLegacyCallInviteContent -> TimelineItemLegacyCallInviteView(modifier = modifier)
         is TimelineItemStateContent -> TimelineItemStateView(
             content = content,
             modifier = modifier

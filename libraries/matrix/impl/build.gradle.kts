@@ -40,6 +40,7 @@ dependencies {
     implementation(projects.libraries.di)
     implementation(projects.libraries.androidutils)
     implementation(projects.libraries.network)
+    implementation(projects.services.analytics.api)
     implementation(projects.services.toolbox.api)
     implementation(projects.libraries.featureflag.api)
     api(projects.libraries.matrix.api)
@@ -53,6 +54,7 @@ dependencies {
     testImplementation(libs.test.junit)
     testImplementation(libs.test.truth)
     testImplementation(projects.libraries.matrix.test)
+    testImplementation(projects.services.analytics.test)
     testImplementation(libs.coroutines.test)
     testImplementation(libs.test.turbine)
 }

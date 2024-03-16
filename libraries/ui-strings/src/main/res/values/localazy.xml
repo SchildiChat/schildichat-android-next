@@ -49,6 +49,7 @@
   <string name="action_decline">"Decline"</string>
   <string name="action_delete_poll">"Delete Poll"</string>
   <string name="action_disable">"Disable"</string>
+  <string name="action_discard">"Discard"</string>
   <string name="action_done">"Done"</string>
   <string name="action_edit">"Edit"</string>
   <string name="action_edit_poll">"Edit poll"</string>
@@ -57,6 +58,7 @@
   <string name="action_enter_pin">"Enter PIN"</string>
   <string name="action_forgot_password">"Forgot password?"</string>
   <string name="action_forward">"Forward"</string>
+  <string name="action_go_back">"Go back"</string>
   <string name="action_invite">"Invite"</string>
   <string name="action_invite_friends">"Invite people"</string>
   <string name="action_invite_friends_to_app">"Invite people to %1$s"</string>
@@ -84,6 +86,7 @@
   <string name="action_reply_in_thread">"Reply in thread"</string>
   <string name="action_report_bug">"Report bug"</string>
   <string name="action_report_content">"Report content"</string>
+  <string name="action_reset">"Reset"</string>
   <string name="action_retry">"Retry"</string>
   <string name="action_retry_decryption">"Retry decryption"</string>
   <string name="action_save">"Save"</string>
@@ -113,6 +116,7 @@
   <string name="common_audio">"Audio"</string>
   <string name="common_blocked_users">"Blocked users"</string>
   <string name="common_bubbles">"Bubbles"</string>
+  <string name="common_call_invite">"Call in progress (unsupported)"</string>
   <string name="common_chat_backup">"Chat backup"</string>
   <string name="common_copyright">"Copyright"</string>
   <string name="common_creating_room">"Creating room…"</string>
@@ -181,6 +185,8 @@
   <string name="common_room">"Room"</string>
   <string name="common_room_name">"Room name"</string>
   <string name="common_room_name_placeholder">"e.g. your project name"</string>
+  <string name="common_saved_changes">"Saved changes"</string>
+  <string name="common_saving">"Saving"</string>
   <string name="common_screen_lock">"Screen lock"</string>
   <string name="common_search_for_someone">"Search for someone"</string>
   <string name="common_search_results">"Search results"</string>
@@ -223,6 +229,8 @@
   <string name="dialog_title_error">"Error"</string>
   <string name="dialog_title_success">"Success"</string>
   <string name="dialog_title_warning">"Warning"</string>
+  <string name="dialog_unsaved_changes_description_android">"Your changes have not been saved. Are you sure you want to go back?"</string>
+  <string name="dialog_unsaved_changes_title">"Save changes?"</string>
   <string name="error_failed_creating_the_permalink">"Failed creating the permalink"</string>
   <string name="error_failed_loading_map">"%1$s could not load the map. Please try again later."</string>
   <string name="error_failed_loading_messages">"Failed loading messages"</string>
@@ -240,6 +248,14 @@
   <string name="screen_media_picker_error_failed_selection">"Failed selecting media, please try again."</string>
   <string name="screen_media_upload_preview_error_failed_processing">"Failed processing media to upload, please try again."</string>
   <string name="screen_media_upload_preview_error_failed_sending">"Failed uploading media, please try again."</string>
+  <string name="screen_room_error_failed_processing_media">"Failed processing media to upload, please try again."</string>
+  <string name="screen_room_error_failed_retrieving_user_details">"Could not retrieve user details"</string>
+  <string name="screen_room_member_details_block_alert_action">"Block"</string>
+  <string name="screen_room_member_details_block_alert_description">"Blocked users won\'t be able to send you messages and all their messages will be hidden. You can unblock them anytime."</string>
+  <string name="screen_room_member_details_block_user">"Block user"</string>
+  <string name="screen_room_member_details_unblock_alert_action">"Unblock"</string>
+  <string name="screen_room_member_details_unblock_alert_description">"You\'ll be able to see all messages from them again."</string>
+  <string name="screen_room_member_details_unblock_user">"Unblock user"</string>
   <string name="screen_share_location_title">"Share location"</string>
   <string name="screen_share_my_location_action">"Share my location"</string>
   <string name="screen_share_open_apple_maps">"Open in Apple Maps"</string>

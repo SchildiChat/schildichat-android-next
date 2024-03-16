@@ -39,6 +39,7 @@ interface MatrixTimeline : AutoCloseable {
 
     val paginationState: StateFlow<PaginationState>
     val timelineItems: Flow<List<MatrixTimelineItem>>
+    val membershipChangeEventReceived: Flow<Unit>
 
     // SC addition: copy sendReadReceipt() but with force
     suspend fun forceSendReadReceipt(eventId: EventId, receiptType: ReceiptType): Result<Unit>

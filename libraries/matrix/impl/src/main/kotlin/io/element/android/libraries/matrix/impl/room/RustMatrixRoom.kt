@@ -36,8 +36,11 @@ import io.element.android.libraries.matrix.api.room.MatrixRoomMembersState
 import io.element.android.libraries.matrix.api.room.MatrixRoomNotificationSettingsState
 import io.element.android.libraries.matrix.api.room.Mention
 import io.element.android.libraries.matrix.api.room.MessageEventType
+import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.matrix.api.room.StateEventType
 import io.element.android.libraries.matrix.api.room.location.AssetType
+import io.element.android.libraries.matrix.api.room.powerlevels.MatrixRoomPowerLevels
+import io.element.android.libraries.matrix.api.room.powerlevels.UserRoleChange
 import io.element.android.libraries.matrix.api.room.roomNotificationSettings
 import io.element.android.libraries.matrix.api.timeline.MatrixTimeline
 import io.element.android.libraries.matrix.api.timeline.ReceiptType
@@ -51,6 +54,8 @@ import io.element.android.libraries.matrix.impl.notificationsettings.RustNotific
 import io.element.android.libraries.matrix.impl.poll.toInner
 import io.element.android.libraries.matrix.impl.room.location.toInner
 import io.element.android.libraries.matrix.impl.room.member.RoomMemberListFetcher
+import io.element.android.libraries.matrix.impl.room.member.RoomMemberMapper
+import io.element.android.libraries.matrix.impl.room.powerlevels.RoomPowerLevelsMapper
 import io.element.android.libraries.matrix.impl.timeline.RustMatrixTimeline
 import io.element.android.libraries.matrix.impl.timeline.toRustReceiptType
 import io.element.android.libraries.matrix.impl.util.mxCallbackFlow
@@ -65,6 +70,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.matrix.rustcomponents.sdk.EventTimelineItem
@@ -74,12 +81,14 @@ import org.matrix.rustcomponents.sdk.RoomListItem
 import org.matrix.rustcomponents.sdk.RoomMessageEventContentWithoutRelation
 import org.matrix.rustcomponents.sdk.SendAttachmentJoinHandle
 import org.matrix.rustcomponents.sdk.TypingNotificationsListener
+import org.matrix.rustcomponents.sdk.UserPowerLevelUpdate
 import org.matrix.rustcomponents.sdk.WidgetCapabilities
 import org.matrix.rustcomponents.sdk.WidgetCapabilitiesProvider
 import org.matrix.rustcomponents.sdk.messageEventContentFromHtml
 import org.matrix.rustcomponents.sdk.messageEventContentFromMarkdown
 import org.matrix.rustcomponents.sdk.use
 import timber.log.Timber
+import uniffi.matrix_sdk.RoomPowerLevelChanges
 import java.io.File
 import org.matrix.rustcomponents.sdk.Room as InnerRoom
 import org.matrix.rustcomponents.sdk.Timeline as InnerTimeline
@@ -151,6 +160,13 @@ class RustMatrixRoom(
 
     override val syncUpdateFlow: StateFlow<Long> = _syncUpdateFlow.asStateFlow()
 
+    init {
+        timeline.membershipChangeEventReceived
+            // The new events should already be in the SDK cache, no need to fetch them from the server
+            .onEach { roomMemberListFetcher.fetchRoomMembers(source = RoomMemberListFetcher.Source.CACHE) }
+            .launchIn(roomCoroutineScope)
+    }
+
     override suspend fun subscribeToSync() = roomSyncSubscriber.subscribe(roomId)
 
     override suspend fun unsubscribeFromSync() = roomSyncSubscriber.unsubscribe(roomId)
@@ -204,7 +220,15 @@ class RustMatrixRoom(
     override val activeMemberCount: Long
         get() = innerRoom.activeMembersCount().toLong()
 
-    override suspend fun updateMembers() = roomMemberListFetcher.fetchRoomMembers()
+    override suspend fun updateMembers() {
+        val useCache = membersStateFlow.value is MatrixRoomMembersState.Unknown
+        val source = if (useCache) {
+            RoomMemberListFetcher.Source.CACHE_AND_SERVER
+        } else {
+            RoomMemberListFetcher.Source.SERVER
+        }
+        roomMemberListFetcher.fetchRoomMembers(source = source)
+    }
 
     override suspend fun userDisplayName(userId: UserId): Result<String?> = withContext(roomDispatcher) {
         runCatching {
@@ -225,6 +249,47 @@ class RustMatrixRoom(
                 prevRoomNotificationSettings = currentRoomNotificationSettings,
                 failure = it
             )
+        }
+    }
+
+    override suspend fun userRole(userId: UserId): Result<RoomMember.Role> = withContext(coroutineDispatchers.io) {
+        runCatching {
+            RoomMemberMapper.mapRole(innerRoom.suggestedRoleForUser(userId.value))
+        }
+    }
+
+    override suspend fun updateUsersRoles(changes: List<UserRoleChange>): Result<Unit> {
+        return runCatching {
+            val powerLevelChanges = changes.map { UserPowerLevelUpdate(it.userId.value, it.powerLevel) }
+            innerRoom.updatePowerLevelsForUsers(powerLevelChanges)
+        }
+    }
+
+    override suspend fun powerLevels(): Result<MatrixRoomPowerLevels> = withContext(roomDispatcher) {
+        runCatching {
+            RoomPowerLevelsMapper.map(innerRoom.getPowerLevels())
+        }
+    }
+
+    override suspend fun updatePowerLevels(matrixRoomPowerLevels: MatrixRoomPowerLevels): Result<Unit> = withContext(roomDispatcher) {
+        runCatching {
+            val changes = RoomPowerLevelChanges(
+                ban = matrixRoomPowerLevels.ban,
+                invite = matrixRoomPowerLevels.invite,
+                kick = matrixRoomPowerLevels.kick,
+                redact = matrixRoomPowerLevels.redactEvents,
+                eventsDefault = matrixRoomPowerLevels.sendEvents,
+                roomName = matrixRoomPowerLevels.roomName,
+                roomAvatar = matrixRoomPowerLevels.roomAvatar,
+                roomTopic = matrixRoomPowerLevels.roomTopic,
+            )
+            innerRoom.applyPowerLevelChanges(changes)
+        }
+    }
+
+    override suspend fun resetPowerLevels(): Result<MatrixRoomPowerLevels> = withContext(roomDispatcher) {
+        runCatching {
+            RoomPowerLevelsMapper.map(innerRoom.resetPowerLevels())
         }
     }
 
@@ -316,6 +381,12 @@ class RustMatrixRoom(
     override suspend fun canUserInvite(userId: UserId): Result<Boolean> {
         return runCatching {
             innerRoom.canUserInvite(userId.value)
+        }
+    }
+
+    override suspend fun canUserKick(userId: UserId): Result<Boolean> {
+        return runCatching {
+            innerRoom.canUserKick(userId.value)
         }
     }
 
@@ -445,6 +516,24 @@ class RustMatrixRoom(
             if (blockUserId != null) {
                 innerRoom.ignoreUser(blockUserId.value)
             }
+        }
+    }
+
+    override suspend fun kickUser(userId: UserId, reason: String?): Result<Unit> = withContext(roomDispatcher) {
+        runCatching {
+            innerRoom.kickUser(userId.value, reason)
+        }
+    }
+
+    override suspend fun banUser(userId: UserId, reason: String?): Result<Unit> = withContext(roomDispatcher) {
+        runCatching {
+            innerRoom.banUser(userId.value, reason)
+        }
+    }
+
+    override suspend fun unbanUser(userId: UserId, reason: String?): Result<Unit> = withContext(roomDispatcher) {
+        runCatching {
+            innerRoom.unbanUser(userId.value, reason)
         }
     }
 

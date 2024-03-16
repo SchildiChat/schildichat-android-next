@@ -45,7 +45,7 @@ internal fun TimelineItemReadMarkerView(
         verticalArrangement = spacedBy(4.dp),
     ) {
         Text(
-            text = stringResource(id = R.string.room_timeline_read_marker_title).uppercase(),
+            text = stringResource(id = R.string.screen_room_timeline_read_marker_title).uppercase(),
             style = ElementTheme.typography.fontBodySmMedium,
             color = ScTheme.exposures.unreadIndicatorLine ?: ElementTheme.colors.textSecondary,
         )

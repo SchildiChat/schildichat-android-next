@@ -49,6 +49,7 @@
   <string name="action_decline">"Elutasítás"</string>
   <string name="action_delete_poll">"Szavazás törlése"</string>
   <string name="action_disable">"Letiltás"</string>
+  <string name="action_discard">"Elvetés"</string>
   <string name="action_done">"Kész"</string>
   <string name="action_edit">"Szerkesztés"</string>
   <string name="action_edit_poll">"Szavazás szerkesztése"</string>
@@ -57,6 +58,7 @@
   <string name="action_enter_pin">"Add meg a PIN-kódot"</string>
   <string name="action_forgot_password">"Elfelejtetted a jelszavadat?"</string>
   <string name="action_forward">"Tovább"</string>
+  <string name="action_go_back">"Visszalépés"</string>
   <string name="action_invite">"Meghívás"</string>
   <string name="action_invite_friends">"Ismerősök meghívása"</string>
   <string name="action_invite_friends_to_app">"Ismerősök meghívása ide: %1$s"</string>
@@ -84,6 +86,7 @@
   <string name="action_reply_in_thread">"Válasz az üzenetszálban"</string>
   <string name="action_report_bug">"Hiba jelentése"</string>
   <string name="action_report_content">"Tartalom jelentése"</string>
+  <string name="action_reset">"Visszaállítás"</string>
   <string name="action_retry">"Újra"</string>
   <string name="action_retry_decryption">"Visszafejtés újbóli megpróbálása"</string>
   <string name="action_save">"Mentés"</string>
@@ -111,7 +114,9 @@
   <string name="common_analytics">"Elemzések"</string>
   <string name="common_appearance">"Megjelenítés"</string>
   <string name="common_audio">"Hang"</string>
+  <string name="common_blocked_users">"Letiltott felhasználók"</string>
   <string name="common_bubbles">"Buborékok"</string>
+  <string name="common_call_invite">"Folyamatban lévő hívás (nem támogatott)"</string>
   <string name="common_chat_backup">"Csevegés biztonsági mentése"</string>
   <string name="common_copyright">"Szerzői jogok"</string>
   <string name="common_creating_room">"Szoba létrehozása…"</string>
@@ -127,7 +132,9 @@
   <string name="common_enter_your_pin">"Add meg a PIN-kódodat"</string>
   <string name="common_error">"Hiba"</string>
   <string name="common_everyone">"Mindenki"</string>
+  <string name="common_failed">"Sikertelen"</string>
   <string name="common_favourite">"Kedvenc"</string>
+  <string name="common_favourited">"Kedvencnek jelölve"</string>
   <string name="common_file">"Fájl"</string>
   <string name="common_file_saved_on_disk_android">"A fájl a Letöltések mappába mentve"</string>
   <string name="common_forward_message">"Üzenet továbbítása"</string>
@@ -152,6 +159,7 @@
   <string name="common_mute">"Némítás"</string>
   <string name="common_no_results">"Nincs találat"</string>
   <string name="common_offline">"Kapcsolat nélkül"</string>
+  <string name="common_or">"vagy"</string>
   <string name="common_password">"Jelszó"</string>
   <string name="common_people">"Emberek"</string>
   <string name="common_permalink">"Állandó hivatkozás"</string>
@@ -177,6 +185,8 @@
   <string name="common_room">"Szoba"</string>
   <string name="common_room_name">"Szoba neve"</string>
   <string name="common_room_name_placeholder">"például a projekted neve"</string>
+  <string name="common_saved_changes">"Mentett módosítások"</string>
+  <string name="common_saving">"Mentés"</string>
   <string name="common_screen_lock">"Képernyőzár"</string>
   <string name="common_search_for_someone">"Személy keresése"</string>
   <string name="common_search_results">"Keresési találatok"</string>
@@ -219,6 +229,8 @@
   <string name="dialog_title_error">"Hiba"</string>
   <string name="dialog_title_success">"Sikeres"</string>
   <string name="dialog_title_warning">"Figyelmeztetés"</string>
+  <string name="dialog_unsaved_changes_description_android">"A módosítások nem lettek mentve. Biztos, hogy visszalép?"</string>
+  <string name="dialog_unsaved_changes_title">"Menti a módosításokat?"</string>
   <string name="error_failed_creating_the_permalink">"Nem sikerült létrehozni az állandó hivatkozást"</string>
   <string name="error_failed_loading_map">"A(z) %1$s nem tudta betölteni a térképet. Próbáld meg újra később."</string>
   <string name="error_failed_loading_messages">"Nem sikerült betölteni az üzeneteket"</string>
@@ -236,6 +248,14 @@
   <string name="screen_media_picker_error_failed_selection">"Nem sikerült kiválasztani a médiát, próbálja újra."</string>
   <string name="screen_media_upload_preview_error_failed_processing">"Nem sikerült feldolgozni a feltöltendő médiát, próbálja újra."</string>
   <string name="screen_media_upload_preview_error_failed_sending">"Nem sikerült a média feltöltése, próbálja újra."</string>
+  <string name="screen_room_error_failed_processing_media">"Nem sikerült feldolgozni a feltöltendő médiát, próbálja újra."</string>
+  <string name="screen_room_error_failed_retrieving_user_details">"Nem sikerült letölteni a felhasználói adatokat"</string>
+  <string name="screen_room_member_details_block_alert_action">"Letiltás"</string>
+  <string name="screen_room_member_details_block_alert_description">"A letiltott felhasználók nem fognak tudni üzeneteket küldeni, és az összes üzenetük rejtve lesz. Bármikor feloldhatja a letiltásukat."</string>
+  <string name="screen_room_member_details_block_user">"Felhasználó letiltása"</string>
+  <string name="screen_room_member_details_unblock_alert_action">"Letiltás feloldása"</string>
+  <string name="screen_room_member_details_unblock_alert_description">"Újra láthatja az összes üzenetét."</string>
+  <string name="screen_room_member_details_unblock_user">"Felhasználó kitiltásának feloldása"</string>
   <string name="screen_share_location_title">"Hely megosztása"</string>
   <string name="screen_share_my_location_action">"Saját hely megosztása"</string>
   <string name="screen_share_open_apple_maps">"Megnyitás az Apple Mapsben"</string>

@@ -19,6 +19,7 @@ package io.element.android.features.roomlist.impl
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -26,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -45,7 +47,7 @@ import io.element.android.features.preferences.api.store.SessionPreferencesStore
 import io.element.android.features.roomlist.impl.datasource.InviteStateDataSource
 import io.element.android.features.roomlist.impl.datasource.RoomListDataSource
 import io.element.android.features.roomlist.impl.filters.RoomListFiltersState
-import io.element.android.features.roomlist.impl.migration.MigrationScreenPresenter
+import io.element.android.features.roomlist.impl.migration.MigrationScreenState
 import io.element.android.features.roomlist.impl.search.RoomListSearchEvents
 import io.element.android.features.roomlist.impl.search.RoomListSearchState
 import io.element.android.libraries.architecture.AsyncData
@@ -59,6 +61,7 @@ import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.encryption.EncryptionService
 import io.element.android.libraries.matrix.api.encryption.RecoveryState
+import io.element.android.libraries.matrix.api.roomlist.RoomList
 import io.element.android.libraries.matrix.api.sync.SyncService
 import io.element.android.libraries.matrix.api.sync.SyncState
 import io.element.android.libraries.matrix.api.timeline.ReceiptType
@@ -70,6 +73,7 @@ import io.element.android.services.analyticsproviders.api.trackers.captureIntera
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -99,7 +103,7 @@ class RoomListPresenter @Inject constructor(
     private val indicatorService: IndicatorService,
     private val filtersPresenter: Presenter<RoomListFiltersState>,
     private val searchPresenter: Presenter<RoomListSearchState>,
-    private val migrationScreenPresenter: MigrationScreenPresenter,
+    private val migrationScreenPresenter: Presenter<MigrationScreenState>,
     private val sessionPreferencesStore: SessionPreferencesStore,
     private val analyticsService: AnalyticsService,
 ) : Presenter<RoomListState> {
@@ -114,16 +118,8 @@ class RoomListPresenter @Inject constructor(
         val matrixUser: MutableState<MatrixUser?> = rememberSaveable {
             mutableStateOf(null)
         }
-        val spaceNavEnabled = ScPrefs.SPACE_NAV.value()
-        val spacesList = if (spaceNavEnabled) spaceListDataSource.allSpaces.collectAsState().value else null
-        val spaceSelectionHierarchy = if (spaceNavEnabled) spaceAwareRoomListDataSource.spaceSelectionHierarchy.collectAsState().value else persistentListOf()
-        val spaceUnreadCounts = if (spaceNavEnabled) spaceUnreadCountsDataSource.spaceUnreadCounts.collectAsState().value else persistentMapOf()
-        val roomList = if (spaceNavEnabled)
-            produceState(initialValue = AsyncData.Loading()) { spaceAwareRoomListDataSource.spaceRooms.collect { value = AsyncData.Success(it) } }.value
-        else
-            produceState(initialValue = AsyncData.Loading()) { roomListDataSource.allRooms.collect { value = AsyncData.Success(it) } }.value
-        val networkConnectionStatus by networkMonitor.connectivity.collectAsState()
 
+        val networkConnectionStatus by networkMonitor.connectivity.collectAsState()
         val filtersState = filtersPresenter.present()
         val searchState = searchPresenter.present()
 
@@ -136,28 +132,7 @@ class RoomListPresenter @Inject constructor(
         }
         PersistSpaceOnPause(scAppStateStore, spaceAwareRoomListDataSource)
 
-        val isMigrating = migrationScreenPresenter.present().isMigrating
-
         var securityBannerDismissed by rememberSaveable { mutableStateOf(false) }
-        val canVerifySession by sessionVerificationService.canVerifySessionFlow.collectAsState(initial = false)
-        val isLastDevice by encryptionService.isLastDevice.collectAsState()
-        val recoveryState by encryptionService.recoveryStateStateFlow.collectAsState()
-        val syncState by syncService.syncState.collectAsState()
-        val securityBannerState by remember {
-            derivedStateOf {
-                when {
-                    securityBannerDismissed -> SecurityBannerState.None
-                    canVerifySession -> if (isLastDevice) {
-                        SecurityBannerState.RecoveryKeyConfirmation
-                    } else {
-                        SecurityBannerState.SessionVerification
-                    }
-                    recoveryState == RecoveryState.INCOMPLETE &&
-                        syncState == SyncState.Running -> SecurityBannerState.RecoveryKeyConfirmation
-                    else -> SecurityBannerState.None
-                }
-            }
-        }
 
         // Avatar indicator
         val showAvatarIndicator by indicatorService.showRoomListTopBarIndicator()
@@ -186,28 +161,101 @@ class RoomListPresenter @Inject constructor(
 
         val snackbarMessage by snackbarDispatcher.collectSnackbarMessageAsState()
 
+        val contentState = roomListContentState(securityBannerDismissed)
+
         return RoomListState(
             matrixUser = matrixUser.value,
             showAvatarIndicator = showAvatarIndicator,
-            roomList = roomList,
-            spacesList = spacesList.orEmpty().toImmutableList(),
-            spaceSelectionHierarchy = spaceSelectionHierarchy ?: persistentListOf(),
-            spaceUnreadCounts = spaceUnreadCounts,
-            securityBannerState = securityBannerState,
             snackbarMessage = snackbarMessage,
             hasNetworkConnection = networkConnectionStatus == NetworkStatus.Online,
-            invitesState = inviteStateDataSource.inviteState(),
             contextMenu = contextMenu.value,
             leaveRoomState = leaveRoomState,
             filtersState = filtersState,
             searchState = searchState,
-            displayMigrationStatus = isMigrating,
+            contentState = contentState,
             eventSink = ::handleEvents,
         )
     }
 
     private fun CoroutineScope.initialLoad(matrixUser: MutableState<MatrixUser?>) = launch {
         matrixUser.value = client.getCurrentUser()
+    }
+
+    @Composable
+    private fun securityBannerState(
+        securityBannerDismissed: Boolean,
+    ): State<SecurityBannerState> {
+        val currentSecurityBannerDismissed by rememberUpdatedState(securityBannerDismissed)
+        val canVerifySession by sessionVerificationService.canVerifySessionFlow.collectAsState(initial = false)
+        val isLastDevice by encryptionService.isLastDevice.collectAsState()
+        val recoveryState by encryptionService.recoveryStateStateFlow.collectAsState()
+        val syncState by syncService.syncState.collectAsState()
+        return remember {
+            derivedStateOf {
+                when {
+                    currentSecurityBannerDismissed -> SecurityBannerState.None
+                    canVerifySession -> if (isLastDevice) {
+                        SecurityBannerState.RecoveryKeyConfirmation
+                    } else {
+                        SecurityBannerState.SessionVerification
+                    }
+                    recoveryState == RecoveryState.INCOMPLETE &&
+                        syncState == SyncState.Running -> SecurityBannerState.RecoveryKeyConfirmation
+                    else -> SecurityBannerState.None
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun roomListContentState(
+        securityBannerDismissed: Boolean,
+    ): RoomListContentState {
+        // SC spaces
+        val spaceNavEnabled = ScPrefs.SPACE_NAV.value()
+        val spacesList = if (spaceNavEnabled) spaceListDataSource.allSpaces.collectAsState().value else null
+        val spaceSelectionHierarchy = if (spaceNavEnabled) spaceAwareRoomListDataSource.spaceSelectionHierarchy.collectAsState().value else persistentListOf()
+        val spaceUnreadCounts = if (spaceNavEnabled) spaceUnreadCountsDataSource.spaceUnreadCounts.collectAsState().value else persistentMapOf()
+        // SC end
+
+        val roomSummaries = if (spaceNavEnabled)
+            produceState(initialValue = AsyncData.Loading()) { spaceAwareRoomListDataSource.spaceRooms.collect { value = AsyncData.Success(it) } }.value
+        else
+            produceState(initialValue = AsyncData.Loading()) { roomListDataSource.allRooms.collect { value = AsyncData.Success(it) } }.value
+        val loadingState by roomListDataSource.loadingState.collectAsState()
+        val showMigration = migrationScreenPresenter.present().isMigrating
+        val showEmpty by remember {
+            derivedStateOf {
+                (loadingState as? RoomList.LoadingState.Loaded)?.numberOfRooms == 0
+            }
+        }
+        val showSkeleton by remember {
+            derivedStateOf {
+                loadingState == RoomList.LoadingState.NotLoaded || roomSummaries is AsyncData.Loading
+            }
+        }
+        return when {
+            showMigration -> RoomListContentState.Migration
+            showEmpty -> {
+                val invitesState = inviteStateDataSource.inviteState()
+                RoomListContentState.Empty(invitesState)
+            }
+            showSkeleton -> RoomListContentState.Skeleton(count = 16)
+            else -> {
+                val invitesState = inviteStateDataSource.inviteState()
+                val securityBannerState by securityBannerState(securityBannerDismissed)
+                RoomListContentState.Rooms(
+                    // SC start
+                    spacesList = spacesList.orEmpty().toImmutableList(),
+                    spaceSelectionHierarchy = spaceSelectionHierarchy ?: persistentListOf(),
+                    spaceUnreadCounts = spaceUnreadCounts,
+                    // SC end
+                    invitesState = invitesState,
+                    securityBannerState = securityBannerState,
+                    summaries = roomSummaries.dataOrNull().orEmpty().toPersistentList()
+                )
+            }
+        }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

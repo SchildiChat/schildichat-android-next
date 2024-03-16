@@ -70,7 +70,7 @@ data class ScBoolPref(
 ): ScPref<Boolean> {
     @IgnoredOnParcel override val key = booleanPreferencesKey(sKey)
     override fun ensureType(value: Any?): Boolean? {
-        if (value !is Boolean) {
+        if (value !is Boolean?) {
             Timber.e("Parse boolean failed of $sKey for ${value?.javaClass?.simpleName}")
             return null
         }
@@ -106,7 +106,7 @@ data class ScStringListPref(
 ): ScListPref<String> {
     @IgnoredOnParcel override val key = stringPreferencesKey(sKey)
     override fun ensureType(value: Any?): String? {
-        if (value !is String) {
+        if (value !is String?) {
             Timber.e("Parse string failed of $sKey for ${value?.javaClass?.simpleName}")
             return null
         }
@@ -158,7 +158,7 @@ data class ScUpstreamFeatureFlagAliasPref(
     @IgnoredOnParcel override val key: Preferences.Key<Boolean>? = null
 
     override fun ensureType(value: Any?): Boolean? {
-        if (value !is Boolean) {
+        if (value !is Boolean?) {
             Timber.e("Parse boolean failed of $sKey for ${value?.javaClass?.simpleName}")
             return null
         }

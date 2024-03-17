@@ -37,6 +37,8 @@ object ScPrefs {
         dependencies = SPACE_NAV.asDependencies(),
     )
     val SPACE_SWIPE = ScBoolPref("SPACE_SWIPE", false, R.string.sc_space_swipe_title, R.string.sc_space_swipe_summary, upstreamChoice = false, authorsChoice = true, dependencies = SPACE_NAV.asDependencies())
+    val PIN_FAVORITES = ScBoolPref("PIN_FAVORITES", false, R.string.sc_pref_pin_favorites_title, R.string.sc_pref_pin_favorites_summary, upstreamChoice = false, authorsChoice = true)
+    val CLIENT_SIDE_UNREAD_SORT = ScBoolPref("CLIENT_SIDE_UNREAD_SORT", false, R.string.sc_pref_client_side_unread_sort_title, R.string.sc_pref_client_side_unread_sort_summary, upstreamChoice = false, authorsChoice = false)
 
     // Timeline
     val SC_TIMELINE_LAYOUT = ScBoolPref("SC_TIMELINE_LAYOUT", true, R.string.sc_pref_sc_timeline_layout_title, upstreamChoice = false)
@@ -85,9 +87,15 @@ object ScPrefs {
         ScPrefCategory(R.string.sc_pref_category_misc, null, listOf(
             NOTIFICATION_ONLY_ALERT_ONCE,
             ScPrefScreen(R.string.sc_pref_screen_experimental_title, R.string.sc_pref_screen_experimental_summary, listOf(
-                PL_DISPLAY_NAME,
-                SYNC_READ_RECEIPT_AND_MARKER,
-                CLIENT_GENERATED_UNREAD_COUNTS,
+                ScPrefCategory(R.string.sc_pref_category_chat_overview, null, listOf(
+                    CLIENT_GENERATED_UNREAD_COUNTS,
+                    PIN_FAVORITES,
+                    CLIENT_SIDE_UNREAD_SORT,
+                )),
+                ScPrefCategory(R.string.sc_pref_category_timeline, null, listOf(
+                    PL_DISPLAY_NAME,
+                    SYNC_READ_RECEIPT_AND_MARKER,
+                )),
             )),
         )),
         ScPrefCategory(CommonStrings.common_developer_options, null, listOf(
@@ -111,6 +119,8 @@ object ScPrefs {
     ))
 
     val devQuickTweaksOverview = listOf(
+        PIN_FAVORITES,
+        CLIENT_SIDE_UNREAD_SORT.copy(titleRes = R.string.sc_pref_client_side_unread_sort_title_short),
         CLIENT_GENERATED_UNREAD_COUNTS,
         ScUpstreamFeatureFlagAliasPref(FeatureFlags.RoomListFilters, R.string.sc_upstream_feature_flag_room_list_filters),
         ScPrefCategory(R.string.sc_pref_category_general_appearance, null, listOf(

@@ -18,6 +18,8 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Sort room list by unread first ‡
 - Non-expanding compact app bar in the chat overview †
 - Show unread counts ([MSC2654](https://github.com/matrix-org/matrix-spec-proposals/pull/2654)) ‡[^1]
+- Experimental client-side unread sorting to respect client-side mention detection and more †
+- Option to show favorites on top †
 
 
 ## Conversation screen

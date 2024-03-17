@@ -40,6 +40,11 @@
     <string name="sc_push_info_summary">View debug info related to push notifications</string>
     <string name="sc_pref_notification_only_alert_once_title">Only alert once</string>
     <string name="sc_pref_notification_only_alert_once_summary">Omit alert sounds for new messages if there is already an open notification for that chat</string>
+    <string name="sc_pref_pin_favorites_title">Pin favorites</string>
+    <string name="sc_pref_pin_favorites_summary">Show chats marked as favorite on top of the list</string>
+    <string name="sc_pref_client_side_unread_sort_title">Client-side unread sorting</string>
+    <string name="sc_pref_client_side_unread_sort_title_short">Client sorting</string>
+    <string name="sc_pref_client_side_unread_sort_summary">Sort chats based on client-side unread calculation</string>
 
     <string name="sc_pref_dev_quick_options">Quick settings</string>
     <string name="sc_pref_debug_read_marker">Debug read marker</string>

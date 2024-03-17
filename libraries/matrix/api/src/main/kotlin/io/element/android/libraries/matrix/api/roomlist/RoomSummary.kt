@@ -50,6 +50,7 @@ data class RoomSummaryDetails(
     val unreadNotificationCount: Int = 0,
     val highlightCount: Int = 0,
     val unreadCount: Int = 0,
+    val isLowPriority: Boolean = false,
     // SC end
     val isMarkedUnread: Boolean,
     val inviter: RoomMember?,

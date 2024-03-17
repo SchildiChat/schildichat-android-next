@@ -43,6 +43,7 @@ class RoomSummaryDetailsFactory(private val roomMessageFactory: RoomMessageFacto
             unreadNotificationCount = roomInfo.notificationCount.toInt(),
             highlightCount = roomInfo.highlightCount.toInt(),
             unreadCount = roomInfo.unreadCount.toInt(),
+            isLowPriority = roomInfo.isLowPriority,
             isMarkedUnread = roomInfo.isMarkedUnread,
             lastMessage = latestRoomMessage,
             inviter = roomInfo.inviter?.let(RoomMemberMapper::map),

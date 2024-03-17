@@ -36,6 +36,9 @@ data class RoomListRoomSummary(
     val notificationCount: Int = 0,
     val highlightCount: Int = 0,
     val unreadCount: Int = 0,
+    // SC client-side sorting
+    val lastMessageTimestamp: Long? = null,
+    val isLowPriority: Boolean = false,
     // SC end
     val isMarkedUnread: Boolean,
     val timestamp: String?,

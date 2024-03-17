@@ -22,10 +22,12 @@ class ScRoomSortOrderSource @Inject constructor(
         // From life space list and current space selection, build the RoomId filter
         combine(
             scPreferencesStore.settingFlow(ScPrefs.PIN_FAVORITES),
-            scPreferencesStore.settingFlow(ScPrefs.CLIENT_SIDE_UNREAD_SORT),
+            scPreferencesStore.settingFlow(ScPrefs.BURY_LOW_PRIORITY),
+            scPreferencesStore.settingFlow(ScPrefs.CLIENT_SIDE_SORT),
+            scPreferencesStore.settingFlow(ScPrefs.SORT_BY_ACTIVITY),
             scPreferencesStore.settingFlow(ScPrefs.CLIENT_GENERATED_UNREAD_COUNTS),
-        ) { pinFavorites, clientSideUnreadSort, clientSideUnreadCounts ->
-            ScRoomSortOrder(pinFavorites, clientSideUnreadSort, clientSideUnreadCounts)
+        ) { pinFavorites, buryLowPriority, clientSideSort, activitySort, clientSideUnreadCounts ->
+            ScRoomSortOrder(pinFavorites, buryLowPriority, clientSideSort, activitySort, clientSideUnreadCounts)
         }.onEach { result ->
             _sortOrder.emit(result)
         }.launchIn(coroutineScope)
@@ -33,10 +35,18 @@ class ScRoomSortOrderSource @Inject constructor(
 
     fun sortRooms(rooms: List<RoomListRoomSummary>, order: ScRoomSortOrder): List<RoomListRoomSummary> {
         return if (order.needsAction()) {
-            rooms.sortedBy { room ->
-                val favoriteAdd = if (order.pinFavorites && !room.isFavorite) 100 else 0
+            // Do activity-based sorting as separate step, since we do not know for sure the range of timestamps,
+            // but we want to prioritize favorite state above activity
+            if (order.activitySort) {
+                rooms.sortedByDescending { it.lastMessageTimestamp ?: 0L }
+            } else {
+                rooms
+            }.sortedBy { room ->
+                val favoriteAdd = if (order.pinFavorites && !room.isFavorite) 1000 else 0
+                val lowPrioAdd = if (order.buryLowPriority && room.isLowPriority) 100 else 0
                 val unreadAdd = when {
-                    !order.clientSideUnreadSort -> 0
+                    order.activitySort -> 0
+                    !order.clientSideSort -> 0
                     order.clientSideUnreadCounts -> unreadSort(
                         room.isMarkedUnread,
                         room.numberOfUnreadMentions,
@@ -50,7 +60,7 @@ class ScRoomSortOrderSource @Inject constructor(
                         room.unreadCount
                     )
                 }
-                favoriteAdd + unreadAdd
+                favoriteAdd + lowPrioAdd + unreadAdd
             }
         } else {
             rooms
@@ -68,8 +78,10 @@ class ScRoomSortOrderSource @Inject constructor(
 
 data class ScRoomSortOrder(
     val pinFavorites: Boolean,
-    val clientSideUnreadSort: Boolean,
+    val buryLowPriority: Boolean,
+    val clientSideSort: Boolean,
+    val activitySort: Boolean,
     val clientSideUnreadCounts: Boolean,
 ) {
-    fun needsAction() = pinFavorites || clientSideUnreadSort
+    fun needsAction() = pinFavorites || buryLowPriority || clientSideSort || activitySort
 }

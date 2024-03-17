@@ -42,9 +42,14 @@
     <string name="sc_pref_notification_only_alert_once_summary">Omit alert sounds for new messages if there is already an open notification for that chat</string>
     <string name="sc_pref_pin_favorites_title">Pin favorites</string>
     <string name="sc_pref_pin_favorites_summary">Show chats marked as favorite on top of the list</string>
-    <string name="sc_pref_client_side_unread_sort_title">Client-side unread sorting</string>
-    <string name="sc_pref_client_side_unread_sort_title_short">Client sorting</string>
-    <string name="sc_pref_client_side_unread_sort_summary">Sort chats based on client-side unread calculation</string>
+    <string name="sc_pref_bury_low_priority_title">Low priority on bottom</string>
+    <string name="sc_pref_bury_low_priority_summary">Sort low priority on the bottom of the list</string>
+    <string name="sc_pref_client_side_sort_title">Client-side sorting</string>
+    <string name="sc_pref_client_side_sort_title_short">Client sorting</string>
+    <string name="sc_pref_client_side_sort_summary">Sort chats solely based on client-side calculation</string>
+    <string name="sc_pref_client_side_activity_sort_title">Sort by activity</string>
+    <string name="sc_pref_client_side_activity_sort_summary">Ignore unread state when sorting chats</string>
+    <string name="sc_pref_category_chat_sorting">Sort order</string>
 
     <string name="sc_pref_dev_quick_options">Quick settings</string>
     <string name="sc_pref_debug_read_marker">Debug read marker</string>

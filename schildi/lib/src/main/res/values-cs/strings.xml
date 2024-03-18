@@ -53,4 +53,11 @@
     <string name="sc_pref_debug_read_marker">Ladit značku přečtení</string>
     <string name="sc_space_all_rooms_title">Všechny chaty</string>
     <string name="sc_upstream_feature_flag_room_list_filters">Filtry seznamu místností</string>
+    <string name="sc_pref_client_side_unread_sort_title_short">Třídění na straně klienta</string>
+    <string name="sc_pref_pin_favorites_title">Připnuté oblíbené</string>
+    <string name="sc_pref_pin_favorites_summary">Zobrazí chaty označené jako oblíbené v horní části seznamu</string>
+    <string name="sc_pref_client_side_unread_sort_title">Třídění nepřečtených na straně klienta</string>
+    <string name="sc_pref_client_side_unread_sort_summary">Třídit chaty na základě výpočtu nepřečtených na straně klienta</string>
+    <string name="sc_pref_notification_only_alert_once_title">Upozornění pouze jednou</string>
+    <string name="sc_pref_notification_only_alert_once_summary">Vynechat zvuky upozornění na nové zprávy, pokud je pro daný chat již otevřené oznámení</string>
 </resources>

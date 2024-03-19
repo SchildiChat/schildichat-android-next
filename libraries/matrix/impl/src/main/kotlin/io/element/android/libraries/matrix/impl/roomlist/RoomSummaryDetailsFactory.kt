@@ -24,6 +24,7 @@ import io.element.android.libraries.matrix.impl.room.member.RoomMemberMapper
 import io.element.android.libraries.matrix.impl.room.message.RoomMessageFactory
 import org.matrix.rustcomponents.sdk.RoomInfo
 import org.matrix.rustcomponents.sdk.use
+import kotlin.math.max
 
 class RoomSummaryDetailsFactory(private val roomMessageFactory: RoomMessageFactory = RoomMessageFactory()) {
     fun create(roomInfo: RoomInfo): RoomSummaryDetails {
@@ -41,7 +42,7 @@ class RoomSummaryDetailsFactory(private val roomMessageFactory: RoomMessageFacto
             numUnreadMessages = roomInfo.numUnreadMessages.toInt(),
             numUnreadNotifications = roomInfo.numUnreadNotifications.toInt(),
             unreadNotificationCount = roomInfo.notificationCount.toInt(),
-            highlightCount = roomInfo.highlightCount.toInt(),
+            highlightCount = max(roomInfo.highlightCount.toInt(), roomInfo.numUnreadMentions.toInt()), // Encrypted rooms don't know mentions server-side, so check both values
             unreadCount = roomInfo.unreadCount.toInt(),
             isLowPriority = roomInfo.isLowPriority,
             isMarkedUnread = roomInfo.isMarkedUnread,

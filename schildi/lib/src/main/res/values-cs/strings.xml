@@ -57,4 +57,12 @@
     <string name="sc_pref_pin_favorites_summary">Zobrazí chaty označené jako oblíbené v horní části seznamu</string>
     <string name="sc_pref_notification_only_alert_once_title">Upozornění pouze jednou</string>
     <string name="sc_pref_notification_only_alert_once_summary">Vynechat zvuky upozornění na nové zprávy, pokud je pro daný chat již otevřené oznámení</string>
+    <string name="sc_pref_bury_low_priority_summary">Řazení s nízkou prioritou na konec seznamu</string>
+    <string name="sc_pref_client_side_sort_title">Řazení na straně klienta</string>
+    <string name="sc_pref_client_side_activity_sort_title">Řazení podle aktivity</string>
+    <string name="sc_pref_client_side_activity_sort_summary">Ignorovat nepřečtený stav při řazení chatů</string>
+    <string name="sc_pref_category_chat_sorting">Pořadí řazení</string>
+    <string name="sc_pref_bury_low_priority_title">S nízkou prioritou dole</string>
+    <string name="sc_pref_client_side_sort_title_short">Řazení v klientu</string>
+    <string name="sc_pref_client_side_sort_summary">Řazení chatů pouze na základě výpočtu na straně klienta</string>
 </resources>

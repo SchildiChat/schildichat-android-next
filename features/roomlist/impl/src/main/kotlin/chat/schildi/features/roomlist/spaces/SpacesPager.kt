@@ -50,6 +50,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -65,7 +66,6 @@ import chat.schildi.lib.preferences.value
 import chat.schildi.lib.util.formatUnreadCount
 import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.ElementTheme
-import io.element.android.features.roomlist.impl.R
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.text.toPx
@@ -84,7 +84,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun SpacesPager(
-    spacesList: ImmutableList<SpaceListDataSource.SpaceHierarchyItem>,
+    spacesList: ImmutableList<SpaceListDataSource.AbstractSpaceHierarchyItem>,
     spaceUnreadCounts: ImmutableMap<String?, SpaceUnreadCountsDataSource.SpaceUnreadCounts>,
     spaceSelectionHierarchy: ImmutableList<String>,
     onSpaceSelected: (List<String>) -> Unit,
@@ -106,7 +106,7 @@ fun SpacesPager(
                 if (newSelection == null) {
                     onSpaceSelected(parentSelection)
                 } else {
-                    onSpaceSelected(parentSelection + listOf(newSelection.info.roomId.value))
+                    onSpaceSelected(parentSelection + listOf(newSelection.selectionId))
                 }
             },
             compactTabs = ScPrefs.COMPACT_ROOT_SPACES.value(),
@@ -118,19 +118,19 @@ fun SpacesPager(
 
 @Composable
 private fun ColumnScope.SpacesPager(
-    spacesList: ImmutableList<SpaceListDataSource.SpaceHierarchyItem>,
+    spacesList: ImmutableList<SpaceListDataSource.AbstractSpaceHierarchyItem>,
     spaceUnreadCounts: ImmutableMap<String?, SpaceUnreadCountsDataSource.SpaceUnreadCounts>,
     spaceSelection: ImmutableList<String>,
-    defaultSpace: SpaceListDataSource.SpaceHierarchyItem?,
+    defaultSpace: SpaceListDataSource.AbstractSpaceHierarchyItem?,
     parentSelection: ImmutableList<String>,
-    selectSpace: (SpaceListDataSource.SpaceHierarchyItem?, ImmutableList<String>) -> Unit,
+    selectSpace: (SpaceListDataSource.AbstractSpaceHierarchyItem?, ImmutableList<String>) -> Unit,
     compactTabs: Boolean,
     content: @Composable (Modifier) -> Unit,
 ) {
     val selectedSpaceIndex = if (spaceSelection.isEmpty()) {
         -1
     } else {
-        spacesList.indexOfFirst { it.info.roomId.value == spaceSelection.first() }
+        spacesList.indexOfFirst { it.selectionId == spaceSelection.first() }
     }
     val childSelections = if (spaceSelection.isEmpty()) spaceSelection else spaceSelection.subList(1, spaceSelection.size)
     if (selectedSpaceIndex < 0 && childSelections.isNotEmpty()) {
@@ -147,16 +147,19 @@ private fun ColumnScope.SpacesPager(
 
     // Child spaces if expanded
     if (selectedSpaceIndex != -1 && expandSpaceChildren) {
-        SpacesPager(
-            spacesList = spacesList[selectedSpaceIndex].spaces,
-            spaceUnreadCounts = spaceUnreadCounts,
-            selectSpace = selectSpace,
-            spaceSelection = childSelections,
-            defaultSpace = spacesList[selectedSpaceIndex],
-            parentSelection = (parentSelection + listOf(spacesList[selectedSpaceIndex].info.roomId.value)).toImmutableList(),
-            compactTabs = false,
-            content = content,
-        )
+        val safeSpace = spacesList[selectedSpaceIndex] as? SpaceListDataSource.SpaceHierarchyItem
+        if (safeSpace != null) {
+            SpacesPager(
+                spacesList = safeSpace.spaces,
+                spaceUnreadCounts = spaceUnreadCounts,
+                selectSpace = selectSpace,
+                spaceSelection = childSelections,
+                defaultSpace = spacesList[selectedSpaceIndex],
+                parentSelection = (parentSelection + listOf(spacesList[selectedSpaceIndex].selectionId)).toImmutableList(),
+                compactTabs = false,
+                content = content,
+            )
+        }
     } else {
         if (ScPrefs.SPACE_SWIPE.value()) {
             // Swipable content
@@ -254,7 +257,7 @@ private fun ColumnScope.SpacesPager(
         }
     ) {
         if (defaultSpace != null) {
-            SpaceTab(defaultSpace, spaceUnreadCounts[defaultSpace.info.roomId.value], selectedTab == 0, expandSpaceChildren, false, compactTabs) {
+            SpaceTab(defaultSpace, spaceUnreadCounts[defaultSpace.selectionId], selectedTab == 0, expandSpaceChildren, false, compactTabs) {
                 expandSpaceChildren = false
                 if (selectedTab != 0) {
                     selectSpace(null, parentSelection)
@@ -272,7 +275,7 @@ private fun ColumnScope.SpacesPager(
             val selected = selectedSpaceIndex == index
             SpaceTab(
                 space,
-                spaceUnreadCounts[space.info.roomId.value],
+                spaceUnreadCounts[space.selectionId],
                 selected,
                 expandSpaceChildren,
                 renderExpandableIndicatorInTabs && space.spaces.isNotEmpty(),
@@ -299,8 +302,8 @@ private fun ColumnScope.SpacesPager(
 
 private fun selectSpaceIndex(
     index: Int,
-    spacesList: ImmutableList<SpaceListDataSource.SpaceHierarchyItem>,
-    selectSpace: (SpaceListDataSource.SpaceHierarchyItem?, ImmutableList<String>) -> Unit,
+    spacesList: ImmutableList<SpaceListDataSource.AbstractSpaceHierarchyItem>,
+    selectSpace: (SpaceListDataSource.AbstractSpaceHierarchyItem?, ImmutableList<String>) -> Unit,
     parentSelection: ImmutableList<String>
 ) {
     if (index == 0) {
@@ -311,7 +314,7 @@ private fun selectSpaceIndex(
 }
 
 @Composable
-private fun SwipeIndicator(space: SpaceListDataSource.SpaceHierarchyItem?, upwards: Boolean, thresholdProgress: Float, modifier: Modifier) {
+private fun SwipeIndicator(space: SpaceListDataSource.AbstractSpaceHierarchyItem?, upwards: Boolean, thresholdProgress: Float, modifier: Modifier) {
     Row(modifier) {
         if (upwards) {
             SwipeIndicatorArrow(imageVector = Icons.AutoMirrored.Outlined.ArrowBackIos, thresholdProgress = thresholdProgress)
@@ -322,11 +325,7 @@ private fun SwipeIndicator(space: SpaceListDataSource.SpaceHierarchyItem?, upwar
                 .background(MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.65f), CircleShape)
                 .padding(8.dp)
         ) {
-            if (space == null) {
-                ShowAllIcon(AvatarSize.SpaceSwipeIndicator, color = MaterialTheme.colorScheme.inverseOnSurface)
-            } else {
-                Avatar(space.info.avatarData.copy(size = AvatarSize.SpaceSwipeIndicator), shape = CircleShape)
-            }
+            AbstractSpaceIcon(space, AvatarSize.SpaceSwipeIndicator, color = MaterialTheme.colorScheme.inverseOnSurface)
         }
         if (!upwards) {
             SwipeIndicatorArrow(imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos, thresholdProgress = thresholdProgress)
@@ -424,7 +423,7 @@ private fun AbstractSpaceTab(
 
 @Composable
 private fun SpaceTab(
-    space: SpaceListDataSource.SpaceHierarchyItem,
+    space: SpaceListDataSource.AbstractSpaceHierarchyItem,
     unreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts?,
     selected: Boolean,
     collapsed: Boolean,
@@ -433,7 +432,7 @@ private fun SpaceTab(
     onClick: () -> Unit
 ) {
     AbstractSpaceTab(
-        text = space.info.name,
+        text = space.name,
         selected = selected,
         collapsed = collapsed,
         expandable = expandable,
@@ -441,15 +440,29 @@ private fun SpaceTab(
         onClick = onClick,
     ) {
         UnreadCountBox(unreadCounts, spaceTabUnreadBadgeOffset(compact)) {
-            Avatar(space.info.avatarData.copy(size = spaceTabIconSize(compact)), shape = spaceTabIconShape(compact))
+            AbstractSpaceIcon(space = space, size = spaceTabIconSize(compact), shape = spaceTabIconShape(compact))
         }
     }
 }
 
 @Composable
-private fun ShowAllIcon(size: AvatarSize, color: Color = MaterialTheme.colorScheme.primary) {
+private fun AbstractSpaceIcon(
+    space: SpaceListDataSource.AbstractSpaceHierarchyItem?,
+    size: AvatarSize,
+    color: Color = MaterialTheme.colorScheme.primary,
+    shape: Shape = CircleShape
+) {
+    when(space) {
+        is SpaceListDataSource.SpaceHierarchyItem -> Avatar(space.info.avatarData.copy(size = size), shape = shape)
+        is SpaceListDataSource.PseudoSpaceItem -> PseudoSpaceIcon(imageVector = space.icon, size = size, color = color)
+        else -> PseudoSpaceIcon(Icons.Filled.Home, AvatarSize.SpaceSwipeIndicator, color = color)
+    }
+}
+
+@Composable
+private fun PseudoSpaceIcon(imageVector: ImageVector, size: AvatarSize, color: Color = MaterialTheme.colorScheme.primary) {
     Icon(
-        imageVector = Icons.Filled.Home,
+        imageVector = imageVector,
         contentDescription = null,
         modifier = Modifier.size(size.dp),
         tint = color,
@@ -473,7 +486,7 @@ private fun ShowAllTab(
         onClick = onClick,
     ) {
         UnreadCountBox(unreadCounts, spaceTabUnreadBadgeOffset(compact)) {
-            ShowAllIcon(spaceTabIconSize(compact))
+            PseudoSpaceIcon(Icons.Filled.Home, spaceTabIconSize(compact))
         }
     }
 }

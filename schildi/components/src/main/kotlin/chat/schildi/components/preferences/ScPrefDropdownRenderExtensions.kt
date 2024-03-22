@@ -66,8 +66,11 @@ fun ScPrefContainer.RenderedDropdown(
         }
     }
 
+    val enabled = LocalScPreferencesStore.current.enabledState(this).value
     DropdownMenuItem(
+        enabled = enabled,
         onClick = {
+            if (!enabled) return@DropdownMenuItem
             showMenu = true
         },
         text = { Text(stringResource(id = titleRes)) },

@@ -44,6 +44,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import chat.schildi.features.roomlist.spaces.SpacesPager
+import chat.schildi.features.roomlist.spaces.isSpaceFilterActive
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import io.element.android.compound.theme.ElementTheme
@@ -203,7 +204,7 @@ private fun RoomsViewList(
     onInvitesClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val withSpaceFilter = state.spaceSelectionHierarchy.isNotEmpty()
+    val withSpaceFilter = isSpaceFilterActive(state.spaceSelectionHierarchy)
 
     val lazyListState = rememberLazyListState()
     val visibleRange by remember {

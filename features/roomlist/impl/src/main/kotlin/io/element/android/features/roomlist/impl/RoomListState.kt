@@ -82,7 +82,7 @@ sealed interface RoomListContentState {
         val securityBannerState: SecurityBannerState,
         val summaries: ImmutableList<RoomListRoomSummary>,
         // SC additions
-        val spacesList: ImmutableList<SpaceListDataSource.SpaceHierarchyItem> = persistentListOf(),
+        val spacesList: ImmutableList<SpaceListDataSource.AbstractSpaceHierarchyItem> = persistentListOf(),
         val spaceSelectionHierarchy: ImmutableList<String> = persistentListOf(),
         val spaceUnreadCounts: ImmutableMap<String?, SpaceUnreadCountsDataSource.SpaceUnreadCounts> = persistentMapOf(),
         // SC additions end

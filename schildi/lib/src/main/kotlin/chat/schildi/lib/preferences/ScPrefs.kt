@@ -24,6 +24,11 @@ object ScPrefs {
     val COMPACT_APP_BAR = ScBoolPref("COMPACT_APP_BAR", true, R.string.sc_pref_compact_app_bar_title, R.string.sc_pref_compact_app_bar_summary, upstreamChoice = false)
     val SC_OVERVIEW_LAYOUT = ScBoolPref("SC_OVERVIEW_LAYOUT", true, R.string.sc_pref_sc_overview_layout_title, upstreamChoice = false)
     val CLIENT_GENERATED_UNREAD_COUNTS = ScBoolPref("CLIENT_GENERATED_UNREAD_COUNTS", false, R.string.sc_client_generated_unread_counts_title, R.string.sc_client_generated_unread_counts_summary, upstreamChoice = true, authorsChoice = false)
+    val PIN_FAVORITES = ScBoolPref("PIN_FAVORITES", false, R.string.sc_pref_pin_favorites_title, R.string.sc_pref_pin_favorites_summary, upstreamChoice = false, authorsChoice = true)
+    val BURY_LOW_PRIORITY = ScBoolPref("BURY_LOW_PRIORITY", false, R.string.sc_pref_bury_low_priority_title, R.string.sc_pref_bury_low_priority_summary, upstreamChoice = false, authorsChoice = false)
+    val CLIENT_SIDE_SORT = ScBoolPref("CLIENT_SIDE_SORT", false, R.string.sc_pref_client_side_sort_title, R.string.sc_pref_client_side_sort_summary, upstreamChoice = false, authorsChoice = false)
+    val SORT_BY_ACTIVITY = ScBoolPref("SORT_BY_ACTIVITY", false, R.string.sc_pref_client_side_activity_sort_title, R.string.sc_pref_client_side_activity_sort_summary, authorsChoice = false, dependencies = CLIENT_SIDE_SORT.asDependencies())
+    // Spaces
     val SPACE_NAV = ScBoolPref("SPACE_NAV", false, R.string.sc_space_nav_title, R.string.sc_space_nav_summary, upstreamChoice = false, authorsChoice = true)
     val COMPACT_ROOT_SPACES = ScBoolPref("COMPACT_ROOT_SPACES", false, R.string.sc_compact_root_spaces_title, R.string.sc_compact_root_spaces_summary, authorsChoice = true, dependencies = SPACE_NAV.asDependencies())
     val SPACE_UNREAD_COUNTS = ScStringListPref(
@@ -36,10 +41,9 @@ object ScPrefs {
         dependencies = SPACE_NAV.asDependencies(),
     )
     val SPACE_SWIPE = ScBoolPref("SPACE_SWIPE", false, R.string.sc_space_swipe_title, R.string.sc_space_swipe_summary, upstreamChoice = false, authorsChoice = true, dependencies = SPACE_NAV.asDependencies())
-    val PIN_FAVORITES = ScBoolPref("PIN_FAVORITES", false, R.string.sc_pref_pin_favorites_title, R.string.sc_pref_pin_favorites_summary, upstreamChoice = false, authorsChoice = true)
-    val BURY_LOW_PRIORITY = ScBoolPref("BURY_LOW_PRIORITY", false, R.string.sc_pref_bury_low_priority_title, R.string.sc_pref_bury_low_priority_summary, upstreamChoice = false, authorsChoice = false)
-    val CLIENT_SIDE_SORT = ScBoolPref("CLIENT_SIDE_SORT", false, R.string.sc_pref_client_side_sort_title, R.string.sc_pref_client_side_sort_summary, upstreamChoice = false, authorsChoice = false)
-    val SORT_BY_ACTIVITY = ScBoolPref("SORT_BY_ACTIVITY", false, R.string.sc_pref_client_side_activity_sort_title, R.string.sc_pref_client_side_activity_sort_summary, authorsChoice = false, dependencies = CLIENT_SIDE_SORT.asDependencies())
+    val PSEUDO_SPACE_FAVORITES = ScBoolPref("PSEUDO_SPACE_FAVORITES", false, R.string.sc_pseudo_space_favorites, null, dependencies = SPACE_NAV.asDependencies())
+    val PSEUDO_SPACE_DMS = ScBoolPref("PSEUDO_SPACE_DMS", false, R.string.sc_pseudo_space_dms_groups, null, dependencies = SPACE_NAV.asDependencies())
+    val PSEUDO_SPACE_SPACELESS = ScBoolPref("PSEUDO_SPACE_SPACELESS", false, R.string.sc_pseudo_space_spaceless, null, dependencies = SPACE_NAV.asDependencies())
 
     // Timeline
     val SC_TIMELINE_LAYOUT = ScBoolPref("SC_TIMELINE_LAYOUT", true, R.string.sc_pref_sc_timeline_layout_title, upstreamChoice = false)
@@ -81,6 +85,11 @@ object ScPrefs {
             SPACE_UNREAD_COUNTS,
             SPACE_SWIPE,
             COMPACT_ROOT_SPACES,
+            ScPrefScreen(R.string.sc_pseudo_spaces_title, R.string.sc_pseudo_spaces_summary_experimental, listOf(
+                PSEUDO_SPACE_DMS,
+                PSEUDO_SPACE_SPACELESS,
+                PSEUDO_SPACE_FAVORITES,
+            ), dependencies = SPACE_NAV.asDependencies())
         )),
         ScPrefCategory(R.string.sc_pref_category_timeline, null, listOf(
             SC_TIMELINE_LAYOUT,
@@ -141,6 +150,11 @@ object ScPrefs {
         ScPrefCategory(R.string.sc_pref_category_misc, null, listOf(
             SPACE_NAV,
             COMPACT_ROOT_SPACES,
+            ScPrefCategory(R.string.sc_pseudo_spaces_title, null, listOf(
+                PSEUDO_SPACE_DMS,
+                PSEUDO_SPACE_SPACELESS.copy(titleRes = R.string.sc_pseudo_space_spaceless_short),
+                PSEUDO_SPACE_FAVORITES,
+            ), dependencies = SPACE_NAV.asDependencies()),
             SYNC_READ_RECEIPT_AND_MARKER,
         )),
     )

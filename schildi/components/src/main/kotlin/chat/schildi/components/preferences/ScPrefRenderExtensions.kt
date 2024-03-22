@@ -63,10 +63,16 @@ fun ScPrefCategory.Rendered(
 fun ScPrefScreen.Rendered(
     onClick: () -> Unit
 ) {
+    val enabled = LocalScPreferencesStore.current.enabledState(this).value
     PreferenceText(
         title = stringResource(id = titleRes),
         subtitle = summaryRes?.let { stringResource(id = it) },
-        onClick = onClick,
+        onClick = {
+            if (enabled) {
+                onClick()
+            }
+        },
+        enabled = enabled,
     )
 }
 

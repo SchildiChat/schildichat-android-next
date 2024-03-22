@@ -44,16 +44,16 @@ class SpaceUnreadCountsDataSource @Inject constructor(
                 // When a space is selected, either its children or its siblings and parent can be visible.
                 // Here, the space's "siblings" contains the selected space itself as well.
                 // Root spaces can be visible as well in the case of compact app bar.
-                val children = rootSpaces.resolveSelection(spaceSelectionValue)?.spaces.orEmpty()
+                val children = (rootSpaces.resolveSelection(spaceSelectionValue) as? SpaceListDataSource.SpaceHierarchyItem)?.spaces.orEmpty()
                 val parent = rootSpaces.resolveSelection(spaceSelectionValue.subList(0, spaceSelectionValue.size-1))
-                val siblings = parent?.spaces ?: emptyList()
+                val siblings = (parent as? SpaceListDataSource.SpaceHierarchyItem)?.spaces.orEmpty()
                 rootSpaces + siblings + children + parent?.let { if (rootSpaces.contains(parent)) emptyList() else listOf(it) }.orEmpty()
             }
             val result = mutableMapOf<String?, SpaceUnreadCounts>(
                 // Total count
                 null to getAggregatedUnreadCounts(allRoomsValue, useClientGeneratedCounts)
             )
-            visibleSpaces.forEach { result[it.info.roomId.value] = getUnreadCountsForSpace(it, allRoomsValue, useClientGeneratedCounts) }
+            visibleSpaces.forEach { result[it.selectionId] = getUnreadCountsForSpace(it, allRoomsValue, useClientGeneratedCounts) }
             result
         }.onEach {
             _spaceUnreadCounts.emit(it.toImmutableMap())
@@ -61,11 +61,11 @@ class SpaceUnreadCountsDataSource @Inject constructor(
     }
 
     private fun getUnreadCountsForSpace(
-        space: SpaceListDataSource.SpaceHierarchyItem,
+        space: SpaceListDataSource.AbstractSpaceHierarchyItem,
         allRooms: List<RoomListRoomSummary>,
         useClientGeneratedUnreadCounts: Boolean,
     ) = getAggregatedUnreadCounts(
-        allRooms.filter { space.flattenedRooms.contains(it.roomId.value) },
+        space.applyFilter(allRooms),
         useClientGeneratedUnreadCounts,
     )
 

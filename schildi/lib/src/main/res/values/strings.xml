@@ -52,6 +52,14 @@
     <string name="sc_pref_category_chat_sorting">Sort order</string>
     <string name="sc_pref_prefer_freeform_reactions_title">Prefer freeform reactions</string>
     <string name="sc_pref_prefer_freeform_reactions_summary">Open the emoji picker showing the freeform reaction input by default</string>
+    <string name="sc_pseudo_spaces_title">Pseudo spaces</string>
+    <string name="sc_pseudo_spaces_summary_experimental">Additional space pages (experimental)</string>
+    <string name="sc_pseudo_space_favorites">Favorites</string>
+    <string name="sc_pseudo_space_dms_groups">Direct chats &amp; groups</string>
+    <string name="sc_pseudo_space_dms">Direct chats</string>
+    <string name="sc_pseudo_space_groups">Groups</string>
+    <string name="sc_pseudo_space_spaceless_short">Space orphans</string>
+    <string name="sc_pseudo_space_spaceless">Groups not added to spaces</string>
 
     <string name="sc_pref_dev_quick_options">Quick settings</string>
     <string name="sc_pref_debug_read_marker">Debug read marker</string>

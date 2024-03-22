@@ -1,6 +1,8 @@
 package chat.schildi.features.roomlist.spaces
 
 import chat.schildi.lib.preferences.ScAppStateStore
+import chat.schildi.lib.preferences.ScPreferencesStore
+import chat.schildi.lib.preferences.ScPrefs
 import io.element.android.features.roomlist.impl.datasource.RoomListDataSource
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.libraries.matrix.api.MatrixClient
@@ -25,12 +27,12 @@ import javax.inject.Inject
 
 class SpaceAwareRoomListDataSource @Inject constructor(
     private val client: MatrixClient,
+    private val scPreferencesStore: ScPreferencesStore,
 ) {
 
     private val _spaceSelectionHierarchy = MutableStateFlow<ImmutableList<String>?>(null)
-    private val _spaceChildFilter = MutableStateFlow<ImmutableList<String>?>(null)
     private val _spaceRooms = MutableSharedFlow<ImmutableList<RoomListRoomSummary>>(replay = 1)
-    private val _selectedSpaceItem = MutableStateFlow<SpaceListDataSource.SpaceHierarchyItem?>(null)
+    private val _selectedSpaceItem = MutableStateFlow<SpaceListDataSource.AbstractSpaceHierarchyItem?>(null)
 
     val spaceRooms: SharedFlow<ImmutableList<RoomListRoomSummary>> = _spaceRooms
     val spaceSelectionHierarchy: StateFlow<ImmutableList<String>?> = _spaceSelectionHierarchy
@@ -54,20 +56,21 @@ class SpaceAwareRoomListDataSource @Inject constructor(
         combine(
             _spaceSelectionHierarchy,
             spaceListDataSource.allSpaces,
-        ) { spaceSelectionValue, allSpacesValue ->
+            scPreferencesStore.settingFlow(ScPrefs.PSEUDO_SPACE_DMS),
+            scPreferencesStore.settingFlow(ScPrefs.PSEUDO_SPACE_FAVORITES),
+        ) { spaceSelectionValue, allSpacesValue, showDmsAsSpace, showFavoritesAsSpace ->
             // No space selected or not initialized yet -> show all
             if (spaceSelectionValue.isNullOrEmpty()) {
                 return@combine Pair(null, true)
             }
             // Show all rooms while space list is not loaded yet, without clearing the space hierarchy
-            val spaceList = allSpacesValue?.takeIf { it.isNotEmpty() } ?: return@combine Pair(null, true)
+            val spaceList = allSpacesValue?.takeIf { it.isNotEmpty() || showDmsAsSpace || showFavoritesAsSpace } ?: return@combine Pair(null, true)
             // Resolve actual space from space hierarchy
             val space = spaceList.resolveSelection(spaceSelectionValue) ?: return@combine Pair(null, false)
             return@combine Pair(space, true)
         }
             .onEach { (space, spaceFound) ->
                 _selectedSpaceItem.value = space
-                _spaceChildFilter.value = space?.flattenedRooms
                 if (!spaceFound) {
                     Timber.i("Selected space not found, clearing selection")
                     updateSpaceSelection(persistentListOf())
@@ -82,20 +85,18 @@ class SpaceAwareRoomListDataSource @Inject constructor(
         // Tell SDK we filter the sliding sync window by spaces
         _selectedSpaceItem.debounce(1000).onEach {
             it ?: return@onEach
-            Timber.v("Pass space selection to SDK")
-            client.roomListService.updateVisibleSpaces(it.flattenedSpaces)
+            val spaces = (it as? SpaceListDataSource.SpaceHierarchyItem)?.flattenedSpaces
+            Timber.v("Pass space selection to SDK: ${spaces?.size} spaces")
+            client.roomListService.updateVisibleSpaces(spaces)
         }.launchIn(coroutineScope)
 
         // Filter by space with the room id list built in the previous flow
         combine(
-            _spaceChildFilter,
+            _selectedSpaceItem,
            roomListDataSource.allRooms
-        ) { filterValue, allRoomsValue ->
+        ) { selectedSpace, allRoomsValue ->
             // Do the actual filtering
-            when (filterValue) {
-                null -> allRoomsValue
-                else -> allRoomsValue.filter { filterValue.contains(it.roomId.value) }
-            }.toImmutableList()
+            selectedSpace?.applyFilter(allRoomsValue) ?: allRoomsValue
         }
             .onEach {
                 _spaceRooms.emit(it)

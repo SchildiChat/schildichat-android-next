@@ -35,6 +35,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Archive
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -153,12 +156,34 @@ private fun RowScope.ScNameAndTimestampRow(room: RoomListRoomSummary) {
         maxLines = 1,
         overflow = TextOverflow.Ellipsis
     )
-    // Timestamp
-    Text(
-        text = room.timestamp ?: "",
-        style = ElementTheme.typography.fontBodySmMedium,
-        color = MaterialTheme.roomListRoomMessageDate(),
-    )
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        // Favorite
+        if (room.isFavorite && ScPrefs.PIN_FAVORITES.value()) {
+            Icon(
+                imageVector = Icons.Default.Star,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
+                tint = MaterialTheme.roomListRoomMessageDate(),
+            )
+        }
+        // Low prio
+        if (room.isLowPriority && ScPrefs.BURY_LOW_PRIORITY.value()) {
+            Icon(
+                imageVector = Icons.Default.Archive,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
+                tint = MaterialTheme.roomListRoomMessageDate(),
+            )
+        }
+        // Timestamp
+        if (!room.timestamp.isNullOrEmpty()) {
+            Text(
+                text = room.timestamp,
+                style = ElementTheme.typography.fontBodySmMedium,
+                color = MaterialTheme.roomListRoomMessageDate(),
+            )
+        }
+    }
 }
 
 @Composable

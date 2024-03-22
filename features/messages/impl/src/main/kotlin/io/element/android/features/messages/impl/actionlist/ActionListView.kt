@@ -333,6 +333,7 @@ private fun EmojiReactionsRow(
                     )
             )
         }
+        // TODO SC extension for quicker freeform reaction
     }
 }
 

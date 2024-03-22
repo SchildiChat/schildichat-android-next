@@ -38,6 +38,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.value
 import io.element.android.emojibasebindings.Emoji
 import io.element.android.emojibasebindings.EmojibaseCategory
 import io.element.android.emojibasebindings.EmojibaseDatasource
@@ -54,13 +56,17 @@ import kotlinx.coroutines.launch
 @Composable
 fun EmojiPicker(
     onEmojiSelected: (Emoji) -> Unit,
+    onCustomEmojiSelected: (String) -> Unit,
     emojibaseStore: EmojibaseStore,
     selectedEmojis: ImmutableSet<String>,
     modifier: Modifier = Modifier,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val categories = remember { emojibaseStore.categories }
-    val pagerState = rememberPagerState(pageCount = { EmojibaseCategory.entries.size })
+    val pagerState = rememberPagerState(
+        pageCount = { SC_EMOJI_PICKER_SIZE },
+        initialPage = if (ScPrefs.PREFER_FREEFORM_REACTIONS.value()) PAGE_FREEFORM_REACTION else 0,
+    )
     Column(modifier) {
         SecondaryTabRow(
             selectedTabIndex = pagerState.currentPage,
@@ -79,12 +85,16 @@ fun EmojiPicker(
                     }
                 )
             }
+            ScEmojiPickerTabs(pagerState)
         }
 
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxWidth(),
         ) { index ->
+            if (scEmojiPickerPage(index, pagerState.currentPage, onCustomEmojiSelected)) {
+                return@HorizontalPager
+            }
             val category = EmojibaseCategory.entries[index]
             val emojis = categories[category] ?: listOf()
             LazyVerticalGrid(
@@ -113,6 +123,7 @@ fun EmojiPicker(
 internal fun EmojiPickerPreview() = ElementPreview {
     EmojiPicker(
         onEmojiSelected = {},
+        onCustomEmojiSelected = {},
         emojibaseStore = EmojibaseDatasource().load(LocalContext.current),
         selectedEmojis = persistentSetOf("😀", "😄", "😃"),
         modifier = Modifier.fillMaxWidth(),

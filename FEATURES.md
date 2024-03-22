@@ -29,6 +29,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Bigger stickers
 - Differentiate notices from normal text messages by adding some transparency
 - Render collapsible `<details>` tags in messages
+- Allow sending freeform reactions
 
 
 ## Notifications

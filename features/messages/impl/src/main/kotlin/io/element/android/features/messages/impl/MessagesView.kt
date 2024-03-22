@@ -259,6 +259,9 @@ fun MessagesView(
         state = state.customReactionState,
         onEmojiSelected = { eventId, emoji ->
             state.eventSink(MessagesEvents.ToggleReaction(emoji.unicode, eventId))
+        },
+        onCustomEmojiSelected = { eventId, emoji ->
+            state.eventSink(MessagesEvents.ToggleReaction(emoji, eventId))
         }
     )
 

@@ -32,6 +32,7 @@ import io.element.android.libraries.matrix.api.core.EventId
 fun CustomReactionBottomSheet(
     state: CustomReactionState,
     onEmojiSelected: (EventId, Emoji) -> Unit,
+    onCustomEmojiSelected: (EventId, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val sheetState = rememberModalBottomSheetState()
@@ -50,6 +51,14 @@ fun CustomReactionBottomSheet(
         }
     }
 
+    fun onCustomEmojiSelectedDismiss(emoji: String) {
+        if (target?.event?.eventId == null) return
+        sheetState.hide(coroutineScope) {
+            state.eventSink(CustomReactionEvents.DismissCustomReactionSheet)
+            onCustomEmojiSelected(target.event.eventId, emoji)
+        }
+    }
+
     if (target?.emojibaseStore != null && target.event.eventId != null) {
         ModalBottomSheet(
             onDismissRequest = ::onDismiss,
@@ -58,6 +67,7 @@ fun CustomReactionBottomSheet(
         ) {
             EmojiPicker(
                 onEmojiSelected = ::onEmojiSelectedDismiss,
+                onCustomEmojiSelected = ::onCustomEmojiSelectedDismiss,
                 emojibaseStore = target.emojibaseStore,
                 selectedEmojis = state.selectedEmoji,
                 modifier = Modifier.fillMaxSize(),

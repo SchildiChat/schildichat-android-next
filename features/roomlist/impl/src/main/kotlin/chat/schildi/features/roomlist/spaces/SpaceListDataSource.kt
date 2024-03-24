@@ -2,7 +2,9 @@ package chat.schildi.features.roomlist.spaces
 
 import android.content.Context
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Rocket
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Tag
 import androidx.compose.runtime.Composable
@@ -27,12 +29,11 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -63,13 +64,11 @@ class SpaceListDataSource @Inject constructor(
     fun launchIn(coroutineScope: CoroutineScope) {
         combine(
             roomListService.allSpaces.summaries,
-            scPreferencesStore.settingFlow(ScPrefs.PSEUDO_SPACE_FAVORITES),
-            scPreferencesStore.settingFlow(ScPrefs.PSEUDO_SPACE_DMS),
-            scPreferencesStore.settingFlow(ScPrefs.PSEUDO_SPACE_SPACELESS),
+            scPreferencesStore.pseudoSpaceSettingsFlow(),
             _forceRebuildFlow,
-        ) { roomSummaries, showPseudoFavorites, showPseudoDms, showPseudoSpaceless, _ ->
+        ) { roomSummaries, pseudoSpaces, _ ->
             Timber.v("Rebuild space list")
-            replaceWith(roomSummaries, showPseudoFavorites, showPseudoDms, showPseudoSpaceless)
+            replaceWith(roomSummaries, pseudoSpaces)
         }.launchIn(coroutineScope)
     }
 
@@ -77,21 +76,17 @@ class SpaceListDataSource @Inject constructor(
 
     private suspend fun replaceWith(
         roomSummaries: List<RoomSummary>,
-        showPseudoFavorites: Boolean,
-        showPseudoDms: Boolean,
-        showPseudoSpaceless: Boolean
+        pseudoSpaces: PseudoSpaceSettings,
     ) = withContext(coroutineDispatchers.computation) {
         lock.withLock {
             diffCacheUpdater.updateWith(roomSummaries)
-            buildAndEmitAllSpaces(roomSummaries, showPseudoFavorites, showPseudoDms, showPseudoSpaceless)
+            buildAndEmitAllSpaces(roomSummaries, pseudoSpaces)
         }
     }
 
     private suspend fun buildAndEmitAllSpaces(
         spaceSummaries: List<RoomSummary>,
-        showPseudoFavorites: Boolean,
-        showPseudoDms: Boolean,
-        showPseudoSpaceless: Boolean
+        pseudoSpaceSettings: PseudoSpaceSettings,
     ) {
         val spaceListRoomSummaries = if (diffCache.isEmpty()) {
             emptyList()
@@ -110,28 +105,37 @@ class SpaceListDataSource @Inject constructor(
             spaceListRoomSummaries
         }
         val pseudoSpaces = mutableListOf<PseudoSpaceItem>()
-        if (showPseudoFavorites) {
+        if (pseudoSpaceSettings.favorites) {
             pseudoSpaces.add(
                 FavoritesPseudoSpaceItem(context.getString(chat.schildi.lib.R.string.sc_pseudo_space_favorites))
             )
         }
-        if (showPseudoDms) {
+        if (pseudoSpaceSettings.dms) {
             pseudoSpaces.add(
                 DmsPseudoSpaceItem(context.getString(chat.schildi.lib.R.string.sc_pseudo_space_dms))
             )
         }
-        if (showPseudoSpaceless) {
-            val excludedRooms = spaceSummaries.flatMap { (it as? RoomSummary.Filled)?.details?.spaceChildren?.map { it.roomId }.orEmpty() }.toImmutableList()
-            pseudoSpaces.add(
-                if (showPseudoDms)
-                    SpacelessGroupsPseudoSpaceItem(context.getString(chat.schildi.lib.R.string.sc_pseudo_space_groups), excludedRooms)
-                else
-                    SpacelessPseudoSpaceItem(context.getString(chat.schildi.lib.R.string.sc_pseudo_space_spaceless_short), excludedRooms)
-            )
-        } else if (showPseudoDms) {
+        if (pseudoSpaceSettings.groups) {
             pseudoSpaces.add(
                 GroupsPseudoSpaceItem(context.getString(chat.schildi.lib.R.string.sc_pseudo_space_groups))
             )
+        }
+        if (pseudoSpaceSettings.spaceless || pseudoSpaceSettings.spacelessGroups) {
+            val excludedRooms = spaceSummaries.flatMap { (it as? RoomSummary.Filled)?.details?.spaceChildren?.map { it.roomId }.orEmpty() }.toImmutableList()
+            if (pseudoSpaceSettings.spacelessGroups) {
+                pseudoSpaces.add(
+                    SpacelessGroupsPseudoSpaceItem(context.getString(chat.schildi.lib.R.string.sc_pseudo_space_spaceless_groups_short), excludedRooms)
+                )
+            }
+            if (pseudoSpaceSettings.spaceless) {
+                pseudoSpaces.add(
+                    SpacelessPseudoSpaceItem(
+                        context.getString(chat.schildi.lib.R.string.sc_pseudo_space_spaceless_short),
+                        excludedRooms,
+                        pseudoSpaceSettings.spacelessGroups
+                    )
+                )
+            }
         }
         _allSpaces.emit(buildSpaceHierarchy(spaceListRoomSummaries, pseudoSpaces))
     }
@@ -267,19 +271,10 @@ class SpaceListDataSource @Inject constructor(
     @Immutable
     data class GroupsPseudoSpaceItem(override val name: String) : PseudoSpaceItem(
         "group",
-        Icons.Default.Tag,
+        Icons.Default.Groups,
     ) {
         override fun applyFilter(rooms: List<RoomListRoomSummary>) =
             rooms.filter { !it.isDm }.toImmutableList()
-    }
-
-    @Immutable
-    data class SpacelessPseudoSpaceItem(override val name: String, val excludedRooms: ImmutableList<String>) : PseudoSpaceItem(
-        "spaceless",
-        Icons.Default.Tag,
-    ) {
-        override fun applyFilter(rooms: List<RoomListRoomSummary>) =
-            rooms.filter { !excludedRooms.contains(it.roomId.value) }.toImmutableList()
     }
 
     @Immutable
@@ -289,6 +284,41 @@ class SpaceListDataSource @Inject constructor(
     ) {
         override fun applyFilter(rooms: List<RoomListRoomSummary>) =
             rooms.filter { !it.isDm && !excludedRooms.contains(it.roomId.value) }.toImmutableList()
+    }
+
+    @Immutable
+    data class SpacelessPseudoSpaceItem(
+        override val name: String,
+        val excludedRooms: ImmutableList<String>,
+        val conflictsWithSpacelessGroups: Boolean
+    ) : PseudoSpaceItem(
+        "spaceless",
+        if (conflictsWithSpacelessGroups) Icons.Default.Rocket else Icons.Default.Tag,
+    ) {
+        override fun applyFilter(rooms: List<RoomListRoomSummary>) =
+            rooms.filter { !excludedRooms.contains(it.roomId.value) }.toImmutableList()
+    }
+
+    data class PseudoSpaceSettings(
+        val favorites: Boolean,
+        val dms: Boolean,
+        val groups: Boolean,
+        val spacelessGroups: Boolean,
+        val spaceless: Boolean,
+    ) {
+        fun hasSpaceIndependentPseudoSpace() = favorites || dms || groups
+    }
+}
+
+fun ScPreferencesStore.pseudoSpaceSettingsFlow(): Flow<SpaceListDataSource.PseudoSpaceSettings> {
+    return combinedSettingFlow { lookup ->
+        SpaceListDataSource.PseudoSpaceSettings(
+            favorites = ScPrefs.PSEUDO_SPACE_FAVORITES.let { it.ensureType(lookup(it)) ?: it.defaultValue },
+            dms = ScPrefs.PSEUDO_SPACE_DMS.let { it.ensureType(lookup(it)) ?: it.defaultValue },
+            groups = ScPrefs.PSEUDO_SPACE_GROUPS.let { it.ensureType(lookup(it)) ?: it.defaultValue },
+            spacelessGroups = ScPrefs.PSEUDO_SPACE_SPACELESS_GROUPS.let { it.ensureType(lookup(it)) ?: it.defaultValue },
+            spaceless = ScPrefs.PSEUDO_SPACE_SPACELESS.let { it.ensureType(lookup(it)) ?: it.defaultValue },
+        )
     }
 }
 

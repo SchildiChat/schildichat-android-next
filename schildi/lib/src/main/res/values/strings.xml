@@ -55,11 +55,12 @@
     <string name="sc_pseudo_spaces_title">Pseudo spaces</string>
     <string name="sc_pseudo_spaces_summary_experimental">Additional space pages (experimental)</string>
     <string name="sc_pseudo_space_favorites">Favorites</string>
-    <string name="sc_pseudo_space_dms_groups">Direct chats &amp; groups</string>
     <string name="sc_pseudo_space_dms">Direct chats</string>
-    <string name="sc_pseudo_space_groups">Groups</string>
+    <string name="sc_pseudo_space_groups">All groups</string>
+    <string name="sc_pseudo_space_spaceless">Chats not added to spaces</string>
     <string name="sc_pseudo_space_spaceless_short">Space orphans</string>
-    <string name="sc_pseudo_space_spaceless">Groups not added to spaces</string>
+    <string name="sc_pseudo_space_spaceless_groups">Group chats not added to spaces</string>
+    <string name="sc_pseudo_space_spaceless_groups_short">Groups</string>
 
     <string name="sc_pref_dev_quick_options">Quick settings</string>
     <string name="sc_pref_debug_read_marker">Debug read marker</string>

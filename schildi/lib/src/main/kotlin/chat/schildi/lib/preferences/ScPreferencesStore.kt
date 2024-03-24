@@ -29,6 +29,7 @@ interface ScPreferencesStore {
     suspend fun <T>setSetting(scPref: ScPref<T>, value: T)
     suspend fun <T>setSettingTypesafe(scPref: ScPref<T>, value: Any?)
     fun <T> settingFlow(scPref: ScPref<T>): Flow<T>
+    fun <T> combinedSettingFlow(transform: ((ScPref<*>) -> Any?) -> T): Flow<T>
     fun isEnabledFlow(scPref: AbstractScPref): Flow<Boolean>
     fun <T>getCachedOrDefaultValue(scPref: ScPref<T>): T
     suspend fun reset()
@@ -74,6 +75,19 @@ class DefaultScPreferencesStore @Inject constructor(
                 prefs[key] ?: scPref.defaultValue
             } else {
                 scPref.defaultValue
+            }
+        }
+    }
+
+    override fun <T> combinedSettingFlow(transform: ((ScPref<*>) -> Any?) -> T): Flow<T> {
+        return store.data.map {  prefs ->
+            transform { scPref ->
+                val key = scPref.key ?: return@transform scPref.defaultValue
+                if (isEnabled(prefs, scPref)) {
+                    prefs[key] ?: scPref.defaultValue
+                } else {
+                    scPref.defaultValue
+                }
             }
         }
     }
@@ -129,6 +143,7 @@ object FakeScPreferencesStore : ScPreferencesStore {
     override suspend fun <T> setSetting(scPref: ScPref<T>, value: T) = shouldNotUsedInProduction()
     override suspend fun <T> setSettingTypesafe(scPref: ScPref<T>, value: Any?) = shouldNotUsedInProduction()
     override fun <T> settingFlow(scPref: ScPref<T>): Flow<T> = emptyFlow<T>().also { shouldNotUsedInProduction() }
+    override fun <T> combinedSettingFlow(transform: ((ScPref<*>) -> Any?) -> T): Flow<T> = emptyFlow<T>().also { shouldNotUsedInProduction() }
     override fun isEnabledFlow(scPref: AbstractScPref): Flow<Boolean> = emptyFlow<Boolean>().also { shouldNotUsedInProduction() }
     override fun <T> getCachedOrDefaultValue(scPref: ScPref<T>): T = scPref.defaultValue.also { shouldNotUsedInProduction() }
 

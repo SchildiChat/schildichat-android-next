@@ -56,15 +56,14 @@ class SpaceAwareRoomListDataSource @Inject constructor(
         combine(
             _spaceSelectionHierarchy,
             spaceListDataSource.allSpaces,
-            scPreferencesStore.settingFlow(ScPrefs.PSEUDO_SPACE_DMS),
-            scPreferencesStore.settingFlow(ScPrefs.PSEUDO_SPACE_FAVORITES),
-        ) { spaceSelectionValue, allSpacesValue, showDmsAsSpace, showFavoritesAsSpace ->
+            scPreferencesStore.pseudoSpaceSettingsFlow(),
+        ) { spaceSelectionValue, allSpacesValue, pseudoSpaces ->
             // No space selected or not initialized yet -> show all
             if (spaceSelectionValue.isNullOrEmpty()) {
                 return@combine Pair(null, true)
             }
             // Show all rooms while space list is not loaded yet, without clearing the space hierarchy
-            val spaceList = allSpacesValue?.takeIf { it.isNotEmpty() || showDmsAsSpace || showFavoritesAsSpace } ?: return@combine Pair(null, true)
+            val spaceList = allSpacesValue?.takeIf { it.isNotEmpty() || pseudoSpaces.hasSpaceIndependentPseudoSpace() } ?: return@combine Pair(null, true)
             // Resolve actual space from space hierarchy
             val space = spaceList.resolveSelection(spaceSelectionValue) ?: return@combine Pair(null, false)
             return@combine Pair(space, true)

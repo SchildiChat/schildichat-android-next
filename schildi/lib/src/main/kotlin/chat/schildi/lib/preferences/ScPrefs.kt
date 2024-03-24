@@ -42,7 +42,9 @@ object ScPrefs {
     )
     val SPACE_SWIPE = ScBoolPref("SPACE_SWIPE", false, R.string.sc_space_swipe_title, R.string.sc_space_swipe_summary, upstreamChoice = false, authorsChoice = true, dependencies = SPACE_NAV.asDependencies())
     val PSEUDO_SPACE_FAVORITES = ScBoolPref("PSEUDO_SPACE_FAVORITES", false, R.string.sc_pseudo_space_favorites, null, dependencies = SPACE_NAV.asDependencies())
-    val PSEUDO_SPACE_DMS = ScBoolPref("PSEUDO_SPACE_DMS", false, R.string.sc_pseudo_space_dms_groups, null, dependencies = SPACE_NAV.asDependencies())
+    val PSEUDO_SPACE_DMS = ScBoolPref("PSEUDO_SPACE_DMS", false, R.string.sc_pseudo_space_dms, null, dependencies = SPACE_NAV.asDependencies())
+    val PSEUDO_SPACE_GROUPS = ScBoolPref("PSEUDO_SPACE_GROUPS", false, R.string.sc_pseudo_space_groups, null, dependencies = SPACE_NAV.asDependencies())
+    val PSEUDO_SPACE_SPACELESS_GROUPS = ScBoolPref("PSEUDO_SPACE_SPACELESS_GROUPS", false, R.string.sc_pseudo_space_spaceless_groups, null, dependencies = SPACE_NAV.asDependencies())
     val PSEUDO_SPACE_SPACELESS = ScBoolPref("PSEUDO_SPACE_SPACELESS", false, R.string.sc_pseudo_space_spaceless, null, dependencies = SPACE_NAV.asDependencies())
 
     // Timeline
@@ -86,9 +88,11 @@ object ScPrefs {
             SPACE_SWIPE,
             COMPACT_ROOT_SPACES,
             ScPrefScreen(R.string.sc_pseudo_spaces_title, R.string.sc_pseudo_spaces_summary_experimental, listOf(
-                PSEUDO_SPACE_DMS,
-                PSEUDO_SPACE_SPACELESS,
                 PSEUDO_SPACE_FAVORITES,
+                PSEUDO_SPACE_DMS,
+                PSEUDO_SPACE_GROUPS,
+                PSEUDO_SPACE_SPACELESS_GROUPS,
+                PSEUDO_SPACE_SPACELESS,
             ), dependencies = SPACE_NAV.asDependencies())
         )),
         ScPrefCategory(R.string.sc_pref_category_timeline, null, listOf(
@@ -151,9 +155,11 @@ object ScPrefs {
             SPACE_NAV,
             COMPACT_ROOT_SPACES,
             ScPrefCategory(R.string.sc_pseudo_spaces_title, null, listOf(
-                PSEUDO_SPACE_DMS,
-                PSEUDO_SPACE_SPACELESS.copy(titleRes = R.string.sc_pseudo_space_spaceless_short),
                 PSEUDO_SPACE_FAVORITES,
+                PSEUDO_SPACE_DMS,
+                PSEUDO_SPACE_GROUPS,
+                PSEUDO_SPACE_SPACELESS_GROUPS.copy(titleRes = R.string.sc_pseudo_space_spaceless_groups_short),
+                PSEUDO_SPACE_SPACELESS.copy(titleRes = R.string.sc_pseudo_space_spaceless_short),
             ), dependencies = SPACE_NAV.asDependencies()),
             SYNC_READ_RECEIPT_AND_MARKER,
         )),

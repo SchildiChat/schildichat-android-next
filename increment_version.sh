@@ -135,6 +135,7 @@ git_changelog() {
         | grep -v "Merge .*branch" \
         | grep -v "Automatic" \
         | grep -v 'merge_helpers\|README\|increment_version' \
+        | grep -v 'Increment version' \
         | grep -v "\\.sh" \
         | grep -v "\\.md" \
         | grep -v "Added translation using Weblate" \

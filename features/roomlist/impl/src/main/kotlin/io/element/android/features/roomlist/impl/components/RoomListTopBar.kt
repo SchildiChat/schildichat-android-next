@@ -23,10 +23,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -79,7 +77,6 @@ import io.element.android.libraries.designsystem.theme.components.HorizontalDivi
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconButton
 import io.element.android.libraries.designsystem.theme.components.MediumTopAppBar
-import io.element.android.libraries.designsystem.theme.components.Surface
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.user.MatrixUser
@@ -93,7 +90,7 @@ private val avatarBloomSize = 430.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RoomListTopBar(
-    matrixUser: MatrixUser?,
+    matrixUser: MatrixUser,
     showAvatarIndicator: Boolean,
     areSearchResultsDisplayed: Boolean,
     // SC start
@@ -131,7 +128,7 @@ fun RoomListTopBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DefaultRoomListTopBar(
-    matrixUser: MatrixUser?,
+    matrixUser: MatrixUser,
     showAvatarIndicator: Boolean,
     areSearchResultsDisplayed: Boolean,
     // SC start
@@ -160,7 +157,7 @@ private fun DefaultRoomListTopBar(
 
     val avatarData by remember(matrixUser) {
         derivedStateOf {
-            matrixUser?.getAvatarData(size = AvatarSize.CurrentUserTopBar)
+            matrixUser.getAvatarData(size = AvatarSize.CurrentUserTopBar)
         }
     }
 
@@ -320,7 +317,7 @@ private fun DefaultRoomListTopBar(
 
 @Composable
 private fun NavigationIcon(
-    avatarData: AvatarData?,
+    avatarData: AvatarData,
     showAvatarIndicator: Boolean,
     onClick: () -> Unit,
 ) {
@@ -329,20 +326,10 @@ private fun NavigationIcon(
         onClick = onClick,
     ) {
         Box {
-            if (avatarData != null) {
-                Avatar(
-                    avatarData = avatarData,
-                    contentDescription = stringResource(CommonStrings.common_settings),
-                )
-            } else {
-                // Placeholder avatar until the avatarData is available
-                Surface(
-                    modifier = Modifier.size(AvatarSize.CurrentUserTopBar.dp),
-                    shape = CircleShape,
-                    color = ElementTheme.colors.iconSecondary,
-                    content = {}
-                )
-            }
+            Avatar(
+                avatarData = avatarData,
+                contentDescription = stringResource(CommonStrings.common_settings),
+            )
             if (showAvatarIndicator) {
                 RedIndicatorAtom(
                     modifier = Modifier.align(Alignment.TopEnd)

@@ -33,7 +33,7 @@ import kotlinx.collections.immutable.persistentMapOf
 
 @Immutable
 data class RoomListState(
-    val matrixUser: MatrixUser?,
+    val matrixUser: MatrixUser,
     val showAvatarIndicator: Boolean,
     val hasNetworkConnection: Boolean,
     val snackbarMessage: SnackbarMessage?,

@@ -26,7 +26,6 @@ Note that following list of changes compared to Element X is likely incomplete, 
 ## Conversation screen
 
 - Floating date header while scrolling †
-- Render media captions ([MSC2530](https://github.com/matrix-org/matrix-spec-proposals/pull/2530)) ‡
 - Bigger stickers
 - Differentiate notices from normal text messages by adding some transparency
 - Render collapsible `<details>` tags in messages
@@ -49,6 +48,11 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Use schildi.chat servers for rageshake bug reports and FCM push gateway server
 - Streamlined settings framework to make settings-controlled features faster to implement
 - Use [UnifiedPush's FOSS FCM distributor](https://github.com/UnifiedPush/android-foss_embedded_fcm_distributor) instead of bundling Google's closed source FCM libraries
+
+
+## Historic
+
+- Render media captions ([MSC2530](https://github.com/matrix-org/matrix-spec-proposals/pull/2530)): has been implemented upstream at v0.4.7
 
 
 †: Can be partly enabled or disabled by user setting  

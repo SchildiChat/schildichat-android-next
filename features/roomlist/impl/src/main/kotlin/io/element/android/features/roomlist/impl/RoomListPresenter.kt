@@ -65,8 +65,6 @@ import io.element.android.libraries.matrix.api.roomlist.RoomList
 import io.element.android.libraries.matrix.api.sync.SyncService
 import io.element.android.libraries.matrix.api.sync.SyncState
 import io.element.android.libraries.matrix.api.timeline.ReceiptType
-import io.element.android.libraries.matrix.api.user.MatrixUser
-import io.element.android.libraries.matrix.api.user.getCurrentUser
 import io.element.android.libraries.matrix.api.verification.SessionVerificationService
 import io.element.android.services.analytics.api.AnalyticsService
 import io.element.android.services.analyticsproviders.api.trackers.captureInteraction
@@ -115,10 +113,7 @@ class RoomListPresenter @Inject constructor(
     override fun present(): RoomListState {
         val coroutineScope = rememberCoroutineScope()
         val leaveRoomState = leaveRoomPresenter.present()
-        val matrixUser: MutableState<MatrixUser?> = rememberSaveable {
-            mutableStateOf(null)
-        }
-
+        val matrixUser = client.userProfile.collectAsState()
         val networkConnectionStatus by networkMonitor.connectivity.collectAsState()
         val filtersState = filtersPresenter.present()
         val searchState = searchPresenter.present()
@@ -128,7 +123,8 @@ class RoomListPresenter @Inject constructor(
             roomListDataSource.launchIn(this)
             spaceAwareRoomListDataSource.launchIn(this, roomListDataSource, spaceListDataSource, scAppStateStore)
             spaceUnreadCountsDataSource.launchIn(this, roomListDataSource, spaceAwareRoomListDataSource, spaceListDataSource)
-            initialLoad(matrixUser)
+            // Force a refresh of the profile
+            client.getUserProfile()
         }
         PersistSpaceOnPause(scAppStateStore, spaceAwareRoomListDataSource)
 
@@ -175,10 +171,6 @@ class RoomListPresenter @Inject constructor(
             contentState = contentState,
             eventSink = ::handleEvents,
         )
-    }
-
-    private fun CoroutineScope.initialLoad(matrixUser: MutableState<MatrixUser?>) = launch {
-        matrixUser.value = client.getCurrentUser()
     }
 
     @Composable

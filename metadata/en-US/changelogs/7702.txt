@@ -1,0 +1,6 @@
+- Update codebase to Element X v0.4.6
+- Add "Only alert once" setting for notifications
+- Allow sending freeform reactions
+- Add experimental client-side sorting for favorites, low priority and unread chats
+- Experimental feature for adding DMs/groups, space orphans and favorites to space navigation
+- Misc bug fixes

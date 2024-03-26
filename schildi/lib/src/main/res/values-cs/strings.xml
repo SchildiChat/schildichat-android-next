@@ -65,4 +65,16 @@
     <string name="sc_pref_bury_low_priority_title">S nízkou prioritou dole</string>
     <string name="sc_pref_client_side_sort_title_short">Řazení v klientu</string>
     <string name="sc_pref_client_side_sort_summary">Řazení chatů pouze na základě výpočtu na straně klienta</string>
+    <string name="sc_pref_prefer_freeform_reactions_title">Preferovat volné reakce</string>
+    <string name="sc_pref_prefer_freeform_reactions_summary">Otevřít nástroj pro výběr emoji, který ve výchozím nastavení zobrazuje zadávání reakcí ve volném tvaru</string>
+    <string name="sc_pseudo_spaces_title">Pseudo prostory</string>
+    <string name="sc_pseudo_space_spaceless_short">Sirotci prostorů</string>
+    <string name="sc_pseudo_spaces_summary_experimental">Další stránky prostoru (experimentální)</string>
+    <string name="sc_pseudo_space_favorites">Oblíbené</string>
+    <string name="sc_pseudo_space_dms">Přímé zprávy</string>
+    <string name="sc_pseudo_space_spaceless">Chaty nepřidané do prostorů</string>
+    <string name="sc_pseudo_space_spaceless_groups">Skupinové chaty nepřidané do prostorů</string>
+    <string name="sc_pseudo_space_spaceless_groups_short">Skupiny</string>
+    <string name="sc_freeform_reaction">Volná reakce</string>
+    <string name="sc_pseudo_space_groups">Všechny skupiny</string>
 </resources>

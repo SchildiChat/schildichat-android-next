@@ -91,7 +91,7 @@ fun TimelineItemImageView(
             AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .then(if (isLoaded) Modifier.background(Color.White) else Modifier),
+                    /*.then(if (isLoaded) Modifier.background(Color.White) else Modifier)*/,
                 model = MediaRequestData(content.preferredMediaSource, MediaRequestData.Kind.File(content.body, content.mimeType)),
                 contentScale = ContentScale.Fit,
                 alignment = Alignment.Center,

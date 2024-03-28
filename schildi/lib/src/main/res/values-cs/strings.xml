@@ -77,4 +77,6 @@
     <string name="sc_pseudo_space_spaceless_groups_short">Skupiny</string>
     <string name="sc_freeform_reaction">Volná reakce</string>
     <string name="sc_pseudo_space_groups">Všechny skupiny</string>
+    <string name="sc_pref_prefer_fullscreen_reaction_sheet_title">Celoobrazovkový výběr reakce</string>
+    <string name="sc_pref_prefer_fullscreen_reaction_sheet_summary">Nechat výběr emoji reakce ihned po otevření plně rozbalený</string>
 </resources>

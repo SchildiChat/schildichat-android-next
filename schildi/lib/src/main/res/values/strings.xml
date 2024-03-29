@@ -63,6 +63,9 @@
     <string name="sc_pseudo_space_spaceless_short">Space orphans</string>
     <string name="sc_pseudo_space_spaceless_groups">Group chats not added to spaces</string>
     <string name="sc_pseudo_space_spaceless_groups_short">Groups</string>
+    <string name="sc_pseudo_space_notifications">Unread notifications and mentions</string>
+    <string name="sc_pseudo_space_notifications_short">Notifications</string>
+    <string name="sc_pseudo_space_unread">Unread</string>
 
     <string name="sc_pref_dev_quick_options">Quick settings</string>
     <string name="sc_pref_debug_read_marker">Debug read marker</string>

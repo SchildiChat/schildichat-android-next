@@ -46,6 +46,8 @@ object ScPrefs {
     val PSEUDO_SPACE_GROUPS = ScBoolPref("PSEUDO_SPACE_GROUPS", false, R.string.sc_pseudo_space_groups, null, dependencies = SPACE_NAV.asDependencies())
     val PSEUDO_SPACE_SPACELESS_GROUPS = ScBoolPref("PSEUDO_SPACE_SPACELESS_GROUPS", false, R.string.sc_pseudo_space_spaceless_groups, null, dependencies = SPACE_NAV.asDependencies())
     val PSEUDO_SPACE_SPACELESS = ScBoolPref("PSEUDO_SPACE_SPACELESS", false, R.string.sc_pseudo_space_spaceless, null, dependencies = SPACE_NAV.asDependencies())
+    val PSEUDO_SPACE_NOTIFICATIONS = ScBoolPref("PSEUDO_SPACE_NOTIFICATIONS", false, R.string.sc_pseudo_space_notifications, null, dependencies = SPACE_NAV.asDependencies())
+    val PSEUDO_SPACE_UNREAD = ScBoolPref("PSEUDO_SPACE_UNREAD", false, R.string.sc_pseudo_space_unread, null, dependencies = SPACE_NAV.asDependencies())
 
     // Timeline
     val SC_TIMELINE_LAYOUT = ScBoolPref("SC_TIMELINE_LAYOUT", true, R.string.sc_pref_sc_timeline_layout_title, upstreamChoice = false)
@@ -94,6 +96,8 @@ object ScPrefs {
                 PSEUDO_SPACE_GROUPS,
                 PSEUDO_SPACE_SPACELESS_GROUPS,
                 PSEUDO_SPACE_SPACELESS,
+                PSEUDO_SPACE_NOTIFICATIONS,
+                PSEUDO_SPACE_UNREAD,
             ), dependencies = SPACE_NAV.asDependencies())
         )),
         ScPrefCategory(R.string.sc_pref_category_timeline, null, listOf(
@@ -162,6 +166,8 @@ object ScPrefs {
                 PSEUDO_SPACE_GROUPS,
                 PSEUDO_SPACE_SPACELESS_GROUPS.copy(titleRes = R.string.sc_pseudo_space_spaceless_groups_short),
                 PSEUDO_SPACE_SPACELESS.copy(titleRes = R.string.sc_pseudo_space_spaceless_short),
+                PSEUDO_SPACE_NOTIFICATIONS.copy(titleRes = R.string.sc_pseudo_space_notifications_short),
+                PSEUDO_SPACE_UNREAD,
             ), dependencies = SPACE_NAV.asDependencies()),
             SYNC_READ_RECEIPT_AND_MARKER,
         )),

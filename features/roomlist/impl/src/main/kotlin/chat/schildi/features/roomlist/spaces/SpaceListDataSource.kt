@@ -3,7 +3,9 @@ package chat.schildi.features.roomlist.spaces
 import android.content.Context
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material.icons.filled.Rocket
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Tag
@@ -136,6 +138,27 @@ class SpaceListDataSource @Inject constructor(
                     )
                 )
             }
+        }
+        if (pseudoSpaceSettings.notifications) {
+            pseudoSpaces.add(
+                NotificationsPseudoSpaceItem(
+                    context.getString(
+                        if (pseudoSpaceSettings.unread)
+                            chat.schildi.lib.R.string.sc_pseudo_space_notifications_short
+                        else
+                            chat.schildi.lib.R.string.sc_pseudo_space_unread
+                    ),
+                    pseudoSpaceSettings.clientUnreadCounts
+                )
+            )
+        }
+        if (pseudoSpaceSettings.unread) {
+            pseudoSpaces.add(
+                UnreadPseudoSpaceItem(
+                    context.getString(chat.schildi.lib.R.string.sc_pseudo_space_unread),
+                    pseudoSpaceSettings.clientUnreadCounts
+                )
+            )
         }
         _allSpaces.emit(buildSpaceHierarchy(spaceListRoomSummaries, pseudoSpaces))
     }
@@ -299,14 +322,43 @@ class SpaceListDataSource @Inject constructor(
             rooms.filter { !excludedRooms.contains(it.roomId.value) }.toImmutableList()
     }
 
+    @Immutable
+    data class NotificationsPseudoSpaceItem(override val name: String, val clientUnreadCounts: Boolean) : PseudoSpaceItem(
+        "notif",
+        Icons.Default.Notifications,
+    ) {
+        override fun applyFilter(rooms: List<RoomListRoomSummary>): ImmutableList<RoomListRoomSummary> {
+            return if (clientUnreadCounts)
+                rooms.filter { it.numberOfUnreadNotifications > 0 || it.numberOfUnreadMentions > 0 || it.isMarkedUnread }.toImmutableList()
+            else
+                rooms.filter { it.notificationCount > 0 || it.highlightCount > 0 || it.numberOfUnreadMentions > 0 || it.isMarkedUnread }.toImmutableList()
+        }
+    }
+
+    @Immutable
+    data class UnreadPseudoSpaceItem(override val name: String, val clientUnreadCounts: Boolean) : PseudoSpaceItem(
+        "unread",
+        Icons.Default.RemoveRedEye,
+    ) {
+        override fun applyFilter(rooms: List<RoomListRoomSummary>): ImmutableList<RoomListRoomSummary> {
+            return if (clientUnreadCounts)
+                rooms.filter { it.numberOfUnreadMessages > 0 || it.isMarkedUnread }.toImmutableList()
+            else
+                rooms.filter { it.unreadCount > 0 || it.isMarkedUnread }.toImmutableList()
+        }
+    }
+
     data class PseudoSpaceSettings(
         val favorites: Boolean,
         val dms: Boolean,
         val groups: Boolean,
         val spacelessGroups: Boolean,
         val spaceless: Boolean,
+        val notifications: Boolean,
+        val unread: Boolean,
+        val clientUnreadCounts: Boolean,
     ) {
-        fun hasSpaceIndependentPseudoSpace() = favorites || dms || groups
+        fun hasSpaceIndependentPseudoSpace() = favorites || dms || groups || notifications || unread
     }
 }
 
@@ -318,6 +370,9 @@ fun ScPreferencesStore.pseudoSpaceSettingsFlow(): Flow<SpaceListDataSource.Pseud
             groups = ScPrefs.PSEUDO_SPACE_GROUPS.let { it.ensureType(lookup(it)) ?: it.defaultValue },
             spacelessGroups = ScPrefs.PSEUDO_SPACE_SPACELESS_GROUPS.let { it.ensureType(lookup(it)) ?: it.defaultValue },
             spaceless = ScPrefs.PSEUDO_SPACE_SPACELESS.let { it.ensureType(lookup(it)) ?: it.defaultValue },
+            notifications = ScPrefs.PSEUDO_SPACE_NOTIFICATIONS.let { it.ensureType(lookup(it)) ?: it.defaultValue },
+            unread = ScPrefs.PSEUDO_SPACE_UNREAD.let { it.ensureType(lookup(it)) ?: it.defaultValue },
+            clientUnreadCounts = ScPrefs.CLIENT_GENERATED_UNREAD_COUNTS.let { it.ensureType(lookup(it)) ?: it.defaultValue },
         )
     }
 }

@@ -15,7 +15,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 ## Chat overview ("room list")
 
 - Filter for spaces, including support for hierarchical spaces †‡
-- Filter for favorites, DMs, and group chat via our spaces navigation
+- Filter for favorites, unreads, DMs, and group chats via our spaces navigation
 - Sort room list by unread first ‡
 - Non-expanding compact app bar in the chat overview †
 - Show unread counts ([MSC2654](https://github.com/matrix-org/matrix-spec-proposals/pull/2654)) ‡[^1]

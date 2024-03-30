@@ -28,6 +28,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import io.element.android.anvilannotations.ContributesNode
 import io.element.android.features.messages.impl.attachments.Attachment
+import io.element.android.features.messages.impl.emojis.RecentEmojiDataSource
 import io.element.android.features.messages.impl.timeline.di.LocalTimelineItemPresenterFactories
 import io.element.android.features.messages.impl.timeline.di.TimelineItemPresenterFactories
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
@@ -52,6 +53,7 @@ class MessagesNode @AssistedInject constructor(
     presenterFactory: MessagesPresenter.Factory,
     private val timelineItemPresenterFactories: TimelineItemPresenterFactories,
     private val mediaPlayer: MediaPlayer,
+    private val recentEmojiDataSource: RecentEmojiDataSource,
 ) : Node(buildContext, plugins = plugins), MessagesNavigator {
     private val presenter = presenterFactory.create(this)
     private val callback = plugins<Callback>().firstOrNull()
@@ -136,6 +138,7 @@ class MessagesNode @AssistedInject constructor(
             val state = presenter.present()
             MessagesView(
                 state = state,
+                recentEmojiDataSource = recentEmojiDataSource,
                 onBackPressed = this::navigateUp,
                 onRoomDetailsClicked = this::onRoomDetailsClicked,
                 onEventClicked = this::onEventClicked,

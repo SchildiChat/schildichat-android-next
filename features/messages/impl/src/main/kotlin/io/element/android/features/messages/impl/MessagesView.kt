@@ -66,6 +66,7 @@ import io.element.android.features.messages.impl.actionlist.ActionListEvents
 import io.element.android.features.messages.impl.actionlist.ActionListView
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemAction
 import io.element.android.features.messages.impl.attachments.Attachment
+import io.element.android.features.messages.impl.emojis.RecentEmojiDataSource
 import io.element.android.features.messages.impl.mentions.MentionSuggestionsPickerView
 import io.element.android.features.messages.impl.messagecomposer.AttachmentsBottomSheet
 import io.element.android.features.messages.impl.messagecomposer.AttachmentsState
@@ -127,6 +128,7 @@ fun MessagesView(
     onCreatePollClicked: () -> Unit,
     onJoinCallClicked: () -> Unit,
     modifier: Modifier = Modifier,
+    recentEmojiDataSource: RecentEmojiDataSource? = null,
     forceJumpToBottomVisibility: Boolean = false
 ) {
     OnLifecycleEvent { _, event ->
@@ -257,6 +259,7 @@ fun MessagesView(
 
     CustomReactionBottomSheet(
         state = state.customReactionState,
+        recentEmojiDataSource = recentEmojiDataSource,
         onEmojiSelected = { eventId, emoji ->
             state.eventSink(MessagesEvents.ToggleReaction(emoji.unicode, eventId))
         },

@@ -188,6 +188,7 @@ private fun SheetContent(
                             highlightedEmojis = target.event.reactionsState.highlightedKeys,
                             onEmojiReactionClicked = onEmojiReactionClicked,
                             onCustomReactionClicked = onCustomReactionClicked,
+                            recentEmojis = target.recentEmojis,
                             modifier = Modifier.fillMaxWidth(),
                         )
                         HorizontalDivider()
@@ -296,6 +297,7 @@ private fun EmojiReactionsRow(
     highlightedEmojis: ImmutableList<String>,
     onEmojiReactionClicked: (String) -> Unit,
     onCustomReactionClicked: () -> Unit,
+    recentEmojis: List<String>,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -303,13 +305,13 @@ private fun EmojiReactionsRow(
         modifier = modifier.padding(horizontal = 24.dp, vertical = 16.dp)
     ) {
         // TODO use most recently used emojis here when available from the Rust SDK
-        val defaultEmojis = sequenceOf(
+        val defaultEmojis = (recentEmojis.take(EMOJI_COUNT_QUICK_PICKER) + sequenceOf(
             "👍️",
             "👎️",
             "🔥",
             "❤️",
             "👏"
-        )
+        )).take(EMOJI_COUNT_QUICK_PICKER)
         for (emoji in defaultEmojis) {
             val isHighlighted = highlightedEmojis.contains(emoji)
             EmojiButton(emoji, isHighlighted, onEmojiReactionClicked)
@@ -333,7 +335,6 @@ private fun EmojiReactionsRow(
                     )
             )
         }
-        // TODO SC extension for quicker freeform reaction
     }
 }
 

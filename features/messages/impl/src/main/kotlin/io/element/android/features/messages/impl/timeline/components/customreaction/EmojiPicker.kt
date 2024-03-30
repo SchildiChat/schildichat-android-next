@@ -44,6 +44,7 @@ import io.element.android.emojibasebindings.Emoji
 import io.element.android.emojibasebindings.EmojibaseCategory
 import io.element.android.emojibasebindings.EmojibaseDatasource
 import io.element.android.emojibasebindings.EmojibaseStore
+import io.element.android.features.messages.impl.emojis.RecentEmojiDataSource
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.text.toSp
@@ -59,6 +60,7 @@ fun EmojiPicker(
     onCustomEmojiSelected: (String) -> Unit,
     emojibaseStore: EmojibaseStore,
     selectedEmojis: ImmutableSet<String>,
+    recentEmojiDataSource: RecentEmojiDataSource? = null,
     modifier: Modifier = Modifier,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -71,6 +73,7 @@ fun EmojiPicker(
         SecondaryTabRow(
             selectedTabIndex = pagerState.currentPage,
         ) {
+            ScEmojiPickerTabsStart(pagerState)
             EmojibaseCategory.entries.forEachIndexed { index, category ->
                 Tab(
                     icon = {
@@ -79,20 +82,21 @@ fun EmojiPicker(
                             contentDescription = stringResource(id = category.title)
                         )
                     },
-                    selected = pagerState.currentPage == index,
+                    selected = pagerState.currentPage.removeScPickerOffset() == index,
                     onClick = {
-                        coroutineScope.launch { pagerState.animateScrollToPage(index) }
+                        coroutineScope.launch { pagerState.animateScrollToPage(index.addScPickerOffset()) }
                     }
                 )
             }
-            ScEmojiPickerTabs(pagerState)
+            ScEmojiPickerTabsEnd(pagerState)
         }
 
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxWidth(),
-        ) { index ->
-            if (scEmojiPickerPage(index, pagerState.currentPage, onCustomEmojiSelected)) {
+        ) { scIndex ->
+            val index = scIndex.removeScPickerOffset()
+            if (scEmojiPickerPage(scIndex, pagerState.currentPage, selectedEmojis, recentEmojiDataSource, onCustomEmojiSelected)) {
                 return@HorizontalPager
             }
             val category = EmojibaseCategory.entries[index]

@@ -2,21 +2,29 @@ package io.element.android.features.messages.impl.timeline.components.customreac
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.TextFields
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -33,20 +41,46 @@ import androidx.compose.ui.unit.dp
 import chat.schildi.lib.R
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
+import io.element.android.emojibasebindings.Emoji
 import io.element.android.emojibasebindings.EmojibaseCategory
+import io.element.android.features.messages.impl.emojis.RecentEmojiDataSource
+import io.element.android.libraries.designsystem.text.toSp
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconButton
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TextField
 import io.element.android.libraries.ui.strings.CommonStrings
+import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
-val SC_EMOJI_PICKER_SIZE = EmojibaseCategory.entries.size + 1
-val PAGE_FREEFORM_REACTION = EmojibaseCategory.entries.size
+val SC_EMOJI_PICKER_SIZE = EmojibaseCategory.entries.size + 2
+const val PAGE_RECENT_EMOJI = 0
+val PAGE_FREEFORM_REACTION = SC_EMOJI_PICKER_SIZE - 1
+fun Int.removeScPickerOffset() = this - 1
+fun Int.addScPickerOffset() = this + 1
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ScEmojiPickerTabs(pagerState: PagerState) {
+fun ScEmojiPickerTabsStart(pagerState: PagerState) {
+    val coroutineScope = rememberCoroutineScope()
+    Tab(
+        icon = {
+            Icon(
+                imageVector = Icons.Default.AccessTime,
+                contentDescription = stringResource(id = R.string.sc_recent_reaction),
+            )
+        },
+        selected = pagerState.currentPage == PAGE_RECENT_EMOJI,
+        onClick = {
+            coroutineScope.launch { pagerState.animateScrollToPage(PAGE_RECENT_EMOJI) }
+        }
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun ScEmojiPickerTabsEnd(pagerState: PagerState) {
     val coroutineScope = rememberCoroutineScope()
     Tab(
         icon = {
@@ -63,43 +97,82 @@ fun ScEmojiPickerTabs(pagerState: PagerState) {
 }
 
 @Composable
-fun scEmojiPickerPage(index: Int, selectedIndex: Int, onCustomEmojiSelected: (String) -> Unit): Boolean {
-    return if (index == PAGE_FREEFORM_REACTION) {
-        val text = remember { mutableStateOf("") }
-        val focusRequester = remember { FocusRequester() }
-        val focusManager = LocalFocusManager.current
-        Row(Modifier.fillMaxSize().padding(8.dp), verticalAlignment = Alignment.Top) {
-            TextField(
-                value = text.value,
-                onValueChange = { text.value = it },
-                modifier = Modifier
-                    .focusRequester(focusRequester)
-                    .weight(1f, fill = true),
-                singleLine = true,
-                label = {
-                    Text(stringResource(R.string.sc_freeform_reaction))
-                },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                ),
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Send),
-                keyboardActions = KeyboardActions(onSend = { onCustomEmojiSelected(text.value) })
-            )
-            SendButton {
-                onCustomEmojiSelected(text.value)
+fun scEmojiPickerPage(
+    index: Int,
+    selectedIndex: Int,
+    selectedEmojis: ImmutableSet<String>,
+    recentEmojiDataSource: RecentEmojiDataSource?,
+    onCustomEmojiSelected: (String) -> Unit
+): Boolean {
+    return when (index) {
+        PAGE_RECENT_EMOJI -> {
+            if (recentEmojiDataSource == null) {
+                // Should only happen for test cases
+                Timber.e("Missing recent emoji data source")
+                return true
             }
-        }
-        LaunchedEffect(selectedIndex == PAGE_FREEFORM_REACTION) {
-            if (selectedIndex == PAGE_FREEFORM_REACTION) {
-                focusRequester.requestFocus()
-            } else {
-                focusManager.clearFocus()
+            LaunchedEffect(recentEmojiDataSource) {
+                recentEmojiDataSource.refresh(this)
             }
+            val recentEmojis = recentEmojiDataSource.recentEmojis.collectAsState().value
+            LazyVerticalGrid(
+                modifier = Modifier.fillMaxSize(),
+                columns = GridCells.Adaptive(minSize = 48.dp),
+                contentPadding = PaddingValues(vertical = 10.dp, horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                items(recentEmojis, key = { it }) { item ->
+                    EmojiItem(
+                        modifier = Modifier.aspectRatio(1f),
+                        item = Emoji("", "", null, emptyList(), item, null),
+                        isSelected = selectedEmojis.contains(item),
+                        onEmojiSelected = { onCustomEmojiSelected(it.unicode) },
+                        emojiSize = 32.dp.toSp(),
+                    )
+                }
+            }
+            true
         }
-        true
-    } else {
-        false
+        PAGE_FREEFORM_REACTION -> {
+            val text = remember { mutableStateOf("") }
+            val focusRequester = remember { FocusRequester() }
+            val focusManager = LocalFocusManager.current
+            Row(
+                Modifier
+                    .fillMaxSize()
+                    .padding(8.dp), verticalAlignment = Alignment.Top) {
+                TextField(
+                    value = text.value,
+                    onValueChange = { text.value = it },
+                    modifier = Modifier
+                        .focusRequester(focusRequester)
+                        .weight(1f, fill = true),
+                    singleLine = true,
+                    label = {
+                        Text(stringResource(R.string.sc_freeform_reaction))
+                    },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                    ),
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Send),
+                    keyboardActions = KeyboardActions(onSend = { onCustomEmojiSelected(text.value) })
+                )
+                SendButton {
+                    onCustomEmojiSelected(text.value)
+                }
+            }
+            LaunchedEffect(selectedIndex == PAGE_FREEFORM_REACTION) {
+                if (selectedIndex == PAGE_FREEFORM_REACTION) {
+                    focusRequester.requestFocus()
+                } else {
+                    focusManager.clearFocus()
+                }
+            }
+            true
+        }
+        else -> false
     }
 }
 

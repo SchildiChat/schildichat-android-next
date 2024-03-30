@@ -29,6 +29,8 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Bigger stickers
 - Differentiate notices from normal text messages by adding some transparency
 - Render collapsible `<details>` tags in messages
+- Suggest and record frequently used emoji reactions (synced with desktop clients via `io.element.recent_emoji` account data)
+
 - Allow sending freeform reactions
 
 

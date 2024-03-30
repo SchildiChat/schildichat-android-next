@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemAction
+import io.element.android.features.messages.impl.emojis.RecentEmojiDataSource
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemLegacyCallInviteContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemPollContent
@@ -41,6 +42,7 @@ import javax.inject.Inject
 
 class ActionListPresenter @Inject constructor(
     private val appPreferencesStore: AppPreferencesStore,
+    private val recentEmojiDataSource: RecentEmojiDataSource,
 ) : Presenter<ActionListState> {
     @Composable
     override fun present(): ActionListState {
@@ -194,6 +196,7 @@ class ActionListPresenter @Inject constructor(
             target.value = ActionListState.Target.Success(
                 event = timelineItem,
                 displayEmojiReactions = displayEmojiReactions,
+                recentEmojis = recentEmojiDataSource.getRecentEmojisSorted(),
                 actions = actions.toImmutableList()
             )
         } else {

@@ -32,6 +32,7 @@ data class ActionListState(
         data class Success(
             val event: TimelineItem.Event,
             val displayEmojiReactions: Boolean,
+            val recentEmojis: List<String> = emptyList(),
             val actions: ImmutableList<TimelineItemAction>,
         ) : Target
     }

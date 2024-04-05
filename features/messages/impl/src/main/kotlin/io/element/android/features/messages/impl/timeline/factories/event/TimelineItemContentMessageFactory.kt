@@ -59,6 +59,7 @@ import io.element.android.libraries.matrix.ui.messages.toHtmlDocument
 import io.element.android.libraries.mediaviewer.api.util.FileExtensionExtractor
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.time.Duration
 
@@ -241,6 +242,7 @@ class TimelineItemContentMessageFactory @Inject constructor(
     }
 
     internal fun parseHtml(formattedBody: FormattedBody?, prefix: String? = null): CharSequence? {
+        try { // Wrong indention: this is a SC-try-catch to catch upstream WYSIWYG render exceptions
         if (formattedBody == null || formattedBody.format != MessageFormat.HTML) return null
         val result = htmlConverterProvider.provide()
             .fromHtmlToSpans(formattedBody.body.replace("<br>\n", "<br>").trimEnd())
@@ -253,6 +255,10 @@ class TimelineItemContentMessageFactory @Inject constructor(
             }
         } else {
             result
+        }
+        } catch (t: Throwable) {
+            Timber.e(t, "wysiwyg render crash")
+            return null
         }
     }
 

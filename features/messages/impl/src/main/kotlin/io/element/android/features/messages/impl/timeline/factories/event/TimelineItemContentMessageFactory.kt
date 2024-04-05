@@ -245,7 +245,7 @@ class TimelineItemContentMessageFactory @Inject constructor(
         try { // Wrong indention: this is a SC-try-catch to catch upstream WYSIWYG render exceptions
         if (formattedBody == null || formattedBody.format != MessageFormat.HTML) return null
         val result = htmlConverterProvider.provide()
-            .fromHtmlToSpans(formattedBody.body.replace("<br>\n", "<br>").trimEnd())
+            .fromHtmlToSpans(formattedBody.body.escapeHtmlBeforeWysiwyg().trimEnd())
             .withFixedURLSpans()
         return if (prefix != null) {
             buildSpannedString {

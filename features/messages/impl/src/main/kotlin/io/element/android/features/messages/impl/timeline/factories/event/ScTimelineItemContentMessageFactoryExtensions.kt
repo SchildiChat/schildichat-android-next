@@ -26,3 +26,10 @@ internal fun TimelineItemContentMessageFactory.parseHtmlCollapsed(formattedBody:
     }
     return parseHtml(formattedBody.copy(body = html.html()), prefix)
 }
+
+internal fun String.escapeHtmlBeforeWysiwyg(): String {
+    return replace("<br>\n", "<br>")
+        .replace(Regex("""<a href="(https://matrix.to/#/[^"]*")></a>""")) {
+            """<a href="${it.groupValues[1]}">UNKNOWN</a>"""
+        }
+}

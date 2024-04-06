@@ -50,6 +50,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Use schildi.chat servers for rageshake bug reports and FCM push gateway server
 - Streamlined settings framework to make settings-controlled features faster to implement
 - Use [UnifiedPush's FOSS FCM distributor](https://github.com/UnifiedPush/android-foss_embedded_fcm_distributor) instead of bundling Google's closed source FCM libraries
+- Misc bug fixes related to upstream bugs (if they're annoying me enough to not wait for Element to fix them. Usually we'll try to contribute these back upstream)
 
 
 ## Historic

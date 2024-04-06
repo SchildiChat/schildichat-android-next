@@ -1,0 +1,5 @@
+- Update codebase to Element X v0.4.7
+- Suggest frequently used emoji reactions (synced with desktop clients)
+- Add pseudo spaces for unread chats
+- Fix some upstream crashes related to rendering the timeline
+- Setting to open reaction picker directly to fully expanded

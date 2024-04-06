@@ -35,6 +35,7 @@ import chat.schildi.features.roomlist.spaces.PersistSpaceOnPause
 import chat.schildi.features.roomlist.spaces.SpaceAwareRoomListDataSource
 import chat.schildi.features.roomlist.spaces.SpaceListDataSource
 import chat.schildi.features.roomlist.spaces.SpaceUnreadCountsDataSource
+import chat.schildi.features.roomlist.spaces.filterByUnread
 import chat.schildi.lib.preferences.ScAppStateStore
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
@@ -205,9 +206,9 @@ class RoomListPresenter @Inject constructor(
     ): RoomListContentState {
         // SC spaces
         val spaceNavEnabled = ScPrefs.SPACE_NAV.value()
-        val spacesList = if (spaceNavEnabled) spaceListDataSource.allSpaces.collectAsState().value else null
         val spaceSelectionHierarchy = if (spaceNavEnabled) spaceAwareRoomListDataSource.spaceSelectionHierarchy.collectAsState().value else persistentListOf()
         val spaceUnreadCounts = if (spaceNavEnabled) spaceUnreadCountsDataSource.spaceUnreadCounts.collectAsState().value else persistentMapOf()
+        val spacesList = if (spaceNavEnabled) spaceListDataSource.allSpaces.collectAsState().value?.filterByUnread(spaceUnreadCounts, spaceSelectionHierarchy) else null
         // SC end
 
         val roomSummaries = if (spaceNavEnabled)

@@ -48,6 +48,9 @@ object ScPrefs {
     val PSEUDO_SPACE_SPACELESS = ScBoolPref("PSEUDO_SPACE_SPACELESS", false, R.string.sc_pseudo_space_spaceless, null, dependencies = SPACE_NAV.asDependencies())
     val PSEUDO_SPACE_NOTIFICATIONS = ScBoolPref("PSEUDO_SPACE_NOTIFICATIONS", false, R.string.sc_pseudo_space_notifications, null, dependencies = SPACE_NAV.asDependencies())
     val PSEUDO_SPACE_UNREAD = ScBoolPref("PSEUDO_SPACE_UNREAD", false, R.string.sc_pseudo_space_unread, null, dependencies = SPACE_NAV.asDependencies())
+    val PSEUDO_SPACE_HIDE_EMPTY_UNREAD = ScBoolPref("PSEUDO_SPACE_HIDE_EMPTY_UNREAD", false, R.string.sc_pseudo_space_hide_empty_unread, null, dependencies = listOf(
+        ScPrefFulfilledForAnyDependency(listOf(PSEUDO_SPACE_NOTIFICATIONS.toDependency(), PSEUDO_SPACE_UNREAD.toDependency()))
+    ), authorsChoice = true)
 
     // Timeline
     val SC_TIMELINE_LAYOUT = ScBoolPref("SC_TIMELINE_LAYOUT", true, R.string.sc_pref_sc_timeline_layout_title, upstreamChoice = false)
@@ -91,13 +94,18 @@ object ScPrefs {
             SPACE_SWIPE,
             COMPACT_ROOT_SPACES,
             ScPrefScreen(R.string.sc_pseudo_spaces_title, R.string.sc_pseudo_spaces_summary_experimental, listOf(
-                PSEUDO_SPACE_FAVORITES,
-                PSEUDO_SPACE_DMS,
-                PSEUDO_SPACE_GROUPS,
-                PSEUDO_SPACE_SPACELESS_GROUPS,
-                PSEUDO_SPACE_SPACELESS,
-                PSEUDO_SPACE_NOTIFICATIONS,
-                PSEUDO_SPACE_UNREAD,
+                ScPrefCategory(R.string.sc_pseudo_spaces_title, null, listOf(
+                    PSEUDO_SPACE_FAVORITES,
+                    PSEUDO_SPACE_DMS,
+                    PSEUDO_SPACE_GROUPS,
+                    PSEUDO_SPACE_SPACELESS_GROUPS,
+                    PSEUDO_SPACE_SPACELESS,
+                    PSEUDO_SPACE_NOTIFICATIONS,
+                    PSEUDO_SPACE_UNREAD,
+                )),
+                ScPrefCategory(R.string.sc_pref_category_general_behaviour, null, listOf(
+                    PSEUDO_SPACE_HIDE_EMPTY_UNREAD,
+                )),
             ), dependencies = SPACE_NAV.asDependencies())
         )),
         ScPrefCategory(R.string.sc_pref_category_timeline, null, listOf(
@@ -168,6 +176,7 @@ object ScPrefs {
                 PSEUDO_SPACE_SPACELESS.copy(titleRes = R.string.sc_pseudo_space_spaceless_short),
                 PSEUDO_SPACE_NOTIFICATIONS.copy(titleRes = R.string.sc_pseudo_space_notifications_short),
                 PSEUDO_SPACE_UNREAD,
+                PSEUDO_SPACE_HIDE_EMPTY_UNREAD,
             ), dependencies = SPACE_NAV.asDependencies()),
             SYNC_READ_RECEIPT_AND_MARKER,
         )),

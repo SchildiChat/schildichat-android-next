@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.value
 import chat.schildi.matrixsdk.ROOM_ACCOUNT_DATA_SPACE_ORDER
 import chat.schildi.matrixsdk.SpaceOrderSerializer
 import io.element.android.features.roomlist.impl.datasource.RoomListRoomSummaryFactory
@@ -28,6 +29,7 @@ import io.element.android.libraries.matrix.api.room.MatrixSpaceChildInfo
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
 import io.element.android.libraries.matrix.api.roomlist.RoomSummary
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
@@ -248,6 +250,7 @@ class SpaceListDataSource @Inject constructor(
         val selectionId: String
         val spaces: ImmutableList<SpaceHierarchyItem>
         fun applyFilter(rooms: List<RoomListRoomSummary>): ImmutableList<RoomListRoomSummary>
+        fun canHide(spaceUnreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts): Boolean = false
     }
 
     @Immutable
@@ -333,6 +336,8 @@ class SpaceListDataSource @Inject constructor(
             else
                 rooms.filter { it.notificationCount > 0 || it.highlightCount > 0 || it.numberOfUnreadMentions > 0 || it.isMarkedUnread }.toImmutableList()
         }
+        override fun canHide(spaceUnreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts): Boolean =
+            spaceUnreadCounts.markedUnreadChats == 0 && spaceUnreadCounts.notifiedChats == 0
     }
 
     @Immutable
@@ -346,6 +351,8 @@ class SpaceListDataSource @Inject constructor(
             else
                 rooms.filter { it.unreadCount > 0 || it.isMarkedUnread }.toImmutableList()
         }
+        override fun canHide(spaceUnreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts): Boolean =
+            spaceUnreadCounts.markedUnreadChats == 0 && spaceUnreadCounts.notifiedChats == 0 && spaceUnreadCounts.unreadChats == 0
     }
 
     data class PseudoSpaceSettings(
@@ -402,4 +409,17 @@ fun List<SpaceListDataSource.AbstractSpaceHierarchyItem>.resolveSpaceName(select
         return null
     }
     return resolveSelection(selection)?.name ?: stringResource(chat.schildi.lib.R.string.sc_space_all_rooms_title)
+}
+
+@Composable
+fun ImmutableList<SpaceListDataSource.AbstractSpaceHierarchyItem>.filterByUnread(
+    counts: ImmutableMap<String?, SpaceUnreadCountsDataSource.SpaceUnreadCounts>,
+    selection: ImmutableList<String>?,
+): ImmutableList<SpaceListDataSource.AbstractSpaceHierarchyItem> {
+    val currentSelection = selection?.firstOrNull()
+    return if (ScPrefs.PSEUDO_SPACE_HIDE_EMPTY_UNREAD.value()) {
+        filter { space -> space.selectionId == currentSelection || counts[space.selectionId]?.let { space.canHide(it) } != true }.toImmutableList()
+    } else {
+        this
+    }
 }

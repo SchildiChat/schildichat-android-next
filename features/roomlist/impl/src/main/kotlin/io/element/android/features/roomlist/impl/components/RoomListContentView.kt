@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import chat.schildi.features.roomlist.spaces.SpacesPager
 import chat.schildi.features.roomlist.spaces.isSpaceFilterActive
+import chat.schildi.features.roomlist.spaces.resolveSelection
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import io.element.android.compound.theme.ElementTheme
@@ -289,7 +290,10 @@ private fun RoomsViewList(
                 HorizontalDivider()
             }
         }
-    }}
+    }
+        // SC empty space view
+        if (state.summaries.isEmpty()) { ScSpaceEmptyView(state.spacesList.resolveSelection(state.spaceSelectionHierarchy)) }
+    }
 }
 
 @Composable

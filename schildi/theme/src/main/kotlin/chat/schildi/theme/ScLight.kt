@@ -128,5 +128,22 @@ internal val sclSemanticColors = SemanticColors(
     iconSuccessPrimary = ScColors.colorAccentGreen,
     iconInfoPrimary = ScColors.colorAccentBlue,
     iconOnSolidPrimary = scd_fgPrimary,
+    // TODO-start
+    bgAccentRest = LightColorTokens.colorGreen900,
+    bgAccentHovered = LightColorTokens.colorGreen1000,
+    bgAccentPressed = LightColorTokens.colorGreen1100,
+    bgDecorative1 = LightColorTokens.colorLime300,
+    bgDecorative2 = LightColorTokens.colorCyan300,
+    bgDecorative3 = LightColorTokens.colorFuchsia300,
+    bgDecorative4 = LightColorTokens.colorPurple300,
+    bgDecorative5 = LightColorTokens.colorPink300,
+    bgDecorative6 = LightColorTokens.colorOrange300,
+    textDecorative1 = LightColorTokens.colorLime1100,
+    textDecorative2 = LightColorTokens.colorCyan1100,
+    textDecorative3 = LightColorTokens.colorFuchsia1100,
+    textDecorative4 = LightColorTokens.colorPurple1100,
+    textDecorative5 = LightColorTokens.colorPink1100,
+    textDecorative6 = LightColorTokens.colorOrange1100,
+    // TODO-end
     isLight = true,
 )

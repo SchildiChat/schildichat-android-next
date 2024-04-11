@@ -82,7 +82,7 @@ class TimelineItemContentMessageFactory @Inject constructor(
                         prefix = "* $senderDisplayName",
                     ),
                     formattedBody = parseHtml(messageType.formatted, prefix = "* $senderDisplayName") ?: emoteBody.withLinks(),
-                    formattedCollapsedBody = parseHtmlCollapsed(messageType.formatted, prefix = "* $senderDisplayName"),
+                    formattedCollapsedBody = parseHtmlCollapsed(permalinkParser, messageType.formatted, prefix = "* $senderDisplayName"),
                     isEdited = content.isEdited,
                 )
             }
@@ -210,7 +210,7 @@ class TimelineItemContentMessageFactory @Inject constructor(
                     body = body,
                     htmlDocument = messageType.formatted?.toHtmlDocument(permalinkParser = permalinkParser),
                     formattedBody = parseHtml(messageType.formatted) ?: body.withLinks(),
-                    formattedCollapsedBody = parseHtmlCollapsed(messageType.formatted),
+                    formattedCollapsedBody = parseHtmlCollapsed(permalinkParser, messageType.formatted),
                     isEdited = content.isEdited,
                 )
             }
@@ -220,7 +220,7 @@ class TimelineItemContentMessageFactory @Inject constructor(
                     body = body,
                     htmlDocument = messageType.formatted?.toHtmlDocument(permalinkParser = permalinkParser),
                     formattedBody = parseHtml(messageType.formatted) ?: body.withLinks(),
-                    formattedCollapsedBody = parseHtmlCollapsed(messageType.formatted),
+                    formattedCollapsedBody = parseHtmlCollapsed(permalinkParser, messageType.formatted),
                     isEdited = content.isEdited,
                 )
             }

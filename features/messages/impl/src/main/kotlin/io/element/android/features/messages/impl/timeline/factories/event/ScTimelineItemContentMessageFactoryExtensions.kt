@@ -1,17 +1,22 @@
 package io.element.android.features.messages.impl.timeline.factories.event
 
+import io.element.android.libraries.matrix.api.permalink.PermalinkParser
 import io.element.android.libraries.matrix.api.timeline.item.event.FormattedBody
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageFormat
 import io.element.android.libraries.matrix.ui.messages.toHtmlDocument
 import timber.log.Timber
 
-internal fun TimelineItemContentMessageFactory.parseHtmlCollapsed(formattedBody: FormattedBody?, prefix: String? = null): CharSequence? {
+internal fun TimelineItemContentMessageFactory.parseHtmlCollapsed(
+    permalinkParser: PermalinkParser,
+    formattedBody: FormattedBody?,
+    prefix: String? = null
+): CharSequence? {
     if (formattedBody == null || formattedBody.format != MessageFormat.HTML) return null
     // If nothing collapsible, no need to do anything
     if ("<details" !in formattedBody.body) {
         return null
     }
-    val html = formattedBody.toHtmlDocument(prefix)?.body() ?: return null
+    val html = formattedBody.toHtmlDocument(permalinkParser, prefix)?.body() ?: return null
     html.getElementsByTag("details").forEach { details ->
         val summaries = details.getElementsByTag("summary")
         if (summaries.size != 1) {

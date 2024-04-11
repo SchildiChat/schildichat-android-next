@@ -98,6 +98,7 @@ class ActionListPresenter @Inject constructor(
                 is TimelineItemStateContent -> {
                     buildList {
                         add(TimelineItemAction.Copy)
+                        add(TimelineItemAction.CopyLink)
                         if (isDeveloperModeEnabled) {
                             add(TimelineItemAction.ViewSource)
                         }
@@ -121,6 +122,7 @@ class ActionListPresenter @Inject constructor(
                         if (timelineItem.content.canBeCopied()) {
                             add(TimelineItemAction.Copy)
                         }
+                        add(TimelineItemAction.CopyLink)
                         if (isDeveloperModeEnabled) {
                             add(TimelineItemAction.ViewSource)
                         }
@@ -138,6 +140,7 @@ class ActionListPresenter @Inject constructor(
                             add(TimelineItemAction.Reply)
                             add(TimelineItemAction.Forward)
                         }
+                        add(TimelineItemAction.CopyLink)
                         if (isDeveloperModeEnabled) {
                             add(TimelineItemAction.ViewSource)
                         }
@@ -178,6 +181,7 @@ class ActionListPresenter @Inject constructor(
                     if (timelineItem.content.canBeCopied()) {
                         add(TimelineItemAction.Copy)
                     }
+                    add(TimelineItemAction.CopyLink)
                     if (isDeveloperModeEnabled) {
                         add(TimelineItemAction.ViewSource)
                     }

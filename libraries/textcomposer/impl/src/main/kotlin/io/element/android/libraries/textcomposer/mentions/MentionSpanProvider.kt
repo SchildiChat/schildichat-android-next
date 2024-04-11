@@ -18,6 +18,7 @@ package io.element.android.libraries.textcomposer.mentions
 
 import android.graphics.Color
 import android.graphics.Typeface
+import android.net.Uri
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.compose.foundation.layout.PaddingValues
@@ -43,10 +44,12 @@ import io.element.android.libraries.designsystem.theme.mentionPillText
 import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.permalink.PermalinkData
 import io.element.android.libraries.matrix.api.permalink.PermalinkParser
+import kotlinx.collections.immutable.persistentListOf
 
 @Stable
 class MentionSpanProvider(
     private val currentSessionId: SessionId,
+    private val permalinkParser: PermalinkParser,
     private var currentUserTextColor: Int = 0,
     private var currentUserBackgroundColor: Int = Color.WHITE,
     private var otherTextColor: Int = 0,
@@ -74,7 +77,7 @@ class MentionSpanProvider(
     }
 
     fun getMentionSpanFor(text: String, url: String): MentionSpan {
-        val permalinkData = PermalinkParser.parse(url)
+        val permalinkData = permalinkParser.parse(url)
         val (startPaddingPx, endPaddingPx) = paddingValuesPx.value
         return when {
             permalinkData is PermalinkData.UserLink -> {
@@ -113,9 +116,15 @@ class MentionSpanProvider(
 }
 
 @Composable
-fun rememberMentionSpanProvider(currentUserId: SessionId): MentionSpanProvider {
+fun rememberMentionSpanProvider(
+    currentUserId: SessionId,
+    permalinkParser: PermalinkParser,
+): MentionSpanProvider {
     val provider = remember(currentUserId) {
-        MentionSpanProvider(currentUserId)
+        MentionSpanProvider(
+            currentSessionId = currentUserId,
+            permalinkParser = permalinkParser,
+        )
     }
     provider.setup()
     return provider
@@ -124,7 +133,26 @@ fun rememberMentionSpanProvider(currentUserId: SessionId): MentionSpanProvider {
 @PreviewsDayNight
 @Composable
 internal fun MentionSpanPreview() {
-    val provider = rememberMentionSpanProvider(SessionId("@me:matrix.org"))
+    val provider = rememberMentionSpanProvider(
+        currentUserId = SessionId("@me:matrix.org"),
+        permalinkParser = object : PermalinkParser {
+            override fun parse(uriString: String): PermalinkData {
+                return when (uriString) {
+                    "https://matrix.to/#/@me:matrix.org" -> PermalinkData.UserLink("@me:matrix.org")
+                    "https://matrix.to/#/@other:matrix.org" -> PermalinkData.UserLink("@other:matrix.org")
+                    "https://matrix.to/#/#room:matrix.org" -> PermalinkData.RoomLink(
+                        roomIdOrAlias = "#room:matrix.org",
+                        isRoomAlias = true,
+                        eventId = null,
+                        viaParameters = persistentListOf(),
+                    )
+                    else -> TODO()
+                }
+            }
+
+            override fun parse(uri: Uri): PermalinkData = TODO()
+        },
+    )
     ElementPreview {
         provider.setup()
 

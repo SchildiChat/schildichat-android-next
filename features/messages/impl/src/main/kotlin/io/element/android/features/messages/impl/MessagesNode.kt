@@ -16,9 +16,12 @@
 
 package io.element.android.features.messages.impl
 
+import android.content.Context
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
@@ -32,11 +35,14 @@ import io.element.android.features.messages.impl.emojis.RecentEmojiDataSource
 import io.element.android.features.messages.impl.timeline.di.LocalTimelineItemPresenterFactories
 import io.element.android.features.messages.impl.timeline.di.TimelineItemPresenterFactories
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
+import io.element.android.libraries.androidutils.system.openUrlInExternalApp
 import io.element.android.libraries.core.bool.orFalse
 import io.element.android.libraries.di.RoomScope
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.UserId
+import io.element.android.libraries.matrix.api.permalink.PermalinkData
+import io.element.android.libraries.matrix.api.permalink.PermalinkParser
 import io.element.android.libraries.matrix.api.room.MatrixRoom
 import io.element.android.libraries.matrix.api.timeline.item.TimelineItemDebugInfo
 import io.element.android.libraries.mediaplayer.api.MediaPlayer
@@ -53,7 +59,8 @@ class MessagesNode @AssistedInject constructor(
     presenterFactory: MessagesPresenter.Factory,
     private val timelineItemPresenterFactories: TimelineItemPresenterFactories,
     private val mediaPlayer: MediaPlayer,
-    private val recentEmojiDataSource: RecentEmojiDataSource,
+    private val recentEmojiDataSource: RecentEmojiDataSource, // SC
+    private val permalinkParser: PermalinkParser,
 ) : Node(buildContext, plugins = plugins), MessagesNavigator {
     private val presenter = presenterFactory.create(this)
     private val callback = plugins<Callback>().firstOrNull()
@@ -98,6 +105,25 @@ class MessagesNode @AssistedInject constructor(
     private fun onUserDataClicked(userId: UserId) {
         callback?.onUserDataClicked(userId)
     }
+
+    private fun onLinkClicked(
+        context: Context,
+        url: String,
+    ) {
+        when (val permalink = permalinkParser.parse(Uri.parse(url))) {
+            is PermalinkData.UserLink -> {
+                callback?.onUserDataClicked(UserId(permalink.userId))
+            }
+            is PermalinkData.RoomLink -> {
+                // TODO Implement room link handling
+            }
+            is PermalinkData.FallbackLink,
+            is PermalinkData.RoomEmailInviteLink -> {
+                context.openUrlInExternalApp(url)
+            }
+        }
+    }
+
     override fun onShowEventDebugInfoClicked(eventId: EventId?, debugInfo: TimelineItemDebugInfo) {
         callback?.onShowEventDebugInfoClicked(eventId, debugInfo)
     }
@@ -132,6 +158,7 @@ class MessagesNode @AssistedInject constructor(
 
     @Composable
     override fun View(modifier: Modifier) {
+        val context = LocalContext.current
         CompositionLocalProvider(
             LocalTimelineItemPresenterFactories provides timelineItemPresenterFactories,
         ) {
@@ -144,6 +171,7 @@ class MessagesNode @AssistedInject constructor(
                 onEventClicked = this::onEventClicked,
                 onPreviewAttachments = this::onPreviewAttachments,
                 onUserDataClicked = this::onUserDataClicked,
+                onLinkClicked = { onLinkClicked(context, it) },
                 onSendLocationClicked = this::onSendLocationClicked,
                 onCreatePollClicked = this::onCreatePollClicked,
                 onJoinCallClicked = this::onJoinCallClicked,

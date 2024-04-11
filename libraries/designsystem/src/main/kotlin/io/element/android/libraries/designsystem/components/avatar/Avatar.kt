@@ -31,7 +31,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,11 +41,8 @@ import androidx.core.graphics.drawable.toBitmap
 import chat.schildi.theme.ScTheme
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
-import coil.compose.LocalImageLoader
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.libraries.designsystem.colors.AvatarColorsProvider
 import io.element.android.libraries.designsystem.preview.ElementThemedPreview
@@ -91,25 +87,32 @@ private fun ImageAvatar(
         ScPreviewAvatar(avatarData, modifier)
         return
     }
-    SubcomposeAsyncImage(
-        model = avatarData,
-        /*onError = {
-            Timber.e(it.result.throwable, "Error loading avatar $it\n${it.result}")
-        },*/
-        contentDescription = contentDescription,
-        contentScale = ContentScale.Crop,
-        //placeholder = debugPlaceholderAvatar(),
-        modifier = modifier
-    ) {
-        when (val state = painter.state) {
-            is AsyncImagePainter.State. Success -> SubcomposeAsyncImageContent()
-            is AsyncImagePainter.State.Error -> {
-                SideEffect {
-                    Timber.e(state.result.throwable, "Error loading avatar $state\n${state.result}")
+    if (LocalInspectionMode.current) {
+        // For compose previews, use debugPlaceholderAvatar()
+        // instead of falling back to initials avatar on load failure
+        AsyncImage(
+            model = avatarData,
+            contentDescription = contentDescription,
+            placeholder = debugPlaceholderAvatar(),
+            modifier = modifier
+        )
+    } else {
+        SubcomposeAsyncImage(
+            model = avatarData,
+            contentDescription = contentDescription,
+            contentScale = ContentScale.Crop,
+            modifier = modifier
+        ) {
+            when (val state = painter.state) {
+                is AsyncImagePainter.State.Success -> SubcomposeAsyncImageContent()
+                is AsyncImagePainter.State.Error -> {
+                    SideEffect {
+                        Timber.e(state.result.throwable, "Error loading avatar $state\n${state.result}")
+                    }
+                    InitialsAvatar(avatarData = avatarData)
                 }
-                InitialsAvatar(avatarData = avatarData)
+                else -> InitialsAvatar(avatarData = avatarData)
             }
-            else -> InitialsAvatar(avatarData = avatarData)
         }
     }
 }

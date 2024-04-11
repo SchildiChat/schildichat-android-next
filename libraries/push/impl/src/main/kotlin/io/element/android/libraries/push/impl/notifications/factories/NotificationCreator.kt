@@ -300,6 +300,7 @@ class NotificationCreator @Inject constructor(
     }
 
     fun createDiagnosticNotification(): Notification {
+        val intent = pendingIntentFactory.createTestPendingIntent()
         return NotificationCompat.Builder(context, notificationChannels.getChannelIdForTest())
             .setContentTitle(buildMeta.applicationName)
             .setContentText(stringProvider.getString(R.string.notification_test_push_notification_content))
@@ -309,7 +310,8 @@ class NotificationCreator @Inject constructor(
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_STATUS)
             .setAutoCancel(true)
-            .setContentIntent(pendingIntentFactory.createTestPendingIntent())
+            .setContentIntent(intent)
+            .setDeleteIntent(intent)
             .build()
     }
 

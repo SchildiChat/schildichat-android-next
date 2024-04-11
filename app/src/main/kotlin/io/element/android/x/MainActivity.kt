@@ -19,6 +19,7 @@ package io.element.android.x
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,7 +33,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
 import chat.schildi.lib.preferences.LocalScPreferencesStore
 import chat.schildi.theme.ScTheme
 import com.bumble.appyx.core.integration.NodeHost
@@ -63,7 +63,7 @@ class MainActivity : NodeActivity() {
         super.onCreate(savedInstanceState)
         appBindings = bindings()
         appBindings.lockScreenService().handleSecureFlag(this)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        enableEdgeToEdge()
         setContent {
             MainContent(appBindings)
         }

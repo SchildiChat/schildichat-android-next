@@ -20,6 +20,7 @@ import chat.schildi.lib.preferences.ScAppStateStore
 import com.squareup.anvil.annotations.ContributesBinding
 import io.element.android.libraries.di.AppScope
 import io.element.android.libraries.matrix.api.MatrixClient
+import io.element.android.libraries.push.api.GetCurrentPushProvider
 import io.element.android.libraries.push.api.PushService
 import io.element.android.libraries.push.impl.notifications.DefaultNotificationDrawerManager
 import io.element.android.libraries.pushproviders.api.Distributor
@@ -34,6 +35,7 @@ class DefaultPushService @Inject constructor(
     private val userPushStoreFactory: UserPushStoreFactory,
     private val pushProviders: Set<@JvmSuppressWildcards PushProvider>,
     private val scAppStateStore: ScAppStateStore,
+    private val getCurrentPushProvider: GetCurrentPushProvider,
 ) : PushService {
     override fun notificationStyleChanged() {
         defaultNotificationDrawerManager.notificationStyleChanged()
@@ -49,7 +51,7 @@ class DefaultPushService @Inject constructor(
      * Get current push provider, compare with provided one, then unregister and register if different, and store change.
      */
     override suspend fun registerWith(matrixClient: MatrixClient, pushProvider: PushProvider, distributor: Distributor) {
-        val userPushStore = userPushStoreFactory.create(matrixClient.sessionId)
+        val userPushStore = userPushStoreFactory.getOrCreate(matrixClient.sessionId)
         val currentPushProviderName = userPushStore.getPushProviderName()
         if (currentPushProviderName != pushProvider.name) {
             // Unregister previous one if any
@@ -61,7 +63,11 @@ class DefaultPushService @Inject constructor(
         scAppStateStore.setPushDistributor(distributor.value, distributor.name)
     }
 
-    override suspend fun testPush() {
-        pushersManager.testPush()
+    override suspend fun testPush(): Boolean {
+        val currentPushProvider = getCurrentPushProvider.getCurrentPushProvider()
+        val pushProvider = pushProviders.find { it.name == currentPushProvider } ?: return false
+        val config = pushProvider.getCurrentUserPushConfig() ?: return false
+        pushersManager.testPush(config)
+        return true
     }
 }

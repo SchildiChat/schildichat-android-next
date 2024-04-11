@@ -113,6 +113,7 @@ internal fun MessageComposerView(
         modifier = modifier,
         state = state.richTextEditorState,
         voiceMessageState = voiceMessageState.voiceMessageState,
+        permalinkParser = state.permalinkParser,
         subcomposing = subcomposing,
         onRequestFocus = ::onRequestFocus,
         onSendMessage = ::sendMessage,

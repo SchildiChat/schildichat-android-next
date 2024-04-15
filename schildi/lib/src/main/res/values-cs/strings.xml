@@ -83,4 +83,7 @@
     <string name="sc_pseudo_space_notifications_short">Oznámení</string>
     <string name="sc_pseudo_space_unread">Nepřečtené</string>
     <string name="sc_recent_reaction">Často používané</string>
+    <string name="sc_pseudo_space_hide_empty_unread">Skrýt prázdné nepřečtené prostory</string>
+    <string name="sc_space_empty_title">Prázný prostor</string>
+    <string name="sc_space_empty_summary">Přejděte do jiného prostoru a najděte své chaty</string>
 </resources>

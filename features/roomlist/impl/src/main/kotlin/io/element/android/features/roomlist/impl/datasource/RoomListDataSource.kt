@@ -65,7 +65,7 @@ class RoomListDataSource @Inject constructor(
         /*
         roomListService
             .allRooms
-            .summaries
+            .filteredSummaries
             .onEach { roomSummaries ->
                 replaceWith(roomSummaries)
             }

@@ -49,7 +49,10 @@ echo "Merging upstream SDK at $sdk_revision..."
 cd "$SDK_DIR"
 require_clean_git
 git fetch upstream
-git merge "$sdk_revision" || read -p "Enter once conflicts are solved"
+git merge "$sdk_revision" || echo "Please resolve and commit SDK conflicts manually!"
 
-echo "Build SDK..."
-"$GIT_ROOT/sc_tools/rust_sdk_build.sh"
+
+#git merge "$sdk_revision" || read -p "Enter once conflicts are solved"
+
+#echo "Build SDK..."
+#"$GIT_ROOT/sc_tools/rust_sdk_build.sh"

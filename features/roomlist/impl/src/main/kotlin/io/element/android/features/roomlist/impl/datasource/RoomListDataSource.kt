@@ -73,7 +73,7 @@ class RoomListDataSource @Inject constructor(
          */
         scRoomSortOrderSource.launchIn(coroutineScope)
         combine(
-            roomListService.allRooms.summaries,
+            roomListService.allRooms.filteredSummaries,
             scRoomSortOrderSource.sortOrder,
         ) { roomSummaries, sortOrder ->
             replaceWith(roomSummaries, sortOrder)

@@ -1,2 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="sc_space_all_rooms_title">所有聊天</string>
+    <string name="sc_recent_reaction">常用</string>
+    <string name="sc_pref_sc_themes_title">SC 主题</string>
+    <string name="sc_pref_sc_layout_title">SC 布局</string>
+    <string name="sc_pref_sc_overview_layout_title">SC 概览布局</string>
+    <string name="sc_pref_sc_timeline_layout_title">SC 对话布局</string>
+    <string name="sc_pref_sc_floating_date_title">浮动日期</string>
+    <string name="sc_pref_pl_display_name_summary_warning">在没有完整获取到成员列表前无法可靠地工作</string>
+    <string name="sc_pref_el_typography_title">Element 风格字体</string>
+    <string name="sc_pref_fast_transitions_title">快速过渡</string>
+    <string name="sc_pref_fast_transitions_summary">加速窗口动画</string>
+    <string name="sc_space_unread_counts_mode_title">合并未读计数</string>
+    <string name="sc_space_unread_counts_mode_messages">统计未读消息数</string>
+    <string name="sc_space_unread_counts_mode_hide">隐藏</string>
+    <string name="sc_push_info_title">推送状态</string>
+    <string name="sc_pseudo_space_dms">私聊</string>
+    <string name="sc_pseudo_space_notifications_short">通知</string>
+    <string name="sc_pseudo_space_unread">未读</string>
+    <string name="sc_pref_restore_defaults">恢复默认</string>
+    <string name="sc_pref_category_general_appearance">外观</string>
+    <string name="sc_pref_category_general_behaviour">行为</string>
+    <string name="sc_pref_category_misc">杂项</string>
+    <string name="sc_pref_screen_experimental_title">实验性</string>
+    <string name="sc_action_mark_as_read">标为已读</string>
+    <string name="sc_action_mark_as_unread">标为未读</string>
+    <string name="sc_onboarding_welcome_title">欢迎使用 SchildiChat</string>
+    <string name="sc_pref_sc_floating_date_summary">在滚动时在消息上方显示日期</string>
+    <string name="sc_push_info_summary">查看和推送通知相关的调试信息</string>
+    <string name="sc_pseudo_space_favorites">收藏</string>
+    <string name="sc_pref_screen_experimental_summary">不稳定特性，很可能会有 bug</string>
+</resources>

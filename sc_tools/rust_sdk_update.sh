@@ -2,6 +2,12 @@
 
 set -e
 
+if [ ! -z "$1" ]; then
+    rust_ver="$1"
+else
+    rust_ver=
+fi
+
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 SDK_DIR="$GIT_ROOT/../matrix-rust-sdk"
 COMPONENTS_DIR="$GIT_ROOT/../matrix-rust-components-kotlin"
@@ -25,9 +31,11 @@ COMPONENTS_DIR="$(realpath "$COMPONENTS_DIR")"
 echo "Using SDK: $SDK_DIR"
 echo "           $COMPONENTS_DIR"
 
-upstream_tag=`upstream_latest_tag`
+if [ -z "$rust_ver" ]; then
+    upstream_tag=`upstream_latest_tag`
 
-rust_ver="$(git show "$upstream_tag:gradle/libs.versions.toml" | grep "org.matrix.rustcomponents:sdk-android:" | sed 's|.*:\(.*\)"|\1|')"
+    rust_ver="$(git show "$upstream_tag:gradle/libs.versions.toml" | grep "org.matrix.rustcomponents:sdk-android:" | sed 's|.*:\(.*\)"|\1|')"
+fi
 
 if [ -z "$rust_ver" ]; then
     echo "Unable to detect currently prefered components version"

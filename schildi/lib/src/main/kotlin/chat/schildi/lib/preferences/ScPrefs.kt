@@ -152,7 +152,7 @@ object ScPrefs {
 
     val devQuickTweaksOverview = listOf(
         CLIENT_GENERATED_UNREAD_COUNTS,
-        ScUpstreamFeatureFlagAliasPref(FeatureFlags.RoomListFilters, R.string.sc_upstream_feature_flag_room_list_filters),
+        //ScUpstreamFeatureFlagAliasPref(FeatureFlags.RoomListFilters, R.string.sc_upstream_feature_flag_room_list_filters),
         ScPrefCategory(R.string.sc_pref_category_chat_sorting, null, listOf(
             PIN_FAVORITES,
             BURY_LOW_PRIORITY,

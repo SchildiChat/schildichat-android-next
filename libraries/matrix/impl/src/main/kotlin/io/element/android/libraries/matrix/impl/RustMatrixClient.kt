@@ -23,7 +23,9 @@ import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.core.coroutine.childScope
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.ProgressCallback
+import io.element.android.libraries.matrix.api.core.RoomAlias
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.core.RoomIdOrAlias
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.createroom.CreateRoomParameters
 import io.element.android.libraries.matrix.api.createroom.RoomPreset
@@ -37,6 +39,7 @@ import io.element.android.libraries.matrix.api.pusher.PushersService
 import io.element.android.libraries.matrix.api.room.MatrixRoom
 import io.element.android.libraries.matrix.api.room.MatrixRoomInfo
 import io.element.android.libraries.matrix.api.room.RoomMembershipObserver
+import io.element.android.libraries.matrix.api.room.preview.RoomPreview
 import io.element.android.libraries.matrix.api.roomdirectory.RoomDirectoryService
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
 import io.element.android.libraries.matrix.api.roomlist.awaitLoaded
@@ -58,6 +61,7 @@ import io.element.android.libraries.matrix.impl.room.RoomContentForwarder
 import io.element.android.libraries.matrix.impl.room.RoomSyncSubscriber
 import io.element.android.libraries.matrix.impl.room.RustMatrixRoom
 import io.element.android.libraries.matrix.impl.room.map
+import io.element.android.libraries.matrix.impl.room.preview.RoomPreviewMapper
 import io.element.android.libraries.matrix.impl.roomdirectory.RustRoomDirectoryService
 import io.element.android.libraries.matrix.impl.roomlist.RoomListFactory
 import io.element.android.libraries.matrix.impl.roomlist.RustRoomListService
@@ -156,7 +160,6 @@ class RustMatrixClient(
         syncService = rustSyncService,
         sessionCoroutineScope = sessionCoroutineScope,
         dispatchers = dispatchers,
-        sessionStore = sessionStore,
     )
 
     private val roomDirectoryService = RustRoomDirectoryService(
@@ -184,7 +187,6 @@ class RustMatrixClient(
                             isTokenValid = false,
                             loginType = existingData.loginType,
                             passphrase = existingData.passphrase,
-                            needsVerification = existingData.needsVerification,
                         )
                         sessionStore.updateData(newData)
                         Timber.d("Removed session data with token: '...$anonymizedToken'.")
@@ -212,7 +214,6 @@ class RustMatrixClient(
                     isTokenValid = true,
                     loginType = existingData.loginType,
                     passphrase = existingData.passphrase,
-                    needsVerification = existingData.needsVerification,
                 )
                 sessionStore.updateData(newData)
                 Timber.d("Saved new session data with token: '...$anonymizedToken'.")
@@ -238,7 +239,6 @@ class RustMatrixClient(
         client = client,
         isSyncServiceReady = rustSyncService.syncState.map { it == SyncState.Running },
         sessionCoroutineScope = sessionCoroutineScope,
-        sessionStore = sessionStore,
     )
 
     private val eventFilters = TimelineConfig.excludedEvents
@@ -454,7 +454,7 @@ class RustMatrixClient(
             runCatching { client.removeAvatar() }
         }
 
-    override suspend fun joinRoom(roomId: RoomId): Result<RoomId> = withContext(sessionDispatcher) {
+    override suspend fun joinRoom(roomId: RoomId): Result<Unit> = withContext(sessionDispatcher) {
         runCatching {
             client.joinRoomById(roomId.value).destroy()
             try {
@@ -462,8 +462,11 @@ class RustMatrixClient(
             } catch (e: Exception) {
                 Timber.e(e, "Timeout waiting for the room to be available in the room list")
             }
-            roomId
         }
+    }
+
+    override suspend fun knockRoom(roomId: RoomId): Result<Unit> {
+        return Result.failure(NotImplementedError("Not yet implemented"))
     }
 
     override suspend fun trackRecentlyVisitedRoom(roomId: RoomId): Result<Unit> = withContext(sessionDispatcher) {
@@ -475,6 +478,18 @@ class RustMatrixClient(
     override suspend fun getRecentlyVisitedRooms(): Result<List<RoomId>> = withContext(sessionDispatcher) {
         runCatching {
             client.getRecentlyVisitedRooms().map(::RoomId)
+        }
+    }
+
+    override suspend fun resolveRoomAlias(roomAlias: RoomAlias): Result<RoomId> = withContext(sessionDispatcher) {
+        runCatching {
+            client.resolveRoomAlias(roomAlias.value).let(::RoomId)
+        }
+    }
+
+    override suspend fun getRoomPreview(roomIdOrAlias: RoomIdOrAlias): Result<RoomPreview> = withContext(sessionDispatcher) {
+        runCatching {
+            client.getRoomPreview(roomIdOrAlias.identifier).let(RoomPreviewMapper::map)
         }
     }
 

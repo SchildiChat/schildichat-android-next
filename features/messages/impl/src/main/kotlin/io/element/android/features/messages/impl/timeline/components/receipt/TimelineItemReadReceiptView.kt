@@ -210,7 +210,7 @@ private fun computeReceiptDescription(receipts: ImmutableList<ReadReceiptData>):
 
 @PreviewsDayNight
 @Composable
-internal fun TimelineItemReactionsViewPreview(
+internal fun TimelineItemReadReceiptViewPreview(
     @PreviewParameter(ReadReceiptViewStateProvider::class) state: ReadReceiptViewState,
 ) = ElementPreview {
     TimelineItemReadReceiptView(

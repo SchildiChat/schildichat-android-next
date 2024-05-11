@@ -261,7 +261,7 @@ class SpaceListDataSource @Inject constructor(
         val flattenedRooms: ImmutableList<String>,
         val flattenedSpaces: ImmutableList<String>,
     ) : AbstractSpaceHierarchyItem {
-        override val name = info.name
+        override val name = info.name ?: "Nameless Space"
         override val selectionId = "$REAL_SPACE_ID_PREFIX${info.roomId.value}"
 
         override fun applyFilter(rooms: List<RoomListRoomSummary>) = rooms.filter { flattenedRooms.contains(it.roomId.value) }.toImmutableList()

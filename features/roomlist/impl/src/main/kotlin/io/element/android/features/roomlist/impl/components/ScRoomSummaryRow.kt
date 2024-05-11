@@ -45,6 +45,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -57,8 +58,10 @@ import chat.schildi.lib.util.formatUnreadCount
 import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
+import io.element.android.features.roomlist.impl.RoomListEvents
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummaryProvider
+import io.element.android.features.roomlist.impl.model.RoomSummaryDisplayType
 import io.element.android.libraries.core.extensions.orEmpty
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.preview.ElementPreview
@@ -70,28 +73,40 @@ import io.element.android.libraries.designsystem.theme.roomListRoomMessage
 import io.element.android.libraries.designsystem.theme.roomListRoomMessageDate
 import io.element.android.libraries.designsystem.theme.roomListRoomName
 import io.element.android.libraries.designsystem.theme.unreadIndicator
+import io.element.android.libraries.ui.strings.CommonStrings
+import timber.log.Timber
 
 internal val scRowMinHeight = 84.dp
+
+internal fun scRoomSummaryRowSupports(room: RoomListRoomSummary) = room.displayType == RoomSummaryDisplayType.ROOM
 
 @Composable
 internal fun ScRoomSummaryRow(
     room: RoomListRoomSummary,
     onClick: (RoomListRoomSummary) -> Unit,
-    onLongClick: (RoomListRoomSummary) -> Unit,
+    eventSink: (RoomListEvents) -> Unit,
     modifier: Modifier = Modifier,
     isLastIndex: Boolean,
 ) {
-    if (room.isPlaceholder) {
-        RoomSummaryPlaceholderRow(
-            modifier = modifier,
-        )
-    } else {
-        ScRoomSummaryRealRow(
-            room = room,
-            onClick = onClick,
-            onLongClick = onLongClick,
-            modifier = modifier
-        )
+    when (room.displayType) {
+        RoomSummaryDisplayType.ROOM -> {
+            ScRoomSummaryRealRow(
+                room = room,
+                onClick = onClick,
+                onLongClick = {
+                    eventSink(RoomListEvents.ShowContextMenu(room))
+                },
+                modifier = modifier
+            )
+        }
+        else -> {
+            // Fall back to upstream for placeholder and invites (for now?)
+            RoomSummaryRow(
+                room = room,
+                onClick = onClick,
+                eventSink = eventSink,
+            )
+        }
     }
     if (!isLastIndex) {
         HorizontalDivider()
@@ -151,7 +166,7 @@ private fun RowScope.ScNameAndTimestampRow(room: RoomListRoomSummary) {
             .weight(1f)
             .padding(end = 16.dp),
         style = ElementTheme.typography.fontBodyLgMedium,
-        text = room.name,
+        text = room.name ?: stringResource(id = CommonStrings.common_no_room_name),
         color = MaterialTheme.roomListRoomName(),
         maxLines = 1,
         overflow = TextOverflow.Ellipsis
@@ -291,7 +306,7 @@ internal fun ScRoomSummaryRowPreview(@PreviewParameter(RoomListRoomSummaryProvid
     ScRoomSummaryRow(
         room = data,
         onClick = {},
-        onLongClick = {},
+        eventSink = {},
         isLastIndex = false,
     )
 }

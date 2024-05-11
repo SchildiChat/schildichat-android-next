@@ -17,8 +17,8 @@ import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.room.MatrixRoom
-import io.element.android.libraries.matrix.api.timeline.MatrixTimeline
 import io.element.android.libraries.matrix.api.timeline.ReceiptType
+import io.element.android.libraries.matrix.api.timeline.Timeline
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -46,7 +46,7 @@ fun forceSetReceipts(context: Context, appScope: CoroutineScope, room: MatrixRoo
 }
 
 @Composable
-fun createScReadState(timeline: MatrixTimeline): ScReadState {
+fun createScReadState(timeline: Timeline): ScReadState {
     val lastReadMarkerIndex = remember { mutableIntStateOf(Int.MAX_VALUE) }
     val lastReadMarkerId = remember { mutableStateOf<EventId?>(null) }
     val readMarkerToSet = remember { mutableStateOf<EventId?>(null) }
@@ -69,7 +69,7 @@ fun ScReadTracker(
     appScope: CoroutineScope,
     scUnreadState: ScReadState,
     isSendPublicReadReceiptsEnabled: Boolean,
-    timeline: MatrixTimeline,
+    timeline: Timeline,
     onBackPressed: () -> Unit
 ) {
     val clickedBack = remember { mutableStateOf(false) }

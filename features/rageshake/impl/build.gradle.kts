@@ -39,6 +39,7 @@ dependencies {
     implementation(projects.schildi.lib)
     implementation(projects.anvilannotations)
     anvil(projects.anvilcodegen)
+    implementation(projects.appconfig)
     implementation(projects.services.toolbox.api)
     implementation(projects.libraries.androidutils)
     implementation(projects.libraries.core)

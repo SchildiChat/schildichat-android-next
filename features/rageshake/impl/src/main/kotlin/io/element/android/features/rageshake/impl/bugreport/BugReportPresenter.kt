@@ -26,10 +26,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import io.element.android.features.rageshake.api.crash.CrashDataStore
+import io.element.android.features.rageshake.api.logs.LogFilesRemover
 import io.element.android.features.rageshake.api.reporter.BugReporter
 import io.element.android.features.rageshake.api.reporter.BugReporterListener
 import io.element.android.features.rageshake.api.screenshot.ScreenshotHolder
-import io.element.android.features.rageshake.impl.logs.VectorFileLogger
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.meta.BuildMeta
@@ -42,6 +42,7 @@ class BugReportPresenter @Inject constructor(
     private val bugReporter: BugReporter,
     private val crashDataStore: CrashDataStore,
     private val screenshotHolder: ScreenshotHolder,
+    private val logFilesRemover: LogFilesRemover,
     private val appCoroutineScope: CoroutineScope,
     private val buildMeta: BuildMeta,
 ) : Presenter<BugReportState> {
@@ -98,6 +99,7 @@ class BugReportPresenter @Inject constructor(
                     if (formState.value.description.length < buildMeta.minBugReportLength) {
                         sendingAction.value = AsyncAction.Failure(BugReportFormError.DescriptionTooShort)
                     } else {
+                        sendingAction.value = AsyncAction.Loading
                         appCoroutineScope.sendBugReport(formState.value, crashInfo.isNotEmpty(), uploadListener)
                     }
                 }
@@ -153,6 +155,6 @@ class BugReportPresenter @Inject constructor(
     private fun CoroutineScope.resetAll() = launch {
         screenshotHolder.reset()
         crashDataStore.reset()
-        VectorFileLogger.getFromTimber()?.reset()
+        logFilesRemover.perform()
     }
 }

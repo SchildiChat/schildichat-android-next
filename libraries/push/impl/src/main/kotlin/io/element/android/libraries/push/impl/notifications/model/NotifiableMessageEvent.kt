@@ -36,7 +36,7 @@ data class NotifiableMessageEvent(
     val senderId: UserId,
     val noisy: Boolean,
     val timestamp: Long,
-    val senderName: String?,
+    val senderDisambiguatedDisplayName: String?,
     val body: String?,
     val caption: String?,
     // We cannot use Uri? type here, as that could trigger a
@@ -56,7 +56,6 @@ data class NotifiableMessageEvent(
 ) : NotifiableEvent {
     val type: String = EventType.MESSAGE
     override val description: String = body ?: ""
-    val title: String = senderName ?: ""
 
     // Example of value:
     // content://io.element.android.x.debug.notifications.fileprovider/downloads/temp/notif/matrix.org/XGItzSDOnSyXjYtOPfiKexDJ

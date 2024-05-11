@@ -27,7 +27,8 @@ data class AvatarData(
     val powerLevel: Long? = null,
 ) {
     val initial by lazy {
-        (name?.takeIf { it.isNotBlank() } ?: id)
+        // For roomIds, use "#" as initial
+        (name?.takeIf { it.isNotBlank() } ?: id.takeIf { !it.startsWith("!") } ?: "#")
             .let { dn ->
                 var startIndex = 0
                 val initial = dn[startIndex]

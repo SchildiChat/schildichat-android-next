@@ -11,7 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,7 +33,6 @@ import io.element.android.libraries.designsystem.theme.components.DropdownMenuIt
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconButton
 import io.element.android.libraries.designsystem.theme.components.Text
-import io.element.android.libraries.matrix.api.timeline.MatrixTimeline
 import io.element.android.libraries.ui.strings.CommonStrings
 
 @Composable

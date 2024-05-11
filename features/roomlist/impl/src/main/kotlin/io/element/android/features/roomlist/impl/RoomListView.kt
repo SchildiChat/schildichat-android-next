@@ -143,7 +143,7 @@ private fun RoomListScaffold(
                 onOpenSettings = onOpenSettings,
                 scrollBehavior = scrollBehavior,
                 displayMenuItems = state.displayActions,
-                displayFilters = state.displayFilters,
+                displayFilters = state.displayFilters && ScPrefs.ELEMENT_ROOM_LIST_FILTERS.value(),
                 filtersState = state.filtersState,
             )
         },

@@ -51,6 +51,7 @@ object ScPrefs {
     val PSEUDO_SPACE_HIDE_EMPTY_UNREAD = ScBoolPref("PSEUDO_SPACE_HIDE_EMPTY_UNREAD", false, R.string.sc_pseudo_space_hide_empty_unread, null, dependencies = listOf(
         ScPrefFulfilledForAnyDependency(listOf(PSEUDO_SPACE_NOTIFICATIONS.toDependency(), PSEUDO_SPACE_UNREAD.toDependency()))
     ), authorsChoice = true)
+    val ELEMENT_ROOM_LIST_FILTERS = ScBoolPref("ELEMENT_ROOM_LIST_FILTERS", false, R.string.sc_upstream_feature_flag_room_list_filters, R.string.sc_upstream_feature_flag_room_list_filters_summary, authorsChoice = false, upstreamChoice = true)
 
     // Timeline
     val SC_TIMELINE_LAYOUT = ScBoolPref("SC_TIMELINE_LAYOUT", true, R.string.sc_pref_sc_timeline_layout_title, upstreamChoice = false)
@@ -87,6 +88,7 @@ object ScPrefs {
         ScPrefCategory(R.string.sc_pref_category_chat_overview, null, listOf(
             SC_OVERVIEW_LAYOUT,
             COMPACT_APP_BAR,
+            ELEMENT_ROOM_LIST_FILTERS,
         )),
         ScPrefCategory(R.string.sc_pref_category_spaces, null, listOf(
             SPACE_NAV,
@@ -152,7 +154,7 @@ object ScPrefs {
 
     val devQuickTweaksOverview = listOf(
         CLIENT_GENERATED_UNREAD_COUNTS,
-        //ScUpstreamFeatureFlagAliasPref(FeatureFlags.RoomListFilters, R.string.sc_upstream_feature_flag_room_list_filters),
+        ELEMENT_ROOM_LIST_FILTERS, // Used to be: ScUpstreamFeatureFlagAliasPref(FeatureFlags.RoomListFilters, R.string.sc_upstream_feature_flag_room_list_filters),
         ScPrefCategory(R.string.sc_pref_category_chat_sorting, null, listOf(
             PIN_FAVORITES,
             BURY_LOW_PRIORITY,

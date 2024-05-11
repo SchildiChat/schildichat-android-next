@@ -94,6 +94,6 @@
     <string name="sc_freeform_reaction">Freeform reaction</string>
     <string name="sc_recent_reaction">Frequently used</string>
 
-    <!-- Upstream feature flags without proper string resource -->
     <string name="sc_upstream_feature_flag_room_list_filters">Room list filters</string>
+    <string name="sc_upstream_feature_flag_room_list_filters_summary">Element\'s way to filter chats</string>
 </resources>

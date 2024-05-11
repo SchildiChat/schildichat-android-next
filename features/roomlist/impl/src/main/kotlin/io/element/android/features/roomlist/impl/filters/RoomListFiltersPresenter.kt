@@ -20,6 +20,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.value
 import io.element.android.features.roomlist.impl.filters.selection.FilterSelectionStrategy
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
@@ -43,6 +45,13 @@ class RoomListFiltersPresenter @Inject constructor(
                 is RoomListFiltersEvents.ToggleFilter -> {
                     filterSelectionStrategy.toggle(event.filter)
                 }
+            }
+        }
+
+        val isFeatureEnabled = ScPrefs.ELEMENT_ROOM_LIST_FILTERS.value()
+        LaunchedEffect(isFeatureEnabled) {
+            if (!isFeatureEnabled) {
+                filterSelectionStrategy.clear()
             }
         }
 

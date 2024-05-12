@@ -153,7 +153,7 @@ private fun RoomsView(
     onRoomClicked: (RoomListRoomSummary) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    if (state.summaries.isEmpty() && filtersState.hasAnyFilterSelected) {
+    if (state.summaries.isEmpty() && (filtersState.hasAnyFilterSelected && state.spacesList.isEmpty())) {
         EmptyViewForFilterStates(
             selectedFilters = filtersState.selectedFilters(),
             modifier = modifier.fillMaxSize()
@@ -161,6 +161,7 @@ private fun RoomsView(
     } else {
         RoomsViewList(
             state = state,
+            filtersState = filtersState, // SC
             eventSink = eventSink,
             onConfirmRecoveryKeyClicked = onConfirmRecoveryKeyClicked,
             onRoomClicked = onRoomClicked,
@@ -172,6 +173,7 @@ private fun RoomsView(
 @Composable
 private fun RoomsViewList(
     state: RoomListContentState.Rooms,
+    filtersState: RoomListFiltersState, // SC
     eventSink: (RoomListEvents) -> Unit,
     onConfirmRecoveryKeyClicked: () -> Unit,
     onRoomClicked: (RoomListRoomSummary) -> Unit,
@@ -251,7 +253,12 @@ private fun RoomsViewList(
         }
     }
         // SC empty space view
-        if (state.summaries.isEmpty()) { ScSpaceEmptyView(state.spacesList.resolveSelection(state.spaceSelectionHierarchy)) }
+        if (state.summaries.isEmpty()) {
+            if (filtersState.hasAnyFilterSelected)
+                EmptyViewForFilterStates(filtersState.selectedFilters(), Modifier.fillMaxSize())
+            else
+                ScSpaceEmptyView(state.spacesList.resolveSelection(state.spaceSelectionHierarchy))
+        }
     }
 }
 

@@ -60,11 +60,6 @@ interface RoomListService {
     val allRooms: DynamicRoomList
 
     /**
-     * returns a [RoomList] object of all invites.
-     */
-    val invites: RoomList
-
-    /**
      * Root spaces.
      */
     val allSpaces: RoomList

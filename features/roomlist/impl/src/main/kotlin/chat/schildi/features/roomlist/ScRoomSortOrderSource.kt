@@ -3,6 +3,7 @@ package chat.schildi.features.roomlist
 import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
+import io.element.android.features.roomlist.impl.model.RoomSummaryDisplayType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -42,6 +43,7 @@ class ScRoomSortOrderSource @Inject constructor(
             } else {
                 rooms
             }.sortedBy { room ->
+                val inviteAdd = if (room.displayType == RoomSummaryDisplayType.INVITE) -10_000 else 0
                 val favoriteAdd = if (order.pinFavorites && !room.isFavorite) 1000 else 0
                 val lowPrioAdd = if (order.buryLowPriority && room.isLowPriority) 100 else 0
                 val unreadAdd = when {
@@ -60,7 +62,7 @@ class ScRoomSortOrderSource @Inject constructor(
                         room.unreadCount
                     )
                 }
-                favoriteAdd + lowPrioAdd + unreadAdd
+                inviteAdd + favoriteAdd + lowPrioAdd + unreadAdd
             }
         } else {
             rooms

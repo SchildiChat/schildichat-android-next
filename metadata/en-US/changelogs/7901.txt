@@ -1,0 +1,6 @@
+This release contains an important security fix from the latest Element X release!
+https://element.io/blog/security-release-element-x-android-0-4-12-and-ios-1-6-7/
+
+- Update codebase to Element X v0.4.12
+- Misc space improvements
+- Possibility to hide empty unread pseudo space

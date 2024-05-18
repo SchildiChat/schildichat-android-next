@@ -133,7 +133,7 @@ internal fun RowScope.scMessagesViewTopBarActions(
                         .padding(horizontal = 4.dp),
                 )
             }
-            scReadState?.fullyReadEventId?.value?.let {
+            scReadState?.fullyReadEventId?.value?.takeIf { it.isNotEmpty() && it != "TODO" }?.let {
                 Text(
                     text = "FR=$it",
                     maxLines = 1,

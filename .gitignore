@@ -1,3 +1,7 @@
+# SC
+.idea/deploymentTargetSelector.xml
+.attach_pid*
+
 # Built application files
 *.apk
 *.ap_

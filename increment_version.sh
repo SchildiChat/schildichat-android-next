@@ -145,6 +145,7 @@ git_changelog() {
         | grep -v "Disable Android Auto supports" \
         | grep -v "Switch to alternative Schil" \
         | grep -vi "fastlane" \
+        | grep -vi "gitignore" \
         | grep -v "\\[gplay-release\\]" \
         || echo "No significant changes since the last release"
 }

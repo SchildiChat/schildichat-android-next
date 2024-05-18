@@ -28,6 +28,9 @@ class ScThemeExposures(
     mentionFg: Color?,
     mentionBg: Color?,
     mentionBgOther: Color?,
+    greenFg: Color?,
+    greenBg: Color?,
+    messageHighlightBg: Color?,
 ) {
     var isScTheme by mutableStateOf(isScTheme)
         private set
@@ -59,6 +62,12 @@ class ScThemeExposures(
         private set
     var mentionBgOther by mutableStateOf(mentionBgOther)
         private set
+    var greenFg by mutableStateOf(greenFg)
+        private set
+    var greenBg by mutableStateOf(greenBg)
+        private set
+    var messageHighlightBg by mutableStateOf(greenBg)
+        private set
 
     fun copy(
         isScTheme: Boolean = this.isScTheme,
@@ -76,6 +85,9 @@ class ScThemeExposures(
         mentionFg: Color? = this.mentionFg,
         mentionBg: Color? = this.mentionBg,
         mentionBgOther: Color? = this.mentionBgOther,
+        greenFg: Color? = this.greenFg,
+        greenBg: Color? = this.greenBg,
+        messageHighlightBg: Color? = this.messageHighlightBg,
     ) = ScThemeExposures(
         isScTheme = isScTheme,
         horizontalDividerThickness = horizontalDividerThickness,
@@ -92,6 +104,9 @@ class ScThemeExposures(
         mentionFg = mentionFg,
         mentionBg = mentionBg,
         mentionBgOther = mentionBgOther,
+        greenFg = greenFg,
+        greenBg = greenBg,
+        messageHighlightBg = messageHighlightBg,
     )
 
     fun updateColorsFrom(other: ScThemeExposures) {
@@ -110,6 +125,9 @@ class ScThemeExposures(
         mentionFg = other.mentionFg
         mentionBg = other.mentionBg
         mentionBgOther = other.mentionBgOther
+        greenFg = other.greenFg
+        greenBg = other.greenBg
+        messageHighlightBg = other.messageHighlightBg
     }
 }
 
@@ -129,6 +147,9 @@ internal val elementLightScExposures = ScThemeExposures(
     mentionFg = null,
     mentionBg = null,
     mentionBgOther = null,
+    greenFg = null,
+    greenBg = null,
+    messageHighlightBg = null,
 )
 
 internal val elementDarkScExposures = ScThemeExposures(
@@ -147,4 +168,7 @@ internal val elementDarkScExposures = ScThemeExposures(
     mentionFg = null,
     mentionBg = null,
     mentionBgOther = null,
+    greenFg = null,
+    greenBg = null,
+    messageHighlightBg = null,
 )

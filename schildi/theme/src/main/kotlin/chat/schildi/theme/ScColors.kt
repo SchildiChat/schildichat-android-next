@@ -4,6 +4,9 @@ import androidx.compose.ui.graphics.Color
 
 internal object ScColors {
     val colorAccentGreen = Color(0xff8bc34a)
+    val colorAccentGreenAlpha_21 = Color(0x218bc34a)
+    val colorAccentGreenAlpha_30 = Color(0x308bc34a)
+    val colorAccentGreenAlpha_80 = Color(0x808bc34a)
     val colorAccentRed = Color(0xfff44336)
     val colorAccentOrange = Color(0xffff5722)
     val colorAccentBlueLight = Color(0xff03a9f4)

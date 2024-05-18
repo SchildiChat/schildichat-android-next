@@ -26,6 +26,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.messages.impl.timeline.TimelineEvents
 import io.element.android.features.messages.impl.timeline.TimelineRoomInfo
@@ -142,7 +143,7 @@ private fun Modifier.focusedEvent(
 ): Modifier {
     val highlightedLineColor = ElementTheme.colors.textActionAccent
     val gradientColors = listOf(
-        ElementTheme.colors.highlightedMessageBackgroundColor,
+        ScTheme.exposures.messageHighlightBg ?: ElementTheme.colors.highlightedMessageBackgroundColor,
         ElementTheme.materialColors.background
     )
     val verticalOffset = focusedEventOffset.toPx()

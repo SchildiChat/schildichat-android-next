@@ -18,6 +18,8 @@ package io.element.android.features.roomdetails.impl.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import chat.schildi.theme.ScTheme
+import chat.schildi.theme.ScThemeExposures
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.libraries.designsystem.components.Badge
@@ -43,17 +45,17 @@ object RoomBadge {
         type: Type,
     ) {
         val backgroundColor = when (type) {
-            Type.Positive -> ElementTheme.colors.badgePositiveBackgroundColor
+            Type.Positive -> ScTheme.exposures.greenBg ?: ElementTheme.colors.badgePositiveBackgroundColor
             Type.Neutral -> ElementTheme.colors.badgeNeutralBackgroundColor
             Type.Negative -> ElementTheme.colors.badgeNegativeBackgroundColor
         }
         val textColor = when (type) {
-            Type.Positive -> ElementTheme.colors.badgePositiveContentColor
+            Type.Positive -> ScTheme.exposures.greenFg ?: ElementTheme.colors.badgePositiveContentColor
             Type.Neutral -> ElementTheme.colors.badgeNeutralContentColor
             Type.Negative -> ElementTheme.colors.badgeNegativeContentColor
         }
         val iconColor = when (type) {
-            Type.Positive -> ElementTheme.colors.iconSuccessPrimary
+            Type.Positive -> ScTheme.exposures.greenFg ?: ElementTheme.colors.iconSuccessPrimary
             Type.Neutral -> ElementTheme.colors.iconSecondary
             Type.Negative -> ElementTheme.colors.iconCriticalPrimary
         }

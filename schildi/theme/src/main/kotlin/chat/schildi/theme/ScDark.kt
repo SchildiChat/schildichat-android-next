@@ -80,6 +80,9 @@ internal val scdExposures = ScThemeExposures(
     mentionFg = ScColors.colorWhite,
     mentionBg = ScColors.colorAccentRed,
     mentionBgOther = ScColors.colorGray_61,
+    greenFg = ScColors.colorAccentGreen,
+    greenBg = ScColors.colorAccentGreenAlpha_30,
+    messageHighlightBg = ScColors.colorAccentGreenAlpha_80,
 )
 
 @OptIn(CoreColorToken::class)

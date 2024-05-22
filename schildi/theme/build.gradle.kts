@@ -10,6 +10,5 @@ android {
 dependencies {
     implementation(projects.schildi.lib)
     implementation(libs.androidx.compose.material3)
-    implementation(libs.accompanist.systemui)
     implementation(libs.compound)
 }

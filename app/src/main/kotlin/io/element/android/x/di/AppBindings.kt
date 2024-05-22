@@ -19,6 +19,7 @@ package io.element.android.x.di
 import chat.schildi.lib.preferences.ScPreferencesStore
 import com.squareup.anvil.annotations.ContributesTo
 import io.element.android.features.api.MigrationEntryPoint
+import io.element.android.features.lockscreen.api.LockScreenEntryPoint
 import io.element.android.features.lockscreen.api.LockScreenService
 import io.element.android.features.preferences.api.store.AppPreferencesStore
 import io.element.android.features.rageshake.api.reporter.BugReporter
@@ -41,4 +42,6 @@ interface AppBindings {
     fun scPreferencesStore(): ScPreferencesStore
 
     fun migrationEntryPoint(): MigrationEntryPoint
+
+    fun lockScreenEntryPoint(): LockScreenEntryPoint
 }

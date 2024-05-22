@@ -33,7 +33,6 @@ import io.element.android.features.messages.impl.voicemessages.composer.aVoiceMe
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.textcomposer.TextComposer
-import io.element.android.libraries.textcomposer.model.Message
 import io.element.android.libraries.textcomposer.model.Suggestion
 import io.element.android.libraries.textcomposer.model.VoiceMessagePlayerEvent
 import io.element.android.libraries.textcomposer.model.VoiceMessageRecorderEvent
@@ -44,17 +43,16 @@ internal fun MessageComposerView(
     state: MessageComposerState,
     voiceMessageState: VoiceMessageComposerState,
     subcomposing: Boolean,
-    enableTextFormatting: Boolean,
     enableVoiceMessages: Boolean,
     modifier: Modifier = Modifier,
     scBeforeSend: (() -> Unit)? = null,
 ) {
     val view = LocalView.current
-    fun sendMessage(message: Message) {
+    fun sendMessage() {
         if (scBeforeSend != null) {
             scBeforeSend()
         }
-        state.eventSink(MessageComposerEvents.SendMessage(message))
+        state.eventSink(MessageComposerEvents.SendMessage)
     }
 
     fun sendUri(uri: Uri) {
@@ -89,7 +87,7 @@ internal fun MessageComposerView(
     val coroutineScope = rememberCoroutineScope()
     fun onRequestFocus() {
         coroutineScope.launch {
-            state.richTextEditorState.requestFocus()
+            state.textEditorState.requestFocus()
         }
     }
 
@@ -111,7 +109,7 @@ internal fun MessageComposerView(
 
     TextComposer(
         modifier = modifier,
-        state = state.richTextEditorState,
+        state = state.textEditorState,
         voiceMessageState = voiceMessageState.voiceMessageState,
         permalinkParser = state.permalinkParser,
         subcomposing = subcomposing,
@@ -122,7 +120,6 @@ internal fun MessageComposerView(
         onResetComposerMode = ::onCloseSpecialMode,
         onAddAttachment = ::onAddAttachment,
         onDismissTextFormatting = ::onDismissTextFormatting,
-        enableTextFormatting = enableTextFormatting,
         enableVoiceMessages = enableVoiceMessages,
         onVoiceRecorderEvent = onVoiceRecorderEvent,
         onVoicePlayerEvent = onVoicePlayerEvent,
@@ -146,7 +143,6 @@ internal fun MessageComposerViewPreview(
             modifier = Modifier.height(IntrinsicSize.Min),
             state = state,
             voiceMessageState = aVoiceMessageComposerState(),
-            enableTextFormatting = true,
             enableVoiceMessages = true,
             subcomposing = false,
         )
@@ -154,7 +150,6 @@ internal fun MessageComposerViewPreview(
             modifier = Modifier.height(200.dp),
             state = state,
             voiceMessageState = aVoiceMessageComposerState(),
-            enableTextFormatting = true,
             enableVoiceMessages = true,
             subcomposing = false,
         )
@@ -171,7 +166,6 @@ internal fun MessageComposerViewVoicePreview(
             modifier = Modifier.height(IntrinsicSize.Min),
             state = aMessageComposerState(),
             voiceMessageState = state,
-            enableTextFormatting = true,
             enableVoiceMessages = true,
             subcomposing = false,
         )

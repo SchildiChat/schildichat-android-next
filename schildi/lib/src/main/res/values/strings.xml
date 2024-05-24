@@ -96,4 +96,6 @@
 
     <string name="sc_upstream_feature_flag_room_list_filters">Room list filters</string>
     <string name="sc_upstream_feature_flag_room_list_filters_summary">Element\'s way to filter chats</string>
+
+    <string name="event_placeholder_location">Location</string>
 </resources>

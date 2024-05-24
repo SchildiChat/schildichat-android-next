@@ -40,8 +40,6 @@ import io.element.android.features.messages.impl.timeline.model.event.TimelineIt
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemUnknownContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemVideoContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemVoiceContent
-import io.element.android.features.messages.impl.timeline.model.event.caption
-import io.element.android.features.messages.impl.timeline.model.event.isEdited
 import io.element.android.features.messages.impl.voicemessages.timeline.VoiceMessageState
 import io.element.android.libraries.architecture.Presenter
 
@@ -78,8 +76,9 @@ fun TimelineItemEventContentView(
             onContentLayoutChanged = onContentLayoutChanged,
             modifier = modifier
         )
-        is TimelineItemLocationContent -> TimelineItemLocationView(
+        is TimelineItemLocationContent -> ScTimelineItemLocationView(
             content = content,
+            onContentLayoutChanged = onContentLayoutChanged,
             modifier = modifier
         )
         is TimelineItemImageContent -> TimelineItemImageView(

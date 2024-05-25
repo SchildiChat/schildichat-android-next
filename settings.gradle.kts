@@ -86,6 +86,7 @@ dependencyResolutionManagement {
                 password = getLocalProperty("gpr.token") as String? ?: System.getenv("GPR_TOKEN")
             }
         }
+        mavenLocal()
         flatDir {
             dirs("libraries/matrix/libs")
         }

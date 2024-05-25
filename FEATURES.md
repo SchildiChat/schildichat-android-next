@@ -32,6 +32,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Suggest and record frequently used emoji reactions (synced with desktop clients via `io.element.recent_emoji` account data)
 
 - Allow sending freeform reactions
+- Bigger emoji-only messages
 
 
 ## Notifications

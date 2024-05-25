@@ -11,4 +11,5 @@ android {
 
 dependencies {
     implementation(libs.serialization.json)
+    implementation(libs.androidx.emoji2)
 }

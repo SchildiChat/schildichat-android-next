@@ -1,11 +1,13 @@
 package chat.schildi.matrixsdk
 
+import androidx.emoji2.text.EmojiCompat
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.longOrNull
+import timber.log.Timber
 import java.lang.Character.UnicodeBlock.MISCELLANEOUS_SYMBOLS
 import java.lang.Character.UnicodeBlock.MISCELLANEOUS_TECHNICAL
 import java.lang.Character.UnicodeBlock.VARIATION_SELECTORS
@@ -75,8 +77,17 @@ public fun MutableList<RecentEmojiItem>.recordSelection(emoji: String) {
     }
 }
 
-// From https://stackoverflow.com/a/74800286 - TODO how good does this work, maybe switch to EmojiCompat?
-fun isValidRecentEmoji(someString: String): Boolean {
+fun isValidRecentEmoji(s: String): Boolean {
+    try {
+        return s.containsOnlyEmojis(1)
+    } catch (t: Throwable) {
+        Timber.d("EmojiCompat didn't work, Fall back to poor man's valid emoji detection")
+        return poorMansIsValidRecentEmoji(s)
+    }
+}
+
+// From https://stackoverflow.com/a/74800286
+fun poorMansIsValidRecentEmoji(someString: String): Boolean {
     if (someString.isNotEmpty() && someString.length < 5) {
         val firstCodePoint = codePointAt(someString, 0)
         val lastCodePoint = codePointBefore(someString, someString.length)
@@ -92,4 +103,42 @@ fun isValidRecentEmoji(someString: String): Boolean {
         }
     }
     return false
+}
+
+fun String.containsOnlyEmojis(maxEmojis: Int = Integer.MAX_VALUE, throwOnError: Boolean = false): Boolean {
+    if (maxEmojis <= 0) return false
+    val emojiCompat = try {
+        EmojiCompat.get()
+    } catch (e: IllegalStateException) {
+        Timber.e("EmojiCompat not initialized yet, cannot check for emoji-only-messages")
+        if (throwOnError) throw e
+        return false
+    }
+    if (emojiCompat.loadState != EmojiCompat.LOAD_STATE_SUCCEEDED) {
+        Timber.e("EmojiCompat loadState: ${emojiCompat.loadState}, cannot check for emoji-only-messages")
+        if (throwOnError) throw IllegalStateException("Unexpected EmojiCompat loadState ${emojiCompat.loadState}")
+        return false
+    }
+    val start = emojiCompat.getEmojiStart(this, 0)
+    if (start != 0) {
+        return false
+    }
+    val end = emojiCompat.getEmojiEnd(this, 0)
+
+    return if (end == -1) {
+        false
+    } else {
+        if (end == length) {
+            true
+        } else {
+            if (end < length) {
+                substring(end).containsOnlyEmojis(maxEmojis = maxEmojis-1)
+            } else {
+                // error, return false for safety
+                Timber.e("EmojiCompat returned unexpected end index")
+                if (throwOnError) throw IllegalStateException("EmojiCompat returned unexpected end index")
+                false
+            }
+        }
+    }
 }

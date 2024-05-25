@@ -17,6 +17,7 @@
 package io.element.android.x
 
 import android.app.Application
+import androidx.emoji2.text.EmojiCompat
 import androidx.startup.AppInitializer
 import io.element.android.features.cachecleaner.api.CacheCleanerInitializer
 import io.element.android.libraries.di.DaggerComponentOwner
@@ -37,5 +38,7 @@ class ElementXApplication : Application(), DaggerComponentOwner {
             initializeComponent(CacheCleanerInitializer::class.java)
         }
         logApplicationInfo()
+        // SC
+        EmojiCompat.init(this)
     }
 }

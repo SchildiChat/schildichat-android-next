@@ -33,6 +33,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 
 - Allow sending freeform reactions
 - Bigger emoji-only messages
+- Don't waste horizontal space in message bubbles with forced line-breaks that do not make full use of the available width
 
 
 ## Notifications

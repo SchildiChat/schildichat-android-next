@@ -70,7 +70,7 @@ class DefaultPushService @Inject constructor(
             currentPushProvider?.unregister(matrixClient)
                 ?.onFailure {
                     Timber.w(it, "Failed to unregister previous push provider")
-                    return Result.failure(it)
+                    //return Result.failure(it)
                 }
         }
         // Store new value

@@ -277,6 +277,7 @@ knit {
 dependencies {
     implementation(projects.schildi.theme)
     implementation(libs.androidx.emoji2)
+    implementation(libs.androidx.emoji2.bundled)
     allLibrariesImpl()
     allServicesImpl()
     allFeaturesImpl(rootDir, logger)

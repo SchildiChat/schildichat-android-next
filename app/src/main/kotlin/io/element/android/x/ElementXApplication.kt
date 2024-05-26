@@ -17,6 +17,7 @@
 package io.element.android.x
 
 import android.app.Application
+import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.text.EmojiCompat
 import androidx.startup.AppInitializer
 import io.element.android.features.cachecleaner.api.CacheCleanerInitializer
@@ -39,6 +40,6 @@ class ElementXApplication : Application(), DaggerComponentOwner {
         }
         logApplicationInfo()
         // SC
-        EmojiCompat.init(this)
+        EmojiCompat.init(BundledEmojiCompatConfig(this))
     }
 }

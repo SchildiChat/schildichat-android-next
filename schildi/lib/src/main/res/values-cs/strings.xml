@@ -87,4 +87,5 @@
     <string name="sc_space_empty_title">Prázný prostor</string>
     <string name="sc_space_empty_summary">Přejděte do jiného prostoru a najděte své chaty</string>
     <string name="sc_upstream_feature_flag_room_list_filters_summary">Filtrování chatů jako v Elementu</string>
+    <string name="event_placeholder_location">Poloha</string>
 </resources>

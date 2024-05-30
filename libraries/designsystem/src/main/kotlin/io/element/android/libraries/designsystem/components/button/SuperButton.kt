@@ -72,7 +72,7 @@ fun SuperButton(
         }
     }
     val isLightTheme = ElementTheme.isLightTheme
-    val colors = remember(isLightTheme) {
+    val colors = scSuperButtonColors() ?: remember(isLightTheme) {
         if (isLightTheme) {
             listOf(
                 LightColorTokens.colorBlue900,

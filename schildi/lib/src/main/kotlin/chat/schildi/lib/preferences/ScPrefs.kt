@@ -28,6 +28,7 @@ object ScPrefs {
     val BURY_LOW_PRIORITY = ScBoolPref("BURY_LOW_PRIORITY", false, R.string.sc_pref_bury_low_priority_title, R.string.sc_pref_bury_low_priority_summary, upstreamChoice = false, authorsChoice = false)
     val CLIENT_SIDE_SORT = ScBoolPref("CLIENT_SIDE_SORT", false, R.string.sc_pref_client_side_sort_title, R.string.sc_pref_client_side_sort_summary, upstreamChoice = false, authorsChoice = false)
     val SORT_BY_ACTIVITY = ScBoolPref("SORT_BY_ACTIVITY", false, R.string.sc_pref_client_side_activity_sort_title, R.string.sc_pref_client_side_activity_sort_summary, authorsChoice = false, dependencies = CLIENT_SIDE_SORT.asDependencies())
+    val DUAL_MENTION_UNREAD_COUNTS = ScBoolPref("DUAL_MENTION_UNREAD_COUNTS", false, R.string.sc_pref_dual_mention_unread_counts_title, R.string.sc_pref_dual_mention_unread_counts_summary, authorsChoice = true, dependencies = SC_OVERVIEW_LAYOUT.asDependencies())
     // Spaces
     val SPACE_NAV = ScBoolPref("SPACE_NAV", false, R.string.sc_space_nav_title, R.string.sc_space_nav_summary, upstreamChoice = false, authorsChoice = true)
     val COMPACT_ROOT_SPACES = ScBoolPref("COMPACT_ROOT_SPACES", false, R.string.sc_compact_root_spaces_title, R.string.sc_compact_root_spaces_summary, authorsChoice = true, dependencies = SPACE_NAV.asDependencies())
@@ -125,6 +126,7 @@ object ScPrefs {
                     BURY_LOW_PRIORITY,
                     CLIENT_SIDE_SORT,
                     SORT_BY_ACTIVITY,
+                    DUAL_MENTION_UNREAD_COUNTS,
                 )),
                 ScPrefCategory(R.string.sc_pref_category_timeline, null, listOf(
                     PL_DISPLAY_NAME,
@@ -168,6 +170,7 @@ object ScPrefs {
             COMPACT_APP_BAR,
         )),
         ScPrefCategory(R.string.sc_pref_category_misc, null, listOf(
+            DUAL_MENTION_UNREAD_COUNTS.copy(titleRes = R.string.sc_pref_dual_mention_unread_counts_title_short),
             SPACE_NAV,
             COMPACT_ROOT_SPACES,
             ScPrefCategory(R.string.sc_pseudo_spaces_title, null, listOf(

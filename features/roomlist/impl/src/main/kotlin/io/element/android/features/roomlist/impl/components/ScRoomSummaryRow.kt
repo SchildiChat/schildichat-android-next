@@ -255,6 +255,11 @@ private fun ScUnreadCounter(room: RoomListRoomSummary) {
     val badgeColor: Color
     var outlinedBadge = false
     when {
+        ScPrefs.DUAL_MENTION_UNREAD_COUNTS.value() && highlightCount > 0 && (notificationCount > highlightCount || (notificationCount == 0 && unreadCount > highlightCount)) -> {
+            val fullUnreadToUse = if (notificationCount == 0) unreadCount else notificationCount
+            count = "${formatUnreadCount(highlightCount)}/${formatUnreadCount(fullUnreadToUse)}"
+            badgeColor = ElementTheme.colors.bgCriticalPrimary
+        }
         notificationCount > 0 -> {
             count = formatUnreadCount(notificationCount)
             badgeColor = if (highlightCount > 0) ElementTheme.colors.bgCriticalPrimary else ElementTheme.colors.unreadIndicator

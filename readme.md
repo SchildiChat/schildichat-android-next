@@ -48,6 +48,25 @@ If you do not have a GitHub account, you can also download the appropriate `.aar
 [the SDK's releases](https://github.com/SchildiChat/matrix-rust-components-kotlin/releases) and put it into `./libraries/rustsdk/matrix-rust-sdk.aar`.
 
 
+## WYSIWYG development
+
+To develop changes in our [matrix-rich-text-editor fork](https://github.com/SchildiChat/matrix-rich-text-editor):
+
+### Build WYSIWYG locally
+
+- Clone the repo
+- Bump the version number to some future version that [doesn't exist yet](https://github.com/SchildiChat/matrix-rich-text-editor/tags)
+  using `./update_version 1.2.3` where `1.2.3` is your chosen version number. By not re-using any existing version number you can make sure you're using your
+  local build if the build of SchildiChat succeeds.
+- Publish the wysiwyg by running `make android` in its directory. (Make sure you have `JAVA_HOME`, `ANDROID_NDK_HOME` and all the build dependencies setup)
+
+### Include local-built WYSIWYG in SchildiChat
+
+- Modify `settings.gradle.kts` to insert `mavenLocal()` into the `dependencyResolutionManagement {}` block.
+  ([Cherry-pick](https://github.com/SchildiChat/schildichat-android-next/commit/de2a30082012a079d8978caf7d5af7e5764310a4))
+- Change the version number of `wysiwyg` in `gradle/libs.versions.toml` to match the one you published locally.
+
+
 ## Contributing
 
 Generally, contributions are welcome!  

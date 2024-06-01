@@ -1,0 +1,6 @@
+- Update codebase to Element X v0.4.13
+- Fix sending location messages
+- Bigger font for emoji-only messages in SC layout
+- Theme fixes
+- Fix some cases of emoji detection for recent reactions
+- Fix wasting horizontal message bubble space on forced line breaks

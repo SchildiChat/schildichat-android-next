@@ -169,6 +169,7 @@ data class BloomLayer(
  * @param bottomSoftEdgeAlpha The alpha value to apply to the bottom soft edge.
  * @param alpha The alpha value to apply to the bloom effect.
  */
+@SuppressWarnings("ModifierComposed")
 fun Modifier.bloom(
     hash: String?,
     background: Color,
@@ -313,6 +314,7 @@ fun Modifier.bloom(
  * @param bottomSoftEdgeAlpha The alpha value to apply to the bottom soft edge.
  * @param alpha The alpha value to apply to the bloom effect.
  */
+@SuppressWarnings("ModifierComposed")
 fun Modifier.avatarBloom(
     avatarData: AvatarData,
     background: Color,

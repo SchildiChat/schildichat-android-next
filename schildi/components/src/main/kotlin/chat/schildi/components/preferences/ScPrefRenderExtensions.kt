@@ -136,7 +136,7 @@ fun <T>ScListPref<T>.Rendered(initial: Any, onChange: (Any) -> Unit) {
             options = names.mapIndexed { index, name ->
                 ListOption(name, summaries?.get(index))
             }.toImmutableList(),
-            onOptionSelected = { index ->
+            onSelectOption = { index ->
                 if (index != selectedIndex) {
                     itemKeys[index]?.let {  k ->
                         onChange(k)

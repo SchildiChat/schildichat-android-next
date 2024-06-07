@@ -47,7 +47,7 @@ import timber.log.Timber
 @Composable
 fun ScTweaksSettingsView(
     state: ScTweaksSettingsState,
-    onBackPressed: () -> Unit,
+    onBackClick: () -> Unit,
     onOpenPrefScreen: (ScPrefScreen) -> Unit,
     handleScPrefAction: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -56,7 +56,7 @@ fun ScTweaksSettingsView(
     PushInfoDialog(state.pushInfo, showPushInfoDialog)
     PreferencePage(
         modifier = modifier,
-        onBackPressed = onBackPressed,
+        onBackClick = onBackClick,
         title = stringResource(id = state.titleRes)
     ) {
         RecursiveScPrefsView(
@@ -139,5 +139,5 @@ private fun PushInfoDialog(pushInfo: String, show: MutableState<Boolean>) {
 @Composable
 internal fun ScTweaksSettingsViewPreview(@PreviewParameter(ScTweaksSettingsStateProvider::class) state: ScTweaksSettingsState) =
     ElementPreview {
-        ScTweaksSettingsView(state = state, onBackPressed = {}, onOpenPrefScreen = {}, handleScPrefAction = {})
+        ScTweaksSettingsView(state = state, onBackClick = {}, onOpenPrefScreen = {}, handleScPrefAction = {})
     }

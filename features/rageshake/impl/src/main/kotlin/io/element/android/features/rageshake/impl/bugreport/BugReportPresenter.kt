@@ -146,7 +146,7 @@ class BugReportPresenter @Inject constructor(
             withDevicesLogs = formState.sendLogs,
             withCrashLogs = hasCrashLogs && formState.sendLogs,
             withScreenshot = formState.sendScreenshot,
-            theBugDescription = formState.description,
+            problemDescription = formState.description,
             canContact = formState.canContact,
             listener = listener
         )

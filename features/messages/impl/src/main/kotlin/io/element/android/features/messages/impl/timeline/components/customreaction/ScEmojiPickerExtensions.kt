@@ -102,7 +102,7 @@ fun scEmojiPickerPage(
     selectedIndex: Int,
     selectedEmojis: ImmutableSet<String>,
     recentEmojiDataSource: RecentEmojiDataSource?,
-    onCustomEmojiSelected: (String) -> Unit
+    onSelectCustomEmoji: (String) -> Unit
 ): Boolean {
     return when (index) {
         PAGE_RECENT_EMOJI -> {
@@ -127,7 +127,7 @@ fun scEmojiPickerPage(
                         modifier = Modifier.aspectRatio(1f),
                         item = Emoji("", "", null, emptyList(), item, null),
                         isSelected = selectedEmojis.contains(item),
-                        onEmojiSelected = { onCustomEmojiSelected(it.unicode) },
+                        onSelectEmoji = { onSelectCustomEmoji(it.unicode) },
                         emojiSize = 32.dp.toSp(),
                     )
                 }
@@ -157,10 +157,10 @@ fun scEmojiPickerPage(
                         unfocusedContainerColor = Color.Transparent,
                     ),
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Send),
-                    keyboardActions = KeyboardActions(onSend = { onCustomEmojiSelected(text.value) })
+                    keyboardActions = KeyboardActions(onSend = { onSelectCustomEmoji(text.value) })
                 )
                 SendButton {
-                    onCustomEmojiSelected(text.value)
+                    onSelectCustomEmoji(text.value)
                 }
             }
             LaunchedEffect(selectedIndex == PAGE_FREEFORM_REACTION) {

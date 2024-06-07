@@ -18,14 +18,14 @@ import io.element.android.libraries.ui.strings.CommonStrings
 @Composable
 fun ScRoomListDropdownEntriesTop(
     onClick: () -> Unit,
-    onMenuActionClicked: (RoomListMenuAction) -> Unit,
-    onCreateRoomClicked: () -> Unit,
+    onMenuActionClick: (RoomListMenuAction) -> Unit,
+    onCreateRoomClick: () -> Unit,
 ) {
     if (ScPrefs.SPACE_NAV.value()) {
         DropdownMenuItem(
             onClick = {
                 onClick()
-                onCreateRoomClicked()
+                onCreateRoomClick()
             },
             text = { Text(stringResource(id = io.element.android.libraries.ui.strings.R.string.action_start_chat)) },
             leadingIcon = {
@@ -40,7 +40,7 @@ fun ScRoomListDropdownEntriesTop(
     DropdownMenuItem(
         onClick = {
             onClick()
-            onMenuActionClicked(RoomListMenuAction.Settings)
+            onMenuActionClick(RoomListMenuAction.Settings)
         },
         text = { Text(stringResource(id = CommonStrings.common_settings)) },
         leadingIcon = {
@@ -57,7 +57,7 @@ fun ScRoomListDropdownEntriesTop(
 @Composable
 fun ScRoomListDropdownEntriesBottom(
     onClick: () -> Unit,
-    onMenuActionClicked: (RoomListMenuAction) -> Unit,
+    onMenuActionClick: (RoomListMenuAction) -> Unit,
 ) {
     if (ScPrefs.SC_DEV_QUICK_OPTIONS.value()) {
         HorizontalDivider()

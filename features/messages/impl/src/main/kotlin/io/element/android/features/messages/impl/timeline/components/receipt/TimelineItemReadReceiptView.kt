@@ -62,7 +62,7 @@ import kotlinx.collections.immutable.ImmutableList
 fun TimelineItemReadReceiptView(
     state: ReadReceiptViewState,
     renderReadReceipts: Boolean,
-    onReadReceiptsClicked: () -> Unit,
+    onReadReceiptsClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (state.receipts.isNotEmpty()) {
@@ -74,7 +74,7 @@ fun TimelineItemReadReceiptView(
                         .testTag(TestTags.messageReadReceipts)
                         .clip(RoundedCornerShape(4.dp))
                         .clickable {
-                            onReadReceiptsClicked()
+                            onReadReceiptsClick()
                         }
                         .padding(2.dp)
                 )
@@ -216,6 +216,6 @@ internal fun TimelineItemReadReceiptViewPreview(
     TimelineItemReadReceiptView(
         state = state,
         renderReadReceipts = true,
-        onReadReceiptsClicked = {},
+        onReadReceiptsClick = {},
     )
 }

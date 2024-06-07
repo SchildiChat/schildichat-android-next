@@ -135,10 +135,10 @@ fun TimelineItemEventRow(
     isHighlighted: Boolean,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
-    onLinkClicked: (String) -> Unit,
+    onLinkClick: (String) -> Unit,
     onUserDataClick: (UserId) -> Unit,
     inReplyToClick: (EventId) -> Unit,
-    onTimestampClicked: (TimelineItem.Event) -> Unit,
+    onTimestampClick: (TimelineItem.Event) -> Unit,
     onReactionClick: (emoji: String, eventId: TimelineItem.Event) -> Unit,
     onReactionLongClick: (emoji: String, eventId: TimelineItem.Event) -> Unit,
     onMoreReactionsClick: (eventId: TimelineItem.Event) -> Unit,
@@ -150,11 +150,11 @@ fun TimelineItemEventRow(
     val coroutineScope = rememberCoroutineScope()
     val interactionSource = remember { MutableInteractionSource() }
 
-    fun onUserDataClicked() {
+    fun onUserDataClick() {
         onUserDataClick(event.senderId)
     }
 
-    fun inReplyToClicked() {
+    fun inReplyToClick() {
         val inReplyToEventId = event.inReplyTo?.eventId() ?: return
         inReplyToClick(inReplyToEventId)
     }
@@ -199,13 +199,13 @@ fun TimelineItemEventRow(
                         interactionSource = interactionSource,
                         onClick = onClick,
                         onLongClick = onLongClick,
-                        onTimestampClicked = onTimestampClicked,
-                        inReplyToClicked = ::inReplyToClicked,
-                        onUserDataClicked = ::onUserDataClicked,
-                        onReactionClicked = { emoji -> onReactionClick(emoji, event) },
-                        onReactionLongClicked = { emoji -> onReactionLongClick(emoji, event) },
-                        onMoreReactionsClicked = { onMoreReactionsClick(event) },
-                        onLinkClicked = onLinkClicked,
+                        onTimestampClick = onTimestampClick,
+                        inReplyToClick = ::inReplyToClick,
+                        onUserDataClick = ::onUserDataClick,
+                        onReactionClick = { emoji -> onReactionClick(emoji, event) },
+                        onReactionLongClick = { emoji -> onReactionLongClick(emoji, event) },
+                        onMoreReactionsClick = { onMoreReactionsClick(event) },
+                        onLinkClick = onLinkClick,
                         eventSink = eventSink,
                     )
                 }
@@ -218,13 +218,13 @@ fun TimelineItemEventRow(
                 interactionSource = interactionSource,
                 onClick = onClick,
                 onLongClick = onLongClick,
-                onTimestampClicked = onTimestampClicked,
-                inReplyToClicked = ::inReplyToClicked,
-                onUserDataClicked = ::onUserDataClicked,
-                onReactionClicked = { emoji -> onReactionClick(emoji, event) },
-                onReactionLongClicked = { emoji -> onReactionLongClick(emoji, event) },
-                onMoreReactionsClicked = { onMoreReactionsClick(event) },
-                onLinkClicked = onLinkClicked,
+                onTimestampClick = onTimestampClick,
+                inReplyToClick = ::inReplyToClick,
+                onUserDataClick = ::onUserDataClick,
+                onReactionClick = { emoji -> onReactionClick(emoji, event) },
+                onReactionLongClick = { emoji -> onReactionLongClick(emoji, event) },
+                onMoreReactionsClick = { onMoreReactionsClick(event) },
+                onLinkClick = onLinkClick,
                 eventSink = eventSink,
             )
         }
@@ -236,7 +236,7 @@ fun TimelineItemEventRow(
                 receipts = event.readReceiptState.receipts,
             ),
             renderReadReceipts = renderReadReceipts,
-            onReadReceiptsClicked = { onReadReceiptClick(event) },
+            onReadReceiptsClick = { onReadReceiptClick(event) },
             modifier = Modifier.padding(top = 4.dp),
         )
     }
@@ -274,13 +274,13 @@ private fun TimelineItemEventRowContent(
     interactionSource: MutableInteractionSource,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
-    onTimestampClicked: (TimelineItem.Event) -> Unit,
-    inReplyToClicked: () -> Unit,
-    onUserDataClicked: () -> Unit,
-    onReactionClicked: (emoji: String) -> Unit,
-    onReactionLongClicked: (emoji: String) -> Unit,
-    onMoreReactionsClicked: (event: TimelineItem.Event) -> Unit,
-    onLinkClicked: (String) -> Unit,
+    onTimestampClick: (TimelineItem.Event) -> Unit,
+    inReplyToClick: () -> Unit,
+    onUserDataClick: () -> Unit,
+    onReactionClick: (emoji: String) -> Unit,
+    onReactionLongClick: (emoji: String) -> Unit,
+    onMoreReactionsClick: (event: TimelineItem.Event) -> Unit,
+    onLinkClick: (String) -> Unit,
     eventSink: (TimelineEvents.EventFromTimelineItem) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -315,7 +315,7 @@ private fun TimelineItemEventRowContent(
                     }
                     .padding(horizontal = 16.dp)
                     .zIndex(1f)
-                    .clickable(onClick = onUserDataClicked)
+                    .clickable(onClick = onUserDataClick)
                     // This is redundant when using talkback
                     .clearAndSetSemantics {
                         invisibleToUser()
@@ -346,11 +346,11 @@ private fun TimelineItemEventRowContent(
             MessageEventBubbleContent(
                 event = event,
                 onMessageLongClick = onLongClick,
-                inReplyToClick = inReplyToClicked,
-                onTimestampClicked = {
-                    onTimestampClicked(event)
+                inReplyToClick = inReplyToClick,
+                onTimestampClick = {
+                    onTimestampClick(event)
                 },
-                onLinkClicked = onLinkClicked,
+                onLinkClick = onLinkClick,
                 eventSink = eventSink,
             )
         }
@@ -361,9 +361,9 @@ private fun TimelineItemEventRowContent(
                 reactionsState = event.reactionsState,
                 userCanSendReaction = timelineRoomInfo.userHasPermissionToSendReaction,
                 isOutgoing = event.isMine,
-                onReactionClicked = onReactionClicked,
-                onReactionLongClicked = onReactionLongClicked,
-                onMoreReactionsClicked = { onMoreReactionsClicked(event) },
+                onReactionClick = onReactionClick,
+                onReactionLongClick = onReactionLongClick,
+                onMoreReactionsClick = { onMoreReactionsClick(event) },
                 modifier = Modifier
                     .constrainAs(reactions) {
                         top.linkTo(message.bottom, margin = (-4).dp)
@@ -433,8 +433,8 @@ private fun MessageEventBubbleContent(
     event: TimelineItem.Event,
     onMessageLongClick: () -> Unit,
     inReplyToClick: () -> Unit,
-    onTimestampClicked: () -> Unit,
-    onLinkClicked: (String) -> Unit,
+    onTimestampClick: () -> Unit,
+    onLinkClick: (String) -> Unit,
     eventSink: (TimelineEvents.EventFromTimelineItem) -> Unit,
     @SuppressLint("ModifierParameter")
     // need to rename this modifier to prevent linter false positives
@@ -474,7 +474,7 @@ private fun MessageEventBubbleContent(
         timestampPosition: TimestampPosition,
         modifier: Modifier = Modifier,
         canShrinkContent: Boolean = false,
-        content: @Composable (onContentLayoutChanged: (ContentAvoidingLayoutData) -> Unit) -> Unit,
+        content: @Composable (onContentLayoutChange: (ContentAvoidingLayoutData) -> Unit) -> Unit,
     ) {
         when (timestampPosition) {
             TimestampPosition.Overlay ->
@@ -482,7 +482,7 @@ private fun MessageEventBubbleContent(
                     content {}
                     TimelineEventTimestampView(
                         event = event,
-                        onClick = onTimestampClicked,
+                        onClick = onTimestampClick,
                         onLongClick = ::onTimestampLongClick,
                         modifier = Modifier
                             .scOrElse(
@@ -506,11 +506,11 @@ private fun MessageEventBubbleContent(
                     spacing = (-4).dp,
                     overlayOffset = DpOffset(0.dp, -1.dp),
                     shrinkContent = canShrinkContent,
-                    content = { content(this::onContentLayoutChanged) },
+                    content = { content(this::onContentLayoutChange) },
                     overlay = {
                         TimelineEventTimestampView(
                             event = event,
-                            onClick = onTimestampClicked,
+                            onClick = onTimestampClick,
                             onLongClick = ::onTimestampLongClick,
                             modifier = Modifier
                                 .padding(horizontal = 8.dp, vertical = 4.dp)
@@ -522,7 +522,7 @@ private fun MessageEventBubbleContent(
                     content {}
                     TimelineEventTimestampView(
                         event = event,
-                        onClick = onTimestampClicked,
+                        onClick = onTimestampClick,
                         onLongClick = ::onTimestampLongClick,
                         modifier = Modifier
                             .align(Alignment.End)
@@ -573,13 +573,13 @@ private fun MessageEventBubbleContent(
                 timestampPosition = timestampPosition,
                 canShrinkContent = canShrinkContent,
                 modifier = timestampLayoutModifier,
-            ) { onContentLayoutChanged ->
+            ) { onContentLayoutChange ->
                 TimelineItemEventContentView(
                     content = event.content,
-                    onLinkClicked = onLinkClicked,
+                    onLinkClick = onLinkClick,
                     onLongClick = onMessageLongClick,
                     eventSink = eventSink,
-                    onContentLayoutChanged = onContentLayoutChanged,
+                    onContentLayoutChange = onContentLayoutChange,
                     modifier = contentModifier
                 )
             }

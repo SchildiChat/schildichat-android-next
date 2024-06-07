@@ -34,9 +34,9 @@ import io.element.android.libraries.matrix.api.core.EventId
 @Composable
 fun CustomReactionBottomSheet(
     state: CustomReactionState,
-    onEmojiSelected: (EventId, Emoji) -> Unit,
-    onCustomEmojiSelected: (EventId, String) -> Unit,
-    recentEmojiDataSource: RecentEmojiDataSource?,
+    onSelectEmoji: (EventId, Emoji) -> Unit,
+    onSelectCustomEmoji: (EventId, String) -> Unit, // SC
+    recentEmojiDataSource: RecentEmojiDataSource?, // SC
     modifier: Modifier = Modifier,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = ScPrefs.PREFER_FULLSCREEN_REACTION_SHEET.value())
@@ -54,7 +54,7 @@ fun CustomReactionBottomSheet(
 
         sheetState.hide(coroutineScope) {
             state.eventSink(CustomReactionEvents.DismissCustomReactionSheet)
-            onEmojiSelected(target.event.eventId, emoji)
+            onSelectEmoji(target.event.eventId, emoji)
 
             if (!wasSelected) recentEmojiDataSource?.recordEmoji(emoji.unicode)
         }
@@ -67,7 +67,7 @@ fun CustomReactionBottomSheet(
 
         sheetState.hide(coroutineScope) {
             state.eventSink(CustomReactionEvents.DismissCustomReactionSheet)
-            onCustomEmojiSelected(target.event.eventId, emoji)
+            onSelectCustomEmoji(target.event.eventId, emoji)
 
             if (!wasSelected) recentEmojiDataSource?.recordEmoji(emoji)
         }
@@ -80,8 +80,8 @@ fun CustomReactionBottomSheet(
             modifier = modifier
         ) {
             EmojiPicker(
-                onEmojiSelected = ::onEmojiSelectedDismiss,
-                onCustomEmojiSelected = ::onCustomEmojiSelectedDismiss,
+                onSelectEmoji = ::onEmojiSelectedDismiss,
+                onSelectCustomEmoji = ::onCustomEmojiSelectedDismiss,
                 emojibaseStore = target.emojibaseStore,
                 selectedEmojis = state.selectedEmoji,
                 recentEmojiDataSource = recentEmojiDataSource,

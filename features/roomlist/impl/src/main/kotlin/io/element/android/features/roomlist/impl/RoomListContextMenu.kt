@@ -47,30 +47,30 @@ import io.element.android.libraries.ui.strings.CommonStrings
 fun RoomListContextMenu(
     contextMenu: RoomListState.ContextMenu.Shown,
     eventSink: (RoomListEvents.ContextMenuEvents) -> Unit,
-    onRoomSettingsClicked: (roomId: RoomId) -> Unit,
+    onRoomSettingsClick: (roomId: RoomId) -> Unit,
 ) {
     ModalBottomSheet(
         onDismissRequest = { eventSink(RoomListEvents.HideContextMenu) },
     ) {
         RoomListModalBottomSheetContent(
             contextMenu = contextMenu,
-            onRoomMarkReadClicked = {
+            onRoomMarkReadClick = {
                 eventSink(RoomListEvents.HideContextMenu)
                 eventSink(RoomListEvents.MarkAsRead(contextMenu.roomId))
             },
-            onRoomMarkUnreadClicked = {
+            onRoomMarkUnreadClick = {
                 eventSink(RoomListEvents.HideContextMenu)
                 eventSink(RoomListEvents.MarkAsUnread(contextMenu.roomId))
             },
-            onRoomSettingsClicked = {
+            onRoomSettingsClick = {
                 eventSink(RoomListEvents.HideContextMenu)
-                onRoomSettingsClicked(contextMenu.roomId)
+                onRoomSettingsClick(contextMenu.roomId)
             },
-            onLeaveRoomClicked = {
+            onLeaveRoomClick = {
                 eventSink(RoomListEvents.HideContextMenu)
                 eventSink(RoomListEvents.LeaveRoom(contextMenu.roomId))
             },
-            onFavoriteChanged = { isFavorite ->
+            onFavoriteChange = { isFavorite ->
                 eventSink(RoomListEvents.SetRoomIsFavorite(contextMenu.roomId, isFavorite))
             },
         )
@@ -80,11 +80,11 @@ fun RoomListContextMenu(
 @Composable
 private fun RoomListModalBottomSheetContent(
     contextMenu: RoomListState.ContextMenu.Shown,
-    onRoomSettingsClicked: () -> Unit,
-    onLeaveRoomClicked: () -> Unit,
-    onFavoriteChanged: (isFavorite: Boolean) -> Unit,
-    onRoomMarkReadClicked: () -> Unit,
-    onRoomMarkUnreadClicked: () -> Unit,
+    onRoomSettingsClick: () -> Unit,
+    onLeaveRoomClick: () -> Unit,
+    onFavoriteChange: (isFavorite: Boolean) -> Unit,
+    onRoomMarkReadClick: () -> Unit,
+    onRoomMarkUnreadClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -114,9 +114,9 @@ private fun RoomListModalBottomSheetContent(
                 },
                 modifier = Modifier.clickable {
                     if (contextMenu.hasNewContent) {
-                        onRoomMarkReadClicked()
+                        onRoomMarkReadClick()
                     } else {
-                        onRoomMarkUnreadClicked()
+                        onRoomMarkUnreadClick()
                     }
                 },
                 leadingContent = ListItemContent.Icon(iconSource = IconSource.Vector(if (contextMenu.hasNewContent) Icons.Default.RemoveRedEye else Icons.Default.NewReleases)),
@@ -147,11 +147,11 @@ private fun RoomListModalBottomSheetContent(
             trailingContent = ListItemContent.Switch(
                 checked = contextMenu.isFavorite,
                 onChange = { isFavorite ->
-                    onFavoriteChanged(isFavorite)
+                    onFavoriteChange(isFavorite)
                 },
             ),
             onClick = {
-                onFavoriteChanged(!contextMenu.isFavorite)
+                onFavoriteChange(!contextMenu.isFavorite)
             },
             style = ListItemStyle.Primary,
         )
@@ -162,7 +162,7 @@ private fun RoomListModalBottomSheetContent(
                     style = MaterialTheme.typography.bodyLarge,
                 )
             },
-            modifier = Modifier.clickable { onRoomSettingsClicked() },
+            modifier = Modifier.clickable { onRoomSettingsClick() },
             leadingContent = ListItemContent.Icon(
                 iconSource = IconSource.Vector(
                     CompoundIcons.Settings(),
@@ -182,7 +182,7 @@ private fun RoomListModalBottomSheetContent(
                 )
                 Text(text = leaveText)
             },
-            modifier = Modifier.clickable { onLeaveRoomClicked() },
+            modifier = Modifier.clickable { onLeaveRoomClick() },
             leadingContent = ListItemContent.Icon(
                 iconSource = IconSource.Vector(
                     CompoundIcons.Leave(),
@@ -204,10 +204,10 @@ internal fun RoomListModalBottomSheetContentPreview(
 ) = ElementPreview {
     RoomListModalBottomSheetContent(
         contextMenu = contextMenu,
-        onRoomMarkReadClicked = {},
-        onRoomMarkUnreadClicked = {},
-        onRoomSettingsClicked = {},
-        onLeaveRoomClicked = {},
-        onFavoriteChanged = {},
+        onRoomMarkReadClick = {},
+        onRoomMarkUnreadClick = {},
+        onRoomSettingsClick = {},
+        onLeaveRoomClick = {},
+        onFavoriteChange = {},
     )
 }

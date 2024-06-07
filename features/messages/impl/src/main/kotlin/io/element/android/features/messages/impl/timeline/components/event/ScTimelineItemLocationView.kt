@@ -51,7 +51,7 @@ private val ICON_RESERVED_WIDTH = ICON_SIZE + ICON_PADDING * 2 + ICON_MARGIN + 4
 @Composable
 fun ScTimelineItemLocationView(
     content: TimelineItemLocationContent,
-    onContentLayoutChanged: (ContentAvoidingLayoutData) -> Unit,
+    onContentLayoutChange: (ContentAvoidingLayoutData) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -78,7 +78,7 @@ fun ScTimelineItemLocationView(
                     text = text,
                     style = ElementRichTextEditorStyle.textStyle(),
                     onTextLayout = ContentAvoidingLayout.measureLegacyLastTextLine(
-                        onContentLayoutChanged = onContentLayoutChanged,
+                        onContentLayoutChange = onContentLayoutChange,
                         extraWidth = ICON_RESERVED_WIDTH
                     ),
                     releaseOnDetach = false,
@@ -98,7 +98,7 @@ fun ScTimelineItemLocationPreview() = ElementPreview {
                 Location(0.0, 0.0, 0f),
                 "Description"
             ),
-            onContentLayoutChanged = {},
+            onContentLayoutChange = {},
             modifier = Modifier.padding(8.dp)
         )
     }

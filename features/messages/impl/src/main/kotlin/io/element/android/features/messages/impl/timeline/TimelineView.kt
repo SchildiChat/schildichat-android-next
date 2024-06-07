@@ -83,15 +83,15 @@ import kotlin.math.abs
 fun TimelineView(
     state: TimelineState,
     typingNotificationState: TypingNotificationState,
-    onUserDataClicked: (UserId) -> Unit,
-    onLinkClicked: (String) -> Unit,
-    onMessageClicked: (TimelineItem.Event) -> Unit,
-    onMessageLongClicked: (TimelineItem.Event) -> Unit,
-    onTimestampClicked: (TimelineItem.Event) -> Unit,
+    onUserDataClick: (UserId) -> Unit,
+    onLinkClick: (String) -> Unit,
+    onMessageClick: (TimelineItem.Event) -> Unit,
+    onMessageLongClick: (TimelineItem.Event) -> Unit,
+    onTimestampClick: (TimelineItem.Event) -> Unit,
     onSwipeToReply: (TimelineItem.Event) -> Unit,
-    onReactionClicked: (emoji: String, TimelineItem.Event) -> Unit,
-    onReactionLongClicked: (emoji: String, TimelineItem.Event) -> Unit,
-    onMoreReactionsClicked: (TimelineItem.Event) -> Unit,
+    onReactionClick: (emoji: String, TimelineItem.Event) -> Unit,
+    onReactionLongClick: (emoji: String, TimelineItem.Event) -> Unit,
+    onMoreReactionsClick: (TimelineItem.Event) -> Unit,
     onReadReceiptClick: (TimelineItem.Event) -> Unit,
     modifier: Modifier = Modifier,
     forceJumpToBottomVisibility: Boolean = false
@@ -100,8 +100,7 @@ fun TimelineView(
         state.eventSink(TimelineEvents.ClearFocusRequestState)
     }
 
-    fun onScrollFinishedAt(firstVisibleIndex: Int, visibleItemCount: Int) {
-        timber.log.Timber.i("oncrollFinishedAt")
+    fun onScrollFinishAt(firstVisibleIndex: Int, visibleItemCount: Int) {
         state.eventSink(TimelineEvents.OnScrollFinished(firstVisibleIndex))
         val timeline = state.timelineItems
         val firstVisibleTimelineIndex = effectiveVisibleTimelineItemIndex(firstVisibleIndex)
@@ -120,7 +119,7 @@ fun TimelineView(
         accessibilityManager.isTouchExplorationEnabled.not()
     }
 
-    fun inReplyToClicked(eventId: EventId) {
+    fun inReplyToClick(eventId: EventId) {
         state.eventSink(TimelineEvents.FocusOnEvent(eventId))
     }
 
@@ -150,16 +149,16 @@ fun TimelineView(
                         isLastOutgoingMessage = (timelineItem as? TimelineItem.Event)?.isMine == true &&
                             state.timelineItems.first().identifier() == timelineItem.identifier(),
                         focusedEventId = state.focusedEventId,
-                        onClick = onMessageClicked,
-                        onLongClick = onMessageLongClicked,
-                        onUserDataClick = onUserDataClicked,
-                        onLinkClicked = onLinkClicked,
-                        inReplyToClick = ::inReplyToClicked,
-                        onReactionClick = onReactionClicked,
-                        onReactionLongClick = onReactionLongClicked,
-                        onMoreReactionsClick = onMoreReactionsClicked,
+                        onClick = onMessageClick,
+                        onLongClick = onMessageLongClick,
+                        onUserDataClick = onUserDataClick,
+                        onLinkClick = onLinkClick,
+                        inReplyToClick = ::inReplyToClick,
+                        onReactionClick = onReactionClick,
+                        onReactionLongClick = onReactionLongClick,
+                        onMoreReactionsClick = onMoreReactionsClick,
                         onReadReceiptClick = onReadReceiptClick,
-                        onTimestampClicked = onTimestampClicked,
+                        onTimestampClick = onTimestampClick,
                         eventSink = state.eventSink,
                         onSwipeToReply = onSwipeToReply,
                     )
@@ -178,7 +177,7 @@ fun TimelineView(
                 newEventState = state.newEventState,
                 isLive = state.isLive,
                 focusRequestState = state.focusRequestState,
-                onScrollFinishedAt = ::onScrollFinishedAt,
+                onScrollFinishAt = ::onScrollFinishAt,
                 onClearFocusRequestState = ::clearFocusRequestState,
                 onJumpToLive = { state.eventSink(TimelineEvents.JumpToLive) },
             )
@@ -198,7 +197,7 @@ private fun BoxScope.TimelineScrollHelper(
     forceJumpToBottomVisibility: Boolean,
     focusRequestState: FocusRequestState,
     onClearFocusRequestState: () -> Unit,
-    onScrollFinishedAt: (Int, Int) -> Unit,
+    onScrollFinishAt: (Int, Int) -> Unit,
     onJumpToLive: () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -246,12 +245,12 @@ private fun BoxScope.TimelineScrollHelper(
         }
     }
 
-    //val latestOnScrollFinishedAt by rememberUpdatedState(onScrollFinishedAt)
+    //val latestOnScrollFinishAt by rememberUpdatedState(onScrollFinishAt)
     LaunchedEffect(isScrollFinished, hasAnyEvent) {
         if (isScrollFinished && hasAnyEvent) {
             // Notify the parent composable about the first visible item index when scrolling finishes
-            //latestOnScrollFinishedAt(lazyListState.firstVisibleItemIndex, lazyListState.layoutInfo.visibleItemsInfo.size)
-            onScrollFinishedAt(lazyListState.firstVisibleItemIndex, lazyListState.layoutInfo.visibleItemsInfo.size)
+            //latestOnScrollFinishAt(lazyListState.firstVisibleItemIndex)
+            onScrollFinishAt(lazyListState.firstVisibleItemIndex, lazyListState.layoutInfo.visibleItemsInfo.size)
         }
     }
 
@@ -311,15 +310,15 @@ internal fun TimelineViewPreview(
                 focusedEventIndex = 0,
             ),
             typingNotificationState = aTypingNotificationState(),
-            onUserDataClicked = {},
-            onLinkClicked = {},
-            onMessageClicked = {},
-            onMessageLongClicked = {},
-            onTimestampClicked = {},
+            onUserDataClick = {},
+            onLinkClick = {},
+            onMessageClick = {},
+            onMessageLongClick = {},
+            onTimestampClick = {},
             onSwipeToReply = {},
-            onReactionClicked = { _, _ -> },
-            onReactionLongClicked = { _, _ -> },
-            onMoreReactionsClicked = {},
+            onReactionClick = { _, _ -> },
+            onReactionLongClick = { _, _ -> },
+            onMoreReactionsClick = {},
             onReadReceiptClick = {},
             forceJumpToBottomVisibility = true,
         )

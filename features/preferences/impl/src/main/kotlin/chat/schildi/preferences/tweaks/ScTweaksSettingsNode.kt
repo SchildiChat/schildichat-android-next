@@ -65,7 +65,7 @@ class ScTweaksSettingsNode @AssistedInject constructor(
         ScTweaksSettingsView(
             state = state,
             modifier = modifier,
-            onBackPressed = ::navigateUp,
+            onBackClick = ::navigateUp,
             onOpenPrefScreen = this::onOpenScTweaks,
             handleScPrefAction = this::handleScPrefAction,
         )

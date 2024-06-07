@@ -56,8 +56,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun EmojiPicker(
-    onEmojiSelected: (Emoji) -> Unit,
-    onCustomEmojiSelected: (String) -> Unit,
+    onSelectEmoji: (Emoji) -> Unit,
+    onSelectCustomEmoji: (String) -> Unit,
     emojibaseStore: EmojibaseStore,
     selectedEmojis: ImmutableSet<String>,
     recentEmojiDataSource: RecentEmojiDataSource? = null,
@@ -96,7 +96,7 @@ fun EmojiPicker(
             modifier = Modifier.fillMaxWidth(),
         ) { scIndex ->
             val index = scIndex.removeScPickerOffset()
-            if (scEmojiPickerPage(scIndex, pagerState.currentPage, selectedEmojis, recentEmojiDataSource, onCustomEmojiSelected)) {
+            if (scEmojiPickerPage(scIndex, pagerState.currentPage, selectedEmojis, recentEmojiDataSource, onSelectCustomEmoji)) {
                 return@HorizontalPager
             }
             val category = EmojibaseCategory.entries[index]
@@ -113,7 +113,7 @@ fun EmojiPicker(
                         modifier = Modifier.aspectRatio(1f),
                         item = item,
                         isSelected = selectedEmojis.contains(item.unicode),
-                        onEmojiSelected = onEmojiSelected,
+                        onSelectEmoji = onSelectEmoji,
                         emojiSize = 32.dp.toSp(),
                     )
                 }
@@ -126,8 +126,8 @@ fun EmojiPicker(
 @Composable
 internal fun EmojiPickerPreview() = ElementPreview {
     EmojiPicker(
-        onEmojiSelected = {},
-        onCustomEmojiSelected = {},
+        onSelectEmoji = {},
+        onSelectCustomEmoji = {},
         emojibaseStore = EmojibaseDatasource().load(LocalContext.current),
         selectedEmojis = persistentSetOf("😀", "😄", "😃"),
         modifier = Modifier.fillMaxWidth(),

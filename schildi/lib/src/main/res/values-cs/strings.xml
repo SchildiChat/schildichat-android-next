@@ -88,4 +88,7 @@
     <string name="sc_space_empty_summary">Přejděte do jiného prostoru a najděte své chaty</string>
     <string name="sc_upstream_feature_flag_room_list_filters_summary">Filtrování chatů jako v Elementu</string>
     <string name="event_placeholder_location">Poloha</string>
+    <string name="sc_pref_dual_mention_unread_counts_title">Kombinovaný počet zmínek/nepřečtení</string>
+    <string name="sc_pref_dual_mention_unread_counts_title_short">Počet dvojích zmínek</string>
+    <string name="sc_pref_dual_mention_unread_counts_summary">Pokud se počet zmínek ve zvýrazněném chatu liší od počtu nepřečtených, zobrazit obojí</string>
 </resources>

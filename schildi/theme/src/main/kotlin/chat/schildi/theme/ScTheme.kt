@@ -14,6 +14,7 @@ import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.theme.ForcedDarkElementTheme
 import io.element.android.compound.tokens.generated.SemanticColors
 import io.element.android.compound.tokens.sc.ElTypographyTokens
+import io.element.android.compound.tokens.sc.ExposedTypographyTokens
 
 object ScTheme {
     val exposures: ScThemeExposures
@@ -127,3 +128,7 @@ fun Color.fakeAlpha(alpha: Float) = Color(
     1f - alpha * (1f - blue),
     1f,
 )
+
+val ExposedTypographyTokens.scBubbleFont
+    @Composable
+    get() = if (ScPrefs.EL_TYPOGRAPHY.value()) fontBodyLgRegular else fontBodyMdRegular

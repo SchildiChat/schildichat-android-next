@@ -49,6 +49,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import chat.schildi.theme.scBubbleFont
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import io.element.android.compound.theme.ElementTheme
@@ -123,7 +124,7 @@ fun TimelineItemVideoView(
             }
             CompositionLocalProvider(
                 LocalContentColor provides ElementTheme.colors.textPrimary,
-                LocalTextStyle provides ElementTheme.typography.fontBodyLgRegular,
+                LocalTextStyle provides ElementTheme.typography.scBubbleFont,
             ) {
                 EditorStyledText(
                     modifier = Modifier

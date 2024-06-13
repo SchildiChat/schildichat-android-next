@@ -33,10 +33,10 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import chat.schildi.lib.compose.thenIf
-import chat.schildi.lib.preferences.ScPrefs.EL_TYPOGRAPHY
 import chat.schildi.lib.preferences.ScPrefs.SC_TIMELINE_LAYOUT
 import chat.schildi.lib.preferences.value
 import chat.schildi.matrixsdk.containsOnlyEmojis
+import chat.schildi.theme.scBubbleFont
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayout
 import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayoutData
@@ -60,11 +60,7 @@ fun TimelineItemTextView(
     val emojiOnly = !canCollapse && SC_TIMELINE_LAYOUT.value() &&
         (content.formattedBody == null || content.formattedBody.toString() == content.body) &&
         content.body.replace(" ", "").containsOnlyEmojis(50)
-    val textStyle = when {
-        emojiOnly -> ElementTheme.typography.fontHeadingXlBold
-        EL_TYPOGRAPHY.value() -> ElementTheme.typography.fontBodyLgRegular
-        else -> ElementTheme.typography.fontBodyMdRegular
-    }
+    val textStyle = if (emojiOnly) ElementTheme.typography.fontHeadingXlBold else ElementTheme.typography.scBubbleFont
     CompositionLocalProvider(
         LocalContentColor provides ElementTheme.colors.textPrimary,
         LocalTextStyle provides textStyle,

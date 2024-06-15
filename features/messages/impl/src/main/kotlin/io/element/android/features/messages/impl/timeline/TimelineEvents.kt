@@ -25,7 +25,7 @@ sealed interface TimelineEvents {
     data object OnUnreadLineVisible : TimelineEvents
     data object MarkAsRead : TimelineEvents
     // SC end
-    data class FocusOnEvent(val eventId: EventId) : TimelineEvents
+    data class FocusOnEvent(val eventId: EventId, val forReadMarker: Boolean = false) : TimelineEvents
     data object ClearFocusRequestState : TimelineEvents
     data object JumpToLive : TimelineEvents
 

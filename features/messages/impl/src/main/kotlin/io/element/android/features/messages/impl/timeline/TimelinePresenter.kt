@@ -160,7 +160,7 @@ class TimelinePresenter @AssistedInject constructor(
                 is TimelineEvents.FocusOnEvent -> localScope.launch {
                     focusedEventId.value = event.eventId
                     if (timelineItemIndexer.isKnown(event.eventId)) {
-                        val index = timelineItemIndexer.indexOf(event.eventId)
+                        val index = timelineItemIndexer.indexOf(event.eventId).offsetForUnreadMarkerFocus(event.forReadMarker)
                         focusRequestState.value = FocusRequestState.Cached(index)
                     } else {
                         focusRequestState.value = FocusRequestState.Fetching

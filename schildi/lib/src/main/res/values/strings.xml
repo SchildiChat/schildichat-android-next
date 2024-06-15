@@ -94,6 +94,10 @@
     <string name="sc_action_mark_as_unread">Mark as unread</string>
     <string name="sc_space_all_rooms_title">All chats</string>
 
+    <string name="sc_action_jump_to_unread">Jump to unread</string>
+    <string name="sc_pref_jump_to_unread_title">Jump to unread</string>
+    <string name="sc_pref_jump_to_unread_option_summary">Show option to jump to last read message</string>
+
     <string name="sc_freeform_reaction">Freeform reaction</string>
     <string name="sc_recent_reaction">Frequently used</string>
 

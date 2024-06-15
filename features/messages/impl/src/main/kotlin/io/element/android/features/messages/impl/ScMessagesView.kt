@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RemoveRedEye
+import androidx.compose.material.icons.filled.Update
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,6 +34,8 @@ import io.element.android.libraries.designsystem.theme.components.DropdownMenuIt
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconButton
 import io.element.android.libraries.designsystem.theme.components.Text
+import io.element.android.libraries.matrix.api.core.EventId
+import io.element.android.libraries.matrix.api.core.MatrixPatterns
 import io.element.android.libraries.ui.strings.CommonStrings
 
 @Composable
@@ -54,6 +57,19 @@ internal fun RowScope.scMessagesViewTopBarActions(
                 imageVector = Icons.Default.RemoveRedEye,
                 contentDescription = stringResource(R.string.sc_action_mark_as_read),
             )
+        }
+    }
+    if (ScPrefs.JUMP_TO_UNREAD.value()) {
+        val fullyReadEventId = state.timelineState.scReadState?.fullyReadEventId?.value?.takeIfIsValidEventId()
+        // TODO maybe later something like
+        //  val isFullyRead = state.timelineState.isLive && state.timelineState.timelineItems.first().isEvent(fullyReadEventId)
+        if (fullyReadEventId != null) {
+            IconButton(onClick = { state.timelineState.eventSink(TimelineEvents.FocusOnEvent(EventId(fullyReadEventId), forReadMarker = true)) }) {
+                Icon(
+                    imageVector = Icons.Default.Update, // There may be a better icon
+                    contentDescription = stringResource(R.string.sc_action_jump_to_unread),
+                )
+            }
         }
     }
     if (ScPrefs.SC_DEV_QUICK_OPTIONS.value()) {
@@ -133,15 +149,19 @@ internal fun RowScope.scMessagesViewTopBarActions(
                         .padding(horizontal = 4.dp),
                 )
             }
-            scReadState?.fullyReadEventId?.value?.takeIf { it.isNotEmpty() && it != "TODO" }?.let {
+            scReadState?.fullyReadEventId?.value?.takeIfIsValidEventId()?.let {
                 Text(
                     text = "FR=$it",
                     maxLines = 1,
                     color = MaterialTheme.colorScheme.secondary,
                     style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.padding(horizontal = 4.dp).align(Alignment.CenterHorizontally),
+                    modifier = Modifier
+                        .padding(horizontal = 4.dp)
+                        .align(Alignment.CenterHorizontally),
                 )
             }
         }
     }
 }
+
+fun String.takeIfIsValidEventId() = takeIf { isNotEmpty() && MatrixPatterns.isEventId(this) }

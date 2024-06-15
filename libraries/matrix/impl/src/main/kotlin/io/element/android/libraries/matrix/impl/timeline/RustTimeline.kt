@@ -552,8 +552,8 @@ class RustTimeline(
             )
         }
     }
-    override suspend fun scDbgFullyReadEventId(): String? {
-        return runCatching { inner.scDbgFullyReadEventId() }.getOrNull()
+    override suspend fun fullyReadEventId(): String? {
+        return runCatching { inner.fullyReadEventId() }.getOrNull()
     }
     // SC end
 }

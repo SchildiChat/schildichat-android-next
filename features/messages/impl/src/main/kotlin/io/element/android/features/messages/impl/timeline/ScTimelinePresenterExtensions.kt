@@ -53,7 +53,7 @@ fun createScReadState(timeline: Timeline): ScReadState {
     val sawUnreadLine = remember { mutableStateOf(false) }
     val fullyReadEventId = remember { mutableStateOf<String?>(null) }
     LaunchedEffect(Unit) {
-        fullyReadEventId.value = timeline.scDbgFullyReadEventId()
+        fullyReadEventId.value = timeline.fullyReadEventId()
     }
     return ScReadState(
         lastReadMarkerIndex,

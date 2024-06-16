@@ -248,7 +248,7 @@ private fun ColumnScope.SpacesPager(
         indicator = { tabPositions ->
             Box(
                 Modifier
-                    .tabIndicatorOffset(tabPositions[selectedTab])
+                    .tabIndicatorOffset(tabPositions.getOrNull(selectedTab) ?: tabPositions[0])
                     .fillMaxWidth()
                     .padding(horizontal = 4.dp)
                     .height(3.dp)

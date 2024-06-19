@@ -91,4 +91,7 @@
     <string name="sc_pref_dual_mention_unread_counts_title">Kombinovaný počet zmínek/nepřečtení</string>
     <string name="sc_pref_dual_mention_unread_counts_title_short">Počet dvojích zmínek</string>
     <string name="sc_pref_dual_mention_unread_counts_summary">Pokud se počet zmínek ve zvýrazněném chatu liší od počtu nepřečtených, zobrazit obojí</string>
+    <string name="sc_action_jump_to_unread">Přejít na nepřečtené</string>
+    <string name="sc_pref_jump_to_unread_title">Přejít na nepřečtené</string>
+    <string name="sc_pref_jump_to_unread_option_summary">Zobrazit možnost přejít na poslední přečtenou zprávu</string>
 </resources>

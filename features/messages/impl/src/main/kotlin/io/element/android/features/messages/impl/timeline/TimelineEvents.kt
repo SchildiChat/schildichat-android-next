@@ -27,6 +27,7 @@ sealed interface TimelineEvents {
     // SC end
     data class FocusOnEvent(val eventId: EventId, val forReadMarker: Boolean = false) : TimelineEvents
     data object ClearFocusRequestState : TimelineEvents
+    data object OnFocusEventRender : TimelineEvents
     data object JumpToLive : TimelineEvents
 
     /**

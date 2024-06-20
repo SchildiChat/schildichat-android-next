@@ -87,12 +87,12 @@ fun TimelineView(
     onLinkClick: (String) -> Unit,
     onMessageClick: (TimelineItem.Event) -> Unit,
     onMessageLongClick: (TimelineItem.Event) -> Unit,
-    onTimestampClick: (TimelineItem.Event) -> Unit,
     onSwipeToReply: (TimelineItem.Event) -> Unit,
     onReactionClick: (emoji: String, TimelineItem.Event) -> Unit,
     onReactionLongClick: (emoji: String, TimelineItem.Event) -> Unit,
     onMoreReactionsClick: (TimelineItem.Event) -> Unit,
     onReadReceiptClick: (TimelineItem.Event) -> Unit,
+    onJoinCallClick: () -> Unit,
     modifier: Modifier = Modifier,
     forceJumpToBottomVisibility: Boolean = false
 ) {
@@ -109,6 +109,14 @@ fun TimelineView(
                 .any { it.contentType() == "TimelineItemReadMarkerModel" }) {
             state.eventSink(TimelineEvents.OnUnreadLineVisible)
         }
+    }
+
+    fun onFocusEventRender() {
+        state.eventSink(TimelineEvents.OnFocusEventRender)
+    }
+
+    fun onJumpToLive() {
+        state.eventSink(TimelineEvents.JumpToLive)
     }
 
     val context = LocalContext.current
@@ -158,9 +166,9 @@ fun TimelineView(
                         onReactionLongClick = onReactionLongClick,
                         onMoreReactionsClick = onMoreReactionsClick,
                         onReadReceiptClick = onReadReceiptClick,
-                        onTimestampClick = onTimestampClick,
                         eventSink = state.eventSink,
                         onSwipeToReply = onSwipeToReply,
+                        onJoinCallClick = onJoinCallClick,
                     )
                 }
             }
@@ -178,8 +186,8 @@ fun TimelineView(
                 isLive = state.isLive,
                 focusRequestState = state.focusRequestState,
                 onScrollFinishAt = ::onScrollFinishAt,
-                onClearFocusRequestState = ::clearFocusRequestState,
-                onJumpToLive = { state.eventSink(TimelineEvents.JumpToLive) },
+                onJumpToLive = ::onJumpToLive,
+                onFocusEventRender = ::onFocusEventRender,
             )
             if (FLOATING_DATE.value()) {
                 FloatingDateHeader(lazyListState, state.timelineItems)
@@ -196,9 +204,9 @@ private fun BoxScope.TimelineScrollHelper(
     isLive: Boolean,
     forceJumpToBottomVisibility: Boolean,
     focusRequestState: FocusRequestState,
-    onClearFocusRequestState: () -> Unit,
     onScrollFinishAt: (Int, Int) -> Unit,
     onJumpToLive: () -> Unit,
+    onFocusEventRender: () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val isScrollFinished by remember { derivedStateOf { !lazyListState.isScrollInProgress } }
@@ -226,15 +234,15 @@ private fun BoxScope.TimelineScrollHelper(
         }
     }
 
-    val latestOnClearFocusRequestState by rememberUpdatedState(onClearFocusRequestState)
+    val latestOnFocusEventRender by rememberUpdatedState(onFocusEventRender)
     LaunchedEffect(focusRequestState) {
-        if (focusRequestState is FocusRequestState.Cached) {
+        if (focusRequestState is FocusRequestState.Success && focusRequestState.isIndexed) {
             if (abs(lazyListState.firstVisibleItemIndex - focusRequestState.index) < 10) {
                 lazyListState.animateScrollToItem(focusRequestState.index)
             } else {
                 lazyListState.scrollToItem(focusRequestState.index)
             }
-            latestOnClearFocusRequestState()
+            latestOnFocusEventRender()
         }
     }
 
@@ -314,12 +322,12 @@ internal fun TimelineViewPreview(
             onLinkClick = {},
             onMessageClick = {},
             onMessageLongClick = {},
-            onTimestampClick = {},
             onSwipeToReply = {},
             onReactionClick = { _, _ -> },
             onReactionLongClick = { _, _ -> },
             onMoreReactionsClick = {},
             onReadReceiptClick = {},
+            onJoinCallClick = {},
             forceJumpToBottomVisibility = true,
         )
     }

@@ -18,7 +18,6 @@ package io.element.android.features.preferences.impl.root
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BugReport
@@ -26,6 +25,7 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.PrecisionManufacturing
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -125,6 +125,11 @@ fun PreferencesRootView(
         Footer(
             version = state.version,
             deviceId = state.deviceId,
+            onClick = if (!state.showDeveloperSettings) {
+                { state.eventSink(PreferencesRootEvents.OnVersionInfoClick) }
+            } else {
+                null
+            }
         )
     }
 }
@@ -244,9 +249,10 @@ private fun ColumnScope.GeneralSection(
 }
 
 @Composable
-private fun Footer(
+private fun ColumnScope.Footer(
     version: String,
-    deviceId: String?
+    deviceId: String?,
+    onClick: (() -> Unit)?,
 ) {
     val text = remember(version, deviceId) {
         buildString {
@@ -259,8 +265,10 @@ private fun Footer(
     }
     Text(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 40.dp, bottom = 24.dp),
+            .align(Alignment.CenterHorizontally)
+            .padding(top = 16.dp)
+            .clickable(enabled = onClick != null, onClick = onClick ?: {})
+            .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 24.dp),
         textAlign = TextAlign.Center,
         text = text,
         style = ElementTheme.typography.fontBodySmRegular,

@@ -21,7 +21,7 @@ import com.squareup.anvil.annotations.ContributesBinding
 import io.element.android.libraries.core.extensions.flatMap
 import io.element.android.libraries.core.log.logger.LoggerTag
 import io.element.android.libraries.di.AppScope
-import io.element.android.libraries.matrix.api.auth.MatrixAuthenticationService
+import io.element.android.libraries.matrix.api.MatrixClientProvider
 import io.element.android.libraries.pushproviders.api.PusherSubscriber
 import io.element.android.libraries.pushstore.api.UserPushStoreFactory
 import io.element.android.libraries.pushstore.api.clientsecret.PushClientSecret
@@ -42,8 +42,8 @@ class DefaultUnifiedPushNewGatewayHandler @Inject constructor(
     private val pusherSubscriber: PusherSubscriber,
     private val userPushStoreFactory: UserPushStoreFactory,
     private val pushClientSecret: PushClientSecret,
-    private val matrixAuthenticationService: MatrixAuthenticationService,
     private val scAppStateStore: ScAppStateStore,
+    private val matrixClientProvider: MatrixClientProvider,
 ) : UnifiedPushNewGatewayHandler {
     override suspend fun handle(endpoint: String, pushGateway: String, clientSecret: String): Result<Unit> {
         // Register the pusher for the session with this client secret, if is it using UnifiedPush.
@@ -55,8 +55,8 @@ class DefaultUnifiedPushNewGatewayHandler @Inject constructor(
         val userDataStore = userPushStoreFactory.getOrCreate(userId)
         scAppStateStore.setPushGateway(pushGateway)
         return if (userDataStore.getPushProviderName() == UnifiedPushConfig.NAME) {
-            matrixAuthenticationService
-                .restoreSession(userId)
+            matrixClientProvider
+                .getOrRestore(userId)
                 .flatMap { client ->
                     pusherSubscriber.registerPusher(client, endpoint, pushGateway)
                 }

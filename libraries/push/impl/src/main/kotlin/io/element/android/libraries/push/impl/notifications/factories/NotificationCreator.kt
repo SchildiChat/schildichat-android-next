@@ -35,9 +35,10 @@ import io.element.android.libraries.di.AppScope
 import io.element.android.libraries.di.ApplicationContext
 import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.core.ThreadId
+import io.element.android.libraries.matrix.api.timeline.item.event.EventType
 import io.element.android.libraries.matrix.api.user.MatrixUser
+import io.element.android.libraries.push.api.notifications.NotificationBitmapLoader
 import io.element.android.libraries.push.impl.R
-import io.element.android.libraries.push.impl.notifications.NotificationBitmapLoader
 import io.element.android.libraries.push.impl.notifications.RoomEventGroupInfo
 import io.element.android.libraries.push.impl.notifications.channels.NotificationChannels
 import io.element.android.libraries.push.impl.notifications.debug.annotateForDebug
@@ -131,12 +132,17 @@ class DefaultNotificationCreator @Inject constructor(
 
         val smallIcon = CommonDrawables.ic_notification_small
 
-        val channelId = notificationChannels.getChannelIdForMessage(roomInfo.shouldBing)
+        val containsMissedCall = events.any { it.type == EventType.CALL_NOTIFY }
+        val channelId = if (containsMissedCall) {
+            notificationChannels.getChannelForIncomingCall(false)
+        } else {
+            notificationChannels.getChannelIdForMessage(noisy = roomInfo.shouldBing)
+        }
         val builder = if (existingNotification != null) {
             NotificationCompat.Builder(context, existingNotification)
         } else {
             NotificationCompat.Builder(context, channelId)
-                .setOnlyAlertOnce(roomInfo.isUpdated || forceOnlyAlertOnce)
+                .setOnlyAlertOnce(forceOnlyAlertOnce) // SC
                 // A category allows groups of notifications to be ranked and filtered – per user or system settings.
                 // For example, alarm notifications should display before promo notifications, or message from known contact
                 // that can be displayed in not disturb mode if white listed (the later will need compat28.x)
@@ -212,6 +218,11 @@ class DefaultNotificationCreator @Inject constructor(
                     setLargeIcon(largeIcon)
                 }
                 setDeleteIntent(pendingIntentFactory.createDismissRoomPendingIntent(roomInfo.sessionId, roomInfo.roomId))
+
+                // If any of the events are of call notify type it means a missed call, set the category to the right value
+                if (events.any { it.type == EventType.CALL_NOTIFY }) {
+                    setCategory(NotificationCompat.CATEGORY_MISSED_CALL)
+                }
             }
             .setTicker(tickerText)
             .build()
@@ -345,7 +356,6 @@ class DefaultNotificationCreator @Inject constructor(
             .setWhen(lastMessageTimestamp)
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
             .setSmallIcon(smallIcon)
-            // set content text to support devices running API level < 24
             .setGroup(currentUser.userId.value)
             // set this notification as the summary for the group
             .setGroupSummary(true)

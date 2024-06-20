@@ -29,7 +29,6 @@ import chat.schildi.lib.preferences.settingState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import io.element.android.features.preferences.api.store.AppPreferencesStore
 import io.element.android.libraries.architecture.Presenter
 import kotlinx.coroutines.launch
 import timber.log.Timber

@@ -21,8 +21,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,18 +28,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.features.messages.impl.timeline.model.event.isEdited
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.Text
+import io.element.android.libraries.matrix.api.timeline.item.event.LocalEventSendState
 import io.element.android.libraries.ui.strings.CommonStrings
 
 @Composable
 fun TimelineEventTimestampView(
-    event: TimelineItem.Event, // SC
+    sendState: LocalEventSendState?, // SC
     formattedTime: String,
     isMessageEdited: Boolean,
     modifier: Modifier = Modifier,
@@ -66,22 +64,14 @@ fun TimelineEventTimestampView(
             color = MaterialTheme.colorScheme.secondary,
         )
 
-        if (ScTheme.scTimeline && event.localSendState is LocalEventSendState.NotSentYet) {
-            Spacer(modifier = Modifier.width(2.dp))
-            Icon(
-                modifier = Modifier.size(15.dp),
-                imageVector = Icons.Outlined.AccessTime,
-                contentDescription = stringResource(id = CommonStrings.common_sending),
-                tint = MaterialTheme.colorScheme.secondary,
-            )
-        }
+        ScTimestampIcon(sendState)
     }
 }
 
 @PreviewsDayNight
 @Composable
 internal fun TimelineEventTimestampViewPreview(@PreviewParameter(TimelineItemEventForTimestampViewProvider::class) event: TimelineItem.Event) = ElementPreview {
-    TimelineEventTimestampView(formattedTime = event.sentTime, isMessageEdited = event.content.isEdited())
+    TimelineEventTimestampView(event.localSendState, formattedTime = event.sentTime, isMessageEdited = event.content.isEdited())
 }
 
 object TimelineEventTimestampViewDefaults {

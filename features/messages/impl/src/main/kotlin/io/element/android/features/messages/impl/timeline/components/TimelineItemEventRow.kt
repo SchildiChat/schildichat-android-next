@@ -474,6 +474,7 @@ private fun MessageEventBubbleContent(
                 Box(modifier, contentAlignment = Alignment.Center) {
                     content {}
                     TimelineEventTimestampView(
+                        sendState = event.localSendState, // SC
                         formattedTime = event.sentTime,
                         isMessageEdited = event.content.isEdited(),
                         modifier = Modifier
@@ -501,6 +502,7 @@ private fun MessageEventBubbleContent(
                     content = { content(this::onContentLayoutChange) },
                     overlay = {
                         TimelineEventTimestampView(
+                            sendState = event.localSendState, // SC
                             formattedTime = event.sentTime,
                             isMessageEdited = event.content.isEdited(),
                             modifier = Modifier
@@ -512,6 +514,7 @@ private fun MessageEventBubbleContent(
                 Column(modifier) {
                     content {}
                     TimelineEventTimestampView(
+                        sendState = event.localSendState, // SC
                         formattedTime = event.sentTime,
                         isMessageEdited = event.content.isEdited(),
                         modifier = Modifier

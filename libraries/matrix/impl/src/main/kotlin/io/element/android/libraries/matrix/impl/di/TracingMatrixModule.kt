@@ -31,8 +31,10 @@ object TracingMatrixModule {
     @Provides
     fun providesTracingFilterConfiguration(buildMeta: BuildMeta): TracingFilterConfiguration {
         return when (buildMeta.buildType) {
+            BuildType.DEBUG_SC,
             BuildType.DEBUG -> TracingFilterConfigurations.debug
             BuildType.NIGHTLY -> TracingFilterConfigurations.nightly
+            BuildType.RELEASE_SC,
             BuildType.RELEASE -> TracingFilterConfigurations.release
         }
     }

@@ -1,2 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="sc_onboarding_welcome_title">Selamat datang di SchildiChat</string>
+    <string name="sc_onboarding_welcome_summary">Membawa kura-kura ke dalam Matrix</string>
+    <string name="sc_pref_tweaks_title">Pengaturan kura-kura</string>
+    <string name="sc_pref_sc_themes_title">Tema SC</string>
+    <string name="sc_pref_sc_layout_title">Tata letak SC</string>
+    <string name="sc_pref_sc_overview_layout_title">Tata letak ikhtisar SC</string>
+    <string name="sc_pref_sc_floating_date_title">Tanggal mengambang</string>
+    <string name="sc_pref_pl_display_name_title">Warna nama berdasarkan tingkat daya</string>
+    <string name="sc_pref_pl_display_name_summary_warning">Tidak bekerja secara andal ketika daftar anggota belum sepenuhnya didapatkan</string>
+    <string name="sc_pref_el_typography_title">Tipografi Element</string>
+    <string name="sc_pref_el_typography_summary">Gunakan pengaturan fon Element dengan teks pesan yang lebih besar</string>
+    <string name="sc_pref_fast_transitions_title">Transisi cepat</string>
+    <string name="sc_pref_fast_transitions_summary">Percepatkan animasi jendela</string>
+    <string name="sc_pref_compact_app_bar_summary">Jangan per besar bilah aplikasi atas</string>
+    <string name="sc_space_nav_title">Navigasi space</string>
+    <string name="sc_space_nav_summary">Saring percakapan Anda berdasarkan space</string>
+    <string name="sc_compact_root_spaces_title">Space akar kecil</string>
+    <string name="sc_space_swipe_title">Usap untuk mengganti space</string>
+    <string name="sc_space_swipe_summary">Tarik ikhtisar percakapan secara horizontal untuk mengganti space</string>
+    <string name="sc_space_unread_counts_mode_messages">Hitung pesan belum terbaca</string>
+    <string name="sc_space_unread_counts_mode_chats">Hitung percakapan belum terbaca</string>
+    <string name="sc_space_unread_counts_mode_hide">Sembunyikan</string>
+    <string name="sc_sync_read_receipt_and_marker_title">Jaga penanda baca dan laporan tersinkron</string>
+    <string name="sc_push_info_title">Info pendorongan</string>
+    <string name="sc_pref_pin_favorites_title">Sematkan favorit</string>
+    <string name="sc_pref_client_side_sort_title">Pengurutan sisi klien</string>
+    <string name="sc_pref_client_side_sort_title_short">Pengurutan klien</string>
+    <string name="sc_pref_category_chat_sorting">Urutan penyortiran</string>
+    <string name="sc_pref_sc_timeline_layout_title">Tata letak percakapan SC</string>
+    <string name="sc_pref_compact_app_bar_title">Bilah aplikasi kecil</string>
+    <string name="sc_pseudo_space_spaceless_groups_short">Grup</string>
+    <string name="sc_pseudo_space_notifications_short">Notifikasi</string>
+    <string name="sc_pseudo_space_unread">Belum terbaca</string>
+    <string name="sc_pref_category_general_behaviour">Perilaku</string>
+    <string name="sc_pref_category_spaces">Space</string>
+    <string name="sc_pref_category_misc">Lainnya</string>
+    <string name="sc_pref_screen_experimental_title">Eksperimental</string>
+    <string name="event_placeholder_location">Lokasi</string>
+    <string name="sc_pseudo_spaces_title">Pseudo-space</string>
+    <string name="sc_pseudo_space_dms">Percakapan langsung</string>
+    <string name="sc_pseudo_space_groups">Semua grup</string>
+    <string name="sc_pseudo_space_spaceless_short">Space tanpa induk</string>
+    <string name="sc_space_empty_title">Space kosong</string>
+    <string name="sc_pref_danger_zone">Zona berbahaya</string>
+    <string name="sc_pref_restore_defaults">Pulihkan bawaan</string>
+    <string name="sc_pref_restore_authors_choice">Pilihan pembuat</string>
+    <string name="sc_pref_category_chat_overview">Ikhtisar percakapan</string>
+    <string name="sc_pref_sc_floating_date_summary">Tampilkan tanggal di atas pesan sambil menggulir</string>
+    <string name="sc_pref_category_general_appearance">Tampilan</string>
+    <string name="sc_compact_root_spaces_summary">Tampilkan ikon tanpa nama untuk space akar</string>
+    <string name="sc_space_unread_counts_mode_title">Jumlah belum terbaca teragregasi</string>
+    <string name="sc_pseudo_space_favorites">Favorit</string>
+    <string name="sc_pref_dev_quick_options">Pengaturan cepat</string>
+</resources>

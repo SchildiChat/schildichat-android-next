@@ -134,7 +134,7 @@ fun ScUpstreamFeatureFlagAliasPref.RenderedDropdown(
         Timber.w("Cannot render ScUpstreamFeatureFlagAliasPref without featureFlagService")
         return
     }
-    val currentValue = featureFlagService.isFeatureEnabledFlow(featureFlag).collectAsState(featureFlag.defaultValue).value
+    val currentValue = featureFlagService.isFeatureEnabledFlow(featureFlag).collectAsState(/*TODO buildMeta.*/defaultValue).value
     DropdownMenuItem(
         onClick = {
             coroutineScope.launch {

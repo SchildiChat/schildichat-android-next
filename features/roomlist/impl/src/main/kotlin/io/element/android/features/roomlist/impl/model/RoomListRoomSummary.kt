@@ -23,6 +23,7 @@ import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.MatrixSpaceChildInfo
 import io.element.android.libraries.matrix.api.room.RoomNotificationMode
 import io.element.android.libraries.matrix.ui.model.InviteSender
+import kotlinx.collections.immutable.ImmutableList
 
 @Immutable
 data class RoomListRoomSummary(
@@ -54,6 +55,7 @@ data class RoomListRoomSummary(
     val isDm: Boolean,
     val isFavorite: Boolean,
     val inviteSender: InviteSender?,
+    val heroes: ImmutableList<AvatarData>,
 ) {
     val isHighlighted = userDefinedNotificationMode != RoomNotificationMode.MUTE &&
         (numberOfUnreadNotifications > 0 || numberOfUnreadMentions > 0) ||

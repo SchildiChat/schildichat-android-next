@@ -28,6 +28,7 @@ import io.element.android.libraries.matrix.api.media.VideoInfo
 import io.element.android.libraries.matrix.api.poll.PollKind
 import io.element.android.libraries.matrix.api.room.Mention
 import io.element.android.libraries.matrix.api.room.location.AssetType
+import io.element.android.libraries.matrix.api.timeline.item.event.InReplyTo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import java.io.File
@@ -54,8 +55,6 @@ interface Timeline : AutoCloseable {
     suspend fun sendMessage(body: String, htmlBody: String?, mentions: List<Mention>): Result<Unit>
 
     suspend fun editMessage(originalEventId: EventId?, transactionId: TransactionId?, body: String, htmlBody: String?, mentions: List<Mention>): Result<Unit>
-
-    suspend fun enterSpecialMode(eventId: EventId?): Result<Unit>
 
     suspend fun replyMessage(
         eventId: EventId,
@@ -173,4 +172,6 @@ interface Timeline : AutoCloseable {
     suspend fun forceSendReadReceipt(eventId: EventId, receiptType: ReceiptType): Result<Unit>
     suspend fun fullyReadEventId(): String?
     // SC end
+
+    suspend fun loadReplyDetails(eventId: EventId): InReplyTo
 }

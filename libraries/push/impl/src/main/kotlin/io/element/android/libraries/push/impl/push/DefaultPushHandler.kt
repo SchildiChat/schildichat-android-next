@@ -98,20 +98,21 @@ class DefaultPushHandler @Inject constructor(
                 Timber.w("Unable to get a session")
                 return
             }
-            val userPushStore = userPushStoreFactory.getOrCreate(userId)
-            val areNotificationsEnabled = userPushStore.getNotificationEnabledForDevice().first()
-            if (areNotificationsEnabled) {
-                val notifiableEvent = notifiableEventResolver.resolveEvent(userId, pushData.roomId, pushData.eventId)
-                when (notifiableEvent) {
-                    null -> Timber.tag(loggerTag.value).w("Unable to get a notification data")
-                    is NotifiableRingingCallEvent -> handleRingingCallEvent(notifiableEvent)
-                    else -> onNotifiableEventReceived.onNotifiableEventReceived(notifiableEvent)
+            val notifiableEvent = notifiableEventResolver.resolveEvent(userId, pushData.roomId, pushData.eventId)
+            when (notifiableEvent) {
+                null -> Timber.tag(loggerTag.value).w("Unable to get a notification data")
+                is NotifiableRingingCallEvent -> handleRingingCallEvent(notifiableEvent)
+                else -> {
+                    val userPushStore = userPushStoreFactory.getOrCreate(userId)
+                    val areNotificationsEnabled = userPushStore.getNotificationEnabledForDevice().first()
+                    if (areNotificationsEnabled) {
+                        onNotifiableEventReceived.onNotifiableEventReceived(notifiableEvent)
+                    } else {
+                        Timber.tag(loggerTag.value).i("Notification are disabled for this device, ignore push.")
+                    }
+                    scAppStateStore.onPushReceived(userPushStore.getPushProviderName())
                 }
-            } else {
-                Timber.tag(loggerTag.value).i("Notification are disabled for this device, ignore push.")
             }
-
-            scAppStateStore.onPushReceived(userPushStore.getPushProviderName())
         } catch (e: Exception) {
             Timber.tag(loggerTag.value).e(e, "## handleInternal() failed")
         }

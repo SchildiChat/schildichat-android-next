@@ -106,7 +106,9 @@ class ActionListPresenter @Inject constructor(
                 is TimelineItemStateContent -> {
                     buildList {
                         add(TimelineItemAction.Copy)
-                        add(TimelineItemAction.CopyLink)
+                        if (timelineItem.isRemote) {
+                            add(TimelineItemAction.CopyLink)
+                        }
                         if (isDeveloperModeEnabled) {
                             add(TimelineItemAction.ViewSource)
                         }
@@ -130,7 +132,9 @@ class ActionListPresenter @Inject constructor(
                         if (timelineItem.content.canBeCopied()) {
                             add(TimelineItemAction.Copy)
                         }
-                        add(TimelineItemAction.CopyLink)
+                        if (timelineItem.isRemote) {
+                            add(TimelineItemAction.CopyLink)
+                        }
                         if (isDeveloperModeEnabled) {
                             add(TimelineItemAction.ViewSource)
                         }
@@ -147,8 +151,8 @@ class ActionListPresenter @Inject constructor(
                         if (timelineItem.isRemote) {
                             add(TimelineItemAction.Reply)
                             add(TimelineItemAction.Forward)
+                            add(TimelineItemAction.CopyLink)
                         }
-                        add(TimelineItemAction.CopyLink)
                         if (isDeveloperModeEnabled) {
                             add(TimelineItemAction.ViewSource)
                         }
@@ -189,7 +193,9 @@ class ActionListPresenter @Inject constructor(
                     if (timelineItem.content.canBeCopied()) {
                         add(TimelineItemAction.Copy)
                     }
-                    add(TimelineItemAction.CopyLink)
+                    if (timelineItem.isRemote) {
+                        add(TimelineItemAction.CopyLink)
+                    }
                     if (isDeveloperModeEnabled) {
                         add(TimelineItemAction.ViewSource)
                     }

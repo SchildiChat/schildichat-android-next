@@ -152,7 +152,7 @@ data class ScUpstreamFeatureFlagAliasPref(
     override val dependencies: List<ScPrefDependency> = emptyList(),
 ) : ScPref<Boolean> {
     @IgnoredOnParcel override val sKey: String = featureFlag.key
-    @IgnoredOnParcel override val defaultValue: Boolean = featureFlag.defaultValue
+    @IgnoredOnParcel override val defaultValue: Boolean = false // TODO featureFlag.defaultValue()
     @IgnoredOnParcel override val authorsChoice: Boolean? = null
     @IgnoredOnParcel override val upstreamChoice: Boolean? = null
     @IgnoredOnParcel override val key: Preferences.Key<Boolean>? = null

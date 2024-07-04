@@ -222,6 +222,9 @@ class DefaultBugReporter @Inject constructor(
                 currentTracingFilter?.let {
                     builder.addFormDataPart("tracing_filter", it)
                 }
+                if (buildMeta.isEnterpriseBuild) {
+                    builder.addFormDataPart("label", "Enterprise")
+                }
                 // add the gzipped files, don't cancel the whole upload if only some file failed to upload
                 var totalUploadedSize = 0L
                 var uploadedSomeLogs = false
@@ -335,11 +338,13 @@ class DefaultBugReporter @Inject constructor(
                 listener.onUploadFailed(serverError)
             }
         } finally {
-            // delete the generated files when the bug report process has finished
-            for (file in bugReportFiles) {
-                file.safeDelete()
+            withContext(coroutineDispatchers.io) {
+                // delete the generated files when the bug report process has finished
+                for (file in bugReportFiles) {
+                    file.safeDelete()
+                }
+                response?.close()
             }
-            response?.close()
         }
     }
 

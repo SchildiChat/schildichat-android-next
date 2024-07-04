@@ -23,6 +23,7 @@ import io.element.android.libraries.matrix.api.room.MatrixSpaceChildInfo
 import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.matrix.api.room.RoomNotificationMode
 import io.element.android.libraries.matrix.api.room.message.RoomMessage
+import io.element.android.libraries.matrix.api.user.MatrixUser
 
 sealed interface RoomSummary {
     data class Empty(val identifier: String) : RoomSummary
@@ -61,6 +62,7 @@ data class RoomSummaryDetails(
     val isDm: Boolean,
     val isFavorite: Boolean,
     val currentUserMembership: CurrentUserMembership,
+    val heroes: List<MatrixUser>,
 ) {
     val lastMessageTimestamp = lastMessage?.originServerTs
 }

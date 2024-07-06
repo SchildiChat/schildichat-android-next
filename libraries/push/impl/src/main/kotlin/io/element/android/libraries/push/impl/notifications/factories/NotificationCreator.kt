@@ -107,7 +107,7 @@ class DefaultNotificationCreator @Inject constructor(
     private val acceptInvitationActionFactory: AcceptInvitationActionFactory,
     private val rejectInvitationActionFactory: RejectInvitationActionFactory
 ) : NotificationCreator {
-    private val accentColor = NotificationConfig.NOTIFICATION_ACCENT_COLOR
+    private val accentColor = buildMeta.scNotificationColor ?: NotificationConfig.NOTIFICATION_ACCENT_COLOR
 
     /**
      * Create a notification for a Room.

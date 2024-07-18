@@ -16,9 +16,20 @@
 
 package io.element.android.libraries.designsystem.theme
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.value
 import io.element.android.compound.annotations.CoreColorToken
 import io.element.android.compound.previews.ColorListPreview
 import io.element.android.compound.theme.ElementTheme
@@ -29,6 +40,22 @@ import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import kotlinx.collections.immutable.persistentMapOf
 
+object DynamicColorPreferences {
+    val isDynamicColorEnabled: Boolean
+        @Composable
+        get() = ScPrefs.SC_DYNAMICCOLORS.value()
+}
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+fun getDynamicColorScheme(isDark: Boolean): ColorScheme {
+    val context = LocalContext.current
+    return if (DynamicColorPreferences.isDynamicColorEnabled) {
+        if (isDark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+    } else {
+        if (isDark) darkColorScheme() else lightColorScheme()
+    }
+}
 /**
  * Room list.
  */
@@ -47,138 +74,173 @@ val SemanticColors.unreadIndicator
 val SemanticColors.placeholderBackground
     get() = bgSubtleSecondary
 
-// This color is not present in Semantic color, so put hard-coded value for now
 val SemanticColors.messageFromMeBackground
-    get() = if (isLight) {
-        // We want LightDesignTokens.colorGray400
+    @Composable
+    get() = if (DynamicColorPreferences.isDynamicColorEnabled) {
+        colorScheme.primaryContainer
+    } else if (isLight) {
         Color(0xFFE1E6EC)
     } else {
-        // We want DarkDesignTokens.colorGray500
         Color(0xFF323539)
     }
 
-// This color is not present in Semantic color, so put hard-coded value for now
+
 val SemanticColors.messageFromOtherBackground
-    get() = if (isLight) {
-        // We want LightDesignTokens.colorGray300
+    @Composable
+    get() = if (DynamicColorPreferences.isDynamicColorEnabled) {
+        colorScheme.secondaryContainer
+    } else if (isLight) {
         Color(0xFFF0F2F5)
     } else {
-        // We want DarkDesignTokens.colorGray400
         Color(0xFF26282D)
     }
 
-// This color is not present in Semantic color, so put hard-coded value for now
 val SemanticColors.progressIndicatorTrackColor
-    get() = if (isLight) {
-        // We want LightDesignTokens.colorAlphaGray500
+    @Composable
+    get() = if (DynamicColorPreferences.isDynamicColorEnabled) {
+        colorScheme.onSurfaceVariant
+    } else if (isLight) {
         Color(0x33052448)
     } else {
-        // We want DarkDesignTokens.colorAlphaGray500
         Color(0x25F4F7FA)
     }
 
-// This color is not present in Semantic color, so put hard-coded value for now
 val SemanticColors.iconSuccessPrimaryBackground
-    get() = if (isLight) {
-        // We want LightDesignTokens.colorGreen300
+    @Composable
+    get() = if (DynamicColorPreferences.isDynamicColorEnabled) {
+        colorScheme.tertiaryContainer
+    } else if (isLight) {
         Color(0xffe3f7ed)
     } else {
-        // We want DarkDesignTokens.colorGreen300
         Color(0xff002513)
     }
 
-// This color is not present in Semantic color, so put hard-coded value for now
 val SemanticColors.bgSubtleTertiary
-    get() = if (isLight) {
-        // We want LightDesignTokens.colorGray100
+    @Composable
+    get() = if (DynamicColorPreferences.isDynamicColorEnabled) {
+        colorScheme.surfaceVariant
+    } else if (isLight) {
         Color(0xfffbfcfd)
     } else {
-        // We want DarkDesignTokens.colorGray100
         Color(0xff14171b)
     }
 
-// Temporary color, which is not in the token right now
 val SemanticColors.temporaryColorBgSpecial
-    get() = if (isLight) Color(0xFFE4E8F0) else Color(0xFF3A4048)
+    @Composable
+    get() = if (DynamicColorPreferences.isDynamicColorEnabled) {
+        colorScheme.background
+    } else if (isLight) Color(0xFFE4E8F0) else Color(0xFF3A4048)
 
-// This color is not present in Semantic color, so put hard-coded value for now
 val SemanticColors.pinDigitBg
-    get() = if (isLight) {
-        // We want LightDesignTokens.colorGray300
+    @Composable
+    get() = if (DynamicColorPreferences.isDynamicColorEnabled) {
+        colorScheme.onPrimaryContainer
+    } else if (isLight) {
         Color(0xFFF0F2F5)
     } else {
-        // We want DarkDesignTokens.colorGray400
         Color(0xFF26282D)
     }
 
 val SemanticColors.currentUserMentionPillText
-    get() = if (isLight) {
-        // We want LightDesignTokens.colorGreen1100
+    @Composable
+    get() = if (DynamicColorPreferences.isDynamicColorEnabled) {
+        colorScheme.onTertiaryContainer
+    } else if (isLight) {
         Color(0xff005c45)
     } else {
-        // We want DarkDesignTokens.colorGreen1100
         Color(0xff1fc090)
     }
 
 val SemanticColors.currentUserMentionPillBackground
-    get() = if (isLight) {
-        // We want LightDesignTokens.colorGreenAlpha400
+    @Composable
+    get() = if (DynamicColorPreferences.isDynamicColorEnabled) {
+        colorScheme.tertiary
+    } else if (isLight) {
         Color(0x3b07b661)
     } else {
-        // We want DarkDesignTokens.colorGreenAlpha500
         Color(0xff003d29)
     }
 
 val SemanticColors.mentionPillText
-    get() = textPrimary
+    @Composable
+    get() = if (DynamicColorPreferences.isDynamicColorEnabled) {
+        colorScheme.onSecondaryContainer
+    } else textPrimary
 
 val SemanticColors.mentionPillBackground
-    get() = if (isLight) {
-        // We want LightDesignTokens.colorGray400
+    @Composable
+    get() = if (DynamicColorPreferences.isDynamicColorEnabled) {
+        colorScheme.secondary
+    } else if (isLight) {
         Color(0x1f052e61)
     } else {
-        // We want DarkDesignTokens.colorGray500
         Color(0x26f4f7fa)
     }
 
 @OptIn(CoreColorToken::class)
 val SemanticColors.bigIconDefaultBackgroundColor
-    get() = if (isLight) LightColorTokens.colorAlphaGray300 else DarkColorTokens.colorAlphaGray300
+    @Composable
+    get() = if (DynamicColorPreferences.isDynamicColorEnabled) {
+        colorScheme.onSurface
+    } else if (isLight) LightColorTokens.colorAlphaGray300 else DarkColorTokens.colorAlphaGray300
 
 @OptIn(CoreColorToken::class)
 val SemanticColors.bigCheckmarkBorderColor
-    get() = if (isLight) LightColorTokens.colorGray400 else DarkColorTokens.colorGray400
+    @Composable
+    get() = if (DynamicColorPreferences.isDynamicColorEnabled) {
+        colorScheme.outline
+    } else if (isLight) LightColorTokens.colorGray400 else DarkColorTokens.colorGray400
 
 @OptIn(CoreColorToken::class)
 val SemanticColors.highlightedMessageBackgroundColor
-    get() = if (isLight) LightColorTokens.colorGreen300 else DarkColorTokens.colorGreen300
+    @Composable
+    get() = if (DynamicColorPreferences.isDynamicColorEnabled) {
+        colorScheme.primary
+    } else if (isLight) LightColorTokens.colorGreen300 else DarkColorTokens.colorGreen300
 
 // Badge colors
 
 @OptIn(CoreColorToken::class)
 val SemanticColors.badgePositiveBackgroundColor
-    get() = if (isLight) LightColorTokens.colorAlphaGreen300 else DarkColorTokens.colorAlphaGreen300
+    @Composable
+    get() = if (DynamicColorPreferences.isDynamicColorEnabled) {
+        colorScheme.primaryContainer
+    } else if (isLight) LightColorTokens.colorAlphaGreen300 else DarkColorTokens.colorAlphaGreen300
 
 @OptIn(CoreColorToken::class)
 val SemanticColors.badgePositiveContentColor
-    get() = if (isLight) LightColorTokens.colorGreen1100 else DarkColorTokens.colorGreen1100
+    @Composable
+    get() = if (DynamicColorPreferences.isDynamicColorEnabled) {
+        colorScheme.onPrimaryContainer
+    } else if (isLight) LightColorTokens.colorGreen1100 else DarkColorTokens.colorGreen1100
 
 @OptIn(CoreColorToken::class)
 val SemanticColors.badgeNeutralBackgroundColor
-    get() = if (isLight) LightColorTokens.colorAlphaGray300 else DarkColorTokens.colorAlphaGray300
+    @Composable
+    get() = if (DynamicColorPreferences.isDynamicColorEnabled) {
+        colorScheme.surfaceVariant
+    } else if (isLight) LightColorTokens.colorAlphaGray300 else DarkColorTokens.colorAlphaGray300
 
 @OptIn(CoreColorToken::class)
 val SemanticColors.badgeNeutralContentColor
-    get() = if (isLight) LightColorTokens.colorGray1100 else DarkColorTokens.colorGray1100
+    @Composable
+    get() = if (DynamicColorPreferences.isDynamicColorEnabled) {
+        colorScheme.onSurfaceVariant
+    } else if (isLight) LightColorTokens.colorGray1100 else DarkColorTokens.colorGray1100
 
 @OptIn(CoreColorToken::class)
 val SemanticColors.badgeNegativeBackgroundColor
-    get() = if (isLight) LightColorTokens.colorAlphaRed300 else DarkColorTokens.colorAlphaRed300
+    @Composable
+    get() = if (DynamicColorPreferences.isDynamicColorEnabled) {
+        colorScheme.errorContainer
+    } else if (isLight) LightColorTokens.colorAlphaRed300 else DarkColorTokens.colorAlphaRed300
 
 @OptIn(CoreColorToken::class)
 val SemanticColors.badgeNegativeContentColor
-    get() = if (isLight) LightColorTokens.colorRed1100 else DarkColorTokens.colorRed1100
-
+    @Composable
+    get() = if (DynamicColorPreferences.isDynamicColorEnabled) {
+        colorScheme.onErrorContainer
+    } else if (isLight) LightColorTokens.colorRed1100 else DarkColorTokens.colorRed1100
 @PreviewsDayNight
 @Composable
 internal fun ColorAliasesPreview() = ElementPreview {

@@ -1,7 +1,13 @@
 package chat.schildi.theme
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.annotations.CoreColorToken
 import io.element.android.compound.tokens.generated.SemanticColors
@@ -64,8 +70,10 @@ internal val scdMaterialColorScheme = darkColorScheme(
     scrim = ScColors.colorBlackAlpha_1f,
 )
 
+
 internal val scdExposures = ScThemeExposures(
     isScTheme = true,
+    isDynamicColor = true,
     horizontalDividerThickness = DividerDefaults.Thickness,
     colorOnAccent = ScColors.colorWhite,
     bubbleBgIncoming = scd_bgFloating,
@@ -158,3 +166,6 @@ internal val scdSemanticColors = SemanticColors(
     // TODO-end
     isLight = false,
 )
+
+
+

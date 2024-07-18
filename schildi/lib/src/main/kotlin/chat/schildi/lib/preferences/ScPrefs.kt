@@ -14,6 +14,7 @@ object ScPrefs {
 
     // Appearance
     val SC_THEME = ScBoolPref("SC_THEMES", true, R.string.sc_pref_sc_themes_title, upstreamChoice = false)
+    val SC_DYNAMICCOLORS = ScBoolPref("SC_DYNAMICCOLORS", true, R.string.sc_pref_sc_dynamic_colors_title, upstreamChoice = false)
     val EL_TYPOGRAPHY = ScBoolPref("EL_TYPOGRAPHY", false, R.string.sc_pref_el_typography_title, R.string.sc_pref_el_typography_summary, upstreamChoice = true)
 
     // General behavior
@@ -82,6 +83,7 @@ object ScPrefs {
     val scTweaks = ScPrefScreen(R.string.sc_pref_tweaks_title, null, listOf<AbstractScPref>(
         ScPrefCategory(R.string.sc_pref_category_general_appearance, null, listOf(
             SC_THEME,
+            SC_DYNAMICCOLORS,
             EL_TYPOGRAPHY,
         )),
         ScPrefCategory(R.string.sc_pref_category_general_behaviour, null, listOf(
@@ -167,6 +169,7 @@ object ScPrefs {
         )),
         ScPrefCategory(R.string.sc_pref_category_general_appearance, null, listOf(
             SC_THEME,
+            SC_DYNAMICCOLORS,
             SC_OVERVIEW_LAYOUT.copy(titleRes = R.string.sc_pref_sc_layout_title),
             EL_TYPOGRAPHY,
             COMPACT_APP_BAR,
@@ -191,6 +194,7 @@ object ScPrefs {
 
     val devQuickTweaksTimeline = listOf(
         SC_THEME,
+        SC_DYNAMICCOLORS,
         EL_TYPOGRAPHY,
         SC_TIMELINE_LAYOUT.copy(titleRes = R.string.sc_pref_sc_layout_title),
         ScPrefCategory(R.string.sc_pref_screen_experimental_title, null, listOf(

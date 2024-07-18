@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 @Stable
 class ScThemeExposures(
     isScTheme: Boolean,
+    isDynamicColor: Boolean,
     horizontalDividerThickness: Dp,
     colorOnAccent: Color,
     bubbleBgIncoming: Color?,
@@ -33,6 +34,8 @@ class ScThemeExposures(
     messageHighlightBg: Color?,
 ) {
     var isScTheme by mutableStateOf(isScTheme)
+        private set
+    var isDynamicColor by mutableStateOf(isDynamicColor)
         private set
     var horizontalDividerThickness by mutableStateOf(horizontalDividerThickness)
         private set
@@ -71,6 +74,7 @@ class ScThemeExposures(
 
     fun copy(
         isScTheme: Boolean = this.isScTheme,
+        isDynamicColor: Boolean = this.isDynamicColor,
         horizontalDividerThickness: Dp = this.horizontalDividerThickness,
         colorOnAccent: Color = this.colorOnAccent,
         bubbleBgIncoming: Color? = this.bubbleBgIncoming,
@@ -90,6 +94,7 @@ class ScThemeExposures(
         messageHighlightBg: Color? = this.messageHighlightBg,
     ) = ScThemeExposures(
         isScTheme = isScTheme,
+        isDynamicColor = isDynamicColor,
         horizontalDividerThickness = horizontalDividerThickness,
         colorOnAccent = colorOnAccent,
         bubbleBgIncoming = bubbleBgIncoming,
@@ -111,6 +116,7 @@ class ScThemeExposures(
 
     fun updateColorsFrom(other: ScThemeExposures) {
         isScTheme = other.isScTheme
+        isDynamicColor = other.isDynamicColor
         horizontalDividerThickness = other.horizontalDividerThickness
         colorOnAccent = other.colorOnAccent
         bubbleBgIncoming = other.bubbleBgIncoming
@@ -133,6 +139,7 @@ class ScThemeExposures(
 
 internal val elementLightScExposures = ScThemeExposures(
     isScTheme = false,
+    isDynamicColor = false,
     horizontalDividerThickness = 0.5.dp, /** [io.element.android.libraries.designsystem.theme.components.HorizontalDivider] */
     colorOnAccent = Color.White,
     bubbleBgIncoming = null,
@@ -154,6 +161,7 @@ internal val elementLightScExposures = ScThemeExposures(
 
 internal val elementDarkScExposures = ScThemeExposures(
     isScTheme = false,
+    isDynamicColor = false,
     horizontalDividerThickness = 0.5.dp, /** [io.element.android.libraries.designsystem.theme.components.HorizontalDivider] */
     colorOnAccent = Color.White,
     bubbleBgIncoming = null,

@@ -1,7 +1,13 @@
 package chat.schildi.theme
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.annotations.CoreColorToken
 import io.element.android.compound.tokens.generated.SemanticColors
@@ -64,8 +70,10 @@ internal val scdMaterialColorScheme = darkColorScheme(
     scrim = ScColors.colorBlackAlpha_1f,
 )
 
+
 internal val scdExposures = ScThemeExposures(
     isScTheme = true,
+    isDynamicColor = true,
     horizontalDividerThickness = DividerDefaults.Thickness,
     colorOnAccent = ScColors.colorWhite,
     bubbleBgIncoming = scd_bgFloating,
@@ -158,3 +166,87 @@ internal val scdSemanticColors = SemanticColors(
     // TODO-end
     isLight = false,
 )
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+fun dynamicSemanticColorScheme(isLight: Boolean): SemanticColors {
+    val context = LocalContext.current
+    val colorScheme = if (isLight) {
+        dynamicLightColorScheme(context)
+    } else {
+        dynamicDarkColorScheme(context)
+    }
+
+    return SemanticColors(
+        textPrimary = colorScheme.primary,
+        textSecondary = colorScheme.secondary,
+        textPlaceholder = colorScheme.onSurface.copy(alpha = 0.4f),
+        textDisabled = colorScheme.onSurface.copy(alpha = 0.38f),
+        textActionPrimary = colorScheme.primary,
+        textActionAccent = colorScheme.tertiary,
+        textLinkExternal = colorScheme.secondary,
+        textCriticalPrimary = colorScheme.error,
+        textSuccessPrimary = colorScheme.primary,
+        textInfoPrimary = colorScheme.onBackground,
+        textOnSolidPrimary = colorScheme.onPrimary,
+        bgSubtlePrimary = colorScheme.surface,
+        bgSubtleSecondary = colorScheme.surfaceVariant,
+        bgCanvasDefault = colorScheme.background,
+        bgCanvasDisabled = colorScheme.surface,
+        bgActionPrimaryRest = colorScheme.primary,
+        bgActionPrimaryHovered = colorScheme.primaryContainer,
+        bgActionPrimaryPressed = colorScheme.primaryContainer,
+        bgActionPrimaryDisabled = colorScheme.onSurface.copy(alpha = 0.38f),
+        bgActionSecondaryRest = colorScheme.surface,
+        bgActionSecondaryHovered = colorScheme.onSurface,
+        bgActionSecondaryPressed = colorScheme.onSurface,
+        bgCriticalPrimary = colorScheme.errorContainer,
+        bgCriticalHovered = colorScheme.errorContainer,
+        bgCriticalSubtle = colorScheme.error,
+        bgCriticalSubtleHovered = colorScheme.error,
+        bgSuccessSubtle = colorScheme.secondary.copy(alpha = 0.2f),
+        bgInfoSubtle = colorScheme.tertiary,
+        borderDisabled = colorScheme.onSurface.copy(alpha = 0.12f),
+        borderFocused = colorScheme.tertiary,
+        borderInteractivePrimary = colorScheme.secondary,
+        borderInteractiveSecondary = colorScheme.onSurface.copy(alpha = 0.60f),
+        borderInteractiveHovered = colorScheme.onSurface,
+        borderCriticalPrimary = colorScheme.error,
+        borderCriticalHovered = colorScheme.error,
+        borderCriticalSubtle = colorScheme.error.copy(alpha = 0.38f),
+        borderSuccessSubtle = colorScheme.secondary,
+        borderInfoSubtle = colorScheme.tertiary,
+        iconPrimary = colorScheme.primary,
+        iconSecondary = colorScheme.secondary,
+        iconTertiary = colorScheme.tertiary,
+        iconQuaternary = colorScheme.onSurface,
+        iconDisabled = colorScheme.onSurface.copy(alpha = 0.38f),
+        iconPrimaryAlpha = colorScheme.primary.copy(alpha = 0.8f),
+        iconSecondaryAlpha = colorScheme.secondary.copy(alpha = 0.8f),
+        iconTertiaryAlpha = colorScheme.tertiary.copy(alpha = 0.8f),
+        iconQuaternaryAlpha = colorScheme.onSurface.copy(alpha = 0.8f),
+        iconAccentTertiary = colorScheme.secondary,
+        iconCriticalPrimary = colorScheme.error,
+        iconSuccessPrimary = colorScheme.secondary,
+        iconInfoPrimary = colorScheme.tertiary,
+        iconOnSolidPrimary = colorScheme.onPrimary,
+        bgAccentRest = colorScheme.primaryContainer,
+        bgAccentHovered = colorScheme.primary,
+        bgAccentPressed = colorScheme.primary,
+        bgDecorative1 = colorScheme.tertiaryContainer,
+        bgDecorative2 = colorScheme.secondaryContainer,
+        bgDecorative3 = colorScheme.errorContainer,
+        bgDecorative4 = colorScheme.onPrimaryContainer,
+        bgDecorative5 = colorScheme.onSecondaryContainer,
+        bgDecorative6 = colorScheme.onTertiaryContainer,
+        textDecorative1 = colorScheme.primary,
+        textDecorative2 = colorScheme.secondary,
+        textDecorative3 = colorScheme.error,
+        textDecorative4 = colorScheme.onPrimary,
+        textDecorative5 = colorScheme.onSecondary,
+        textDecorative6 = colorScheme.onTertiary,
+        isLight = isLight,
+    )
+}
+
+

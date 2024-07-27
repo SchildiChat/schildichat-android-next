@@ -15,6 +15,3 @@ versionMinor=`get_prop versionMinor "$version_kt"`
 versionPatch=`get_prop versionPatch "$version_kt"`
 tag="sc_last_v$versionMajor.$versionMinor.$versionPatch"
 git tag "$tag" || true
-
-# Make sure LFS is happy
-"$mydir/sc_tools/lfs_mirror.sh"

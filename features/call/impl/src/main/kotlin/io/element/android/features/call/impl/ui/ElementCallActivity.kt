@@ -30,13 +30,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.IntentCompat
 import androidx.lifecycle.Lifecycle
-import chat.schildi.lib.preferences.DefaultScPreferencesStore
-import chat.schildi.lib.preferences.LocalScPreferencesStore
-import chat.schildi.theme.ScTheme
 import io.element.android.features.call.api.CallType
 import io.element.android.features.call.impl.DefaultElementCallEntryPoint
 import io.element.android.features.call.impl.di.CallBindings
@@ -95,9 +91,9 @@ class ElementCallActivity : AppCompatActivity(), CallScreenNavigator {
         audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
         requestAudioFocus()
 
-        setContent { CompositionLocalProvider(LocalScPreferencesStore provides DefaultScPreferencesStore(applicationContext, null)) {
+        setContent {
             val pipState = pictureInPicturePresenter.present()
-            ElementThemeApp(appPreferencesStore) {
+            ElementThemeApp(appPreferencesStore, applicationContext) {
                 val state = presenter.present()
                 eventSink = state.eventSink
                 CallScreenView(
@@ -109,7 +105,7 @@ class ElementCallActivity : AppCompatActivity(), CallScreenNavigator {
                     }
                 )
             }
-        } }
+        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

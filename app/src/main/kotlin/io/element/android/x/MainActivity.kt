@@ -71,9 +71,8 @@ class MainActivity : NodeActivity() {
     @Composable
     private fun MainContent(appBindings: AppBindings) {
         val migrationState = appBindings.migrationEntryPoint().present()
-        ElementThemeApp(appBindings.preferencesStore()) {
+        ElementThemeApp(appBindings.preferencesStore(), appBindings.scPreferencesStore()) {
             CompositionLocalProvider(
-                LocalScPreferencesStore provides appBindings.scPreferencesStore(),
                 LocalSnackbarDispatcher provides appBindings.snackbarDispatcher(),
                 LocalUriHandler provides SafeUriHandler(this),
             ) {

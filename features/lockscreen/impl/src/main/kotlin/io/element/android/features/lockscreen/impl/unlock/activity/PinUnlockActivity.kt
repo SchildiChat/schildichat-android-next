@@ -51,7 +51,7 @@ class PinUnlockActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         bindings<PinUnlockBindings>().inject(this)
         setContent {
-            ElementThemeApp(appPreferencesStore) {
+            ElementThemeApp(appPreferencesStore, applicationContext) {
                 val state = presenter.present()
                 PinUnlockView(state = state, isInAppUnlock = false)
             }

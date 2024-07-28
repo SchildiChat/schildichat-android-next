@@ -73,7 +73,7 @@ class IncomingCallActivity : AppCompatActivity() {
         val notificationData = intent?.let { IntentCompat.getParcelableExtra(it, EXTRA_NOTIFICATION_DATA, CallNotificationData::class.java) }
         if (notificationData != null) {
             setContent {
-                ElementThemeApp(appPreferencesStore) {
+                ElementThemeApp(appPreferencesStore, applicationContext) {
                     IncomingCallScreen(
                         notificationData = notificationData,
                         onAnswer = ::onAnswer,

@@ -16,14 +16,18 @@
 
 package io.element.android.libraries.designsystem.theme
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import chat.schildi.lib.preferences.DefaultScPreferencesStore
+import chat.schildi.lib.preferences.LocalScPreferencesStore
+import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.theme.ScTheme
-import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.theme.Theme
 import io.element.android.compound.theme.isDark
 import io.element.android.compound.theme.mapToTheme
@@ -39,6 +43,7 @@ import io.element.android.libraries.preferences.api.store.AppPreferencesStore
 @Composable
 fun ElementThemeApp(
     appPreferencesStore: AppPreferencesStore,
+    scPreferencesStore: ScPreferencesStore, // SC: ensure we have a ScPreferencesStore and thus proper theming in every activity by enforcing this additional parameter here
     content: @Composable () -> Unit,
 ) {
     val theme by remember {
@@ -54,8 +59,17 @@ fun ElementThemeApp(
             }
         )
     }
+    CompositionLocalProvider(LocalScPreferencesStore provides scPreferencesStore) {
     ScTheme(
         darkTheme = theme.isDark(),
         content = content,
     )
+    }
 }
+
+@Composable // SC: shortcut
+fun ElementThemeApp(appPreferencesStore: AppPreferencesStore, context: Context, content: @Composable () -> Unit) = ElementThemeApp(
+    appPreferencesStore = appPreferencesStore,
+    scPreferencesStore = DefaultScPreferencesStore(context, null),
+    content = content
+)

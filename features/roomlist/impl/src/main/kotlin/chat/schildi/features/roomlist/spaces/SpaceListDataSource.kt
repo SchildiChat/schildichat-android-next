@@ -62,7 +62,7 @@ class SpaceListDataSource @Inject constructor(
     private val lock = Mutex()
     private val diffCache = MutableListDiffCache<RoomListRoomSummary>()
     private val diffCacheUpdater = DiffCacheUpdater<RoomSummary, RoomListRoomSummary>(diffCache = diffCache, detectMoves = true) { old, new ->
-        old?.identifier() == new?.identifier()
+        old?.roomId == new?.roomId
     }
 
     fun launchIn(coroutineScope: CoroutineScope) {
@@ -125,7 +125,7 @@ class SpaceListDataSource @Inject constructor(
             )
         }
         if (pseudoSpaceSettings.spaceless || pseudoSpaceSettings.spacelessGroups) {
-            val excludedRooms = spaceSummaries.flatMap { (it as? RoomSummary.Filled)?.details?.spaceChildren?.map { it.roomId }.orEmpty() }.toImmutableList()
+            val excludedRooms = spaceSummaries.flatMap { it.spaceChildren.map { it.roomId } }.toImmutableList()
             if (pseudoSpaceSettings.spacelessGroups) {
                 pseudoSpaces.add(
                     SpacelessGroupsPseudoSpaceItem(context.getString(chat.schildi.lib.R.string.sc_pseudo_space_spaceless_groups_short), excludedRooms)
@@ -235,13 +235,9 @@ class SpaceListDataSource @Inject constructor(
     }
 
     private fun buildAndCacheItem(roomSummaries: List<RoomSummary>, index: Int): RoomListRoomSummary? {
-        val roomListRoomSummary = when (val roomSummary = roomSummaries.getOrNull(index)) {
-            is RoomSummary.Empty -> RoomListRoomSummaryFactory.createPlaceholder(roomSummary.identifier)
-            is RoomSummary.Filled -> roomListRoomSummaryFactory.create(roomSummary)
-            null -> null
-        }
-        diffCache[index] = roomListRoomSummary
-        return roomListRoomSummary
+        val roomListSummary = roomSummaries.getOrNull(index)?.let { roomListRoomSummaryFactory.create(it) }
+        diffCache[index] = roomListSummary
+        return roomListSummary
     }
 
     @Immutable

@@ -71,6 +71,7 @@ import io.element.android.libraries.matrix.api.sync.SyncService
 import io.element.android.libraries.matrix.api.sync.SyncState
 import io.element.android.libraries.matrix.api.timeline.ReceiptType
 import io.element.android.libraries.preferences.api.store.SessionPreferencesStore
+import io.element.android.libraries.push.api.notifications.NotificationCleaner
 import io.element.android.services.analytics.api.AnalyticsService
 import io.element.android.services.analyticsproviders.api.trackers.captureInteraction
 import kotlinx.collections.immutable.persistentListOf
@@ -79,6 +80,8 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
@@ -110,6 +113,7 @@ class RoomListPresenter @Inject constructor(
     private val analyticsService: AnalyticsService,
     private val acceptDeclineInvitePresenter: Presenter<AcceptDeclineInviteState>,
     private val fullScreenIntentPermissionsPresenter: FullScreenIntentPermissionsPresenter,
+    private val notificationCleaner: NotificationCleaner,
 ) : Presenter<RoomListState> {
     private val encryptionService: EncryptionService = client.encryptionService()
     private val syncService: SyncService = client.syncService()
@@ -144,7 +148,9 @@ class RoomListPresenter @Inject constructor(
         fun handleEvents(event: RoomListEvents) {
             when (event) {
                 is RoomListEvents.UpdateSpaceFilter -> { spaceAwareRoomListDataSource.updateSpaceSelection(event.spaceSelectionHierarchy.toImmutableList()) }
-                is RoomListEvents.UpdateVisibleRange -> updateVisibleRange(event.range, event.withSpaceFilter)
+                is RoomListEvents.UpdateVisibleRange -> coroutineScope.launch {
+                    updateVisibleRange(event.range)
+                }
                 RoomListEvents.DismissRequestVerificationPrompt -> securityBannerDismissed = true
                 RoomListEvents.DismissRecoveryKeyPrompt -> securityBannerDismissed = true
                 RoomListEvents.ToggleSearchResults -> searchState.eventSink(RoomListSearchEvents.ToggleSearchVisibility)
@@ -297,6 +303,7 @@ class RoomListPresenter @Inject constructor(
     }
 
     private fun CoroutineScope.markAsRead(roomId: RoomId) = launch {
+        notificationCleaner.clearMessagesForRoom(client.sessionId, roomId)
         client.getRoom(roomId)?.use { room ->
             room.setUnreadFlag(isUnread = false)
             val receiptType = if (sessionPreferencesStore.isSendPublicReadReceiptsEnabled().first()) {
@@ -320,14 +327,20 @@ class RoomListPresenter @Inject constructor(
         }
     }
 
-    private fun updateVisibleRange(range: IntRange, withSpaceFilter: Boolean) {
-        if (range.isEmpty()) return
-        val midExtendedRangeSize = EXTENDED_RANGE_SIZE / 2
-        val extendedRangeStart = (range.first - midExtendedRangeSize).coerceAtLeast(0)
-        // Safe to give bigger size than room list
-        val extendedRangeEnd = range.last + midExtendedRangeSize
-        val extendedRange = IntRange(extendedRangeStart, extendedRangeEnd)
-        client.roomListService.updateAllRoomsVisibleRange(extendedRange, withSpaceFilter)
+    private var currentUpdateVisibleRangeJob: Job? = null
+    private fun CoroutineScope.updateVisibleRange(range: IntRange) {
+        currentUpdateVisibleRangeJob?.cancel()
+        currentUpdateVisibleRangeJob = launch(SupervisorJob()) {
+            if (range.isEmpty()) return@launch
+            val currentRoomList = roomListDataSource.allRooms.first()
+            // Use extended range to 'prefetch' the next rooms info
+            val midExtendedRangeSize = EXTENDED_RANGE_SIZE / 2
+            val extendedRange = range.first until range.last + midExtendedRangeSize
+            val roomIds = extendedRange.mapNotNull { index ->
+                currentRoomList.getOrNull(index)?.roomId
+            }
+            roomListDataSource.subscribeToVisibleRooms(roomIds)
+        }
     }
 }
 
@@ -336,5 +349,5 @@ internal fun RoomListRoomSummary.toInviteData() = InviteData(
     roomId = roomId,
     // Note: `name` should not be null at this point, but just in case, fallback to the roomId
     roomName = name ?: roomId.value,
-    isDirect = isDirect,
+    isDm = isDm,
 )

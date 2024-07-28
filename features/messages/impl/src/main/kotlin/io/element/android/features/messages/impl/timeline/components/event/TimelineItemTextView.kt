@@ -46,8 +46,10 @@ import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.ui.messages.LocalRoomMemberProfilesCache
 import io.element.android.libraries.matrix.ui.messages.RoomMemberProfilesCache
 import io.element.android.libraries.textcomposer.ElementRichTextEditorStyle
+import io.element.android.libraries.textcomposer.mentions.LocalMentionSpanTheme
 import io.element.android.libraries.textcomposer.mentions.MentionSpan
 import io.element.android.libraries.textcomposer.mentions.getMentionSpans
+import io.element.android.libraries.textcomposer.mentions.updateMentionStyles
 import io.element.android.wysiwyg.compose.EditorStyledText
 
 @Composable
@@ -87,15 +89,16 @@ internal fun getTextWithResolvedMentions(content: TimelineItemTextBasedContent):
     // SC merge conflict canary: duplicated code into extensions!
     val userProfileCache = LocalRoomMemberProfilesCache.current
     val lastCacheUpdate by userProfileCache.lastCacheUpdate.collectAsState()
-    val formattedBody = remember(content.formattedBody, lastCacheUpdate) {
+    val mentionSpanTheme = LocalMentionSpanTheme.current
+    val formattedBody = content.formattedBody ?: content.pillifiedBody
+    val textWithMentions = remember(formattedBody, mentionSpanTheme, lastCacheUpdate) {
         // SC merge conflict canary: code copied into extensions!
-        content.formattedBody?.let { formattedBody ->
-            updateMentionSpans(formattedBody, userProfileCache)
-            formattedBody
-        }
+        updateMentionSpans(formattedBody, userProfileCache)
+        mentionSpanTheme.updateMentionStyles(formattedBody)
+        formattedBody
     }
     // SC merge conflict canary: code copied into extensions!
-    return SpannableString(formattedBody ?: content.body)
+    return SpannableString(textWithMentions)
 }
 
 /*private*/ fun updateMentionSpans(text: CharSequence, cache: RoomMemberProfilesCache): Boolean {

@@ -160,7 +160,7 @@ class DefaultNotificationCreator @Inject constructor(
 
         val messagingStyle = existingNotification?.let {
             MessagingStyle.extractMessagingStyleFromNotification(it)
-        } ?: messagingStyleFromCurrentUser(roomInfo.sessionId, currentUser, imageLoader, roomInfo.roomDisplayName, !roomInfo.isDirect)
+        } ?: messagingStyleFromCurrentUser(roomInfo.sessionId, currentUser, imageLoader, roomInfo.roomDisplayName, !roomInfo.isDm)
 
         messagingStyle.addMessagesFromEvents(events, imageLoader)
 

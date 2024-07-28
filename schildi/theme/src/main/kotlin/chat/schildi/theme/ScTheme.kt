@@ -12,6 +12,7 @@ import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.theme.ForcedDarkElementTheme
+import io.element.android.compound.theme.toMaterialColorScheme
 import io.element.android.compound.tokens.generated.SemanticColors
 import io.element.android.compound.tokens.sc.ElTypographyTokens
 import io.element.android.compound.tokens.sc.ExposedTypographyTokens
@@ -52,15 +53,6 @@ fun ScTheme(
     useElTypography: Boolean = ScPrefs.EL_TYPOGRAPHY.value(),
     content: @Composable () -> Unit,
 ) {
-    val compoundColors: SemanticColors
-    val materialColors: ColorScheme
-    if (useScTheme) {
-        compoundColors = if (darkTheme) scdSemanticColors else sclSemanticColors
-        materialColors = if (darkTheme) scdMaterialColorScheme else sclMaterialColorScheme
-    } else {
-        compoundColors = if (darkTheme) elColorsDark else elColorsLight
-        materialColors = if (darkTheme) elMaterialColorSchemeDark else elMaterialColorSchemeLight
-    }
     val typography = if (useElTypography) elTypography else scTypography
     val typographyTokens = if (useElTypography) ElTypographyTokens else ScTypographyTokens
 
@@ -77,8 +69,10 @@ fun ScTheme(
             applySystemBarsUpdate = applySystemBarsUpdate,
             lightStatusBar = lightStatusBar,
             dynamicColor = dynamicColor,
-            compoundColors = compoundColors,
-            materialColors = materialColors,
+            compoundLight = if (useScTheme) sclSemanticColors else elColorsLight,
+            compoundDark = if (useScTheme) scdSemanticColors else elColorsDark,
+            materialColorsLight = if (useScTheme) sclMaterialColorScheme else elMaterialColorSchemeLight,
+            materialColorsDark = if (useScTheme) scdMaterialColorScheme else elMaterialColorSchemeDark,
             typography = typography,
             typographyTokens = typographyTokens,
             content = content,

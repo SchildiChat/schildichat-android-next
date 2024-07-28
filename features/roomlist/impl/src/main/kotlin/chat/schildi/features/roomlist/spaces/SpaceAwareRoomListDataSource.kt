@@ -81,14 +81,6 @@ class SpaceAwareRoomListDataSource @Inject constructor(
             spaceListDataSource.forceRebuildSpaceFilter()
         }.launchIn(coroutineScope)
 
-        // Tell SDK we filter the sliding sync window by spaces
-        _selectedSpaceItem.debounce(1000).onEach {
-            it ?: return@onEach
-            val spaces = (it as? SpaceListDataSource.SpaceHierarchyItem)?.flattenedSpaces
-            Timber.v("Pass space selection to SDK: ${spaces?.size} spaces")
-            client.roomListService.updateVisibleSpaces(spaces)
-        }.launchIn(coroutineScope)
-
         // Filter by space with the room id list built in the previous flow
         combine(
             _selectedSpaceItem,

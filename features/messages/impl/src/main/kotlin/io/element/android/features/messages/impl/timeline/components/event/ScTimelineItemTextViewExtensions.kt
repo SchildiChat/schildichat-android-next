@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import chat.schildi.lib.compose.thenIf
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContent
 import io.element.android.libraries.matrix.ui.messages.LocalRoomMemberProfilesCache
+import io.element.android.libraries.textcomposer.mentions.LocalMentionSpanTheme
+import io.element.android.libraries.textcomposer.mentions.updateMentionStyles
 
 @Composable
 internal fun scGetTextWithResolvedMentions(
@@ -42,11 +44,12 @@ internal fun Modifier.scCollapseClick(
 private fun getTextWithResolvedMentions(toFormat: CharSequence?, content: TimelineItemTextBasedContent): CharSequence {
     val userProfileCache = LocalRoomMemberProfilesCache.current
     val lastCacheUpdate by userProfileCache.lastCacheUpdate.collectAsState()
-    val formattedBody = remember(toFormat, lastCacheUpdate) {
-        toFormat?.let { formattedBody ->
-            updateMentionSpans(formattedBody, userProfileCache)
-            formattedBody
-        }
+    val mentionSpanTheme = LocalMentionSpanTheme.current
+    val formattedBody = toFormat ?: content.pillifiedBody
+    val textWithMentions = remember(formattedBody, mentionSpanTheme, lastCacheUpdate) {
+        updateMentionSpans(formattedBody, userProfileCache)
+        mentionSpanTheme.updateMentionStyles(formattedBody)
+        formattedBody
     }
-    return SpannableString(formattedBody ?: content.body)
+    return SpannableString(textWithMentions)
 }

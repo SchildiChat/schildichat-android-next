@@ -30,18 +30,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import chat.schildi.features.roomlist.spaces.SpacesPager
 import chat.schildi.features.roomlist.spaces.isSpaceFilterActive
@@ -190,13 +189,9 @@ private fun RoomsViewList(
             firstItemIndex until firstItemIndex + size
         }
     }
-    val nestedScrollConnection = remember(withSpaceFilter) {
-        object : NestedScrollConnection {
-            override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-                eventSink(RoomListEvents.UpdateVisibleRange(visibleRange, withSpaceFilter))
-                return super.onPostFling(consumed, available)
-            }
-        }
+    val updatedEventSink by rememberUpdatedState(newValue = eventSink)
+    LaunchedEffect(visibleRange) {
+        updatedEventSink(RoomListEvents.UpdateVisibleRange(visibleRange))
     }
     val coroutineScope = rememberCoroutineScope()
     SpacesPager(
@@ -211,7 +206,7 @@ private fun RoomsViewList(
     ) { modifier ->
     LazyColumn(
         state = lazyListState,
-        modifier = modifier.nestedScroll(nestedScrollConnection),
+        modifier = modifier,
         // FAB height is 56dp, bottom padding is 16dp, we add 8dp as extra margin -> 56+16+8 = 80
         contentPadding = PaddingValues(bottom = 80.dp).takeIf { !ScPrefs.SPACE_NAV.value() } ?: PaddingValues()
     ) {
@@ -221,7 +216,7 @@ private fun RoomsViewList(
                     item {
                         ConfirmRecoveryKeyBanner(
                             onContinueClick = onConfirmRecoveryKeyClick,
-                            onDismissClick = { eventSink(RoomListEvents.DismissRecoveryKeyPrompt) }
+                            onDismissClick = { updatedEventSink(RoomListEvents.DismissRecoveryKeyPrompt) }
                         )
                     }
                 }

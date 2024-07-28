@@ -126,6 +126,7 @@ internal val sclSemanticColors = SemanticColors(
     iconSecondaryAlpha = scl_fgSecondary.copy(alpha = scl_icon_alpha),
     iconTertiaryAlpha = scl_fgTertiary.copy(alpha = scl_icon_alpha),
     iconQuaternaryAlpha = scl_fgTertiary.copy(alpha = scl_icon_alpha),
+    iconAccentPrimary = scl_accent,
     iconAccentTertiary = scl_accent,
     iconCriticalPrimary = ScColors.colorAccentRed, // TODO align with other colorRed900?
     iconSuccessPrimary = ScColors.colorAccentGreen,

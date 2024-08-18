@@ -78,9 +78,7 @@ class RoomSyncSubscriber(
     private fun subscribeToRoom(roomId: RoomId) {
         if (!isSubscribedTo(roomId)) {
             Timber.d("Subscribing to room $roomId}")
-            roomListService.room(roomId.value).use { roomListItem ->
-                roomListItem.subscribe(settings)
-            }
+            roomListService.subscribeToRooms(listOf(roomId.value), settings)
         }
         subscribedRoomIds.add(roomId)
     }

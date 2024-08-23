@@ -57,6 +57,7 @@ internal class RustRoomListService(
         ) {
             when (source) {
                 RoomList.Source.All -> innerRoomListService.allRooms()
+                RoomList.Source.SPACES -> innerRoomListService.allSpaces()
             }
         }
     }
@@ -76,8 +77,8 @@ internal class RustRoomListService(
         innerRoomListService.allRooms()
     }
 
-    override val allSpaces: RoomList = roomListFactory.createRoomList(
-        pageSize = Int.MAX_VALUE,
+    override val allSpaces: DynamicRoomList = roomListFactory.createRoomList(
+        pageSize = DEFAULT_PAGE_SIZE,
         coroutineContext = sessionDispatcher,
     ) {
         innerRoomListService.allSpaces()
@@ -85,6 +86,7 @@ internal class RustRoomListService(
 
     init {
         allRooms.loadAllIncrementally(sessionCoroutineScope)
+        allSpaces.loadAllIncrementally(sessionCoroutineScope)
     }
 
     override val syncIndicator: StateFlow<RoomListService.SyncIndicator> =

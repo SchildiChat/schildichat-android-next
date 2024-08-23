@@ -36,6 +36,7 @@ data class RoomListRoomSummary(
     val numberOfUnreadMentions: Int,
     val numberOfUnreadNotifications: Int,
     // SC: spaces
+    val isSpace: Boolean = false,
     val spaceChildren: List<MatrixSpaceChildInfo> = emptyList(),
     // SC: server-reported values compared to client-generated above
     val notificationCount: Int = 0,

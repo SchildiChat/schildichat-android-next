@@ -2,7 +2,6 @@ package chat.schildi.features.roomlist.spaces
 
 import chat.schildi.lib.preferences.ScAppStateStore
 import chat.schildi.lib.preferences.ScPreferencesStore
-import chat.schildi.lib.preferences.ScPrefs
 import io.element.android.features.roomlist.impl.datasource.RoomListDataSource
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.libraries.matrix.api.MatrixClient
@@ -26,7 +25,6 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class SpaceAwareRoomListDataSource @Inject constructor(
-    private val client: MatrixClient,
     private val scPreferencesStore: ScPreferencesStore,
 ) {
 

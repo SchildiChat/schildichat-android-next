@@ -145,11 +145,13 @@ class RoomListPresenter @Inject constructor(
 
         val contextMenu = remember { mutableStateOf<RoomListState.ContextMenu>(RoomListState.ContextMenu.Hidden) }
 
+        val spaceNavEnabled = ScPrefs.SPACE_NAV.value()
+
         fun handleEvents(event: RoomListEvents) {
             when (event) {
                 is RoomListEvents.UpdateSpaceFilter -> { spaceAwareRoomListDataSource.updateSpaceSelection(event.spaceSelectionHierarchy.toImmutableList()) }
                 is RoomListEvents.UpdateVisibleRange -> coroutineScope.launch {
-                    updateVisibleRange(event.range)
+                    updateVisibleRange(event.range, spaceNavEnabled)
                 }
                 RoomListEvents.DismissRequestVerificationPrompt -> securityBannerDismissed = true
                 RoomListEvents.DismissRecoveryKeyPrompt -> securityBannerDismissed = true
@@ -328,11 +330,11 @@ class RoomListPresenter @Inject constructor(
     }
 
     private var currentUpdateVisibleRangeJob: Job? = null
-    private fun CoroutineScope.updateVisibleRange(range: IntRange) {
+    private fun CoroutineScope.updateVisibleRange(range: IntRange, spaceNavEnabled: Boolean) {
         currentUpdateVisibleRangeJob?.cancel()
         currentUpdateVisibleRangeJob = launch(SupervisorJob()) {
             if (range.isEmpty()) return@launch
-            val currentRoomList = roomListDataSource.allRooms.first()
+            val currentRoomList = if (spaceNavEnabled) spaceAwareRoomListDataSource.spaceRooms.first() else roomListDataSource.allRooms.first()
             // Use extended range to 'prefetch' the next rooms info
             val midExtendedRangeSize = EXTENDED_RANGE_SIZE / 2
             val extendedRange = range.first until range.last + midExtendedRangeSize

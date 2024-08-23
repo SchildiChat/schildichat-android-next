@@ -43,6 +43,7 @@ class RoomListRoomSummaryFactory @Inject constructor(
             numberOfUnreadMentions = details.numUnreadMentions,
             numberOfUnreadNotifications = details.numUnreadNotifications,
             // SC start
+            isSpace = details.isSpace,
             spaceChildren = details.spaceChildren,
             notificationCount = details.unreadNotificationCount,
             highlightCount = details.highlightCount,

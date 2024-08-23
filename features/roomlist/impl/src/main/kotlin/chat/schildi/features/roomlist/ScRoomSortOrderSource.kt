@@ -35,6 +35,7 @@ class ScRoomSortOrderSource @Inject constructor(
     }
 
     fun sortRooms(rooms: List<RoomListRoomSummary>, order: ScRoomSortOrder): List<RoomListRoomSummary> {
+        // TODO: move to SDK?
         return if (order.needsAction()) {
             // Do activity-based sorting as separate step, since we do not know for sure the range of timestamps,
             // but we want to prioritize favorite state above activity

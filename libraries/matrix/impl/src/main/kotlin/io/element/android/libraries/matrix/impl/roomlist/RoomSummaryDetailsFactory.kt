@@ -42,6 +42,7 @@ class RoomSummaryDetailsFactory(private val roomMessageFactory: RoomMessageFacto
             canonicalAlias = roomInfo.canonicalAlias?.let(::RoomAlias),
             isDirect = roomInfo.isDirect,
             avatarUrl = roomInfo.avatarUrl,
+            isSpace = roomInfo.isSpace,
             spaceChildren = roomInfo.spaceChildren.map(MatrixSpaceChildInfoMapper::map),
             numUnreadMentions = roomInfo.numUnreadMentions.toInt(),
             numUnreadMessages = roomInfo.numUnreadMessages.toInt(),

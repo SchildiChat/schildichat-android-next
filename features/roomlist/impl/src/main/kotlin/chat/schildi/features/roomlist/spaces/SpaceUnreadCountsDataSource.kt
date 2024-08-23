@@ -5,6 +5,7 @@ import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
 import io.element.android.features.roomlist.impl.datasource.RoomListDataSource
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
+import io.element.android.libraries.matrix.api.roomlist.RoomListService
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableMap
@@ -17,7 +18,8 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class SpaceUnreadCountsDataSource @Inject constructor(
-    private val scPreferencesStore: ScPreferencesStore
+    private val scPreferencesStore: ScPreferencesStore,
+    private val roomListService: RoomListService,
 ) {
 
     private val _spaceUnreadCounts = MutableStateFlow<ImmutableMap<String?, SpaceUnreadCounts>>(persistentMapOf())
@@ -35,8 +37,8 @@ class SpaceUnreadCountsDataSource @Inject constructor(
             spaceAwareRoomListDataSource.spaceSelectionHierarchy,
             scPreferencesStore.settingFlow(ScPrefs.CLIENT_GENERATED_UNREAD_COUNTS),
         ) { allRoomsValue, rootSpaces, spaceSelectionValue, useClientGeneratedCounts ->
-            rootSpaces ?: return@combine mapOf()
-            spaceSelectionValue ?: return@combine mapOf()
+            rootSpaces ?: return@combine Pair(emptyMap<String?, SpaceUnreadCounts>(), emptyList())
+            spaceSelectionValue ?: return@combine Pair(emptyMap<String?, SpaceUnreadCounts>(), emptyList())
             val visibleSpaces = if (spaceSelectionValue.isEmpty()) {
                 // Nothing selected, only root spaces visible
                 rootSpaces
@@ -53,10 +55,12 @@ class SpaceUnreadCountsDataSource @Inject constructor(
                 // Total count
                 null to getAggregatedUnreadCounts(allRoomsValue, useClientGeneratedCounts)
             )
+            val visibleSpaceIds = visibleSpaces.mapNotNull { (it as? SpaceListDataSource.SpaceHierarchyItem)?.info?.roomId }
             visibleSpaces.forEach { result[it.selectionId] = getUnreadCountsForSpace(it, allRoomsValue, useClientGeneratedCounts) }
-            result
-        }.onEach {
-            _spaceUnreadCounts.emit(it.toImmutableMap())
+            Pair(result, visibleSpaceIds)
+        }.onEach { (result, visibleSpaceIds) ->
+            _spaceUnreadCounts.emit(result.toImmutableMap())
+            roomListService.subscribeToVisibleRooms(visibleSpaceIds)
         }.launchIn(coroutineScope)
     }
 

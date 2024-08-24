@@ -196,7 +196,7 @@ private fun RoomsViewList(
     val coroutineScope = rememberCoroutineScope()
     SpacesPager(
         spacesList = state.spacesList,
-        spaceUnreadCounts = state.spaceUnreadCounts,
+        totalUnreadCounts = state.totalUnreadCounts,
         spaceSelectionHierarchy = state.spaceSelectionHierarchy,
         onSpaceSelected = { selection ->
             eventSink(RoomListEvents.UpdateSpaceFilter(selection))

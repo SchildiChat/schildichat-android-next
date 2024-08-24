@@ -86,7 +86,7 @@ sealed interface RoomListContentState {
         // SC additions
         val spacesList: ImmutableList<SpaceListDataSource.AbstractSpaceHierarchyItem> = persistentListOf(),
         val spaceSelectionHierarchy: ImmutableList<String> = persistentListOf(),
-        val spaceUnreadCounts: ImmutableMap<String?, SpaceUnreadCountsDataSource.SpaceUnreadCounts> = persistentMapOf(),
+        val totalUnreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts? = null,
         // SC additions end
     ) : RoomListContentState
 }

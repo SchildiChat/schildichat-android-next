@@ -6,13 +6,16 @@ import chat.schildi.lib.preferences.ScPrefs
 import io.element.android.features.roomlist.impl.datasource.RoomListDataSource
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
-import kotlinx.collections.immutable.ImmutableMap
-import kotlinx.collections.immutable.persistentMapOf
-import kotlinx.collections.immutable.toImmutableMap
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -22,8 +25,10 @@ class SpaceUnreadCountsDataSource @Inject constructor(
     private val roomListService: RoomListService,
 ) {
 
-    private val _spaceUnreadCounts = MutableStateFlow<ImmutableMap<String?, SpaceUnreadCounts>>(persistentMapOf())
-    val spaceUnreadCounts: StateFlow<ImmutableMap<String?, SpaceUnreadCounts>> = _spaceUnreadCounts
+    private val _enrichedSpaces = MutableStateFlow<ImmutableList<SpaceListDataSource.AbstractSpaceHierarchyItem>?>(null)
+    val enrichedSpaces: StateFlow<ImmutableList<SpaceListDataSource.AbstractSpaceHierarchyItem>?> = _enrichedSpaces
+    private val _totalUnreadCounts = MutableStateFlow<SpaceUnreadCounts?>(null)
+    val totalUnreadCounts: StateFlow<SpaceUnreadCounts?> = _totalUnreadCounts
 
     fun launchIn(
         coroutineScope: CoroutineScope,
@@ -32,13 +37,15 @@ class SpaceUnreadCountsDataSource @Inject constructor(
         spaceListDataSource: SpaceListDataSource
     ) {
         combine(
-            roomListDataSource.allRooms,
+            roomListDataSource.allRooms.throttleLatest(300),
             spaceListDataSource.allSpaces,
             spaceAwareRoomListDataSource.spaceSelectionHierarchy,
             scPreferencesStore.settingFlow(ScPrefs.CLIENT_GENERATED_UNREAD_COUNTS),
-        ) { allRoomsValue, rootSpaces, spaceSelectionValue, useClientGeneratedCounts ->
-            rootSpaces ?: return@combine Pair(emptyMap<String?, SpaceUnreadCounts>(), emptyList())
-            spaceSelectionValue ?: return@combine Pair(emptyMap<String?, SpaceUnreadCounts>(), emptyList())
+            scPreferencesStore.settingFlow(ScPrefs.SPACE_NAV),
+        ) { allRoomsValue, rootSpaces, spaceSelectionValue, useClientGeneratedCounts, spaceNavEnabled ->
+            if (!spaceNavEnabled || rootSpaces == null || spaceSelectionValue == null) {
+                return@combine Triple(SpaceUnreadCounts(), null, emptyList())
+            }
             val visibleSpaces = if (spaceSelectionValue.isEmpty()) {
                 // Nothing selected, only root spaces visible
                 rootSpaces
@@ -51,15 +58,18 @@ class SpaceUnreadCountsDataSource @Inject constructor(
                 val siblings = (parent as? SpaceListDataSource.SpaceHierarchyItem)?.spaces.orEmpty()
                 rootSpaces + siblings + children + parent?.let { if (rootSpaces.contains(parent)) emptyList() else listOf(it) }.orEmpty()
             }
-            val result = mutableMapOf<String?, SpaceUnreadCounts>(
-                // Total count
-                null to getAggregatedUnreadCounts(allRoomsValue, useClientGeneratedCounts)
-            )
+            val totalUnreadCount = getAggregatedUnreadCounts(allRoomsValue, useClientGeneratedCounts)
             val visibleSpaceIds = visibleSpaces.mapNotNull { (it as? SpaceListDataSource.SpaceHierarchyItem)?.info?.roomId }
-            visibleSpaces.forEach { result[it.selectionId] = getUnreadCountsForSpace(it, allRoomsValue, useClientGeneratedCounts) }
-            Pair(result, visibleSpaceIds)
-        }.onEach { (result, visibleSpaceIds) ->
-            _spaceUnreadCounts.emit(result.toImmutableMap())
+            val newEnrichedSpaces = rootSpaces.map { space ->
+                space.enrich {
+                    if (it in visibleSpaces) getUnreadCountsForSpace(it, allRoomsValue, useClientGeneratedCounts) else null
+                }
+            }.toImmutableList()
+            //visibleSpaces.forEach { result[it.selectionId] = getUnreadCountsForSpace(it, allRoomsValue, useClientGeneratedCounts) }
+            Triple(totalUnreadCount, newEnrichedSpaces, visibleSpaceIds)
+        }.onEach { (totalUnreadCount, result, visibleSpaceIds) ->
+            _totalUnreadCounts.emit(totalUnreadCount)
+            _enrichedSpaces.emit(result)
             roomListService.subscribeToVisibleRooms(visibleSpaceIds)
         }.launchIn(coroutineScope)
     }
@@ -106,4 +116,12 @@ class SpaceUnreadCountsDataSource @Inject constructor(
         val unreadChats: Int = 0,
         val markedUnreadChats: Int = 0,
     )
+}
+
+// Emit immediately but delay too fast updates after that
+fun <T> Flow<T>.throttleLatest(period: Long) = flow {
+    conflate().collect {
+        emit(it)
+        delay(period)
+    }
 }

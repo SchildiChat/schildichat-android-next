@@ -224,8 +224,8 @@ class RoomListPresenter @Inject constructor(
         // SC spaces
         val spaceNavEnabled = ScPrefs.SPACE_NAV.value()
         val spaceSelectionHierarchy = if (spaceNavEnabled) spaceAwareRoomListDataSource.spaceSelectionHierarchy.collectAsState().value else persistentListOf()
-        val spaceUnreadCounts = if (spaceNavEnabled) spaceUnreadCountsDataSource.spaceUnreadCounts.collectAsState().value else persistentMapOf()
-        val spacesList = if (spaceNavEnabled) spaceListDataSource.allSpaces.collectAsState().value?.filterByUnread(spaceUnreadCounts, spaceSelectionHierarchy) else null
+        val totalUnreadCounts = if (spaceNavEnabled) spaceUnreadCountsDataSource.totalUnreadCounts.collectAsState().value else null
+        val spacesList = if (spaceNavEnabled) spaceUnreadCountsDataSource.enrichedSpaces.collectAsState().value?.filterByUnread(spaceSelectionHierarchy) else null
         // SC end
 
         val roomSummaries = if (spaceNavEnabled)
@@ -254,7 +254,7 @@ class RoomListPresenter @Inject constructor(
                     // SC start
                     spacesList = spacesList.orEmpty().toImmutableList(),
                     spaceSelectionHierarchy = spaceSelectionHierarchy ?: persistentListOf(),
-                    spaceUnreadCounts = spaceUnreadCounts,
+                    totalUnreadCounts = totalUnreadCounts,
                     // SC end
                     securityBannerState = securityBannerState,
                     fullScreenIntentPermissionsState = fullScreenIntentPermissionsPresenter.present(),

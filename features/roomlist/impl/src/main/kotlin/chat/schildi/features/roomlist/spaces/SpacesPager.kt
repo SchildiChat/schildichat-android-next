@@ -72,7 +72,6 @@ import io.element.android.libraries.designsystem.text.toPx
 import io.element.android.libraries.designsystem.theme.unreadIndicator
 import io.element.android.libraries.designsystem.utils.OnLifecycleEvent
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
@@ -85,7 +84,7 @@ import kotlin.math.roundToInt
 @Composable
 fun SpacesPager(
     spacesList: ImmutableList<SpaceListDataSource.AbstractSpaceHierarchyItem>,
-    spaceUnreadCounts: ImmutableMap<String?, SpaceUnreadCountsDataSource.SpaceUnreadCounts>,
+    totalUnreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts?,
     spaceSelectionHierarchy: ImmutableList<String>,
     onSpaceSelected: (List<String>) -> Unit,
     modifier: Modifier = Modifier,
@@ -98,7 +97,7 @@ fun SpacesPager(
     Column(modifier) {
         SpacesPager(
             spacesList = spacesList,
-            spaceUnreadCounts = spaceUnreadCounts,
+            totalUnreadCounts = totalUnreadCounts,
             spaceSelection = spaceSelectionHierarchy,
             defaultSpace = null,
             parentSelection = persistentListOf(),
@@ -119,7 +118,7 @@ fun SpacesPager(
 @Composable
 private fun ColumnScope.SpacesPager(
     spacesList: ImmutableList<SpaceListDataSource.AbstractSpaceHierarchyItem>,
-    spaceUnreadCounts: ImmutableMap<String?, SpaceUnreadCountsDataSource.SpaceUnreadCounts>,
+    totalUnreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts?,
     spaceSelection: ImmutableList<String>,
     defaultSpace: SpaceListDataSource.AbstractSpaceHierarchyItem?,
     parentSelection: ImmutableList<String>,
@@ -151,7 +150,7 @@ private fun ColumnScope.SpacesPager(
         if (safeSpace != null) {
             SpacesPager(
                 spacesList = safeSpace.spaces,
-                spaceUnreadCounts = spaceUnreadCounts,
+                totalUnreadCounts = totalUnreadCounts,
                 selectSpace = selectSpace,
                 spaceSelection = childSelections,
                 defaultSpace = spacesList[selectedSpaceIndex],
@@ -257,14 +256,14 @@ private fun ColumnScope.SpacesPager(
         }
     ) {
         if (defaultSpace != null) {
-            SpaceTab(defaultSpace, spaceUnreadCounts[defaultSpace.selectionId], selectedTab == 0, expandSpaceChildren, false, compactTabs) {
+            SpaceTab(defaultSpace, selectedTab == 0, expandSpaceChildren, false, compactTabs) {
                 expandSpaceChildren = false
                 if (selectedTab != 0) {
                     selectSpace(null, parentSelection)
                 }
             }
         } else {
-            ShowAllTab(spaceUnreadCounts[null], selectedTab == 0, expandSpaceChildren, compactTabs) {
+            ShowAllTab(totalUnreadCounts, selectedTab == 0, expandSpaceChildren, compactTabs) {
                 expandSpaceChildren = false
                 if (selectedTab != 0) {
                     selectSpace(null, parentSelection)
@@ -275,7 +274,6 @@ private fun ColumnScope.SpacesPager(
             val selected = selectedSpaceIndex == index
             SpaceTab(
                 space,
-                spaceUnreadCounts[space.selectionId],
                 selected,
                 expandSpaceChildren,
                 renderExpandableIndicatorInTabs && space.spaces.isNotEmpty(),
@@ -424,7 +422,6 @@ private fun AbstractSpaceTab(
 @Composable
 private fun SpaceTab(
     space: SpaceListDataSource.AbstractSpaceHierarchyItem,
-    unreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts?,
     selected: Boolean,
     collapsed: Boolean,
     expandable: Boolean,
@@ -439,7 +436,7 @@ private fun SpaceTab(
         compact = compact,
         onClick = onClick,
     ) {
-        UnreadCountBox(unreadCounts, spaceTabUnreadBadgeOffset(compact)) {
+        UnreadCountBox(space.unreadCounts, spaceTabUnreadBadgeOffset(compact)) {
             AbstractSpaceIcon(space = space, size = spaceTabIconSize(compact), shape = spaceTabIconShape(compact))
         }
     }

@@ -185,7 +185,7 @@ object ScPrefs {
                 PSEUDO_SPACE_UNREAD,
                 PSEUDO_SPACE_HIDE_EMPTY_UNREAD,
             ), dependencies = SPACE_NAV.asDependencies()),
-            SYNC_READ_RECEIPT_AND_MARKER,
+            SYNC_READ_RECEIPT_AND_MARKER.copy(titleRes = R.string.sc_sync_read_receipt_and_marker_title_short),
         )),
     )
 

@@ -16,10 +16,12 @@
 
 package io.element.android.libraries.matrix.impl.auth
 
+import android.os.Build
 import com.squareup.anvil.annotations.ContributesBinding
 import io.element.android.appconfig.AuthenticationConfig
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.core.extensions.mapFailure
+import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.di.AppScope
 import io.element.android.libraries.di.SingleIn
 import io.element.android.libraries.matrix.api.MatrixClient
@@ -65,6 +67,7 @@ class RustMatrixAuthenticationService @Inject constructor(
     private val rustMatrixClientFactory: RustMatrixClientFactory,
     private val passphraseGenerator: PassphraseGenerator,
     private val oidcConfigurationProvider: OidcConfigurationProvider,
+    private val buildMeta: BuildMeta,
 ) : MatrixAuthenticationService {
     // Passphrase which will be used for new sessions. Existing sessions will use the passphrase
     // stored in the SessionData.
@@ -134,7 +137,7 @@ class RustMatrixAuthenticationService @Inject constructor(
         withContext(coroutineDispatchers.io) {
             runCatching {
                 val client = currentClient ?: error("You need to call `setHomeserver()` first")
-                client.login(username, password, "SchildiNext (Android)", null)
+                client.login(username, password, "${buildMeta.applicationName} (${Build.MANUFACTURER} ${Build.MODEL})", null)
                 val sessionData = client.session()
                     .toSessionData(
                         isTokenValid = true,

@@ -94,4 +94,5 @@
     <string name="sc_action_jump_to_unread">Přejít na nepřečtené</string>
     <string name="sc_pref_jump_to_unread_title">Přejít na nepřečtené</string>
     <string name="sc_pref_jump_to_unread_option_summary">Zobrazit možnost přejít na poslední přečtenou zprávu</string>
+    <string name="sc_sync_read_receipt_and_marker_title_short">Synchronizovat značky přečtení</string>
 </resources>

@@ -66,7 +66,7 @@ class ScThemeExposures(
         private set
     var greenBg by mutableStateOf(greenBg)
         private set
-    var messageHighlightBg by mutableStateOf(greenBg)
+    var messageHighlightBg by mutableStateOf(messageHighlightBg)
         private set
 
     fun copy(

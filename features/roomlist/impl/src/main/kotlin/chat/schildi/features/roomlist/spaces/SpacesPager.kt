@@ -396,8 +396,8 @@ private fun AbstractSpaceTab(
     if (compact) {
         Box(
             Modifier
-                .padding(vertical = 8.dp, horizontal = 16.dp)
                 .clickable(onClick = onClick)
+                .padding(vertical = 8.dp, horizontal = 16.dp)
         ) {
             icon()
             /*

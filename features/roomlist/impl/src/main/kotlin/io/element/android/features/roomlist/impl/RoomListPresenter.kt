@@ -37,6 +37,7 @@ import chat.schildi.features.roomlist.spaces.SpaceAwareRoomListDataSource
 import chat.schildi.features.roomlist.spaces.SpaceListDataSource
 import chat.schildi.features.roomlist.spaces.SpaceUnreadCountsDataSource
 import chat.schildi.features.roomlist.spaces.filterByUnread
+import chat.schildi.features.roomlist.spaces.resolveSelection
 import chat.schildi.lib.preferences.ScAppStateStore
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
@@ -253,7 +254,7 @@ class RoomListPresenter @Inject constructor(
                 RoomListContentState.Rooms(
                     // SC start
                     spacesList = spacesList.orEmpty().toImmutableList(),
-                    spaceSelectionHierarchy = spaceSelectionHierarchy ?: persistentListOf(),
+                    spaceSelectionHierarchy = spaceSelectionHierarchy?.takeIf { spacesList?.resolveSelection(it) != null } ?: persistentListOf(),
                     totalUnreadCounts = totalUnreadCounts,
                     // SC end
                     securityBannerState = securityBannerState,

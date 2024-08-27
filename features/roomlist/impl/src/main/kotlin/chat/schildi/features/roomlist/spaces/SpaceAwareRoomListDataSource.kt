@@ -36,7 +36,12 @@ class SpaceAwareRoomListDataSource @Inject constructor(
     val spaceSelectionHierarchy: StateFlow<ImmutableList<String>?> = _spaceSelectionHierarchy
 
     @OptIn(FlowPreview::class)
-    fun launchIn(coroutineScope: CoroutineScope, roomListDataSource: RoomListDataSource, spaceListDataSource: SpaceListDataSource, scAppStateStore: ScAppStateStore) {
+    fun launchIn(
+        coroutineScope: CoroutineScope,
+        roomListDataSource: RoomListDataSource,
+        spaceListDataSource: SpaceListDataSource,
+        scAppStateStore: ScAppStateStore
+    ) {
         // Restore previous space selection
         coroutineScope.launch {
             _spaceSelectionHierarchy.value = scAppStateStore.loadInitialSpaceSelection().toImmutableList()
@@ -69,8 +74,10 @@ class SpaceAwareRoomListDataSource @Inject constructor(
             .onEach { (space, spaceFound) ->
                 _selectedSpaceItem.value = space
                 if (!spaceFound) {
-                    Timber.i("Selected space not found, clearing selection")
-                    updateSpaceSelection(persistentListOf())
+                    Timber.i("Selected space not found")
+                    // In the room loads later with paginating sync, may still be useful to not clear.
+                    // UI will render home anyway until user selects a different space.
+                    //updateSpaceSelection(persistentListOf())
                 }
             }
             .launchIn(coroutineScope)

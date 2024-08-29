@@ -40,6 +40,7 @@ class RoomSummaryDetailsFactory(private val roomMessageFactory: RoomMessageFacto
             roomId = RoomId(roomInfo.id),
             name = roomInfo.displayName,
             canonicalAlias = roomInfo.canonicalAlias?.let(::RoomAlias),
+            alternativeAliases = roomInfo.alternativeAliases.map(::RoomAlias),
             isDirect = roomInfo.isDirect,
             avatarUrl = roomInfo.avatarUrl,
             isSpace = roomInfo.isSpace,

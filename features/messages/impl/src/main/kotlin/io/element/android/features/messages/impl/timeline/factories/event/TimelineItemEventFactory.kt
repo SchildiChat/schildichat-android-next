@@ -80,6 +80,7 @@ class TimelineItemEventFactory @Inject constructor(
             content = contentFactory.create(currentTimelineItem.event),
             isMine = currentTimelineItem.event.isOwn,
             isEditable = currentTimelineItem.event.isEditable,
+            canBeRepliedTo = currentTimelineItem.event.canBeRepliedTo,
             sentTime = sentTime,
             sentDate = daySeparatorFormatter.format(currentTimelineItem.event.timestamp),
             groupPosition = groupPosition,
@@ -90,6 +91,7 @@ class TimelineItemEventFactory @Inject constructor(
             isThreaded = currentTimelineItem.event.isThreaded(),
             debugInfo = currentTimelineItem.event.debugInfo,
             origin = currentTimelineItem.event.origin,
+            messageShield = currentTimelineItem.event.messageShield,
         )
     }
 

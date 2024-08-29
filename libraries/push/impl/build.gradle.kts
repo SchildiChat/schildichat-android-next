@@ -57,6 +57,7 @@ dependencies {
     implementation(projects.libraries.uiStrings)
     implementation(projects.libraries.troubleshoot.api)
     implementation(projects.features.call.api)
+    implementation(projects.libraries.featureflag.api)
     api(projects.libraries.pushproviders.api)
     api(projects.libraries.pushstore.api)
     api(projects.libraries.push.api)
@@ -82,6 +83,8 @@ dependencies {
     testImplementation(projects.services.appnavstate.test)
     testImplementation(projects.services.toolbox.impl)
     testImplementation(projects.services.toolbox.test)
+    testImplementation(projects.libraries.featureflag.test)
+    testImplementation(libs.kotlinx.collections.immutable)
 }
 
 // SC resource override

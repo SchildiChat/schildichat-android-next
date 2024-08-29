@@ -18,6 +18,8 @@ package io.element.android.features.messages.impl.timeline
 
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.timeline.Timeline
+import io.element.android.libraries.matrix.api.timeline.item.event.MessageShield
+import kotlin.time.Duration
 
 sealed interface TimelineEvents {
     data class OnScrollFinished(val firstIndex: Int) : TimelineEvents
@@ -25,10 +27,13 @@ sealed interface TimelineEvents {
     data object OnUnreadLineVisible : TimelineEvents
     data object MarkAsRead : TimelineEvents
     // SC end
-    data class FocusOnEvent(val eventId: EventId, val forReadMarker: Boolean = false) : TimelineEvents
+    data class FocusOnEvent(val eventId: EventId, val debounce: Duration = Duration.ZERO, val forReadMarker: Boolean = false) : TimelineEvents
     data object ClearFocusRequestState : TimelineEvents
     data object OnFocusEventRender : TimelineEvents
     data object JumpToLive : TimelineEvents
+
+    data class ShowShieldDialog(val messageShield: MessageShield) : TimelineEvents
+    data object HideShieldDialog : TimelineEvents
 
     /**
      * Events coming from a timeline item.

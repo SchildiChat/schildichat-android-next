@@ -20,7 +20,7 @@ import io.element.android.libraries.ui.strings.CommonStrings
 internal fun RowScope.ScTimestampIcon(
     sendState: LocalEventSendState?,
 ) {
-    if (ScTheme.scTimeline && sendState is LocalEventSendState.NotSentYet) {
+    if (ScTheme.scTimeline && sendState is LocalEventSendState.Sending) {
         Spacer(modifier = Modifier.width(2.dp))
         Icon(
             modifier = Modifier.size(15.dp),

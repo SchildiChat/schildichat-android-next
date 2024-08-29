@@ -38,6 +38,7 @@ import io.element.android.libraries.designsystem.text.toPx
 import io.element.android.libraries.designsystem.theme.highlightedMessageBackgroundColor
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.UserId
+import io.element.android.libraries.matrix.api.timeline.item.event.MessageShield
 
 @Composable
 internal fun TimelineItemRow(
@@ -50,6 +51,7 @@ internal fun TimelineItemRow(
     onLinkClick: (String) -> Unit,
     onClick: (TimelineItem.Event) -> Unit,
     onLongClick: (TimelineItem.Event) -> Unit,
+    onShieldClick: (MessageShield) -> Unit,
     inReplyToClick: (EventId) -> Unit,
     onReactionClick: (key: String, TimelineItem.Event) -> Unit,
     onReactionLongClick: (key: String, TimelineItem.Event) -> Unit,
@@ -111,6 +113,7 @@ internal fun TimelineItemRow(
                             isHighlighted = timelineItem.isEvent(focusedEventId),
                             onClick = { onClick(timelineItem) },
                             onLongClick = { onLongClick(timelineItem) },
+                            onShieldClick = onShieldClick,
                             onUserDataClick = onUserDataClick,
                             onLinkClick = onLinkClick,
                             inReplyToClick = inReplyToClick,
@@ -133,6 +136,7 @@ internal fun TimelineItemRow(
                     focusedEventId = focusedEventId,
                     onClick = onClick,
                     onLongClick = onLongClick,
+                    onShieldClick = onShieldClick,
                     inReplyToClick = inReplyToClick,
                     onUserDataClick = onUserDataClick,
                     onLinkClick = onLinkClick,

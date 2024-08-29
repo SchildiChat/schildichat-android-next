@@ -29,6 +29,7 @@ data class RoomSummary(
     val roomId: RoomId,
     val name: String?,
     val canonicalAlias: RoomAlias?,
+    val alternativeAliases: List<RoomAlias>,
     val isDirect: Boolean,
     val avatarUrl: String?,
     val lastMessage: RoomMessage?,
@@ -54,4 +55,6 @@ data class RoomSummary(
     val heroes: List<MatrixUser>,
 ) {
     val lastMessageTimestamp = lastMessage?.originServerTs
+    val aliases: List<RoomAlias>
+        get() = listOfNotNull(canonicalAlias) + alternativeAliases
 }

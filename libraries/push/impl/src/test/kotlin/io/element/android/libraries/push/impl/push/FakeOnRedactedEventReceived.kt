@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 New Vector Ltd
+ * Copyright (c) 2024 New Vector Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package io.element.android.libraries.matrix.ui.media
+package io.element.android.libraries.push.impl.push
 
-import io.element.android.libraries.designsystem.components.avatar.AvatarData
-import io.element.android.libraries.matrix.api.media.MediaSource
-import kotlin.math.roundToLong
+import io.element.android.libraries.push.impl.notifications.model.ResolvedPushEvent
+import io.element.android.tests.testutils.lambda.lambdaError
 
-internal fun AvatarData.toMediaRequestData(): MediaRequestData {
-    return MediaRequestData(
-        source = url?.let { MediaSource(it) },
-        kind = MediaRequestData.Kind.Thumbnail(size.dp.value.roundToLong())
-    )
+class FakeOnRedactedEventReceived(
+    private val onRedactedEventReceivedResult: (ResolvedPushEvent.Redaction) -> Unit = { lambdaError() },
+) : OnRedactedEventReceived {
+    override fun onRedactedEventReceived(redaction: ResolvedPushEvent.Redaction) {
+        onRedactedEventReceivedResult(redaction)
+    }
 }

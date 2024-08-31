@@ -433,6 +433,7 @@ class DefaultNotificationCreator @Inject constructor(
                         event.imageUri?.let {
                             message.setData("image/", it)
                         }
+                        message.extras.putString(MESSAGE_EVENT_ID, event.eventId.value)
                     }
                     addMessage(message)
 
@@ -458,10 +459,10 @@ class DefaultNotificationCreator @Inject constructor(
     ): MessagingStyle {
         return MessagingStyle(
             Person.Builder()
-            .setName(user.displayName?.annotateForDebug(50))
-            .setIcon(bitmapLoader.getUserIcon(user.avatarUrl, imageLoader))
-            .setKey(sessionId.value)
-            .build()
+                .setName(user.displayName?.annotateForDebug(50))
+                .setIcon(bitmapLoader.getUserIcon(user.avatarUrl, imageLoader))
+                .setKey(sessionId.value)
+                .build()
         ).also {
             it.conversationTitle = roomName.takeIf { roomIsGroup }
             it.isGroupConversation = roomIsGroup
@@ -476,6 +477,10 @@ class DefaultNotificationCreator @Inject constructor(
         drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
         drawable.draw(canvas)
         return bitmap
+    }
+
+    companion object {
+        const val MESSAGE_EVENT_ID = "message_event_id"
     }
 }
 

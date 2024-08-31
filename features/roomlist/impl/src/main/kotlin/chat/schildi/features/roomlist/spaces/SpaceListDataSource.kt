@@ -72,7 +72,7 @@ class SpaceListDataSource @Inject constructor(
             scPreferencesStore.pseudoSpaceSettingsFlow(),
             _forceRebuildFlow,
         ) { roomSummaries, pseudoSpaces, _ ->
-            Timber.v("Rebuild space list")
+            Timber.v("Rebuild space list with ${roomSummaries.size}/${roomListService.allSpaces.loadingState.value} spaces")
             replaceWith(roomSummaries, pseudoSpaces)
         }.launchIn(coroutineScope)
     }

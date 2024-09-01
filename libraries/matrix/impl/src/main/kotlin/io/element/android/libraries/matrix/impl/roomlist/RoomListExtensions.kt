@@ -17,6 +17,7 @@
 package io.element.android.libraries.matrix.impl.roomlist
 
 import io.element.android.libraries.core.data.tryOrNull
+import io.element.android.libraries.matrix.api.roomlist.ScRoomSortOrder
 import io.element.android.libraries.matrix.impl.util.cancelAndDestroy
 import io.element.android.libraries.matrix.impl.util.mxCallbackFlow
 import kotlinx.coroutines.channels.Channel
@@ -66,7 +67,8 @@ fun RoomListInterface.loadingStateFlow(): Flow<RoomListLoadingState> =
 internal fun RoomListInterface.entriesFlow(
     pageSize: Int,
     roomListDynamicEvents: Flow<RoomListDynamicEvents>,
-    initialFilterKind: RoomListEntriesDynamicFilterKind
+    initialFilterKind: RoomListEntriesDynamicFilterKind,
+    sortOrder: ScRoomSortOrder,
 ): Flow<List<RoomListEntriesUpdate>> =
     callbackFlow {
         val listener = object : RoomListEntriesListener {
@@ -77,6 +79,7 @@ internal fun RoomListInterface.entriesFlow(
         val result = entriesWithDynamicAdapters(pageSize.toUInt(), listener)
         val controller = result.controller()
         controller.setFilter(initialFilterKind)
+        controller.setSortOrder(sortOrder.toSdkSortOrder())
         roomListDynamicEvents.onEach { controllerEvents ->
             when (controllerEvents) {
                 is RoomListDynamicEvents.SetFilter -> {

@@ -1,7 +1,6 @@
 package chat.schildi.lib.preferences
 
 import chat.schildi.lib.R
-import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.ui.strings.CommonStrings
 
 object ScPrefs {
@@ -26,8 +25,7 @@ object ScPrefs {
     val CLIENT_GENERATED_UNREAD_COUNTS = ScBoolPref("CLIENT_GENERATED_UNREAD_COUNTS", false, R.string.sc_client_generated_unread_counts_title, R.string.sc_client_generated_unread_counts_summary, upstreamChoice = true, authorsChoice = false)
     val PIN_FAVORITES = ScBoolPref("PIN_FAVORITES", false, R.string.sc_pref_pin_favorites_title, R.string.sc_pref_pin_favorites_summary, upstreamChoice = false, authorsChoice = true)
     val BURY_LOW_PRIORITY = ScBoolPref("BURY_LOW_PRIORITY", false, R.string.sc_pref_bury_low_priority_title, R.string.sc_pref_bury_low_priority_summary, upstreamChoice = false, authorsChoice = false)
-    val CLIENT_SIDE_SORT = ScBoolPref("CLIENT_SIDE_SORT", false, R.string.sc_pref_client_side_sort_title, R.string.sc_pref_client_side_sort_summary, upstreamChoice = false, authorsChoice = false)
-    val SORT_BY_ACTIVITY = ScBoolPref("SORT_BY_ACTIVITY", false, R.string.sc_pref_client_side_activity_sort_title, R.string.sc_pref_client_side_activity_sort_summary, authorsChoice = false, dependencies = CLIENT_SIDE_SORT.asDependencies())
+    val SORT_BY_UNREAD = ScBoolPref("SORT_BY_UNREAD", false, R.string.sc_pref_client_side_sort_by_unread_title, R.string.sc_pref_client_side_sort_by_unread_summary, upstreamChoice = false, authorsChoice = true)
     val DUAL_MENTION_UNREAD_COUNTS = ScBoolPref("DUAL_MENTION_UNREAD_COUNTS", false, R.string.sc_pref_dual_mention_unread_counts_title, R.string.sc_pref_dual_mention_unread_counts_summary, authorsChoice = true, dependencies = SC_OVERVIEW_LAYOUT.asDependencies())
     // Spaces
     val SPACE_NAV = ScBoolPref("SPACE_NAV", false, R.string.sc_space_nav_title, R.string.sc_space_nav_summary, upstreamChoice = false, authorsChoice = true)
@@ -91,6 +89,9 @@ object ScPrefs {
             SC_OVERVIEW_LAYOUT,
             COMPACT_APP_BAR,
             ELEMENT_ROOM_LIST_FILTERS,
+            SORT_BY_UNREAD,
+            PIN_FAVORITES,
+            BURY_LOW_PRIORITY,
         )),
         ScPrefCategory(R.string.sc_pref_category_spaces, null, listOf(
             SPACE_NAV,
@@ -123,10 +124,6 @@ object ScPrefs {
             ScPrefScreen(R.string.sc_pref_screen_experimental_title, R.string.sc_pref_screen_experimental_summary, listOf(
                 ScPrefCategory(R.string.sc_pref_category_chat_overview, null, listOf(
                     CLIENT_GENERATED_UNREAD_COUNTS,
-                    PIN_FAVORITES,
-                    BURY_LOW_PRIORITY,
-                    CLIENT_SIDE_SORT,
-                    SORT_BY_ACTIVITY,
                     DUAL_MENTION_UNREAD_COUNTS,
                 )),
                 ScPrefCategory(R.string.sc_pref_category_timeline, null, listOf(
@@ -160,10 +157,9 @@ object ScPrefs {
         CLIENT_GENERATED_UNREAD_COUNTS,
         ELEMENT_ROOM_LIST_FILTERS, // Used to be: ScUpstreamFeatureFlagAliasPref(FeatureFlags.RoomListFilters, R.string.sc_upstream_feature_flag_room_list_filters),
         ScPrefCategory(R.string.sc_pref_category_chat_sorting, null, listOf(
+            SORT_BY_UNREAD,
             PIN_FAVORITES,
             BURY_LOW_PRIORITY,
-            CLIENT_SIDE_SORT.copy(titleRes = R.string.sc_pref_client_side_sort_title_short),
-            SORT_BY_ACTIVITY,
         )),
         ScPrefCategory(R.string.sc_pref_category_general_appearance, null, listOf(
             SC_THEME,

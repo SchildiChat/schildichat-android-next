@@ -16,11 +16,13 @@ Note that following list of changes compared to Element X is likely incomplete, 
 
 - Filter for spaces, including support for hierarchical spaces †‡
 - Filter for favorites, unreads, DMs, and group chats via our spaces navigation
-- Sort room list by unread first ‡
+- Configure room list sort order to optionally: †‡
+    - Show unread on top
+    - Pin favorites
+    - Show low priority on bottom
 - Non-expanding compact app bar in the chat overview †
 - Show unread counts ([MSC2654](https://github.com/matrix-org/matrix-spec-proposals/pull/2654)) ‡[^1]
 - Experimental client-side unread sorting to respect client-side mention detection and more †
-- Option to show favorites on top †
 
 
 ## Conversation screen

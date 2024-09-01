@@ -16,7 +16,6 @@
 
 package io.element.android.features.roomlist.impl.datasource
 
-import chat.schildi.features.roomlist.ScRoomSortOrder
 import chat.schildi.features.roomlist.ScRoomSortOrderSource
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.libraries.androidutils.diff.DiffCacheUpdater
@@ -32,7 +31,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -71,18 +69,12 @@ class RoomListDataSource @Inject constructor(
         roomListService
             .allRooms
             .filteredSummaries
+         */
+        scRoomSortOrderSource.filteredSummaries(coroutineScope)
             .onEach { roomSummaries ->
                 replaceWith(roomSummaries)
             }
             .launchIn(coroutineScope)
-         */
-        scRoomSortOrderSource.launchIn(coroutineScope)
-        combine(
-            roomListService.allRooms.filteredSummaries,
-            scRoomSortOrderSource.sortOrder,
-        ) { roomSummaries, sortOrder ->
-            replaceWith(roomSummaries, sortOrder)
-        }.launchIn(coroutineScope)
     }
 
     suspend fun subscribeToVisibleRooms(roomIds: List<RoomId>) {
@@ -99,17 +91,17 @@ class RoomListDataSource @Inject constructor(
             .launchIn(appScope)
     }
 
-    private suspend fun replaceWith(roomSummaries: List<RoomSummary>, sortOrder: ScRoomSortOrder) = withContext(coroutineDispatchers.computation) {
+    private suspend fun replaceWith(roomSummaries: List<RoomSummary>) = withContext(coroutineDispatchers.computation) {
         lock.withLock {
             diffCacheUpdater.updateWith(roomSummaries)
-            buildAndEmitAllRooms(roomSummaries, sortOrder)
+            buildAndEmitAllRooms(roomSummaries)
         }
     }
 
-    private suspend fun buildAndEmitAllRooms(roomSummaries: List<RoomSummary>, sortOrder: ScRoomSortOrder) {
+    private suspend fun buildAndEmitAllRooms(roomSummaries: List<RoomSummary>) {
         val roomListRoomSummaries = diffCache.indices().mapNotNull { index ->
             diffCache.get(index) ?: buildAndCacheItem(roomSummaries, index)
-        }.let { scRoomSortOrderSource.sortRooms(it, sortOrder) }
+        }
         _allRooms.emit(roomListRoomSummaries.toImmutableList())
     }
 

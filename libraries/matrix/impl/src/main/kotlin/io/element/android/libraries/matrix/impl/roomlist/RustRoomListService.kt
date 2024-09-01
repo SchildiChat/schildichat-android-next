@@ -21,6 +21,7 @@ import io.element.android.libraries.matrix.api.roomlist.DynamicRoomList
 import io.element.android.libraries.matrix.api.roomlist.RoomList
 import io.element.android.libraries.matrix.api.roomlist.RoomListFilter
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
+import io.element.android.libraries.matrix.api.roomlist.ScRoomSortOrder
 import io.element.android.libraries.matrix.api.roomlist.loadAllIncrementally
 import io.element.android.libraries.matrix.impl.room.RoomSyncSubscriber
 import kotlinx.coroutines.CoroutineDispatcher
@@ -54,6 +55,26 @@ internal class RustRoomListService(
             pageSize = pageSize,
             initialFilter = initialFilter,
             coroutineContext = sessionDispatcher,
+        ) {
+            when (source) {
+                RoomList.Source.All -> innerRoomListService.allRooms()
+                RoomList.Source.SPACES -> innerRoomListService.allSpaces()
+            }
+        }
+    }
+
+    override fun scCreateRoomList( // SC: add coroutineScope and sortOrder - tricky to have coroutineScope with default fallback for child classes
+        pageSize: Int,
+        initialFilter: RoomListFilter,
+        source: RoomList.Source,
+        coroutineScope: CoroutineScope,
+        sortOrder: ScRoomSortOrder
+    ): DynamicRoomList {
+        return roomListFactory.createRoomList(
+            pageSize = pageSize,
+            initialFilter = initialFilter,
+            coroutineScope = coroutineScope,
+            sortOrder = sortOrder,
         ) {
             when (source) {
                 RoomList.Source.All -> innerRoomListService.allRooms()

@@ -31,8 +31,6 @@
     <string name="sc_pref_client_side_sort_title">Сортування на стороні клієнта</string>
     <string name="sc_pref_client_side_sort_title_short">Сортування у клієнті</string>
     <string name="sc_pref_client_side_sort_summary">Сортувати чати виключно на основі розрахунку на стороні клієнта</string>
-    <string name="sc_pref_client_side_activity_sort_title">Сортувати за активністю</string>
-    <string name="sc_pref_client_side_activity_sort_summary">Ігнорувати стан непрочитаного при сортуванні чатів</string>
     <string name="sc_pref_category_chat_sorting">Порядок сортування</string>
     <string name="sc_pref_prefer_freeform_reactions_title">Надавати перевагу реакціям вільної форми</string>
     <string name="sc_pref_prefer_freeform_reactions_summary">Відкривати вікно вибору емодзі, яке за замовчуванням показує введення реакції у довільній формі</string>

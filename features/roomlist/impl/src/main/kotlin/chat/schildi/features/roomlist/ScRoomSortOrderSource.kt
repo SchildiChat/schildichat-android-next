@@ -1,90 +1,62 @@
 package chat.schildi.features.roomlist
 
+import androidx.lifecycle.AtomicReference
 import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
-import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
-import io.element.android.features.roomlist.impl.model.RoomSummaryDisplayType
+import io.element.android.libraries.core.coroutine.childScope
+import io.element.android.libraries.matrix.api.roomlist.RoomList
+import io.element.android.libraries.matrix.api.roomlist.RoomListFilter
+import io.element.android.libraries.matrix.api.roomlist.RoomListService
+import io.element.android.libraries.matrix.api.roomlist.RoomSummary
+import io.element.android.libraries.matrix.api.roomlist.ScRoomSortOrder
+import io.element.android.libraries.matrix.api.roomlist.loadAllIncrementally
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.flatMapLatest
+import timber.log.Timber
 import javax.inject.Inject
 
 class ScRoomSortOrderSource @Inject constructor(
-    private val scPreferencesStore: ScPreferencesStore
+    private val scPreferencesStore: ScPreferencesStore,
+    private val roomListService: RoomListService,
 ) {
+    private val lastCoroutineScope = AtomicReference<CoroutineScope?>(null)
 
-    private val _sortOrder = MutableSharedFlow<ScRoomSortOrder>(replay = 1)
-    val sortOrder: SharedFlow<ScRoomSortOrder> = _sortOrder
-
-    fun launchIn(coroutineScope: CoroutineScope) {
-        // From life space list and current space selection, build the RoomId filter
-        combine(
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun filteredSummaries(coroutineScope: CoroutineScope): Flow<List<RoomSummary>> {
+        // Listen to preferences relevant to sort order, then apply these to the dynamic room list
+        return combine(
+            scPreferencesStore.settingFlow(ScPrefs.SORT_BY_UNREAD),
             scPreferencesStore.settingFlow(ScPrefs.PIN_FAVORITES),
             scPreferencesStore.settingFlow(ScPrefs.BURY_LOW_PRIORITY),
-            scPreferencesStore.settingFlow(ScPrefs.CLIENT_SIDE_SORT),
-            scPreferencesStore.settingFlow(ScPrefs.SORT_BY_ACTIVITY),
             scPreferencesStore.settingFlow(ScPrefs.CLIENT_GENERATED_UNREAD_COUNTS),
-        ) { pinFavorites, buryLowPriority, clientSideSort, activitySort, clientSideUnreadCounts ->
-            ScRoomSortOrder(pinFavorites, buryLowPriority, clientSideSort, activitySort, clientSideUnreadCounts)
-        }.onEach { result ->
-            _sortOrder.emit(result)
-        }.launchIn(coroutineScope)
-    }
-
-    fun sortRooms(rooms: List<RoomListRoomSummary>, order: ScRoomSortOrder): List<RoomListRoomSummary> {
-        // TODO: move to SDK?
-        return if (order.needsAction()) {
-            // Do activity-based sorting as separate step, since we do not know for sure the range of timestamps,
-            // but we want to prioritize favorite state above activity
-            if (order.activitySort) {
-                rooms.sortedByDescending { it.lastMessageTimestamp ?: 0L }
-            } else {
-                rooms
-            }.sortedBy { room ->
-                val inviteAdd = if (room.displayType == RoomSummaryDisplayType.INVITE) -10_000 else 0
-                val favoriteAdd = if (order.pinFavorites && !room.isFavorite) 1000 else 0
-                val lowPrioAdd = if (order.buryLowPriority && room.isLowPriority) 100 else 0
-                val unreadAdd = when {
-                    order.activitySort -> 0
-                    !order.clientSideSort -> 0
-                    order.clientSideUnreadCounts -> unreadSort(
-                        room.isMarkedUnread,
-                        room.numberOfUnreadMentions,
-                        room.numberOfUnreadNotifications,
-                        room.numberOfUnreadMessages
-                    )
-                    else -> unreadSort(
-                        room.isMarkedUnread,
-                        room.highlightCount,
-                        room.notificationCount,
-                        room.unreadCount
-                    )
-                }
-                inviteAdd + favoriteAdd + lowPrioAdd + unreadAdd
-            }
-        } else {
-            rooms
+        ) { byUnread, pinFavorites, buryLowPriority, clientSideUnreadCounts ->
+            ScRoomSortOrder(
+                byUnread = byUnread,
+                pinFavourites = pinFavorites,
+                buryLowPriority = buryLowPriority,
+                clientSideUnreadCounts = clientSideUnreadCounts,
+            )
+        }.flatMapLatest { sortOrder ->
+            // TODO: would be nice to teach the SDK to update sort order without recreating the whole list
+            // Cancel jobs for previous list
+            val scope = coroutineScope.childScope(Dispatchers.Default, "sc-sorted-room-list")
+            lastCoroutineScope.getAndSet(scope)?.cancel()
+            Timber.d("Create new filtered and sorted room list for $sortOrder")
+            roomListService.scCreateRoomList(
+                pageSize = 30,
+                initialFilter = RoomListFilter.all(),
+                source = RoomList.Source.All,
+                sortOrder = sortOrder,
+                coroutineScope = scope,
+            ).also {
+                it.loadAllIncrementally(scope)
+            }.filteredSummaries
         }
     }
-
-    private fun unreadSort(markedUnread: Boolean, mentionCount: Int, notificationCount: Int, unreadCount: Int): Int {
-        return when {
-            markedUnread || notificationCount > 0 || mentionCount > 0 -> 0
-            unreadCount > 0 -> 1
-            else -> 2
-        }
-    }
-}
-
-data class ScRoomSortOrder(
-    val pinFavorites: Boolean,
-    val buryLowPriority: Boolean,
-    val clientSideSort: Boolean,
-    val activitySort: Boolean,
-    val clientSideUnreadCounts: Boolean,
-) {
-    fun needsAction() = pinFavorites || buryLowPriority || clientSideSort || activitySort
 }

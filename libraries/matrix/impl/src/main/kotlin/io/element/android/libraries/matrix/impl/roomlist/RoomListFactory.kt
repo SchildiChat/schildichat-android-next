@@ -20,6 +20,7 @@ import io.element.android.libraries.matrix.api.roomlist.DynamicRoomList
 import io.element.android.libraries.matrix.api.roomlist.RoomList
 import io.element.android.libraries.matrix.api.roomlist.RoomListFilter
 import io.element.android.libraries.matrix.api.roomlist.RoomSummary
+import io.element.android.libraries.matrix.api.roomlist.ScRoomSortOrder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,6 +51,7 @@ internal class RoomListFactory(
         coroutineScope: CoroutineScope = sessionCoroutineScope,
         coroutineContext: CoroutineContext = EmptyCoroutineContext,
         initialFilter: RoomListFilter = RoomListFilter.all(),
+        sortOrder: ScRoomSortOrder = ScRoomSortOrder(),
         innerProvider: suspend () -> InnerRoomList
     ): DynamicRoomList {
         val loadingStateFlow: MutableStateFlow<RoomList.LoadingState> = MutableStateFlow(RoomList.LoadingState.NotLoaded)
@@ -68,7 +70,8 @@ internal class RoomListFactory(
                 innerRoomList.entriesFlow(
                     pageSize = pageSize,
                     roomListDynamicEvents = dynamicEvents,
-                    initialFilterKind = RoomListEntriesDynamicFilterKind.NonLeft
+                    initialFilterKind = RoomListEntriesDynamicFilterKind.NonLeft,
+                    sortOrder = sortOrder,
                 ).onEach { update ->
                     processor.postUpdate(update)
                 }.launchIn(this)

@@ -18,6 +18,7 @@ package io.element.android.libraries.matrix.api.roomlist
 
 import androidx.compose.runtime.Immutable
 import io.element.android.libraries.matrix.api.core.RoomId
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterIsInstance
@@ -52,6 +53,14 @@ interface RoomListService {
         pageSize: Int,
         initialFilter: RoomListFilter,
         source: RoomList.Source,
+    ): DynamicRoomList
+
+    fun scCreateRoomList(
+        pageSize: Int,
+        initialFilter: RoomListFilter,
+        source: RoomList.Source,
+        coroutineScope: CoroutineScope,
+        sortOrder: ScRoomSortOrder = ScRoomSortOrder(),
     ): DynamicRoomList
 
     /**

@@ -16,6 +16,7 @@
 
 package io.element.android.libraries.matrix.impl.roomlist
 
+import io.element.android.libraries.core.coroutine.childScope
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.roomlist.DynamicRoomList
 import io.element.android.libraries.matrix.api.roomlist.RoomList
@@ -26,15 +27,19 @@ import io.element.android.libraries.matrix.api.roomlist.loadAllIncrementally
 import io.element.android.libraries.matrix.impl.room.RoomSyncSubscriber
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.isActive
 import org.matrix.rustcomponents.sdk.RoomListServiceState
 import org.matrix.rustcomponents.sdk.RoomListServiceSyncIndicator
 import timber.log.Timber
+import java.util.concurrent.atomic.AtomicReference
 import org.matrix.rustcomponents.sdk.RoomListService as InnerRustRoomListService
 
 private const val DEFAULT_PAGE_SIZE = 20
@@ -46,6 +51,8 @@ internal class RustRoomListService(
     private val roomListFactory: RoomListFactory,
     private val roomSyncSubscriber: RoomSyncSubscriber,
 ) : RoomListService {
+    private val lastListWithSortOrder = AtomicReference<Triple<DynamicRoomList, CoroutineScope, ScRoomSortOrder>?>(null)
+
     override fun createRoomList(
         pageSize: Int,
         initialFilter: RoomListFilter,
@@ -63,24 +70,37 @@ internal class RustRoomListService(
         }
     }
 
-    override fun scCreateRoomList( // SC: add coroutineScope and sortOrder - tricky to have coroutineScope with default fallback for child classes
+    override fun getOrReplaceRoomListWithSortOrder(
         pageSize: Int,
         initialFilter: RoomListFilter,
         source: RoomList.Source,
-        coroutineScope: CoroutineScope,
         sortOrder: ScRoomSortOrder
     ): DynamicRoomList {
-        return roomListFactory.createRoomList(
-            pageSize = pageSize,
-            initialFilter = initialFilter,
-            coroutineScope = coroutineScope,
-            sortOrder = sortOrder,
-        ) {
-            when (source) {
-                RoomList.Source.All -> innerRoomListService.allRooms()
-                RoomList.Source.SPACES -> innerRoomListService.allSpaces()
+        return lastListWithSortOrder.updateAndGet { previous ->
+            if (previous?.third == sortOrder && previous.second.isActive) {
+                previous
+            } else {
+                val scope = sessionCoroutineScope.childScope(Dispatchers.Default, "sc-room-list")
+                Triple(
+                    roomListFactory.createRoomList(
+                        pageSize = pageSize,
+                        initialFilter = initialFilter,
+                        coroutineScope = scope,
+                        sortOrder = sortOrder,
+                    ) {
+                        when (source) {
+                            RoomList.Source.All -> innerRoomListService.allRooms()
+                            RoomList.Source.SPACES -> innerRoomListService.allSpaces()
+                        }
+                    }.also { roomList ->
+                        previous?.second?.cancel("Sorted room list being replaced")
+                        roomList.loadAllIncrementally(scope)
+                    },
+                    scope,
+                    sortOrder
+                )
             }
-        }
+        }!!.first
     }
 
     override suspend fun subscribeToVisibleRooms(roomIds: List<RoomId>) {

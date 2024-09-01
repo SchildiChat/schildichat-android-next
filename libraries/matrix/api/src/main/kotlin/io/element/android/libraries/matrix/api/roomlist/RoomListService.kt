@@ -55,11 +55,10 @@ interface RoomListService {
         source: RoomList.Source,
     ): DynamicRoomList
 
-    fun scCreateRoomList(
+    fun getOrReplaceRoomListWithSortOrder(
         pageSize: Int,
         initialFilter: RoomListFilter,
         source: RoomList.Source,
-        coroutineScope: CoroutineScope,
         sortOrder: ScRoomSortOrder = ScRoomSortOrder(),
     ): DynamicRoomList
 

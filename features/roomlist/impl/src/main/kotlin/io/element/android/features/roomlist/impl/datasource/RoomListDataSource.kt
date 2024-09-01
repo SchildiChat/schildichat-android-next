@@ -70,7 +70,7 @@ class RoomListDataSource @Inject constructor(
             .allRooms
             .filteredSummaries
          */
-        scRoomSortOrderSource.filteredSummaries(coroutineScope)
+        scRoomSortOrderSource.filteredSummaries()
             .onEach { roomSummaries ->
                 replaceWith(roomSummaries)
             }

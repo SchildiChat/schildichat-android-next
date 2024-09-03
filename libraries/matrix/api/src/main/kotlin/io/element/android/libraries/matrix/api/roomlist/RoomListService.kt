@@ -18,7 +18,6 @@ package io.element.android.libraries.matrix.api.roomlist
 
 import androidx.compose.runtime.Immutable
 import io.element.android.libraries.matrix.api.core.RoomId
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterIsInstance
@@ -58,7 +57,6 @@ interface RoomListService {
     fun getOrReplaceRoomListWithSortOrder(
         pageSize: Int,
         initialFilter: RoomListFilter,
-        source: RoomList.Source,
         sortOrder: ScRoomSortOrder = ScRoomSortOrder(),
     ): DynamicRoomList
 
@@ -73,6 +71,12 @@ interface RoomListService {
      * If you want to get a filtered room list, consider using [createRoomList].
      */
     val allRooms: DynamicRoomList
+
+    /**
+     * SC: don't use allRooms, sorted rooms unfortunately needs recreation when changing sort order which could break some flows,
+     * so only use it if we're sure we cover that
+     */
+    val sortedRooms: DynamicRoomList
 
     /**
      * Root spaces.

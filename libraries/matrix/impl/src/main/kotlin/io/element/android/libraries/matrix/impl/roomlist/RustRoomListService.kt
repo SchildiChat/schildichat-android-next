@@ -73,25 +73,21 @@ internal class RustRoomListService(
     override fun getOrReplaceRoomListWithSortOrder(
         pageSize: Int,
         initialFilter: RoomListFilter,
-        source: RoomList.Source,
         sortOrder: ScRoomSortOrder
     ): DynamicRoomList {
         return lastListWithSortOrder.updateAndGet { previous ->
             if (previous?.third == sortOrder && previous.second.isActive) {
                 previous
             } else {
-                val scope = sessionCoroutineScope.childScope(Dispatchers.Default, "sc-room-list")
+                val scope = sessionCoroutineScope.childScope(sessionDispatcher, "sc-room-list")
                 Triple(
                     roomListFactory.createRoomList(
                         pageSize = pageSize,
-                        initialFilter = initialFilter,
+                        initialFilter = previous?.first?.currentFilter?.value ?: initialFilter,
                         coroutineScope = scope,
                         sortOrder = sortOrder,
                     ) {
-                        when (source) {
-                            RoomList.Source.All -> innerRoomListService.allRooms()
-                            RoomList.Source.SPACES -> innerRoomListService.allSpaces()
-                        }
+                        innerRoomListService.allRooms()
                     }.also { roomList ->
                         previous?.second?.cancel("Sorted room list being replaced")
                         roomList.loadAllIncrementally(scope)
@@ -117,6 +113,7 @@ internal class RustRoomListService(
     ) {
         innerRoomListService.allRooms()
     }
+        get() = lastListWithSortOrder.get()?.first ?: field
 
     override val allSpaces: DynamicRoomList = roomListFactory.createRoomList(
         pageSize = DEFAULT_PAGE_SIZE,
@@ -124,6 +121,9 @@ internal class RustRoomListService(
     ) {
         innerRoomListService.allSpaces()
     }
+
+    override val sortedRooms: DynamicRoomList
+        get() = lastListWithSortOrder.get()?.first ?: allRooms
 
     init {
         allRooms.loadAllIncrementally(sessionCoroutineScope)

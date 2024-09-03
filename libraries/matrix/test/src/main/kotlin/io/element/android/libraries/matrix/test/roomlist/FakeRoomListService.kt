@@ -63,8 +63,8 @@ class FakeRoomListService(
         }
     }
 
-    override fun getOrReplaceRoomListWithSortOrder(pageSize: Int, initialFilter: RoomListFilter, source: RoomList.Source, sortOrder: ScRoomSortOrder)
-        = createRoomList(pageSize, initialFilter, source)
+    override fun getOrReplaceRoomListWithSortOrder(pageSize: Int, initialFilter: RoomListFilter, sortOrder: ScRoomSortOrder)
+        = createRoomList(pageSize, initialFilter, RoomList.Source.All)
 
     override suspend fun subscribeToVisibleRooms(roomIds: List<RoomId>) {
         subscribeToVisibleRoomsLambda(roomIds)
@@ -81,6 +81,8 @@ class FakeRoomListService(
         allSpacesLoadingStateFlow,
         MutableStateFlow(RoomListFilter.all())
     )
+
+    override val sortedRooms = allRooms
 
     override val state: StateFlow<RoomListService.State> = roomListStateFlow
 

@@ -40,7 +40,6 @@ class ScRoomSortOrderSource @Inject constructor(
             roomListService.getOrReplaceRoomListWithSortOrder(
                 pageSize = 30,
                 initialFilter = RoomListFilter.all(),
-                source = RoomList.Source.All,
                 sortOrder = sortOrder,
             ).filteredSummaries
         }

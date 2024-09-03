@@ -87,6 +87,7 @@ class RoomListDataSource @Inject constructor(
             .debounce(0.5.seconds)
             .onEach {
                 roomListService.allRooms.rebuildSummaries()
+                roomListService.sortedRooms.rebuildSummaries()
             }
             .launchIn(appScope)
     }

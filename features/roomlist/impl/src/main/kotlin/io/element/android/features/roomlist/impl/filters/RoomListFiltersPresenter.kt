@@ -19,8 +19,6 @@ package io.element.android.features.roomlist.impl.filters
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
-import chat.schildi.lib.preferences.ScPrefs
-import chat.schildi.lib.preferences.value
 import io.element.android.features.roomlist.impl.filters.selection.FilterSelectionStrategy
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
@@ -69,7 +67,8 @@ class RoomListFiltersPresenter @Inject constructor(
                 }
                 .collect { filters ->
                     val result = MatrixRoomListFilter.All(filters)
-                    roomListService.allRooms.updateFilter(result)
+                    //roomListService.allRooms.updateFilter(result)
+                    roomListService.sortedRooms.updateFilter(result)
                 }
         }
 

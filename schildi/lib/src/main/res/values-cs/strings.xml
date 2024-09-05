@@ -93,4 +93,6 @@
     <string name="sc_pref_jump_to_unread_title">Přejít na nepřečtené</string>
     <string name="sc_pref_jump_to_unread_option_summary">Zobrazit možnost přejít na poslední přečtenou zprávu</string>
     <string name="sc_sync_read_receipt_and_marker_title_short">Synchronizovat značky přečtení</string>
+    <string name="sc_pref_client_side_sort_by_unread_title">Řadit podle nepřečtených</string>
+    <string name="sc_pref_client_side_sort_by_unread_summary">Řazení nepřečtených chatů na začátek seznamu</string>
 </resources>

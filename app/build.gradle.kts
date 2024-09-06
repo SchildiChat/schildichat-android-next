@@ -358,6 +358,7 @@ tasks.withType<GenerateBuildConfig>().configureEach {
 }
 
 licensee {
+    ignoreDependencies("chat.schildi.rustcomponents", "sdk-android")
     allow("Apache-2.0")
     allow("MIT")
     allow("GPL-2.0-with-classpath-exception")

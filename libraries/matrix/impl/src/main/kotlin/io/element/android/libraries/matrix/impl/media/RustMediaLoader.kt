@@ -22,8 +22,6 @@ import io.element.android.libraries.matrix.api.media.MatrixMediaLoader
 import io.element.android.libraries.matrix.api.media.MediaFile
 import io.element.android.libraries.matrix.api.media.MediaSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import org.matrix.rustcomponents.sdk.Client
 import org.matrix.rustcomponents.sdk.mediaSourceFromUrl
@@ -53,8 +51,6 @@ class RustMediaLoader(
             }
         }
 
-    private val loadMediaSourceMutex = Mutex()
-
     @OptIn(ExperimentalUnsignedTypes::class)
     override suspend fun loadMediaThumbnail(
         source: MediaSource,
@@ -64,13 +60,11 @@ class RustMediaLoader(
         withContext(mediaDispatcher) {
             runCatching {
                 source.toRustMediaSource().use { mediaSource ->
-                    loadMediaSourceMutex.withLock {
-                        innerClient.getMediaThumbnail(
-                            mediaSource = mediaSource,
-                            width = width.toULong(),
-                            height = height.toULong()
-                        )
-                    }.toUByteArray().toByteArray()
+                    innerClient.getMediaThumbnail(
+                        mediaSource = mediaSource,
+                        width = width.toULong(),
+                        height = height.toULong()
+                    ).toUByteArray().toByteArray()
                 }
             }
         }

@@ -60,7 +60,6 @@ import io.element.android.features.roomlist.impl.filters.RoomListFiltersEmptySta
 import io.element.android.features.roomlist.impl.filters.RoomListFiltersState
 import io.element.android.features.roomlist.impl.filters.aRoomListFiltersState
 import io.element.android.features.roomlist.impl.filters.selection.FilterSelectionState
-import io.element.android.features.roomlist.impl.migration.MigrationScreenView
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
@@ -77,6 +76,7 @@ fun RoomListContentView(
     contentState: RoomListContentState,
     filtersState: RoomListFiltersState,
     eventSink: (RoomListEvents) -> Unit,
+    onSetUpRecoveryClick: () -> Unit,
     onConfirmRecoveryKeyClick: () -> Unit,
     onRoomClick: (RoomListRoomSummary) -> Unit,
     onCreateRoomClick: () -> Unit,
@@ -84,9 +84,6 @@ fun RoomListContentView(
 ) {
     Box(modifier = modifier) {
         when (contentState) {
-            is RoomListContentState.Migration -> {
-                MigrationScreenView(isMigrating = true)
-            }
             is RoomListContentState.Skeleton -> {
                 SkeletonView(
                     count = contentState.count,
@@ -102,6 +99,7 @@ fun RoomListContentView(
                     state = contentState,
                     filtersState = filtersState,
                     eventSink = eventSink,
+                    onSetUpRecoveryClick = onSetUpRecoveryClick,
                     onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
                     onRoomClick = onRoomClick,
                 )
@@ -148,6 +146,7 @@ private fun RoomsView(
     state: RoomListContentState.Rooms,
     filtersState: RoomListFiltersState,
     eventSink: (RoomListEvents) -> Unit,
+    onSetUpRecoveryClick: () -> Unit,
     onConfirmRecoveryKeyClick: () -> Unit,
     onRoomClick: (RoomListRoomSummary) -> Unit,
     modifier: Modifier = Modifier,
@@ -162,6 +161,7 @@ private fun RoomsView(
             state = state,
             filtersState = filtersState, // SC
             eventSink = eventSink,
+            onSetUpRecoveryClick = onSetUpRecoveryClick,
             onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
             onRoomClick = onRoomClick,
             modifier = modifier.fillMaxSize(),
@@ -174,6 +174,7 @@ private fun RoomsViewList(
     state: RoomListContentState.Rooms,
     filtersState: RoomListFiltersState, // SC
     eventSink: (RoomListEvents) -> Unit,
+    onSetUpRecoveryClick: () -> Unit,
     onConfirmRecoveryKeyClick: () -> Unit,
     onRoomClick: (RoomListRoomSummary) -> Unit,
     modifier: Modifier = Modifier,
@@ -210,21 +211,27 @@ private fun RoomsViewList(
         // FAB height is 56dp, bottom padding is 16dp, we add 8dp as extra margin -> 56+16+8 = 80
         contentPadding = PaddingValues(bottom = 80.dp).takeIf { !ScPrefs.SPACE_NAV.value() } ?: PaddingValues()
     ) {
-        if (state.securityBannerState != SecurityBannerState.None) {
-            when (state.securityBannerState) {
-                SecurityBannerState.RecoveryKeyConfirmation -> {
-                    item {
-                        ConfirmRecoveryKeyBanner(
-                            onContinueClick = onConfirmRecoveryKeyClick,
-                            onDismissClick = { updatedEventSink(RoomListEvents.DismissRecoveryKeyPrompt) }
-                        )
-                    }
+        when (state.securityBannerState) {
+            SecurityBannerState.SetUpRecovery -> {
+                item {
+                    SetUpRecoveryKeyBanner(
+                        onContinueClick = onSetUpRecoveryClick,
+                        onDismissClick = { updatedEventSink(RoomListEvents.DismissRecoveryKeyPrompt) }
+                    )
                 }
-                else -> Unit
             }
-        } else if (state.fullScreenIntentPermissionsState.shouldDisplayBanner) {
-            item {
-                FullScreenIntentPermissionBanner(state = state.fullScreenIntentPermissionsState)
+            SecurityBannerState.RecoveryKeyConfirmation -> {
+                item {
+                    ConfirmRecoveryKeyBanner(
+                        onContinueClick = onConfirmRecoveryKeyClick,
+                        onDismissClick = { updatedEventSink(RoomListEvents.DismissRecoveryKeyPrompt) }
+                    )
+                }
+            }
+            SecurityBannerState.None -> if (state.fullScreenIntentPermissionsState.shouldDisplayBanner) {
+                item {
+                    FullScreenIntentPermissionBanner(state = state.fullScreenIntentPermissionsState)
+                }
             }
         }
 
@@ -315,6 +322,7 @@ internal fun RoomListContentViewPreview(@PreviewParameter(RoomListContentStatePr
             filterSelectionStates = RoomListFilter.entries.map { FilterSelectionState(it, isSelected = true) }
         ),
         eventSink = {},
+        onSetUpRecoveryClick = {},
         onConfirmRecoveryKeyClick = {},
         onRoomClick = {},
         onCreateRoomClick = {},

@@ -40,6 +40,7 @@ import io.element.android.features.messages.impl.timeline.components.layout.Cont
 import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayoutData
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContentProvider
+import io.element.android.features.messages.impl.utils.containsOnlyEmojis
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.matrix.api.core.UserId
@@ -61,11 +62,13 @@ fun TimelineItemTextView(
     onContentLayoutChange: (ContentAvoidingLayoutData) -> Unit = {},
 ) {
     val canCollapse = content.formattedCollapsedBody != null
-    val emojiOnly = !canCollapse && SC_TIMELINE_LAYOUT.value() &&
-        (content.formattedBody == null || content.formattedBody.toString() == content.body) &&
-        content.body.replace(" ", "").containsOnlyEmojis(50)
+    val emojiOnly = (content.formattedBody == null || content.formattedBody.toString() == content.body) &&
+        !canCollapse && content.body.replace(" ", "").containsOnlyEmojis(50)
     val collapsed = remember { mutableStateOf(canCollapse) }
-    val textStyle = if (emojiOnly) ElementTheme.typography.fontHeadingXlBold else ElementTheme.typography.scBubbleFont
+    val textStyle = when {
+        emojiOnly -> ElementTheme.typography.fontHeadingXlRegular
+        else -> ElementTheme.typography.scBubbleFont
+    }
     CompositionLocalProvider(
         LocalContentColor provides ElementTheme.colors.textPrimary,
         LocalTextStyle provides textStyle,

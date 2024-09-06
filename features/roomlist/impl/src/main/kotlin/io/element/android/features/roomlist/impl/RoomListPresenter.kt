@@ -51,7 +51,6 @@ import io.element.android.features.networkmonitor.api.NetworkMonitor
 import io.element.android.features.networkmonitor.api.NetworkStatus
 import io.element.android.features.roomlist.impl.datasource.RoomListDataSource
 import io.element.android.features.roomlist.impl.filters.RoomListFiltersState
-import io.element.android.features.roomlist.impl.migration.MigrationScreenState
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.features.roomlist.impl.search.RoomListSearchEvents
 import io.element.android.features.roomlist.impl.search.RoomListSearchState
@@ -109,7 +108,6 @@ class RoomListPresenter @Inject constructor(
     private val indicatorService: IndicatorService,
     private val filtersPresenter: Presenter<RoomListFiltersState>,
     private val searchPresenter: Presenter<RoomListSearchState>,
-    private val migrationScreenPresenter: Presenter<MigrationScreenState>,
     private val sessionPreferencesStore: SessionPreferencesStore,
     private val analyticsService: AnalyticsService,
     private val acceptDeclineInvitePresenter: Presenter<AcceptDeclineInviteState>,
@@ -210,8 +208,15 @@ class RoomListPresenter @Inject constructor(
             derivedStateOf {
                 when {
                     currentSecurityBannerDismissed -> SecurityBannerState.None
-                    recoveryState == RecoveryState.INCOMPLETE &&
-                        syncState == SyncState.Running -> SecurityBannerState.RecoveryKeyConfirmation
+                    syncState == SyncState.Running -> {
+                        when (recoveryState) {
+                            RecoveryState.UNKNOWN,
+                            RecoveryState.DISABLED -> SecurityBannerState.SetUpRecovery
+                            RecoveryState.INCOMPLETE -> SecurityBannerState.RecoveryKeyConfirmation
+                            RecoveryState.WAITING_FOR_SYNC,
+                            RecoveryState.ENABLED -> SecurityBannerState.None
+                        }
+                    }
                     else -> SecurityBannerState.None
                 }
             }
@@ -234,7 +239,6 @@ class RoomListPresenter @Inject constructor(
         else
             produceState(initialValue = AsyncData.Loading()) { roomListDataSource.allRooms.collect { value = AsyncData.Success(it) } }.value
         val loadingState by roomListDataSource.loadingState.collectAsState()
-        val showMigration = migrationScreenPresenter.present().isMigrating
         val showEmpty = //by remember {
             //derivedStateOf {
                 (loadingState as? RoomList.LoadingState.Loaded)?.numberOfRooms == 0
@@ -246,7 +250,6 @@ class RoomListPresenter @Inject constructor(
             //}
         //}
         return when {
-            showMigration -> RoomListContentState.Migration
             showEmpty -> RoomListContentState.Empty
             showSkeleton -> RoomListContentState.Skeleton(count = 16)
             else -> {

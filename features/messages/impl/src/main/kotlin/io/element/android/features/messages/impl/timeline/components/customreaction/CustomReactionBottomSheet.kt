@@ -28,14 +28,14 @@ import io.element.android.emojibasebindings.Emoji
 import io.element.android.features.messages.impl.emojis.RecentEmojiDataSource
 import io.element.android.libraries.designsystem.theme.components.ModalBottomSheet
 import io.element.android.libraries.designsystem.theme.components.hide
-import io.element.android.libraries.matrix.api.core.EventId
+import io.element.android.libraries.matrix.api.core.UniqueId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomReactionBottomSheet(
     state: CustomReactionState,
-    onSelectEmoji: (EventId, Emoji) -> Unit,
-    onSelectCustomEmoji: (EventId, String) -> Unit, // SC
+    onSelectEmoji: (UniqueId, Emoji) -> Unit,
+    onSelectCustomEmoji: (UniqueId, String) -> Unit, // SC
     recentEmojiDataSource: RecentEmojiDataSource?, // SC
     modifier: Modifier = Modifier,
 ) {
@@ -48,26 +48,26 @@ fun CustomReactionBottomSheet(
     }
 
     fun onEmojiSelectedDismiss(emoji: Emoji) {
-        if (target?.event?.eventId == null) return
+        if (target?.event == null) return
 
         val wasSelected = state.selectedEmoji.contains(emoji.unicode)
 
         sheetState.hide(coroutineScope) {
             state.eventSink(CustomReactionEvents.DismissCustomReactionSheet)
-            onSelectEmoji(target.event.eventId, emoji)
+            onSelectEmoji(target.event.id, emoji)
 
             if (!wasSelected) recentEmojiDataSource?.recordEmoji(emoji.unicode)
         }
     }
 
     fun onCustomEmojiSelectedDismiss(emoji: String) {
-        if (target?.event?.eventId == null) return
+        if (target?.event == null) return
 
         val wasSelected = state.selectedEmoji.contains(emoji)
 
         sheetState.hide(coroutineScope) {
             state.eventSink(CustomReactionEvents.DismissCustomReactionSheet)
-            onSelectCustomEmoji(target.event.eventId, emoji)
+            onSelectCustomEmoji(target.event.id, emoji)
 
             if (!wasSelected) recentEmojiDataSource?.recordEmoji(emoji)
         }

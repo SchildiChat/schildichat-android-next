@@ -28,7 +28,7 @@ internal val sclMaterialColorScheme = lightColorScheme(
     inversePrimary = scl_bg,
 
     secondary = scl_fgSecondary,
-    onSecondary = scl_fgPrimary,
+    onSecondary = scd_fgPrimary,
     secondaryContainer = scl_bg,
     onSecondaryContainer = scl_fgSecondary,
 

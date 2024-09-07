@@ -76,6 +76,7 @@ fun UserProfileHeaderSection(
             color = MaterialTheme.colorScheme.secondary,
             modifier = Modifier
                 .fillMaxWidth()
+                .copyTextOnLongPress(userId.value)
                 .padding(horizontal = 16.dp),
             textAlign = TextAlign.Center,
         )

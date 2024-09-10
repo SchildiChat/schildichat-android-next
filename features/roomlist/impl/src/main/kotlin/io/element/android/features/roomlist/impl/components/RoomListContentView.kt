@@ -1,17 +1,8 @@
 /*
- * Copyright (c) 2024 New Vector Ltd
+ * Copyright 2024 New Vector Ltd.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * SPDX-License-Identifier: AGPL-3.0-only
+ * Please see LICENSE in the repository root for full details.
  */
 
 package io.element.android.features.roomlist.impl.components
@@ -80,6 +71,7 @@ fun RoomListContentView(
     onConfirmRecoveryKeyClick: () -> Unit,
     onRoomClick: (RoomListRoomSummary) -> Unit,
     onCreateRoomClick: () -> Unit,
+    onMigrateToNativeSlidingSyncClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {
@@ -101,6 +93,7 @@ fun RoomListContentView(
                     eventSink = eventSink,
                     onSetUpRecoveryClick = onSetUpRecoveryClick,
                     onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
+                    onMigrateToNativeSlidingSyncClick = onMigrateToNativeSlidingSyncClick,
                     onRoomClick = onRoomClick,
                 )
             }
@@ -149,6 +142,7 @@ private fun RoomsView(
     onSetUpRecoveryClick: () -> Unit,
     onConfirmRecoveryKeyClick: () -> Unit,
     onRoomClick: (RoomListRoomSummary) -> Unit,
+    onMigrateToNativeSlidingSyncClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (state.summaries.isEmpty() && (filtersState.hasAnyFilterSelected && state.spacesList.isEmpty())) {
@@ -164,6 +158,7 @@ private fun RoomsView(
             onSetUpRecoveryClick = onSetUpRecoveryClick,
             onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
             onRoomClick = onRoomClick,
+            onMigrateToNativeSlidingSyncClick = onMigrateToNativeSlidingSyncClick,
             modifier = modifier.fillMaxSize(),
         )
     }
@@ -177,6 +172,7 @@ private fun RoomsViewList(
     onSetUpRecoveryClick: () -> Unit,
     onConfirmRecoveryKeyClick: () -> Unit,
     onRoomClick: (RoomListRoomSummary) -> Unit,
+    onMigrateToNativeSlidingSyncClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val withSpaceFilter = isSpaceFilterActive(state.spaceSelectionHierarchy)
@@ -216,7 +212,7 @@ private fun RoomsViewList(
                 item {
                     SetUpRecoveryKeyBanner(
                         onContinueClick = onSetUpRecoveryClick,
-                        onDismissClick = { updatedEventSink(RoomListEvents.DismissRecoveryKeyPrompt) }
+                        onDismissClick = { updatedEventSink(RoomListEvents.DismissBanner) }
                     )
                 }
             }
@@ -224,7 +220,15 @@ private fun RoomsViewList(
                 item {
                     ConfirmRecoveryKeyBanner(
                         onContinueClick = onConfirmRecoveryKeyClick,
-                        onDismissClick = { updatedEventSink(RoomListEvents.DismissRecoveryKeyPrompt) }
+                        onDismissClick = { updatedEventSink(RoomListEvents.DismissBanner) }
+                    )
+                }
+            }
+            SecurityBannerState.NeedsNativeSlidingSyncMigration -> {
+                item {
+                    NativeSlidingSyncMigrationBanner(
+                        onContinueClick = onMigrateToNativeSlidingSyncClick,
+                        onDismissClick = { updatedEventSink(RoomListEvents.DismissBanner) }
                     )
                 }
             }
@@ -326,5 +330,6 @@ internal fun RoomListContentViewPreview(@PreviewParameter(RoomListContentStatePr
         onConfirmRecoveryKeyClick = {},
         onRoomClick = {},
         onCreateRoomClick = {},
+        onMigrateToNativeSlidingSyncClick = {},
     )
 }

@@ -15,6 +15,7 @@ import io.element.android.features.ftue.api.state.FtueService
 import io.element.android.features.ftue.api.state.FtueState
 import io.element.android.features.lockscreen.api.LockScreenService
 import io.element.android.libraries.di.SessionScope
+import io.element.android.libraries.di.SingleIn
 import io.element.android.libraries.di.annotations.SessionCoroutineScope
 import io.element.android.libraries.matrix.api.verification.SessionVerificationService
 import io.element.android.libraries.matrix.api.verification.SessionVerifiedStatus
@@ -38,6 +39,7 @@ import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 @ContributesBinding(SessionScope::class)
+@SingleIn(SessionScope::class)
 class DefaultFtueService @Inject constructor(
     private val sdkVersionProvider: BuildVersionSdkIntProvider,
     @SessionCoroutineScope sessionCoroutineScope: CoroutineScope,

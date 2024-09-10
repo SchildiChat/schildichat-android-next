@@ -61,6 +61,6 @@ fun ElementThemeApp(
 @Composable // SC: shortcut
 fun ElementThemeApp(appPreferencesStore: AppPreferencesStore, context: Context, content: @Composable () -> Unit) = ElementThemeApp(
     appPreferencesStore = appPreferencesStore,
-    scPreferencesStore = DefaultScPreferencesStore(context, null),
+    scPreferencesStore = DefaultScPreferencesStore(context),
     content = content
 )

@@ -59,6 +59,7 @@ internal fun TimelineItemRow(
             TimelineItemEventContentView(
                 content = event.content,
                 onLinkClick = onLinkClick,
+                onLongClick = { onLongClick(event) },
                 eventSink = eventSink,
                 modifier = contentModifier,
                 onContentLayoutChange = onContentLayoutChange

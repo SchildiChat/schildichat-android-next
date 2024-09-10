@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowRight
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,7 +17,6 @@ import chat.schildi.lib.preferences.LocalScPreferencesStore
 import chat.schildi.lib.preferences.ScBoolPref
 import chat.schildi.lib.preferences.ScPref
 import chat.schildi.lib.preferences.ScPrefContainer
-import chat.schildi.lib.preferences.ScUpstreamFeatureFlagAliasPref
 import chat.schildi.lib.preferences.enabledState
 import chat.schildi.lib.preferences.settingState
 import io.element.android.compound.theme.ElementTheme
@@ -37,7 +35,7 @@ fun AbstractScPref.AutoRenderedDropdown(
 ) {
     when (this) {
         is ScBoolPref -> return RenderedDropdown(leadingIcon)
-        is ScUpstreamFeatureFlagAliasPref -> return RenderedDropdown(leadingIcon)
+        //is ScUpstreamFeatureFlagAliasPref -> return RenderedDropdown(leadingIcon)
         is ScPrefContainer -> return RenderedDropdown(onClick, leadingIcon)
         else -> {
             Timber.w("Not supported to render ScPref ${this.javaClass} as option")
@@ -124,6 +122,7 @@ fun ScPref<Boolean>.RenderedDropdown(
     )
 }
 
+/*
 @Composable
 fun ScUpstreamFeatureFlagAliasPref.RenderedDropdown(
     leadingIcon: @Composable (() -> Unit)? = null,
@@ -161,3 +160,4 @@ fun ScUpstreamFeatureFlagAliasPref.RenderedDropdown(
         }
     )
 }
+ */

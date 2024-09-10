@@ -7,7 +7,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import io.element.android.libraries.featureflag.api.FeatureFlags
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import timber.log.Timber
@@ -144,6 +143,7 @@ data class ScActionablePref(
     override val dependencies: List<ScPrefDependency> = emptyList(),
 ) : AbstractScPref
 
+/*
 @Parcelize
 data class ScUpstreamFeatureFlagAliasPref(
     val featureFlag: FeatureFlags,
@@ -165,3 +165,4 @@ data class ScUpstreamFeatureFlagAliasPref(
         return value
     }
 }
+ */

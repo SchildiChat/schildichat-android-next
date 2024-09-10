@@ -22,6 +22,4 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.serialization.json)
     implementation(projects.libraries.uiStrings)
-
-    api(projects.libraries.featureflag.api)
 }

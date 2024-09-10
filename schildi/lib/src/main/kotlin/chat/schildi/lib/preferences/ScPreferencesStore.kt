@@ -13,7 +13,6 @@ import com.squareup.anvil.annotations.ContributesBinding
 import io.element.android.libraries.di.AppScope
 import io.element.android.libraries.di.ApplicationContext
 import io.element.android.libraries.di.SingleIn
-import io.element.android.libraries.featureflag.api.FeatureFlagService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -34,17 +33,12 @@ interface ScPreferencesStore {
     fun <T>getCachedOrDefaultValue(scPref: ScPref<T>): T
     suspend fun reset()
     suspend fun prefetch()
-
-    // FeatureFlagService should not actually be necessary for any ScPrefs, but may be handy for rendering ScUpstreamFeatureFlagAliasPref
-    // without handling a featureFlagService through a lot of functions
-    val featureFlagService: FeatureFlagService?
 }
 
 @ContributesBinding(AppScope::class)
 @SingleIn(AppScope::class)
 class DefaultScPreferencesStore @Inject constructor(
     @ApplicationContext context: Context,
-    override val featureFlagService: FeatureFlagService?,
 ) : ScPreferencesStore {
     private val store = context.scPrefDataStore
 
@@ -131,7 +125,6 @@ class DefaultScPreferencesStore @Inject constructor(
 }
 
 object FakeScPreferencesStore : ScPreferencesStore {
-    override val featureFlagService = null
     private fun shouldNotUsedInProduction() {
         val e = Exception("Should use CompositionLocalProvider with proper LocalScPreferencesStore")
         if (false /* BuildConfig.DEBUG */) {

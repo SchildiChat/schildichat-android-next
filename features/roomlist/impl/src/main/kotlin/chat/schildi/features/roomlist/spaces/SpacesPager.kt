@@ -553,8 +553,8 @@ private fun UnreadCountBox(unreadCounts: SpaceUnreadCountsDataSource.SpaceUnread
         // Keep icon centered
         Spacer(
             Modifier
-                .width(8.dp)
-                .offset((-8).dp, (-8).dp)
+                .width(offset)
+                .offset(-offset, -offset)
                 .align(Alignment.TopStart))
     }
 }

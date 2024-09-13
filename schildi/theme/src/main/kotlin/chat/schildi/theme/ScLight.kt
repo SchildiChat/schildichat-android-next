@@ -63,6 +63,7 @@ internal val sclExposures = ScThemeExposures(
     bubbleBgIncoming = ScColors.colorWhite_ee,
     bubbleBgOutgoing = scl_accent.fakeAlpha(0.12f),
     unreadBadgeColor = ScColors.colorGray_73,
+    unreadBadgeOnToolbarColor = ScColors.colorGray_73,
     appBarBg = scl_bg,
     bubbleRadius = 10.dp,
     timestampRadius = 6.dp,

@@ -19,6 +19,7 @@ class ScThemeExposures(
     bubbleBgIncoming: Color?,
     bubbleBgOutgoing: Color?,
     unreadBadgeColor: Color,
+    unreadBadgeOnToolbarColor: Color,
     appBarBg: Color?,
     bubbleRadius: Dp,
     timestampRadius: Dp,
@@ -43,6 +44,8 @@ class ScThemeExposures(
     var bubbleBgOutgoing by mutableStateOf(bubbleBgOutgoing)
         private set
     var unreadBadgeColor by mutableStateOf(unreadBadgeColor)
+        private set
+    var unreadBadgeOnToolbarColor by mutableStateOf(unreadBadgeOnToolbarColor)
         private set
     var appBarBg by mutableStateOf(appBarBg)
         private set
@@ -76,6 +79,7 @@ class ScThemeExposures(
         bubbleBgIncoming: Color? = this.bubbleBgIncoming,
         bubbleBgOutgoing: Color? = this.bubbleBgOutgoing,
         unreadBadgeColor: Color = this.unreadBadgeColor,
+        unreadBadgeOnToolbarColor: Color = this.unreadBadgeOnToolbarColor,
         appBarBg: Color? = this.appBarBg,
         bubbleRadius: Dp = this.bubbleRadius,
         timestampRadius: Dp = this.timestampRadius,
@@ -95,6 +99,7 @@ class ScThemeExposures(
         bubbleBgIncoming = bubbleBgIncoming,
         bubbleBgOutgoing = bubbleBgOutgoing,
         unreadBadgeColor = unreadBadgeColor,
+        unreadBadgeOnToolbarColor = unreadBadgeOnToolbarColor,
         appBarBg = appBarBg,
         bubbleRadius = bubbleRadius,
         timestampRadius = timestampRadius,
@@ -116,6 +121,7 @@ class ScThemeExposures(
         bubbleBgIncoming = other.bubbleBgIncoming
         bubbleBgOutgoing = other.bubbleBgOutgoing
         unreadBadgeColor = other.unreadBadgeColor
+        unreadBadgeOnToolbarColor = other.unreadBadgeOnToolbarColor
         appBarBg = other.appBarBg
         bubbleRadius = other.bubbleRadius
         timestampRadius = other.timestampRadius
@@ -138,6 +144,7 @@ internal val elementLightScExposures = ScThemeExposures(
     bubbleBgIncoming = null,
     bubbleBgOutgoing = null,
     unreadBadgeColor = Color(0xffa9b2bc),
+    unreadBadgeOnToolbarColor = Color(0xffa9b2bc),
     appBarBg = null,
     bubbleRadius = 12.dp,
     timestampRadius = 10.0.dp,
@@ -159,6 +166,7 @@ internal val elementDarkScExposures = ScThemeExposures(
     bubbleBgIncoming = null,
     bubbleBgOutgoing = null,
     unreadBadgeColor = Color(0xff737d8c),
+    unreadBadgeOnToolbarColor = Color(0xff737d8c),
     appBarBg = null,
     bubbleRadius = 12.dp,
     timestampRadius = 10.0.dp,

@@ -51,7 +51,7 @@ git fetch upstream
 git merge "$components_tag" || read -p "Enter once conflicts are solved"
 
 echo "Trying to detect appropriate Rust SDK from GitHub releases"
-sdk_revision=`curl https://github.com/matrix-org/matrix-rust-components-kotlin/releases/tag/sdk-v"$rust_ver" | grep ">https://github.com/matrix-org/matrix-rust-sdk/tree/" | sed "s|.*https://github.com/matrix-org/matrix-rust-sdk/tree/\\(.*\\)</a>.*|\\1|g"`
+sdk_revision=`curl https://github.com/matrix-org/matrix-rust-components-kotlin/releases/tag/sdk-v"$rust_ver" | grep "/matrix-org/matrix-rust-sdk/tree/" | sed "s|.*/matrix-org/matrix-rust-sdk/tree/\\(.*\\)</a>.*|\\1|g"`
 
 echo "Merging upstream SDK at $sdk_revision..."
 cd "$SDK_DIR"

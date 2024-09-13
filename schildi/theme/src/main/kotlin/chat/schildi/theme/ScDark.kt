@@ -71,6 +71,7 @@ internal val scdExposures = ScThemeExposures(
     bubbleBgIncoming = scd_bgFloating,
     bubbleBgOutgoing = scd_bg,
     unreadBadgeColor = scd_bgFloating,
+    unreadBadgeOnToolbarColor = ScColors.colorGray_61,
     appBarBg = scd_bg,
     bubbleRadius = 10.dp,
     timestampRadius = 6.dp,

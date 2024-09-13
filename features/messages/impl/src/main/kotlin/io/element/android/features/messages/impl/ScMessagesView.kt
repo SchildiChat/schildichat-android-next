@@ -1,16 +1,27 @@
 package io.element.android.features.messages.impl
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material.icons.filled.Update
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,13 +30,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import chat.schildi.components.preferences.AutoRenderedDropdown
 import chat.schildi.lib.R
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
+import chat.schildi.lib.util.formatUnreadCount
+import chat.schildi.theme.ScTheme
+import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.messages.impl.timeline.ScReadState
 import io.element.android.features.messages.impl.timeline.TimelineEvents
 import io.element.android.libraries.designsystem.icons.CompoundDrawables
@@ -49,6 +65,7 @@ internal fun RowScope.scMessagesViewTopBarActions(
     state: MessagesState,
     callState: RoomCallState,
     onJoinCallClicked: () -> Unit,
+    onViewAllPinnedMessagesClick: () -> Unit,
 ) {
     val markAsReadAsQuickAction = showMarkAsReadQuickAction()
     if (markAsReadAsQuickAction) {
@@ -69,6 +86,19 @@ internal fun RowScope.scMessagesViewTopBarActions(
                     imageVector = Icons.Default.Update, // There may be a better icon
                     contentDescription = stringResource(R.string.sc_action_jump_to_unread),
                 )
+            }
+        }
+    }
+    if (ScPrefs.PINNED_MESSAGE_TOOLBAR_ACTION.value()) {
+        val count = state.pinnedMessagesBannerState.pinnedMessagesCount()
+        if (count > 0) {
+            UnclippedIconButton(onClick = onViewAllPinnedMessagesClick) {
+                BoxWithCount(count) {
+                    Icon(
+                        imageVector = Icons.Default.PushPin,
+                        contentDescription = stringResource(io.element.android.libraries.ui.strings.R.string.common_pinned),
+                    )
+                }
             }
         }
     }
@@ -162,6 +192,64 @@ internal fun RowScope.scMessagesViewTopBarActions(
             }
         }
     }
+}
+
+@Composable // Similar to UnreadCountBox from SpacesPager
+private fun BoxWithCount(count: Int, offset: Dp = 6.dp, content: @Composable () -> Unit) {
+    if (count <= 0) {
+        content()
+        return
+    }
+    Box {
+        content()
+        Box(
+            modifier = Modifier
+                .offset(offset, -offset)
+                .background(ScTheme.exposures.unreadBadgeOnToolbarColor, RoundedCornerShape(8.dp))
+                .sizeIn(minWidth = 16.dp, minHeight = 16.dp)
+                .align(Alignment.TopEnd)
+        ) {
+            androidx.compose.material3.Text(
+                text = formatUnreadCount(count),
+                color = ScTheme.exposures.colorOnAccent,
+                style = MaterialTheme.typography.labelSmall,
+                maxLines = 1,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(horizontal = 2.dp)
+            )
+        }
+    }
+}
+
+@Composable // Based on material3/IconButton, some unneeded code removed and most specifically, `clip()` removed from modifier
+fun UnclippedIconButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    content: @Composable BoxScope.() -> Unit
+) {
+    @Suppress("DEPRECATION_ERROR")
+    Box(
+        modifier = modifier
+            .minimumInteractiveComponentSize()
+            .size(40.dp) // IconButtonTokens.StateLayerSize
+            //.clip(IconButtonTokens.StateLayerShape.value)
+            //.background(color = colors.containerColor(enabled))
+            .clickable(
+                onClick = onClick,
+                role = Role.Button,
+                interactionSource = interactionSource,
+                indication = androidx.compose.material.ripple.rememberRipple(
+                    bounded = false,
+                    //radius = IconButtonTokens.StateLayerSize / 2
+                    radius = 20.dp
+                )
+            ),
+        contentAlignment = Alignment.Center,
+        content = content,
+    )
 }
 
 fun String.takeIfIsValidEventId() = takeIf { isNotEmpty() && MatrixPatterns.isEventId(this) }

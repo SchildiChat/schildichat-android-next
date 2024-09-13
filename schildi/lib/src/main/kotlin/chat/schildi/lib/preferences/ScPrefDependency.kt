@@ -11,9 +11,10 @@ sealed interface ScPrefDependency : Parcelable {
 
 @Parcelize
 data class ScPrefEnabledDependency(
-    val pref: ScPref<Boolean>
+    val pref: ScPref<Boolean>,
+    val expect: Boolean = true,
 ) : ScPrefDependency {
-    private fun fulfilledFor(value: Boolean): Boolean = value
+    private fun fulfilledFor(value: Boolean): Boolean = value == expect
     override fun fulfilledFor(preferences: Preferences): Boolean = fulfilledFor(preferences[pref.key!!] ?: pref.defaultValue)
 }
 
@@ -24,5 +25,5 @@ data class ScPrefFulfilledForAnyDependency(
     override fun fulfilledFor(preferences: Preferences): Boolean = dependencies.any { it.fulfilledFor(preferences) }
 }
 
-fun ScPref<Boolean>.toDependency(): ScPrefDependency = ScPrefEnabledDependency(this)
-fun ScPref<Boolean>.asDependencies(): List<ScPrefDependency> = listOf(toDependency())
+fun ScPref<Boolean>.toDependency(expect: Boolean = true): ScPrefDependency = ScPrefEnabledDependency(this, expect)
+fun ScPref<Boolean>.asDependencies(expect: Boolean = true): List<ScPrefDependency> = listOf(toDependency(expect))

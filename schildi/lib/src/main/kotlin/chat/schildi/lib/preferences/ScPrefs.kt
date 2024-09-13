@@ -53,6 +53,8 @@ object ScPrefs {
     val ELEMENT_ROOM_LIST_FILTERS = ScBoolPref("ELEMENT_ROOM_LIST_FILTERS", false, R.string.sc_upstream_feature_flag_room_list_filters, R.string.sc_upstream_feature_flag_room_list_filters_summary, authorsChoice = false, upstreamChoice = true)
 
     // Timeline
+    val PINNED_MESSAGE_OVERLAY = ScBoolPref("PINNED_MESSAGE_OVERLAY", false, R.string.sc_pref_pinned_message_overlay_title, R.string.sc_pref_pinned_message_overlay_summary, authorsChoice = false, upstreamChoice = true)
+    val PINNED_MESSAGE_TOOLBAR_ACTION = ScBoolPref("PINNED_MESSAGE_TOOLBAR_ACTION", true, R.string.sc_pref_pinned_message_toolbar_title, R.string.sc_pref_pinned_message_toolbar_summary, authorsChoice = true, upstreamChoice = false, dependencies = PINNED_MESSAGE_OVERLAY.asDependencies(expect = false))
     val SC_TIMELINE_LAYOUT = ScBoolPref("SC_TIMELINE_LAYOUT", true, R.string.sc_pref_sc_timeline_layout_title, upstreamChoice = false)
     val FLOATING_DATE = ScBoolPref("FLOATING_DATE", true, R.string.sc_pref_sc_floating_date_title, R.string.sc_pref_sc_floating_date_summary, upstreamChoice = false)
     val PL_DISPLAY_NAME = ScBoolPref("PL_DISPLAY_NAME", false, R.string.sc_pref_pl_display_name_title, R.string.sc_pref_pl_display_name_summary_warning, authorsChoice = false, upstreamChoice = false)
@@ -116,6 +118,8 @@ object ScPrefs {
         ScPrefCategory(R.string.sc_pref_category_timeline, null, listOf(
             SC_TIMELINE_LAYOUT,
             FLOATING_DATE,
+            PINNED_MESSAGE_OVERLAY,
+            PINNED_MESSAGE_TOOLBAR_ACTION,
             PREFER_FREEFORM_REACTIONS,
             PREFER_FULLSCREEN_REACTION_SHEET,
         )),
@@ -189,6 +193,8 @@ object ScPrefs {
         SC_THEME,
         EL_TYPOGRAPHY,
         SC_TIMELINE_LAYOUT.copy(titleRes = R.string.sc_pref_sc_layout_title),
+        PINNED_MESSAGE_OVERLAY.copy(titleRes = R.string.sc_pref_pinned_message_overlay_title_short),
+        PINNED_MESSAGE_TOOLBAR_ACTION.copy(titleRes = R.string.sc_pref_pinned_message_toolbar_title_short),
         ScPrefCategory(R.string.sc_pref_screen_experimental_title, null, listOf(
             PL_DISPLAY_NAME,
             READ_MARKER_DEBUG,

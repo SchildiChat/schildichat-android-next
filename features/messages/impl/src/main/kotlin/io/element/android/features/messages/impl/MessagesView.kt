@@ -200,6 +200,7 @@ fun MessagesView(
                     onRoomDetailsClick = onRoomDetailsClick,
                     onJoinCallClick = onJoinCallClick,
                     state = state, // SC
+                    onViewAllPinnedMessagesClick = onViewAllPinnedMessagesClick, // SC
                 )
                 ScReadMarkerDebug(state.timelineState.scReadState)
             }
@@ -401,7 +402,7 @@ private fun MessagesViewContent(
                         nestedScrollConnection = scrollBehavior.nestedScrollConnection,
                     )
                     AnimatedVisibility(
-                        visible = state.pinnedMessagesBannerState is PinnedMessagesBannerState.Visible && scrollBehavior.isVisible,
+                        visible = ScPrefs.PINNED_MESSAGE_OVERLAY.value() && state.pinnedMessagesBannerState is PinnedMessagesBannerState.Visible && scrollBehavior.isVisible,
                         enter = expandVertically(),
                         exit = shrinkVertically(),
                     ) {
@@ -484,6 +485,7 @@ private fun MessagesViewTopBar(
     onJoinCallClick: () -> Unit,
     onBackClick: () -> Unit,
     state: MessagesState, // SC
+    onViewAllPinnedMessagesClick: () -> Unit, // SC
 ) {
     TopAppBar(
         navigationIcon = {
@@ -515,7 +517,7 @@ private fun MessagesViewTopBar(
                 enabled = callState != RoomCallState.DISABLED
             )
             //Spacer(Modifier.width(8.dp)) // SC: moved to scMessagesViewTopBarActions()
-            scMessagesViewTopBarActions(state, callState, onJoinCallClick)
+            scMessagesViewTopBarActions(state, callState, onJoinCallClick, onViewAllPinnedMessagesClick)
         },
         windowInsets = WindowInsets(0.dp)
     )

@@ -73,6 +73,12 @@
     <string name="sc_pref_dual_mention_unread_counts_title">Combined mention/unread count</string>
     <string name="sc_pref_dual_mention_unread_counts_title_short">Dual mention count</string>
     <string name="sc_pref_dual_mention_unread_counts_summary">When a highlighted chat\'s mention count differs from unread count, show both</string>
+    <string name="sc_pref_pinned_message_overlay_title">Pinned message overlay</string>
+    <string name="sc_pref_pinned_message_overlay_title_short">Pinned overlay</string>
+    <string name="sc_pref_pinned_message_overlay_summary">Preview pinned messages on top of the conversation view</string>
+    <string name="sc_pref_pinned_message_toolbar_title">Pinned message toolbar action</string>
+    <string name="sc_pref_pinned_message_toolbar_title_short">Pinned in toolbar</string>
+    <string name="sc_pref_pinned_message_toolbar_summary">Quick action to access pinned messages via top app bar</string>
 
     <string name="sc_pref_dev_quick_options">Quick settings</string>
     <string name="sc_pref_debug_read_marker">Debug read marker</string>

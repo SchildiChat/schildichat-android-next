@@ -1,0 +1,6 @@
+- Update codebase to Element X v0.6.0
+- Fix login flow sometimes getting stuck
+- Fully switch to client-side chat sorting
+- Access pinned messages via top app bar action
+- Adjust default session name to easier tell apart devices
+- Misc bug fixes

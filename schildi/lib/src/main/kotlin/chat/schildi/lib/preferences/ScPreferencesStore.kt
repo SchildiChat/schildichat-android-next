@@ -68,7 +68,7 @@ class DefaultScPreferencesStore @Inject constructor(
             if (isEnabled(prefs, scPref)) {
                 prefs[key] ?: scPref.defaultValue
             } else {
-                scPref.defaultValue
+                scPref.disabledValue
             }
         }
     }
@@ -80,7 +80,7 @@ class DefaultScPreferencesStore @Inject constructor(
                 if (isEnabled(prefs, scPref)) {
                     prefs[key] ?: scPref.defaultValue
                 } else {
-                    scPref.defaultValue
+                    scPref.disabledValue
                 }
             }
         }

@@ -86,7 +86,6 @@ import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.UserId
-import io.element.android.libraries.matrix.api.timeline.item.event.MessageShield
 import io.element.android.libraries.matrix.api.timeline.item.event.ProfileTimelineDetails
 import io.element.android.libraries.matrix.ui.messages.reply.InReplyToDetails
 import io.element.android.libraries.matrix.ui.messages.reply.InReplyToView
@@ -117,7 +116,6 @@ fun TimelineItemEventRow(
     isHighlighted: Boolean,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
-    onShieldClick: (MessageShield) -> Unit,
     onLinkClick: (String) -> Unit,
     onUserDataClick: (UserId) -> Unit,
     inReplyToClick: (EventId) -> Unit,
@@ -170,6 +168,17 @@ fun TimelineItemEventRow(
                         ReplySwipeIndicator({ offset / 120 })
                     }
                     TimelineItemEventRowContent(
+                        event = event,
+                        isHighlighted = isHighlighted,
+                        timelineRoomInfo = timelineRoomInfo,
+                        interactionSource = interactionSource,
+                        onClick = onClick,
+                        onLongClick = onLongClick,
+                        inReplyToClick = ::inReplyToClick,
+                        onUserDataClick = ::onUserDataClick,
+                        onReactionClick = { emoji -> onReactionClick(emoji, event) },
+                        onReactionLongClick = { emoji -> onReactionLongClick(emoji, event) },
+                        onMoreReactionsClick = { onMoreReactionsClick(event) },
                         modifier = Modifier
                             .absoluteOffset { IntOffset(x = offset.roundToInt(), y = 0) }
                             .draggable(
@@ -185,18 +194,7 @@ fun TimelineItemEventRow(
                                 },
                                 state = state.draggableState,
                             ),
-                        event = event,
-                        isHighlighted = isHighlighted,
-                        timelineRoomInfo = timelineRoomInfo,
-                        interactionSource = interactionSource,
-                        onClick = onClick,
-                        onLongClick = onLongClick,
-                        onShieldClick = onShieldClick,
-                        inReplyToClick = ::inReplyToClick,
-                        onUserDataClick = ::onUserDataClick,
-                        onReactionClick = { emoji -> onReactionClick(emoji, event) },
-                        onReactionLongClick = { emoji -> onReactionLongClick(emoji, event) },
-                        onMoreReactionsClick = { onMoreReactionsClick(event) },
+                        eventSink = eventSink,
                         eventContentView = eventContentView,
                     )
                 }
@@ -209,12 +207,12 @@ fun TimelineItemEventRow(
                 interactionSource = interactionSource,
                 onClick = onClick,
                 onLongClick = onLongClick,
-                onShieldClick = onShieldClick,
                 inReplyToClick = ::inReplyToClick,
                 onUserDataClick = ::onUserDataClick,
                 onReactionClick = { emoji -> onReactionClick(emoji, event) },
                 onReactionLongClick = { emoji -> onReactionLongClick(emoji, event) },
                 onMoreReactionsClick = { onMoreReactionsClick(event) },
+                eventSink = eventSink,
                 eventContentView = eventContentView,
             )
         }
@@ -264,12 +262,12 @@ private fun TimelineItemEventRowContent(
     interactionSource: MutableInteractionSource,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
-    onShieldClick: (MessageShield) -> Unit,
     inReplyToClick: () -> Unit,
     onUserDataClick: () -> Unit,
     onReactionClick: (emoji: String) -> Unit,
     onReactionLongClick: (emoji: String) -> Unit,
     onMoreReactionsClick: (event: TimelineItem.Event) -> Unit,
+    eventSink: (TimelineEvents.EventFromTimelineItem) -> Unit,
     modifier: Modifier = Modifier,
     eventContentView: @Composable (Modifier, (ContentAvoidingLayoutData) -> Unit) -> Unit,
 ) {
@@ -332,9 +330,9 @@ private fun TimelineItemEventRowContent(
         ) {
             MessageEventBubbleContent(
                 event = event,
-                onShieldClick = onShieldClick,
                 onMessageLongClick = onLongClick,
                 inReplyToClick = inReplyToClick,
+                eventSink = eventSink,
                 eventContentView = eventContentView,
             )
         }
@@ -392,9 +390,9 @@ private fun MessageSenderInformation(
 @Composable
 private fun MessageEventBubbleContent(
     event: TimelineItem.Event,
-    onShieldClick: (MessageShield) -> Unit,
     onMessageLongClick: () -> Unit,
     inReplyToClick: () -> Unit,
+    eventSink: (TimelineEvents.EventFromTimelineItem) -> Unit,
     @SuppressLint("ModifierParameter")
     // need to rename this modifier to prevent linter false positives
     @Suppress("ModifierNaming")
@@ -432,7 +430,7 @@ private fun MessageEventBubbleContent(
     @Composable
     fun WithTimestampLayout(
         timestampPosition: TimestampPosition,
-        onShieldClick: (MessageShield) -> Unit,
+        eventSink: (TimelineEvents.EventFromTimelineItem) -> Unit,
         modifier: Modifier = Modifier,
         canShrinkContent: Boolean = false,
         content: @Composable (onContentLayoutChange: (ContentAvoidingLayoutData) -> Unit) -> Unit,
@@ -443,7 +441,7 @@ private fun MessageEventBubbleContent(
                     content {}
                     TimelineEventTimestampView(
                         event = event,
-                        onShieldClick = onShieldClick,
+                        eventSink = eventSink,
                         modifier = Modifier
                             .scOrElse(
                                 forSc = Modifier
@@ -470,7 +468,7 @@ private fun MessageEventBubbleContent(
                     overlay = {
                         TimelineEventTimestampView(
                             event = event,
-                            onShieldClick = onShieldClick,
+                            eventSink = eventSink,
                             modifier = Modifier
                                 .padding(horizontal = 8.dp, vertical = 4.dp)
                         )
@@ -481,7 +479,7 @@ private fun MessageEventBubbleContent(
                     content {}
                     TimelineEventTimestampView(
                         event = event,
-                        onShieldClick = onShieldClick,
+                        eventSink = eventSink,
                         modifier = Modifier
                             .align(Alignment.End)
                             .padding(horizontal = 8.dp, vertical = 4.dp)
@@ -529,7 +527,7 @@ private fun MessageEventBubbleContent(
         val contentWithTimestamp = @Composable {
             WithTimestampLayout(
                 timestampPosition = timestampPosition,
-                onShieldClick = onShieldClick,
+                eventSink = eventSink,
                 canShrinkContent = canShrinkContent,
                 modifier = timestampLayoutModifier,
                 content = { onContentLayoutChange ->

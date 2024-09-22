@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.state
@@ -24,6 +25,8 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import io.element.android.features.messages.impl.MessagesNavigator
+import io.element.android.features.messages.impl.crypto.sendfailure.resolve.ResolveVerifiedUserSendFailureEvents
+import io.element.android.features.messages.impl.crypto.sendfailure.resolve.ResolveVerifiedUserSendFailureState
 import io.element.android.features.messages.impl.timeline.factories.TimelineItemsFactory
 import io.element.android.features.messages.impl.timeline.factories.TimelineItemsFactoryConfig
 import io.element.android.features.messages.impl.timeline.model.NewEventState
@@ -69,6 +72,7 @@ class TimelinePresenter @AssistedInject constructor(
     private val endPollAction: EndPollAction,
     private val sessionPreferencesStore: SessionPreferencesStore,
     private val timelineController: TimelineController,
+    private val resolveVerifiedUserSendFailurePresenter: Presenter<ResolveVerifiedUserSendFailureState>,
 ) : Presenter<TimelineState> {
     @AssistedFactory
     interface Factory {
@@ -81,6 +85,7 @@ class TimelinePresenter @AssistedInject constructor(
             computeReactions = true,
         )
     )
+    private var timelineItems by mutableStateOf<ImmutableList<TimelineItem>>(persistentListOf())
 
     @Composable
     override fun present(): TimelineState {
@@ -89,9 +94,12 @@ class TimelinePresenter @AssistedInject constructor(
             mutableStateOf(FocusRequestState.None)
         }
 
+        LaunchedEffect(Unit) {
+            timelineItemsFactory.timelineItems.collect { timelineItems = it }
+        }
+
         val lastReadReceiptId = rememberSaveable { mutableStateOf<EventId?>(null) }
 
-        val timelineItems by timelineItemsFactory.timelineItems.collectAsState(initial = persistentListOf())
         val roomInfo by room.roomInfoFlow.collectAsState(initial = null)
 
         val syncUpdateFlow = room.syncUpdateFlow.collectAsState()
@@ -104,6 +112,7 @@ class TimelinePresenter @AssistedInject constructor(
         val newEventState = remember { mutableStateOf(NewEventState.None) }
         val messageShield: MutableState<MessageShield?> = remember { mutableStateOf(null) }
 
+        val resolveVerifiedUserSendFailureState = resolveVerifiedUserSendFailurePresenter.present()
         val isSendPublicReadReceiptsEnabled by sessionPreferencesStore.isSendPublicReadReceiptsEnabled().collectAsState(initial = true)
         val renderReadReceipts by sessionPreferencesStore.isRenderReadReceiptsEnabled().collectAsState(initial = true)
         val isLive by timelineController.isLive().collectAsState(initial = true)
@@ -177,6 +186,9 @@ class TimelinePresenter @AssistedInject constructor(
                 }
                 TimelineEvents.HideShieldDialog -> messageShield.value = null
                 is TimelineEvents.ShowShieldDialog -> messageShield.value = event.messageShield
+                is TimelineEvents.ComputeVerifiedUserSendFailure -> {
+                    resolveVerifiedUserSendFailureState.eventSink(ResolveVerifiedUserSendFailureEvents.ComputeForMessage(event.event))
+                }
             }
         }
 
@@ -254,6 +266,7 @@ class TimelinePresenter @AssistedInject constructor(
             isLive = isLive,
             focusRequestState = focusRequestState.value,
             messageShield = messageShield.value,
+            resolveVerifiedUserSendFailureState = resolveVerifiedUserSendFailureState,
             eventSink = { handleEvents(it) }
         )
     }

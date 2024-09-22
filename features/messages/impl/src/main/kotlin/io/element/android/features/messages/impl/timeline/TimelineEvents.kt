@@ -7,6 +7,7 @@
 
 package io.element.android.features.messages.impl.timeline
 
+import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageShield
@@ -23,7 +24,6 @@ sealed interface TimelineEvents {
     data object OnFocusEventRender : TimelineEvents
     data object JumpToLive : TimelineEvents
 
-    data class ShowShieldDialog(val messageShield: MessageShield) : TimelineEvents
     data object HideShieldDialog : TimelineEvents
 
     /**
@@ -31,6 +31,8 @@ sealed interface TimelineEvents {
      */
     sealed interface EventFromTimelineItem : TimelineEvents
 
+    data class ComputeVerifiedUserSendFailure(val event: TimelineItem.Event) : EventFromTimelineItem
+    data class ShowShieldDialog(val messageShield: MessageShield) : EventFromTimelineItem
     data class LoadMore(val direction: Timeline.PaginationDirection) : EventFromTimelineItem
 
     /**

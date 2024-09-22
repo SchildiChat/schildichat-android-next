@@ -9,6 +9,7 @@ package io.element.android.features.messages.impl.actionlist
 
 import androidx.compose.runtime.Immutable
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemAction
+import io.element.android.features.messages.impl.crypto.sendfailure.VerifiedUserSendFailure
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import kotlinx.collections.immutable.ImmutableList
 
@@ -17,6 +18,7 @@ data class ActionListState(
     val target: Target,
     val eventSink: (ActionListEvents) -> Unit,
 ) {
+    @Immutable
     sealed interface Target {
         data object None : Target
         data class Loading(val event: TimelineItem.Event) : Target
@@ -24,6 +26,7 @@ data class ActionListState(
             val event: TimelineItem.Event,
             val displayEmojiReactions: Boolean,
             val recentEmojis: List<String> = emptyList(),
+            val verifiedUserSendFailure: VerifiedUserSendFailure,
             val actions: ImmutableList<TimelineItemAction>,
         ) : Target
     }

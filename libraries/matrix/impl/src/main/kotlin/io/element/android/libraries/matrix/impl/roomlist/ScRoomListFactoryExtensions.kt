@@ -7,4 +7,5 @@ fun ScRoomSortOrder.toSdkSortOrder() = uniffi.matrix_sdk_ui.ScSortOrder(
         pinFavorites = pinFavourites,
         buryLowPriority = buryLowPriority,
         clientGeneratedUnread = clientSideUnreadCounts,
+        withSilentUnread = withSilentUnread,
     )

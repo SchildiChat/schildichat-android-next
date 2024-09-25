@@ -273,7 +273,7 @@ private fun ScUnreadCounter(room: RoomListRoomSummary) {
             badgeColor = ElementTheme.colors.unreadIndicator
             outlinedBadge = true
         }
-        unreadCount > 0 -> {
+        unreadCount > 0 && ScPrefs.RENDER_SILENT_UNREAD.value() -> {
             count = formatUnreadCount(unreadCount)
             badgeColor = ScTheme.exposures.unreadBadgeColor
         }

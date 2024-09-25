@@ -513,7 +513,7 @@ private fun UnreadCountBox(unreadCounts: SpaceUnreadCountsDataSource.SpaceUnread
             badgeColor = ElementTheme.colors.unreadIndicator
             outlinedBadge = true
         }
-        unreadCounts.unreadMessages > 0 -> {
+        unreadCounts.unreadMessages > 0 && ScPrefs.RENDER_SILENT_UNREAD.value() -> {
             count = if (countChats) unreadCounts.unreadChats else unreadCounts.unreadMessages
             badgeColor = ScTheme.exposures.unreadBadgeColor
         }

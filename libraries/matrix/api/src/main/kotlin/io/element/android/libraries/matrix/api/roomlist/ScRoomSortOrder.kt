@@ -6,4 +6,5 @@ data class ScRoomSortOrder(
     val pinFavourites: Boolean = false,
     val buryLowPriority: Boolean = false,
     val clientSideUnreadCounts: Boolean = false,
+    val withSilentUnread: Boolean = false,
 )

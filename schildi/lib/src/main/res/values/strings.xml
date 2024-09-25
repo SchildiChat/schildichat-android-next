@@ -50,6 +50,10 @@
     <string name="sc_pref_client_side_sort_summary">Sort chats solely based on client-side calculation</string>
     <string name="sc_pref_client_side_sort_by_unread_title">Sort by unread</string>
     <string name="sc_pref_client_side_sort_by_unread_summary">Sort unread chats on top of the list</string>
+    <string name="sc_pref_sort_with_silent_unread_title">Sort with muted unread</string>
+    <string name="sc_pref_sort_with_silent_unread_summary">Sort muted unread chats above fully read chats</string>
+    <string name="sc_pref_render_silent_unread_title">Show silent unread counts</string>
+    <string name="sc_pref_render_silent_unread_summary">Render unread message counts also for muted chats</string>
     <string name="sc_pref_category_chat_sorting">Sort order</string>
     <string name="sc_pref_prefer_freeform_reactions_title">Prefer freeform reactions</string>
     <string name="sc_pref_prefer_freeform_reactions_summary">Open the emoji picker showing the freeform reaction input by default</string>

@@ -37,10 +37,10 @@ private const val DEFAULT_PAGE_SIZE = 20
 
 internal class RustRoomListService(
     private val innerRoomListService: InnerRustRoomListService,
-    private val sessionCoroutineScope: CoroutineScope,
     private val sessionDispatcher: CoroutineDispatcher,
     private val roomListFactory: RoomListFactory,
     private val roomSyncSubscriber: RoomSyncSubscriber,
+    private val sessionCoroutineScope: CoroutineScope,
 ) : RoomListService {
     private val lastListWithSortOrder = AtomicReference<Triple<DynamicRoomList, CoroutineScope, ScRoomSortOrder>?>(null)
 
@@ -74,8 +74,9 @@ internal class RustRoomListService(
                 Triple(
                     roomListFactory.createRoomList(
                         pageSize = pageSize,
-                        initialFilter = previous?.first?.currentFilter?.value ?: initialFilter,
+                        coroutineContext = sessionDispatcher,
                         coroutineScope = scope,
+                        initialFilter = previous?.first?.currentFilter?.value ?: initialFilter,
                         sortOrder = sortOrder,
                     ) {
                         innerRoomListService.allRooms()

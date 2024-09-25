@@ -254,6 +254,7 @@ class TimelinePresenter @AssistedInject constructor(
                     userHasPermissionToSendMessage = userHasPermissionToSendMessage,
                     userHasPermissionToSendReaction = userHasPermissionToSendReaction,
                     isCallOngoing = roomInfo?.hasRoomCall.orFalse(),
+                    pinnedEventIds = roomInfo?.pinnedEventIds.orEmpty(),
                 )
             }
         }

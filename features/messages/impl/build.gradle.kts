@@ -58,7 +58,7 @@ dependencies {
     implementation(projects.libraries.uiUtils)
     implementation(projects.libraries.testtags)
     implementation(projects.features.networkmonitor.api)
-    implementation(projects.services.analytics.api)
+    implementation(projects.services.analytics.compose)
     implementation(projects.services.toolbox.api)
     implementation(libs.coil.compose)
     implementation(libs.datetime)

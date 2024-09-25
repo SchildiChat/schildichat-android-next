@@ -68,4 +68,5 @@ data class TimelineRoomInfo(
     val userHasPermissionToSendMessage: Boolean,
     val userHasPermissionToSendReaction: Boolean,
     val isCallOngoing: Boolean,
+    val pinnedEventIds: List<EventId>
 )

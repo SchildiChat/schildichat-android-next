@@ -60,7 +60,7 @@ fun ListItem(
         headlineColor = style.headlineColor(),
         leadingIconColor = style.leadingIconColor(),
         trailingIconColor = style.trailingIconColor(),
-        supportingColor = style.supportingTextColor(),
+        supportingColor = style.supportingTextColorWithEnabled(enabled),
         disabledHeadlineColor = ListItemDefaultColors.headlineDisabled,
         disabledLeadingIconColor = ListItemDefaultColors.iconDisabled,
         disabledTrailingIconColor = ListItemDefaultColors.iconDisabled,

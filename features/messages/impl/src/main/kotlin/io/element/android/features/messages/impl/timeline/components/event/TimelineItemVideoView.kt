@@ -40,6 +40,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import chat.schildi.lib.compose.thenIf
 import chat.schildi.theme.scBubbleFont
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
@@ -118,8 +119,9 @@ fun TimelineItemVideoView(
                 LocalTextStyle provides ElementTheme.typography.scBubbleFont,
             ) {
                 EditorStyledText(
-                    modifier = Modifier
-                        .widthIn(min = MIN_HEIGHT_IN_DP.dp * content.aspectRatio!!, max = MAX_HEIGHT_IN_DP.dp * content.aspectRatio),
+                    modifier = Modifier.thenIf(content.aspectRatio != null) {
+                        widthIn(min = MIN_HEIGHT_IN_DP.dp * content.aspectRatio!!, max = MAX_HEIGHT_IN_DP.dp * content.aspectRatio)
+                    },
                     text = caption,
                     style = ElementRichTextEditorStyle.textStyle(),
                     releaseOnDetach = false,

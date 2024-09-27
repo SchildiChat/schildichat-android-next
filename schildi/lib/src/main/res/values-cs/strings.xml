@@ -95,4 +95,14 @@
     <string name="sc_sync_read_receipt_and_marker_title_short">Synchronizovat značky přečtení</string>
     <string name="sc_pref_client_side_sort_by_unread_title">Řadit podle nepřečtených</string>
     <string name="sc_pref_client_side_sort_by_unread_summary">Řazení nepřečtených chatů na začátek seznamu</string>
+    <string name="sc_pref_pinned_message_overlay_title_short">Překrytí připnutých</string>
+    <string name="sc_pref_pinned_message_toolbar_title">Akce na panelu nástrojů připnutých zpráv</string>
+    <string name="sc_pref_pinned_message_toolbar_title_short">Připnuté na panelu nástrojů</string>
+    <string name="sc_pref_pinned_message_toolbar_summary">Rychlá akce pro přístup k připnutým zprávám prostřednictvím horního panelu aplikací</string>
+    <string name="sc_pref_pinned_message_overlay_title">Překrytí připnutých zpráv</string>
+    <string name="sc_pref_pinned_message_overlay_summary">Náhled připnutých zpráv v horní části zobrazení konverzace</string>
+    <string name="sc_pref_sort_with_silent_unread_title">Třídit s tlumenými nepřečtenými</string>
+    <string name="sc_pref_sort_with_silent_unread_summary">Řadit ztlumené nepřečtené chaty nad plně přečtené chaty</string>
+    <string name="sc_pref_render_silent_unread_summary">Zobrazovat počty nepřečtených zpráv i pro ztlumené chaty</string>
+    <string name="sc_pref_render_silent_unread_title">Zobrazit počty ztišených nepřečtených</string>
 </resources>

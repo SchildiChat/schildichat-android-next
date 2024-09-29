@@ -1,0 +1,5 @@
+- Update codebase to Element X v0.6.4
+- Add options to hide muted unread counts and to ignore for sorting
+- Adjust some text colors for SC themes
+- Fix upstream crash if a video has a caption and the thumbnail ratio is unknown
+- Switch to client-side unread counts by default to account for synapse's native SSS

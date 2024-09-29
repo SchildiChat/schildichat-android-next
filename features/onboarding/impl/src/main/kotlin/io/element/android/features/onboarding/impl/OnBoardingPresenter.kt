@@ -14,6 +14,7 @@ import io.element.android.appconfig.OnBoardingConfig
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.core.meta.BuildType
+import io.element.android.libraries.core.meta.isGplayBuild
 import io.element.android.libraries.featureflag.api.FeatureFlagService
 import io.element.android.libraries.featureflag.api.FeatureFlags
 import javax.inject.Inject
@@ -35,7 +36,7 @@ class OnBoardingPresenter @Inject constructor(
             isDebugBuild = buildMeta.buildType != BuildType.RELEASE,
             productionApplicationName = buildMeta.productionApplicationName,
             canLoginWithQrCode = canLoginWithQrCode,
-            canCreateAccount = OnBoardingConfig.CAN_CREATE_ACCOUNT,
+            canCreateAccount = OnBoardingConfig.CAN_CREATE_ACCOUNT && !buildMeta.isGplayBuild,
         )
     }
 }

@@ -21,6 +21,7 @@ anvil {
 
 dependencies {
     implementation(projects.schildi.matrixsdk)
+    implementation(projects.schildi.lib)
     releaseImplementation(libs.matrix.sdk)
     if (file("${rootDir.path}/libraries/rustsdk/matrix-rust-sdk.aar").exists()) {
         println("\nNote: Using local binary of the Rust SDK.\n")

@@ -58,8 +58,7 @@ class RoomListFiltersPresenter @Inject constructor(
                 }
                 .collect { filters ->
                     val result = MatrixRoomListFilter.All(filters)
-                    //roomListService.allRooms.updateFilter(result)
-                    roomListService.sortedRooms.updateFilter(result)
+                    roomListService.allRooms.updateFilter(result)
                 }
         }
 

@@ -13,7 +13,6 @@ import io.element.android.libraries.matrix.api.roomlist.RoomList
 import io.element.android.libraries.matrix.api.roomlist.RoomListFilter
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
 import io.element.android.libraries.matrix.api.roomlist.RoomSummary
-import io.element.android.libraries.matrix.api.roomlist.ScRoomSortOrder
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -54,9 +53,6 @@ class FakeRoomListService(
         }
     }
 
-    override fun getOrReplaceRoomListWithSortOrder(pageSize: Int, initialFilter: RoomListFilter, sortOrder: ScRoomSortOrder)
-        = createRoomList(pageSize, initialFilter, RoomList.Source.All)
-
     override suspend fun subscribeToVisibleRooms(roomIds: List<RoomId>) {
         subscribeToVisibleRoomsLambda(roomIds)
     }
@@ -72,8 +68,6 @@ class FakeRoomListService(
         allSpacesLoadingStateFlow,
         MutableStateFlow(RoomListFilter.all())
     )
-
-    override val sortedRooms = allRooms
 
     override val state: StateFlow<RoomListService.State> = roomListStateFlow
 

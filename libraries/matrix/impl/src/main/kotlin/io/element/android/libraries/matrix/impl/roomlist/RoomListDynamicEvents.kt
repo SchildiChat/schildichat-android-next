@@ -7,10 +7,12 @@
 
 package io.element.android.libraries.matrix.impl.roomlist
 
+import io.element.android.libraries.matrix.api.roomlist.ScSdkInboxSettings
 import org.matrix.rustcomponents.sdk.RoomListEntriesDynamicFilterKind
 
 internal sealed interface RoomListDynamicEvents {
     data object Reset : RoomListDynamicEvents
     data object LoadMore : RoomListDynamicEvents
     data class SetFilter(val filter: RoomListEntriesDynamicFilterKind) : RoomListDynamicEvents
+    data class SetScInboxSettings(val settings: ScSdkInboxSettings) : RoomListDynamicEvents
 }

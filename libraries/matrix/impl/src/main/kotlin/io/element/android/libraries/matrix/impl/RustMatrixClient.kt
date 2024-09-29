@@ -7,6 +7,7 @@
 
 package io.element.android.libraries.matrix.impl
 
+import chat.schildi.lib.preferences.ScPreferencesStore
 import io.element.android.libraries.androidutils.file.getSizeOfFiles
 import io.element.android.libraries.androidutils.file.safeDelete
 import io.element.android.libraries.core.bool.orFalse
@@ -120,6 +121,7 @@ class RustMatrixClient(
     private val sessionStore: SessionStore,
     private val appCoroutineScope: CoroutineScope,
     private val sessionDelegate: RustClientSessionDelegate,
+    private val scPreferencesStore: ScPreferencesStore,
     syncService: ClientSyncService,
     dispatchers: CoroutineDispatchers,
     baseCacheDirectory: File,
@@ -168,6 +170,7 @@ class RustMatrixClient(
             sessionCoroutineScope = sessionCoroutineScope,
         ),
         roomSyncSubscriber = roomSyncSubscriber,
+        scPreferencesStore = scPreferencesStore,
     )
 
     private val verificationService = RustSessionVerificationService(

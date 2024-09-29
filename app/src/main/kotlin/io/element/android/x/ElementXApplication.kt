@@ -28,6 +28,7 @@ class ElementXApplication : Application(), DaggerComponentOwner {
             initializeComponent(CrashInitializer::class.java)
             initializeComponent(TracingInitializer::class.java)
             initializeComponent(CacheCleanerInitializer::class.java)
+            initializeComponent(ScInitializer::class.java) // SC
         }
         EmojiCompat.init(BundledEmojiCompatConfig(this)) // SC
         logApplicationInfo(this)

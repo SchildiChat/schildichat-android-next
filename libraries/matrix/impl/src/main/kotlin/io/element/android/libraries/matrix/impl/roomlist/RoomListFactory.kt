@@ -11,7 +11,8 @@ import io.element.android.libraries.matrix.api.roomlist.DynamicRoomList
 import io.element.android.libraries.matrix.api.roomlist.RoomList
 import io.element.android.libraries.matrix.api.roomlist.RoomListFilter
 import io.element.android.libraries.matrix.api.roomlist.RoomSummary
-import io.element.android.libraries.matrix.api.roomlist.ScRoomSortOrder
+import io.element.android.libraries.matrix.api.roomlist.ScSdkInboxSettings
+import io.element.android.libraries.matrix.api.roomlist.ScSdkRoomSortOrder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,7 +43,7 @@ internal class RoomListFactory(
         coroutineContext: CoroutineContext,
         coroutineScope: CoroutineScope = sessionCoroutineScope,
         initialFilter: RoomListFilter = RoomListFilter.all(),
-        sortOrder: ScRoomSortOrder = ScRoomSortOrder(),
+        initialInboxSettings: ScSdkInboxSettings? = null,
         innerProvider: suspend () -> InnerRoomList
     ): DynamicRoomList {
         val loadingStateFlow: MutableStateFlow<RoomList.LoadingState> = MutableStateFlow(RoomList.LoadingState.NotLoaded)
@@ -62,7 +63,7 @@ internal class RoomListFactory(
                     pageSize = pageSize,
                     roomListDynamicEvents = dynamicEvents,
                     initialFilterKind = RoomListEntriesDynamicFilterKind.NonLeft,
-                    sortOrder = sortOrder,
+                    initialInboxSettings = initialInboxSettings,
                 ).onEach { update ->
                     processor.postUpdate(update)
                 }.launchIn(this)
@@ -115,6 +116,10 @@ private class RustDynamicRoomList(
 
     override suspend fun updateFilter(filter: RoomListFilter) {
         currentFilter.emit(filter)
+    }
+
+    override suspend fun updateSettings(settings: ScSdkInboxSettings) {
+        dynamicEvents.emit(RoomListDynamicEvents.SetScInboxSettings(settings))
     }
 
     override suspend fun loadMore() {

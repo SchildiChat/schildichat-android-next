@@ -7,7 +7,7 @@
 
 package io.element.android.features.roomlist.impl.datasource
 
-import chat.schildi.features.roomlist.ScRoomSortOrderSource
+import chat.schildi.features.roomlist.ScInboxSettingsSource
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.libraries.androidutils.diff.DiffCacheUpdater
 import io.element.android.libraries.androidutils.diff.MutableListDiffCache
@@ -36,7 +36,7 @@ class RoomListDataSource @Inject constructor(
     private val roomListRoomSummaryFactory: RoomListRoomSummaryFactory,
     private val coroutineDispatchers: CoroutineDispatchers,
     private val notificationSettingsService: NotificationSettingsService,
-    private val scRoomSortOrderSource: ScRoomSortOrderSource,
+    private val scInboxSettingsSource: ScInboxSettingsSource,
     private val appScope: CoroutineScope,
 ) {
     init {
@@ -56,12 +56,10 @@ class RoomListDataSource @Inject constructor(
     val loadingState = roomListService.allRooms.loadingState
 
     fun launchIn(coroutineScope: CoroutineScope) {
-        /*
+        scInboxSettingsSource.launchIn(coroutineScope)
         roomListService
             .allRooms
             .filteredSummaries
-         */
-        scRoomSortOrderSource.filteredSummaries()
             .onEach { roomSummaries ->
                 replaceWith(roomSummaries)
             }
@@ -78,7 +76,6 @@ class RoomListDataSource @Inject constructor(
             .debounce(0.5.seconds)
             .onEach {
                 roomListService.allRooms.rebuildSummaries()
-                roomListService.sortedRooms.rebuildSummaries()
             }
             .launchIn(appScope)
     }

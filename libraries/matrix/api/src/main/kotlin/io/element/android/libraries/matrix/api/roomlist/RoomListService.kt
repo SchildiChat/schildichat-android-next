@@ -45,12 +45,6 @@ interface RoomListService {
         source: RoomList.Source,
     ): DynamicRoomList
 
-    fun getOrReplaceRoomListWithSortOrder(
-        pageSize: Int,
-        initialFilter: RoomListFilter,
-        sortOrder: ScRoomSortOrder = ScRoomSortOrder(),
-    ): DynamicRoomList
-
     /**
      * Subscribes to sync requests for the visible rooms.
      * @param roomIds the list of visible room ids to subscribe to.
@@ -62,12 +56,6 @@ interface RoomListService {
      * If you want to get a filtered room list, consider using [createRoomList].
      */
     val allRooms: DynamicRoomList
-
-    /**
-     * SC: don't use allRooms, sorted rooms unfortunately needs recreation when changing sort order which could break some flows,
-     * so only use it if we're sure we cover that
-     */
-    val sortedRooms: DynamicRoomList
 
     /**
      * Root spaces.

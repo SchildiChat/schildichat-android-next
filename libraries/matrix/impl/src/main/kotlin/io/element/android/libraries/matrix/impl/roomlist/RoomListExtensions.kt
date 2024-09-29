@@ -8,7 +8,7 @@
 package io.element.android.libraries.matrix.impl.roomlist
 
 import io.element.android.libraries.core.data.tryOrNull
-import io.element.android.libraries.matrix.api.roomlist.ScRoomSortOrder
+import io.element.android.libraries.matrix.api.roomlist.ScSdkInboxSettings
 import io.element.android.libraries.matrix.impl.util.cancelAndDestroy
 import io.element.android.libraries.matrix.impl.util.mxCallbackFlow
 import kotlinx.coroutines.channels.Channel
@@ -59,7 +59,7 @@ internal fun RoomListInterface.entriesFlow(
     pageSize: Int,
     roomListDynamicEvents: Flow<RoomListDynamicEvents>,
     initialFilterKind: RoomListEntriesDynamicFilterKind,
-    sortOrder: ScRoomSortOrder,
+    initialInboxSettings: ScSdkInboxSettings? = null,
 ): Flow<List<RoomListEntriesUpdate>> =
     callbackFlow {
         val listener = object : RoomListEntriesListener {
@@ -69,11 +69,19 @@ internal fun RoomListInterface.entriesFlow(
         }
         val result = entriesWithDynamicAdapters(pageSize.toUInt(), listener)
         val controller = result.controller()
-        controller.setFilter(initialFilterKind)
-        controller.setSortOrder(sortOrder.toSdkSortOrder())
+        if (initialInboxSettings == null) {
+            controller.setFilter(initialFilterKind)
+        } else {
+            controller.setScInboxSettings(initialFilterKind, initialInboxSettings.toSdkSettings())
+        }
+        var previousScInboxSettings = initialInboxSettings
         roomListDynamicEvents.onEach { controllerEvents ->
             when (controllerEvents) {
                 is RoomListDynamicEvents.SetFilter -> {
+                    if (initialInboxSettings != null) {
+                        Timber.e("Setting filter while using SC inbox settings not supported")
+                        return@onEach
+                    }
                     controller.setFilter(controllerEvents.filter)
                 }
                 is RoomListDynamicEvents.LoadMore -> {
@@ -81,6 +89,20 @@ internal fun RoomListInterface.entriesFlow(
                 }
                 is RoomListDynamicEvents.Reset -> {
                     controller.resetToOnePage()
+                }
+                is RoomListDynamicEvents.SetScInboxSettings -> {
+                    if (initialInboxSettings == null) {
+                        Timber.w("Setting SC inbox settings after initializing without")
+                    }
+                    if (controllerEvents.settings == previousScInboxSettings) {
+                        Timber.i("Ignore inbox settings update without change")
+                        return@onEach
+                    }
+                    previousScInboxSettings = controllerEvents.settings
+                    controller.setScInboxSettings(
+                        initialFilterKind,
+                        controllerEvents.settings.toSdkSettings()
+                    )
                 }
             }
         }.launchIn(this)

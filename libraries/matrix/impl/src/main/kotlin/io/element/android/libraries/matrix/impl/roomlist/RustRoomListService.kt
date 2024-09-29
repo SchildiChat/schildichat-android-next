@@ -7,30 +7,29 @@
 
 package io.element.android.libraries.matrix.impl.roomlist
 
-import io.element.android.libraries.core.coroutine.childScope
+import chat.schildi.lib.preferences.ScPreferencesStore
+import chat.schildi.lib.preferences.ScPrefs
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.roomlist.DynamicRoomList
 import io.element.android.libraries.matrix.api.roomlist.RoomList
 import io.element.android.libraries.matrix.api.roomlist.RoomListFilter
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
-import io.element.android.libraries.matrix.api.roomlist.ScRoomSortOrder
+import io.element.android.libraries.matrix.api.roomlist.ScSdkInboxSettings
+import io.element.android.libraries.matrix.api.roomlist.ScSdkRoomSortOrder
 import io.element.android.libraries.matrix.api.roomlist.loadAllIncrementally
 import io.element.android.libraries.matrix.impl.room.RoomSyncSubscriber
+import io.element.android.libraries.preferences.api.store.AppPreferencesStore
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.isActive
 import org.matrix.rustcomponents.sdk.RoomListServiceState
 import org.matrix.rustcomponents.sdk.RoomListServiceSyncIndicator
 import timber.log.Timber
-import java.util.concurrent.atomic.AtomicReference
 import org.matrix.rustcomponents.sdk.RoomListService as InnerRustRoomListService
 
 private const val DEFAULT_PAGE_SIZE = 20
@@ -40,9 +39,9 @@ internal class RustRoomListService(
     private val sessionDispatcher: CoroutineDispatcher,
     private val roomListFactory: RoomListFactory,
     private val roomSyncSubscriber: RoomSyncSubscriber,
-    private val sessionCoroutineScope: CoroutineScope,
+    private val scPreferencesStore: ScPreferencesStore,
+    sessionCoroutineScope: CoroutineScope,
 ) : RoomListService {
-    private val lastListWithSortOrder = AtomicReference<Triple<DynamicRoomList, CoroutineScope, ScRoomSortOrder>?>(null)
 
     override fun createRoomList(
         pageSize: Int,
@@ -61,36 +60,6 @@ internal class RustRoomListService(
         }
     }
 
-    override fun getOrReplaceRoomListWithSortOrder(
-        pageSize: Int,
-        initialFilter: RoomListFilter,
-        sortOrder: ScRoomSortOrder
-    ): DynamicRoomList {
-        return lastListWithSortOrder.updateAndGet { previous ->
-            if (previous?.third == sortOrder && previous.second.isActive) {
-                previous
-            } else {
-                val scope = sessionCoroutineScope.childScope(sessionDispatcher, "sc-room-list")
-                Triple(
-                    roomListFactory.createRoomList(
-                        pageSize = pageSize,
-                        coroutineContext = sessionDispatcher,
-                        coroutineScope = scope,
-                        initialFilter = previous?.first?.currentFilter?.value ?: initialFilter,
-                        sortOrder = sortOrder,
-                    ) {
-                        innerRoomListService.allRooms()
-                    }.also { roomList ->
-                        previous?.second?.cancel("Sorted room list being replaced")
-                        roomList.loadAllIncrementally(scope)
-                    },
-                    scope,
-                    sortOrder
-                )
-            }
-        }!!.first
-    }
-
     override suspend fun subscribeToVisibleRooms(roomIds: List<RoomId>) {
         roomSyncSubscriber.batchSubscribe(roomIds)
     }
@@ -98,10 +67,18 @@ internal class RustRoomListService(
     override val allRooms: DynamicRoomList = roomListFactory.createRoomList(
         pageSize = DEFAULT_PAGE_SIZE,
         coroutineContext = sessionDispatcher,
+        initialInboxSettings = ScSdkInboxSettings(
+            sortOrder = ScSdkRoomSortOrder(
+                byUnread = scPreferencesStore.getCachedOrDefaultValue(ScPrefs.SORT_BY_UNREAD),
+                pinFavourites = scPreferencesStore.getCachedOrDefaultValue(ScPrefs.PIN_FAVORITES),
+                buryLowPriority = scPreferencesStore.getCachedOrDefaultValue(ScPrefs.BURY_LOW_PRIORITY),
+                clientSideUnreadCounts = scPreferencesStore.getCachedOrDefaultValue(ScPrefs.CLIENT_GENERATED_UNREAD_COUNTS),
+                withSilentUnread = scPreferencesStore.getCachedOrDefaultValue(ScPrefs.SORT_WITH_SILENT_UNREAD),
+            )
+        ),
     ) {
         innerRoomListService.allRooms()
     }
-        get() = lastListWithSortOrder.get()?.first ?: field
 
     override val allSpaces: DynamicRoomList = roomListFactory.createRoomList(
         pageSize = DEFAULT_PAGE_SIZE,
@@ -109,9 +86,6 @@ internal class RustRoomListService(
     ) {
         innerRoomListService.allSpaces()
     }
-
-    override val sortedRooms: DynamicRoomList
-        get() = lastListWithSortOrder.get()?.first ?: allRooms
 
     init {
         allRooms.loadAllIncrementally(sessionCoroutineScope)

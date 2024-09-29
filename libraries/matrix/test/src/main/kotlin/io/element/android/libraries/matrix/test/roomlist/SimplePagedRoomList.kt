@@ -11,6 +11,7 @@ import io.element.android.libraries.matrix.api.roomlist.DynamicRoomList
 import io.element.android.libraries.matrix.api.roomlist.RoomList
 import io.element.android.libraries.matrix.api.roomlist.RoomListFilter
 import io.element.android.libraries.matrix.api.roomlist.RoomSummary
+import io.element.android.libraries.matrix.api.roomlist.ScSdkInboxSettings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,6 +39,8 @@ data class SimplePagedRoomList(
     override suspend fun updateFilter(filter: RoomListFilter) {
         currentFilter.emit(filter)
     }
+
+    override suspend fun updateSettings(settings: ScSdkInboxSettings) {}
 
     override suspend fun rebuildSummaries() {
         // No-op

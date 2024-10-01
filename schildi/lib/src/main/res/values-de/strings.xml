@@ -38,7 +38,7 @@
     <string name="sc_pref_compact_app_bar_summary">Erweitern Sie niemals die obere App-Leiste</string>
     <string name="sc_space_nav_summary">Chats nach Spaces filtern</string>
     <string name="sc_space_swipe_title">wischen, um Spaces zu wechseln</string>
-    <string name="sc_pref_sc_themes_title">SC-Thema</string>
+    <string name="sc_pref_sc_themes_title">SC Theme</string>
     <string name="sc_pref_prefer_freeform_reactions_title">Freiform-Reaktionen bevorzugen</string>
     <string name="sc_pseudo_spaces_title">Pseudo-Spaces</string>
     <string name="sc_pseudo_space_favorites">Favoriten</string>
@@ -81,4 +81,7 @@
     <string name="sc_pref_pinned_message_overlay_title_short">Angepinntes Overlay</string>
     <string name="sc_pref_sort_with_silent_unread_title">Sortieren mit stummgeschaltet Ungelesen</string>
     <string name="sc_pref_pinned_message_toolbar_summary">Schnellzugriff auf angeheftete Nachrichten über die obere App-Leiste</string>
+    <string name="sc_compact_root_spaces_summary">Zeige Symbol ohne Namen für Root Spaces</string>
+    <string name="sc_pref_category_misc">Sonstiges</string>
+    <string name="sc_pref_el_typography_title">Element Typografie</string>
 </resources>

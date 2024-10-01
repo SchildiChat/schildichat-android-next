@@ -51,4 +51,6 @@
     <string name="sc_pref_category_chat_sorting">Sortierfolge</string>
     <string name="sc_pref_client_side_sort_by_unread_title">Sortieren nach ungelesen</string>
     <string name="sc_pref_client_side_sort_by_unread_summary">Ungelesene Chats am Anfang der Liste sortieren</string>
+    <string name="sc_pref_fast_transitions_title">Schnelle Übergänge</string>
+    <string name="sc_space_nav_title">Space-Navigation</string>
 </resources>

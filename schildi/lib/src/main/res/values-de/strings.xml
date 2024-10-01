@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="sc_pref_tweaks_title">Schildi Extras</string>
-    <string name="sc_pref_restore_defaults">Voreinstellungen wiederherstellen</string>
+    <string name="sc_pref_restore_defaults">Standardwerte wiederherstellen</string>
     <string name="sc_pref_restore_authors_choice">Wahl des Autors</string>
     <string name="sc_push_info_title">Push-Info</string>
     <string name="sc_push_info_summary">Betrachte Debug-Informationen im Zusammenhang mit Push-Benachrichtigungen</string>
@@ -21,7 +21,7 @@
     <string name="sc_pref_sc_floating_date_title">Schwebendes Datum</string>
     <string name="sc_pref_sc_floating_date_summary">Zeige das Datum über Nachrichten beim Scrollen</string>
     <string name="sc_pref_pl_display_name_summary_warning">Funktioniert nicht zuverlässig, wenn die Mitgliederliste noch nicht vollständig geladen wurde</string>
-    <string name="sc_pref_el_typography_summary">Nutze Elements Schrifteinstellungen für größeren Nachrichtentext</string>
+    <string name="sc_pref_el_typography_summary">Nutze Element Schrifteinstellungen für größeren Nachrichtentext</string>
     <string name="sc_space_unread_counts_mode_messages">Zähle ungelesene Nachrichten</string>
     <string name="sc_space_unread_counts_mode_chats">Zähle ungelesene Unterhaltungen</string>
     <string name="sc_set_read_marker_toast_start">Setze Gelesen-Markierung auf %s</string>
@@ -53,4 +53,32 @@
     <string name="sc_pref_client_side_sort_by_unread_summary">Ungelesene Chats am Anfang der Liste sortieren</string>
     <string name="sc_pref_fast_transitions_title">Schnelle Übergänge</string>
     <string name="sc_space_nav_title">Space-Navigation</string>
+    <string name="sc_pref_category_timeline">Gesprächsbildschirm</string>
+    <string name="sc_pref_debug_read_marker">Debug-Lesezeichen</string>
+    <string name="sc_pref_sc_overview_layout_title">SC Übersichtslayout</string>
+    <string name="sc_pref_sc_timeline_layout_title">SC Unterhaltungslayout</string>
+    <string name="sc_pref_restore_element">Geschmack von Element anwenden</string>
+    <string name="event_placeholder_location">Standort</string>
+    <string name="sc_pseudo_space_spaceless_groups_short">Gruppen</string>
+    <string name="sc_upstream_feature_flag_room_list_filters">Filter für Raumliste</string>
+    <string name="sc_pseudo_space_unread">Ungelesen</string>
+    <string name="sc_pseudo_space_notifications_short">Benachrichtigungen</string>
+    <string name="sc_pseudo_space_notifications">Ungelesene Benachrichtigungen und Erwähnungen</string>
+    <string name="sc_recent_reaction">Häufig verwendet</string>
+    <string name="sc_space_empty_summary">Navigiere zu einem anderen Bereich, um deine Chats zu finden</string>
+    <string name="sc_space_empty_title">Leerer Space</string>
+    <string name="sc_pseudo_space_hide_empty_unread">Ungelesene Spaces ausblenden</string>
+    <string name="sc_pref_dual_mention_unread_counts_title_short">Zählung der doppelten Erwähnung</string>
+    <string name="sc_upstream_feature_flag_room_list_filters_summary">Weg von Element zum Filtern von Chats</string>
+    <string name="sc_pref_dual_mention_unread_counts_title">Kombinierte Erwähnung/Ungelesen</string>
+    <string name="sc_pref_jump_to_unread_title">Zu Ungelesen springen</string>
+    <string name="sc_action_jump_to_unread">Zu Ungelesen springen</string>
+    <string name="sc_pref_jump_to_unread_option_summary">Option anzeigen, um zur letzten gelesenen Nachricht zu springen</string>
+    <string name="sc_space_all_rooms_title">Alle Chats</string>
+    <string name="sc_pseudo_space_spaceless">Chats nicht zu Spaces hinzugefügt</string>
+    <string name="sc_pref_pinned_message_toolbar_title_short">Angeheftet in Symbolleiste</string>
+    <string name="sc_pref_pinned_message_overlay_title">Angepinntes Nachrichten-Overlay</string>
+    <string name="sc_pref_pinned_message_overlay_title_short">Angepinntes Overlay</string>
+    <string name="sc_pref_sort_with_silent_unread_title">Sortieren mit stummgeschaltet Ungelesen</string>
+    <string name="sc_pref_pinned_message_toolbar_summary">Schnellzugriff auf angeheftete Nachrichten über die obere App-Leiste</string>
 </resources>

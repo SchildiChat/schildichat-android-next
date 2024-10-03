@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextFieldDefaults
@@ -37,10 +38,13 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.value
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.roomlist.impl.R
 import io.element.android.features.roomlist.impl.RoomListEvents
 import io.element.android.features.roomlist.impl.components.RoomSummaryRow
+import io.element.android.features.roomlist.impl.components.ScRoomSummaryRow
 import io.element.android.features.roomlist.impl.contentType
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.libraries.designsystem.components.button.BackButton
@@ -186,10 +190,19 @@ private fun RoomListSearchContent(
             LazyColumn(
                 modifier = Modifier.weight(1f),
             ) {
-                items(
+                itemsIndexed(
                     items = state.results,
-                    contentType = { room -> room.contentType() },
-                ) { room ->
+                    contentType = { _, room -> room.contentType() },
+                ) { index, room ->
+                    if (ScPrefs.SC_OVERVIEW_LAYOUT.value()) {
+                        ScRoomSummaryRow(
+                            room = room,
+                            onClick = ::onRoomClick,
+                            eventSink = eventSink,
+                            isLastIndex = index == state.results.lastIndex,
+                        )
+                        return@itemsIndexed
+                    }
                     RoomSummaryRow(
                         room = room,
                         onClick = ::onRoomClick,

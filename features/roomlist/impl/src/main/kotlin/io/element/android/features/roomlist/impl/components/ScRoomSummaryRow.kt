@@ -74,11 +74,8 @@ import io.element.android.libraries.designsystem.theme.roomListRoomMessageDate
 import io.element.android.libraries.designsystem.theme.roomListRoomName
 import io.element.android.libraries.designsystem.theme.unreadIndicator
 import io.element.android.libraries.ui.strings.CommonStrings
-import timber.log.Timber
 
 internal val scRowMinHeight = 84.dp
-
-internal fun scRoomSummaryRowSupports(room: RoomListRoomSummary) = room.displayType == RoomSummaryDisplayType.ROOM
 
 @Composable
 internal fun ScRoomSummaryRow(

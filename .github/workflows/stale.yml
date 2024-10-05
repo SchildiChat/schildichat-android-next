@@ -14,4 +14,4 @@ jobs:
           days-before-issue-close: 14
           days-before-pr-stale: -1
           days-before-pr-close: -1
-          exempt-issue-labels: 'longterm,enhancement,prio:medium,prio:high'
+          exempt-issue-labels: 'longterm,enhancement,prio:medium,prio:high,accepted,upstream:feature'

@@ -123,7 +123,6 @@ class DefaultBugReporter @Inject constructor(
                             else -> compressFile(file)
                         }
                     }
-                    files.deleteAllExceptMostRecent()
                 }
                 if (withCrashLogs || withDevicesLogs) {
                     saveLogCat()
@@ -367,20 +366,6 @@ class DefaultBugReporter @Inject constructor(
             val logDirectory = logDirectory()
             logDirectory.listFiles()?.toList()
         }.orEmpty()
-    }
-
-    /**
-     * Delete all the log files except the most recent one.
-     */
-    private fun List<File>.deleteAllExceptMostRecent() {
-        if (size > 1) {
-            val mostRecentFile = maxByOrNull { it.lastModified() }
-            forEach { file ->
-                if (file != mostRecentFile) {
-                    file.safeDelete()
-                }
-            }
-        }
     }
 
     // ==============================================================================================================

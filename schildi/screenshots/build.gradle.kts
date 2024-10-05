@@ -20,7 +20,7 @@ dependencies {
     implementation(projects.schildi.theme)
     allLibrariesImpl()
     allServicesImpl()
-    allFeaturesImpl(rootDir, logger)
+    allFeaturesImpl(project)
     implementation(projects.features.call)
     implementation(projects.anvilannotations)
     implementation(projects.appnav)

@@ -11,6 +11,7 @@ import com.android.build.api.variant.FilterConfiguration.FilterType.ABI
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.android.build.gradle.tasks.GenerateBuildConfig
 import extension.AssetCopyTask
+import extension.ComponentMergingStrategy
 import extension.GitBranchNameValueSource
 import extension.GitRevisionValueSource
 import extension.allEnterpriseImpl
@@ -19,14 +20,13 @@ import extension.allLibrariesImpl
 import extension.allServicesImpl
 import extension.koverDependencies
 import extension.locales
+import extension.setupAnvil
 import extension.setupKover
 import java.util.Locale
 
 plugins {
     id("io.element.android-compose-application")
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.anvil)
-    alias(libs.plugins.kapt)
     // When using precompiled plugins, we need to apply the firebase plugin like this
     id(libs.plugins.firebaseAppDistribution.get().pluginId)
     alias(libs.plugins.knit)
@@ -157,9 +157,6 @@ android {
             }
         }
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 
     buildFeatures {
         buildConfig = true
@@ -284,6 +281,12 @@ knit {
     }
 }
 
+setupAnvil(
+    generateDaggerCode = true,
+    generateDaggerFactoriesUsingAnvil = false,
+    componentMergingStrategy = ComponentMergingStrategy.KSP,
+)
+
 dependencies {
     implementation(projects.schildi.theme)
     implementation(libs.androidx.emoji2)
@@ -291,23 +294,24 @@ dependencies {
     allLibrariesImpl()
     allServicesImpl()
     if (isEnterpriseBuild) {
-        allEnterpriseImpl(rootDir, logger)
+        allEnterpriseImpl(project)
         implementation(projects.appicon.enterprise)
     } else {
         implementation(projects.appicon.element)
     }
-    allFeaturesImpl(rootDir, logger)
+    allFeaturesImpl(project)
     implementation(projects.features.migration.api)
-    implementation(projects.anvilannotations)
     implementation(projects.appnav)
     implementation(projects.appconfig)
     implementation(projects.libraries.uiStrings)
-    anvil(projects.anvilcodegen)
+    implementation(projects.services.analytics.compose)
 
-    // Comment to not include firebase in the project
-    "gplayImplementation"(projects.libraries.pushproviders.firebase)
-    // Comment to not include unified push in the project
-    implementation(projects.libraries.pushproviders.unifiedpush)
+    if (ModulesConfig.pushProvidersConfig.includeFirebase) {
+        "gplayImplementation"(projects.libraries.pushproviders.firebase)
+    }
+    if (ModulesConfig.pushProvidersConfig.includeUnifiedPush) {
+        implementation(projects.libraries.pushproviders.unifiedpush)
+    }
 
     implementation(libs.appyx.core)
     implementation(libs.androidx.splash)
@@ -325,9 +329,6 @@ dependencies {
     implementation(libs.serialization.json)
 
     implementation(libs.matrix.emojibase.bindings)
-
-    implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
 
     testImplementation(libs.test.junit)
     testImplementation(libs.test.robolectric)
@@ -352,14 +353,13 @@ licensee {
     ignoreDependencies("chat.schildi.rustcomponents", "sdk-android")
     allow("Apache-2.0")
     allow("MIT")
-    allow("GPL-2.0-with-classpath-exception")
     allow("BSD-2-Clause")
     allowUrl("https://opensource.org/licenses/MIT")
     allowUrl("https://developer.android.com/studio/terms.html")
-    allowUrl("http://openjdk.java.net/legal/gplv2+ce.html")
     allowUrl("https://www.zetetic.net/sqlcipher/license/")
     allowUrl("https://jsoup.org/license")
     allowUrl("https://asm.ow2.io/license.html")
+    allowUrl("https://www.gnu.org/licenses/agpl-3.0.txt")
     ignoreDependencies("com.github.matrix-org", "matrix-analytics-events")
 }
 

@@ -38,8 +38,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -121,7 +121,7 @@ private fun ScRoomSummaryRealRow(
     val clickModifier = Modifier.combinedClickable(
         onClick = { onClick(room) },
         onLongClick = { onLongClick(room) },
-        indication = rememberRipple(),
+        indication = ripple(),
         interactionSource = remember { MutableInteractionSource() }
     )
 

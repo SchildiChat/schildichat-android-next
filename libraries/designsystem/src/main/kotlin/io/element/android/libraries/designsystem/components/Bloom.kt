@@ -365,7 +365,7 @@ fun Modifier.avatarBloom(
         )
     } else {
         // There is no URL so we'll generate an avatar with the initials and use that as the bloom source
-        val avatarColors = AvatarColorsProvider.provide(avatarData.id, ElementTheme.isLightTheme, ScTheme.yes)
+        val avatarColors = AvatarColorsProvider.provide(avatarData.id)
         val initialsBitmap = initialsBitmap(
             width = BloomDefaults.ENCODE_SIZE_PX.toDp(),
             height = BloomDefaults.ENCODE_SIZE_PX.toDp(),
@@ -539,7 +539,7 @@ class InitialsColorIntProvider : PreviewParameterProvider<Int> {
 @ShowkaseComposable(group = PreviewGroup.Bloom)
 internal fun BloomInitialsPreview(@PreviewParameter(InitialsColorIntProvider::class) color: Int) {
     ElementPreview {
-        val avatarColors = AvatarColorsProvider.provide("$color", ElementTheme.isLightTheme, ScTheme.yes)
+        val avatarColors = AvatarColorsProvider.provide("$color")
         val bitmap = initialsBitmap(text = "F", backgroundColor = avatarColors.background, textColor = avatarColors.foreground)
         val hash = BlurHash.encode(
             bitmap = bitmap.asAndroidBitmap(),

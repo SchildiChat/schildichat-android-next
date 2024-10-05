@@ -8,16 +8,14 @@ import chat.schildi.theme.ScPowerLevelColors
 import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.AvatarColors
 import io.element.android.compound.theme.ElementTheme
-import io.element.android.compound.theme.avatarColorsDark
-import io.element.android.compound.theme.avatarColorsLight
+import io.element.android.compound.theme.avatarColors
 import timber.log.Timber
 
 @Composable
 fun getPowerLevelColors(): PowerLevelColors {
     return when {
         ScTheme.yes -> ScPowerLevelColors
-        ElementTheme.isLightTheme -> avatarColorsLight.toPowerLevelColors()
-        else -> avatarColorsDark.toPowerLevelColors()
+        else -> avatarColors().toPowerLevelColors()
     }
 }
 

@@ -328,18 +328,17 @@ private fun EmojiReactionsRow(
     recentEmojis: List<String>, // SC
     modifier: Modifier = Modifier,
 ) {
-    Row(
+    ScQuickEmojiRow(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier.padding(horizontal = 24.dp, vertical = 16.dp)
-    ) {
-        // TODO use most recently used emojis here when available from the Rust SDK
-        val defaultEmojis = (recentEmojis.take(EMOJI_COUNT_QUICK_PICKER) + sequenceOf(
+    ) { emojiCountForQuickPicker ->
+        val defaultEmojis = (recentEmojis.take(emojiCountForQuickPicker) + sequenceOf(
             "👍️",
             "👎️",
             "🔥",
             "❤️",
             "👏"
-        )).take(EMOJI_COUNT_QUICK_PICKER)
+        )).take(emojiCountForQuickPicker)
         for (emoji in defaultEmojis) {
             val isHighlighted = highlightedEmojis.contains(emoji)
             EmojiButton(emoji, isHighlighted, onEmojiReactionClick)

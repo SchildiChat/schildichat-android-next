@@ -63,7 +63,7 @@ import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummaryProvider
 import io.element.android.features.roomlist.impl.model.RoomSummaryDisplayType
 import io.element.android.libraries.core.extensions.orEmpty
-import io.element.android.libraries.designsystem.components.avatar.Avatar
+import io.element.android.libraries.designsystem.components.avatar.CompositeAvatar
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
@@ -134,11 +134,10 @@ private fun ScRoomSummaryRealRow(
             .padding(horizontal = 16.dp, vertical = 11.dp)
             .height(IntrinsicSize.Min),
     ) {
-        Avatar(
-            room
-                .avatarData,
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
+        CompositeAvatar(
+            avatarData = room.avatarData,
+            heroes = room.heroes,
+            modifier = Modifier.align(Alignment.CenterVertically)
         )
         Column(
             modifier = Modifier

@@ -225,7 +225,9 @@ private fun ColumnScope.SpacesPager(
                 }
             }
         } else {
-            content(Modifier.weight(1f, fill = true))
+            Box(Modifier.weight(1f, fill = true)) {
+                content(Modifier.fillMaxWidth())
+            }
         }
     }
 

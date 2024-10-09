@@ -50,10 +50,10 @@ require_clean_git
 git fetch upstream
 git merge "$components_tag" || read -p "Enter once conflicts are solved"
 
-echo "Trying to detect appropriate Rust SDK from GitHub releases"
-sdk_revision=`curl https://github.com/matrix-org/matrix-rust-components-kotlin/releases/tag/sdk-v"$rust_ver" | grep "/matrix-org/matrix-rust-sdk/tree/" | sed "s|.*/matrix-org/matrix-rust-sdk/tree/\\(.*\\)</a>.*|\\1|g"`
+echo "Trying to detect appropriate Rust SDK from recent commits"
+sdk_revision=`git log "$components_tag" --oneline|grep "Bump SDK version to"|head -n 1|sed 's|.*(matrix-rust-sdk to \(.*\))|\1|'`
 
-echo "Merging upstream SDK at $sdk_revision..."
+echo "Merging Rust SDK version: $sdk_revision"
 cd "$SDK_DIR"
 require_clean_git
 git fetch upstream

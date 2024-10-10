@@ -115,7 +115,7 @@ internal val scdSemanticColors = SemanticColors(
     bgCriticalSubtle = colorRed200, // TODO
     bgCriticalSubtleHovered = colorRed300, // TODO
     bgSuccessSubtle = ScColors.colorAccentGreen.copy(alpha=0.2f),
-    bgInfoSubtle = colorBlue200, // TODO
+    bgInfoSubtle = ScColors.colorAccentBlueDark,
     borderDisabled = scd_divider,
     borderFocused = colorBlue900, // TODO
     borderInteractivePrimary = scd_fgSecondary,
@@ -125,7 +125,7 @@ internal val scdSemanticColors = SemanticColors(
     borderCriticalHovered = colorRed1000, // TODO
     borderCriticalSubtle = colorRed500, // TODO
     borderSuccessSubtle = ScColors.colorAccentGreen,
-    borderInfoSubtle = colorBlue500, // TODO
+    borderInfoSubtle = ScColors.colorAccentBlueDark,
     iconPrimary = scd_fgPrimary,
     iconSecondary = scd_fgSecondary,
     iconTertiary = scd_fgTertiary,

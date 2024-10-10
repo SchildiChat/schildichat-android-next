@@ -107,7 +107,7 @@ internal val sclSemanticColors = SemanticColors(
     bgCriticalSubtle = LightColorTokens.colorRed200, // TODO
     bgCriticalSubtleHovered = LightColorTokens.colorRed300, // TODO
     bgSuccessSubtle = ScColors.colorAccentGreen.copy(alpha=0.2f),
-    bgInfoSubtle = LightColorTokens.colorBlue200, // TODO
+    bgInfoSubtle = ScColors.colorAccentBluePale,
     borderDisabled = scl_divider,
     borderFocused = LightColorTokens.colorBlue900, // TODO
     borderInteractivePrimary = scl_fgSecondary,
@@ -117,7 +117,7 @@ internal val sclSemanticColors = SemanticColors(
     borderCriticalHovered = LightColorTokens.colorRed1000, // TODO
     borderCriticalSubtle = LightColorTokens.colorRed500, // TODO
     borderSuccessSubtle = ScColors.colorAccentGreen,
-    borderInfoSubtle = LightColorTokens.colorBlue500, // TODO
+    borderInfoSubtle = ScColors.colorAccentBluePale,
     iconPrimary = scl_fgPrimary,
     iconSecondary = scl_fgSecondary,
     iconTertiary = scl_fgSecondary, // This is used as default in ListItem leading icons, i.e. in PreferencesRootView

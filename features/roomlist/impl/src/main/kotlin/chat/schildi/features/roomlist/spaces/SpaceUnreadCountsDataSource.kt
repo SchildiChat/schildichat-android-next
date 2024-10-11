@@ -96,7 +96,7 @@ class SpaceUnreadCountsDataSource @Inject constructor(
         return unread
     }
 
-    private fun SpaceUnreadCounts.add(mentions: Int, notifications: Int, unread: Int, markedUnread: Boolean): SpaceUnreadCounts = SpaceUnreadCounts(
+    private fun SpaceUnreadCounts.add(mentions: Long, notifications: Long, unread: Long, markedUnread: Boolean): SpaceUnreadCounts = SpaceUnreadCounts(
         this.mentionedMessages + mentions,
         this.notifiedMessages + notifications,
         this.unreadMessages + unread,
@@ -108,13 +108,13 @@ class SpaceUnreadCountsDataSource @Inject constructor(
 
     @Immutable
     data class SpaceUnreadCounts(
-        val mentionedMessages: Int = 0,
-        val notifiedMessages: Int = 0,
-        val unreadMessages: Int = 0,
-        val mentionedChats: Int = 0,
-        val notifiedChats: Int = 0,
-        val unreadChats: Int = 0,
-        val markedUnreadChats: Int = 0,
+        val mentionedMessages: Long = 0,
+        val notifiedMessages: Long = 0,
+        val unreadMessages: Long = 0,
+        val mentionedChats: Long = 0,
+        val notifiedChats: Long = 0,
+        val unreadChats: Long = 0,
+        val markedUnreadChats: Long = 0,
     )
 }
 

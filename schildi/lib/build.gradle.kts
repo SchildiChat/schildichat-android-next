@@ -1,21 +1,18 @@
+import extension.setupAnvil
+
 plugins {
     id("io.element.android-compose-library")
     id("kotlin-parcelize")
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.anvil)
 }
 
 android {
     namespace = "chat.schildi.lib"
 }
 
-anvil {
-    generateDaggerFactories.set(true)
-}
+setupAnvil()
 
 dependencies {
-    anvil(projects.anvilcodegen)
-    implementation(projects.anvilannotations)
     implementation(projects.libraries.di)
     implementation(libs.dagger)
 

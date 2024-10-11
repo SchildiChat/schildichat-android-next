@@ -126,7 +126,7 @@ class SpaceListDataSource @Inject constructor(
             )
         }
         if (pseudoSpaceSettings.spaceless || pseudoSpaceSettings.spacelessGroups) {
-            val excludedRooms = spaceSummaries.flatMap { it.spaceChildren.map { it.roomId } }.toImmutableList()
+            val excludedRooms = spaceSummaries.flatMap { it.info.spaceChildren.map { it.roomId } }.toImmutableList()
             if (pseudoSpaceSettings.spacelessGroups) {
                 pseudoSpaces.add(
                     SpacelessGroupsPseudoSpaceItem(context.getString(chat.schildi.lib.R.string.sc_pseudo_space_spaceless_groups_short), excludedRooms)
@@ -375,7 +375,7 @@ class SpaceListDataSource @Inject constructor(
                 rooms.filter { it.notificationCount > 0 || it.highlightCount > 0 || it.numberOfUnreadMentions > 0 || it.isMarkedUnread }.toImmutableList()
         }
         override fun canHide(spaceUnreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts): Boolean =
-            spaceUnreadCounts.markedUnreadChats == 0 && spaceUnreadCounts.notifiedChats == 0
+            spaceUnreadCounts.markedUnreadChats == 0L && spaceUnreadCounts.notifiedChats == 0L
     }
 
     @Immutable
@@ -397,7 +397,7 @@ class SpaceListDataSource @Inject constructor(
                 rooms.filter { it.unreadCount > 0 || it.isMarkedUnread }.toImmutableList()
         }
         override fun canHide(spaceUnreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts): Boolean =
-            spaceUnreadCounts.markedUnreadChats == 0 && spaceUnreadCounts.notifiedChats == 0 && spaceUnreadCounts.unreadChats == 0
+            spaceUnreadCounts.markedUnreadChats == 0L && spaceUnreadCounts.notifiedChats == 0L && spaceUnreadCounts.unreadChats == 0L
     }
 
     data class PseudoSpaceSettings(

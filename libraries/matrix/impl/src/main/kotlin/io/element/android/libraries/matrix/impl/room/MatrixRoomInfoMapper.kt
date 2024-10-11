@@ -53,6 +53,15 @@ class MatrixRoomInfoMapper {
             activeRoomCallParticipants = it.activeRoomCallParticipants.map(::UserId).toImmutableList(),
             heroes = it.elementHeroes().toImmutableList(),
             pinnedEventIds = it.pinnedEventIds.map(::EventId).toImmutableList(),
+            isMarkedUnread = it.isMarkedUnread,
+            numUnreadMessages = it.numUnreadMessages.toLong(),
+            numUnreadMentions = it.numUnreadMentions.toLong(),
+            numUnreadNotifications = it.numUnreadNotifications.toLong(),
+            // SC start
+            spaceChildren = it.spaceChildren.map(MatrixSpaceChildInfoMapper::map),
+            unreadCount = it.unreadCount.toLong(),
+            isLowPriority = it.isLowPriority,
+            // SC end
         )
     }
 }

@@ -23,16 +23,16 @@ data class RoomListRoomSummary(
     val roomId: RoomId,
     val name: String?,
     val canonicalAlias: RoomAlias?,
-    val numberOfUnreadMessages: Int,
-    val numberOfUnreadMentions: Int,
-    val numberOfUnreadNotifications: Int,
+    val numberOfUnreadMessages: Long,
+    val numberOfUnreadMentions: Long,
+    val numberOfUnreadNotifications: Long,
     // SC: spaces
     val isSpace: Boolean = false,
     val spaceChildren: List<MatrixSpaceChildInfo> = emptyList(),
     // SC: server-reported values compared to client-generated above
-    val notificationCount: Int = 0,
-    val highlightCount: Int = 0,
-    val unreadCount: Int = 0,
+    val notificationCount: Long = 0,
+    val highlightCount: Long = 0,
+    val unreadCount: Long = 0,
     // SC client-side sorting
     val lastMessageTimestamp: Long? = null,
     val isLowPriority: Boolean = false,

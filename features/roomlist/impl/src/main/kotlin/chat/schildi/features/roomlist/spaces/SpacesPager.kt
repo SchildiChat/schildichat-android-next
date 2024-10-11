@@ -498,7 +498,7 @@ private fun UnreadCountBox(unreadCounts: SpaceUnreadCountsDataSource.SpaceUnread
         return
     }
     val countChats = mode == ScPrefs.SpaceUnreadCountMode.CHATS
-    val count: Int
+    val count: Long
     val badgeColor: Color
     var outlinedBadge = false
     when {

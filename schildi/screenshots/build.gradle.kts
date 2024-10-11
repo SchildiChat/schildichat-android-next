@@ -1,10 +1,10 @@
 import extension.allFeaturesImpl
 import extension.allLibrariesImpl
 import extension.allServicesImpl
+import extension.setupAnvil
 
 plugins {
     id("io.element.android-compose-library")
-    alias(libs.plugins.anvil)
     alias(libs.plugins.ksp)
 }
 
@@ -12,9 +12,7 @@ android {
     namespace = "chat.schildi.screenshots"
 }
 
-anvil {
-    generateDaggerFactories.set(true)
-}
+setupAnvil()
 
 dependencies {
     implementation(projects.schildi.theme)
@@ -25,7 +23,6 @@ dependencies {
     implementation(projects.anvilannotations)
     implementation(projects.appnav)
     implementation(projects.appconfig)
-    anvil(projects.anvilcodegen)
 
     implementation(libs.appyx.core)
     implementation(libs.androidx.splash)

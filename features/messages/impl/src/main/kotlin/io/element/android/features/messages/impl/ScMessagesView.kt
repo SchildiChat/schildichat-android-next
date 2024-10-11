@@ -210,7 +210,7 @@ private fun BoxWithCount(count: Int, offset: Dp = 6.dp, content: @Composable () 
                 .align(Alignment.TopEnd)
         ) {
             androidx.compose.material3.Text(
-                text = formatUnreadCount(count),
+                text = formatUnreadCount(count.toLong()),
                 color = ScTheme.exposures.colorOnAccent,
                 style = MaterialTheme.typography.labelSmall,
                 maxLines = 1,

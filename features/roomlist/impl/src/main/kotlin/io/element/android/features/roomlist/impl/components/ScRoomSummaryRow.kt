@@ -235,9 +235,9 @@ private fun RowScope.ScLastMessageAndIndicatorRow(room: RoomListRoomSummary) {
 
 @Composable
 private fun ScUnreadCounter(room: RoomListRoomSummary) {
-    val highlightCount: Int
-    val notificationCount: Int
-    val unreadCount: Int
+    val highlightCount: Long
+    val notificationCount: Long
+    val unreadCount: Long
     if (ScPrefs.CLIENT_GENERATED_UNREAD_COUNTS.value()) {
         highlightCount = room.numberOfUnreadMentions
         notificationCount = room.numberOfUnreadNotifications
@@ -251,8 +251,8 @@ private fun ScUnreadCounter(room: RoomListRoomSummary) {
     val badgeColor: Color
     var outlinedBadge = false
     when {
-        ScPrefs.DUAL_MENTION_UNREAD_COUNTS.value() && highlightCount > 0 && (notificationCount > highlightCount || (notificationCount == 0 && unreadCount > highlightCount)) -> {
-            val fullUnreadToUse = if (notificationCount == 0) unreadCount else notificationCount
+        ScPrefs.DUAL_MENTION_UNREAD_COUNTS.value() && highlightCount > 0 && (notificationCount > highlightCount || (notificationCount == 0L && unreadCount > highlightCount)) -> {
+            val fullUnreadToUse = if (notificationCount == 0L) unreadCount else notificationCount
             count = "${formatUnreadCount(highlightCount)}/${formatUnreadCount(fullUnreadToUse)}"
             badgeColor = ElementTheme.colors.bgCriticalPrimary
         }

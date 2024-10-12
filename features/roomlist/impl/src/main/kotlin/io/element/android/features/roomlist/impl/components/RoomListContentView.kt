@@ -66,6 +66,7 @@ import kotlinx.coroutines.launch
 fun RoomListContentView(
     contentState: RoomListContentState,
     filtersState: RoomListFiltersState,
+    onMeasureSpaceBarHeight: (Int) -> Unit = {}, // SC
     eventSink: (RoomListEvents) -> Unit,
     onSetUpRecoveryClick: () -> Unit,
     onConfirmRecoveryKeyClick: () -> Unit,
@@ -90,6 +91,7 @@ fun RoomListContentView(
                 RoomsView(
                     state = contentState,
                     filtersState = filtersState,
+                    onMeasureSpaceBarHeight = onMeasureSpaceBarHeight, // SC
                     eventSink = eventSink,
                     onSetUpRecoveryClick = onSetUpRecoveryClick,
                     onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
@@ -138,6 +140,7 @@ private fun EmptyView(
 private fun RoomsView(
     state: RoomListContentState.Rooms,
     filtersState: RoomListFiltersState,
+    onMeasureSpaceBarHeight: (Int) -> Unit, // SC
     eventSink: (RoomListEvents) -> Unit,
     onSetUpRecoveryClick: () -> Unit,
     onConfirmRecoveryKeyClick: () -> Unit,
@@ -154,6 +157,7 @@ private fun RoomsView(
         RoomsViewList(
             state = state,
             filtersState = filtersState, // SC
+            onMeasureSpaceBarHeight = onMeasureSpaceBarHeight, // SC
             eventSink = eventSink,
             onSetUpRecoveryClick = onSetUpRecoveryClick,
             onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
@@ -168,6 +172,7 @@ private fun RoomsView(
 private fun RoomsViewList(
     state: RoomListContentState.Rooms,
     filtersState: RoomListFiltersState, // SC
+    onMeasureSpaceBarHeight: (Int) -> Unit, // SC
     eventSink: (RoomListEvents) -> Unit,
     onSetUpRecoveryClick: () -> Unit,
     onConfirmRecoveryKeyClick: () -> Unit,
@@ -199,6 +204,7 @@ private fun RoomsViewList(
             eventSink(RoomListEvents.UpdateSpaceFilter(selection))
             coroutineScope.launch { lazyListState.scrollToItem(0) }
         },
+        onMeasureSpaceBarHeight = onMeasureSpaceBarHeight,
         modifier = modifier,
     ) { modifier ->
     LazyColumn(

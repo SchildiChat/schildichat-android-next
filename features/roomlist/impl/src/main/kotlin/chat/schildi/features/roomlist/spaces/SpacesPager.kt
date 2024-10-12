@@ -42,6 +42,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -52,6 +53,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -87,11 +89,13 @@ fun SpacesPager(
     totalUnreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts?,
     spaceSelectionHierarchy: ImmutableList<String>,
     onSpaceSelected: (List<String>) -> Unit,
+    onMeasureSpaceBarHeight: (Int) -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable (Modifier) -> Unit,
 ) {
     if (!ScPrefs.SPACE_NAV.value() || spacesList.isEmpty()) {
         content(modifier)
+        LaunchedEffect(Unit) { onMeasureSpaceBarHeight(0) }
         return
     }
     Column(modifier) {
@@ -109,6 +113,7 @@ fun SpacesPager(
                 }
             },
             compactTabs = ScPrefs.COMPACT_ROOT_SPACES.value(),
+            onMeasureSpaceBarHeight = onMeasureSpaceBarHeight,
             content = content,
         )
     }
@@ -124,6 +129,7 @@ private fun ColumnScope.SpacesPager(
     parentSelection: ImmutableList<String>,
     selectSpace: (SpaceListDataSource.AbstractSpaceHierarchyItem?, ImmutableList<String>) -> Unit,
     compactTabs: Boolean,
+    onMeasureSpaceBarHeight: (Int) -> Unit,
     content: @Composable (Modifier) -> Unit,
 ) {
     val selectedSpaceIndex = if (spaceSelection.isEmpty()) {
@@ -144,6 +150,16 @@ private fun ColumnScope.SpacesPager(
     // Child spaces if expanded
     var expandSpaceChildren by remember { mutableStateOf(childSelections.isNotEmpty()) }
 
+    val thisSpaceBarHeight = remember { mutableIntStateOf(0) }
+    val childrenSpaceBarHeight = remember { mutableIntStateOf(0) }
+    fun onSpaceBarHeightUpdate() {
+        if (expandSpaceChildren) {
+            onMeasureSpaceBarHeight(thisSpaceBarHeight.intValue + childrenSpaceBarHeight.intValue)
+        } else {
+            onMeasureSpaceBarHeight(thisSpaceBarHeight.intValue)
+        }
+    }
+
     // Child spaces if expanded
     if (selectedSpaceIndex != -1 && expandSpaceChildren) {
         val safeSpace = spacesList[selectedSpaceIndex] as? SpaceListDataSource.SpaceHierarchyItem
@@ -156,6 +172,10 @@ private fun ColumnScope.SpacesPager(
                 defaultSpace = spacesList[selectedSpaceIndex],
                 parentSelection = (parentSelection + listOf(spacesList[selectedSpaceIndex].selectionId)).toImmutableList(),
                 compactTabs = false,
+                onMeasureSpaceBarHeight = {
+                    childrenSpaceBarHeight.intValue = it
+                    onSpaceBarHeightUpdate()
+                },
                 content = content,
             )
         }
@@ -255,7 +275,11 @@ private fun ColumnScope.SpacesPager(
                     .height(3.dp)
                     .background(color = tabIndicatorColor, shape = RoundedCornerShape(1.5.dp))
             )
-        }
+        },
+        modifier = Modifier.onGloballyPositioned {
+            thisSpaceBarHeight.intValue = it.size.height
+            onSpaceBarHeightUpdate()
+        },
     ) {
         if (defaultSpace != null) {
             SpaceTab(defaultSpace, selectedTab == 0, expandSpaceChildren, false, compactTabs) {

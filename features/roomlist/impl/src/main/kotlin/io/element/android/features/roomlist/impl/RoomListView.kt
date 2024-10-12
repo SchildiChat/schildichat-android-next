@@ -17,6 +17,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -120,6 +124,9 @@ private fun RoomListScaffold(
     val scrollBehavior = scRoomListScrollBehavior(appBarState)
     val snackbarHostState = rememberSnackbarHostState(snackbarMessage = state.snackbarMessage)
 
+    // SC
+    val spaceBarHeight = remember { mutableIntStateOf(0) }
+
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -144,6 +151,7 @@ private fun RoomListScaffold(
             RoomListContentView(
                 contentState = state.contentState,
                 filtersState = state.filtersState,
+                onMeasureSpaceBarHeight = { spaceBarHeight.intValue = it }, // SC
                 eventSink = state.eventSink,
                 onSetUpRecoveryClick = onSetUpRecoveryClick,
                 onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
@@ -160,6 +168,7 @@ private fun RoomListScaffold(
                 FloatingActionButton(
                     // FIXME align on Design system theme
                     containerColor = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.addSpaceNavPadding(spaceBarHeight.intValue),
                     onClick = onCreateRoomClick
                 ) {
                     Icon(

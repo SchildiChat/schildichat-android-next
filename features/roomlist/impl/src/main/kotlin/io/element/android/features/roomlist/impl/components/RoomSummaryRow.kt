@@ -42,6 +42,7 @@ import io.element.android.features.roomlist.impl.RoomListEvents
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummaryProvider
 import io.element.android.features.roomlist.impl.model.RoomSummaryDisplayType
+import io.element.android.features.roomlist.impl.model.hasNewContent
 import io.element.android.libraries.core.extensions.orEmpty
 import io.element.android.libraries.designsystem.atomic.atoms.UnreadIndicatorAtom
 import io.element.android.libraries.designsystem.components.avatar.CompositeAvatar

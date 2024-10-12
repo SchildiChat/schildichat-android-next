@@ -30,6 +30,7 @@ import chat.schildi.features.roomlist.spaces.SpaceUnreadCountsDataSource
 import chat.schildi.features.roomlist.spaces.filterByUnread
 import chat.schildi.features.roomlist.spaces.resolveSelection
 import chat.schildi.lib.preferences.ScAppStateStore
+import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import im.vector.app.features.analytics.plan.Interaction
@@ -44,6 +45,7 @@ import io.element.android.features.networkmonitor.api.NetworkStatus
 import io.element.android.features.roomlist.impl.datasource.RoomListDataSource
 import io.element.android.features.roomlist.impl.filters.RoomListFiltersState
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
+import io.element.android.features.roomlist.impl.model.hasNewContent
 import io.element.android.features.roomlist.impl.search.RoomListSearchEvents
 import io.element.android.features.roomlist.impl.search.RoomListSearchState
 import io.element.android.libraries.architecture.AsyncData
@@ -93,6 +95,7 @@ class RoomListPresenter @Inject constructor(
     private val snackbarDispatcher: SnackbarDispatcher,
     private val leaveRoomPresenter: Presenter<LeaveRoomState>,
     private val roomListDataSource: RoomListDataSource,
+    private val scPreferencesStore: ScPreferencesStore,
     private val scAppStateStore: ScAppStateStore,
     private val spaceAwareRoomListDataSource: SpaceAwareRoomListDataSource,
     private val spaceListDataSource: SpaceListDataSource,
@@ -297,7 +300,7 @@ class RoomListPresenter @Inject constructor(
             isDm = event.roomListRoomSummary.isDm,
             isFavorite = event.roomListRoomSummary.isFavorite,
             markAsUnreadFeatureFlagEnabled = featureFlagService.isFeatureEnabled(FeatureFlags.MarkAsUnread),
-            hasNewContent = event.roomListRoomSummary.hasNewContent
+            hasNewContent = event.roomListRoomSummary.hasNewContent(scPreferencesStore)
         )
         contextMenuState.value = initialState
 

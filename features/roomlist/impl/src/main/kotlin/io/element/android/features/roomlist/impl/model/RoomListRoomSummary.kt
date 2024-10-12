@@ -54,9 +54,11 @@ data class RoomListRoomSummary(
         isMarkedUnread ||
         displayType == RoomSummaryDisplayType.INVITE
 
+    /* SC: moved to extension to acknowledge user setting for rendering unread, and for unread source
     val hasNewContent = numberOfUnreadMessages > 0 ||
         numberOfUnreadMentions > 0 ||
         numberOfUnreadNotifications > 0 ||
         isMarkedUnread ||
         displayType == RoomSummaryDisplayType.INVITE
+     */
 }

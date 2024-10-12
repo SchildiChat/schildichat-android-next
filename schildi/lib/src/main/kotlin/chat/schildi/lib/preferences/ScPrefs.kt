@@ -65,6 +65,8 @@ object ScPrefs {
         ScPrefFulfilledForAnyDependency(listOf(PSEUDO_SPACE_NOTIFICATIONS.toDependency(), PSEUDO_SPACE_UNREAD.toDependency()))
     ), authorsChoice = true)
     val ELEMENT_ROOM_LIST_FILTERS = ScBoolPref("ELEMENT_ROOM_LIST_FILTERS", false, R.string.sc_upstream_feature_flag_room_list_filters, R.string.sc_upstream_feature_flag_room_list_filters_summary, authorsChoice = false, upstreamChoice = true)
+    // Chat overview settings depending on spaces
+    val SNC_FAB = ScBoolPref("SNC_FAB", true, R.string.sc_pref_snc_fab_title, R.string.sc_pref_snc_fab_summary, disabledValue = false, authorsChoice = false, upstreamChoice = true, dependencies = SPACE_NAV.asDependencies(false))
 
     // Timeline
     val PINNED_MESSAGE_OVERLAY = ScBoolPref("PINNED_MESSAGE_OVERLAY", false, R.string.sc_pref_pinned_message_overlay_title, R.string.sc_pref_pinned_message_overlay_summary, authorsChoice = false, upstreamChoice = true)
@@ -105,6 +107,7 @@ object ScPrefs {
             SC_OVERVIEW_LAYOUT,
             COMPACT_APP_BAR,
             ELEMENT_ROOM_LIST_FILTERS,
+            SNC_FAB,
             RENDER_SILENT_UNREAD,
             SORT_BY_UNREAD,
             SORT_WITH_SILENT_UNREAD,
@@ -176,6 +179,7 @@ object ScPrefs {
     val devQuickTweaksOverview = listOf(
         CLIENT_GENERATED_UNREAD_COUNTS,
         ELEMENT_ROOM_LIST_FILTERS, // Used to be: ScUpstreamFeatureFlagAliasPref(FeatureFlags.RoomListFilters, R.string.sc_upstream_feature_flag_room_list_filters),
+        SNC_FAB.copy(titleRes = R.string.sc_pref_snc_fab_title_short),
         RENDER_SILENT_UNREAD,
         ScPrefCategory(R.string.sc_pref_category_chat_sorting, null, listOf(
             SORT_BY_UNREAD,

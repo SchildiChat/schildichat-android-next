@@ -21,7 +21,7 @@ fun ScRoomListDropdownEntriesTop(
     onMenuActionClick: (RoomListMenuAction) -> Unit,
     onCreateRoomClick: () -> Unit,
 ) {
-    if (ScPrefs.SPACE_NAV.value()) {
+    if (!ScPrefs.SNC_FAB.value()) {
         DropdownMenuItem(
             onClick = {
                 onClick()

@@ -83,6 +83,9 @@
     <string name="sc_pref_pinned_message_toolbar_title">Pinned message toolbar action</string>
     <string name="sc_pref_pinned_message_toolbar_title_short">Pinned in toolbar</string>
     <string name="sc_pref_pinned_message_toolbar_summary">Quick action to access pinned messages via top app bar</string>
+    <string name="sc_pref_snc_fab_title">Start-new-chat as floating action button</string>
+    <string name="sc_pref_snc_fab_title_short">SNC as FAB</string>
+    <string name="sc_pref_snc_fab_summary">Overlay the room list with a button to start new chats, rather than having the option in the action bar.</string>
 
     <string name="sc_pref_dev_quick_options">Quick settings</string>
     <string name="sc_pref_debug_read_marker">Debug read marker</string>

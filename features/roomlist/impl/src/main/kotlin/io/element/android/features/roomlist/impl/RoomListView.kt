@@ -156,7 +156,7 @@ private fun RoomListScaffold(
             )
         },
         floatingActionButton = {
-            if (state.displayActions && !ScPrefs.SPACE_NAV.value()) {
+            if (state.displayActions && ScPrefs.SNC_FAB.value()) {
                 FloatingActionButton(
                     // FIXME align on Design system theme
                     containerColor = MaterialTheme.colorScheme.primary,

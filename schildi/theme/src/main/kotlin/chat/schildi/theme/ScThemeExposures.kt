@@ -32,6 +32,8 @@ class ScThemeExposures(
     greenFg: Color?,
     greenBg: Color?,
     messageHighlightBg: Color?,
+    composerBlockBg: Color?,
+    composerBlockFg: Color?,
 ) {
     var isScTheme by mutableStateOf(isScTheme)
         private set
@@ -71,6 +73,10 @@ class ScThemeExposures(
         private set
     var messageHighlightBg by mutableStateOf(messageHighlightBg)
         private set
+    var composerBlockBg by mutableStateOf(composerBlockBg)
+        private set
+    var composerBlockFg by mutableStateOf(composerBlockFg)
+        private set
 
     fun copy(
         isScTheme: Boolean = this.isScTheme,
@@ -92,6 +98,8 @@ class ScThemeExposures(
         greenFg: Color? = this.greenFg,
         greenBg: Color? = this.greenBg,
         messageHighlightBg: Color? = this.messageHighlightBg,
+        composerBlockBg: Color? = this.composerBlockBg,
+        composerBlockFg: Color? = this.composerBlockFg,
     ) = ScThemeExposures(
         isScTheme = isScTheme,
         horizontalDividerThickness = horizontalDividerThickness,
@@ -112,6 +120,8 @@ class ScThemeExposures(
         greenFg = greenFg,
         greenBg = greenBg,
         messageHighlightBg = messageHighlightBg,
+        composerBlockBg = composerBlockBg,
+        composerBlockFg = composerBlockFg,
     )
 
     fun updateColorsFrom(other: ScThemeExposures) {
@@ -134,6 +144,8 @@ class ScThemeExposures(
         greenFg = other.greenFg
         greenBg = other.greenBg
         messageHighlightBg = other.messageHighlightBg
+        composerBlockBg = other.composerBlockBg
+        composerBlockFg = other.composerBlockFg
     }
 }
 
@@ -157,6 +169,8 @@ internal val elementLightScExposures = ScThemeExposures(
     greenFg = null,
     greenBg = null,
     messageHighlightBg = null,
+    composerBlockBg = null,
+    composerBlockFg = null,
 )
 
 internal val elementDarkScExposures = ScThemeExposures(
@@ -179,4 +193,6 @@ internal val elementDarkScExposures = ScThemeExposures(
     greenFg = null,
     greenBg = null,
     messageHighlightBg = null,
+    composerBlockBg = null,
+    composerBlockFg = null,
 )

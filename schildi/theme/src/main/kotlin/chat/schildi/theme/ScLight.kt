@@ -29,10 +29,10 @@ internal val sclMaterialColorScheme = lightColorScheme(
 
     secondary = scl_fgSecondary,
     onSecondary = scd_fgPrimary,
-    secondaryContainer = scl_bg,
+    secondaryContainer = scl_bgBlack,
     onSecondaryContainer = scl_fgSecondary,
 
-    tertiary = scl_fgTertiary,
+    tertiary = scl_fgSecondary,
     onTertiary = scl_fgTertiary,
     tertiaryContainer = scl_bgBlack,
     onTertiaryContainer = scl_fgTertiary,
@@ -76,6 +76,8 @@ internal val sclExposures = ScThemeExposures(
     greenFg = ScColors.colorAccentGreen,
     greenBg = ScColors.colorAccentGreenAlpha_21,
     messageHighlightBg = ScColors.colorAccentGreenAlpha_80,
+    composerBlockBg = null,
+    composerBlockFg = null,
 )
 
 @OptIn(CoreColorToken::class)

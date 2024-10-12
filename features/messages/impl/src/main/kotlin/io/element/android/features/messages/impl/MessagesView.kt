@@ -51,6 +51,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
+import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.messages.impl.actionlist.ActionListEvents
@@ -586,14 +587,14 @@ private fun CantSendMessageBanner() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.secondary)
+            .background(ScTheme.exposures.composerBlockBg ?: MaterialTheme.colorScheme.secondary)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
             text = stringResource(id = R.string.screen_room_timeline_no_permission_to_post),
-            color = MaterialTheme.colorScheme.onSecondary,
+            color = ScTheme.exposures.composerBlockFg ?: MaterialTheme.colorScheme.onSecondary,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             fontStyle = FontStyle.Italic,

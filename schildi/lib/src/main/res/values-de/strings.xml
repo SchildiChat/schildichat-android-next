@@ -93,4 +93,5 @@
     <string name="sc_compact_root_spaces_title">Kompakte Root-Spaces</string>
     <string name="sc_pseudo_spaces_summary_experimental">Zusätzliche Spaces-Seiten (experimentell)</string>
     <string name="sc_pref_dual_mention_unread_counts_summary">Wenn die Anzahl der Erwähnungen eines hervorgehobenen Chats von der Anzahl der ungelesenen Chats abweicht, werden beide angezeigt</string>
+    <string name="sc_pref_snc_fab_title_short">SNC als FAB</string>
 </resources>

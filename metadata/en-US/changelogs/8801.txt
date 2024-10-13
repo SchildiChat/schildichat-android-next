@@ -1,0 +1,7 @@
+- Update codebase to Element X v0.7.0
+- Add setting to show start-new-chat floating action button, independent of space setting
+- Scale reaction quick picker emoji count with screen size
+- Use SC overview layout for search
+- Open up more SC settings to Element layout
+- Enable spaces by default
+- Bug fixes and memory usage improvements

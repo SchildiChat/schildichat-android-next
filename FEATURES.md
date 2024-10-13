@@ -8,7 +8,6 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Schildi theme with more neutral colors and some design tweaks †
 - Schildi layout tweaks †
 - Faster screen transitions †
-- Show avatar placeholders instead of blank space for avatars that failed to load
 - App icon & branding ⸸
 
 
@@ -17,12 +16,12 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Filter for spaces, including support for hierarchical spaces †‡
 - Filter for favorites, unreads, DMs, and group chats via our spaces navigation
 - Configure room list sort order to optionally: †‡
-    - Show unread on top
+    - Show unread chats on top (while optionally ignoring muted unreads)
     - Pin favorites
     - Show low priority on bottom
 - Non-expanding compact app bar in the chat overview †
-- Show unread counts ([MSC2654](https://github.com/matrix-org/matrix-spec-proposals/pull/2654)) ‡[^1]
-- Experimental client-side unread sorting to respect client-side mention detection and more †
+- Show start-new-chat action in the top app bar rather than as floating action button †
+- Show unread counts †
 
 
 ## Conversation screen
@@ -63,10 +62,9 @@ Note that following list of changes compared to Element X is likely incomplete, 
 
 - Render media captions ([MSC2530](https://github.com/matrix-org/matrix-spec-proposals/pull/2530)): has been implemented upstream at v0.4.7
 - Bigger emoji-only messages: upstreamed at v0.5.2
+- Show avatar placeholders instead of blank space for avatars that failed to load
 
 
 †: Can be partly enabled or disabled by user setting  
 ‡: Powered by [our own rust-sdk fork](https://github.com/SchildiChat/matrix-rust-sdk)  
 ⸸: Work in progress  
-
-[^1]: Unread counts for muted chats require `msc2654_enabled: true` in your synapse's `experimental_features` config and a [patched sliding-sync-proxy](https://github.com/SpiritCroc/matrix-sliding-sync/commit/785ce8ca4cac1a17509e3e611d117c1f6860ef2b)

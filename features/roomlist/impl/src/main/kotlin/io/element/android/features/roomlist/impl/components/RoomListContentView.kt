@@ -211,7 +211,7 @@ private fun RoomsViewList(
         state = lazyListState,
         modifier = modifier,
         // FAB height is 56dp, bottom padding is 16dp, we add 8dp as extra margin -> 56+16+8 = 80
-        contentPadding = PaddingValues(bottom = 80.dp).takeIf { !ScPrefs.SPACE_NAV.value() } ?: PaddingValues()
+        contentPadding = PaddingValues(bottom = 80.dp).takeIf { ScPrefs.SNC_FAB.value() } ?: PaddingValues()
     ) {
         when (state.securityBannerState) {
             SecurityBannerState.SetUpRecovery -> {

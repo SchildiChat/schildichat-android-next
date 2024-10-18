@@ -3,12 +3,13 @@
 Note that following list of changes compared to Element X is likely incomplete, since it is only occassionally updated.
 
 
-## General UI
+## General UI & App Behaviour
 
 - Schildi theme with more neutral colors and some design tweaks †
 - Schildi layout tweaks †
 - Faster screen transitions †
 - App icon & branding ⸸
+- Open links in external browser rather than attaching a single-tab in-app browser window †
 
 
 ## Chat overview ("room list")

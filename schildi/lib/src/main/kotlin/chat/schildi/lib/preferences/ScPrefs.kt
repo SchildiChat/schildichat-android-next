@@ -18,6 +18,7 @@ object ScPrefs {
     // General behavior
     val FAST_TRANSITIONS = ScBoolPref("FAST_TRANSITIONS", true, R.string.sc_pref_fast_transitions_title, R.string.sc_pref_fast_transitions_summary, upstreamChoice = false)
     val NOTIFICATION_ONLY_ALERT_ONCE = ScBoolPref("NOTIFICATION_ONLY_ALERT_ONCE", false, R.string.sc_pref_notification_only_alert_once_title, R.string.sc_pref_notification_only_alert_once_summary, upstreamChoice = false)
+    val OPEN_LINKS_IN_CUSTOM_TAB = ScBoolPref("OPEN_LINKS_IN_CUSTOM_TAB", false, R.string.sc_pref_open_links_in_custom_tab_title, R.string.sc_pref_open_links_in_custom_tab_summary, upstreamChoice = true, authorsChoice = false)
 
     // Chat overview
     val COMPACT_APP_BAR = ScBoolPref("COMPACT_APP_BAR", true, R.string.sc_pref_compact_app_bar_title, R.string.sc_pref_compact_app_bar_summary, upstreamChoice = false)
@@ -102,6 +103,7 @@ object ScPrefs {
         )),
         ScPrefCategory(R.string.sc_pref_category_general_behaviour, null, listOf(
             FAST_TRANSITIONS,
+            OPEN_LINKS_IN_CUSTOM_TAB,
         )),
         ScPrefCategory(R.string.sc_pref_category_chat_overview, null, listOf(
             SC_OVERVIEW_LAYOUT,
@@ -217,6 +219,7 @@ object ScPrefs {
         SC_TIMELINE_LAYOUT.copy(titleRes = R.string.sc_pref_sc_layout_title),
         PINNED_MESSAGE_OVERLAY.copy(titleRes = R.string.sc_pref_pinned_message_overlay_title_short),
         PINNED_MESSAGE_TOOLBAR_ACTION.copy(titleRes = R.string.sc_pref_pinned_message_toolbar_title_short),
+        OPEN_LINKS_IN_CUSTOM_TAB,
         ScPrefCategory(R.string.sc_pref_screen_experimental_title, null, listOf(
             PL_DISPLAY_NAME,
             READ_MARKER_DEBUG,

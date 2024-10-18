@@ -19,6 +19,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
+import chat.schildi.lib.preferences.ScPreferencesStore
+import chat.schildi.lib.preferences.ScPrefs
 import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
@@ -36,6 +38,7 @@ import io.element.android.features.messages.impl.timeline.di.LocalTimelineItemPr
 import io.element.android.features.messages.impl.timeline.di.TimelineItemPresenterFactories
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.libraries.androidutils.browser.openUrlInChromeCustomTab
+import io.element.android.libraries.androidutils.system.openUrlInExternalApp
 import io.element.android.libraries.androidutils.system.toast
 import io.element.android.libraries.architecture.NodeInputs
 import io.element.android.libraries.architecture.inputs
@@ -65,6 +68,7 @@ class MessagesNode @AssistedInject constructor(
     private val timelineItemPresenterFactories: TimelineItemPresenterFactories,
     private val mediaPlayer: MediaPlayer,
     private val recentEmojiDataSource: RecentEmojiDataSource, // SC
+    private val scPreferencesStore: ScPreferencesStore, // SC
     private val permalinkParser: PermalinkParser,
 ) : Node(buildContext, plugins = plugins), MessagesNavigator {
     private val presenter = presenterFactory.create(this)
@@ -141,6 +145,10 @@ class MessagesNode @AssistedInject constructor(
             }
             is PermalinkData.FallbackLink,
             is PermalinkData.RoomEmailInviteLink -> {
+                if (!scPreferencesStore.getCachedOrDefaultValue(ScPrefs.OPEN_LINKS_IN_CUSTOM_TAB)) {
+                    activity.openUrlInExternalApp(url)
+                    return
+                }
                 activity.openUrlInChromeCustomTab(null, darkTheme, url)
             }
         }

@@ -29,6 +29,7 @@ import io.element.android.libraries.architecture.runCatchingUpdatingState
 import io.element.android.libraries.core.bool.orFalse
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.core.meta.BuildType
+import io.element.android.libraries.core.meta.isGplayBuild
 import io.element.android.libraries.featureflag.api.Feature
 import io.element.android.libraries.featureflag.api.FeatureFlagService
 import io.element.android.libraries.featureflag.api.FeatureFlags
@@ -80,7 +81,7 @@ class DeveloperSettingsPresenter @Inject constructor(
                 .filter { it.isFinished.not() }
                 .run {
                     // Never display room directory search in release builds for Play Store
-                    if (buildMeta.flavorDescription == "GooglePlay" && buildMeta.buildType == BuildType.RELEASE) {
+                    if (buildMeta.flavorDescription == "GooglePlay" && buildMeta.buildType == BuildType.RELEASE || buildMeta.isGplayBuild) {
                         filterNot { it.key == FeatureFlags.RoomDirectorySearch.key }
                     } else {
                         this

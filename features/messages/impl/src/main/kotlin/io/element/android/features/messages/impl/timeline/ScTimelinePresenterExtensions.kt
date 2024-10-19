@@ -116,10 +116,9 @@ fun ScReadTracker(
     }
 }
 
-// TypingNotificationView lazy list item causes us an offset by one!
-// Defining a function allows me to keep track of everywhere this may need updating in case of future changes.
-// Fortunately, the `item { }` definition is unconditional currently, so we can just always subtract one
-fun effectiveVisibleTimelineItemIndex(index: Int) = max(0, index-1)
+// Use this to define some offset next time upstream adds individual `item()` calls in the lazy column below the actual timeline's `items()` call.
+// Compare TimelineView.kt's LazyColumn to double check next time floating date offset seems wrong.
+fun effectiveVisibleTimelineItemIndex(index: Int) = index.coerceAtLeast(0)
 
 fun CoroutineScope.scOnScrollFinished(
     dispatchers: CoroutineDispatchers,

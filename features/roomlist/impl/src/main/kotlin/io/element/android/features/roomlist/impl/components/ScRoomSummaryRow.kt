@@ -74,6 +74,7 @@ import io.element.android.libraries.designsystem.theme.roomListRoomMessageDate
 import io.element.android.libraries.designsystem.theme.roomListRoomName
 import io.element.android.libraries.designsystem.theme.unreadIndicator
 import io.element.android.libraries.ui.strings.CommonStrings
+import kotlin.math.max
 
 internal val scRowMinHeight = 84.dp
 
@@ -238,21 +239,22 @@ private fun ScUnreadCounter(room: RoomListRoomSummary) {
     val highlightCount: Long
     val notificationCount: Long
     val unreadCount: Long
+    val allowSilentUnreadCount = ScPrefs.RENDER_SILENT_UNREAD.value()
     if (ScPrefs.CLIENT_GENERATED_UNREAD_COUNTS.value()) {
         highlightCount = room.numberOfUnreadMentions
         notificationCount = room.numberOfUnreadNotifications
-        unreadCount = room.numberOfUnreadMessages
+        unreadCount = if (allowSilentUnreadCount) room.numberOfUnreadMessages else 0
     } else {
         highlightCount = room.highlightCount
         notificationCount = room.notificationCount
-        unreadCount = room.unreadCount
+        unreadCount = if (allowSilentUnreadCount) room.unreadCount else 0
     }
     val count: String
     val badgeColor: Color
     var outlinedBadge = false
     when {
-        ScPrefs.DUAL_MENTION_UNREAD_COUNTS.value() && highlightCount > 0 && (notificationCount > highlightCount || (notificationCount == 0L && unreadCount > highlightCount)) -> {
-            val fullUnreadToUse = if (notificationCount == 0L) unreadCount else notificationCount
+        ScPrefs.DUAL_MENTION_UNREAD_COUNTS.value() && highlightCount > 0 && (notificationCount > highlightCount || unreadCount > highlightCount) -> {
+            val fullUnreadToUse = max(unreadCount, notificationCount)
             count = "${formatUnreadCount(highlightCount)}/${formatUnreadCount(fullUnreadToUse)}"
             badgeColor = ElementTheme.colors.bgCriticalPrimary
         }
@@ -269,7 +271,7 @@ private fun ScUnreadCounter(room: RoomListRoomSummary) {
             badgeColor = ElementTheme.colors.unreadIndicator
             outlinedBadge = true
         }
-        unreadCount > 0 && ScPrefs.RENDER_SILENT_UNREAD.value() -> {
+        unreadCount > 0 -> {
             count = formatUnreadCount(unreadCount)
             badgeColor = ScTheme.exposures.unreadBadgeColor
         }

@@ -94,4 +94,10 @@
     <string name="sc_pseudo_spaces_summary_experimental">Zusätzliche Spaces-Seiten (experimentell)</string>
     <string name="sc_pref_dual_mention_unread_counts_summary">Wenn die Anzahl der Erwähnungen eines hervorgehobenen Chats von der Anzahl der ungelesenen Chats abweicht, werden beide angezeigt</string>
     <string name="sc_pref_snc_fab_title_short">SNC als FAB</string>
+    <string name="sc_pref_prefer_fullscreen_reaction_sheet_summary">Lasse den Emoji-Reaktionspicker beim Öffnen sofort vollständig erscheinen</string>
+    <string name="sc_pref_client_side_sort_summary">Chats ausschließlich auf der Grundlage einer clientseitigen Berechnung sortieren</string>
+    <string name="sc_pref_sort_with_silent_unread_summary">Stummgeschaltete ungelesene Chats über vollständig gelesene Chats sortieren</string>
+    <string name="sc_pref_snc_fab_title">Start-Neu-Chat als schwebender Button</string>
+    <string name="sc_pref_open_links_in_custom_tab_title">Links in Apps öffnen</string>
+    <string name="sc_pref_open_links_in_custom_tab_summary">Öffne beim Anklicken von Links vorzugsweise Browserfenster mit nur einer Registerkarte in der App, wenn Ihr Browser dies unterstützt.</string>
 </resources>

@@ -30,13 +30,13 @@ import io.element.android.libraries.matrix.api.timeline.item.event.EventType
 import io.element.android.libraries.matrix.api.timeline.item.event.FileMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.ImageMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.LocationMessageType
+import io.element.android.libraries.matrix.api.timeline.item.event.MessageTypeWithAttachment
 import io.element.android.libraries.matrix.api.timeline.item.event.NoticeMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.OtherMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.StickerMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.TextMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.VideoMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.VoiceMessageType
-import io.element.android.libraries.matrix.api.timeline.item.event.caption
 import io.element.android.libraries.matrix.ui.messages.toPlainText
 import io.element.android.libraries.preferences.api.store.AppPreferencesStore
 import io.element.android.libraries.push.impl.R
@@ -107,7 +107,7 @@ class DefaultNotifiableEventResolver @Inject constructor(
                     timestamp = this.timestamp,
                     senderDisambiguatedDisplayName = senderDisambiguatedDisplayName,
                     body = messageBody,
-                    caption = content.messageType.caption(),
+                    caption = (content.messageType as? MessageTypeWithAttachment)?.caption,
                     imageUriString = content.fetchImageIfPresent(client)?.toString(),
                     roomName = roomDisplayName,
                     roomIsDm = isDm,
@@ -267,15 +267,15 @@ class DefaultNotifiableEventResolver @Inject constructor(
         senderDisambiguatedDisplayName: String,
     ): String {
         return when (val messageType = content.messageType) {
-            is AudioMessageType -> messageType.body
+            is AudioMessageType -> messageType.bestDescription
             is VoiceMessageType -> stringProvider.getString(CommonStrings.common_voice_message)
             is EmoteMessageType -> "* $senderDisambiguatedDisplayName ${messageType.body}"
-            is FileMessageType -> messageType.body
-            is ImageMessageType -> messageType.body
-            is StickerMessageType -> messageType.body
+            is FileMessageType -> messageType.bestDescription
+            is ImageMessageType -> messageType.bestDescription
+            is StickerMessageType -> messageType.bestDescription
             is NoticeMessageType -> messageType.body
             is TextMessageType -> messageType.toPlainText(permalinkParser = permalinkParser)
-            is VideoMessageType -> messageType.body
+            is VideoMessageType -> messageType.bestDescription
             is LocationMessageType -> messageType.body
             is OtherMessageType -> messageType.body
         }
@@ -301,7 +301,7 @@ class DefaultNotifiableEventResolver @Inject constructor(
                 .getMediaFile(
                     mediaSource = messageType.source,
                     mimeType = messageType.info?.mimetype,
-                    body = messageType.body,
+                    filename = messageType.filename,
                 )
             is VideoMessageType -> null // Use the thumbnail here?
             else -> null

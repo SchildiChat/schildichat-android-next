@@ -26,6 +26,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberUpdatedState
@@ -95,13 +96,18 @@ class ElementCallActivity :
         pictureInPicturePresenter.setPipView(this)
 
         audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
-        requestAudioFocus()
 
         setContent {
             val pipState = pictureInPicturePresenter.present()
             ElementThemeApp(appPreferencesStore, applicationContext) {
                 val state = presenter.present()
                 eventSink = state.eventSink
+                LaunchedEffect(state.isCallActive, state.isInWidgetMode) {
+                    // Note when not in WidgetMode, isCallActive will never be true, so consider the call is active
+                    if (state.isCallActive || !state.isInWidgetMode) {
+                        setCallIsActive()
+                    }
+                }
                 CallScreenView(
                     state = state,
                     pipState = pipState,
@@ -112,6 +118,11 @@ class ElementCallActivity :
                 )
             }
         }
+    }
+
+    private fun setCallIsActive() {
+        requestAudioFocus()
+        CallForegroundService.start(this)
     }
 
     @Composable
@@ -153,18 +164,6 @@ class ElementCallActivity :
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setCallType(intent)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        CallForegroundService.stop(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        if (!isFinishing && !isChangingConfigurations) {
-            CallForegroundService.start(this)
-        }
     }
 
     override fun onDestroy() {
@@ -230,10 +229,10 @@ class ElementCallActivity :
 
     @Suppress("DEPRECATION")
     private fun requestAudioFocus() {
-        val audioAttributes = AudioAttributes.Builder()
-            .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
-            .build()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val audioAttributes = AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
+                .build()
             val request = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
                 .setAudioAttributes(audioAttributes)
                 .build()
@@ -246,7 +245,6 @@ class ElementCallActivity :
                 AudioManager.STREAM_VOICE_CALL,
                 AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE,
             )
-
             audioFocusChangeListener = listener
         }
     }

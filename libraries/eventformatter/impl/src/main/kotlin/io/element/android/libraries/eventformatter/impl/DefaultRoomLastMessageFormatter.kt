@@ -38,7 +38,6 @@ import io.element.android.libraries.matrix.api.timeline.item.event.UnableToDecry
 import io.element.android.libraries.matrix.api.timeline.item.event.UnknownContent
 import io.element.android.libraries.matrix.api.timeline.item.event.VideoMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.VoiceMessageType
-import io.element.android.libraries.matrix.api.timeline.item.event.caption
 import io.element.android.libraries.matrix.api.timeline.item.event.getDisambiguatedDisplayName
 import io.element.android.libraries.matrix.ui.messages.toPlainText
 import io.element.android.libraries.ui.strings.CommonStrings
@@ -68,7 +67,7 @@ class DefaultRoomLastMessageFormatter @Inject constructor(
                 message.prefixIfNeeded(senderDisambiguatedDisplayName, isDmRoom, isOutgoing)
             }
             is StickerContent -> {
-                val message = sp.getString(CommonStrings.common_sticker) + " (" + content.body + ")"
+                val message = sp.getString(CommonStrings.common_sticker) + " (" + content.bestDescription + ")"
                 message.prefixIfNeeded(senderDisambiguatedDisplayName, isDmRoom, isOutgoing)
             }
             is UnableToDecryptContent -> {
@@ -111,10 +110,10 @@ class DefaultRoomLastMessageFormatter @Inject constructor(
                 messageType.toPlainText(permalinkParser)
             }
             is VideoMessageType -> {
-                messageType.caption() ?: sp.getString(CommonStrings.common_video)
+                messageType.caption ?: sp.getString(CommonStrings.common_video)
             }
             is ImageMessageType -> {
-                messageType.caption() ?: sp.getString(CommonStrings.common_image)
+                messageType.caption ?: sp.getString(CommonStrings.common_image)
             }
             is StickerMessageType -> {
                 sp.getString(CommonStrings.common_sticker)
@@ -123,13 +122,13 @@ class DefaultRoomLastMessageFormatter @Inject constructor(
                 sp.getString(CommonStrings.common_shared_location)
             }
             is FileMessageType -> {
-                messageType.caption() ?: sp.getString(CommonStrings.common_file)
+                messageType.caption ?: sp.getString(CommonStrings.common_file)
             }
             is AudioMessageType -> {
-                messageType.caption() ?: sp.getString(CommonStrings.common_audio)
+                messageType.caption ?: sp.getString(CommonStrings.common_audio)
             }
             is VoiceMessageType -> {
-                messageType.caption() ?: sp.getString(CommonStrings.common_voice_message)
+                messageType.caption ?: sp.getString(CommonStrings.common_voice_message)
             }
             is OtherMessageType -> {
                 messageType.body

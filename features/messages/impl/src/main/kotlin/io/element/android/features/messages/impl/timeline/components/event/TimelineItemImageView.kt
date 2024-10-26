@@ -94,7 +94,7 @@ fun TimelineItemImageView(
                     model = MediaRequestData(
                         source = content.preferredMediaSource,
                         kind = MediaRequestData.Kind.File(
-                            body = content.filename ?: content.body,
+                            fileName = content.filename,
                             mimeType = content.mimeType,
                         ),
                     ),
@@ -111,7 +111,9 @@ fun TimelineItemImageView(
             val caption = if (LocalInspectionMode.current) {
                 SpannedString(content.caption)
             } else {
-                content.formatted?.body?.takeIf { content.formatted.format == MessageFormat.HTML } ?: SpannedString(content.caption)
+                content.formattedCaption?.body
+                    ?.takeIf { content.formattedCaption.format == MessageFormat.HTML }
+                    ?: SpannedString(content.caption)
             }
             CompositionLocalProvider(
                 LocalContentColor provides ElementTheme.colors.textPrimary,
@@ -161,9 +163,9 @@ internal fun TimelineImageWithCaptionRowPreview() = ElementPreview {
             ATimelineItemEventRow(
                 event = aTimelineItemEvent(
                     isMine = isMine,
-                    content = aTimelineItemImageContent().copy(
+                    content = aTimelineItemImageContent(
                         filename = "image.jpg",
-                        body = "A long caption that may wrap into several lines",
+                        caption = "A long caption that may wrap into several lines",
                         aspectRatio = 2.5f,
                     ),
                     groupPosition = TimelineItemGroupPosition.Last,
@@ -173,9 +175,9 @@ internal fun TimelineImageWithCaptionRowPreview() = ElementPreview {
         ATimelineItemEventRow(
             event = aTimelineItemEvent(
                 isMine = false,
-                content = aTimelineItemImageContent().copy(
+                content = aTimelineItemImageContent(
                     filename = "image.jpg",
-                    body = "Image with null aspectRatio",
+                    caption = "Image with null aspectRatio",
                     aspectRatio = null,
                 ),
                 groupPosition = TimelineItemGroupPosition.Last,

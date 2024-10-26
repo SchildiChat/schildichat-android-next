@@ -171,7 +171,7 @@ fun MessagesView(
     }
 
     fun onEmojiReactionClick(emoji: String, event: TimelineItem.Event) {
-        state.eventSink(MessagesEvents.ToggleReaction(emoji, event.id))
+        state.eventSink(MessagesEvents.ToggleReaction(emoji, event.eventOrTransactionId))
     }
 
     fun onEmojiReactionLongClick(emoji: String, event: TimelineItem.Event) {

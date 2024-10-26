@@ -61,7 +61,7 @@ open class InReplyToDetailsProvider : PreviewParameterProvider<InReplyToDetails>
             ),
             aMessageContent(
                 body = "Sticker",
-                type = StickerMessageType("Image", MediaSource("url"), null),
+                type = StickerMessageType("Image", null, null, MediaSource("url"), null),
             ),
             aMessageContent(
                 body = "File",

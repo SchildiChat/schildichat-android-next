@@ -21,9 +21,9 @@ import io.element.android.libraries.matrix.api.notification.NotificationService
 import io.element.android.libraries.matrix.api.notificationsettings.NotificationSettingsService
 import io.element.android.libraries.matrix.api.oidc.AccountManagementAction
 import io.element.android.libraries.matrix.api.pusher.PushersService
-import io.element.android.libraries.matrix.api.room.InvitedRoom
 import io.element.android.libraries.matrix.api.room.MatrixRoom
 import io.element.android.libraries.matrix.api.room.MatrixRoomInfo
+import io.element.android.libraries.matrix.api.room.PendingRoom
 import io.element.android.libraries.matrix.api.room.RoomMembershipObserver
 import io.element.android.libraries.matrix.api.room.alias.ResolvedRoomAlias
 import io.element.android.libraries.matrix.api.room.preview.RoomPreview
@@ -55,7 +55,7 @@ interface MatrixClient : Closeable {
     suspend fun getAccountData(eventType: String): String? // SC
     suspend fun getRoomAccountData(roomId: RoomId, eventType: String): String? // SC
     suspend fun setAccountData(eventType: String, content: String) // SC
-    suspend fun getInvitedRoom(roomId: RoomId): InvitedRoom?
+    suspend fun getPendingRoom(roomId: RoomId): PendingRoom?
     suspend fun findDM(userId: UserId): RoomId?
     suspend fun ignoreUser(userId: UserId): Result<Unit>
     suspend fun unignoreUser(userId: UserId): Result<Unit>
@@ -68,7 +68,7 @@ interface MatrixClient : Closeable {
     suspend fun removeAvatar(): Result<Unit>
     suspend fun joinRoom(roomId: RoomId): Result<RoomSummary?>
     suspend fun joinRoomByIdOrAlias(roomIdOrAlias: RoomIdOrAlias, serverNames: List<String>): Result<RoomSummary?>
-    suspend fun knockRoom(roomId: RoomId): Result<Unit>
+    suspend fun knockRoom(roomIdOrAlias: RoomIdOrAlias, message: String, serverNames: List<String>): Result<RoomSummary?>
     fun syncService(): SyncService
     fun sessionVerificationService(): SessionVerificationService
     fun pushersService(): PushersService

@@ -19,14 +19,14 @@ import io.element.android.emojibasebindings.Emoji
 import io.element.android.features.messages.impl.emojis.RecentEmojiDataSource
 import io.element.android.libraries.designsystem.theme.components.ModalBottomSheet
 import io.element.android.libraries.designsystem.theme.components.hide
-import io.element.android.libraries.matrix.api.core.UniqueId
+import io.element.android.libraries.matrix.api.timeline.item.event.EventOrTransactionId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomReactionBottomSheet(
     state: CustomReactionState,
-    onSelectEmoji: (UniqueId, Emoji) -> Unit,
-    onSelectCustomEmoji: (UniqueId, String) -> Unit, // SC
+    onSelectEmoji: (EventOrTransactionId, Emoji) -> Unit,
+    onSelectCustomEmoji: (EventOrTransactionId, String) -> Unit, // SC
     recentEmojiDataSource: RecentEmojiDataSource?, // SC
     modifier: Modifier = Modifier,
 ) {
@@ -45,7 +45,7 @@ fun CustomReactionBottomSheet(
 
         sheetState.hide(coroutineScope) {
             state.eventSink(CustomReactionEvents.DismissCustomReactionSheet)
-            onSelectEmoji(target.event.id, emoji)
+            onSelectEmoji(target.event.eventOrTransactionId, emoji)
 
             if (!wasSelected) recentEmojiDataSource?.recordEmoji(emoji.unicode)
         }
@@ -58,7 +58,7 @@ fun CustomReactionBottomSheet(
 
         sheetState.hide(coroutineScope) {
             state.eventSink(CustomReactionEvents.DismissCustomReactionSheet)
-            onSelectCustomEmoji(target.event.id, emoji)
+            onSelectCustomEmoji(target.event.eventOrTransactionId, emoji)
 
             if (!wasSelected) recentEmojiDataSource?.recordEmoji(emoji)
         }

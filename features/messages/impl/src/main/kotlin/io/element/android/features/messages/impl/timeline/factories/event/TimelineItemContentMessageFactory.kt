@@ -86,9 +86,9 @@ class TimelineItemContentMessageFactory @Inject constructor(
             is ImageMessageType -> {
                 val aspectRatio = aspectRatioOf(messageType.info?.width, messageType.info?.height)
                 TimelineItemImageContent(
-                    body = messageType.body.trimEnd(),
-                    formatted = messageType.formatted,
                     filename = messageType.filename,
+                    caption = messageType.caption?.trimEnd(),
+                    formattedCaption = messageType.formattedCaption,
                     mediaSource = messageType.source,
                     thumbnailSource = messageType.info?.thumbnailSource,
                     mimeType = messageType.info?.mimetype ?: MimeTypes.OctetStream,
@@ -97,13 +97,15 @@ class TimelineItemContentMessageFactory @Inject constructor(
                     height = messageType.info?.height?.toInt(),
                     aspectRatio = aspectRatio,
                     formattedFileSize = fileSizeFormatter.format(messageType.info?.size ?: 0),
-                    fileExtension = messageType.filename?.let { fileExtensionExtractor.extractFromName(it) }.orEmpty()
+                    fileExtension = fileExtensionExtractor.extractFromName(messageType.filename)
                 )
             }
             is StickerMessageType -> {
                 val aspectRatio = aspectRatioOf(messageType.info?.width, messageType.info?.height)
                 TimelineItemStickerContent(
-                    body = messageType.body.trimEnd(),
+                    filename = messageType.filename,
+                    caption = messageType.caption?.trimEnd(),
+                    formattedCaption = messageType.formattedCaption,
                     mediaSource = messageType.source,
                     thumbnailSource = messageType.info?.thumbnailSource,
                     mimeType = messageType.info?.mimetype ?: MimeTypes.OctetStream,
@@ -112,7 +114,7 @@ class TimelineItemContentMessageFactory @Inject constructor(
                     height = messageType.info?.height?.toInt(),
                     aspectRatio = aspectRatio,
                     formattedFileSize = fileSizeFormatter.format(messageType.info?.size ?: 0),
-                    fileExtension = fileExtensionExtractor.extractFromName(messageType.body)
+                    fileExtension = fileExtensionExtractor.extractFromName(messageType.filename)
                 )
             }
             is LocationMessageType -> {
@@ -138,9 +140,9 @@ class TimelineItemContentMessageFactory @Inject constructor(
             is VideoMessageType -> {
                 val aspectRatio = aspectRatioOf(messageType.info?.width, messageType.info?.height)
                 TimelineItemVideoContent(
-                    body = messageType.body.trimEnd(),
-                    formatted = messageType.formatted,
                     filename = messageType.filename,
+                    caption = messageType.caption?.trimEnd(),
+                    formattedCaption = messageType.formattedCaption,
                     thumbnailSource = messageType.info?.thumbnailSource,
                     videoSource = messageType.source,
                     mimeType = messageType.info?.mimetype ?: MimeTypes.OctetStream,
@@ -150,18 +152,19 @@ class TimelineItemContentMessageFactory @Inject constructor(
                     blurHash = messageType.info?.blurhash,
                     aspectRatio = aspectRatio,
                     formattedFileSize = fileSizeFormatter.format(messageType.info?.size ?: 0),
-                    fileExtension = messageType.filename?.let { fileExtensionExtractor.extractFromName(it) }.orEmpty(),
+                    fileExtension = fileExtensionExtractor.extractFromName(messageType.filename),
                 )
             }
             is AudioMessageType -> {
                 TimelineItemAudioContent(
-                    body = messageType.body.trimEnd(),
                     filename = messageType.filename,
+                    caption = messageType.caption?.trimEnd(),
+                    formattedCaption = messageType.formattedCaption,
                     mediaSource = messageType.source,
                     duration = messageType.info?.duration ?: Duration.ZERO,
                     mimeType = messageType.info?.mimetype ?: MimeTypes.OctetStream,
                     formattedFileSize = fileSizeFormatter.format(messageType.info?.size ?: 0),
-                    fileExtension = fileExtensionExtractor.extractFromName(messageType.body),
+                    fileExtension = fileExtensionExtractor.extractFromName(messageType.filename),
                 )
             }
             is VoiceMessageType -> {
@@ -169,8 +172,9 @@ class TimelineItemContentMessageFactory @Inject constructor(
                     true -> {
                         TimelineItemVoiceContent(
                             eventId = eventId,
-                            body = messageType.body.trimEnd(),
                             filename = messageType.filename,
+                            caption = messageType.caption?.trimEnd(),
+                            formattedCaption = messageType.formattedCaption,
                             mediaSource = messageType.source,
                             duration = messageType.info?.duration ?: Duration.ZERO,
                             mimeType = messageType.info?.mimetype ?: MimeTypes.OctetStream,
@@ -179,22 +183,24 @@ class TimelineItemContentMessageFactory @Inject constructor(
                     }
                     false -> {
                         TimelineItemAudioContent(
-                            body = messageType.body.trimEnd(),
                             filename = messageType.filename,
+                            caption = messageType.caption?.trimEnd(),
+                            formattedCaption = messageType.formattedCaption,
                             mediaSource = messageType.source,
                             duration = messageType.info?.duration ?: Duration.ZERO,
                             mimeType = messageType.info?.mimetype ?: MimeTypes.OctetStream,
                             formattedFileSize = fileSizeFormatter.format(messageType.info?.size ?: 0),
-                            fileExtension = fileExtensionExtractor.extractFromName(messageType.body),
+                            fileExtension = fileExtensionExtractor.extractFromName(messageType.filename),
                         )
                     }
                 }
             }
             is FileMessageType -> {
-                val fileExtension = fileExtensionExtractor.extractFromName(messageType.body)
+                val fileExtension = fileExtensionExtractor.extractFromName(messageType.filename)
                 TimelineItemFileContent(
-                    body = messageType.body.trimEnd(),
                     filename = messageType.filename,
+                    caption = messageType.caption?.trimEnd(),
+                    formattedCaption = messageType.formattedCaption,
                     thumbnailSource = messageType.info?.thumbnailSource,
                     fileSource = messageType.source,
                     mimeType = messageType.info?.mimetype ?: MimeTypes.fromFileExtension(fileExtension),

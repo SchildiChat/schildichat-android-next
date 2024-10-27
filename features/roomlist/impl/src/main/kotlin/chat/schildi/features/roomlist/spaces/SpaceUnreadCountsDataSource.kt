@@ -5,6 +5,7 @@ import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
 import io.element.android.features.roomlist.impl.datasource.RoomListDataSource
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
+import io.element.android.features.roomlist.impl.model.RoomSummaryDisplayType
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -91,20 +92,36 @@ class SpaceUnreadCountsDataSource @Inject constructor(
                 if (useClientGeneratedUnreadCounts) room.numberOfUnreadNotifications else room.notificationCount,
                 if (useClientGeneratedUnreadCounts) room.numberOfUnreadMessages else room.unreadCount,
                 room.isMarkedUnread,
+                room.displayType == RoomSummaryDisplayType.INVITE,
             )
         }
         return unread
     }
 
-    private fun SpaceUnreadCounts.add(mentions: Long, notifications: Long, unread: Long, markedUnread: Boolean): SpaceUnreadCounts = SpaceUnreadCounts(
-        this.mentionedMessages + mentions,
-        this.notifiedMessages + notifications,
-        this.unreadMessages + unread,
-        this.mentionedChats + if (mentions > 0) 1 else 0,
-        this.notifiedChats + if (notifications > 0) 1 else 0,
-        this.unreadChats + if (unread > 0) 1 else 0,
-        this.markedUnreadChats + if (markedUnread) 1 else 0
-    )
+    private fun SpaceUnreadCounts.add(
+        mentions: Long,
+        notifications: Long,
+        unread: Long,
+        markedUnread: Boolean,
+        isInvite: Boolean
+    ): SpaceUnreadCounts = if (isInvite) {
+        copy(
+            notifiedMessages = this.notifiedMessages + 1,
+            unreadMessages = this.unreadMessages + 1,
+            notifiedChats = this.notifiedChats + 1,
+            unreadChats = this.unreadChats + 1,
+        )
+    } else {
+        SpaceUnreadCounts(
+            this.mentionedMessages + mentions,
+            this.notifiedMessages + notifications,
+            this.unreadMessages + unread,
+            this.mentionedChats + if (mentions > 0) 1 else 0,
+            this.notifiedChats + if (notifications > 0) 1 else 0,
+            this.unreadChats + if (unread > 0) 1 else 0,
+            this.markedUnreadChats + if (markedUnread) 1 else 0
+        )
+    }
 
     @Immutable
     data class SpaceUnreadCounts(

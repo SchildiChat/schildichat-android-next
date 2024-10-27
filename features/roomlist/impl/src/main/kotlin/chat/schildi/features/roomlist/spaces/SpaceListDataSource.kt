@@ -20,6 +20,7 @@ import chat.schildi.matrixsdk.ROOM_ACCOUNT_DATA_SPACE_ORDER
 import chat.schildi.matrixsdk.SpaceOrderSerializer
 import io.element.android.features.roomlist.impl.datasource.RoomListRoomSummaryFactory
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
+import io.element.android.features.roomlist.impl.model.RoomSummaryDisplayType
 import io.element.android.libraries.androidutils.diff.DiffCacheUpdater
 import io.element.android.libraries.androidutils.diff.MutableListDiffCache
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
@@ -369,10 +370,17 @@ class SpaceListDataSource @Inject constructor(
             unreadCounts = getUnreadCounts(this)
         )
         override fun applyFilter(rooms: List<RoomListRoomSummary>): ImmutableList<RoomListRoomSummary> {
-            return if (clientUnreadCounts)
-                rooms.filter { it.numberOfUnreadNotifications > 0 || it.numberOfUnreadMentions > 0 || it.isMarkedUnread }.toImmutableList()
-            else
-                rooms.filter { it.notificationCount > 0 || it.highlightCount > 0 || it.numberOfUnreadMentions > 0 || it.isMarkedUnread }.toImmutableList()
+            return if (clientUnreadCounts) {
+                rooms.filter {
+                    it.numberOfUnreadNotifications > 0 || it.numberOfUnreadMentions > 0
+                        || it.isMarkedUnread || it.displayType == RoomSummaryDisplayType.INVITE
+                }
+            } else {
+                rooms.filter {
+                    it.notificationCount > 0 || it.highlightCount > 0 || it.numberOfUnreadMentions > 0
+                        || it.isMarkedUnread || it.displayType == RoomSummaryDisplayType.INVITE
+                }
+            }.toImmutableList()
         }
         override fun canHide(spaceUnreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts): Boolean =
             spaceUnreadCounts.markedUnreadChats == 0L && spaceUnreadCounts.notifiedChats == 0L
@@ -391,10 +399,11 @@ class SpaceListDataSource @Inject constructor(
             unreadCounts = getUnreadCounts(this)
         )
         override fun applyFilter(rooms: List<RoomListRoomSummary>): ImmutableList<RoomListRoomSummary> {
-            return if (clientUnreadCounts)
-                rooms.filter { it.numberOfUnreadMessages > 0 || it.isMarkedUnread }.toImmutableList()
-            else
-                rooms.filter { it.unreadCount > 0 || it.isMarkedUnread }.toImmutableList()
+            return if (clientUnreadCounts) {
+                rooms.filter { it.numberOfUnreadMessages > 0 || it.isMarkedUnread || it.displayType == RoomSummaryDisplayType.INVITE }
+            } else {
+                rooms.filter { it.unreadCount > 0 || it.isMarkedUnread || it.displayType == RoomSummaryDisplayType.INVITE }
+            }.toImmutableList()
         }
         override fun canHide(spaceUnreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts): Boolean =
             spaceUnreadCounts.markedUnreadChats == 0L && spaceUnreadCounts.notifiedChats == 0L && spaceUnreadCounts.unreadChats == 0L

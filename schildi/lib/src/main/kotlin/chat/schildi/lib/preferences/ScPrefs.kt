@@ -82,6 +82,7 @@ object ScPrefs {
 
     // Developer options
     val SC_PUSH_INFO = ScActionablePref("SC_PUSH_INFO", R.string.sc_push_info_title, R.string.sc_push_info_summary)
+    val SC_USER_CHANGED_SETTINGS = ScActionablePref("SC_USER_CHANGED_SETTINGS", R.string.sc_pref_user_changed_prefs_title, R.string.sc_pref_user_changed_prefs_summary)
     val SC_DEV_QUICK_OPTIONS = ScBoolPref("SC_DEV_QUICK_OPTIONS", false, R.string.sc_pref_dev_quick_options, authorsChoice = true)
     val READ_MARKER_DEBUG = ScBoolPref("READ_MARKER_DEBUG", false, R.string.sc_pref_debug_read_marker, authorsChoice = true, upstreamChoice = false)
     private val SC_DANGER_ZONE = ScBoolPref("SC_DANGER_ZONE", false, R.string.sc_pref_danger_zone, authorsChoice = true)
@@ -159,6 +160,7 @@ object ScPrefs {
             )),
         )),
         ScPrefCategory(CommonStrings.common_developer_options, null, listOf(
+            SC_USER_CHANGED_SETTINGS,
             SC_PUSH_INFO,
             SC_DEV_QUICK_OPTIONS,
             READ_MARKER_DEBUG,

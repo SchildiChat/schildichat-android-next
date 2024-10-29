@@ -58,6 +58,7 @@ dependencies {
     implementation(projects.features.deactivation.api)
     implementation(projects.features.roomlist.api)
     implementation(projects.services.analytics.api)
+    implementation(projects.services.analytics.compose)
     implementation(projects.services.toolbox.api)
     implementation(libs.datetime)
     implementation(libs.coil.compose)

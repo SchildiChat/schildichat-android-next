@@ -1,0 +1,5 @@
+- Update codebase to Element X v0.7.2
+- Make opening links in-app in single-tab browser optional
+- Handle invites as unread for pseudo spaces and unread counts
+- Possibility to view summary of user-changed turtle tweaks in settings
+- Bug fixes

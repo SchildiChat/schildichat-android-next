@@ -26,6 +26,7 @@ import io.element.android.services.analytics.api.AnalyticsService
 import io.element.android.services.toolbox.api.systemclock.SystemClock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
+import org.matrix.rustcomponents.sdk.Client
 import org.matrix.rustcomponents.sdk.ClientBuilder
 import org.matrix.rustcomponents.sdk.Session
 import org.matrix.rustcomponents.sdk.SlidingSyncVersion
@@ -53,8 +54,9 @@ class RustMatrixClientFactory @Inject constructor(
     private val timelineEventTypeFilterFactory: TimelineEventTypeFilterFactory,
     private val clientBuilderProvider: ClientBuilderProvider,
 ) {
+    private val sessionDelegate = RustClientSessionDelegate(sessionStore, appCoroutineScope, coroutineDispatchers)
+
     suspend fun create(sessionData: SessionData): RustMatrixClient = withContext(coroutineDispatchers.io) {
-        val sessionDelegate = RustClientSessionDelegate(sessionStore, appCoroutineScope, coroutineDispatchers)
         val client = getBaseClientBuilder(
             sessionPaths = sessionData.getSessionPaths(),
             passphrase = sessionData.passphrase,
@@ -62,18 +64,21 @@ class RustMatrixClientFactory @Inject constructor(
         )
             .homeserverUrl(sessionData.homeserverUrl)
             .username(sessionData.userId)
-            .setSessionDelegate(sessionDelegate)
             .use { it.build() }
 
         client.restoreSession(sessionData.toSession())
+
+        create(client)
+    }
+
+    suspend fun create(client: Client): RustMatrixClient {
+        val (anonymizedAccessToken, anonymizedRefreshToken) = client.session().anonymizedTokens()
 
         val syncService = client.syncService()
             .withUtdHook(UtdTracker(analyticsService))
             .finish()
 
-        val (anonymizedAccessToken, anonymizedRefreshToken) = sessionData.anonymizedTokens()
-
-        RustMatrixClient(
+        return RustMatrixClient(
             client = client,
             baseDirectory = baseDirectory,
             sessionStore = sessionStore,
@@ -85,6 +90,7 @@ class RustMatrixClientFactory @Inject constructor(
             clock = clock,
             timelineEventTypeFilterFactory = timelineEventTypeFilterFactory,
             scPreferencesStore = scPreferencesStore,
+            featureFlagService = featureFlagService,
         ).also {
             Timber.tag(it.toString()).d("Creating Client with access token '$anonymizedAccessToken' and refresh token '$anonymizedRefreshToken'")
         }
@@ -100,6 +106,7 @@ class RustMatrixClientFactory @Inject constructor(
                 dataPath = sessionPaths.fileDirectory.absolutePath,
                 cachePath = sessionPaths.cacheDirectory.absolutePath,
             )
+            .setSessionDelegate(sessionDelegate)
             .passphrase(passphrase)
             .userAgent(userAgentProvider.provide())
             .addRootCertificates(userCertificatesProvider.provides())

@@ -44,9 +44,9 @@ android {
 
     defaultConfig {
         applicationId = "chat.schildi.android"
-        targetSdk = Versions.targetSdk
         versionCode = 890
         versionName = "0.7.2.sc13"
+        targetSdk = Versions.TARGET_SDK
 
         // Keep abiFilter for the universalApk
         ndk {

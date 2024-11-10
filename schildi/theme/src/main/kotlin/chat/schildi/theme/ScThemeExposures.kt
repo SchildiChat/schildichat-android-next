@@ -23,6 +23,7 @@ class ScThemeExposures(
     appBarBg: Color?,
     bubbleRadius: Dp,
     timestampRadius: Dp,
+    commonLayoutRadius: Dp,
     timestampOverlayBg: Color,
     unreadIndicatorLine: Color?,
     unreadIndicatorThickness: Dp,
@@ -52,6 +53,8 @@ class ScThemeExposures(
     var appBarBg by mutableStateOf(appBarBg)
         private set
     var bubbleRadius by mutableStateOf(bubbleRadius)
+        private set
+    var commonLayoutRadius by mutableStateOf(commonLayoutRadius)
         private set
     var timestampRadius by mutableStateOf(timestampRadius)
         private set
@@ -88,6 +91,7 @@ class ScThemeExposures(
         unreadBadgeOnToolbarColor: Color = this.unreadBadgeOnToolbarColor,
         appBarBg: Color? = this.appBarBg,
         bubbleRadius: Dp = this.bubbleRadius,
+        commonLayoutRadius: Dp = this.commonLayoutRadius,
         timestampRadius: Dp = this.timestampRadius,
         timestampOverlayBg: Color = this.timestampOverlayBg,
         unreadIndicatorLine: Color? = this.unreadIndicatorLine,
@@ -110,6 +114,7 @@ class ScThemeExposures(
         unreadBadgeOnToolbarColor = unreadBadgeOnToolbarColor,
         appBarBg = appBarBg,
         bubbleRadius = bubbleRadius,
+        commonLayoutRadius = commonLayoutRadius,
         timestampRadius = timestampRadius,
         timestampOverlayBg = timestampOverlayBg,
         unreadIndicatorLine = unreadIndicatorLine,
@@ -134,6 +139,7 @@ class ScThemeExposures(
         unreadBadgeOnToolbarColor = other.unreadBadgeOnToolbarColor
         appBarBg = other.appBarBg
         bubbleRadius = other.bubbleRadius
+        commonLayoutRadius = other.commonLayoutRadius
         timestampRadius = other.timestampRadius
         timestampOverlayBg = other.timestampOverlayBg
         unreadIndicatorLine = other.unreadIndicatorLine
@@ -159,6 +165,7 @@ internal val elementLightScExposures = ScThemeExposures(
     unreadBadgeOnToolbarColor = Color(0xffa9b2bc),
     appBarBg = null,
     bubbleRadius = 12.dp,
+    commonLayoutRadius = 10.dp,
     timestampRadius = 10.0.dp,
     timestampOverlayBg = Color.Magenta, // unused for non-SC themes
     unreadIndicatorLine = null,
@@ -183,6 +190,7 @@ internal val elementDarkScExposures = ScThemeExposures(
     unreadBadgeOnToolbarColor = Color(0xff737d8c),
     appBarBg = null,
     bubbleRadius = 12.dp,
+    commonLayoutRadius = 10.dp,
     timestampRadius = 10.0.dp,
     timestampOverlayBg = Color.Magenta, // unused for non-SC themes
     unreadIndicatorLine = null,

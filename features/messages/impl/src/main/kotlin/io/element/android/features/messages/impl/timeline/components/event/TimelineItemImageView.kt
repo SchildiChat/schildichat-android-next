@@ -36,6 +36,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import chat.schildi.lib.compose.thenIf
+import chat.schildi.theme.ScTheme
 import chat.schildi.theme.scBubbleFont
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
@@ -53,7 +54,6 @@ import io.element.android.libraries.designsystem.components.blurhash.blurHashBac
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageFormat
-import io.element.android.libraries.matrix.ui.media.MediaRequestData
 import io.element.android.libraries.textcomposer.ElementRichTextEditorStyle
 import io.element.android.libraries.ui.strings.CommonStrings
 import io.element.android.wysiwyg.compose.EditorStyledText
@@ -71,9 +71,7 @@ fun TimelineItemImageView(
         modifier = modifier.semantics { contentDescription = description },
     ) {
         val containerModifier = if (content.showCaption) {
-            Modifier
-                .padding(top = 6.dp)
-                .clip(RoundedCornerShape(6.dp))
+            Modifier.clip(RoundedCornerShape(ScTheme.exposures.commonLayoutRadius))
         } else {
             Modifier
         }
@@ -81,7 +79,7 @@ fun TimelineItemImageView(
             modifier = containerModifier.blurHashBackground(content.blurhash, alpha = 0.9f),
             aspectRatio = content.aspectRatio,
         ) {
-            if (shouldDrawScPreviewMedia(content.preferredMediaSource)) { ScPreviewMedia(content.preferredMediaSource) ; return@TimelineItemAspectRatioBox }
+            if (shouldDrawScPreviewMedia(content.mediaSource)) { ScPreviewMedia(content.mediaSource) ; return@TimelineItemAspectRatioBox }
             ProtectedView(
                 hideContent = hideMediaContent,
                 onShowClick = onShowClick,
@@ -91,13 +89,7 @@ fun TimelineItemImageView(
                     modifier = Modifier
                         .fillMaxWidth()
                         /*.then(if (isLoaded) Modifier.background(Color.White) else Modifier)*/,
-                    model = MediaRequestData(
-                        source = content.preferredMediaSource,
-                        kind = MediaRequestData.Kind.File(
-                            fileName = content.filename,
-                            mimeType = content.mimeType,
-                        ),
-                    ),
+                    model = content.thumbnailMediaRequestData,
                     contentScale = ContentScale.Fit,
                     alignment = Alignment.Center,
                     contentDescription = description,
@@ -122,6 +114,7 @@ fun TimelineItemImageView(
                 val aspectRatio = content.aspectRatio ?: DEFAULT_ASPECT_RATIO
                 EditorStyledText(
                     modifier = Modifier
+                        .padding(horizontal = 4.dp) // This is (12.dp - 8.dp) contentPadding from CommonLayout
                         .widthIn(min = MIN_HEIGHT_IN_DP.dp * aspectRatio, max = MAX_HEIGHT_IN_DP.dp * aspectRatio),
                     text = caption,
                     style = ElementRichTextEditorStyle.textStyle(),

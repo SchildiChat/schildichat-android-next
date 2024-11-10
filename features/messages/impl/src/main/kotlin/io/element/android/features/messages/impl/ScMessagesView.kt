@@ -41,9 +41,9 @@ import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import chat.schildi.lib.util.formatUnreadCount
 import chat.schildi.theme.ScTheme
-import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.messages.impl.timeline.ScReadState
 import io.element.android.features.messages.impl.timeline.TimelineEvents
+import io.element.android.features.roomcall.api.RoomCallState
 import io.element.android.libraries.designsystem.icons.CompoundDrawables
 import io.element.android.libraries.designsystem.theme.components.DropdownMenu
 import io.element.android.libraries.designsystem.theme.components.DropdownMenuItem
@@ -116,7 +116,7 @@ internal fun RowScope.scMessagesViewTopBarActions(
             expanded = showMenu,
             onDismissRequest = { showMenu = false }
         ) {
-            if (moveCallButtonToOverflow() && callState != RoomCallState.DISABLED) {
+            if (moveCallButtonToOverflow() && (callState as? RoomCallState.StandBy)?.canStartCall == true) {
                 DropdownMenuItem(
                     onClick = {
                         showMenu = false

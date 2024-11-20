@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -21,6 +22,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.TextFields
 import androidx.compose.material3.Tab
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,8 +50,6 @@ import io.element.android.features.messages.impl.emojis.RecentEmojiDataSource
 import io.element.android.libraries.designsystem.text.toSp
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconButton
-import io.element.android.libraries.designsystem.theme.components.Text
-import io.element.android.libraries.designsystem.theme.components.TextField
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.coroutines.launch
@@ -78,7 +79,6 @@ fun ScEmojiPickerTabsStart(pagerState: PagerState) {
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ScEmojiPickerTabsEnd(pagerState: PagerState) {
     val coroutineScope = rememberCoroutineScope()
@@ -140,7 +140,7 @@ fun scEmojiPickerPage(
             val focusManager = LocalFocusManager.current
             Row(
                 Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .padding(8.dp), verticalAlignment = Alignment.Top) {
                 TextField(
                     value = text.value,
@@ -150,7 +150,7 @@ fun scEmojiPickerPage(
                         .weight(1f, fill = true),
                     singleLine = true,
                     label = {
-                        Text(stringResource(R.string.sc_freeform_reaction))
+                        Text(stringResource(R.string.sc_freeform_reaction),)
                     },
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,
@@ -159,7 +159,7 @@ fun scEmojiPickerPage(
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Send),
                     keyboardActions = KeyboardActions(onSend = { onSelectCustomEmoji(text.value) })
                 )
-                SendButton {
+                SendButton(Modifier.align(Alignment.Bottom)) {
                     onSelectCustomEmoji(text.value)
                 }
             }

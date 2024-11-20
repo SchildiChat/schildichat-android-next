@@ -93,6 +93,7 @@ class TimelineItemEventFactory @AssistedInject constructor(
             origin = currentTimelineItem.event.origin,
             timelineItemDebugInfoProvider = currentTimelineItem.event.timelineItemDebugInfoProvider,
             messageShieldProvider = currentTimelineItem.event.messageShieldProvider,
+            sendHandleProvider = currentTimelineItem.event.sendHandleProvider,
         )
     }
 

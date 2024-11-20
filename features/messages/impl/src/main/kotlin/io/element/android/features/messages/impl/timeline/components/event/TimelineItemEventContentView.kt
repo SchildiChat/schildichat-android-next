@@ -39,9 +39,10 @@ import io.element.android.libraries.architecture.Presenter
 fun TimelineItemEventContentView(
     content: TimelineItemEventContent,
     hideMediaContent: Boolean,
-    onShowClick: () -> Unit,
+    onContentClick: (() -> Unit)?,
+    onLongClick:(() -> Unit), // SC: non-null
+    onShowContentClick: () -> Unit,
     onLinkClick: (url: String) -> Unit,
-    onLongClick: () -> Unit, // SC
     eventSink: (TimelineEvents.EventFromTimelineItem) -> Unit,
     modifier: Modifier = Modifier,
     onContentLayoutChange: (ContentAvoidingLayoutData) -> Unit = {},
@@ -62,7 +63,7 @@ fun TimelineItemEventContentView(
             content = content,
             modifier = modifier.thenIf(content is TimelineItemNoticeContent) { alpha(0.65f) }, // SC
             onLinkClick = onLinkClick,
-            onLongClick = onLongClick, // SC
+            onLongClick = onLongClick,
             onContentLayoutChange = onContentLayoutChange
         )
         is TimelineItemUnknownContent -> TimelineItemUnknownView(
@@ -78,20 +79,28 @@ fun TimelineItemEventContentView(
         is TimelineItemImageContent -> TimelineItemImageView(
             content = content,
             hideMediaContent = hideMediaContent,
-            onShowClick = onShowClick,
+            onContentClick = onContentClick,
+            onLongClick = onLongClick,
+            onShowContentClick = onShowContentClick,
+            onLinkClick = onLinkClick,
             onContentLayoutChange = onContentLayoutChange,
             modifier = modifier,
         )
         is TimelineItemStickerContent -> TimelineItemStickerView(
             content = content,
             hideMediaContent = hideMediaContent,
-            onShowClick = onShowClick,
+            onContentClick = onContentClick,
+            onLongClick = onLongClick,
+            onShowClick = onShowContentClick,
             modifier = modifier,
         )
         is TimelineItemVideoContent -> TimelineItemVideoView(
             content = content,
             hideMediaContent = hideMediaContent,
-            onShowClick = onShowClick,
+            onContentClick = onContentClick,
+            onLongClick = onLongClick,
+            onShowContentClick = onShowContentClick,
+            onLinkClick = onLinkClick,
             onContentLayoutChange = onContentLayoutChange,
             modifier = modifier
         )

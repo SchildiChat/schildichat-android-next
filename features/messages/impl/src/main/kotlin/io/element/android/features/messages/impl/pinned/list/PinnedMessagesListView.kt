@@ -216,7 +216,7 @@ private fun PinnedMessagesListLoaded(
                 focusedEventId = null,
                 onUserDataClick = onUserDataClick,
                 onLinkClick = onLinkClick,
-                onClick = onEventClick,
+                onContentClick = onEventClick,
                 onLongClick = ::onMessageLongClick,
                 inReplyToClick = {},
                 onReactionClick = { _, _ -> },
@@ -230,6 +230,7 @@ private fun PinnedMessagesListLoaded(
                     TimelineItemEventContentViewWrapper(
                         event = event,
                         timelineProtectionState = state.timelineProtectionState,
+                        onContentClick = { onEventClick(event) },
                         onLinkClick = onLinkClick,
                         onLongClick = {},
                         modifier = contentModifier,
@@ -245,6 +246,7 @@ private fun PinnedMessagesListLoaded(
 private fun TimelineItemEventContentViewWrapper(
     event: TimelineItem.Event,
     timelineProtectionState: TimelineProtectionState,
+    onContentClick: () -> Unit,
     onLinkClick: (String) -> Unit,
     onLongClick: () -> Unit,
     onContentLayoutChange: (ContentAvoidingLayoutData) -> Unit,
@@ -260,11 +262,12 @@ private fun TimelineItemEventContentViewWrapper(
         TimelineItemEventContentView(
             content = event.content,
             hideMediaContent = timelineProtectionState.hideMediaContent(event.eventId),
-            onShowClick = { timelineProtectionState.eventSink(TimelineProtectionEvent.ShowContent(event.eventId)) },
+            onShowContentClick = { timelineProtectionState.eventSink(TimelineProtectionEvent.ShowContent(event.eventId)) },
             onLinkClick = onLinkClick,
-            onLongClick = onLongClick,
             eventSink = { },
             modifier = modifier,
+            onContentClick = onContentClick,
+            onLongClick = onLongClick, // SC: non-null
             onContentLayoutChange = onContentLayoutChange
         )
     }

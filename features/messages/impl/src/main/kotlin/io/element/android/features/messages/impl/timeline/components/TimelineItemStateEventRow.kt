@@ -71,10 +71,11 @@ fun TimelineItemStateEventRow(
                 TimelineItemEventContentView(
                     content = event.content,
                     onLinkClick = {},
-                    onLongClick = onLongClick,
                     hideMediaContent = false,
-                    onShowClick = {},
+                    onShowContentClick = {},
                     eventSink = eventSink,
+                    onContentClick = null,
+                    onLongClick = onLongClick, // SC: non-null
                     modifier = Modifier.defaultTimelineContentPadding()
                 )
             }

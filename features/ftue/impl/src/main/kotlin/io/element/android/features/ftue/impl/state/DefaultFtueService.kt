@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import timber.log.Timber
 import javax.inject.Inject
 
 @ContributesBinding(SessionScope::class)
@@ -99,7 +100,10 @@ class DefaultFtueService @Inject constructor(
             } else {
                 getNextStep(FtueStep.AnalyticsOptIn)
             }
-            FtueStep.AnalyticsOptIn -> null
+            FtueStep.AnalyticsOptIn -> {
+                state.value = FtueState.Complete // SC: fix login flow getting stuck, again...
+                null
+            }
         }
 
     private fun isSessionVerificationStateReady(): Boolean {
@@ -138,7 +142,7 @@ class DefaultFtueService @Inject constructor(
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal suspend fun updateState() {
-        val nextStep = getNextStep()
+        val nextStep = getNextStep().also { Timber.tag("SC_FTUE").d("Next step from updateState: $it") }
         state.value = when {
             // Final state, there aren't any more next steps
             nextStep == null -> FtueState.Complete

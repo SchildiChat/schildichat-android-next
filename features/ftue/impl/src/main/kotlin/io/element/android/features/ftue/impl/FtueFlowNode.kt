@@ -46,6 +46,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
+import timber.log.Timber
 
 @ContributesNode(SessionScope::class)
 class FtueFlowNode @AssistedInject constructor(
@@ -137,7 +138,7 @@ class FtueFlowNode @AssistedInject constructor(
     }
 
     private fun moveToNextStepIfNeeded() = lifecycleScope.launch {
-        when (ftueState.getNextStep()) {
+        when (ftueState.getNextStep().also { Timber.tag("SC_FTUE").d("Next step from flow node: $it") }) {
             FtueStep.WaitingForInitialState -> {
                 backstack.newRoot(NavTarget.Placeholder)
             }

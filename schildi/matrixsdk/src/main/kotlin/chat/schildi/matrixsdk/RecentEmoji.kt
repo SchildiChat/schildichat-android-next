@@ -73,7 +73,7 @@ public fun MutableList<RecentEmojiItem>.recordSelection(emoji: String) {
     }
     add(0, newEntry)
     while (size > RECENT_EMOJI_LIMIT) {
-        removeLast()
+        removeAt(lastIndex)
     }
 }
 

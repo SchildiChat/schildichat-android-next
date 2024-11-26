@@ -16,6 +16,7 @@ import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RadialGradientShader
 import androidx.compose.ui.graphics.ShaderBrush
+import chat.schildi.theme.ScTheme
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 
@@ -30,6 +31,7 @@ fun LightGradientBackground(
     secondColor: Color = Color(0x001273EB),
     ratio: Float = 642 / 775f,
 ) {
+    if (ScTheme.yes) return
     Canvas(
         modifier = modifier.fillMaxSize()
     ) {

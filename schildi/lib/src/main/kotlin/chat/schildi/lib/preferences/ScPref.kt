@@ -3,6 +3,7 @@ package chat.schildi.lib.preferences
 import android.os.Parcelable
 import androidx.annotation.ArrayRes
 import androidx.annotation.StringRes
+import androidx.compose.ui.graphics.Color
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -55,6 +56,15 @@ data class ScPrefCategory(
     override val prefs: List<AbstractScPref>,
     override val dependencies: List<ScPrefDependency> = emptyList(),
 ) : ScPrefContainer
+
+@Parcelize
+data class ScPrefCollection(
+    override val titleRes: Int,
+    override val prefs: List<AbstractScPref>,
+    override val dependencies: List<ScPrefDependency> = emptyList(),
+) : ScPrefContainer {
+    @IgnoredOnParcel override val summaryRes: Int? = null
+}
 
 @Parcelize
 data class ScBoolPref(
@@ -119,11 +129,11 @@ data class ScStringListPref(
 @Parcelize
 data class ScColorPref(
     override val sKey: String,
-    override val defaultValue: Int,
     @StringRes
     override val titleRes: Int,
     @StringRes
     override val summaryRes: Int? = null,
+    override val defaultValue: Int = FOLLOW_THEME_VALUE,
     override val disabledValue: Int = defaultValue,
     override val authorsChoice: Int? = null,
     override val upstreamChoice: Int? = null,
@@ -136,6 +146,13 @@ data class ScColorPref(
             return null
         }
         return value
+    }
+
+    companion object {
+        // Fully transparent #000001 (less likely to be set by user then #000000)
+        const val FOLLOW_THEME_VALUE = 0x00000001
+
+        fun valueToColor(value: Int) = value.takeIf { it != FOLLOW_THEME_VALUE }?.let { Color(it) }
     }
 }
 

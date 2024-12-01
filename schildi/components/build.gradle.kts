@@ -10,5 +10,6 @@ android {
 dependencies {
     implementation(projects.schildi.lib)
     implementation(projects.libraries.designsystem)
-    implementation(libs.skydoves.colorpicker)
+    implementation(projects.libraries.uiStrings)
+    implementation(libs.colorpicker)
 }

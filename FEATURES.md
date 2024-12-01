@@ -10,6 +10,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Faster screen transitions †
 - App icon & branding ⸸
 - Open links in external browser rather than attaching a single-tab in-app browser window †
+- Customizable colors for message bubbles †
 
 
 ## Chat overview ("room list")

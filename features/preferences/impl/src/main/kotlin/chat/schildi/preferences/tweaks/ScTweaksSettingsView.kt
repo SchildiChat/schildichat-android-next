@@ -46,6 +46,7 @@ import chat.schildi.lib.preferences.LocalScPreferencesStore
 import chat.schildi.lib.preferences.ScActionablePref
 import chat.schildi.lib.preferences.ScPrefCategory
 import chat.schildi.lib.preferences.ScPref
+import chat.schildi.lib.preferences.ScPrefCollection
 import chat.schildi.lib.preferences.ScPrefContainer
 import chat.schildi.lib.preferences.ScPrefScreen
 import chat.schildi.lib.preferences.ScPrefs
@@ -120,6 +121,14 @@ fun RecursiveScPrefsView(
                         handleScPrefAction = handleScPrefAction,
                     )
                 }
+            }
+            is ScPrefCollection -> {
+                RecursiveScPrefsView(
+                    state = state,
+                    prefs = scPref.prefs,
+                    onOpenPrefScreen = onOpenPrefScreen,
+                    handleScPrefAction = handleScPrefAction,
+                )
             }
             is ScPrefScreen -> {
                 scPref.Rendered {

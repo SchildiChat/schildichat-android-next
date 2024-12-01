@@ -102,8 +102,8 @@ fun MessageEventBubble(
     // Ignore state.isHighlighted for now, we need a design decision on it.
     val backgroundBubbleColor = when {
         ScTheme.yes && state.scIsBgLess -> Color.Transparent
-        state.isMine -> ScTheme.exposures.bubbleBgOutgoing ?: ElementTheme.colors.messageFromMeBackground
-        else -> ScTheme.exposures.bubbleBgIncoming ?: ElementTheme.colors.messageFromOtherBackground
+        state.isMine -> ScTheme.bubbleBgOutgoing ?: ElementTheme.colors.messageFromMeBackground
+        else -> ScTheme.bubbleBgIncoming ?: ElementTheme.colors.messageFromOtherBackground
     }
     val bubbleShape = bubbleShape()
     val radiusPx = (avatarRadius + SENDER_AVATAR_BORDER_WIDTH).toPx()

@@ -80,6 +80,13 @@ object ScPrefs {
     val PREFER_FULLSCREEN_REACTION_SHEET = ScBoolPref("PREFER_FULLSCREEN_REACTION_SHEET", false, R.string.sc_pref_prefer_fullscreen_reaction_sheet_title, R.string.sc_pref_prefer_fullscreen_reaction_sheet_summary, authorsChoice = false, upstreamChoice = false)
     val JUMP_TO_UNREAD = ScBoolPref("JUMP_TO_UNREAD", false, R.string.sc_pref_jump_to_unread_title, R.string.sc_pref_jump_to_unread_option_summary, authorsChoice = true, upstreamChoice = false)
 
+    // Advanced theming options - Light theme
+    val BUBBLE_BG_LIGHT_OUTGOING = ScColorPref("BUBBLE_BG_LIGHT_OUTGOING", R.string.sc_pref_bubble_color_outgoing_title)
+    val BUBBLE_BG_LIGHT_INCOMING = ScColorPref("BUBBLE_BG_LIGHT_INCOMING", R.string.sc_pref_bubble_color_incoming_title)
+    // Advanced theming options - Dark theme
+    val BUBBLE_BG_DARK_OUTGOING = ScColorPref("BUBBLE_BG_DARK_OUTGOING", R.string.sc_pref_bubble_color_outgoing_title)
+    val BUBBLE_BG_DARK_INCOMING = ScColorPref("BUBBLE_BG_DARK_INCOMING", R.string.sc_pref_bubble_color_incoming_title)
+
     // Developer options
     val SC_PUSH_INFO = ScActionablePref("SC_PUSH_INFO", R.string.sc_push_info_title, R.string.sc_push_info_summary)
     val SC_USER_CHANGED_SETTINGS = ScActionablePref("SC_USER_CHANGED_SETTINGS", R.string.sc_pref_user_changed_prefs_title, R.string.sc_pref_user_changed_prefs_summary)
@@ -87,20 +94,38 @@ object ScPrefs {
     val READ_MARKER_DEBUG = ScBoolPref("READ_MARKER_DEBUG", false, R.string.sc_pref_debug_read_marker, authorsChoice = true, upstreamChoice = false)
     private val SC_DANGER_ZONE = ScBoolPref("SC_DANGER_ZONE", false, R.string.sc_pref_danger_zone, authorsChoice = true)
     val SC_RESTORE_DEFAULTS = ScActionablePref("SC_RESTORE_DEFAULTS", R.string.sc_pref_restore_defaults, dependencies = SC_DANGER_ZONE.asDependencies())
+    val SC_RESTORE_ADVANCED_THEME_DEFAULTS = ScActionablePref("SC_RESTORE_ADVANCED_THEME_DEFAULTS", R.string.sc_pref_restore_defaults)
     val SC_RESTORE_UPSTREAM = ScActionablePref("SC_RESTORE_UPSTREAM", R.string.sc_pref_restore_element, dependencies = SC_DANGER_ZONE.asDependencies())
     val SC_RESTORE_AUTHORS_CHOICE = ScActionablePref("SC_RESTORE_AUTHORS_CHOICE", R.string.sc_pref_restore_authors_choice, dependencies = SC_DANGER_ZONE.asDependencies())
 
     // Tests to be removed before release
     /*
     val SC_TEST = ScStringListPref("TEST", "b", arrayOf("a", "b", "c"), arrayOf("A", "B", "C"), null, R.string.test)
-    val SC_BUBBLE_BG_DARK_OUT = ScColorPref("SC_BUBBLE_BG_DARK_OUT", 0x008bc34a, R.string.test)
-    val SC_BUBBLE_BG_LIGHT_OUT = ScColorPref("SC_BUBBLE_BG_LIGHT_OUT", 0x008bc34a, R.string.test)
      */
+
+    // Separate collection so we can restore defaults for these only
+    val scTweaksAdvancedTheming = ScPrefCollection(
+        R.string.sc_pref_screen_advanced_theming_summary,
+        listOf(
+            ScPrefCategory(io.element.android.libraries.ui.strings.R.string.common_light, null, listOf(
+                BUBBLE_BG_LIGHT_INCOMING,
+                BUBBLE_BG_LIGHT_OUTGOING,
+            )),
+            ScPrefCategory(io.element.android.libraries.ui.strings.R.string.common_dark, null, listOf(
+                BUBBLE_BG_DARK_INCOMING,
+                BUBBLE_BG_DARK_OUTGOING,
+            )),
+        )
+    )
 
     val scTweaks = ScPrefScreen(R.string.sc_pref_tweaks_title, null, listOf<AbstractScPref>(
         ScPrefCategory(R.string.sc_pref_category_general_appearance, null, listOf(
             SC_THEME,
             EL_TYPOGRAPHY,
+            ScPrefScreen(R.string.sc_pref_screen_advanced_theming_title, R.string.sc_pref_screen_advanced_theming_summary, listOf(
+                SC_RESTORE_ADVANCED_THEME_DEFAULTS,
+                scTweaksAdvancedTheming,
+            ))
         )),
         ScPrefCategory(R.string.sc_pref_category_general_behaviour, null, listOf(
             FAST_TRANSITIONS,
@@ -173,8 +198,6 @@ object ScPrefs {
         ScPrefCategory(R.string.test, null, listOf(
             ScPrefScreen(R.string.test, null, listOf(
                 SC_TEST,
-                SC_BUBBLE_BG_DARK_OUT,
-                SC_BUBBLE_BG_LIGHT_OUT,
             )),
         )),
          */

@@ -19,6 +19,7 @@ package chat.schildi.preferences.tweaks
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import chat.schildi.lib.preferences.ScPref
+import chat.schildi.lib.preferences.ScPrefContainer
 import chat.schildi.lib.preferences.ScPrefScreen
 import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
@@ -90,12 +91,16 @@ class ScTweaksSettingsNode @AssistedInject constructor(
                 batchSetScPrefs { it.authorsChoice ?: it.defaultValue }
                 setUpstreamSettingsToPreset(true)
             }
+            ScPrefs.SC_RESTORE_ADVANCED_THEME_DEFAULTS.key -> {
+                batchSetScPrefs(ScPrefs.scTweaksAdvancedTheming) { it.defaultValue }
+                setUpstreamSettingsToPreset(false)
+            }
             else -> Timber.e("Unhandled actionable pref $key")
         }
     }
 
-    private fun batchSetScPrefs(to: (ScPref<*>) -> Any?) {
-        ScPrefs.scTweaks.forEachPreference { pref ->
+    private fun batchSetScPrefs(parent: ScPrefContainer = ScPrefs.scTweaks, to: (ScPref<*>) -> Any?) {
+        parent.forEachPreference { pref ->
             appCoroutineScope.launch {
                 to(pref)?.let {
                     scPreferencesStore.setSettingTypesafe(pref, it)

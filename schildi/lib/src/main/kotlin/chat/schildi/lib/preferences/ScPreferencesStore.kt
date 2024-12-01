@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -176,6 +177,9 @@ val LocalScPreferencesStore = staticCompositionLocalOf<ScPreferencesStore> { Fak
 
 @Composable
 fun <T>ScPref<T>.value(): T = LocalScPreferencesStore.current.settingState(this).value
+
+@Composable
+fun ScColorPref.userColor(): Color? = LocalScPreferencesStore.current.settingState(this).value.let { ScColorPref.valueToColor(it) }
 
 @Composable
 fun <T>ScPref<T>.state(): State<T> = LocalScPreferencesStore.current.settingState(this)

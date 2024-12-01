@@ -14,7 +14,9 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import chat.schildi.lib.preferences.ScColorPref
 import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.userColor
 import chat.schildi.lib.preferences.value
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.sc.ElTypographyTokens
@@ -34,6 +36,18 @@ object ScTheme {
     val scTimeline: Boolean
         @Composable
         get() = ScPrefs.SC_TIMELINE_LAYOUT.value()
+
+    val bubbleBgIncoming: Color?
+        @Composable
+        get() = getUserThemedColor(ScPrefs.BUBBLE_BG_LIGHT_INCOMING, ScPrefs.BUBBLE_BG_DARK_INCOMING) ?: exposures.bubbleBgIncoming
+
+    val bubbleBgOutgoing: Color?
+        @Composable
+        get() = getUserThemedColor(ScPrefs.BUBBLE_BG_LIGHT_OUTGOING, ScPrefs.BUBBLE_BG_DARK_OUTGOING) ?: exposures.bubbleBgOutgoing
+
+    @Composable
+    private fun getUserThemedColor(lightPref: ScColorPref, darkPref: ScColorPref): Color? =
+        (if (ElementTheme.isLightTheme) lightPref else darkPref).userColor()
 }
 
 // Element defaults to light compound colors, so follow that as fallback default for exposures as well

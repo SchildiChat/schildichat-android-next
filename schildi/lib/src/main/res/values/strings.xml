@@ -117,6 +117,13 @@
     <string name="sc_pref_jump_to_unread_title">Jump to unread</string>
     <string name="sc_pref_jump_to_unread_option_summary">Show option to jump to last read message</string>
 
+    <string name="sc_pref_screen_advanced_theming_title">Advanced theming</string>
+    <string name="sc_pref_screen_advanced_theming_summary">Customize theme colors</string>
+    <string name="sc_pref_bubble_color_incoming_title">Incoming message bubble color</string>
+    <string name="sc_pref_bubble_color_outgoing_title">Outgoing message bubble color</string>
+    <string name="sc_color_pref_follow_theme_default">Follow theme default</string>
+    <string name="sc_color_pref_custom_color">Custom color: %1$s</string>
+
     <string name="sc_freeform_reaction">Freeform reaction</string>
     <string name="sc_recent_reaction">Frequently used</string>
 

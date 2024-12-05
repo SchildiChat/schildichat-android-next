@@ -113,4 +113,10 @@
     <string name="sc_pref_user_changed_prefs_title">Nastavení změněná uživatelem</string>
     <string name="sc_pref_user_changed_prefs_summary">Seznam všech nastavení, která již nemají výchozí hodnotu.</string>
     <string name="sc_pref_user_changed_prefs_empty">Vše je ve výchozím nastavení</string>
+    <string name="sc_pref_bubble_color_outgoing_title">Barva bubliny odchozí zprávy</string>
+    <string name="sc_color_pref_follow_theme_default">Podle výchozího motivu</string>
+    <string name="sc_color_pref_custom_color">Vlastní barva: %1$s</string>
+    <string name="sc_pref_screen_advanced_theming_title">Pokročilá témata</string>
+    <string name="sc_pref_screen_advanced_theming_summary">Přizpůsobit barvy motivu</string>
+    <string name="sc_pref_bubble_color_incoming_title">Barva bubliny příchozí zprávy</string>
 </resources>

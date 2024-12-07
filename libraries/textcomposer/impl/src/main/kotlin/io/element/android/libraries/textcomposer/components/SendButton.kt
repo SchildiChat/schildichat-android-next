@@ -70,7 +70,7 @@ internal fun SendButton(
                 .size(36.dp)
                 .then(
                     if (canSendMessage) {
-                        buttonBackgroundModifier()
+                        scButtonBackgroundModifier() ?: buttonBackgroundModifier()
                     } else {
                         Modifier
                     }

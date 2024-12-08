@@ -313,6 +313,11 @@ class FakeMatrixRoom(
         return canUserPinUnpinResult(userId)
     }
 
+    // SC start
+    override suspend fun addSpaceChild(childId: RoomId): Result<Unit> = Result.success(Unit)
+    override suspend fun removeSpaceChild(childId: RoomId): Result<Unit> = Result.success(Unit)
+    // SC end
+
     override suspend fun sendImage(
         file: File,
         thumbnailFile: File?,

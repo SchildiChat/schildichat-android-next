@@ -196,6 +196,11 @@ interface MatrixRoom : Closeable {
     suspend fun canUserJoinCall(userId: UserId): Result<Boolean> =
         canUserSendState(userId, StateEventType.CALL_MEMBER)
 
+    // SC start
+    suspend fun addSpaceChild(childId: RoomId): Result<Unit>
+    suspend fun removeSpaceChild(childId: RoomId): Result<Unit>
+    // SC end
+
     suspend fun updateAvatar(mimeType: String, data: ByteArray): Result<Unit>
 
     suspend fun removeAvatar(): Result<Unit>

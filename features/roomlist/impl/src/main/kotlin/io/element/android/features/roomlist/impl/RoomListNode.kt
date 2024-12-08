@@ -27,6 +27,7 @@ import io.element.android.features.roomlist.api.RoomListEntryPoint
 import io.element.android.features.roomlist.impl.components.RoomListMenuAction
 import io.element.android.libraries.deeplink.usecase.InviteFriendsUseCase
 import io.element.android.libraries.di.SessionScope
+import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.preferences.api.store.EnableNativeSlidingSyncUseCase
 import io.element.android.services.analytics.api.AnalyticsService
@@ -37,6 +38,7 @@ class RoomListNode @AssistedInject constructor(
     @Assisted plugins: List<Plugin>,
     private val presenter: RoomListPresenter,
     private val inviteFriendsUseCase: InviteFriendsUseCase,
+    private val matrixClient: MatrixClient, //SC
     private val analyticsService: AnalyticsService,
     private val acceptDeclineInviteView: AcceptDeclineInviteView,
     private val directLogoutView: DirectLogoutView,
@@ -99,6 +101,8 @@ class RoomListNode @AssistedInject constructor(
 
         RoomListView(
             state = state,
+            matrixClient = matrixClient, // SC
+            spaceListDataSource = presenter.spaceListDataSource, // SC
             onRoomClick = this::onRoomClick,
             onSettingsClick = this::onOpenSettings,
             onCreateRoomClick = this::onCreateRoomClick,

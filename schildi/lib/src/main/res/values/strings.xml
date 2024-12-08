@@ -131,4 +131,12 @@
     <string name="sc_upstream_feature_flag_room_list_filters_summary">Element\'s way to filter chats</string>
 
     <string name="event_placeholder_location">Location</string>
+
+    <string name="sc_pref_space_management_title">Space management</string>
+    <string name="sc_pref_space_management_summary">Add option to assign rooms to spaces from the room list context menu</string>
+    <string name="sc_action_space_management">Assign spaces</string>
+    <string name="sc_action_assign_room_to_spaces">Spaces for %1$s</string>
+    <string name="sc_space_is_sub_space_of">In %1$s</string>
+    <string name="sc_space_list_loading">Spaces loading…</string>
+    <string name="sc_space_list_empty">You don\'t have any spaces!</string>
 </resources>

@@ -213,6 +213,7 @@ class SpaceListDataSource @Inject constructor(
         regularChildren: HashMap<String, MutableList<MatrixSpaceChildInfo>>,
         forbiddenChildren: List<String> = emptyList(),
     ): SpaceHierarchyItem {
+        // Space children
         val children = hierarchy[spaceSummary.id]?.mapNotNull { (spaceChildInfo, child) ->
             if (child.roomId.value in forbiddenChildren) {
                 Timber.w("Detected space loop: ${spaceSummary.id} -> ${child.roomId.value}")
@@ -221,15 +222,18 @@ class SpaceListDataSource @Inject constructor(
                 createSpaceHierarchyItem(child, spaceChildInfo.order, hierarchy, regularChildren, forbiddenChildren + listOf(spaceSummary.roomId.value))
             }
         }?.sortedWith(SpaceComparator)?.toImmutableList() ?: persistentListOf()
+
+        // Room children
+        val directChildrenRooms = regularChildren[spaceSummary.id].orEmpty().map { it.roomId }
+
         return SpaceHierarchyItem(
             info = spaceSummary,
             order = order,
             spaces = children,
+            directChildren = directChildrenRooms.toImmutableSet(),
             flattenedRooms = (
-                // All direct children rooms
-                regularChildren[spaceSummary.id].orEmpty().map { it.roomId }
-                    // All indirect children rooms
-                    + children.flatMap { it.flattenedRooms }
+                // All direct + indirect children rooms
+                directChildrenRooms + children.flatMap { it.flattenedRooms }
                 ).toImmutableSet(),
         )
     }
@@ -257,6 +261,7 @@ class SpaceListDataSource @Inject constructor(
         val info: RoomListRoomSummary,
         val order: String?,
         override val spaces: ImmutableList<SpaceHierarchyItem>,
+        val directChildren: ImmutableSet<String>,
         val flattenedRooms: ImmutableSet<String>,
         override val unreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts? = null,
     ) : AbstractSpaceHierarchyItem {
@@ -475,4 +480,27 @@ fun ImmutableList<SpaceListDataSource.AbstractSpaceHierarchyItem>.filterByUnread
     } else {
         this
     }
+}
+
+fun List<SpaceListDataSource.AbstractSpaceHierarchyItem>.flattenWithParents(
+    result: MutableList<Pair<SpaceListDataSource.AbstractSpaceHierarchyItem, MutableList<SpaceListDataSource.AbstractSpaceHierarchyItem>>> = mutableListOf(),
+    currentParent: SpaceListDataSource.AbstractSpaceHierarchyItem? = null,
+): List<Pair<SpaceListDataSource.AbstractSpaceHierarchyItem, List<SpaceListDataSource.AbstractSpaceHierarchyItem>>> {
+    forEach { space ->
+        val previouslyAdded = result.find { it.first.selectionId == space.selectionId }
+        if (previouslyAdded != null) {
+            if (currentParent != null &&
+                previouslyAdded.second.none { it.selectionId == currentParent.selectionId }
+            ) {
+                previouslyAdded.second.add(currentParent)
+            }
+            return@forEach
+        }
+        result.add(Pair(space, currentParent?.let { mutableListOf(it) } ?: mutableListOf()))
+        space.spaces.flattenWithParents(
+            result = result,
+            currentParent = space,
+        )
+    }
+    return result
 }

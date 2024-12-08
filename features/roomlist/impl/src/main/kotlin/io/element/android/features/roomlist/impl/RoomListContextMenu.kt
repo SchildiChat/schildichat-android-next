@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import chat.schildi.features.roomlist.spaces.SpaceListDataSource
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.libraries.designsystem.components.list.ListItemContent
@@ -30,6 +31,7 @@ import io.element.android.libraries.designsystem.theme.components.ListItem
 import io.element.android.libraries.designsystem.theme.components.ListItemStyle
 import io.element.android.libraries.designsystem.theme.components.ModalBottomSheet
 import io.element.android.libraries.designsystem.theme.components.Text
+import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.ui.strings.CommonStrings
 
@@ -37,6 +39,9 @@ import io.element.android.libraries.ui.strings.CommonStrings
 @Composable
 fun RoomListContextMenu(
     contextMenu: RoomListState.ContextMenu.Shown,
+    roomListState: RoomListState, // SC
+    matrixClient: MatrixClient?, // SC
+    spaceListDataSource: SpaceListDataSource?, // SC
     eventSink: (RoomListEvents.ContextMenuEvents) -> Unit,
     onRoomSettingsClick: (roomId: RoomId) -> Unit,
 ) {
@@ -45,6 +50,9 @@ fun RoomListContextMenu(
     ) {
         RoomListModalBottomSheetContent(
             contextMenu = contextMenu,
+            roomListState = roomListState, // SC
+            matrixClient = matrixClient, // SC
+            spaceListDataSource = spaceListDataSource, // SC
             onRoomMarkReadClick = {
                 eventSink(RoomListEvents.HideContextMenu)
                 eventSink(RoomListEvents.MarkAsRead(contextMenu.roomId))
@@ -71,6 +79,9 @@ fun RoomListContextMenu(
 @Composable
 private fun RoomListModalBottomSheetContent(
     contextMenu: RoomListState.ContextMenu.Shown,
+    roomListState: RoomListState, // SC
+    matrixClient: MatrixClient?, // SC
+    spaceListDataSource: SpaceListDataSource?, // SC
     onRoomSettingsClick: () -> Unit,
     onLeaveRoomClick: () -> Unit,
     onFavoriteChange: (isFavorite: Boolean) -> Unit,
@@ -162,6 +173,7 @@ private fun RoomListModalBottomSheetContent(
             ),
             style = ListItemStyle.Primary,
         )
+        ManageSpacesRoomListContextMenuItems(contextMenu, roomListState, matrixClient)
         ListItem(
             headlineContent = {
                 val leaveText = stringResource(
@@ -195,6 +207,9 @@ internal fun RoomListModalBottomSheetContentPreview(
 ) = ElementPreview {
     RoomListModalBottomSheetContent(
         contextMenu = contextMenu,
+        roomListState = aRoomListState(), // SC
+        matrixClient = null, // SC
+        spaceListDataSource = null, // SC
         onRoomMarkReadClick = {},
         onRoomMarkUnreadClick = {},
         onRoomSettingsClick = {},

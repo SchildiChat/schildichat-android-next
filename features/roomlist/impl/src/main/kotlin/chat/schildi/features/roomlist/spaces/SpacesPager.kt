@@ -469,25 +469,31 @@ private fun SpaceTab(
 }
 
 @Composable
-private fun AbstractSpaceIcon(
+fun AbstractSpaceIcon(
     space: SpaceListDataSource.AbstractSpaceHierarchyItem?,
     size: AvatarSize,
+    modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.primary,
-    shape: Shape = CircleShape
+    shape: Shape = CircleShape,
 ) {
     when(space) {
-        is SpaceListDataSource.SpaceHierarchyItem -> Avatar(space.info.avatarData.copy(size = size), shape = shape)
-        is SpaceListDataSource.PseudoSpaceItem -> PseudoSpaceIcon(imageVector = space.icon, size = size, color = color)
-        else -> PseudoSpaceIcon(Icons.Filled.Home, AvatarSize.SpaceSwipeIndicator, color = color)
+        is SpaceListDataSource.SpaceHierarchyItem -> Avatar(space.info.avatarData.copy(size = size), shape = shape, modifier = modifier)
+        is SpaceListDataSource.PseudoSpaceItem -> PseudoSpaceIcon(imageVector = space.icon, size = size, color = color, modifier = modifier)
+        else -> PseudoSpaceIcon(Icons.Filled.Home, AvatarSize.SpaceSwipeIndicator, color = color, modifier = modifier)
     }
 }
 
 @Composable
-private fun PseudoSpaceIcon(imageVector: ImageVector, size: AvatarSize, color: Color = MaterialTheme.colorScheme.primary) {
+private fun PseudoSpaceIcon(
+    imageVector: ImageVector,
+    size: AvatarSize,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.primary
+) {
     Icon(
         imageVector = imageVector,
         contentDescription = null,
-        modifier = Modifier.size(size.dp),
+        modifier = modifier.size(size.dp),
         tint = color,
     )
 }

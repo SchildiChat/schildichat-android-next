@@ -447,6 +447,19 @@ class RustMatrixRoom(
         }
     }
 
+    // SC start
+    override suspend fun addSpaceChild(childId: RoomId): Result<Unit> {
+        return runCatching {
+            innerRoom.addSpaceChild(childId.value)
+        }
+    }
+    override suspend fun removeSpaceChild(childId: RoomId): Result<Unit> {
+        return runCatching {
+            innerRoom.removeSpaceChild(childId.value)
+        }
+    }
+    // SC end
+
     override suspend fun sendImage(
         file: File,
         thumbnailFile: File?,

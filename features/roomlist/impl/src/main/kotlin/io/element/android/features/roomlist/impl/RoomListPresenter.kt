@@ -97,7 +97,7 @@ class RoomListPresenter @Inject constructor(
     private val scPreferencesStore: ScPreferencesStore,
     private val scAppStateStore: ScAppStateStore,
     private val spaceAwareRoomListDataSource: SpaceAwareRoomListDataSource,
-    private val spaceListDataSource: SpaceListDataSource,
+    val spaceListDataSource: SpaceListDataSource,
     private val spaceUnreadCountsDataSource: SpaceUnreadCountsDataSource,
     private val featureFlagService: FeatureFlagService,
     private val indicatorService: IndicatorService,

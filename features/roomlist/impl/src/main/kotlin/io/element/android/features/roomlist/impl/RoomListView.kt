@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import chat.schildi.features.roomlist.spaces.SpaceListDataSource
 import chat.schildi.lib.compose.thenIf
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
@@ -43,11 +44,14 @@ import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.Scaffold
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarHost
 import io.element.android.libraries.designsystem.utils.snackbar.rememberSnackbarHostState
+import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
 
 @Composable
 fun RoomListView(
     state: RoomListState,
+    matrixClient: MatrixClient?, // SC
+    spaceListDataSource: SpaceListDataSource?, // SC
     onRoomClick: (RoomId) -> Unit,
     onSettingsClick: () -> Unit,
     onSetUpRecoveryClick: () -> Unit,
@@ -68,6 +72,9 @@ fun RoomListView(
             if (state.contextMenu is RoomListState.ContextMenu.Shown) {
                 RoomListContextMenu(
                     contextMenu = state.contextMenu,
+                    roomListState = state, // SC
+                    matrixClient = matrixClient, // SC
+                    spaceListDataSource = spaceListDataSource, // SC
                     eventSink = state.eventSink,
                     onRoomSettingsClick = onRoomSettingsClick,
                 )
@@ -190,6 +197,8 @@ internal fun RoomListRoomSummary.contentType() = displayType.ordinal
 internal fun RoomListViewPreview(@PreviewParameter(RoomListStateProvider::class) state: RoomListState) = ElementPreview {
     RoomListView(
         state = state,
+        matrixClient = null, // SC
+        spaceListDataSource = null, // SC
         onRoomClick = {},
         onSettingsClick = {},
         onSetUpRecoveryClick = {},

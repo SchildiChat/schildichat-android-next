@@ -70,7 +70,7 @@ fun PreferenceText(
             Text(
                 style = ElementTheme.typography.fontBodyLgRegular,
                 text = title,
-                color = tintColor ?: enabled.toEnabledColor(),
+                color = scUnspecifiedColor() ?: tintColor ?: enabled.toEnabledColor(),
             )
         },
         supportingContent = if (subtitle != null) {
@@ -78,7 +78,7 @@ fun PreferenceText(
                 Text(
                     style = ElementTheme.typography.fontBodyMdRegular,
                     text = subtitle,
-                    color = tintColor ?: enabled.toSecondaryEnabledColor(),
+                    color = scUnspecifiedColor() ?: tintColor ?: enabled.toSecondaryEnabledColor(),
                 )
             }
         } else {
@@ -87,7 +87,7 @@ fun PreferenceText(
                     Text(
                         style = ElementTheme.typography.fontBodyMdRegular,
                         text = it,
-                        color = tintColor ?: enabled.toSecondaryEnabledColor(),
+                        color = scUnspecifiedColor() ?: tintColor ?: enabled.toSecondaryEnabledColor(),
                     )
                 }
             }
@@ -101,7 +101,7 @@ fun PreferenceText(
                         Text(
                             text = currentValue,
                             style = ElementTheme.typography.fontBodyXsMedium,
-                            color = enabled.toSecondaryEnabledColor(),
+                            color = scUnspecifiedColor() ?: enabled.toSecondaryEnabledColor(),
                         )
                     } else if (loadingCurrentValue) {
                         CircularProgressIndicator(

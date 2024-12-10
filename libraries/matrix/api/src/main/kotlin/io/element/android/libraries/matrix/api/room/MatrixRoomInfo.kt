@@ -68,6 +68,7 @@ data class MatrixRoomInfo(
     val numUnreadMentions: Long,
     // SC: start
     val spaceChildren: List<MatrixSpaceChildInfo> = emptyList(),
+    val canUserManageSpaces: Boolean = false,
     val unreadCount: Long = 0,
     val isLowPriority: Boolean = false,
     // SC end

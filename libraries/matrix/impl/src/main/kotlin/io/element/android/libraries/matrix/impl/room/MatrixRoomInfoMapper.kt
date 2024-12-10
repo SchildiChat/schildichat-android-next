@@ -60,6 +60,7 @@ class MatrixRoomInfoMapper {
             numUnreadNotifications = it.numUnreadNotifications.toLong(),
             // SC start
             spaceChildren = it.spaceChildren.map(MatrixSpaceChildInfoMapper::map),
+            canUserManageSpaces = it.canUserManageSpaces,
             unreadCount = it.unreadCount.toLong(),
             isLowPriority = it.isLowPriority,
             // SC end

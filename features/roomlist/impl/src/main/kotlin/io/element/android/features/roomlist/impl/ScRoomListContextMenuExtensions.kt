@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,6 +25,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -31,6 +33,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -64,8 +68,10 @@ data class SpaceSelectionEntry(
     val isDirectParent: Boolean,
 ) {
     override fun toString(): String {
-        return "SpaceSelector(${space.info.roomId}, isDirectParent=$isDirectParent)"
+        return "SpaceSelector(${space.info.roomId}, isDirectParent=$isDirectParent, permission=$userHasPermission)"
     }
+    val userHasPermission: Boolean
+        get() = space.info.canUserManageSpaces
 }
 
 sealed interface PendingSpaceManagementState {
@@ -156,9 +162,10 @@ fun ManageParentSpacesDialog(
                 null
             }
         }
-            ?.sortedWith(compareBy({ !(originallyCheckedState[it.space.selectionId] ?: it.isDirectParent) }, { it.space.name.lowercase() }))
+            ?.sortedWith(compareBy({ !it.userHasPermission }, { !(originallyCheckedState[it.space.selectionId] ?: it.isDirectParent) }, { it.space.name.lowercase() }))
             ?.toImmutableList()
     }
+    val indexOfFirstPermissionDeniedSpace = remember(spaceSelection) { spaceSelection?.indexOfFirst { !it.userHasPermission }.takeIf { it != -1 } }
     pendingSpaceAction?.let { pendingSpaceActionValue ->
         LaunchedEffect(pendingSpaceActionValue) {
             if (pendingSpaceActionValue is PendingSpaceManagementState.InProgress) {
@@ -231,10 +238,14 @@ fun ManageParentSpacesDialog(
                             )
                         }
                     }
-                    items(spaceItems) { item ->
+                    itemsIndexed(spaceItems) { index, item ->
+                        if (index == indexOfFirstPermissionDeniedSpace) {
+                            PermissionDeniedTitle()
+                        }
                         val isCheckedPerLocalEcho = expectedState[item.space.selectionId]
                         val isLocalEchoPending = isCheckedPerLocalEcho?.let { it == item.isDirectParent } == false
-                        Row(Modifier.fillMaxWidth().clickable(enabled = !isLocalEchoPending) {
+                        val clickable = item.userHasPermission && !isLocalEchoPending
+                        Row(Modifier.fillMaxWidth().clickable(enabled = clickable) {
                             pendingSpaceAction = if (isCheckedPerLocalEcho ?: item.isDirectParent) {
                                 PendingSpaceManagementState.Remove(item)
                             } else {
@@ -243,7 +254,7 @@ fun ManageParentSpacesDialog(
                         }) {
                             val spaceHasPendingActionInProgress = isLocalEchoPending ||
                                 (pendingSpaceAction as? PendingSpaceManagementState.InProgress)?.parentSpace?.selectionId == item.space.selectionId
-                            Box(Modifier.size(48.dp).align(Alignment.CenterVertically)) {
+                            Box(Modifier.size(48.dp).align(Alignment.CenterVertically).alpha(if (clickable) 1f else ElementTheme.colors.textDisabled.alpha)) {
                                 AnimatedContent(
                                     spaceHasPendingActionInProgress,
                                     modifier = Modifier.size(48.dp),
@@ -266,13 +277,14 @@ fun ManageParentSpacesDialog(
                                         Checkbox(
                                             checked = isCheckedPerLocalEcho ?: item.isDirectParent,
                                             onCheckedChange = { checked ->
-                                                if (isLocalEchoPending) return@Checkbox
+                                                if (!clickable) return@Checkbox
                                                 pendingSpaceAction = if (checked) {
                                                     PendingSpaceManagementState.Add(item)
                                                 } else {
                                                     PendingSpaceManagementState.Remove(item)
                                                 }
                                             },
+                                            enabled = clickable,
                                             modifier = Modifier.size(48.dp),
                                         )
                                     }
@@ -288,14 +300,14 @@ fun ManageParentSpacesDialog(
                                     item.space.name,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
-                                    color = ElementTheme.colors.textPrimary,
+                                    color = ElementTheme.colors.textPrimary.withDisabledAlpha(clickable),
                                 )
                                 if (item.parents.isNotEmpty()) {
                                     Text(
                                         stringResource(chat.schildi.lib.R.string.sc_space_is_sub_space_of, item.parents.joinToString { it.name }),
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis,
-                                        color = ElementTheme.colors.textSecondary,
+                                        color = ElementTheme.colors.textSecondary.withDisabledAlpha(clickable),
                                     )
                                 }
                             }
@@ -308,12 +320,27 @@ fun ManageParentSpacesDialog(
 }
 
 @Composable
-fun SelectSpaceTitle(contextMenu: RoomListState.ContextMenu.Shown) {
+private fun Color.withDisabledAlpha(enabled: Boolean) = if (enabled) this else copy(alpha = alpha * ElementTheme.colors.textDisabled.alpha)
+
+@Composable
+private fun SelectSpaceTitle(contextMenu: RoomListState.ContextMenu.Shown) {
     Text(
         text = stringResource(chat.schildi.lib.R.string.sc_action_assign_room_to_spaces, contextMenu.roomName ?: contextMenu.roomId.value),
         color = ElementTheme.colors.textPrimary,
         style = ElementTheme.typography.fontHeadingSmRegular,
         textAlign = TextAlign.Center,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
+    )
+}
+
+
+@Composable
+private fun PermissionDeniedTitle() {
+    Text(
+        text = stringResource(chat.schildi.lib.R.string.sc_space_list_permissions_missing_for_following),
+        color = ElementTheme.colors.textPrimary,
+        style = ElementTheme.typography.fontBodyLgMedium,
+        textAlign = TextAlign.Left,
+        modifier = Modifier.fillMaxWidth().padding(top = 12.dp, bottom = 8.dp, start = 4.dp, end = 4.dp),
     )
 }

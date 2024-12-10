@@ -37,6 +37,7 @@ class RoomListRoomSummaryFactory @Inject constructor(
             numberOfUnreadNotifications = roomInfo.numUnreadNotifications,
             // SC start
             isSpace = roomInfo.isSpace,
+            canUserManageSpaces = roomInfo.canUserManageSpaces,
             spaceChildren = roomInfo.spaceChildren,
             notificationCount = roomInfo.notificationCount,
             highlightCount = roomInfo.highlightCount,

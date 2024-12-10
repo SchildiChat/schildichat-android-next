@@ -29,6 +29,7 @@ data class RoomListRoomSummary(
     // SC: spaces
     val isSpace: Boolean = false,
     val spaceChildren: List<MatrixSpaceChildInfo> = emptyList(),
+    val canUserManageSpaces: Boolean = false,
     // SC: server-reported values compared to client-generated above
     val notificationCount: Long = 0,
     val highlightCount: Long = 0,

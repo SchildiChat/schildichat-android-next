@@ -40,7 +40,7 @@ import io.element.android.wysiwyg.compose.EditorStyledText
 
 private val ICON_SIZE = 24.dp
 private val ICON_PADDING = 4.dp
-private val ICON_MARGIN = 8.dp
+private val ICON_MARGIN = 10.dp
 private val ICON_RESERVED_WIDTH = ICON_SIZE + ICON_PADDING * 2 + ICON_MARGIN + 4.dp
 
 /**
@@ -55,7 +55,7 @@ fun ScTimelineItemLocationView(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier,
+        modifier = modifier.padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
@@ -99,7 +99,6 @@ fun ScTimelineItemLocationPreview() = ElementPreview {
                 "Description"
             ),
             onContentLayoutChange = {},
-            modifier = Modifier.padding(8.dp)
         )
     }
 }

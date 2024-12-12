@@ -469,7 +469,7 @@ private fun SpaceTab(
 }
 
 @Composable
-fun AbstractSpaceIcon(
+private fun AbstractSpaceIcon(
     space: SpaceListDataSource.AbstractSpaceHierarchyItem?,
     size: AvatarSize,
     modifier: Modifier = Modifier,
@@ -607,3 +607,14 @@ fun PersistSpaceOnPause(scAppStateStore: ScAppStateStore, spaceAwareRoomListData
 private fun spaceTabIconSize(compact: Boolean) = if (compact) AvatarSize.CompactBottomSpaceBar else AvatarSize.BottomSpaceBar
 private fun spaceTabIconShape(compact: Boolean) = if (compact) RoundedCornerShape(8.dp) else RoundedCornerShape(4.dp)
 private fun spaceTabUnreadBadgeOffset(compact: Boolean) = if (compact) 6.dp else 8.dp
+
+// For other places in the UI wanting to render space icons
+@Composable
+fun GenericSpaceIcon(
+    space: SpaceListDataSource.AbstractSpaceHierarchyItem?,
+    modifier: Modifier = Modifier,
+    size: AvatarSize = spaceTabIconSize(false),
+    shape: Shape = spaceTabIconShape(true),
+) {
+    AbstractSpaceIcon(space = space, size = size, shape = shape, modifier = modifier)
+}

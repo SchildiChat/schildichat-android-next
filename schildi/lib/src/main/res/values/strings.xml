@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
+    <!-- Common strings -->
+    <string name="sc_action_apply">Apply</string>
+
     <!-- Onboarding -->
     <string name="sc_onboarding_welcome_title">Welcome to SchildiChat</string>
     <string name="sc_onboarding_welcome_summary">Bringing turtles into the Matrix</string>

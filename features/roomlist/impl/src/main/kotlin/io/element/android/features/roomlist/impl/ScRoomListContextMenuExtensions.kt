@@ -2,34 +2,25 @@ package io.element.android.features.roomlist.impl
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Workspaces
-import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,25 +32,26 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import chat.schildi.features.roomlist.spaces.AbstractSpaceIcon
+import chat.schildi.features.roomlist.spaces.GenericSpaceIcon
 import chat.schildi.features.roomlist.spaces.SpaceListDataSource
 import chat.schildi.features.roomlist.spaces.flattenWithParents
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import io.element.android.compound.theme.ElementTheme
-import io.element.android.libraries.designsystem.components.avatar.AvatarSize
+import io.element.android.libraries.designsystem.components.dialogs.ListDialog
 import io.element.android.libraries.designsystem.components.list.ListItemContent
 import io.element.android.libraries.designsystem.theme.components.Checkbox
 import io.element.android.libraries.designsystem.theme.components.CircularProgressIndicator
 import io.element.android.libraries.designsystem.theme.components.IconSource
 import io.element.android.libraries.designsystem.theme.components.ListItem
 import io.element.android.libraries.designsystem.theme.components.ListItemStyle
-import io.element.android.libraries.designsystem.theme.components.Surface
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.matrix.api.MatrixClient
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 data class SpaceSelectionEntry(
@@ -74,18 +66,13 @@ data class SpaceSelectionEntry(
         get() = space.info.canUserManageSpaces
 }
 
-sealed interface PendingSpaceManagementState {
+sealed interface PendingSpaceManagementAction {
     val selection: SpaceSelectionEntry
-    val parentSpace: SpaceListDataSource.SpaceHierarchyItem
+    val space: SpaceListDataSource.SpaceHierarchyItem
         get() = selection.space
 
-    sealed interface InProgress : PendingSpaceManagementState
-    sealed interface Result : PendingSpaceManagementState
-
-    data class Add(override val selection: SpaceSelectionEntry): InProgress
-    data class Remove(override val selection: SpaceSelectionEntry): InProgress
-    data class Error(override val selection: SpaceSelectionEntry, val msg: String): Result
-    data class Success(override val selection: SpaceSelectionEntry): Result
+    data class Add(override val selection: SpaceSelectionEntry): PendingSpaceManagementAction
+    data class Remove(override val selection: SpaceSelectionEntry): PendingSpaceManagementAction
 }
 
 @Composable
@@ -126,7 +113,6 @@ fun ManageSpacesRoomListContextMenuItems(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManageParentSpacesDialog(
     contextMenu: RoomListState.ContextMenu.Shown,
@@ -141,11 +127,14 @@ fun ManageParentSpacesDialog(
     // To not re-sort while user is viewing at it, remember original checked state...
     val originallyCheckedState = remember { mutableStateMapOf<String, Boolean>() }
     // Lazy local echos
+    val pendingState = remember { mutableStateMapOf<String, Boolean>() }
     val expectedState = remember { mutableStateMapOf<String, Boolean>() }
+    // Pending actions
+    val pendingSpaceActions = remember { mutableStateListOf<PendingSpaceManagementAction>() }
+    val pendingActionsInProgress by remember { mutableStateOf(false) }
 
     var spaceSelection by remember { mutableStateOf<ImmutableList<SpaceSelectionEntry>?>(null) }
     val spacesList = (roomListState.contentState as? RoomListContentState.Rooms)?.spacesList
-    var pendingSpaceAction by remember { mutableStateOf<PendingSpaceManagementState?>(null) }
 
     LaunchedEffect(roomId, spacesList) {
         spaceSelection = spacesList?.flattenWithParents()?.mapNotNull { (space, parents) ->
@@ -166,150 +155,169 @@ fun ManageParentSpacesDialog(
             ?.toImmutableList()
     }
     val indexOfFirstPermissionDeniedSpace = remember(spaceSelection) { spaceSelection?.indexOfFirst { !it.userHasPermission }.takeIf { it != -1 } }
-    pendingSpaceAction?.let { pendingSpaceActionValue ->
-        LaunchedEffect(pendingSpaceActionValue) {
-            if (pendingSpaceActionValue is PendingSpaceManagementState.InProgress) {
-                val room = matrixClient?.getRoom(pendingSpaceActionValue.parentSpace.info.roomId)
-                pendingSpaceAction = if (room == null) {
-                    Timber.e("Failed to find room for space ${pendingSpaceActionValue.parentSpace.info.roomId}")
-                    PendingSpaceManagementState.Error(pendingSpaceActionValue.selection, "Not found")
-                } else {
-                    val selectionId = pendingSpaceActionValue.parentSpace.selectionId
-                    if (selectionId !in originallyCheckedState) {
-                        originallyCheckedState[selectionId] = pendingSpaceActionValue.selection.isDirectParent
-                    }
-                    val result = when (pendingSpaceActionValue) {
-                        is PendingSpaceManagementState.Add -> {
-                            expectedState[selectionId] = true
-                            room.addSpaceChild(roomId)
-                        }
-                        is PendingSpaceManagementState.Remove -> {
-                            expectedState[selectionId] = false
-                            room.removeSpaceChild(roomId)
-                        }
-                    }
-                    if (result.isSuccess) {
-                        PendingSpaceManagementState.Success(pendingSpaceActionValue.selection)
-                    } else {
-                        Timber.e("Failed to execute space management action: ${result.exceptionOrNull()}")
-                        PendingSpaceManagementState.Error(pendingSpaceActionValue.selection, result.exceptionOrNull().toString())
-                    }
-                }
-            } else if (pendingSpaceActionValue is PendingSpaceManagementState.Result) {
-                if (pendingSpaceActionValue is PendingSpaceManagementState.Error) {
-                    Toast.makeText(context, pendingSpaceActionValue.msg, Toast.LENGTH_LONG).show()
-                    expectedState.remove(pendingSpaceActionValue.parentSpace.selectionId)
-                }
-                delay(3000)
-                pendingSpaceAction = null
-            }
+
+    fun handleItemSelect(item: SpaceSelectionEntry, select: Boolean) {
+        // Sanity check for permissions
+        if (!item.userHasPermission) {
+            Timber.tag("SpaceMan").d("Clicked space without permission")
+            return
         }
+        val selectionId = item.space.selectionId
+        val wasSelected = pendingState[selectionId] ?: expectedState[selectionId] ?: item.isDirectParent
+        // Sanity check if we handled it before
+        if (wasSelected == select) {
+            Timber.tag("SpaceMan").d("Clicked space without changing selection state")
+            return
+        }
+        // Persist original toggle state for sort order if necessary
+        if (!originallyCheckedState.contains(selectionId)) {
+            originallyCheckedState[selectionId] = item.isDirectParent
+        }
+        // Remove previous actions
+        pendingSpaceActions.removeIf { it.space.selectionId == selectionId }
+        // Add new action if necessary
+        if (select != item.isDirectParent) {
+            val pendingSpaceAction = if (select) {
+                PendingSpaceManagementAction.Add(item)
+            } else {
+                PendingSpaceManagementAction.Remove(item)
+            }
+            pendingSpaceActions.add(pendingSpaceAction)
+        }
+        // Update UI with new selection state
+        pendingState[selectionId] = select
     }
-    BasicAlertDialog(onDismissRequest = dismiss) {
-        Surface(Modifier.background(ElementTheme.materialColors.surfaceBright, RoundedCornerShape(12.dp))) {
-            val spaceItems = spaceSelection
-            if (spaceItems == null) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Spacer(Modifier.height(8.dp))
-                    SelectSpaceTitle(contextMenu)
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(AvatarSize.BottomSpaceBar.dp).padding(horizontal = 8.dp).align(Alignment.CenterHorizontally)
+    val scope = rememberCoroutineScope()
+    ListDialog(
+        onSubmit = {
+            scope.launch(Dispatchers.IO) {
+                Timber.tag("SpaceMan").d("Start processing ${pendingSpaceActions.size} actions")
+                while (pendingSpaceActions.isNotEmpty()) {
+                    val action = pendingSpaceActions.removeAt(0)
+                    val room = matrixClient?.getRoom(action.space.info.roomId)
+                    if (room == null) {
+                        Timber.tag("SpaceMan").e("Failed to find room for space ${action.space.info.roomId}")
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, "Space ${action.space.info.name ?: action.space.info.roomId} not found", Toast.LENGTH_LONG).show()
+                        }
+                    } else {
+                        Timber.tag("SpaceMan").d("Starting action $action")
+                        val selectionId = action.space.selectionId
+                        val result = when (action) {
+                            is PendingSpaceManagementAction.Add -> {
+                                expectedState[selectionId] = true
+                                room.addSpaceChild(roomId)
+                            }
+                            is PendingSpaceManagementAction.Remove -> {
+                                expectedState[selectionId] = false
+                                room.removeSpaceChild(roomId)
+                            }
+                        }
+                        if (result.isSuccess) {
+                            Timber.tag("SpaceMan").d("Finished action $action")
+                        } else {
+                            Timber.tag("SpaceMan").e("Failed to execute space management action: ${result.exceptionOrNull()}")
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(context, result.exceptionOrNull()?.toString() ?: "Unknown error", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        onDismissRequest = dismiss,
+        title = stringResource(chat.schildi.lib.R.string.sc_action_assign_room_to_spaces, contextMenu.roomName ?: contextMenu.roomId.value),
+        enabled = pendingSpaceActions.isNotEmpty(),
+        submitText = stringResource(chat.schildi.lib.R.string.sc_action_apply),
+        cancelText = if (pendingSpaceActions.isEmpty())
+            stringResource(io.element.android.libraries.ui.strings.R.string.action_done)
+        else
+            stringResource(io.element.android.libraries.ui.strings.R.string.action_cancel)
+    ) {
+        val spaceItems = spaceSelection
+        when {
+            spaceItems == null -> {
+                item {
+                    Box(Modifier.fillMaxWidth()) {
+                        CircularProgressIndicator(
+                            Modifier.size(48.dp).padding(horizontal = 8.dp).align(Alignment.Center)
+                        )
+                    }
+                }
+            }
+            spaceItems.isEmpty() -> {
+                item {
+                    Text(
+                        stringResource(chat.schildi.lib.R.string.sc_space_list_empty),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
-            } else {
-                val lazyListState = rememberLazyListState()
-                LazyColumn(
-                    state = lazyListState,
-                    contentPadding = PaddingValues(8.dp),
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    item {
-                        SelectSpaceTitle(contextMenu)
-                        Spacer(Modifier.height(2.dp))
+            }
+            else -> {
+                itemsIndexed(spaceItems) { index, item ->
+                    if (index == indexOfFirstPermissionDeniedSpace) {
+                        PermissionDeniedTitle()
                     }
-                    if (spaceItems.isEmpty()) {
-                        item {
-                            Text(
-                                stringResource(chat.schildi.lib.R.string.sc_space_list_empty),
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.fillMaxWidth(),
-                            )
+                    val isCheckedPerLocalEcho = pendingState[item.space.selectionId]
+                    val isServerEchoPending = expectedState[item.space.selectionId]?.let { it == item.isDirectParent } == false
+                    val clickable = item.userHasPermission && !isServerEchoPending && !pendingActionsInProgress
+                    Row(Modifier.fillMaxWidth().clickable(enabled = clickable) {
+                        handleItemSelect(item, !(isCheckedPerLocalEcho ?: item.isDirectParent))
+                    }) {
+                        val spaceHasPendingActionInProgress = isServerEchoPending || pendingActionsInProgress && pendingSpaceActions.any {
+                            it.space.selectionId == item.space.selectionId
                         }
-                    }
-                    itemsIndexed(spaceItems) { index, item ->
-                        if (index == indexOfFirstPermissionDeniedSpace) {
-                            PermissionDeniedTitle()
-                        }
-                        val isCheckedPerLocalEcho = expectedState[item.space.selectionId]
-                        val isLocalEchoPending = isCheckedPerLocalEcho?.let { it == item.isDirectParent } == false
-                        val clickable = item.userHasPermission && !isLocalEchoPending
-                        Row(Modifier.fillMaxWidth().clickable(enabled = clickable) {
-                            pendingSpaceAction = if (isCheckedPerLocalEcho ?: item.isDirectParent) {
-                                PendingSpaceManagementState.Remove(item)
-                            } else {
-                                PendingSpaceManagementState.Add(item)
-                            }
-                        }) {
-                            val spaceHasPendingActionInProgress = isLocalEchoPending ||
-                                (pendingSpaceAction as? PendingSpaceManagementState.InProgress)?.parentSpace?.selectionId == item.space.selectionId
-                            Box(Modifier.size(48.dp).align(Alignment.CenterVertically).alpha(if (clickable) 1f else ElementTheme.colors.textDisabled.alpha)) {
-                                AnimatedContent(
-                                    spaceHasPendingActionInProgress,
-                                    modifier = Modifier.size(48.dp),
-                                    label = "SpaceSelectionState"
-                                ) { showSpinner ->
-                                    if (showSpinner) {
-                                        Box(
-                                            modifier = Modifier.size(24.dp).align(Alignment.Center).graphicsLayer {
-                                                // Workaround to force the spinner smaller than it wants to
-                                                scaleX = 0.5f
-                                                scaleY = 0.5f
-                                            },
-                                        ) {
-                                            CircularProgressIndicator(
-                                                modifier = Modifier.size(48.dp).align(Alignment.Center),
-                                                strokeWidth = 4.dp
-                                            )
-                                        }
-                                    } else {
-                                        Checkbox(
-                                            checked = isCheckedPerLocalEcho ?: item.isDirectParent,
-                                            onCheckedChange = { checked ->
-                                                if (!clickable) return@Checkbox
-                                                pendingSpaceAction = if (checked) {
-                                                    PendingSpaceManagementState.Add(item)
-                                                } else {
-                                                    PendingSpaceManagementState.Remove(item)
-                                                }
-                                            },
-                                            enabled = clickable,
-                                            modifier = Modifier.size(48.dp),
+                        Box(Modifier.size(48.dp).align(Alignment.CenterVertically).alpha(if (clickable) 1f else ElementTheme.colors.textDisabled.alpha)) {
+                            AnimatedContent(
+                                spaceHasPendingActionInProgress,
+                                modifier = Modifier.size(48.dp),
+                                label = "SpaceSelectionState"
+                            ) { showSpinner ->
+                                if (showSpinner) {
+                                    Box(
+                                        modifier = Modifier.size(24.dp).align(Alignment.Center).graphicsLayer {
+                                            // Workaround to force the spinner smaller than it wants to
+                                            scaleX = 0.5f
+                                            scaleY = 0.5f
+                                        },
+                                    ) {
+                                        CircularProgressIndicator(
+                                            modifier = Modifier.size(48.dp).align(Alignment.Center),
+                                            strokeWidth = 4.dp
                                         )
                                     }
-                                }
-                            }
-                            AbstractSpaceIcon(
-                                space = item.space,
-                                size = AvatarSize.BottomSpaceBar,
-                                modifier = Modifier.align(Alignment.CenterVertically),
-                            )
-                            Column(Modifier.align(Alignment.CenterVertically).padding(start = 8.dp, top = 2.dp, bottom = 2.dp)) {
-                                Text(
-                                    item.space.name,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    color = ElementTheme.colors.textPrimary.withDisabledAlpha(clickable),
-                                )
-                                if (item.parents.isNotEmpty()) {
-                                    Text(
-                                        stringResource(chat.schildi.lib.R.string.sc_space_is_sub_space_of, item.parents.joinToString { it.name }),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        color = ElementTheme.colors.textSecondary.withDisabledAlpha(clickable),
+                                } else {
+                                    Checkbox(
+                                        checked = isCheckedPerLocalEcho ?: item.isDirectParent,
+                                        onCheckedChange = { checked ->
+                                            if (!clickable) return@Checkbox
+                                            handleItemSelect(item, checked)
+                                        },
+                                        enabled = clickable,
+                                        modifier = Modifier.size(48.dp),
                                     )
                                 }
+                            }
+                        }
+                        GenericSpaceIcon(
+                            space = item.space,
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                        )
+                        Column(Modifier.align(Alignment.CenterVertically).padding(start = 8.dp, top = 2.dp, bottom = 2.dp)) {
+                            Text(
+                                item.space.name,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                color = ElementTheme.colors.textPrimary.withDisabledAlpha(clickable),
+                            )
+                            if (item.parents.isNotEmpty()) {
+                                Text(
+                                    stringResource(chat.schildi.lib.R.string.sc_space_is_sub_space_of, item.parents.joinToString { it.name }),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    color = ElementTheme.colors.textSecondary.withDisabledAlpha(clickable),
+                                )
                             }
                         }
                     }
@@ -323,24 +331,12 @@ fun ManageParentSpacesDialog(
 private fun Color.withDisabledAlpha(enabled: Boolean) = if (enabled) this else copy(alpha = alpha * ElementTheme.colors.textDisabled.alpha)
 
 @Composable
-private fun SelectSpaceTitle(contextMenu: RoomListState.ContextMenu.Shown) {
-    Text(
-        text = stringResource(chat.schildi.lib.R.string.sc_action_assign_room_to_spaces, contextMenu.roomName ?: contextMenu.roomId.value),
-        color = ElementTheme.colors.textPrimary,
-        style = ElementTheme.typography.fontHeadingSmRegular,
-        textAlign = TextAlign.Center,
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
-    )
-}
-
-
-@Composable
 private fun PermissionDeniedTitle() {
     Text(
         text = stringResource(chat.schildi.lib.R.string.sc_space_list_permissions_missing_for_following),
         color = ElementTheme.colors.textPrimary,
         style = ElementTheme.typography.fontBodyLgMedium,
         textAlign = TextAlign.Left,
-        modifier = Modifier.fillMaxWidth().padding(top = 12.dp, bottom = 8.dp, start = 4.dp, end = 4.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 12.dp, bottom = 8.dp, start = 12.dp, end = 12.dp),
     )
 }

@@ -68,7 +68,7 @@ object ScPrefs {
     val ELEMENT_ROOM_LIST_FILTERS = ScBoolPref("ELEMENT_ROOM_LIST_FILTERS", false, R.string.sc_upstream_feature_flag_room_list_filters, R.string.sc_upstream_feature_flag_room_list_filters_summary, authorsChoice = false, upstreamChoice = true)
     // Chat overview settings depending on spaces
     val SNC_FAB = ScBoolPref("SNC_FAB", true, R.string.sc_pref_snc_fab_title, R.string.sc_pref_snc_fab_summary, disabledValue = false, authorsChoice = false, upstreamChoice = true)
-    val SPACE_MANAGEMENT = ScBoolPref("SPACE_MANAGEMENT", false, R.string.sc_pref_space_management_title, R.string.sc_pref_space_management_summary, authorsChoice = true, upstreamChoice = false, dependencies = SPACE_NAV.asDependencies())
+    val SPACE_MANAGEMENT = ScBoolPref("SPACE_MANAGEMENT", true, R.string.sc_pref_space_management_title, R.string.sc_pref_space_management_summary, authorsChoice = true, upstreamChoice = false, dependencies = SPACE_NAV.asDependencies())
 
     // Timeline
     val PINNED_MESSAGE_OVERLAY = ScBoolPref("PINNED_MESSAGE_OVERLAY", false, R.string.sc_pref_pinned_message_overlay_title, R.string.sc_pref_pinned_message_overlay_summary, authorsChoice = false, upstreamChoice = true)

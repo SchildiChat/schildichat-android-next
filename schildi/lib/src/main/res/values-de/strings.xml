@@ -32,7 +32,7 @@
     <string name="sc_pref_bury_low_priority_title">Niedrige Priorität am unteren Ende</string>
     <string name="sc_pref_client_side_sort_title">Client-seitiges Sortieren</string>
     <string name="sc_pref_fast_transitions_summary">Beschleunigte Fensteranimation</string>
-    <string name="sc_onboarding_welcome_summary">Schildkröten in die Matrix holen</string>
+    <string name="sc_onboarding_welcome_summary">Schildkröten in der Matrix</string>
     <string name="sc_pref_pl_display_name_title">Namensfarbe je nach Chat-Berechtigung</string>
     <string name="sc_pref_compact_app_bar_title">Kompakte App-Leiste</string>
     <string name="sc_pref_compact_app_bar_summary">Niemals die obere App-Leiste erweitern</string>

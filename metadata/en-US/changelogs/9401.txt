@@ -1,0 +1,3 @@
+- Update codebase to Element X v0.7.5
+- Add long press action to room list for adding and removing rooms from spaces
+- Bug fixes

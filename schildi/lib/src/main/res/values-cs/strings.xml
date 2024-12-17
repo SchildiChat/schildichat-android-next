@@ -119,4 +119,13 @@
     <string name="sc_pref_screen_advanced_theming_title">Pokročilá témata</string>
     <string name="sc_pref_screen_advanced_theming_summary">Přizpůsobit barvy motivu</string>
     <string name="sc_pref_bubble_color_incoming_title">Barva bubliny příchozí zprávy</string>
+    <string name="sc_action_space_management">Přiřadit prostory</string>
+    <string name="sc_space_is_sub_space_of">V %1$s</string>
+    <string name="sc_pref_space_management_title">Správa prostorů</string>
+    <string name="sc_pref_space_management_summary">Přidá možnost přiřazení místností k prostorům z kontextové nabídky seznamu místností</string>
+    <string name="sc_space_list_permissions_missing_for_following">Prostory spravované ostatními</string>
+    <string name="sc_action_apply">Použít</string>
+    <string name="sc_action_assign_room_to_spaces">Prostory pro %1$s</string>
+    <string name="sc_space_list_loading">Načítání prostorů…</string>
+    <string name="sc_space_list_empty">Nemáte žádné prostory!</string>
 </resources>

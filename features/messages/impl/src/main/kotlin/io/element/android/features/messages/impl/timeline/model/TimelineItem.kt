@@ -71,6 +71,7 @@ sealed interface TimelineItem {
         val senderProfile: ProfileTimelineDetails,
         val senderAvatar: AvatarData,
         val content: TimelineItemEventContent,
+        val sentTimeMillis: Long = 0L,
         val sentTime: String = "",
         val sentDate: String? = null,
         val isMine: Boolean = false,

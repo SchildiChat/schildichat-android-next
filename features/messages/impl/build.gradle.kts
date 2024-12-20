@@ -52,6 +52,7 @@ dependencies {
     implementation(projects.libraries.permissions.api)
     implementation(projects.libraries.preferences.api)
     implementation(projects.libraries.roomselect.api)
+    implementation(projects.libraries.voiceplayer.api)
     implementation(projects.libraries.voicerecorder.api)
     implementation(projects.libraries.mediaplayer.api)
     implementation(projects.libraries.uiUtils)
@@ -70,6 +71,7 @@ dependencies {
     implementation(libs.vanniktech.blurhash)
     implementation(libs.telephoto.zoomableimage)
     implementation(libs.matrix.emojibase.bindings)
+    implementation(projects.features.knockrequests.api)
 
     testImplementation(libs.test.junit)
     testImplementation(libs.coroutines.test)

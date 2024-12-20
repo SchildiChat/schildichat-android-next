@@ -112,6 +112,7 @@ class RustMatrixClientFactory @Inject constructor(
             .addRootCertificates(userCertificatesProvider.provides())
             .autoEnableBackups(true)
             .autoEnableCrossSigning(true)
+            .useEventCachePersistentStorage(featureFlagService.isFeatureEnabled(FeatureFlags.EventCache))
             .roomKeyRecipientStrategy(
                 strategy = if (featureFlagService.isFeatureEnabled(FeatureFlags.OnlySignedDeviceIsolationMode)) {
                     CollectStrategy.IdentityBasedStrategy

@@ -72,6 +72,10 @@ fun RoomListContextMenu(
             onFavoriteChange = { isFavorite ->
                 eventSink(RoomListEvents.SetRoomIsFavorite(contextMenu.roomId, isFavorite))
             },
+            onClearCacheRoomClick = {
+                eventSink(RoomListEvents.HideContextMenu)
+                eventSink(RoomListEvents.ClearCacheOfRoom(contextMenu.roomId))
+            },
         )
     }
 }
@@ -87,6 +91,7 @@ private fun RoomListModalBottomSheetContent(
     onFavoriteChange: (isFavorite: Boolean) -> Unit,
     onRoomMarkReadClick: () -> Unit,
     onRoomMarkUnreadClick: () -> Unit,
+    onClearCacheRoomClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -194,6 +199,18 @@ private fun RoomListModalBottomSheetContent(
             ),
             style = ListItemStyle.Destructive,
         )
+        if (contextMenu.eventCacheFeatureFlagEnabled) {
+            ListItem(
+                headlineContent = {
+                    Text(text = "Clear cache for this room")
+                },
+                modifier = Modifier.clickable { onClearCacheRoomClick() },
+                leadingContent = ListItemContent.Icon(
+                    iconSource = IconSource.Vector(CompoundIcons.Delete())
+                ),
+                style = ListItemStyle.Primary,
+            )
+        }
     }
 }
 
@@ -215,5 +232,6 @@ internal fun RoomListModalBottomSheetContentPreview(
         onRoomSettingsClick = {},
         onLeaveRoomClick = {},
         onFavoriteChange = {},
+        onClearCacheRoomClick = {},
     )
 }

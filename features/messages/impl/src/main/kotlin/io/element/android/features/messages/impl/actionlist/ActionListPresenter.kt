@@ -38,6 +38,8 @@ import io.element.android.features.messages.impl.timeline.model.event.canBeCopie
 import io.element.android.features.messages.impl.timeline.model.event.canBeForwarded
 import io.element.android.features.messages.impl.timeline.model.event.canReact
 import io.element.android.libraries.architecture.Presenter
+import io.element.android.libraries.dateformatter.api.DateFormatter
+import io.element.android.libraries.dateformatter.api.DateFormatterMode
 import io.element.android.libraries.di.RoomScope
 import io.element.android.libraries.featureflag.api.FeatureFlagService
 import io.element.android.libraries.featureflag.api.FeatureFlags
@@ -66,6 +68,7 @@ class DefaultActionListPresenter @AssistedInject constructor(
     private val room: MatrixRoom,
     private val userSendFailureFactory: VerifiedUserSendFailureFactory,
     private val featureFlagService: FeatureFlagService,
+    private val dateFormatter: DateFormatter,
 ) : ActionListPresenter {
     @AssistedFactory
     @ContributesBinding(RoomScope::class)
@@ -133,6 +136,11 @@ class DefaultActionListPresenter @AssistedInject constructor(
         if (actions.isNotEmpty() || displayEmojiReactions || verifiedUserSendFailure != VerifiedUserSendFailure.None) {
             target.value = ActionListState.Target.Success(
                 event = timelineItem,
+                sentTimeFull = dateFormatter.format(
+                    timelineItem.sentTimeMillis,
+                    DateFormatterMode.Full,
+                    useRelative = true,
+                ),
                 displayEmojiReactions = displayEmojiReactions,
                 recentEmojis = recentEmojiDataSource.getRecentEmojisSorted(),
                 verifiedUserSendFailure = verifiedUserSendFailure,
@@ -173,6 +181,8 @@ class DefaultActionListPresenter @AssistedInject constructor(
                         add(TimelineItemAction.EditCaption)
                         add(TimelineItemAction.RemoveCaption)
                     }
+                } else if (timelineItem.content is TimelineItemPollContent) {
+                    add(TimelineItemAction.EditPoll)
                 } else {
                     add(TimelineItemAction.Edit)
                 }

@@ -37,7 +37,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 
 - Allow sending freeform reactions
 - Don't waste horizontal space in message bubbles with forced line-breaks that do not make full use of the available width
-- Show alt text for inline images / custom emotes, instead of not showing them at all
+- Render inline images such as custom emotes in text messages
 
 - Disable Element's pinned message overlay on top of the conversation screen †
 - Access pinned messages via toolbar action when the pinned message overlay is disabled †

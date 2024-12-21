@@ -22,8 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import chat.schildi.lib.preferences.ScPrefs.SC_TIMELINE_LAYOUT
-import chat.schildi.lib.preferences.value
 import chat.schildi.matrixsdk.containsOnlyEmojis
 import chat.schildi.theme.scBubbleFont
 import io.element.android.compound.theme.ElementTheme
@@ -31,7 +29,6 @@ import io.element.android.features.messages.impl.timeline.components.layout.Cont
 import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayoutData
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContentProvider
-import io.element.android.features.messages.impl.utils.containsOnlyEmojis
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.matrix.api.core.UserId

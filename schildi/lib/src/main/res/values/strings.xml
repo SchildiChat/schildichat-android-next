@@ -143,4 +143,7 @@
     <string name="sc_space_list_loading">Spaces loading…</string>
     <string name="sc_space_list_empty">You don\'t have any spaces!</string>
     <string name="sc_space_list_permissions_missing_for_following">Spaces managed by others</string>
+
+    <string name="sc_pref_render_inline_images_title">Inline images</string>
+    <string name="sc_pref_render_inline_images_summary">Render images such as custom emotes in text messages</string>
 </resources>

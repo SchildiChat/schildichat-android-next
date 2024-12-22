@@ -41,6 +41,8 @@ fun FormattedBody.toHtmlDocument(
             // Prepend `@` to mentions
             fixMentions(dom, permalinkParser)
 
+            fixInlineImages(dom) // SC
+
             dom
         }
 }

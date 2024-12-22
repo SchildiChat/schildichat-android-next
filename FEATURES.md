@@ -24,6 +24,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Non-expanding compact app bar in the chat overview †
 - Show start-new-chat action in the top app bar rather than as floating action button †
 - Show unread counts †
+- Show alt text for inline images / custom emotes, instead of not showing them at all
 
 
 ## Conversation screen

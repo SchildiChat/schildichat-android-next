@@ -1,0 +1,3 @@
+- Update codebase to Element X v0.7.6
+- Add experimental option to render inline images and custom emotes in text messages
+- Show inline image fallback texts in timeline and room list rather than nothing at all

@@ -1,5 +1,6 @@
 package io.element.android.features.messages.impl.timeline.components.event
 
+import android.graphics.drawable.Animatable
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
@@ -9,7 +10,6 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -111,18 +111,29 @@ fun CharSequence.resolveInlineImageSpans(): CharSequence {
                 Timber.tag("InlineImage").v("Inline image \"$src\" state is $state")
             }
         }
-        val bitmap = (painter.state as? AsyncImagePainter.State.Success)?.result?.drawable?.toBitmapOrNull() ?: return@mapNotNull null
-        Pair(inSpan, bitmap)
+        val drawable = (painter.state as? AsyncImagePainter.State.Success)?.result?.drawable ?: return@mapNotNull null
+        Pair(inSpan, drawable)
     }
     if (spansToReplace.isEmpty()) {
         return this
     }
     return remember(this, spansToReplace) {
         SpannableString(this).apply {
-            spansToReplace.forEach { (inSpan, bitmap) ->
+            spansToReplace.forEach { (inSpan, drawable) ->
                 val start = getSpanStart(inSpan).takeIf { it != -1 } ?: return@forEach
                 val end = getSpanEnd(inSpan).takeIf { it != -1 } ?: return@forEach
-                setSpan(ImageSpan(context, bitmap), start, end, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+                val span = if (drawable is Animatable) {
+                    ImageSpan(drawable)
+                } else {
+                    val bitmap = drawable.toBitmapOrNull()
+                    if (bitmap == null) {
+                        ImageSpan(drawable)
+                    } else {
+                        // Works a bit more reliable for some drawables, to not squeeze emotes when out of screen during initial render
+                        ImageSpan(context, bitmap)
+                    }
+                }
+                setSpan(span, start, end, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
             }
         }
     }

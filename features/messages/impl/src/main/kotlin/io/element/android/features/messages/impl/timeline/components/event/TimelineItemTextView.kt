@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import chat.schildi.matrixsdk.containsOnlyEmojis
 import chat.schildi.theme.scBubbleFont
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayout
@@ -51,7 +50,7 @@ fun TimelineItemTextView(
 ) {
     val canCollapse = content.formattedCollapsedBody != null
     val emojiOnly = (content.formattedBody == null || content.formattedBody.toString() == content.body) &&
-        !canCollapse && content.body.replace(" ", "").containsOnlyEmojis(50)
+        !canCollapse && containsOnlyEmojisOrEmotes(content.formattedBody, content.body)
     val collapsed = remember { mutableStateOf(canCollapse) }
     val textStyle = when {
         emojiOnly -> ElementTheme.typography.fontHeadingXlRegular
@@ -61,7 +60,7 @@ fun TimelineItemTextView(
         LocalContentColor provides ElementTheme.colors.textPrimary,
         LocalTextStyle provides textStyle,
     ) {
-        val body = scGetTextWithResolvedMentions(content, collapsed)
+        val body = scGetTextWithResolvedMentions(content, collapsed, textStyle)
         Box(modifier.semantics { contentDescription = content.plainText }.scCollapseClick(collapsed, canCollapse, onLongClick)) {
             EditorStyledText(
                 text = body,

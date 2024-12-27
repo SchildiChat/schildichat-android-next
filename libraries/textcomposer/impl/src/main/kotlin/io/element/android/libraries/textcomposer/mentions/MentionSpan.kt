@@ -74,9 +74,10 @@ class MentionSpan(
 
     override fun draw(canvas: Canvas, text: CharSequence?, start: Int, end: Int, x: Float, top: Int, y: Int, bottom: Int, paint: Paint) {
         // Extra vertical space to add below the baseline (y). This helps us center the span vertically
-        val extraVerticalSpace = y + paint.ascent() + paint.descent() - top
+        //val extraVerticalSpace = y + paint.ascent() + paint.descent() - top
 
-        val rect = RectF(x, top.toFloat(), x + textWidth + startPadding + endPadding, y.toFloat() + extraVerticalSpace)
+        //val rect = RectF(x, top.toFloat(), x + textWidth + startPadding + endPadding, y.toFloat() + extraVerticalSpace)
+        val rect = RectF(x, y.toFloat() + paint.ascent(), x + textWidth + startPadding + endPadding, y.toFloat() + paint.descent())
         val radius = rect.height() / 2
         canvas.drawRoundRect(rect, radius, radius, backgroundPaint)
         paint.color = textColor

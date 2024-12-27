@@ -80,7 +80,7 @@ object ScPrefs {
     val PREFER_FREEFORM_REACTIONS = ScBoolPref("PREFER_FREEFORM_REACTIONS", false, R.string.sc_pref_prefer_freeform_reactions_title, R.string.sc_pref_prefer_freeform_reactions_summary, authorsChoice = false)
     val PREFER_FULLSCREEN_REACTION_SHEET = ScBoolPref("PREFER_FULLSCREEN_REACTION_SHEET", false, R.string.sc_pref_prefer_fullscreen_reaction_sheet_title, R.string.sc_pref_prefer_fullscreen_reaction_sheet_summary, authorsChoice = false, upstreamChoice = false)
     val JUMP_TO_UNREAD = ScBoolPref("JUMP_TO_UNREAD", false, R.string.sc_pref_jump_to_unread_title, R.string.sc_pref_jump_to_unread_option_summary, authorsChoice = true, upstreamChoice = false)
-    val RENDER_INLINE_IMAGES = ScBoolPref("RENDER_INLINE_IMAGES", false, R.string.sc_pref_render_inline_images_title, R.string.sc_pref_render_inline_images_summary, authorsChoice = true, upstreamChoice = false)
+    val RENDER_INLINE_IMAGES = ScBoolPref("RENDER_INLINE_IMAGES", true, R.string.sc_pref_render_inline_images_title, R.string.sc_pref_render_inline_images_summary, authorsChoice = true, upstreamChoice = false)
 
     // Advanced theming options - Light theme
     val BUBBLE_BG_LIGHT_OUTGOING = ScColorPref("BUBBLE_BG_LIGHT_OUTGOING", R.string.sc_pref_bubble_color_outgoing_title)
@@ -166,6 +166,7 @@ object ScPrefs {
         )),
         ScPrefCategory(R.string.sc_pref_category_timeline, null, listOf(
             SC_TIMELINE_LAYOUT,
+            RENDER_INLINE_IMAGES,
             FLOATING_DATE,
             PINNED_MESSAGE_OVERLAY,
             PINNED_MESSAGE_TOOLBAR_ACTION,
@@ -181,7 +182,6 @@ object ScPrefs {
                     SPACE_MANAGEMENT,
                 )),
                 ScPrefCategory(R.string.sc_pref_category_timeline, null, listOf(
-                    RENDER_INLINE_IMAGES,
                     PL_DISPLAY_NAME,
                     JUMP_TO_UNREAD,
                     SYNC_READ_RECEIPT_AND_MARKER,

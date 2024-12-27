@@ -49,7 +49,7 @@ fun TimelineItemTextView(
     onContentLayoutChange: (ContentAvoidingLayoutData) -> Unit = {},
 ) {
     val canCollapse = content.formattedCollapsedBody != null
-    val emojiOnly = (content.formattedBody == null || content.formattedBody.toString() == content.body) &&
+    val emojiOnly = /*(content.formattedBody == null || content.formattedBody.toString() == content.body) &&*/
         !canCollapse && containsOnlyEmojisOrEmotes(content.formattedBody, content.body)
     val collapsed = remember { mutableStateOf(canCollapse) }
     val textStyle = when {

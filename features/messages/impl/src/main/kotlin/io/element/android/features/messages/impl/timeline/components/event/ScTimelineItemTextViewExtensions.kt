@@ -167,20 +167,30 @@ fun CharSequence.resolveInlineImageSpans(textStyle: TextStyle): CharSequence {
 private fun TextStyle.customEmoteSize() = (fontSize.toDp() + CUSTOM_EMOTE_FONT_SIZE_ADD.dp).roundToPx()
 
 @Composable
-internal fun containsOnlyEmojisOrEmotes(formatted: CharSequence?, body: String): Boolean = remember(formatted, body) {
-    val toCheck = if (formatted is Spanned) {
-        val inlineImageSpans = formatted.getSpans<InlineImageSpan>()
-        var toCheck = SpannableStringBuilder(formatted)
-        inlineImageSpans.forEach { span ->
-            val start = toCheck.getSpanStart(span)
-            val end = toCheck.getSpanEnd(span)
-            if (start != -1 && end != -1) {
-                toCheck = toCheck.replace(start, end, "\uD83D\uDC22")
-            }
-        }
-        toCheck.toString()
-    } else {
-        body
+internal fun containsOnlyEmojisOrEmotes(formattedBody: CharSequence?, body: String): Boolean {
+    // Ignore custom emotes when not rendered
+    val formattedWithInlineImages = formattedBody?.takeIf {
+        ScPrefs.RENDER_INLINE_IMAGES.value()
     }
-    toCheck.replace(" ", "").containsOnlyEmojis(50)
+    return remember(formattedWithInlineImages, body) {
+        val toCheck = if (formattedWithInlineImages is Spanned) {
+            val inlineImageSpans = formattedWithInlineImages.getSpans<InlineImageSpan>()
+            var toCheck = SpannableStringBuilder(formattedWithInlineImages)
+            inlineImageSpans.forEach { span ->
+                // Inline images that are not a custom emote do not count
+                if (!span.isEmoticon) {
+                    return@remember false
+                }
+                val start = toCheck.getSpanStart(span)
+                val end = toCheck.getSpanEnd(span)
+                if (start != -1 && end != -1) {
+                    toCheck = toCheck.replace(start, end, "\uD83D\uDC22")
+                }
+            }
+            toCheck.toString()
+        } else {
+            formattedBody?.toString() ?: body
+        }
+        toCheck.replace(" ", "").containsOnlyEmojis(50)
+    }
 }

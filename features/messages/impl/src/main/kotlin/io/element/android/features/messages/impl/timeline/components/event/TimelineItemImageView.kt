@@ -37,7 +37,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import chat.schildi.lib.compose.thenIf
 import chat.schildi.theme.ScTheme
 import chat.schildi.theme.scBubbleFont
 import coil.compose.AsyncImage

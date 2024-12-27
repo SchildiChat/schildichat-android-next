@@ -302,6 +302,10 @@ class RustMatrixClient(
             innerClient.setAccountData(eventType, content)
         }
     }
+
+    override suspend fun getUrlPreviewJson(url: String): String {
+        return innerClient.getUrlPreviewJson(url)
+    }
     // SC additions end
 
     override suspend fun findDM(userId: UserId): RoomId? {

@@ -146,4 +146,10 @@
 
     <string name="sc_pref_render_inline_images_title">Inline images</string>
     <string name="sc_pref_render_inline_images_summary">Render images such as custom emotes in text messages</string>
+
+    <string name="sc_url_previews_title">Link previews</string>
+    <string name="sc_url_previews_summary">Query and render previews for links included in messages</string>
+    <string name="sc_url_previews_in_e2ee_rooms_title">Link previews in encrypted rooms</string>
+    <string name="sc_url_previews_in_e2ee_rooms_title_short">Link previews for E2EE</string>
+    <string name="sc_url_previews_in_e2ee_rooms_summary">Leak partial message content to your homeserver by also allowing link previews in encrypted rooms</string>
 </resources>

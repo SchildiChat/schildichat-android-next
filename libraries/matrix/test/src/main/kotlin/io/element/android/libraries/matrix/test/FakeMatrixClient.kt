@@ -136,6 +136,7 @@ class FakeMatrixClient(
     override suspend fun getAccountData(eventType: String): String? = null
     override suspend fun getRoomAccountData(roomId: RoomId, eventType: String): String? = null
     override suspend fun setAccountData(eventType: String, content: String) {}
+    override suspend fun getUrlPreviewJson(url: String): String = "{}"
     // SC additions end
 
     override suspend fun getPendingRoom(roomId: RoomId): PendingRoom? {

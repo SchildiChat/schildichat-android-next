@@ -49,12 +49,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstrainScope
 import androidx.constraintlayout.compose.ConstraintLayout
-import chat.schildi.lib.preferences.ScPrefs
-import chat.schildi.lib.preferences.value
 import chat.schildi.theme.ScTheme
 import chat.schildi.theme.extensions.scOrElse
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
+import io.element.android.features.messages.impl.UrlPreviewView
 import io.element.android.features.messages.impl.timeline.TimelineEvents
 import io.element.android.features.messages.impl.timeline.TimelineRoomInfo
 import io.element.android.features.messages.impl.timeline.aTimelineItemEvent
@@ -70,6 +69,7 @@ import io.element.android.features.messages.impl.timeline.model.event.TimelineIt
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemLocationContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemPollContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemStickerContent
+import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemVideoContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemVoiceContent
 import io.element.android.features.messages.impl.timeline.model.event.aTimelineItemImageContent
@@ -78,7 +78,6 @@ import io.element.android.features.messages.impl.timeline.protection.TimelinePro
 import io.element.android.features.messages.impl.timeline.protection.TimelineProtectionState
 import io.element.android.features.messages.impl.timeline.protection.mustBeProtected
 import io.element.android.libraries.designsystem.colors.AvatarColorsProvider
-import io.element.android.libraries.designsystem.colors.powerLevelToAvatarColors
 import io.element.android.libraries.designsystem.components.EqualWidthColumn
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
@@ -617,11 +616,13 @@ private fun MessageEventBubbleContent(
             EqualWidthColumn(modifier = modifier, spacing = 8.dp) {
                 threadDecoration()
                 inReplyTo(inReplyToDetails)
+                UrlPreviewView(event.content, true) // SC
                 contentWithTimestamp()
             }
         } else {
             Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 threadDecoration()
+                UrlPreviewView(event.content, showThreadDecoration) // SC
                 contentWithTimestamp()
             }
         }

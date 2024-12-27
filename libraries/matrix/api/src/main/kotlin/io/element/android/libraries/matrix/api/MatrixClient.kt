@@ -56,6 +56,7 @@ interface MatrixClient : Closeable {
     suspend fun getAccountData(eventType: String): String? // SC
     suspend fun getRoomAccountData(roomId: RoomId, eventType: String): String? // SC
     suspend fun setAccountData(eventType: String, content: String) // SC
+    suspend fun getUrlPreviewJson(url: String): String // SC
     suspend fun getPendingRoom(roomId: RoomId): PendingRoom?
     suspend fun findDM(userId: UserId): RoomId?
     suspend fun ignoreUser(userId: UserId): Result<Unit>

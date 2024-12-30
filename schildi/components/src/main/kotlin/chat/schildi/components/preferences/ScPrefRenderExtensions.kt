@@ -92,10 +92,10 @@ fun ScPrefCategoryCollapsed.Rendered(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
                 .clickable {
                     onChange(!expanded)
-                },
+                }
+                .padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(

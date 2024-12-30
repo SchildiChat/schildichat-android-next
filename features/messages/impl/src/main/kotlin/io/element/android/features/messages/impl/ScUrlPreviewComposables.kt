@@ -177,9 +177,10 @@ fun UrlPreviewView(
                 maxLines = if (expanded) 50 else 2,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
-                    .padding(horizontal = 4.dp)
                     .thenIf(urlPreview.imageUrl != null || urlPreview.title != null || urlPreview.siteName != null) { padding(top = 4.dp) }
-                    .clickable { expanded = !expanded },
+                    .clip(RoundedCornerShape(4.dp))
+                    .clickable { expanded = !expanded }
+                    .padding(horizontal = 4.dp),
             )
         }
     }

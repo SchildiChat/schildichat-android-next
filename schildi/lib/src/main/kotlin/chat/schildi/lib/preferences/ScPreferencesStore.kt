@@ -162,8 +162,15 @@ fun ScPreferencesStore.enabledState(scPref: AbstractScPref, context: CoroutineCo
 
 fun List<AbstractScPref>.collectScPrefs(predicate: (ScPref<*>) -> Boolean = { true }): List<ScPref<*>> = this.flatMap { pref ->
     when (pref) {
-        is ScPrefContainer -> pref.prefs.collectScPrefs(predicate)
+        is ScPrefContainer -> pref.prefs.collectScPrefs(predicate).let {
+            if (pref is ScPref<*>) {
+                it + listOf(pref).filter(predicate)
+            } else {
+                it
+            }
+        }
         is ScPref<*> -> listOf(pref).filter(predicate)
+        is ScDisclaimerPref,
         is ScActionablePref -> emptyList()
     }
 }

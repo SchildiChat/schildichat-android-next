@@ -44,8 +44,10 @@ import chat.schildi.components.preferences.Rendered
 import chat.schildi.lib.preferences.AbstractScPref
 import chat.schildi.lib.preferences.LocalScPreferencesStore
 import chat.schildi.lib.preferences.ScActionablePref
+import chat.schildi.lib.preferences.ScDisclaimerPref
 import chat.schildi.lib.preferences.ScPrefCategory
 import chat.schildi.lib.preferences.ScPref
+import chat.schildi.lib.preferences.ScPrefCategoryCollapsed
 import chat.schildi.lib.preferences.ScPrefCollection
 import chat.schildi.lib.preferences.ScPrefContainer
 import chat.schildi.lib.preferences.ScPrefScreen
@@ -55,7 +57,6 @@ import io.element.android.libraries.designsystem.components.preferences.Preferen
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.theme.badgeNegativeContentColor
-import io.element.android.libraries.designsystem.theme.badgePositiveContentColor
 import io.element.android.libraries.designsystem.theme.components.Surface
 import timber.log.Timber
 
@@ -100,17 +101,23 @@ fun RecursiveScPrefsView(
 ) {
     prefs.forEach { scPref ->
         when (scPref) {
-            is ScPref<*> -> {
+            is ScPrefCategoryCollapsed -> {
                 val prefVal = state.prefVals[scPref.sKey]
                 if (prefVal == null) {
                     Timber.e("Missing value for ${scPref.sKey}")
                     return@forEach
                 }
-
-                scPref.AutoRendered(
+                scPref.Rendered(
                     initial = prefVal,
                     onChange = { newVal -> state.eventSink(ScTweaksSettingsEvents.SetScPref(scPref, newVal)) }
-                )
+                ) {
+                    RecursiveScPrefsView(
+                        state = state,
+                        prefs = scPref.prefs,
+                        onOpenPrefScreen = onOpenPrefScreen,
+                        handleScPrefAction = handleScPrefAction,
+                    )
+                }
             }
             is ScPrefCategory -> {
                 scPref.Rendered {
@@ -137,6 +144,21 @@ fun RecursiveScPrefsView(
             }
             is ScActionablePref -> {
                 scPref.Rendered(handleAction = handleScPrefAction)
+            }
+            is ScDisclaimerPref -> {
+                scPref.Rendered()
+            }
+            is ScPref<*> -> {
+                val prefVal = state.prefVals[scPref.sKey]
+                if (prefVal == null) {
+                    Timber.e("Missing value for ${scPref.sKey}")
+                    return@forEach
+                }
+
+                scPref.AutoRendered(
+                    initial = prefVal,
+                    onChange = { newVal -> state.eventSink(ScTweaksSettingsEvents.SetScPref(scPref, newVal)) }
+                )
             }
             else -> Timber.e("Unhandled ScPref type ${scPref.javaClass.simpleName}")
         }

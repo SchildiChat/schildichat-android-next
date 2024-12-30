@@ -58,6 +58,28 @@ data class ScPrefCategory(
 ) : ScPrefContainer
 
 @Parcelize
+data class ScPrefCategoryCollapsed(
+    override val sKey: String,
+    override val titleRes: Int,
+    override val defaultValue: Boolean = false,
+    override val summaryRes: Int? = null,
+    override val disabledValue: Boolean = defaultValue,
+    override val authorsChoice: Boolean? = null,
+    override val upstreamChoice: Boolean? = null,
+    override val prefs: List<AbstractScPref>,
+    override val dependencies: List<ScPrefDependency> = emptyList(),
+) : ScPrefContainer, ScPref<Boolean> {
+    @IgnoredOnParcel override val key = booleanPreferencesKey(sKey)
+    override fun ensureType(value: Any?): Boolean? {
+        if (value !is Boolean?) {
+            Timber.e("Parse boolean failed of $sKey for ${value?.javaClass?.simpleName}")
+            return null
+        }
+        return value
+    }
+}
+
+@Parcelize
 data class ScPrefCollection(
     override val titleRes: Int,
     override val prefs: List<AbstractScPref>,
@@ -163,6 +185,15 @@ data class ScActionablePref(
     override val summaryRes: Int? = null,
     override val dependencies: List<ScPrefDependency> = emptyList(),
 ) : AbstractScPref
+
+@Parcelize
+data class ScDisclaimerPref(
+    val key: String,
+    override val titleRes: Int,
+) : AbstractScPref {
+    @IgnoredOnParcel override val summaryRes = null
+    @IgnoredOnParcel override val dependencies = emptyList<ScPrefDependency>()
+}
 
 /*
 @Parcelize

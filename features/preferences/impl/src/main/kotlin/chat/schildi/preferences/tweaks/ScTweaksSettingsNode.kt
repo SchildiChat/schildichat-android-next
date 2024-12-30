@@ -101,6 +101,9 @@ class ScTweaksSettingsNode @AssistedInject constructor(
 
     private fun batchSetScPrefs(parent: ScPrefContainer = ScPrefs.scTweaks, to: (ScPref<*>) -> Any?) {
         parent.forEachPreference { pref ->
+            if (pref.sKey in ScPrefs.prefsToExcludeFromBatchSet) {
+                return@forEachPreference
+            }
             appCoroutineScope.launch {
                 to(pref)?.let {
                     scPreferencesStore.setSettingTypesafe(pref, it)

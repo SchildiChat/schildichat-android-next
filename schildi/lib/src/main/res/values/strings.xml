@@ -10,7 +10,9 @@
     <!-- SchildiChat settings -->
     <string name="sc_pref_tweaks_title">Turtle tweaks</string>
     <string name="sc_pref_sc_themes_title">SC theme</string>
+    <string name="sc_pref_sc_themes_summary">Disable to follow Element\'s theme.</string>
     <string name="sc_pref_sc_layout_title">SC layout</string>
+    <string name="sc_pref_sc_layout_summary">Disable to follow Element\'s layout.</string>
     <string name="sc_pref_sc_overview_layout_title">SC overview layout</string>
     <string name="sc_pref_sc_timeline_layout_title">SC conversation layout</string>
     <string name="sc_pref_sc_floating_date_title">Floating date</string>
@@ -57,7 +59,6 @@
     <string name="sc_pref_sort_with_silent_unread_summary">Sort muted unread chats above fully read chats</string>
     <string name="sc_pref_render_silent_unread_title">Show silent unread counts</string>
     <string name="sc_pref_render_silent_unread_summary">Render unread message counts also for muted chats</string>
-    <string name="sc_pref_category_chat_sorting">Sort order</string>
     <string name="sc_pref_prefer_freeform_reactions_title">Prefer freeform reactions</string>
     <string name="sc_pref_prefer_freeform_reactions_summary">Open the emoji picker showing the freeform reaction input by default</string>
     <string name="sc_pref_prefer_fullscreen_reaction_sheet_title">Fullscreen reaction picker</string>
@@ -98,19 +99,29 @@
     <string name="sc_pref_dev_quick_options">Quick settings</string>
     <string name="sc_pref_debug_read_marker">Debug read marker</string>
     <string name="sc_pref_danger_zone">Danger zone</string>
+    <string name="sc_pref_danger_zone_summary">Do not report bugs after enabling this.</string>
     <string name="sc_pref_restore_defaults">Restore defaults</string>
     <string name="sc_pref_restore_element">Apply Element taste</string>
     <string name="sc_pref_restore_authors_choice">Author\'s choice</string>
 
+    <string name="sc_pref_category_general">General</string>
+    <string name="sc_pref_category_general_summary">App appearance and behavior</string>
     <string name="sc_pref_category_general_appearance">Appearance</string>
     <string name="sc_pref_category_general_behaviour">Behaviour</string>
     <string name="sc_pref_category_chat_overview">Chat overview</string>
+    <string name="sc_pref_category_chat_sorting">Sort order</string>
     <string name="sc_pref_category_spaces">Spaces</string>
     <string name="sc_pref_category_timeline">Conversation screen</string>
+    <string name="sc_pref_category_reactions">Reactions</string>
+    <string name="sc_pref_category_pinned_messages">Pinned messages</string>
+    <string name="sc_pref_category_notifications">Notifications</string>
     <string name="sc_pref_category_misc">Misc</string>
+    <string name="sc_pref_category_debug_infos">Debug infos</string>
 
     <string name="sc_pref_screen_experimental_title">Experimental</string>
     <string name="sc_pref_screen_experimental_summary">Unstable features, expect bugs</string>
+    <string name="sc_pref_chamber_of_secrets_title">Chamber of Secrets</string>
+    <string name="sc_pref_chamber_of_secrets_summary">Following settings are highly experimental and known to cause issues. Do not report bugs after changing these!</string>
 
     <string name="sc_action_mark_as_read">Mark as read</string>
     <string name="sc_action_mark_as_unread">Mark as unread</string>

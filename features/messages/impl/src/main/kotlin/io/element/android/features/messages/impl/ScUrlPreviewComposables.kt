@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -23,10 +24,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.core.text.getSpans
 import chat.schildi.lib.compose.thenIf
 import chat.schildi.lib.preferences.ScPrefs
@@ -125,15 +129,15 @@ fun UrlPreviewView(
             .clickable(onClick = onClick)
             .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
+        val titleColumnHeight = remember { mutableIntStateOf(0) }
+        val density = LocalDensity.current
         Row {
             urlPreview.imageUrl?.let { imageUrl ->
                 AsyncImage(
                     modifier = Modifier
                         .sizeIn(
-                            minWidth = 40.dp,
-                            minHeight = 40.dp,
                             maxWidth = 140.dp,
-                            maxHeight = 80.dp,
+                            maxHeight = max(80.dp, density.run { titleColumnHeight.intValue.toDp() }),
                         )
                         .padding(end = 4.dp, top = 4.dp)
                         .clip(RoundedCornerShape(4.dp))
@@ -147,14 +151,16 @@ fun UrlPreviewView(
             Column(
                 Modifier
                     .padding(horizontal = 4.dp)
-                    .align(Alignment.CenterVertically),
+                    .align(Alignment.CenterVertically)
+                    .onGloballyPositioned { titleColumnHeight.intValue = it.size.height },
             ) {
                 urlPreview.title?.let { title ->
                     Text(
                         text = title,
                         style = ElementTheme.typography.scBubbleFont,
                         color = ElementTheme.colors.textPrimary,
-                        maxLines = 3,
+                        maxLines = 4,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
                 urlPreview.siteName?.let { site ->
@@ -163,6 +169,7 @@ fun UrlPreviewView(
                         style = ElementTheme.typography.scBubbleFont,
                         color = ElementTheme.colors.textSecondary,
                         maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
             }

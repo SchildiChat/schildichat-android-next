@@ -1,8 +1,12 @@
 package io.element.android.features.messages.impl
 
 import android.app.Activity
+import android.net.InetAddresses
+import android.net.Uri
+import android.os.Build
 import android.text.Spanned
 import android.text.style.URLSpan
+import android.util.Patterns
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -46,10 +50,13 @@ import io.element.android.features.messages.impl.timeline.model.event.TimelineIt
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContent
 import io.element.android.libraries.androidutils.browser.openUrlInChromeCustomTab
 import io.element.android.libraries.androidutils.system.openUrlInExternalApp
+import io.element.android.libraries.core.data.tryOrNull
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.matrix.api.media.MediaSource
 import io.element.android.libraries.matrix.api.room.MatrixRoom
 import io.element.android.libraries.matrix.ui.media.MediaRequestData
+import io.element.android.libraries.textcomposer.mentions.MentionSpan
+import io.element.android.wysiwyg.view.spans.CustomMentionSpan
 
 @Composable
 fun UrlPreviewProvider.takeIfEnabledForRoom(room: MatrixRoom): UrlPreviewProvider? {
@@ -61,14 +68,63 @@ fun UrlPreviewProvider.takeIfEnabledForRoom(room: MatrixRoom): UrlPreviewProvide
     return if (allowed) this else null
 }
 
+private fun String.isIpAddress(): Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+    InetAddresses.isNumericAddress(this)
+} else {
+    Patterns.IP_ADDRESS.matcher(this).matches()
+}
+
+private fun String.toPreviewableUrl(): String? {
+    val url = when {
+        "://" in this -> this
+        // There's some funny "tel:" linkifications of numbers that would match otherwise
+        ":" in this -> return null
+        else -> "https://$this"
+    }
+    val uri = tryOrNull { Uri.parse(url) } ?: return null
+    val host = uri.host ?: return null
+    // Message and room links shouldn't render an url preview
+    if (host == "matrix.to") {
+        return null
+    }
+    // Don't bother for non-http(s) schemes
+    if (uri.scheme != "https" && uri.scheme != "http") {
+        return null
+    }
+    // Don't bother for IP links
+    if (host.isIpAddress()) {
+        return null
+    }
+    return uri.toString()
+}
+
 @Composable
 fun resolveUrlPreview(content: TimelineItemTextBasedContent): UrlPreviewInfo? {
     // This will be null when url previews are disabled for this room
     val urlPreviewProvider = LocalUrlPreviewProvider.current ?: return null
     val preview = remember { mutableStateOf<UrlPreviewInfo?>(null) }
     LaunchedEffect(content) {
-        val urls = (content.formattedBody as? Spanned)?.getSpans<URLSpan>()?.filter { it.url.startsWith("https://") }
-        urls?.firstOrNull()?.url?.let { url ->
+        val formattedBody = content.formattedBody as? Spanned
+        if (formattedBody == null) {
+            preview.value = null
+            return@LaunchedEffect
+        }
+        val urlSpans = formattedBody.getSpans<URLSpan>()
+        if (urlSpans.isEmpty()) {
+            preview.value = null
+            return@LaunchedEffect
+        }
+        val urls = formattedBody.getSpans<URLSpan>().mapNotNull { urlSpan ->
+            val urlSpanStart = formattedBody.getSpanStart(urlSpan).takeIf { it != -1 } ?: return@mapNotNull null
+            val urlSpanEnd = formattedBody.getSpanEnd(urlSpan).takeIf { it != -1 } ?: return@mapNotNull null
+            if (formattedBody.getSpans<CustomMentionSpan>(urlSpanStart, urlSpanEnd).isNotEmpty() ||
+                formattedBody.getSpans<MentionSpan>(urlSpanStart, urlSpanEnd).isNotEmpty()) {
+                // Don't mind links in mentions
+                return@mapNotNull null
+            }
+            urlSpan.url.toPreviewableUrl()
+        }
+        urls.firstOrNull()?.let { url ->
             urlPreviewProvider.fetchPreview(url) {
                 preview.value = it?.let { UrlPreviewInfo(url, it) }
             }

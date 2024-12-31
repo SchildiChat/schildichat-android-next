@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -42,10 +43,11 @@ import chat.schildi.lib.preferences.value
 import chat.schildi.matrixsdk.urlpreview.UrlPreview
 import chat.schildi.matrixsdk.urlpreview.UrlPreviewInfo
 import chat.schildi.matrixsdk.urlpreview.UrlPreviewProvider
+import chat.schildi.matrixsdk.urlpreview.UrlPreviewStateHolder
 import chat.schildi.theme.scBubbleFont
 import coil.compose.AsyncImage
 import io.element.android.compound.theme.ElementTheme
-import io.element.android.features.messages.impl.timeline.di.LocalUrlPreviewProvider
+import io.element.android.features.messages.impl.timeline.di.LocalUrlPreviewStateProvider
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemEventContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContent
 import io.element.android.libraries.androidutils.browser.openUrlInChromeCustomTab
@@ -59,7 +61,7 @@ import io.element.android.libraries.textcomposer.mentions.MentionSpan
 import io.element.android.wysiwyg.view.spans.CustomMentionSpan
 
 @Composable
-fun UrlPreviewProvider.takeIfEnabledForRoom(room: MatrixRoom): UrlPreviewProvider? {
+fun <T>T.takeIfUrlPreviewsEnabledForRoom(room: MatrixRoom): T? {
     val allowed = if (room.isEncrypted) {
         ScPrefs.URL_PREVIEWS_IN_E2EE_ROOMS.value()
     } else {
@@ -101,17 +103,17 @@ private fun String.toPreviewableUrl(): String? {
 @Composable
 fun resolveUrlPreview(content: TimelineItemTextBasedContent): UrlPreviewInfo? {
     // This will be null when url previews are disabled for this room
-    val urlPreviewProvider = LocalUrlPreviewProvider.current ?: return null
-    val preview = remember { mutableStateOf<UrlPreviewInfo?>(null) }
+    val urlPreviewStateProvider = LocalUrlPreviewStateProvider.current ?: return null
+    var previewStateHolder by remember { mutableStateOf<UrlPreviewStateHolder?>(null) }
     LaunchedEffect(content) {
         val formattedBody = content.formattedBody as? Spanned
         if (formattedBody == null) {
-            preview.value = null
+            previewStateHolder = null
             return@LaunchedEffect
         }
         val urlSpans = formattedBody.getSpans<URLSpan>()
         if (urlSpans.isEmpty()) {
-            preview.value = null
+            previewStateHolder = null
             return@LaunchedEffect
         }
         val urls = formattedBody.getSpans<URLSpan>().mapNotNull { urlSpan ->
@@ -125,12 +127,17 @@ fun resolveUrlPreview(content: TimelineItemTextBasedContent): UrlPreviewInfo? {
             urlSpan.url.toPreviewableUrl()
         }
         urls.firstOrNull()?.let { url ->
-            urlPreviewProvider.fetchPreview(url) {
-                preview.value = it?.let { UrlPreviewInfo(url, it) }
-            }
+            previewStateHolder = urlPreviewStateProvider.getStateHolder(url)
         }
     }
-    return preview.value
+    LaunchedEffect(previewStateHolder) {
+        previewStateHolder?.onRender()
+    }
+    return previewStateHolder?.let { stateHolder ->
+        stateHolder.state.collectAsState().value?.let {
+            UrlPreviewInfo(stateHolder.url, it)
+        }
+    }
 }
 
 @Composable

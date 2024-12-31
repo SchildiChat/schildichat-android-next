@@ -1,9 +1,9 @@
 package io.element.android.features.messages.impl.timeline.di
 
 import androidx.compose.runtime.staticCompositionLocalOf
-import chat.schildi.matrixsdk.urlpreview.UrlPreviewProvider
+import chat.schildi.matrixsdk.urlpreview.UrlPreviewStateProvider
 
 /**
- * Provides a [UrlPreviewProvider] to the composition.
+ * Provides a [UrlPreviewStateProvider] to the composition.
  */
-val LocalUrlPreviewProvider = staticCompositionLocalOf<UrlPreviewProvider?> { null }
+val LocalUrlPreviewStateProvider = staticCompositionLocalOf<UrlPreviewStateProvider?> { null }

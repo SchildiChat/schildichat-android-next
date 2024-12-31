@@ -22,6 +22,7 @@ import androidx.lifecycle.Lifecycle
 import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.matrixsdk.urlpreview.UrlPreviewProvider
+import chat.schildi.matrixsdk.urlpreview.UrlPreviewStateProvider
 import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
@@ -41,7 +42,7 @@ import io.element.android.features.messages.impl.messagecomposer.MessageComposer
 import io.element.android.features.messages.impl.timeline.TimelineEvents
 import io.element.android.features.messages.impl.timeline.TimelinePresenter
 import io.element.android.features.messages.impl.timeline.di.LocalTimelineItemPresenterFactories
-import io.element.android.features.messages.impl.timeline.di.LocalUrlPreviewProvider
+import io.element.android.features.messages.impl.timeline.di.LocalUrlPreviewStateProvider
 import io.element.android.features.messages.impl.timeline.di.TimelineItemPresenterFactories
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.libraries.androidutils.browser.openUrlInChromeCustomTab
@@ -79,7 +80,7 @@ class MessagesNode @AssistedInject constructor(
     private val mediaPlayer: MediaPlayer,
     private val recentEmojiDataSource: RecentEmojiDataSource, // SC
     private val scPreferencesStore: ScPreferencesStore, // SC
-    private val urlPreviewProvider: UrlPreviewProvider, // SC
+    urlPreviewProvider: UrlPreviewProvider, // SC
     private val permalinkParser: PermalinkParser,
     private val knockRequestsBannerRenderer: KnockRequestsBannerRenderer
 ) : Node(buildContext, plugins = plugins), MessagesNavigator {
@@ -90,6 +91,9 @@ class MessagesNode @AssistedInject constructor(
         actionListPresenter = actionListPresenterFactory.create(TimelineItemActionPostProcessor.Default)
     )
     private val callbacks = plugins<Callback>()
+
+    // SC: in order to avoid keeping too many url preview state holders around, limit this to a per-room-open scope
+    private val urlPreviewStateProvider = UrlPreviewStateProvider(urlPreviewProvider)
 
     data class Inputs(val focusedEventId: EventId?) : NodeInputs
 
@@ -120,6 +124,7 @@ class MessagesNode @AssistedInject constructor(
             },
             onDestroy = {
                 mediaPlayer.close()
+                urlPreviewStateProvider.clear()
             }
         )
     }
@@ -236,7 +241,7 @@ class MessagesNode @AssistedInject constructor(
         val isDark = ElementTheme.isLightTheme.not()
         CompositionLocalProvider(
             LocalTimelineItemPresenterFactories provides timelineItemPresenterFactories,
-            LocalUrlPreviewProvider provides urlPreviewProvider.takeIfEnabledForRoom(room), // SC
+            LocalUrlPreviewStateProvider provides urlPreviewStateProvider.takeIfUrlPreviewsEnabledForRoom(room), // SC
         ) {
             val state = presenter.present()
             OnLifecycleEvent { _, event ->

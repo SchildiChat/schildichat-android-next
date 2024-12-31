@@ -45,7 +45,7 @@ private data class UrlPreviewFileCache(
 )
 
 private const val PREVIEW_CACHE_LIFETIME_MILLIS = 7L * 24 * 60 * 60 * 1_000
-private const val DEBUG = false
+const val DEBUG_URL_PREVIEWS = true
 
 class UrlPreviewProvider @Inject constructor(
     @ApplicationContext
@@ -109,11 +109,11 @@ class UrlPreviewProvider @Inject constructor(
             val preview = previewFromCache.data.decodeUrlPreview()
             publishPreview(preview)
             if (previewFromCache.url == url && previewFromCache.ts + PREVIEW_CACHE_LIFETIME_MILLIS > System.currentTimeMillis()) {
-                if (DEBUG) logger.d("Cache hit for ts=${previewFromCache.ts}")
+                if (DEBUG_URL_PREVIEWS) logger.d("Cache hit for ts=${previewFromCache.ts}")
                 // No need to re-lookup
                 return
             } else {
-                if (DEBUG) logger.d("Preliminary cache hit for ts=${previewFromCache.ts}, url match=${previewFromCache.url == url}")
+                if (DEBUG_URL_PREVIEWS) logger.d("Preliminary cache hit for ts=${previewFromCache.ts}, url match=${previewFromCache.url == url}")
             }
         }
         val previewData = try {
@@ -128,7 +128,7 @@ class UrlPreviewProvider @Inject constructor(
             return
         }
         val preview = previewData.decodeUrlPreview()
-        if (DEBUG) logger.d("Fetched new url preview, decoded: ${preview != null}")
+        if (DEBUG_URL_PREVIEWS) logger.d("Fetched new url preview, decoded: ${preview != null}")
         publishPreview(preview)
         persistPreviewToFileCache(cacheFile, url, previewData)
     }

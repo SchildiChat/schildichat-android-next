@@ -42,7 +42,6 @@ import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import chat.schildi.matrixsdk.urlpreview.UrlPreview
 import chat.schildi.matrixsdk.urlpreview.UrlPreviewInfo
-import chat.schildi.matrixsdk.urlpreview.UrlPreviewProvider
 import chat.schildi.matrixsdk.urlpreview.UrlPreviewStateHolder
 import chat.schildi.theme.scBubbleFont
 import coil.compose.AsyncImage
@@ -100,6 +99,14 @@ private fun String.toPreviewableUrl(): String? {
     return uri.toString()
 }
 
+private fun String.isAllowedUrlPrefix(): Boolean {
+    // If we have a ":" right before the URL, it's probably just part of an mxid...
+    if (endsWith(":")) {
+        return false
+    }
+    return true
+}
+
 @Composable
 fun resolveUrlPreview(content: TimelineItemTextBasedContent): UrlPreviewInfo? {
     // This will be null when url previews are disabled for this room
@@ -122,6 +129,9 @@ fun resolveUrlPreview(content: TimelineItemTextBasedContent): UrlPreviewInfo? {
             if (formattedBody.getSpans<CustomMentionSpan>(urlSpanStart, urlSpanEnd).isNotEmpty() ||
                 formattedBody.getSpans<MentionSpan>(urlSpanStart, urlSpanEnd).isNotEmpty()) {
                 // Don't mind links in mentions
+                return@mapNotNull null
+            }
+            if (!formattedBody.substring(0, urlSpanStart).isAllowedUrlPrefix()) {
                 return@mapNotNull null
             }
             urlSpan.url.toPreviewableUrl()

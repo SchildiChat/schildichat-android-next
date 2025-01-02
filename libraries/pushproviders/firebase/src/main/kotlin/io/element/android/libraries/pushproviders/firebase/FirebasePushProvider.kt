@@ -32,6 +32,7 @@ class FirebasePushProvider(
 ) : PushProvider {
     override val index = FirebaseConfig.INDEX
     override val name = FirebaseConfig.NAME
+    override val supportMultipleDistributors = false
 
     override fun getDistributors(): List<Distributor> {
         return listOfNotNull(
@@ -53,6 +54,8 @@ class FirebasePushProvider(
             gateway = firebaseGatewayProvider.getFirebaseGateway(),
         )
     }
+
+    override suspend fun getCurrentDistributorValue(sessionId: SessionId): String = firebaseDistributor.value
 
     override suspend fun getCurrentDistributor(sessionId: SessionId) = firebaseDistributor
 

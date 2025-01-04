@@ -222,6 +222,8 @@ fun UrlPreviewView(
                         .sizeIn(
                             maxWidth = 140.dp,
                             maxHeight = max(80.dp, density.run { titleColumnHeight.intValue.toDp() }),
+                            minWidth = 16.dp,
+                            minHeight = 16.dp,
                         )
                         .padding(end = 4.dp, top = 4.dp)
                         .clip(RoundedCornerShape(4.dp))

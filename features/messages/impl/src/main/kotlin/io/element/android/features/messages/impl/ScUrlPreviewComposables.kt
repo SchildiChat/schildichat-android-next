@@ -134,6 +134,11 @@ fun resolveUrlPreview(content: TimelineItemTextBasedContent): UrlPreviewInfo? {
             if (!formattedBody.substring(0, urlSpanStart).isAllowedUrlPrefix()) {
                 return@mapNotNull null
             }
+            Pair(urlSpan, urlSpanStart)
+        }.sortedBy {
+            // Sort by link start position
+            it.second
+        }.mapNotNull { (urlSpan, _) ->
             urlSpan.url.toPreviewableUrl()
         }
         urls.firstOrNull()?.let { url ->

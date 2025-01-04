@@ -75,9 +75,10 @@ private fun String.isIpAddress(): Boolean = if (Build.VERSION.SDK_INT >= Build.V
     Patterns.IP_ADDRESS.matcher(this).matches()
 }
 
-private fun String.toPreviewableUrl(): String? {
+private fun String.toPreviewableUrl(requireExplicitHttps: Boolean): String? {
     val url = when {
         "://" in this -> this
+        requireExplicitHttps -> return null
         // There's some funny "tel:" linkifications of numbers that would match otherwise
         ":" in this -> return null
         else -> "https://$this"
@@ -89,7 +90,7 @@ private fun String.toPreviewableUrl(): String? {
         return null
     }
     // Don't bother for non-http(s) schemes
-    if (uri.scheme != "https" && uri.scheme != "http") {
+    if (uri.scheme != "https" && (requireExplicitHttps || uri.scheme != "http")) {
         return null
     }
     // Don't bother for IP links
@@ -101,7 +102,8 @@ private fun String.toPreviewableUrl(): String? {
 
 private fun String.isAllowedUrlPrefix(): Boolean {
     // If we have a ":" right before the URL, it's probably just part of an mxid...
-    if (endsWith(":")) {
+    // I also have some messages with slashes that I don't want here
+    if (endsWith(":") || endsWith("/")) {
         return false
     }
     return true
@@ -112,7 +114,9 @@ fun resolveUrlPreview(content: TimelineItemTextBasedContent): UrlPreviewInfo? {
     // This will be null when url previews are disabled for this room
     val urlPreviewStateProvider = LocalUrlPreviewStateProvider.current ?: return null
     var previewStateHolder by remember { mutableStateOf<UrlPreviewStateHolder?>(null) }
-    LaunchedEffect(content) {
+    // Whether to only linkify links that explicitly contain "https://" at the beginning.
+    val requireExplicitHttps = ScPrefs.URL_PREVIEWS_REQUIRE_EXPLICIT_LINKS.value()
+    LaunchedEffect(content, requireExplicitHttps) {
         val formattedBody = content.formattedBody as? Spanned
         if (formattedBody == null) {
             previewStateHolder = null
@@ -139,10 +143,12 @@ fun resolveUrlPreview(content: TimelineItemTextBasedContent): UrlPreviewInfo? {
             // Sort by link start position
             it.second
         }.mapNotNull { (urlSpan, _) ->
-            urlSpan.url.toPreviewableUrl()
+            urlSpan.url.toPreviewableUrl(requireExplicitHttps)
         }
         urls.firstOrNull()?.let { url ->
             previewStateHolder = urlPreviewStateProvider.getStateHolder(url)
+        } ?: kotlin.run {
+            previewStateHolder = null
         }
     }
     LaunchedEffect(previewStateHolder) {

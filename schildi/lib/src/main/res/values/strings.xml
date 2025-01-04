@@ -163,4 +163,7 @@
     <string name="sc_url_previews_in_e2ee_rooms_title">Link previews in encrypted rooms</string>
     <string name="sc_url_previews_in_e2ee_rooms_title_short">Link previews for E2EE</string>
     <string name="sc_url_previews_in_e2ee_rooms_summary">Leak partial message content to your homeserver by also allowing link previews in encrypted rooms</string>
+    <string name="sc_url_previews_require_explicit_links_title">Require explicit links for previews</string>
+    <string name="sc_url_previews_require_explicit_links_title_short">Require explicit links</string>
+    <string name="sc_url_previews_require_explicit_links_summary">Only query previews for links explicitly starting with \"https://\"</string>
 </resources>

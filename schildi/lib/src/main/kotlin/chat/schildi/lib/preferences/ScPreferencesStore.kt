@@ -70,10 +70,11 @@ class DefaultScPreferencesStore @Inject constructor(
     override fun <T> settingFlow(scPref: ScPref<T>): Flow<T> {
         val key = scPref.key ?: return emptyFlow()
         return store.data.map { prefs ->
-            if (isEnabled(prefs, scPref)) {
+            val disabledValue = scPref.disabledValue
+            if (isEnabled(prefs, scPref) || disabledValue == null) {
                 prefs[key] ?: scPref.defaultValue
             } else {
-                scPref.disabledValue
+                disabledValue
             }
         }
     }
@@ -83,10 +84,11 @@ class DefaultScPreferencesStore @Inject constructor(
             transform(
                 { scPref ->
                     val key = scPref.key ?: return@transform scPref.defaultValue
-                    if (isEnabled(prefs, scPref)) {
+                    val disabledValue = scPref.disabledValue
+                    if (isEnabled(prefs, scPref) || disabledValue == null) {
                         prefs[key] ?: scPref.defaultValue
                     } else {
-                        scPref.disabledValue
+                        disabledValue
                     }
                 },
                 { scPref ->

@@ -86,6 +86,7 @@ object ScPrefs {
     val RENDER_INLINE_IMAGES = ScBoolPref("RENDER_INLINE_IMAGES", true, R.string.sc_pref_render_inline_images_title, R.string.sc_pref_render_inline_images_summary, authorsChoice = true, upstreamChoice = false)
     val URL_PREVIEWS = ScBoolPref("URL_PREVIEWS", false, R.string.sc_url_previews_title, R.string.sc_url_previews_summary, authorsChoice = true, upstreamChoice = false)
     val URL_PREVIEWS_IN_E2EE_ROOMS = ScBoolPref("URL_PREVIEWS_IN_E2EE_ROOMS", false, R.string.sc_url_previews_in_e2ee_rooms_title, R.string.sc_url_previews_in_e2ee_rooms_summary, authorsChoice = true, upstreamChoice = false, dependencies = URL_PREVIEWS.asDependencies(), disabledValue = false)
+    val URL_PREVIEWS_REQUIRE_EXPLICIT_LINKS = ScBoolPref("URL_PREVIEWS_REQUIRE_EXPLICIT_LINKS", true, R.string.sc_url_previews_require_explicit_links_title, R.string.sc_url_previews_require_explicit_links_summary, authorsChoice = true, dependencies = URL_PREVIEWS.asDependencies(), disabledValue = null)
 
     // Advanced theming options - Light theme
     val BUBBLE_BG_LIGHT_OUTGOING = ScColorPref("BUBBLE_BG_LIGHT_OUTGOING", R.string.sc_pref_bubble_color_outgoing_title)
@@ -196,8 +197,11 @@ object ScPrefs {
             ScPrefCategory(R.string.sc_pref_category_timeline, null, listOf(
                 PL_DISPLAY_NAME,
                 JUMP_TO_UNREAD,
+            )),
+            ScPrefCategory(R.string.sc_url_previews_title, null, listOf(
                 URL_PREVIEWS,
                 URL_PREVIEWS_IN_E2EE_ROOMS,
+                URL_PREVIEWS_REQUIRE_EXPLICIT_LINKS,
             )),
         )),
         ScPrefCategory(R.string.sc_pref_category_debug_infos, null, listOf(
@@ -269,6 +273,7 @@ object ScPrefs {
         ScPrefCategory(R.string.sc_pref_screen_experimental_title, null, listOf(
             URL_PREVIEWS,
             URL_PREVIEWS_IN_E2EE_ROOMS.copy(titleRes = R.string.sc_url_previews_in_e2ee_rooms_title_short),
+            URL_PREVIEWS_REQUIRE_EXPLICIT_LINKS.copy(titleRes = R.string.sc_url_previews_require_explicit_links_title_short),
             PL_DISPLAY_NAME,
             READ_MARKER_DEBUG,
         )),

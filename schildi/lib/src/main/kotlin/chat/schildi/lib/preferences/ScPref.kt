@@ -27,7 +27,8 @@ sealed interface AbstractScPref : Parcelable {
 sealed interface ScPref<T> : AbstractScPref {
     val sKey: String
     val defaultValue: T
-    val disabledValue: T
+    // Value when the preference is disabled via dependencies. If null, return the actual value anyway. Subclasses should default this to defaultValue.
+    val disabledValue: T?
     val authorsChoice: T?
     val upstreamChoice: T?
 
@@ -96,7 +97,7 @@ data class ScBoolPref(
     override val titleRes: Int,
     @StringRes
     override val summaryRes: Int? = null,
-    override val disabledValue: Boolean = defaultValue,
+    override val disabledValue: Boolean? = defaultValue,
     override val authorsChoice: Boolean? = null,
     override val upstreamChoice: Boolean? = null,
     override val dependencies: List<ScPrefDependency> = emptyList(),

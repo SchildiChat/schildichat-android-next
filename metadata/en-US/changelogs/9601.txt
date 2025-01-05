@@ -1,0 +1,3 @@
+- Support rendering inline images and custom emotes
+- Add experimental option to fetch and render URL previews
+- Restructure the "Turtle tweaks" settings screen

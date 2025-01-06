@@ -12,4 +12,5 @@ sealed interface RoomDetailsEvent {
     data object MuteNotification : RoomDetailsEvent
     data object UnmuteNotification : RoomDetailsEvent
     data class SetFavorite(val isFavorite: Boolean) : RoomDetailsEvent
+    data class SetLowPriority(val isLowPriority: Boolean) : RoomDetailsEvent // SC
 }

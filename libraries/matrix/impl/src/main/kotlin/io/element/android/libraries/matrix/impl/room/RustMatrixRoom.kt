@@ -494,6 +494,11 @@ class RustMatrixRoom(
             innerRoom.removeSpaceChild(childId.value)
         }
     }
+    override suspend fun setIsLowPriority(isLowPriority: Boolean): Result<Unit> = withContext(roomDispatcher) {
+        runCatching {
+            innerRoom.setIsLowPriority(isLowPriority, null)
+        }
+    }
     // SC end
 
     override suspend fun sendImage(

@@ -41,7 +41,6 @@ fun RoomListContextMenu(
     contextMenu: RoomListState.ContextMenu.Shown,
     roomListState: RoomListState, // SC
     matrixClient: MatrixClient?, // SC
-    spaceListDataSource: SpaceListDataSource?, // SC
     eventSink: (RoomListEvents.ContextMenuEvents) -> Unit,
     onRoomSettingsClick: (roomId: RoomId) -> Unit,
 ) {
@@ -52,7 +51,7 @@ fun RoomListContextMenu(
             contextMenu = contextMenu,
             roomListState = roomListState, // SC
             matrixClient = matrixClient, // SC
-            spaceListDataSource = spaceListDataSource, // SC
+            onLowPriorityChange = { eventSink(RoomListEvents.SetRoomIsLowPriority(contextMenu.roomId, it))}, // SC
             onRoomMarkReadClick = {
                 eventSink(RoomListEvents.HideContextMenu)
                 eventSink(RoomListEvents.MarkAsRead(contextMenu.roomId))
@@ -85,7 +84,7 @@ private fun RoomListModalBottomSheetContent(
     contextMenu: RoomListState.ContextMenu.Shown,
     roomListState: RoomListState, // SC
     matrixClient: MatrixClient?, // SC
-    spaceListDataSource: SpaceListDataSource?, // SC
+    onLowPriorityChange: (isLowPriority: Boolean) -> Unit, // SC
     onRoomSettingsClick: () -> Unit,
     onLeaveRoomClick: () -> Unit,
     onFavoriteChange: (isFavorite: Boolean) -> Unit,
@@ -162,6 +161,7 @@ private fun RoomListModalBottomSheetContent(
             },
             style = ListItemStyle.Primary,
         )
+        LowPriorityRoomListContextMenuItem(contextMenu, onLowPriorityChange) // SC
         ListItem(
             headlineContent = {
                 Text(
@@ -226,7 +226,7 @@ internal fun RoomListModalBottomSheetContentPreview(
         contextMenu = contextMenu,
         roomListState = aRoomListState(), // SC
         matrixClient = null, // SC
-        spaceListDataSource = null, // SC
+        onLowPriorityChange = {}, // SC
         onRoomMarkReadClick = {},
         onRoomMarkUnreadClick = {},
         onRoomSettingsClick = {},

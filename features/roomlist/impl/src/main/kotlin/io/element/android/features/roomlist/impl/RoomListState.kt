@@ -50,6 +50,7 @@ data class RoomListState(
             val roomName: String?,
             val isDm: Boolean,
             val isFavorite: Boolean,
+            val isLowPriority: Boolean = false, // SC
             val markAsUnreadFeatureFlagEnabled: Boolean,
             val eventCacheFeatureFlagEnabled: Boolean,
             val hasNewContent: Boolean,

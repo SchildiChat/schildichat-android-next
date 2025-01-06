@@ -161,6 +161,7 @@ class RoomListPresenter @Inject constructor(
                 }
                 is RoomListEvents.LeaveRoom -> leaveRoomState.eventSink(LeaveRoomEvent.ShowConfirmation(event.roomId))
                 is RoomListEvents.SetRoomIsFavorite -> coroutineScope.setRoomIsFavorite(event.roomId, event.isFavorite)
+                is RoomListEvents.SetRoomIsLowPriority -> coroutineScope.launch { client.getRoom(event.roomId)?.use { it.setIsLowPriority(event.isLowPriority) } } // SC
                 is RoomListEvents.MarkAsRead -> coroutineScope.markAsRead(event.roomId)
                 is RoomListEvents.MarkAsUnread -> coroutineScope.markAsUnread(event.roomId)
                 is RoomListEvents.AcceptInvite -> {
@@ -295,6 +296,7 @@ class RoomListPresenter @Inject constructor(
             roomName = event.roomListRoomSummary.name,
             isDm = event.roomListRoomSummary.isDm,
             isFavorite = event.roomListRoomSummary.isFavorite,
+            isLowPriority = event.roomListRoomSummary.isLowPriority, // SC
             markAsUnreadFeatureFlagEnabled = featureFlagService.isFeatureEnabled(FeatureFlags.MarkAsUnread),
             hasNewContent = event.roomListRoomSummary.hasNewContent(scPreferencesStore),
             eventCacheFeatureFlagEnabled = featureFlagService.isFeatureEnabled(FeatureFlags.EventCache),
@@ -306,13 +308,16 @@ class RoomListPresenter @Inject constructor(
             val isShowingContextMenuFlow = snapshotFlow { contextMenuState.value is RoomListState.ContextMenu.Shown }
                 .distinctUntilChanged()
 
+            handleLowPriorityFlow(room, contextMenuState, initialState, isShowingContextMenuFlow) // SC: same as favourite flow below, but launchIn instead of collect
+
             val isFavoriteFlow = room.roomInfoFlow
                 .map { it.isFavorite }
                 .distinctUntilChanged()
 
             isFavoriteFlow
                 .onEach { isFavorite ->
-                    contextMenuState.value = initialState.copy(isFavorite = isFavorite)
+                    //contextMenuState.value = initialState.copy(isFavorite = isFavorite)
+                    contextMenuState.value = (contextMenuState.value as? RoomListState.ContextMenu.Shown ?: initialState).copy(isFavorite = isFavorite)
                 }
                 .flatMapLatest { isShowingContextMenuFlow }
                 .takeWhile { isShowingContextMenu -> isShowingContextMenu }

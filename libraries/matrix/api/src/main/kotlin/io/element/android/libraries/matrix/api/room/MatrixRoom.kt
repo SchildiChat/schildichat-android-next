@@ -213,6 +213,7 @@ interface MatrixRoom : Closeable {
     // SC start
     suspend fun addSpaceChild(childId: RoomId): Result<Unit>
     suspend fun removeSpaceChild(childId: RoomId): Result<Unit>
+    suspend fun setIsLowPriority(isLowPriority: Boolean): Result<Unit>
     // SC end
 
     suspend fun updateAvatar(mimeType: String, data: ByteArray): Result<Unit>

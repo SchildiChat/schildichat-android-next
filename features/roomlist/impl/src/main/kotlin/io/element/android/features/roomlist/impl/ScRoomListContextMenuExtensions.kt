@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.Workspaces
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -38,6 +39,7 @@ import chat.schildi.features.roomlist.spaces.flattenWithParents
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import io.element.android.compound.theme.ElementTheme
+import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.libraries.designsystem.components.dialogs.ListDialog
 import io.element.android.libraries.designsystem.components.list.ListItemContent
 import io.element.android.libraries.designsystem.theme.components.Checkbox
@@ -53,6 +55,39 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+
+@Composable
+fun LowPriorityRoomListContextMenuItem(
+    contextMenu: RoomListState.ContextMenu.Shown,
+    onLowPriorityChange: (Boolean) -> Unit,
+) {
+    if (ScPrefs.BURY_LOW_PRIORITY.value()) {
+        ListItem(
+            headlineContent = {
+                Text(
+                    text = stringResource(id = chat.schildi.lib.R.string.sc_action_low_priority),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            },
+            leadingContent = ListItemContent.Icon(
+                iconSource = IconSource.Vector(
+                    Icons.Default.Archive,
+                    contentDescription = stringResource(id = chat.schildi.lib.R.string.sc_action_low_priority),
+                )
+            ),
+            trailingContent = ListItemContent.Switch(
+                checked = contextMenu.isLowPriority,
+                onChange = { isLowPriority ->
+                    onLowPriorityChange(isLowPriority)
+                },
+            ),
+            onClick = {
+                onLowPriorityChange(!contextMenu.isLowPriority)
+            },
+            style = ListItemStyle.Primary,
+        )
+    }
+}
 
 data class SpaceSelectionEntry(
     val space: SpaceListDataSource.SpaceHierarchyItem,

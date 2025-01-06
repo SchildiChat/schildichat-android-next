@@ -142,6 +142,7 @@ class RoomDetailsPresenter @Inject constructor(
                     }
                 }
                 is RoomDetailsEvent.SetFavorite -> scope.setFavorite(event.isFavorite)
+                is RoomDetailsEvent.SetLowPriority -> scope.launch { room.setIsLowPriority(event.isLowPriority) } // SC
             }
         }
 
@@ -164,6 +165,7 @@ class RoomDetailsPresenter @Inject constructor(
             leaveRoomState = leaveRoomState,
             roomNotificationSettings = roomNotificationSettingsState.roomNotificationSettings(),
             isFavorite = isFavorite,
+            isLowPriority = remember { derivedStateOf { roomInfo?.isLowPriority.orFalse() } }.value, // SC
             displayRolesAndPermissionsSettings = !room.isDm && isUserAdmin,
             isPublic = joinRule == JoinRule.Public,
             heroes = roomInfo?.heroes.orEmpty().toPersistentList(),

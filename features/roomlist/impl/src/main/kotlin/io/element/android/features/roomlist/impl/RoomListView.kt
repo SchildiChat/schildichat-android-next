@@ -74,7 +74,6 @@ fun RoomListView(
                     contextMenu = state.contextMenu,
                     roomListState = state, // SC
                     matrixClient = matrixClient, // SC
-                    spaceListDataSource = spaceListDataSource, // SC
                     eventSink = state.eventSink,
                     onRoomSettingsClick = onRoomSettingsClick,
                 )

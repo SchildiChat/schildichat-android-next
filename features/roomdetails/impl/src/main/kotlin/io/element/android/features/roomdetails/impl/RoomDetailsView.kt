@@ -185,6 +185,9 @@ fun RoomDetailsView(
                     }
                 )
 
+                // SC: low priority item, if sorting by low priority is enabled
+                LowPriorityItem(state.isLowPriority) { state.eventSink(RoomDetailsEvent.SetLowPriority(it)) }
+
                 if (state.canShowPinnedMessages) {
                     PinnedMessagesItem(
                         pinnedMessagesCount = state.pinnedMessagesCount,

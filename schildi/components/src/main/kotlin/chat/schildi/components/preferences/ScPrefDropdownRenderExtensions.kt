@@ -110,6 +110,7 @@ fun ScPref<Boolean>.RenderedDropdown(
         trailingIcon = {
             Checkbox(
                 checked = currentValue,
+                enabled = enabled,
                 onCheckedChange = {
                     if (!enabled) return@Checkbox
                     coroutineScope.launch {

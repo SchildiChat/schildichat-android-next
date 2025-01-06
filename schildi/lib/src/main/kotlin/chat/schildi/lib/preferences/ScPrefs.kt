@@ -153,26 +153,26 @@ object ScPrefs {
                 PIN_FAVORITES,
                 BURY_LOW_PRIORITY,
             )),
-            ScPrefCategory(R.string.sc_pref_category_spaces, null, listOf(
-                SPACE_NAV,
-                SPACE_UNREAD_COUNTS,
-                SPACE_SWIPE,
-                COMPACT_ROOT_SPACES,
-                ScPrefScreen(R.string.sc_pseudo_spaces_title, R.string.sc_pseudo_spaces_summary_experimental, listOf(
-                    ScPrefCategory(R.string.sc_pseudo_spaces_title, null, listOf(
-                        PSEUDO_SPACE_FAVORITES,
-                        PSEUDO_SPACE_DMS,
-                        PSEUDO_SPACE_GROUPS,
-                        PSEUDO_SPACE_SPACELESS_GROUPS,
-                        PSEUDO_SPACE_SPACELESS,
-                        PSEUDO_SPACE_NOTIFICATIONS,
-                        PSEUDO_SPACE_UNREAD,
-                    )),
-                    ScPrefCategory(R.string.sc_pref_category_general_behaviour, null, listOf(
-                        PSEUDO_SPACE_HIDE_EMPTY_UNREAD,
-                    )),
-                ), dependencies = SPACE_NAV.asDependencies())
-            )),
+        )),
+        ScPrefScreen(R.string.sc_pref_category_spaces, null, listOf(
+            SPACE_NAV,
+            SPACE_UNREAD_COUNTS,
+            SPACE_SWIPE,
+            COMPACT_ROOT_SPACES,
+            ScPrefScreen(R.string.sc_pseudo_spaces_title, R.string.sc_pseudo_spaces_summary_experimental, listOf(
+                ScPrefCategory(R.string.sc_pseudo_spaces_title, null, listOf(
+                    PSEUDO_SPACE_FAVORITES,
+                    PSEUDO_SPACE_DMS,
+                    PSEUDO_SPACE_GROUPS,
+                    PSEUDO_SPACE_SPACELESS_GROUPS,
+                    PSEUDO_SPACE_SPACELESS,
+                    PSEUDO_SPACE_NOTIFICATIONS,
+                    PSEUDO_SPACE_UNREAD,
+                )),
+                ScPrefCategory(R.string.sc_pref_category_general_behaviour, null, listOf(
+                    PSEUDO_SPACE_HIDE_EMPTY_UNREAD,
+                )),
+            ), dependencies = SPACE_NAV.asDependencies())
         )),
         ScPrefScreen(R.string.sc_pref_category_timeline, null, listOf(
             SC_TIMELINE_LAYOUT,
@@ -230,7 +230,6 @@ object ScPrefs {
     )
 
     val devQuickTweaksOverview = listOf(
-        CLIENT_GENERATED_UNREAD_COUNTS,
         ELEMENT_ROOM_LIST_FILTERS, // Used to be: ScUpstreamFeatureFlagAliasPref(FeatureFlags.RoomListFilters, R.string.sc_upstream_feature_flag_room_list_filters),
         SNC_FAB.copy(titleRes = R.string.sc_pref_snc_fab_title_short),
         RENDER_SILENT_UNREAD,
@@ -246,8 +245,7 @@ object ScPrefs {
             EL_TYPOGRAPHY,
             COMPACT_APP_BAR,
         )),
-        ScPrefCategory(R.string.sc_pref_category_misc, null, listOf(
-            DUAL_MENTION_UNREAD_COUNTS.copy(titleRes = R.string.sc_pref_dual_mention_unread_counts_title_short),
+        ScPrefCategory(R.string.sc_pref_category_spaces, null, listOf(
             SPACE_NAV,
             COMPACT_ROOT_SPACES,
             ScPrefCategory(R.string.sc_pseudo_spaces_title, null, listOf(
@@ -260,6 +258,10 @@ object ScPrefs {
                 PSEUDO_SPACE_UNREAD,
                 PSEUDO_SPACE_HIDE_EMPTY_UNREAD,
             ), dependencies = SPACE_NAV.asDependencies()),
+        )),
+        ScPrefCategory(R.string.sc_pref_category_misc, null, listOf(
+            DUAL_MENTION_UNREAD_COUNTS.copy(titleRes = R.string.sc_pref_dual_mention_unread_counts_title_short),
+            CLIENT_GENERATED_UNREAD_COUNTS,
             SYNC_READ_RECEIPT_AND_MARKER.copy(titleRes = R.string.sc_sync_read_receipt_and_marker_title_short),
             MARK_READ_REQUIRES_SEEN_UNREAD_LINE.copy(titleRes = R.string.sc_pref_mark_read_requires_seen_unread_line_title_short),
         )),

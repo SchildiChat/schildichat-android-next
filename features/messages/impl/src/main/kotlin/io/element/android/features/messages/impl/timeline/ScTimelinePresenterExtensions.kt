@@ -77,7 +77,8 @@ fun ScReadTracker(
 
     if (ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.value()) {
         val debug = ScPrefs.READ_MARKER_DEBUG.value()
-        BackHandler(enabled = !clickedBack.value && scUnreadState.sawUnreadLine.value && scUnreadState.readMarkerToSet.value != null) {
+        val allowMarkAsRead = scUnreadState.sawUnreadLine.value || !ScPrefs.MARK_READ_REQUIRES_SEEN_UNREAD_LINE.value()
+        BackHandler(enabled = !clickedBack.value && allowMarkAsRead && scUnreadState.readMarkerToSet.value != null) {
             scUnreadState.readMarkerToSet.value?.let { eventId ->
                 appScope.launch {
                     val toast = Toast.makeText(

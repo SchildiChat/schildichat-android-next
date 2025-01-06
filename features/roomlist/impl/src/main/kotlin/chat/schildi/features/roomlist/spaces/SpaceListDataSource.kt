@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.safeLookup
 import chat.schildi.lib.preferences.value
 import chat.schildi.matrixsdk.ROOM_ACCOUNT_DATA_SPACE_ORDER
 import chat.schildi.matrixsdk.SpaceOrderSerializer
@@ -431,14 +432,14 @@ class SpaceListDataSource @Inject constructor(
 fun ScPreferencesStore.pseudoSpaceSettingsFlow(): Flow<SpaceListDataSource.PseudoSpaceSettings> {
     return combinedSettingFlow { lookup ->
         SpaceListDataSource.PseudoSpaceSettings(
-            favorites = ScPrefs.PSEUDO_SPACE_FAVORITES.let { it.ensureType(lookup(it)) ?: it.defaultValue },
-            dms = ScPrefs.PSEUDO_SPACE_DMS.let { it.ensureType(lookup(it)) ?: it.defaultValue },
-            groups = ScPrefs.PSEUDO_SPACE_GROUPS.let { it.ensureType(lookup(it)) ?: it.defaultValue },
-            spacelessGroups = ScPrefs.PSEUDO_SPACE_SPACELESS_GROUPS.let { it.ensureType(lookup(it)) ?: it.defaultValue },
-            spaceless = ScPrefs.PSEUDO_SPACE_SPACELESS.let { it.ensureType(lookup(it)) ?: it.defaultValue },
-            notifications = ScPrefs.PSEUDO_SPACE_NOTIFICATIONS.let { it.ensureType(lookup(it)) ?: it.defaultValue },
-            unread = ScPrefs.PSEUDO_SPACE_UNREAD.let { it.ensureType(lookup(it)) ?: it.defaultValue },
-            clientUnreadCounts = ScPrefs.CLIENT_GENERATED_UNREAD_COUNTS.let { it.ensureType(lookup(it)) ?: it.defaultValue },
+            favorites = ScPrefs.PSEUDO_SPACE_FAVORITES.safeLookup(lookup),
+            dms = ScPrefs.PSEUDO_SPACE_DMS.safeLookup(lookup),
+            groups = ScPrefs.PSEUDO_SPACE_GROUPS.safeLookup(lookup),
+            spacelessGroups = ScPrefs.PSEUDO_SPACE_SPACELESS_GROUPS.safeLookup(lookup),
+            spaceless = ScPrefs.PSEUDO_SPACE_SPACELESS.safeLookup(lookup),
+            notifications = ScPrefs.PSEUDO_SPACE_NOTIFICATIONS.safeLookup(lookup),
+            unread = ScPrefs.PSEUDO_SPACE_UNREAD.safeLookup(lookup),
+            clientUnreadCounts = ScPrefs.CLIENT_GENERATED_UNREAD_COUNTS.safeLookup(lookup),
         )
     }
 }

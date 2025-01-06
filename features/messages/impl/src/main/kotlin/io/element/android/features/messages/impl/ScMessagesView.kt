@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Update
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,7 +38,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import chat.schildi.components.preferences.AutoRenderedDropdown
 import chat.schildi.lib.R
+import chat.schildi.lib.preferences.LocalScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.safeLookup
 import chat.schildi.lib.preferences.value
 import chat.schildi.lib.util.formatUnreadCount
 import chat.schildi.theme.ScTheme
@@ -55,7 +58,12 @@ import io.element.android.libraries.matrix.api.core.MatrixPatterns
 import io.element.android.libraries.ui.strings.CommonStrings
 
 @Composable
-private fun showMarkAsReadQuickAction(): Boolean = ScPrefs.SC_DEV_QUICK_OPTIONS.value() && ScPrefs.READ_MARKER_DEBUG.value() && ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.value()
+private fun showMarkAsReadQuickAction(): Boolean = LocalScPreferencesStore.current.combinedSettingFlow { lookup ->
+    ScPrefs.SC_DEV_QUICK_OPTIONS.safeLookup(lookup) &&
+        ScPrefs.READ_MARKER_DEBUG.safeLookup(lookup) &&
+        ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.safeLookup(lookup) &&
+        ScPrefs.MARK_READ_REQUIRES_SEEN_UNREAD_LINE.safeLookup(lookup)
+}.collectAsState(false).value
 
 @Composable
 internal fun moveCallButtonToOverflow(): Boolean = showMarkAsReadQuickAction()

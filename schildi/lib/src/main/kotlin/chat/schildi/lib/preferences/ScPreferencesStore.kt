@@ -40,6 +40,10 @@ interface ScPreferencesStore {
     }
 }
 
+fun <T>ScPref<T>.safeLookup(getPref: (ScPref<*>) -> Any?): T {
+    return ensureType(getPref(this)) ?: defaultValue
+}
+
 @ContributesBinding(AppScope::class)
 @SingleIn(AppScope::class)
 class DefaultScPreferencesStore @Inject constructor(

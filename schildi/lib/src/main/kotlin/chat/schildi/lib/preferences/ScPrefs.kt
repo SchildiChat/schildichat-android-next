@@ -80,6 +80,7 @@ object ScPrefs {
     val FLOATING_DATE = ScBoolPref("FLOATING_DATE", true, R.string.sc_pref_sc_floating_date_title, R.string.sc_pref_sc_floating_date_summary, upstreamChoice = false)
     val PL_DISPLAY_NAME = ScBoolPref("PL_DISPLAY_NAME", false, R.string.sc_pref_pl_display_name_title, R.string.sc_pref_pl_display_name_summary_warning, authorsChoice = false, upstreamChoice = false)
     val SYNC_READ_RECEIPT_AND_MARKER = ScBoolPref("SYNC_READ_RECEIPT_AND_MARKER", false, R.string.sc_sync_read_receipt_and_marker_title, R.string.sc_sync_read_receipt_and_marker_summary, authorsChoice = true, dependencies = SC_DANGER_ZONE.asDependencies())
+    val MARK_READ_REQUIRES_SEEN_UNREAD_LINE = ScBoolPref("MARK_READ_REQUIRES_SEEN_UNREAD_LINE", true, R.string.sc_pref_mark_read_requires_seen_unread_line_title, R.string.sc_pref_mark_read_requires_seen_unread_line_summary, authorsChoice = false, dependencies = SYNC_READ_RECEIPT_AND_MARKER.asDependencies())
     val PREFER_FREEFORM_REACTIONS = ScBoolPref("PREFER_FREEFORM_REACTIONS", false, R.string.sc_pref_prefer_freeform_reactions_title, R.string.sc_pref_prefer_freeform_reactions_summary, authorsChoice = false)
     val PREFER_FULLSCREEN_REACTION_SHEET = ScBoolPref("PREFER_FULLSCREEN_REACTION_SHEET", false, R.string.sc_pref_prefer_fullscreen_reaction_sheet_title, R.string.sc_pref_prefer_fullscreen_reaction_sheet_summary, authorsChoice = false, upstreamChoice = false)
     val JUMP_TO_UNREAD = ScBoolPref("JUMP_TO_UNREAD", false, R.string.sc_pref_jump_to_unread_title, R.string.sc_pref_jump_to_unread_option_summary, authorsChoice = true, upstreamChoice = false)
@@ -214,8 +215,9 @@ object ScPrefs {
             SC_DANGER_ZONE,
             ScPrefScreen(R.string.sc_pref_chamber_of_secrets_title, null, listOf(
                 ScDisclaimerPref("SC_CHAMBER_OF_SECRETS_DISCLAIMER", R.string.sc_pref_chamber_of_secrets_summary),
-                SYNC_READ_RECEIPT_AND_MARKER,
                 CLIENT_GENERATED_UNREAD_COUNTS,
+                SYNC_READ_RECEIPT_AND_MARKER,
+                MARK_READ_REQUIRES_SEEN_UNREAD_LINE,
             ), dependencies = SC_DANGER_ZONE.asDependencies()),
             SC_RESTORE_DEFAULTS,
             SC_RESTORE_UPSTREAM,
@@ -259,6 +261,7 @@ object ScPrefs {
                 PSEUDO_SPACE_HIDE_EMPTY_UNREAD,
             ), dependencies = SPACE_NAV.asDependencies()),
             SYNC_READ_RECEIPT_AND_MARKER.copy(titleRes = R.string.sc_sync_read_receipt_and_marker_title_short),
+            MARK_READ_REQUIRES_SEEN_UNREAD_LINE.copy(titleRes = R.string.sc_pref_mark_read_requires_seen_unread_line_title_short),
         )),
     )
 

@@ -38,6 +38,9 @@
     <string name="sc_sync_read_receipt_and_marker_title">Keep read marker and receipt in sync</string>
     <string name="sc_sync_read_receipt_and_marker_title_short">Sync read markers</string>
     <string name="sc_sync_read_receipt_and_marker_summary">Always set your read receipt (what others see and what calculates your unread messages count) to the same message like your fully read marker (the new messages line when viewing a chat)</string>
+    <string name="sc_pref_mark_read_requires_seen_unread_line_title">Only mark read when fully read</string>
+    <string name="sc_pref_mark_read_requires_seen_unread_line_title_short">Require fully read</string>
+    <string name="sc_pref_mark_read_requires_seen_unread_line_summary">Do not mark chats as read when the unread line was not seen since opening a chat.</string>
     <string name="sc_set_read_marker_toast_start">Setting read marker to %s</string>
     <string name="sc_set_read_marker_implicit_toast_start">Setting read marker…</string>
     <string name="sc_client_generated_unread_counts_title">Client-generated unread counts</string>

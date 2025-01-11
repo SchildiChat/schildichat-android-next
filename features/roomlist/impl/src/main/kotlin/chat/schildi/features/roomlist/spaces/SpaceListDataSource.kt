@@ -312,7 +312,7 @@ class SpaceListDataSource @Inject constructor(
             unreadCounts = getUnreadCounts(this)
         )
         override fun applyFilter(rooms: List<RoomListRoomSummary>) =
-            rooms.filter { it.isDm }.toImmutableList()
+            rooms.filter { it.isDirect }.toImmutableList()
     }
 
     @Immutable
@@ -327,7 +327,7 @@ class SpaceListDataSource @Inject constructor(
             unreadCounts = getUnreadCounts(this)
         )
         override fun applyFilter(rooms: List<RoomListRoomSummary>) =
-            rooms.filter { !it.isDm }.toImmutableList()
+            rooms.filter { !it.isDirect }.toImmutableList()
     }
 
     @Immutable
@@ -343,7 +343,7 @@ class SpaceListDataSource @Inject constructor(
             unreadCounts = getUnreadCounts(this)
         )
         override fun applyFilter(rooms: List<RoomListRoomSummary>) =
-            rooms.filter { !it.isDm && !excludedRooms.contains(it.roomId.value) }.toImmutableList()
+            rooms.filter { !it.isDirect && !excludedRooms.contains(it.roomId.value) }.toImmutableList()
     }
 
     @Immutable

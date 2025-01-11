@@ -25,6 +25,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Show start-new-chat action in the top app bar rather than as floating action button †
 - Show unread counts †
 - Show alt text for inline images / custom emotes, instead of not showing them at all
+- When filtering for DMs, also treat DMs with more than 2 members as DMs if marked as such
 
 
 ## Conversation screen

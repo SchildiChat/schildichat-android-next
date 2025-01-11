@@ -19,10 +19,12 @@ val RoomListFilter.predicate
         is RoomListFilter.Any -> { _: RoomSummary -> true }
         RoomListFilter.None -> { _: RoomSummary -> false }
         RoomListFilter.Category.Group -> { roomSummary: RoomSummary ->
-            !roomSummary.info.isDm && !roomSummary.isInvited()
+            //!roomSummary.info.isDm && !roomSummary.isInvited() // SC: isDirect ignores member count, isDm not
+            !roomSummary.info.isDirect && !roomSummary.isInvited()
         }
         RoomListFilter.Category.People -> { roomSummary: RoomSummary ->
-            roomSummary.info.isDm && !roomSummary.isInvited()
+            //roomSummary.info.isDm && !roomSummary.isInvited() // SC: isDirect ignores member count, isDm not
+            roomSummary.info.isDirect && !roomSummary.isInvited()
         }
         RoomListFilter.Favorite -> { roomSummary: RoomSummary ->
             roomSummary.info.isFavorite && !roomSummary.isInvited()

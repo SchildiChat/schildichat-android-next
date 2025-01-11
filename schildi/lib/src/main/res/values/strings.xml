@@ -174,4 +174,6 @@
     <string name="sc_url_previews_require_explicit_links_summary">Only query previews for links explicitly starting with \"https://\"</string>
     <string name="sc_reply_preview_line_count_title">Reply preview line count</string>
     <string name="sc_reply_preview_line_count_summary">Maximum number of lines to preview replied-to messages</string>
+    <string name="sc_pref_fully_expand_message_menu_title">Fully expand message menu</string>
+    <string name="sc_pref_fully_expand_message_menu_summary">Open the message context menu fully on message longpress</string>
 </resources>

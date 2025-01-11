@@ -110,7 +110,10 @@ internal fun RowScope.scMessagesViewTopBarActions(
             }
         }
     }
-    if (ScPrefs.SC_DEV_QUICK_OPTIONS.value()) {
+    val devQuickOptions = ScPrefs.SC_DEV_QUICK_OPTIONS.value()
+    val callItemInOverflow = (ScPrefs.HIDE_CALL_TOOLBAR_ACTION.value() || moveCallButtonToOverflow()) &&
+        (callState as? RoomCallState.StandBy)?.canStartCall == true
+    if (devQuickOptions || callItemInOverflow) {
         var showMenu by remember { mutableStateOf(false) }
         IconButton(
             onClick = { showMenu = !showMenu }
@@ -124,7 +127,7 @@ internal fun RowScope.scMessagesViewTopBarActions(
             expanded = showMenu,
             onDismissRequest = { showMenu = false }
         ) {
-            if (moveCallButtonToOverflow() && (callState as? RoomCallState.StandBy)?.canStartCall == true) {
+            if (callItemInOverflow) {
                 DropdownMenuItem(
                     onClick = {
                         showMenu = false
@@ -133,19 +136,21 @@ internal fun RowScope.scMessagesViewTopBarActions(
                     text = { Text(stringResource(CommonStrings.a11y_start_call)) },
                 )
             }
-            if (ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.value() && !markAsReadAsQuickAction) {
-                DropdownMenuItem(
-                    onClick = {
-                        showMenu = false
-                        state.timelineState.eventSink(TimelineEvents.MarkAsRead)
-                    },
-                    text = { Text(stringResource(id = R.string.sc_action_mark_as_read)) },
-                )
-            }
-            ScPrefs.devQuickTweaksTimeline.forEach {
-                it.AutoRenderedDropdown(
-                    onClick = { showMenu = false }
-                )
+            if (devQuickOptions) {
+                if (ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.value() && !markAsReadAsQuickAction) {
+                    DropdownMenuItem(
+                        onClick = {
+                            showMenu = false
+                            state.timelineState.eventSink(TimelineEvents.MarkAsRead)
+                        },
+                        text = { Text(stringResource(id = R.string.sc_action_mark_as_read)) },
+                    )
+                }
+                ScPrefs.devQuickTweaksTimeline.forEach {
+                    it.AutoRenderedDropdown(
+                        onClick = { showMenu = false }
+                    )
+                }
             }
         }
     } else {

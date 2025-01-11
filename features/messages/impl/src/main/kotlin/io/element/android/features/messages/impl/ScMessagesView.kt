@@ -84,19 +84,6 @@ internal fun RowScope.scMessagesViewTopBarActions(
             )
         }
     }
-    if (ScPrefs.JUMP_TO_UNREAD.value()) {
-        val fullyReadEventId = state.timelineState.scReadState?.fullyReadEventId?.value?.takeIfIsValidEventId()
-        // TODO maybe later something like
-        //  val isFullyRead = state.timelineState.isLive && state.timelineState.timelineItems.first().isEvent(fullyReadEventId)
-        if (fullyReadEventId != null) {
-            IconButton(onClick = { state.timelineState.eventSink(TimelineEvents.FocusOnEvent(EventId(fullyReadEventId), forReadMarker = true)) }) {
-                Icon(
-                    imageVector = Icons.Default.Update, // There may be a better icon
-                    contentDescription = stringResource(R.string.sc_action_jump_to_unread),
-                )
-            }
-        }
-    }
     if (ScPrefs.PINNED_MESSAGE_TOOLBAR_ACTION.value()) {
         val count = state.pinnedMessagesBannerState.pinnedMessagesCount()
         if (count > 0) {
@@ -107,6 +94,19 @@ internal fun RowScope.scMessagesViewTopBarActions(
                         contentDescription = stringResource(io.element.android.libraries.ui.strings.R.string.common_pinned),
                     )
                 }
+            }
+        }
+    }
+    if (ScPrefs.JUMP_TO_UNREAD.value()) {
+        val fullyReadEventId = state.timelineState.scReadState?.fullyReadEventId?.value?.takeIfIsValidEventId()
+        // TODO maybe later something like
+        //  val isFullyRead = state.timelineState.isLive && state.timelineState.timelineItems.first().isEvent(fullyReadEventId)
+        if (fullyReadEventId != null) {
+            IconButton(onClick = { state.timelineState.eventSink(TimelineEvents.FocusOnEvent(EventId(fullyReadEventId), forReadMarker = true)) }) {
+                Icon(
+                    imageVector = Icons.Default.Update, // There may be a better icon
+                    contentDescription = stringResource(R.string.sc_action_jump_to_unread),
+                )
             }
         }
     }

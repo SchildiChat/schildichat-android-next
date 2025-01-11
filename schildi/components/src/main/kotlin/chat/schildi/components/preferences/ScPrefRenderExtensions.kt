@@ -13,15 +13,23 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
@@ -29,12 +37,16 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import chat.schildi.lib.preferences.LocalScPreferencesStore
 import chat.schildi.lib.preferences.ScActionablePref
 import chat.schildi.lib.preferences.ScBoolPref
 import chat.schildi.lib.preferences.ScColorPref
 import chat.schildi.lib.preferences.ScDisclaimerPref
+import chat.schildi.lib.preferences.ScIntPref
 import chat.schildi.lib.preferences.ScPrefCategory
 import chat.schildi.lib.preferences.ScListPref
 import chat.schildi.lib.preferences.ScPref
@@ -48,7 +60,10 @@ import io.element.android.libraries.designsystem.components.preferences.Preferen
 import io.element.android.libraries.designsystem.components.preferences.PreferenceSwitch
 import io.element.android.libraries.designsystem.components.preferences.PreferenceText
 import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
+import io.element.android.libraries.designsystem.theme.components.ListSupportingText
+import io.element.android.libraries.designsystem.theme.components.SimpleAlertDialogContent
 import io.element.android.libraries.designsystem.theme.components.Text
+import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -57,6 +72,7 @@ import timber.log.Timber
 fun <T>ScPref<T>.AutoRendered(initial: Any, onChange: (Any) -> Unit) {
     when (this) {
         is ScBoolPref -> return Rendered(initial, onChange)
+        is ScIntPref -> return Rendered(initial, onChange)
         is ScListPref -> return Rendered(initial, onChange)
         is ScColorPref -> return Rendered(initial, onChange)
         else -> {
@@ -185,6 +201,89 @@ fun ScPref<Boolean>.Rendered(initial: Any, onChange: (Boolean) -> Unit) {
         enabled = LocalScPreferencesStore.current.enabledState(this).value,
     )
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ScIntPref.Rendered(initial: Any, onChange: (Any) -> Unit) {
+    val v = ensureType(initial)
+    if (v == null) {
+        Timber.e("Invalid initial value $initial")
+    }
+
+    val openDialog = remember { mutableStateOf(false) }
+
+    val enabled = LocalScPreferencesStore.current.enabledState(this).value
+
+    val value = v ?: defaultValue
+
+    PreferenceText(
+        title = stringResource(id = titleRes),
+        subtitle = summaryRes?.let { stringResource(id = it, value, value) } ?: value.toString(),
+        onClick = { if (enabled) openDialog.value = true },
+        enabled = enabled,
+    )
+    if (openDialog.value) {
+        val decoratedSubtitle: @Composable (() -> Unit)? = summaryRes?.let {
+            @Composable {
+                ListSupportingText(
+                    text = stringResource(id = it, value, value),
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
+        }
+        BasicAlertDialog(
+            modifier = Modifier,
+            onDismissRequest = { openDialog.value = false },
+        ) {
+            val textValue = remember {
+                val initialText = value.toString()
+                mutableStateOf(TextFieldValue(text = initialText, selection = TextRange(0, initialText.length)))
+            }
+            val focusRequester = remember { FocusRequester() }
+            fun onSubmitClick() {
+                try {
+                    val newValue = textValue.value.text.toInt().coerceIn(minValue, maxValue)
+                    onChange(newValue)
+                } catch (t: Throwable) {
+                    Timber.w(t, "Failed to set int preference, invalid text input?")
+                }
+                openDialog.value = false
+            }
+            SimpleAlertDialogContent(
+                title = stringResource(id = titleRes),
+                subtitle = decoratedSubtitle,
+                submitText = stringResource(CommonStrings.action_ok),
+                cancelText = stringResource(CommonStrings.action_cancel),
+                onSubmitClick = ::onSubmitClick,
+                onCancelClick = { openDialog.value = false },
+                applyPaddingToContents = false,
+                enabled = textValue.value.text.toIntOrNull()?.let { it.coerceIn(minValue, maxValue) == it } == true,
+            ) {
+                androidx.compose.material3.TextField(
+                    value = textValue.value,
+                    onValueChange = { textValue.value = it },
+                    modifier = Modifier
+                        .focusRequester(focusRequester)
+                        .fillMaxWidth(),
+                    singleLine = true,
+                    label = {
+                        androidx.compose.material3.Text(stringResource(titleRes))
+                    },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                    ),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    keyboardActions = KeyboardActions(onDone = { onSubmitClick() }),
+                )
+            }
+            LaunchedEffect(Unit) {
+                focusRequester.requestFocus()
+            }
+        }
+    }
+}
+
 @Composable
 fun <T>ScListPref<T>.Rendered(initial: Any, onChange: (Any) -> Unit) {
     val v = ensureType(initial)

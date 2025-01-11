@@ -30,6 +30,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.value
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.libraries.designsystem.atomic.atoms.PlaceholderAtom
 import io.element.android.libraries.designsystem.icons.CompoundDrawables
@@ -183,7 +185,7 @@ private fun ReplyToContentText(metadata: InReplyToMetadata?) {
             fontStyle = fontStyle,
             textAlign = TextAlign.Start,
             color = MaterialTheme.colorScheme.secondary,
-            maxLines = 2,
+            maxLines = ScPrefs.REPLY_PREVIEW_LINE_COUNT.value(),
             overflow = TextOverflow.Ellipsis,
         )
     }

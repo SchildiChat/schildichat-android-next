@@ -113,6 +113,31 @@ data class ScBoolPref(
 }
 
 @Parcelize
+data class ScIntPref(
+    override val sKey: String,
+    override val defaultValue: Int,
+    @StringRes
+    override val titleRes: Int,
+    @StringRes
+    override val summaryRes: Int? = null,
+    override val disabledValue: Int? = defaultValue,
+    override val authorsChoice: Int? = null,
+    override val upstreamChoice: Int? = null,
+    override val dependencies: List<ScPrefDependency> = emptyList(),
+    val minValue: Int = Int.MIN_VALUE,
+    val maxValue: Int = Int.MAX_VALUE,
+): ScPref<Int> {
+    @IgnoredOnParcel override val key = intPreferencesKey(sKey)
+    override fun ensureType(value: Any?): Int? {
+        if (value !is Int?) {
+            Timber.e("Parse int failed of $sKey for ${value?.javaClass?.simpleName}")
+            return null
+        }
+        return value
+    }
+}
+
+@Parcelize
 sealed interface ScListPref<T>: ScPref<T> {
     val itemKeys: Array<T>
     @get: ArrayRes

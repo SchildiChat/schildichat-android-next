@@ -89,6 +89,7 @@ object ScPrefs {
     val URL_PREVIEWS = ScBoolPref("URL_PREVIEWS", false, R.string.sc_url_previews_title, R.string.sc_url_previews_summary, authorsChoice = true, upstreamChoice = false)
     val URL_PREVIEWS_IN_E2EE_ROOMS = ScBoolPref("URL_PREVIEWS_IN_E2EE_ROOMS", false, R.string.sc_url_previews_in_e2ee_rooms_title, R.string.sc_url_previews_in_e2ee_rooms_summary, authorsChoice = true, upstreamChoice = false, dependencies = URL_PREVIEWS.asDependencies(), disabledValue = false)
     val URL_PREVIEWS_REQUIRE_EXPLICIT_LINKS = ScBoolPref("URL_PREVIEWS_REQUIRE_EXPLICIT_LINKS", true, R.string.sc_url_previews_require_explicit_links_title, R.string.sc_url_previews_require_explicit_links_summary, authorsChoice = true, dependencies = URL_PREVIEWS.asDependencies(), disabledValue = null)
+    val REPLY_PREVIEW_LINE_COUNT = ScIntPref("REPLY_PREVIEW_LINE_COUNT", 4, R.string.sc_reply_preview_line_count_title, R.string.sc_reply_preview_line_count_summary, minValue = 1, authorsChoice = 4, upstreamChoice = 2)
 
     // Advanced theming options - Light theme
     val BUBBLE_BG_LIGHT_OUTGOING = ScColorPref("BUBBLE_BG_LIGHT_OUTGOING", R.string.sc_pref_bubble_color_outgoing_title)
@@ -180,6 +181,7 @@ object ScPrefs {
             RENDER_INLINE_IMAGES,
             FLOATING_DATE,
             HIDE_CALL_TOOLBAR_ACTION,
+            REPLY_PREVIEW_LINE_COUNT,
             ScPrefCategory(R.string.sc_pref_category_pinned_messages, null, listOf(
                 PINNED_MESSAGE_OVERLAY,
                 PINNED_MESSAGE_TOOLBAR_ACTION,

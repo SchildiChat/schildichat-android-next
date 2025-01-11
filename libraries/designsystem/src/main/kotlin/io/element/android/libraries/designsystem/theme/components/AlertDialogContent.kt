@@ -79,7 +79,7 @@ internal fun SimpleAlertDialogContent(
 }
 
 @Composable
-internal fun SimpleAlertDialogContent(
+/*internal*/ fun SimpleAlertDialogContent(
     submitText: String,
     onSubmitClick: () -> Unit,
     title: String? = null,

@@ -7,9 +7,11 @@ import android.os.Build
 import android.text.Spanned
 import android.text.style.URLSpan
 import android.util.Patterns
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -165,6 +167,7 @@ fun resolveUrlPreview(content: TimelineItemTextBasedContent): UrlPreviewInfo? {
 fun UrlPreviewView(
     content: TimelineItemEventContent,
     skipTopPadding: Boolean,
+    onLongCLick: (() -> Unit)?,
 ) {
     val textBasedContent = content as? TimelineItemTextBasedContent ?: return
     val paddingValues = PaddingValues(
@@ -173,13 +176,14 @@ fun UrlPreviewView(
         top = if (skipTopPadding) 0.dp else 8.dp,
         bottom = 0.dp,
     )
-    UrlPreviewViewForContent(textBasedContent, paddingValues)
+    UrlPreviewViewForContent(textBasedContent, paddingValues, onLongCLick)
 }
 
 @Composable
 fun UrlPreviewViewForContent(
     content: TimelineItemTextBasedContent,
     paddingValues: PaddingValues,
+    onLongCLick: (() -> Unit)?,
 ) {
     val (url, urlPreview) = resolveUrlPreview(content) ?: return
     if (urlPreview.imageUrl == null && urlPreview.title == null && urlPreview.description == null) {
@@ -188,7 +192,7 @@ fun UrlPreviewViewForContent(
     val context = LocalContext.current
     val openLinksInCustomTab = ScPrefs.OPEN_LINKS_IN_CUSTOM_TAB.value()
     val isDark = ElementTheme.isLightTheme.not()
-    UrlPreviewView(urlPreview, paddingValues) {
+    UrlPreviewView(urlPreview, paddingValues, onLongCLick) {
         if (openLinksInCustomTab && context is Activity) {
             context.openUrlInChromeCustomTab(null, isDark, url)
         } else {
@@ -197,11 +201,13 @@ fun UrlPreviewViewForContent(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UrlPreviewView(
     urlPreview: UrlPreview,
     paddingValues: PaddingValues,
-    onClick: () -> Unit
+    onLongCLick: (() -> Unit)?,
+    onClick: () -> Unit,
 ) {
     Column(
         Modifier
@@ -210,7 +216,7 @@ fun UrlPreviewView(
             .clip(RoundedCornerShape(6.dp))
             .background(MaterialTheme.colorScheme.surface)
             .border(1.dp, ElementTheme.colors.textDisabled, RoundedCornerShape(6.dp)) // Add border so link previews look different from replies
-            .clickable(onClick = onClick)
+            .combinedClickable(onClick = onClick, onLongClick = onLongCLick)
             .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
         val titleColumnHeight = remember { mutableIntStateOf(0) }
@@ -289,6 +295,7 @@ fun UrlPreviewViewPreview() {
             description = "Description",
             siteName = "Site",
         ),
-        PaddingValues(8.dp)
+        PaddingValues(8.dp),
+        null
     ) {}
 }

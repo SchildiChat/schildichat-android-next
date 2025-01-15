@@ -616,13 +616,13 @@ private fun MessageEventBubbleContent(
             EqualWidthColumn(modifier = modifier, spacing = 8.dp) {
                 threadDecoration()
                 inReplyTo(inReplyToDetails)
-                UrlPreviewView(event.content, true) // SC
+                UrlPreviewView(event.content, true, onMessageLongClick) // SC
                 contentWithTimestamp()
             }
         } else {
             Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 threadDecoration()
-                UrlPreviewView(event.content, showThreadDecoration) // SC
+                UrlPreviewView(event.content, showThreadDecoration, onMessageLongClick) // SC
                 contentWithTimestamp()
             }
         }

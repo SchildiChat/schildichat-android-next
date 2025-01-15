@@ -260,7 +260,7 @@ private fun MessageSummary(
 
     @Composable
     fun ContentForBody(body: String) {
-        Text(body, style = contentStyle, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        ScMessageContextPreview(body) ?: Text(body, style = contentStyle, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 
     val context = LocalContext.current

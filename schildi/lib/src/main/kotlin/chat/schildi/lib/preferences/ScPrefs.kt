@@ -91,6 +91,7 @@ object ScPrefs {
     val URL_PREVIEWS_REQUIRE_EXPLICIT_LINKS = ScBoolPref("URL_PREVIEWS_REQUIRE_EXPLICIT_LINKS", true, R.string.sc_url_previews_require_explicit_links_title, R.string.sc_url_previews_require_explicit_links_summary, authorsChoice = true, dependencies = URL_PREVIEWS.asDependencies(), disabledValue = null)
     val REPLY_PREVIEW_LINE_COUNT = ScIntPref("REPLY_PREVIEW_LINE_COUNT", 4, R.string.sc_reply_preview_line_count_title, R.string.sc_reply_preview_line_count_summary, minValue = 1, authorsChoice = 4, upstreamChoice = 2)
     val FULLY_EXPAND_MESSAGE_MENU = ScBoolPref("FULLY_EXPAND_MESSAGE_MENU", false, R.string.sc_pref_fully_expand_message_menu_title, R.string.sc_pref_fully_expand_message_menu_summary, authorsChoice = true, upstreamChoice = false)
+    val MESSAGE_CONTEXT_MENU_TEXT_SELECTABLE = ScBoolPref("MESSAGE_CONTEXT_MENU_TEXT_SELECTABLE", true, R.string.sc_pref_message_context_menu_text_selectable_title, R.string.sc_pref_message_context_menu_text_selectable_summary, authorsChoice = true, upstreamChoice = false)
 
     // Advanced theming options - Light theme
     val BUBBLE_BG_LIGHT_OUTGOING = ScColorPref("BUBBLE_BG_LIGHT_OUTGOING", R.string.sc_pref_bubble_color_outgoing_title)
@@ -183,10 +184,13 @@ object ScPrefs {
             FLOATING_DATE,
             HIDE_CALL_TOOLBAR_ACTION,
             REPLY_PREVIEW_LINE_COUNT,
-            FULLY_EXPAND_MESSAGE_MENU,
             ScPrefCategory(R.string.sc_pref_category_pinned_messages, null, listOf(
                 PINNED_MESSAGE_OVERLAY,
                 PINNED_MESSAGE_TOOLBAR_ACTION,
+            )),
+            ScPrefCategory(R.string.sc_pref_category_message_context_menu, null, listOf(
+                MESSAGE_CONTEXT_MENU_TEXT_SELECTABLE,
+                FULLY_EXPAND_MESSAGE_MENU,
             )),
             ScPrefCategory(R.string.sc_pref_category_reactions, null, listOf(
                 PREFER_FREEFORM_REACTIONS,
@@ -282,6 +286,7 @@ object ScPrefs {
         PINNED_MESSAGE_TOOLBAR_ACTION.copy(titleRes = R.string.sc_pref_pinned_message_toolbar_title_short),
         RENDER_INLINE_IMAGES,
         OPEN_LINKS_IN_CUSTOM_TAB,
+        MESSAGE_CONTEXT_MENU_TEXT_SELECTABLE.copy(titleRes = R.string.sc_pref_message_context_menu_text_selectable_title_short),
         ScPrefCategory(R.string.sc_pref_screen_experimental_title, null, listOf(
             URL_PREVIEWS,
             URL_PREVIEWS_IN_E2EE_ROOMS.copy(titleRes = R.string.sc_url_previews_in_e2ee_rooms_title_short),

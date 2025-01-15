@@ -123,6 +123,7 @@
     <string name="sc_pref_category_notifications">Notifications</string>
     <string name="sc_pref_category_misc">Misc</string>
     <string name="sc_pref_category_debug_infos">Debug infos</string>
+    <string name="sc_pref_category_message_context_menu">Message context menu</string>
 
     <string name="sc_pref_screen_experimental_title">Experimental</string>
     <string name="sc_pref_screen_experimental_summary">Unstable features, expect bugs</string>
@@ -176,4 +177,7 @@
     <string name="sc_reply_preview_line_count_summary">Maximum number of lines to preview replied-to messages</string>
     <string name="sc_pref_fully_expand_message_menu_title">Fully expand message menu</string>
     <string name="sc_pref_fully_expand_message_menu_summary">Open the message context menu fully on message longpress</string>
+    <string name="sc_pref_message_context_menu_text_selectable_title">Selectable text on message longpress</string>
+    <string name="sc_pref_message_context_menu_text_selectable_title_short">Selectable text</string>
+    <string name="sc_pref_message_context_menu_text_selectable_summary">Allow fine-grained text selection for copy-pasting in the message longpress menu</string>
 </resources>

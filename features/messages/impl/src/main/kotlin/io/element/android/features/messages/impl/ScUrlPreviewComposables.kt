@@ -10,7 +10,6 @@ import android.util.Patterns
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -278,7 +277,7 @@ fun UrlPreviewView(
                 modifier = Modifier
                     .thenIf(urlPreview.imageUrl != null || urlPreview.title != null || urlPreview.siteName != null) { padding(top = 4.dp) }
                     .clip(RoundedCornerShape(4.dp))
-                    .clickable { expanded = !expanded }
+                    .combinedClickable(onLongClick = onLongCLick) { expanded = !expanded }
                     .padding(horizontal = 4.dp),
             )
         }

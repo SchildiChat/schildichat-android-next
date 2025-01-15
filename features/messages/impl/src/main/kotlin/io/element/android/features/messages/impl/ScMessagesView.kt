@@ -163,7 +163,7 @@ internal fun RowScope.scMessagesViewTopBarActions(
         Column(Modifier.fillMaxWidth()) {
             Row(Modifier.fillMaxWidth()) {
                 Text(
-                    text = "LR=${scReadState?.lastReadMarkerId?.value.toString()}",
+                    text = "LR=${scReadState?.lastReadMarkerId?.value}/${scReadState?.lastReadMarkerIndex?.intValue}",
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Center,
@@ -181,7 +181,7 @@ internal fun RowScope.scMessagesViewTopBarActions(
                     modifier = Modifier.padding(horizontal = 4.dp),
                 )
                 Text(
-                    text = "TS=${scReadState?.readMarkerToSet?.value.toString()}",
+                    text = "TS=${scReadState?.readMarkerToSet?.value}",
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Center,

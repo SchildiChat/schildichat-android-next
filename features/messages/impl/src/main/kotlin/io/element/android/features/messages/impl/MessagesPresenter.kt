@@ -1,8 +1,8 @@
 /*
  * Copyright 2023, 2024 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only
- * Please see LICENSE in the repository root for full details.
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * Please see LICENSE files in the repository root for full details.
  */
 
 package io.element.android.features.messages.impl
@@ -484,7 +484,7 @@ class MessagesPresenter @AssistedInject constructor(
         )
     }
 
-    private suspend fun handleCopyContents(event: TimelineItem.Event) {
+    private fun handleCopyContents(event: TimelineItem.Event) {
         val content = when (event.content) {
             is TimelineItemTextBasedContent -> event.content.body
             is TimelineItemStateContent -> event.content.body
@@ -496,7 +496,7 @@ class MessagesPresenter @AssistedInject constructor(
         }
     }
 
-    private suspend fun handleCopyCaption(event: TimelineItem.Event) {
+    private fun handleCopyCaption(event: TimelineItem.Event) {
         val content = (event.content as? TimelineItemEventContentWithAttachment)?.caption ?: return
         clipboardHelper.copyPlainText(content)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {

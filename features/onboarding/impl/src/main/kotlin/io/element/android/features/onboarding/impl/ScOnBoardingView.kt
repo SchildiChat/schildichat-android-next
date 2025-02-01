@@ -61,17 +61,13 @@ fun ScOnBoardingView(
     onSignInWithQrCode: () -> Unit,
     onSignIn: () -> Unit,
     onCreateAccount: () -> Unit,
-    onOpenDeveloperSettings: () -> Unit,
     onReportProblem: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     OnBoardingPage(
         modifier = modifier,
         content = {
-            OnBoardingContent(
-                state = state,
-                onOpenDeveloperSettings = onOpenDeveloperSettings
-            )
+            OnBoardingContent(state = state)
         },
         footer = {
             OnBoardingButtons(
@@ -88,7 +84,6 @@ fun ScOnBoardingView(
 @Composable
 private fun OnBoardingContent(
     state: OnBoardingState,
-    onOpenDeveloperSettings: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -130,17 +125,6 @@ private fun OnBoardingContent(
                     color = ElementTheme.materialColors.secondary,
                     style = ElementTheme.typography.fontBodyLgRegular.copy(fontSize = 17.sp),
                     textAlign = TextAlign.Center
-                )
-            }
-        }
-        if (state.isDebugBuild) {
-            IconButton(
-                modifier = Modifier.align(Alignment.TopEnd),
-                onClick = onOpenDeveloperSettings,
-            ) {
-                Icon(
-                    imageVector = CompoundIcons.SettingsSolid(),
-                    contentDescription = stringResource(CommonStrings.common_settings)
                 )
             }
         }
@@ -209,7 +193,6 @@ internal fun ScOnBoardingScreenPreview(
         onSignInWithQrCode = {},
         onSignIn = {},
         onCreateAccount = {},
-        onOpenDeveloperSettings = {},
         onReportProblem = {},
     )
 }

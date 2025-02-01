@@ -1,8 +1,8 @@
 /*
  * Copyright 2023, 2024 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only
- * Please see LICENSE in the repository root for full details.
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * Please see LICENSE files in the repository root for full details.
  */
 
 package io.element.android.libraries.preferences.impl.store
@@ -17,8 +17,11 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.squareup.anvil.annotations.ContributesBinding
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.core.meta.BuildType
+import io.element.android.libraries.core.meta.isInternalBuild
+import io.element.android.libraries.core.meta.isScBetaBuild
 import io.element.android.libraries.di.AppScope
 import io.element.android.libraries.di.ApplicationContext
+import io.element.android.libraries.matrix.api.tracing.LogLevel
 import io.element.android.libraries.preferences.api.store.AppPreferencesStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -31,6 +34,7 @@ private val customElementCallBaseUrlKey = stringPreferencesKey("elementCallBaseU
 private val themeKey = stringPreferencesKey("theme")
 private val simplifiedSlidingSyncKey = booleanPreferencesKey("useSimplifiedSlidingSync")
 private val hideImagesAndVideosKey = booleanPreferencesKey("hideImagesAndVideos")
+private val logLevelKey = stringPreferencesKey("logLevel")
 
 @ContributesBinding(AppScope::class)
 class DefaultAppPreferencesStore @Inject constructor(
@@ -104,7 +108,29 @@ class DefaultAppPreferencesStore @Inject constructor(
         }
     }
 
+    override suspend fun setTracingLogLevel(logLevel: LogLevel) {
+        store.edit { prefs ->
+            prefs[logLevelKey] = logLevel.name
+        }
+    }
+
+    override fun getTracingLogLevelFlow(): Flow<LogLevel> {
+        return store.data.map { prefs ->
+            prefs[logLevelKey]?.let { LogLevel.valueOf(it) } ?: buildMeta.defaultLogLevel()
+        }
+    }
+
     override suspend fun reset() {
         store.edit { it.clear() }
+    }
+}
+
+private fun BuildMeta.defaultLogLevel(): LogLevel {
+    return when (buildType) {
+        BuildType.DEBUG -> LogLevel.TRACE
+        BuildType.NIGHTLY -> LogLevel.DEBUG
+        BuildType.RELEASE -> LogLevel.INFO
+        BuildType.DEBUG_SC -> LogLevel.TRACE
+        BuildType.RELEASE_SC -> if (isInternalBuild || isScBetaBuild) LogLevel.DEBUG else LogLevel.INFO
     }
 }

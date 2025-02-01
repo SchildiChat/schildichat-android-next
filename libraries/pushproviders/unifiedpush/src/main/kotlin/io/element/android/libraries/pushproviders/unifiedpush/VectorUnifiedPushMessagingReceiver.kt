@@ -1,8 +1,8 @@
 /*
  * Copyright 2023, 2024 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only
- * Please see LICENSE in the repository root for full details.
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * Please see LICENSE files in the repository root for full details.
  */
 
 package io.element.android.libraries.pushproviders.unifiedpush
@@ -28,6 +28,7 @@ class VectorUnifiedPushMessagingReceiver : MessagingReceiver() {
     @Inject lateinit var guardServiceStarter: GuardServiceStarter
     @Inject lateinit var unifiedPushStore: UnifiedPushStore
     @Inject lateinit var unifiedPushGatewayResolver: UnifiedPushGatewayResolver
+    @Inject lateinit var unifiedPushGatewayUrlResolver: UnifiedPushGatewayUrlResolver
     @Inject lateinit var newGatewayHandler: UnifiedPushNewGatewayHandler
     @Inject lateinit var endpointRegistrationHandler: EndpointRegistrationHandler
     @Inject lateinit var coroutineScope: CoroutineScope
@@ -63,7 +64,10 @@ class VectorUnifiedPushMessagingReceiver : MessagingReceiver() {
     override fun onNewEndpoint(context: Context, endpoint: String, instance: String) {
         Timber.tag(loggerTag.value).i("onNewEndpoint: $endpoint")
         coroutineScope.launch {
-            val gateway = unifiedPushGatewayResolver.getGateway(endpoint, unifiedPushStore.getPushGateway(instance))
+            val gateway = unifiedPushGatewayResolver.getGateway(endpoint)
+                .let { gatewayResult ->
+                    unifiedPushGatewayUrlResolver.resolve(gatewayResult, instance)
+                }
             unifiedPushStore.storePushGateway(instance, gateway)
             val result = newGatewayHandler.handle(endpoint, gateway, instance)
                 .onFailure {

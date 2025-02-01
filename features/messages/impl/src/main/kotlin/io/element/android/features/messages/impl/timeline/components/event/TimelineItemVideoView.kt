@@ -150,6 +150,7 @@ fun TimelineItemVideoView(
                         .widthIn(min = MIN_HEIGHT_IN_DP.dp * aspectRatio, max = MAX_HEIGHT_IN_DP.dp * aspectRatio),
                     text = caption,
                     onLinkClickedListener = onLinkClick,
+                    onLinkLongClickedListener = scLinkLongClickListener(),
                     style = ElementRichTextEditorStyle.textStyle(),
                     releaseOnDetach = false,
                     onTextLayout = ContentAvoidingLayout.measureLegacyLastTextLine(onContentLayoutChange = onContentLayoutChange),

@@ -123,6 +123,7 @@ fun TimelineItemImageView(
                     text = caption,
                     style = ElementRichTextEditorStyle.textStyle(),
                     onLinkClickedListener = onLinkClick,
+                    onLinkLongClickedListener = scLinkLongClickListener(),
                     releaseOnDetach = false,
                     onTextLayout = ContentAvoidingLayout.measureLegacyLastTextLine(onContentLayoutChange = onContentLayoutChange),
                 )

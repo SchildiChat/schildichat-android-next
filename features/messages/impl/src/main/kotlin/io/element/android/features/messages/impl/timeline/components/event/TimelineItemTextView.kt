@@ -65,6 +65,7 @@ fun TimelineItemTextView(
             EditorStyledText(
                 text = body,
                 onLinkClickedListener = onLinkClick,
+                onLinkLongClickedListener = scLinkLongClickListener(),
                 style = ElementRichTextEditorStyle.textStyle(),
                 onTextLayout = ContentAvoidingLayout.measureLegacyLastTextLine(onContentLayoutChange = onContentLayoutChange),
                 releaseOnDetach = false,

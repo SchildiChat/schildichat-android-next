@@ -15,7 +15,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmapOrNull
@@ -193,4 +195,10 @@ internal fun containsOnlyEmojisOrEmotes(formattedBody: CharSequence?, body: Stri
         }
         toCheck.replace(" ", "").containsOnlyEmojis(50)
     }
+}
+
+@Composable
+fun scLinkLongClickListener(): (String) -> Unit {
+    val clipboard = LocalClipboardManager.current
+    return { clipboard.setText(AnnotatedString(it)) }
 }

@@ -45,7 +45,9 @@ import chat.schildi.matrixsdk.urlpreview.UrlPreview
 import chat.schildi.matrixsdk.urlpreview.UrlPreviewInfo
 import chat.schildi.matrixsdk.urlpreview.UrlPreviewStateHolder
 import chat.schildi.theme.scBubbleFont
-import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.messages.impl.timeline.di.LocalUrlPreviewStateProvider
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemEventContent
@@ -222,22 +224,28 @@ fun UrlPreviewView(
         val density = LocalDensity.current
         Row {
             urlPreview.imageUrl?.let { imageUrl ->
-                AsyncImage(
-                    modifier = Modifier
-                        .sizeIn(
-                            maxWidth = 140.dp,
-                            maxHeight = max(80.dp, density.run { titleColumnHeight.intValue.toDp() }),
-                            minWidth = 16.dp,
-                            minHeight = 16.dp,
-                        )
-                        .padding(end = 4.dp, top = 4.dp)
-                        .clip(RoundedCornerShape(4.dp))
-                        .align(Alignment.Top),
+                SubcomposeAsyncImage(
+                    modifier = Modifier.align(Alignment.Top),
                     model = MediaRequestData(MediaSource(imageUrl), MediaRequestData.Kind.Content),
                     contentScale = ContentScale.Fit,
                     alignment = Alignment.Center,
                     contentDescription = null,
-                )
+                ) {
+                    when (painter.state) {
+                        is AsyncImagePainter.State.Success -> SubcomposeAsyncImageContent(
+                            modifier = Modifier
+                                .sizeIn(
+                                    maxWidth = 140.dp,
+                                    maxHeight = max(80.dp, density.run { titleColumnHeight.intValue.toDp() }),
+                                    minWidth = 16.dp,
+                                    minHeight = 16.dp,
+                                )
+                                .padding(end = 4.dp, top = 4.dp)
+                                .clip(RoundedCornerShape(4.dp)),
+                        )
+                        else -> {}
+                    }
+                }
             }
             Column(
                 Modifier

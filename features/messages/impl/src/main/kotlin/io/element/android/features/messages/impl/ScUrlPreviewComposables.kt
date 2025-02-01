@@ -247,7 +247,7 @@ fun UrlPreviewView(
             ) {
                 urlPreview.title?.let { title ->
                     Text(
-                        text = title,
+                        text = title.trim(),
                         style = ElementTheme.typography.scBubbleFont,
                         color = ElementTheme.colors.textPrimary,
                         maxLines = 4,
@@ -256,7 +256,7 @@ fun UrlPreviewView(
                 }
                 urlPreview.siteName?.let { site ->
                     Text(
-                        text = site,
+                        text = site.trim(),
                         style = ElementTheme.typography.scBubbleFont,
                         color = ElementTheme.colors.textSecondary,
                         maxLines = 1,
@@ -266,7 +266,7 @@ fun UrlPreviewView(
             }
         }
         urlPreview.description?.let { description ->
-            val sanitized = description.replace("\n\n", "\n").replace("\n", " ")
+            val sanitized = description.replace("\n\n", "\n").replace("\n", " ").trim()
             var expanded by remember { mutableStateOf(false) }
             Text(
                 text = sanitized,

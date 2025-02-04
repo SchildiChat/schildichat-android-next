@@ -25,7 +25,7 @@ media3 = "1.5.1"
 camera = "1.4.1"
 
 # Compose
-compose_bom = "2025.01.00"
+compose_bom = "2025.01.01"
 composecompiler = "1.5.15"
 
 # Coroutines
@@ -50,7 +50,7 @@ wysiwyg = "3.1.2"
 telephoto = "0.14.0"
 
 # Dependency analysis
-dependencyAnalysis = "2.7.0"
+dependencyAnalysis = "2.8.0"
 
 # DI
 dagger = "2.55"
@@ -194,13 +194,13 @@ opusencoder = "io.element.android:opusencoder:1.1.0"
 zxing_cpp = "io.github.zxing-cpp:android:2.2.0"
 
 # Analytics
-posthog = "com.posthog:posthog-android:3.11.0"
-sentry = "io.sentry:sentry-android:8.0.0"
+posthog = "com.posthog:posthog-android:3.11.1"
+sentry = "io.sentry:sentry-android:8.1.0"
 # main branch can be tested replacing the version with main-SNAPSHOT
 matrix_analytics_events = "com.github.matrix-org:matrix-analytics-events:0.28.0"
 
 # Emojibase
-matrix_emojibase_bindings = "io.element.android:emojibase-bindings:1.3.3"
+matrix_emojibase_bindings = "io.element.android:emojibase-bindings:1.3.4"
 sigpwned_emoji4j = "com.sigpwned:emoji4j-core:16.0.0"
 
 # Di
@@ -241,7 +241,7 @@ anvil = { id = "dev.zacsweers.anvil", version.ref = "anvil" }
 detekt = "io.gitlab.arturbosch.detekt:1.23.7"
 ktlint = "org.jlleitschuh.gradle.ktlint:12.1.2"
 dependencygraph = "com.savvasdalkitsis.module-dependency-graph:0.12"
-dependencycheck = "org.owasp.dependencycheck:12.0.0"
+dependencycheck = "org.owasp.dependencycheck:12.0.2"
 dependencyanalysis = { id = "com.autonomousapps.dependency-analysis", version.ref = "dependencyAnalysis" }
 paparazzi = "app.cash.paparazzi:1.3.5"
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }

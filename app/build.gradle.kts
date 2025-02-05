@@ -179,7 +179,8 @@ android {
 }
 
 // SC: downstream package name and versioning, overriding Element default config while reducing merge conflicts
-val scVersion = 20
+val scVersionMajor = 7
+val scVersionMinor = 6
 android {
     // Use a flavor for common things that the upstream config will not override by the build type
     flavorDimensions += "package"

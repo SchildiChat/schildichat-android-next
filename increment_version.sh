@@ -26,6 +26,7 @@ last_tag=
 
 if [ "$1" = "test" ]; then
     release_type="test"
+    bump_type="auto"
     previousTestVersionCode="$2"
     last_tag="$3"
     if echo "$previousTestVersionCode" | grep -q 0\$; then
@@ -36,6 +37,13 @@ if [ "$1" = "test" ]; then
     fi
 else
     release_type="normal"
+    if [ "$1" = "major" ]; then
+        bump_type="major"
+    elif [ "$1" = "minor" ]; then
+        bump_type="minor"
+    else
+        bump_type="auto"
+    fi
 fi
 
 
@@ -61,24 +69,35 @@ if [ -z "$last_tag" ]; then
 fi
 
 
-# Legacy versioning, based on Element's version codes
-#calculate_version_code() {
-#    echo "(($versionMajor * 10000 + $versionMinor * 100 + $versionPatch + $scVersion) + 4000000) * 10" | bc
-#}
-
-
 #
-# Increase version
+# Increment version
 #
 
-versionMajor=`get_prop versionMajor "$version_kt"`
-versionMinor=`get_prop versionMinor "$version_kt"`
-versionPatch=`get_prop versionPatch "$version_kt"`
-scVersion=`get_prop scVersion`
-
+elVersionYear=`get_prop versionYear "$version_kt"`
+elVersionMonth=`get_prop versionMonth "$version_kt"`
+elVersionRelNumber=`get_prop versionReleaseNumber "$version_kt"`
+scVersionMajor=`get_prop scVersionMajor`
+scVersionMinor=`get_prop scVersionMinor`
 previousVersionCode=`grep '^            versionCode = ' "$build_gradle" | sed 's|^            versionCode = ||'`
-# versionCode incremented independently of versionName, and always increment scVersion
-((scVersion++)) || true
+
+sc_el_version_append="-ex_${elVersionYear}_${elVersionMonth}_${elVersionRelNumber}"
+
+if [ "$bump_type" = "major" ]; then
+    ((scVersionMajor++)) || true
+    scVersionMinor=0
+elif [ "$bump_type" = "minor" ]; then
+    ((scVersionMinor++)) || true
+else
+    previousVersionName=`grep '^            versionName = "' "$build_gradle" | sed 's|^            versionName = "||;s|"$||'`
+    previousElVersionAppend=`echo "$previousVersionName"|sed 's|^[^-]*||'`
+    if [ "$previousElVersionAppend" = "$sc_el_version_append" ]; then
+        ((scVersionMinor++)) || true
+    else
+        ((scVersionMajor++)) || true
+        scVersionMinor=0
+    fi
+fi
+
 if [ "$release_type" = "test" ]; then
     if [ ! -z "$previousTestVersionCode" ]; then
         testVersionCount=$((previousVersionCode > previousTestVersionCode ? 1 : (previousTestVersionCode - previousVersionCode + 1)))
@@ -101,11 +120,13 @@ else
     done
 fi
 
-
-version="$versionMajor.$versionMinor.$versionPatch.sc$scVersion"
+# Hardcoded "0" to be bumped to "2" once SCNext gets encouraged over legacy
+sc_base_version="0.$scVersionMajor.$scVersionMinor"
 
 if [ "$release_type" = "test" ]; then
-    version="$version-test$testVersionCount"
+    version="$sc_base_version-test${testVersionCount}${sc_el_version_append}"
+else
+    version="${sc_base_version}${sc_el_version_append}"
 fi
 
 new_tag="sc_v$version"
@@ -117,7 +138,8 @@ if ((preview)); then
     exit 0
 fi
 
-set_prop "scVersion" "$scVersion"
+set_prop "scVersionMajor" "$scVersionMajor"
+set_prop "scVersionMinor" "$scVersionMinor"
 set_prop "versionCode" "$versionCode"
 set_prop "versionName" "\"$version\""
 

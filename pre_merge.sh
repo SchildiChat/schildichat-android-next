@@ -10,8 +10,8 @@ require_clean_git
 
 # Tag this version for easier git diff-ing
 version_kt="$mydir/plugins/src/main/kotlin/Versions.kt"
-versionMajor=`get_prop versionMajor "$version_kt"`
-versionMinor=`get_prop versionMinor "$version_kt"`
-versionPatch=`get_prop versionPatch "$version_kt"`
-tag="sc_last_v$versionMajor.$versionMinor.$versionPatch"
+elVersionYear=`get_prop versionYear "$version_kt"`
+elVersionMonth=`get_prop versionMonth "$version_kt"`
+elVersionRelNumber=`get_prop versionReleaseNumber "$version_kt"`
+tag="sc_last_ex_${elVersionYear}_${elVersionMonth}_${elVersionRelNumber}"
 git tag "$tag" || true

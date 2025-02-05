@@ -79,6 +79,7 @@ object AppModule {
         buildType: BuildType,
         enterpriseService: EnterpriseService,
     ) = BuildMeta(
+        scBuildMeta = createScBuildMeta(),
         isDebuggable = BuildConfig.DEBUG,
         buildType = buildType,
         applicationName = ApplicationConfig.APPLICATION_NAME.takeIf { it.isNotEmpty() } ?: context.getString(R.string.app_name),

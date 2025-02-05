@@ -37,10 +37,10 @@ if [ "$1" = "test" ]; then
     fi
 else
     release_type="normal"
-    if [ "$1" = "major" ]; then
-        bump_type="major"
-    elif [ "$1" = "minor" ]; then
+    if [ "$1" = "-f" ]; then
         bump_type="minor"
+    elif [ "$1" = "-p" ]; then
+        bump_type="patch"
     else
         bump_type="auto"
     fi
@@ -78,23 +78,25 @@ elVersionMonth=`get_prop versionMonth "$version_kt"`
 elVersionRelNumber=`get_prop versionReleaseNumber "$version_kt"`
 scVersionMajor=`get_prop scVersionMajor`
 scVersionMinor=`get_prop scVersionMinor`
+scVersionPatch=`get_prop scVersionPatch`
 previousVersionCode=`grep '^            versionCode = ' "$build_gradle" | sed 's|^            versionCode = ||'`
 
 sc_el_version_append="-ex_${elVersionYear}_${elVersionMonth}_${elVersionRelNumber}"
+el_version="${elVersionYear}.${elVersionMonth}.${elVersionRelNumber}"
 
-if [ "$bump_type" = "major" ]; then
-    ((scVersionMajor++)) || true
-    scVersionMinor=0
-elif [ "$bump_type" = "minor" ]; then
+if [ "$bump_type" = "minor" ]; then
     ((scVersionMinor++)) || true
+    scVersionPatch=0
+elif [ "$bump_type" = "patch" ]; then
+    ((scVersionPatch++)) || true
 else
     previousVersionName=`grep '^            versionName = "' "$build_gradle" | sed 's|^            versionName = "||;s|"$||'`
     previousElVersionAppend=`echo "$previousVersionName"|sed 's|^[^-]*||'`
     if [ "$previousElVersionAppend" = "$sc_el_version_append" ]; then
-        ((scVersionMinor++)) || true
+        ((scVersionPatch++)) || true
     else
-        ((scVersionMajor++)) || true
-        scVersionMinor=0
+        ((scVersionMinor++)) || true
+        scVersionPatch=0
     fi
 fi
 
@@ -121,7 +123,7 @@ else
 fi
 
 # Hardcoded "0" to be bumped to "2" once SCNext gets encouraged over legacy
-sc_base_version="0.$scVersionMajor.$scVersionMinor"
+sc_base_version="$scVersionMajor.$scVersionMinor.$scVersionPatch"
 
 if [ "$release_type" = "test" ]; then
     version="$sc_base_version-test${testVersionCount}${sc_el_version_append}"
@@ -140,6 +142,7 @@ fi
 
 set_prop "scVersionMajor" "$scVersionMajor"
 set_prop "scVersionMinor" "$scVersionMinor"
+set_prop "scVersionPatch" "$scVersionPatch"
 set_prop "versionCode" "$versionCode"
 set_prop "versionName" "\"$version\""
 
@@ -213,8 +216,10 @@ git add -A
 if [ "$release_type" = "test" ]; then
     git commit -m "Test version $versionCode"
 else
-    git commit -m "Increment version"
-    git tag "$new_tag" -m "Version $version (${versionCode}0)
+    git commit -m "Increment version to $sc_base_version"
+    git tag "$new_tag" -m "Version $sc_base_version (${versionCode}0)
+
+Based on Element X: $el_version
 
 $(cat "$changelog_file")"
 fi

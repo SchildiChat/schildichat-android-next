@@ -8,6 +8,7 @@
 package io.element.android.features.preferences.impl.root
 
 import io.element.android.features.logout.api.direct.DirectLogoutState
+import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarMessage
 import io.element.android.libraries.matrix.api.core.DeviceId
 import io.element.android.libraries.matrix.api.user.MatrixUser
@@ -15,6 +16,7 @@ import io.element.android.libraries.matrix.api.user.MatrixUser
 data class PreferencesRootState(
     val myUser: MatrixUser,
     val version: String,
+    val buildMeta: BuildMeta? = null, // SC
     val deviceId: DeviceId?,
     val showSecureBackup: Boolean,
     val showSecureBackupBadge: Boolean,

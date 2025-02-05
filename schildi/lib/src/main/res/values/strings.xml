@@ -180,4 +180,8 @@
     <string name="sc_pref_message_context_menu_text_selectable_title">Selectable text on message longpress</string>
     <string name="sc_pref_message_context_menu_text_selectable_title_short">Selectable text</string>
     <string name="sc_pref_message_context_menu_text_selectable_summary">Allow fine-grained text selection for copy-pasting in the message longpress menu</string>
+
+    <string name="sc_about_based_on_element_x_version">Based on Element X: %1$s</string>
+    <string name="sc_about_git_revision">Built from: %1$s</string>
+    <string name="sc_about_device_id">Device: %1$s</string>
 </resources>

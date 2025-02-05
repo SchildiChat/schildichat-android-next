@@ -8,6 +8,7 @@
 package io.element.android.libraries.core.meta
 
 data class BuildMeta(
+    val scBuildMeta: ScBuildMeta,
     val buildType: BuildType,
     val isDebuggable: Boolean,
     val applicationName: String,

@@ -179,8 +179,11 @@ android {
 }
 
 // SC: downstream package name and versioning, overriding Element default config while reducing merge conflicts
-val scVersionMajor = 7
-val scVersionMinor = 6
+val scVersionMajor = 0
+val scVersionMinor = 7
+val scVersionPatch = 6
+// Following val is set by increment_version.sh based on the values above
+val scVersionMain = "0.7.6"
 android {
     // Use a flavor for common things that the upstream config will not override by the build type
     flavorDimensions += "package"
@@ -218,9 +221,13 @@ android {
     buildTypes {
         named("debug") {
             resValue("string", "app_name", "SchildiChat Next dbg")
+            buildConfigField("String", "SC_VERSION_MAIN", "\"$scVersionMain\"")
+            buildConfigField("String", "SC_VERSION_ELEMENT", "\"${Versions.VERSION_NAME}\"")
         }
         named("release") {
             resValue("string", "app_name", "SchildiChat Next")
+            buildConfigField("String", "SC_VERSION_MAIN", "\"$scVersionMain\"")
+            buildConfigField("String", "SC_VERSION_ELEMENT", "\"${Versions.VERSION_NAME}\"")
         }
     }
 }

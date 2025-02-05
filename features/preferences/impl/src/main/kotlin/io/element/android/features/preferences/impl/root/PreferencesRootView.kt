@@ -28,6 +28,7 @@ import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.preferences.impl.R
 import io.element.android.features.preferences.impl.user.UserPreferences
 import io.element.android.libraries.architecture.coverage.ExcludeFromCoverage
+import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.designsystem.components.list.ListItemContent
 import io.element.android.libraries.designsystem.components.preferences.PreferencePage
 import io.element.android.libraries.designsystem.icons.CompoundDrawables
@@ -117,6 +118,7 @@ fun PreferencesRootView(
         )
 
         Footer(
+            buildMeta = state.buildMeta, // SC
             version = state.version,
             deviceId = state.deviceId,
             onClick = if (!state.showDeveloperSettings) {
@@ -253,11 +255,12 @@ private fun ColumnScope.GeneralSection(
 
 @Composable
 private fun ColumnScope.Footer(
+    buildMeta: BuildMeta?, // SC
     version: String,
     deviceId: DeviceId?,
     onClick: (() -> Unit)?,
 ) {
-    val text = remember(version, deviceId) {
+    val text = buildScVersionString(buildMeta, deviceId) ?: remember(version, deviceId) {
         buildString {
             append(version)
             if (deviceId != null) {

@@ -163,4 +163,7 @@
     <string name="sc_pref_category_notifications">Oznámení</string>
     <string name="sc_pref_category_debug_infos">Ladící informace</string>
     <string name="sc_pref_chamber_of_secrets_title">Tajemná komnata</string>
+    <string name="sc_about_git_revision">Sestaveno z: %1$s</string>
+    <string name="sc_about_device_id">Zařízení: %1$s</string>
+    <string name="sc_about_based_on_element_x_version">Založeno na Elementu X: %1$s</string>
 </resources>

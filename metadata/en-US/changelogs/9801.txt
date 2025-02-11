@@ -1,0 +1,9 @@
+- Update codebase to Element X v25.02.0
+- Allow toggling "low priority" on chats when used for sorting
+- Add option to move "start call" into the overflow menu
+- Add setting for max reply preview size
+- Add setting to fully expand the message context menu immediately on longpress
+- Make text in the message longpress menu selectable
+- Copy URLs to clipboard when longpressing links
+- Treat DMs as DMs in more places, independent of member count
+- Other improvements and bug fixes

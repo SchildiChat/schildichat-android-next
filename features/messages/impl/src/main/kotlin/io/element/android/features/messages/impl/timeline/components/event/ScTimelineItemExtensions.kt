@@ -2,8 +2,6 @@ package io.element.android.features.messages.impl.timeline.components.event
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
-import chat.schildi.lib.preferences.ScPrefs
-import chat.schildi.lib.preferences.value
 
 @Composable
-fun scLayoutDpUnspecified() = if (ScPrefs.SC_TIMELINE_LAYOUT.value()) Dp.Unspecified else null
+fun scLayoutDpUnspecified() = Dp.Unspecified // This fix seems to be necessary on both SC and EleX layouts, but not on upstream EleX though?

@@ -1,2 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="sc_onboarding_welcome_title">Bienvenido a SchildiChat</string>
+    <string name="sc_action_apply">Aplicar</string>
+    <string name="sc_onboarding_welcome_summary">Trayendo tortugas en la Matrix</string>
+    <string name="sc_pref_sc_themes_title">SC Diseño</string>
+    <string name="sc_action_low_priority">Baja prioridad</string>
+</resources>

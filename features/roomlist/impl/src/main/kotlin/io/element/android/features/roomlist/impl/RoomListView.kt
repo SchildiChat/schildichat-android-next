@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableFloatStateOf
@@ -29,6 +30,7 @@ import chat.schildi.features.roomlist.spaces.SpaceListDataSource
 import chat.schildi.lib.compose.thenIf
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
+import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.leaveroom.api.LeaveRoomView
 import io.element.android.features.networkmonitor.api.ui.ConnectivityIndicatorContainer
@@ -59,8 +61,6 @@ fun RoomListView(
     onCreateRoomClick: () -> Unit,
     onRoomSettingsClick: (roomId: RoomId) -> Unit,
     onMenuActionClick: (RoomListMenuAction) -> Unit,
-    onRoomDirectorySearchClick: () -> Unit,
-    onMigrateToNativeSlidingSyncClick: () -> Unit,
     modifier: Modifier = Modifier,
     acceptDeclineInviteView: @Composable () -> Unit,
 ) {
@@ -89,7 +89,6 @@ fun RoomListView(
                 onOpenSettings = onSettingsClick,
                 onCreateRoomClick = onCreateRoomClick,
                 onMenuActionClick = onMenuActionClick,
-                onMigrateToNativeSlidingSyncClick = onMigrateToNativeSlidingSyncClick,
                 modifier = Modifier.padding(top = topPadding),
             )
             // This overlaid view will only be visible when state.displaySearchResults is true
@@ -97,12 +96,11 @@ fun RoomListView(
                 state = state.searchState,
                 eventSink = state.eventSink,
                 onRoomClick = onRoomClick,
-                onRoomDirectorySearchClick = onRoomDirectorySearchClick,
                 modifier = Modifier
                     .statusBarsPadding()
                     .padding(top = topPadding)
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
+                    .background(ElementTheme.colors.bgCanvasDefault)
             )
             acceptDeclineInviteView()
         }
@@ -119,7 +117,6 @@ private fun RoomListScaffold(
     onOpenSettings: () -> Unit,
     onCreateRoomClick: () -> Unit,
     onMenuActionClick: (RoomListMenuAction) -> Unit,
-    onMigrateToNativeSlidingSyncClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     fun onRoomClick(room: RoomListRoomSummary) {
@@ -163,7 +160,6 @@ private fun RoomListScaffold(
                 onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
                 onRoomClick = ::onRoomClick,
                 onCreateRoomClick = onCreateRoomClick,
-                onMigrateToNativeSlidingSyncClick = onMigrateToNativeSlidingSyncClick,
                 modifier = Modifier
                     .padding(padding)
                     .consumeWindowInsets(padding)
@@ -172,15 +168,14 @@ private fun RoomListScaffold(
         floatingActionButton = {
             if (state.displayActions && ScPrefs.SNC_FAB.value()) {
                 FloatingActionButton(
-                    // FIXME align on Design system theme
-                    containerColor = MaterialTheme.colorScheme.primary,
+                    containerColor = ElementTheme.colors.iconPrimary,
                     modifier = Modifier.addSpaceNavPadding(spaceBarHeight.intValue),
                     onClick = onCreateRoomClick
                 ) {
                     Icon(
-                        // Note cannot use Icons.Outlined.EditSquare, it does not exist :/
-                        imageVector = CompoundIcons.Compose(),
-                        contentDescription = stringResource(id = R.string.screen_roomlist_a11y_create_message)
+                        imageVector = CompoundIcons.Plus(),
+                        contentDescription = stringResource(id = R.string.screen_roomlist_a11y_create_message),
+                        tint = ElementTheme.colors.iconOnSolidPrimary,
                     )
                 }
             }
@@ -205,8 +200,6 @@ internal fun RoomListViewPreview(@PreviewParameter(RoomListStateProvider::class)
         onCreateRoomClick = {},
         onRoomSettingsClick = {},
         onMenuActionClick = {},
-        onRoomDirectorySearchClick = {},
         acceptDeclineInviteView = {},
-        onMigrateToNativeSlidingSyncClick = {},
     )
 }

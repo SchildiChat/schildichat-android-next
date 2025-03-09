@@ -59,10 +59,10 @@ import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.encryption.EncryptionService
 import io.element.android.libraries.matrix.api.encryption.RecoveryState
 import io.element.android.libraries.matrix.api.roomlist.RoomList
-import io.element.android.libraries.matrix.api.sync.SlidingSyncVersion
 import io.element.android.libraries.matrix.api.sync.SyncService
 import io.element.android.libraries.matrix.api.sync.isOnline
 import io.element.android.libraries.matrix.api.timeline.ReceiptType
+import io.element.android.libraries.preferences.api.store.AppPreferencesStore
 import io.element.android.libraries.preferences.api.store.SessionPreferencesStore
 import io.element.android.libraries.push.api.notifications.NotificationCleaner
 import io.element.android.services.analytics.api.AnalyticsService
@@ -109,6 +109,7 @@ class RoomListPresenter @Inject constructor(
     private val fullScreenIntentPermissionsPresenter: Presenter<FullScreenIntentPermissionsState>,
     private val notificationCleaner: NotificationCleaner,
     private val logoutPresenter: Presenter<DirectLogoutState>,
+    private val appPreferencesStore: AppPreferencesStore,
 ) : Presenter<RoomListState> {
     private val encryptionService: EncryptionService = client.encryptionService()
 
@@ -201,16 +202,13 @@ class RoomListPresenter @Inject constructor(
     @Composable
     private fun rememberSecurityBannerState(
         securityBannerDismissed: Boolean,
-        needsSlidingSyncMigration: Boolean,
     ): State<SecurityBannerState> {
         val currentSecurityBannerDismissed by rememberUpdatedState(securityBannerDismissed)
-        val currentNeedsSlidingSyncMigration by rememberUpdatedState(needsSlidingSyncMigration)
         val recoveryState by encryptionService.recoveryStateStateFlow.collectAsState()
         return remember {
             derivedStateOf {
                 calculateBannerState(
                     securityBannerDismissed = currentSecurityBannerDismissed,
-                    needsSlidingSyncMigration = currentNeedsSlidingSyncMigration,
                     recoveryState = recoveryState,
                 )
             }
@@ -219,7 +217,6 @@ class RoomListPresenter @Inject constructor(
 
     private fun calculateBannerState(
         securityBannerDismissed: Boolean,
-        needsSlidingSyncMigration: Boolean,
         recoveryState: RecoveryState,
     ): SecurityBannerState {
         if (securityBannerDismissed) {
@@ -232,10 +229,6 @@ class RoomListPresenter @Inject constructor(
             RecoveryState.UNKNOWN,
             RecoveryState.WAITING_FOR_SYNC,
             RecoveryState.ENABLED -> Unit
-        }
-
-        if (needsSlidingSyncMigration) {
-            return SecurityBannerState.NeedsNativeSlidingSyncMigration
         }
 
         return SecurityBannerState.None
@@ -267,10 +260,7 @@ class RoomListPresenter @Inject constructor(
                 loadingState == RoomList.LoadingState.NotLoaded || roomSummaries is AsyncData.Loading
             //}
         //}
-        val needsSlidingSyncMigration by produceState(false) {
-            value = client.needsSlidingSyncMigration().getOrDefault(false)
-        }
-        val securityBannerState by rememberSecurityBannerState(securityBannerDismissed, needsSlidingSyncMigration)
+        val securityBannerState by rememberSecurityBannerState(securityBannerDismissed)
         return when {
             showEmpty -> RoomListContentState.Empty(securityBannerState = securityBannerState)
             showSkeleton -> RoomListContentState.Skeleton(count = 16)
@@ -299,7 +289,8 @@ class RoomListPresenter @Inject constructor(
             isLowPriority = event.roomListRoomSummary.isLowPriority, // SC
             markAsUnreadFeatureFlagEnabled = featureFlagService.isFeatureEnabled(FeatureFlags.MarkAsUnread),
             hasNewContent = event.roomListRoomSummary.hasNewContent(scPreferencesStore),
-            eventCacheFeatureFlagEnabled = featureFlagService.isFeatureEnabled(FeatureFlags.EventCache),
+            eventCacheFeatureFlagEnabled = appPreferencesStore.isDeveloperModeEnabledFlow().first() &&
+                featureFlagService.isFeatureEnabled(FeatureFlags.EventCache),
         )
         contextMenuState.value = initialState
 
@@ -365,19 +356,6 @@ class RoomListPresenter @Inject constructor(
         }
     }
 
-    /**
-     * Checks if the user needs to migrate to a native sliding sync version.
-     */
-    private suspend fun MatrixClient.needsSlidingSyncMigration(): Result<Boolean> = runCatching {
-        val currentSlidingSyncVersion = currentSlidingSyncVersion().getOrThrow()
-        if (currentSlidingSyncVersion != SlidingSyncVersion.Native) {
-            val availableSlidingSyncVersions = availableSlidingSyncVersions().getOrThrow()
-            availableSlidingSyncVersions.contains(SlidingSyncVersion.Native)
-        } else {
-            false
-        }
-    }
-
     private var currentUpdateVisibleRangeJob: Job? = null
     private fun CoroutineScope.updateVisibleRange(range: IntRange, spaceNavEnabled: Boolean) {
         currentUpdateVisibleRangeJob?.cancel()
@@ -399,9 +377,12 @@ class RoomListPresenter @Inject constructor(
 }
 
 @VisibleForTesting
-internal fun RoomListRoomSummary.toInviteData() = InviteData(
-    roomId = roomId,
-    // Note: `name` should not be null at this point, but just in case, fallback to the roomId
-    roomName = name ?: roomId.value,
-    isDm = isDm,
-)
+internal fun RoomListRoomSummary.toInviteData(): InviteData? {
+    if (inviteSender == null) return null
+    return InviteData(
+        roomId = roomId,
+        roomName = name ?: roomId.value,
+        isDm = isDm,
+        senderId = inviteSender.userId,
+    )
+}

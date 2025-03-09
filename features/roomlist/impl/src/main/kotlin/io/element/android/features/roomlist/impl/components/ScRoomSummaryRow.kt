@@ -164,7 +164,7 @@ private fun RowScope.ScNameAndTimestampRow(room: RoomListRoomSummary) {
             .padding(end = 16.dp),
         style = ElementTheme.typography.fontBodyLgMedium,
         text = room.name ?: stringResource(id = CommonStrings.common_no_room_name),
-        color = MaterialTheme.roomListRoomName(),
+        color = ElementTheme.roomListRoomName(),
         maxLines = 1,
         overflow = TextOverflow.Ellipsis
     )
@@ -175,7 +175,7 @@ private fun RowScope.ScNameAndTimestampRow(room: RoomListRoomSummary) {
                 imageVector = Icons.Default.Star,
                 contentDescription = null,
                 modifier = Modifier.size(16.dp),
-                tint = MaterialTheme.roomListRoomMessageDate(),
+                tint = ElementTheme.roomListRoomMessageDate(),
             )
         }
         // Low prio
@@ -184,7 +184,7 @@ private fun RowScope.ScNameAndTimestampRow(room: RoomListRoomSummary) {
                 imageVector = Icons.Default.Archive,
                 contentDescription = null,
                 modifier = Modifier.size(16.dp),
-                tint = MaterialTheme.roomListRoomMessageDate(),
+                tint = ElementTheme.roomListRoomMessageDate(),
             )
         }
         // Timestamp
@@ -192,7 +192,7 @@ private fun RowScope.ScNameAndTimestampRow(room: RoomListRoomSummary) {
             Text(
                 text = room.timestamp,
                 style = ElementTheme.typography.fontBodySmMedium,
-                color = MaterialTheme.roomListRoomMessageDate(),
+                color = ElementTheme.roomListRoomMessageDate(),
             )
         }
     }
@@ -208,7 +208,7 @@ private fun RowScope.ScLastMessageAndIndicatorRow(room: RoomListRoomSummary) {
             .weight(1f)
             .padding(end = 16.dp),
         text = attributedLastMessage,
-        color = MaterialTheme.roomListRoomMessage(),
+        color = ElementTheme.roomListRoomMessage(),
         style = ElementTheme.typography.fontBodyMdRegular,
         minLines = 2,
         maxLines = 2,

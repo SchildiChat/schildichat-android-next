@@ -170,7 +170,7 @@ private fun Modifier.focusedEvent(
     val highlightedLineColor = ElementTheme.colors.textActionAccent
     val gradientColors = listOf(
         ScTheme.exposures.messageHighlightBg ?: ElementTheme.colors.highlightedMessageBackgroundColor,
-        ElementTheme.materialColors.background
+        ElementTheme.colors.bgCanvasDefault,
     )
     val verticalOffset = focusedEventOffset.toPx()
     val verticalRatio = 0.7f

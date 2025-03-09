@@ -142,7 +142,7 @@ private fun ReplyToErrorContent(
         Text(
             text = data.message,
             style = ElementTheme.typography.fontBodyMdRegular,
-            color = MaterialTheme.colorScheme.error,
+            color = ElementTheme.colors.textCriticalPrimary,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
         )
@@ -173,7 +173,7 @@ private fun ReplyToContentText(metadata: InReplyToMetadata?) {
         if (iconResourceId != null) {
             Icon(
                 resourceId = iconResourceId,
-                tint = MaterialTheme.colorScheme.secondary,
+                tint = ElementTheme.colors.iconSecondary,
                 contentDescription = null,
                 modifier = Modifier.size(16.dp)
             )
@@ -184,7 +184,7 @@ private fun ReplyToContentText(metadata: InReplyToMetadata?) {
             style = ElementTheme.typography.fontBodyMdRegular,
             fontStyle = fontStyle,
             textAlign = TextAlign.Start,
-            color = MaterialTheme.colorScheme.secondary,
+            color = ElementTheme.colors.textSecondary,
             maxLines = ScPrefs.REPLY_PREVIEW_LINE_COUNT.value(),
             overflow = TextOverflow.Ellipsis,
         )

@@ -22,6 +22,7 @@ import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.Theme
 import io.element.android.compound.theme.isDark
 import io.element.android.compound.theme.mapToTheme
+import io.element.android.features.enterprise.api.EnterpriseService
 import io.element.android.libraries.preferences.api.store.AppPreferencesStore
 
 /**
@@ -35,6 +36,7 @@ import io.element.android.libraries.preferences.api.store.AppPreferencesStore
 fun ElementThemeApp(
     appPreferencesStore: AppPreferencesStore,
     scPreferencesStore: ScPreferencesStore, // SC: ensure we have a ScPreferencesStore and thus proper theming in every activity by enforcing this additional parameter here
+    enterpriseService: EnterpriseService,
     content: @Composable () -> Unit,
 ) {
     val theme by remember {
@@ -50,17 +52,22 @@ fun ElementThemeApp(
             }
         )
     }
+    val compoundLight = remember { enterpriseService.semanticColorsLight() }
+    val compoundDark = remember { enterpriseService.semanticColorsDark() }
     CompositionLocalProvider(LocalScPreferencesStore provides scPreferencesStore) {
     ScTheme(
         darkTheme = theme.isDark(),
         content = content,
+        //compoundLight = compoundLight, // SC: eh don't care about enterprise colors
+        //compoundDark = compoundDark, // SC commented out
     )
     }
 }
 
 @Composable // SC: shortcut
-fun ElementThemeApp(appPreferencesStore: AppPreferencesStore, context: Context, content: @Composable () -> Unit) = ElementThemeApp(
+fun ElementThemeApp(appPreferencesStore: AppPreferencesStore, context: Context, enterpriseService: EnterpriseService, content: @Composable () -> Unit) = ElementThemeApp(
     appPreferencesStore = appPreferencesStore,
     scPreferencesStore = DefaultScPreferencesStore(context),
+    enterpriseService = enterpriseService,
     content = content
 )

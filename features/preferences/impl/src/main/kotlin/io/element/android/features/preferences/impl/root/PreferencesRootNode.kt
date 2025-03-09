@@ -8,9 +8,9 @@
 package io.element.android.features.preferences.impl.root
 
 import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import chat.schildi.lib.preferences.ScPrefScreen
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
@@ -22,7 +22,6 @@ import io.element.android.anvilannotations.ContributesNode
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.logout.api.direct.DirectLogoutEvents
 import io.element.android.features.logout.api.direct.DirectLogoutView
-import io.element.android.features.logout.api.util.onSuccessLogout
 import io.element.android.libraries.androidutils.browser.openUrlInChromeCustomTab
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.user.MatrixUser
@@ -119,7 +118,7 @@ class PreferencesRootNode @AssistedInject constructor(
     @Composable
     override fun View(modifier: Modifier) {
         val state = presenter.present()
-        val activity = LocalContext.current as Activity
+        val activity = requireNotNull(LocalActivity.current)
         val isDark = ElementTheme.isLightTheme.not()
         PreferencesRootView(
             state = state,
@@ -147,11 +146,6 @@ class PreferencesRootNode @AssistedInject constructor(
             onDeactivateClick = this::onOpenAccountDeactivation
         )
 
-        directLogoutView.Render(
-            state = state.directLogoutState,
-            onSuccessLogout = {
-                onSuccessLogout(activity, isDark, it)
-            }
-        )
+        directLogoutView.Render(state = state.directLogoutState)
     }
 }

@@ -10,6 +10,7 @@ package io.element.android.x.di
 import chat.schildi.lib.preferences.ScPreferencesStore
 import com.squareup.anvil.annotations.ContributesTo
 import io.element.android.features.api.MigrationEntryPoint
+import io.element.android.features.enterprise.api.EnterpriseService
 import io.element.android.features.lockscreen.api.LockScreenEntryPoint
 import io.element.android.features.lockscreen.api.LockScreenService
 import io.element.android.features.rageshake.api.reporter.BugReporter
@@ -38,4 +39,6 @@ interface AppBindings {
     fun lockScreenEntryPoint(): LockScreenEntryPoint
 
     fun analyticsService(): AnalyticsService
+
+    fun enterpriseService(): EnterpriseService
 }

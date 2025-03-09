@@ -95,7 +95,7 @@ internal fun MatrixBadgeAtomNegativePreview() = ElementPreview {
     MatrixBadgeAtom.View(
         MatrixBadgeAtom.MatrixBadgeData(
             text = "Not trusted",
-            icon = CompoundIcons.Error(),
+            icon = CompoundIcons.ErrorSolid(),
             type = MatrixBadgeAtom.Type.Negative,
         )
     )

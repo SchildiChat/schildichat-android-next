@@ -8,8 +8,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.core.graphics.drawable.toBitmap
-import coil.compose.LocalImageLoader
-import coil.request.ImageRequest
+import coil3.request.ImageRequest
 import kotlinx.coroutines.runBlocking
 
 @Composable
@@ -20,7 +19,8 @@ fun shouldDrawScPreviewAvatar(avatarData: AvatarData): Boolean {
 @Composable
 fun ScPreviewAvatar(avatarData: AvatarData, modifier: Modifier) {
     val context = LocalContext.current
-    val imageLoader = LocalImageLoader.current
-    val drawable = runBlocking { imageLoader.execute(ImageRequest.Builder(context).data(avatarData).build()) }.drawable ?: return
-    Image(drawable.toBitmap().asImageBitmap(), contentDescription = null, contentScale = ContentScale.Crop, modifier = modifier)
+    // TODO
+    //val imageLoader = LocalImageLoader.current
+    //val drawable = runBlocking { imageLoader.execute(ImageRequest.Builder(context).data(avatarData).build()) }.drawable ?: return
+    //Image(drawable.toBitmap().asImageBitmap(), contentDescription = null, contentScale = ContentScale.Crop, modifier = modifier)
 }

@@ -57,6 +57,7 @@ import io.element.android.features.messages.impl.actionlist.model.TimelineItemAc
 import io.element.android.features.messages.impl.crypto.identity.IdentityChangeStateView
 import io.element.android.features.messages.impl.emojis.RecentEmojiDataSource
 import io.element.android.features.messages.impl.messagecomposer.AttachmentsBottomSheet
+import io.element.android.features.messages.impl.messagecomposer.DisabledComposerView
 import io.element.android.features.messages.impl.messagecomposer.MessageComposerEvents
 import io.element.android.features.messages.impl.messagecomposer.MessageComposerView
 import io.element.android.features.messages.impl.messagecomposer.suggestions.SuggestionsPickerView
@@ -99,6 +100,7 @@ import io.element.android.libraries.designsystem.utils.snackbar.SnackbarHost
 import io.element.android.libraries.designsystem.utils.snackbar.rememberSnackbarHostState
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.UserId
+import io.element.android.libraries.matrix.api.encryption.identity.IdentityState
 import io.element.android.libraries.textcomposer.model.TextEditorState
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.ImmutableList
@@ -111,9 +113,9 @@ fun MessagesView(
     state: MessagesState,
     onBackClick: () -> Unit,
     onRoomDetailsClick: () -> Unit,
-    onEventContentClick: (event: TimelineItem.Event) -> Boolean,
+    onEventContentClick: (isLive: Boolean, event: TimelineItem.Event) -> Boolean,
     onUserDataClick: (UserId) -> Unit,
-    onLinkClick: (String) -> Unit,
+    onLinkClick: (String, Boolean) -> Unit,
     onSendLocationClick: () -> Unit,
     onCreatePollClick: () -> Unit,
     onJoinCallClick: () -> Unit,
@@ -143,7 +145,7 @@ fun MessagesView(
 
     fun onContentClick(event: TimelineItem.Event) {
         Timber.v("onMessageClick= ${event.id}")
-        val hideKeyboard = onEventContentClick(event)
+        val hideKeyboard = onEventContentClick(state.timelineState.isLive, event)
         if (hideKeyboard) {
             localView.hideKeyboard()
         }
@@ -202,8 +204,8 @@ fun MessagesView(
             MessagesViewContent(
                 state = state,
                 modifier = Modifier
-                        .padding(padding)
-                        .consumeWindowInsets(padding),
+                    .padding(padding)
+                    .consumeWindowInsets(padding),
                 onContentClick = ::onContentClick,
                 onMessageLongClick = ::onMessageLongClick,
                 onUserDataClick = { hidingKeyboard { onUserDataClick(it) } },
@@ -283,7 +285,7 @@ private fun MessagesViewContent(
     state: MessagesState,
     onContentClick: (TimelineItem.Event) -> Unit,
     onUserDataClick: (UserId) -> Unit,
-    onLinkClick: (String) -> Unit,
+    onLinkClick: (String, Boolean) -> Unit,
     onReactionClick: (key: String, TimelineItem.Event) -> Unit,
     onReactionLongClick: (key: String, TimelineItem.Event) -> Unit,
     onMoreReactionsClick: (TimelineItem.Event) -> Unit,
@@ -300,9 +302,9 @@ private fun MessagesViewContent(
 ) {
     Box(
         modifier = modifier
-                .fillMaxSize()
-                .navigationBarsPadding()
-                .imePadding(),
+            .fillMaxSize()
+            .navigationBarsPadding()
+            .imePadding(),
     ) {
         AttachmentsBottomSheet(
             state = state.composerState,
@@ -359,7 +361,7 @@ private fun MessagesViewContent(
                         state = state.timelineState,
                         timelineProtectionState = state.timelineProtectionState,
                         onUserDataClick = onUserDataClick,
-                        onLinkClick = onLinkClick,
+                        onLinkClick = { url -> onLinkClick(url, false) },
                         onContentClick = onContentClick,
                         onMessageLongClick = onMessageLongClick,
                         onSwipeToReply = onSwipeToReply,
@@ -412,19 +414,19 @@ private fun MessagesViewComposerBottomSheetContents(
     subcomposing: Boolean,
     state: MessagesState,
     scBeforeSend: (() -> Unit)?,
-    onLinkClick: (String) -> Unit,
+    onLinkClick: (String, Boolean) -> Unit,
 ) {
     if (state.userEventPermissions.canSendMessage) {
         Column(modifier = Modifier.fillMaxWidth()) {
             SuggestionsPickerView(
                 modifier = Modifier
-                        .heightIn(max = 230.dp)
-                        // Consume all scrolling, preventing the bottom sheet from being dragged when interacting with the list of suggestions
-                        .nestedScroll(object : NestedScrollConnection {
-                            override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
-                                return available
-                            }
-                        }),
+                    .heightIn(max = 230.dp)
+                    // Consume all scrolling, preventing the bottom sheet from being dragged when interacting with the list of suggestions
+                    .nestedScroll(object : NestedScrollConnection {
+                        override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
+                            return available
+                        }
+                    }),
                 roomId = state.roomId,
                 roomName = state.roomName.dataOrNull(),
                 roomAvatarData = state.roomAvatar.dataOrNull(),
@@ -441,14 +443,21 @@ private fun MessagesViewComposerBottomSheetContents(
                     onLinkClick = onLinkClick,
                 )
             }
-            MessageComposerView(
-                state = state.composerState,
-                voiceMessageState = state.voiceMessageComposerState,
-                subcomposing = subcomposing,
-                enableVoiceMessages = state.enableVoiceMessages,
-                modifier = Modifier.fillMaxWidth(),
-                scBeforeSend = scBeforeSend,
-            )
+            val verificationViolation = state.roomMemberIdentityStateChanges.firstOrNull {
+                it.identityState == IdentityState.VerificationViolation
+            }
+            if (verificationViolation != null) {
+                DisabledComposerView(modifier = Modifier.fillMaxWidth())
+            } else {
+                MessageComposerView(
+                    state = state.composerState,
+                    voiceMessageState = state.voiceMessageComposerState,
+                    subcomposing = subcomposing,
+                    enableVoiceMessages = state.enableVoiceMessages,
+                    modifier = Modifier.fillMaxWidth(),
+                    scBeforeSend = scBeforeSend,
+                )
+            }
         }
     } else {
         CantSendMessageBanner()
@@ -475,8 +484,8 @@ private fun MessagesViewTopBar(
         title = {
             val roundedCornerShape = RoundedCornerShape(8.dp)
             val titleModifier = Modifier
-                    .clip(roundedCornerShape)
-                    .clickable { onRoomDetailsClick() }
+                .clip(roundedCornerShape)
+                .clickable { onRoomDetailsClick() }
             if (roomName != null && roomAvatar != null) {
                 RoomAvatarAndNameRow(
                     roomName = roomName,
@@ -532,15 +541,15 @@ private fun RoomAvatarAndNameRow(
 private fun CantSendMessageBanner() {
     Row(
         modifier = Modifier
-                .fillMaxWidth()
-                .background(ScTheme.exposures.composerBlockBg ?: MaterialTheme.colorScheme.secondary)
-                .padding(16.dp),
+            .fillMaxWidth()
+            .background(ScTheme.exposures.composerBlockBg ?: ElementTheme.colors.bgSubtleSecondary)
+            .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
             text = stringResource(id = R.string.screen_room_timeline_no_permission_to_post),
-            color = ScTheme.exposures.composerBlockFg ?: MaterialTheme.colorScheme.onSecondary,
+            color = ScTheme.exposures.composerBlockFg ?: ElementTheme.colors.textSecondary,
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             fontStyle = FontStyle.Italic,
@@ -555,9 +564,9 @@ internal fun MessagesViewPreview(@PreviewParameter(MessagesStateProvider::class)
         state = state,
         onBackClick = {},
         onRoomDetailsClick = {},
-        onEventContentClick = { false },
+        onEventContentClick = { _, _ -> false },
         onUserDataClick = {},
-        onLinkClick = {},
+        onLinkClick = { _, _ -> },
         onSendLocationClick = {},
         onCreatePollClick = {},
         onJoinCallClick = {},

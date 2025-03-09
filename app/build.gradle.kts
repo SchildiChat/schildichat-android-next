@@ -10,6 +10,7 @@
 import com.android.build.api.variant.FilterConfiguration.FilterType.ABI
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.android.build.gradle.tasks.GenerateBuildConfig
+import config.BuildTimeConfig
 import extension.AssetCopyTask
 import extension.ComponentMergingStrategy
 import extension.GitBranchNameValueSource
@@ -43,6 +44,7 @@ android {
     namespace = "io.element.android.x"
 
     defaultConfig {
+        //applicationId = BuildTimeConfig.APPLICATION_ID
         applicationId = "chat.schildi.android"
         versionCode = 980
         versionName = "0.8.0-ex_25_2_0"
@@ -93,11 +95,7 @@ android {
         }
     }
 
-    val baseAppName = if (isEnterpriseBuild) {
-        "Element Enterprise"
-    } else {
-        "Element X"
-    }
+    val baseAppName = BuildTimeConfig.APPLICATION_NAME
     logger.warnInBox("Building $baseAppName")
 
     buildTypes {
@@ -361,6 +359,7 @@ tasks.withType<GenerateBuildConfig>().configureEach {
 
 licensee {
     ignoreDependencies("chat.schildi.rustcomponents", "sdk-android")
+    ignoreDependencies("com.github.SchildiChat", "element-compound-android")
     allow("Apache-2.0")
     allow("MIT")
     allow("BSD-2-Clause")

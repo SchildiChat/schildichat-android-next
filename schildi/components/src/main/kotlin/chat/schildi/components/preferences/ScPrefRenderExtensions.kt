@@ -58,8 +58,8 @@ import io.element.android.libraries.designsystem.components.dialogs.ListOption
 import io.element.android.libraries.designsystem.components.dialogs.SingleSelectionDialog
 import io.element.android.libraries.designsystem.components.preferences.PreferenceCategory
 import io.element.android.libraries.designsystem.components.preferences.PreferenceSwitch
-import io.element.android.libraries.designsystem.components.preferences.PreferenceText
 import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
+import io.element.android.libraries.designsystem.theme.components.ListItem
 import io.element.android.libraries.designsystem.theme.components.ListSupportingText
 import io.element.android.libraries.designsystem.theme.components.SimpleAlertDialogContent
 import io.element.android.libraries.designsystem.theme.components.Text
@@ -148,9 +148,13 @@ fun ScPrefScreen.Rendered(
     onClick: () -> Unit
 ) {
     val enabled = LocalScPreferencesStore.current.enabledState(this).value
-    PreferenceText(
-        title = stringResource(id = titleRes),
-        subtitle = summaryRes?.let { stringResource(id = it) },
+    ListItem(
+        headlineContent = {
+            Text(stringResource(id = titleRes))
+        },
+        supportingContent = summaryRes?.let {
+            { Text(stringResource(it)) }
+        },
         onClick = {
             if (enabled) {
                 onClick()
@@ -165,9 +169,13 @@ fun ScActionablePref.Rendered(
     handleAction: (String) -> Unit
 ) {
     val enabled = LocalScPreferencesStore.current.enabledState(this).value
-    PreferenceText(
-        title = stringResource(id = titleRes),
-        subtitle = summaryRes?.let { stringResource(id = it) },
+    ListItem(
+        headlineContent = {
+            Text(stringResource(id = titleRes))
+        },
+        supportingContent = summaryRes?.let {
+            { Text(stringResource(it)) }
+        },
         onClick = {
             if (enabled) {
                 handleAction(key)
@@ -216,9 +224,13 @@ fun ScIntPref.Rendered(initial: Any, onChange: (Any) -> Unit) {
 
     val value = v ?: defaultValue
 
-    PreferenceText(
-        title = stringResource(id = titleRes),
-        subtitle = summaryRes?.let { stringResource(id = it, value, value) } ?: value.toString(),
+    ListItem(
+        headlineContent = {
+            Text(stringResource(id = titleRes))
+        },
+        supportingContent = summaryRes?.let {
+            { Text(stringResource(it)) }
+        },
         onClick = { if (enabled) openDialog.value = true },
         enabled = enabled,
     )
@@ -300,9 +312,13 @@ fun <T>ScListPref<T>.Rendered(initial: Any, onChange: (Any) -> Unit) {
 
     val enabled = LocalScPreferencesStore.current.enabledState(this).value
 
-    PreferenceText(
-        title = stringResource(id = titleRes),
-        subtitle = summaryRes?.let { stringResource(id = it) } ?: selectedName,
+    ListItem(
+        headlineContent = {
+            Text(stringResource(id = titleRes))
+        },
+        supportingContent = summaryRes?.let {
+            { Text(stringResource(it)) }
+        },
         onClick = { if (enabled) openDialog.value = true },
         enabled = enabled,
     )

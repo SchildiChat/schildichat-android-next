@@ -146,7 +146,7 @@
     <string name="sc_pref_render_inline_images_summary">Vykreslovat obrázky, jako jsou vlastní emotikony v textových zprávách</string>
     <string name="sc_pref_danger_zone_summary">Po zapnutí této funkce nenahlašovat chyby.</string>
     <string name="sc_pref_category_general">Obecné</string>
-    <string name="sc_pref_sc_layout_summary">Zakažte, aby se dodržovalo rozložení prvku.</string>
+    <string name="sc_pref_sc_layout_summary">Zakažte, aby se dodržovalo rozložení Elementu.</string>
     <string name="sc_pref_sc_themes_summary">Zakažte, aby se dodržovalo téma Elementu.</string>
     <string name="sc_url_previews_require_explicit_links_title_short">Vyžadovat explicitní odkazy</string>
     <string name="sc_url_previews_require_explicit_links_summary">Dotazujte se pouze na náhledy odkazů explicitně začínajících ttps://\\</string>

@@ -1,6 +1,5 @@
 package io.element.android.features.messages.impl
 
-import android.app.Activity
 import android.net.InetAddresses
 import android.net.Uri
 import android.os.Build
@@ -52,7 +51,6 @@ import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.messages.impl.timeline.di.LocalUrlPreviewStateProvider
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemEventContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContent
-import io.element.android.libraries.androidutils.browser.openUrlInChromeCustomTab
 import io.element.android.libraries.androidutils.system.openUrlInExternalApp
 import io.element.android.libraries.core.data.tryOrNull
 import io.element.android.libraries.designsystem.theme.components.Text
@@ -191,14 +189,8 @@ fun UrlPreviewViewForContent(
         return
     }
     val context = LocalContext.current
-    val openLinksInCustomTab = ScPrefs.OPEN_LINKS_IN_CUSTOM_TAB.value()
-    val isDark = ElementTheme.isLightTheme.not()
     UrlPreviewView(urlPreview, paddingValues, onLongCLick) {
-        if (openLinksInCustomTab && context is Activity) {
-            context.openUrlInChromeCustomTab(null, isDark, url)
-        } else {
-            context.openUrlInExternalApp(url)
-        }
+        context.openUrlInExternalApp(url)
     }
 }
 

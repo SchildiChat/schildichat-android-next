@@ -171,10 +171,6 @@ class MessagesNode @AssistedInject constructor(
                 }
             }
             is PermalinkData.RoomEmailInviteLink -> {
-                if (!scPreferencesStore.getCachedOrDefaultValue(ScPrefs.OPEN_LINKS_IN_CUSTOM_TAB)) {
-                    activity.openUrlInExternalApp(url)
-                    return
-                }
                 activity.openUrlInChromeCustomTab(null, darkTheme, url)
             }
         }

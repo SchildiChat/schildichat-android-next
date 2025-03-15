@@ -6,7 +6,8 @@
   -->
 <resources>
     <!-- Must be equal to DarkDesignTokens.colorThemeBg -->
-    <color name="splashscreen_bg_dark">#FF101317</color>
+    <!-- <color name="splashscreen_bg_dark">#FF101317</color> -->
+    <color name="splashscreen_bg_dark">#FF212121</color>
     <!-- Must be equal to LightDesignTokens.colorThemeBg -->
     <color name="splashscreen_bg_light">#FFFFFFFF</color>
 </resources>

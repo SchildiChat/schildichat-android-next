@@ -31,7 +31,7 @@
   <string name="screen_room_timeline_add_reaction">"Emoji ekle"</string>
   <string name="screen_room_timeline_beginning_of_room">"Bu, %1$s odasının başlangıcıdır."</string>
   <string name="screen_room_timeline_beginning_of_room_no_name">"Bu konuşmanın başlangıcıdır."</string>
-  <string name="screen_room_timeline_legacy_call">"Desteklenmeyen çağrı. Arayanın yeni Element X uygulamasını kullanıp kullanamayacağını sorun."</string>
+  <string name="screen_room_timeline_legacy_call">"Desteklenmeyen çağrı. Arayanın yeni SchildiChat Next uygulamasını kullanıp kullanamayacağını sorun."</string>
   <string name="screen_room_timeline_less_reactions">"Daha az göster"</string>
   <string name="screen_room_timeline_message_copied">"Mesaj kopyalandı"</string>
   <string name="screen_room_timeline_no_permission_to_post">"Bu odada gönderi yapma izniniz yok"</string>

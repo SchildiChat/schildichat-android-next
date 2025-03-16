@@ -51,4 +51,17 @@ for added_by_them in `git status | grep "^$add_prefix" | sed "s|$add_prefix||"`;
     fi
 done
 
+echo "Checking for translation conflicts"
+mod_prefix="	both modified:   "
+for modified in `git status | grep "^$mod_prefix" | sed "s|$mod_prefix||"`; do
+    if [[ "$modified" =~ translations.xml ]]; then
+        echo "Processing conflicting $modified"
+        git checkout MERGE_HEAD -- "$modified"
+    fi
+done
+
+echo "Re-applying string corrections"
+./correct_strings.sh
+git add \*/translations.xml
+
 popd

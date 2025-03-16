@@ -44,9 +44,9 @@ import chat.schildi.matrixsdk.urlpreview.UrlPreview
 import chat.schildi.matrixsdk.urlpreview.UrlPreviewInfo
 import chat.schildi.matrixsdk.urlpreview.UrlPreviewStateHolder
 import chat.schildi.theme.scBubbleFont
-import coil.compose.AsyncImagePainter
-import coil.compose.SubcomposeAsyncImage
-import coil.compose.SubcomposeAsyncImageContent
+import coil3.compose.AsyncImagePainter
+import coil3.compose.SubcomposeAsyncImage
+import coil3.compose.SubcomposeAsyncImageContent
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.messages.impl.timeline.di.LocalUrlPreviewStateProvider
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemEventContent
@@ -223,7 +223,7 @@ fun UrlPreviewView(
                     alignment = Alignment.Center,
                     contentDescription = null,
                 ) {
-                    when (painter.state) {
+                    when (painter.state.collectAsState().value) {
                         is AsyncImagePainter.State.Success -> SubcomposeAsyncImageContent(
                             modifier = Modifier
                                 .sizeIn(

@@ -108,8 +108,6 @@
     <string name="sc_pref_snc_fab_title">Spustit nový chat jako plovoucí akční tlačítko</string>
     <string name="sc_pref_snc_fab_title_short">Nový chat jako plovoucí tlačítko</string>
     <string name="sc_pref_snc_fab_summary">Překrýt seznam místností tlačítkem pro zahájení nových chatů namísto možnosti na panelu akcí.</string>
-    <string name="sc_pref_open_links_in_custom_tab_title">Otevřít odkazy v aplikaci</string>
-    <string name="sc_pref_open_links_in_custom_tab_summary">Při klikání na odkazy dávat přednost otevírání oken prohlížeče s jednou kartou v aplikaci, pokud to váš prohlížeč podporuje.</string>
     <string name="sc_pref_user_changed_prefs_title">Nastavení změněná uživatelem</string>
     <string name="sc_pref_user_changed_prefs_summary">Seznam všech nastavení, která již nemají výchozí hodnotu.</string>
     <string name="sc_pref_user_changed_prefs_empty">Vše je ve výchozím nastavení</string>

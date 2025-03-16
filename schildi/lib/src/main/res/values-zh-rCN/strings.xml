@@ -97,8 +97,6 @@
     <string name="sc_pref_snc_fab_title">将“开始聊天”作为浮动操作按钮</string>
     <string name="sc_pref_snc_fab_summary">在聊天室列表上放置开始新聊天的按钮，而不是在操作栏中显示该选项。</string>
     <string name="sc_pref_pinned_message_toolbar_title_short">固定到工具栏</string>
-    <string name="sc_pref_open_links_in_custom_tab_title">在应用内打开链接</string>
-    <string name="sc_pref_open_links_in_custom_tab_summary">点击链接时，如果浏览器支持，首选在应用内打开单标签浏览器窗口。</string>
     <string name="sc_pref_fully_expand_message_menu_title">完全展开消息菜单</string>
     <string name="sc_pref_category_message_context_menu">消息上下文菜单</string>
     <string name="sc_pref_message_context_menu_text_selectable_title_short">可选文本</string>

@@ -94,8 +94,6 @@
     <string name="sc_pref_snc_fab_title">Start-new-chat as floating action button</string>
     <string name="sc_pref_snc_fab_title_short">SNC as FAB</string>
     <string name="sc_pref_snc_fab_summary">Overlay the room list with a button to start new chats, rather than having the option in the action bar.</string>
-    <string name="sc_pref_open_links_in_custom_tab_title">Open links in-app</string>
-    <string name="sc_pref_open_links_in_custom_tab_summary">When clicking links, prefer opening single-tab browser windows in-app if supported by your browser.</string>
     <string name="sc_pref_user_changed_prefs_title">User-changed settings</string>
     <string name="sc_pref_user_changed_prefs_summary">List all settings that are no longer the default value.</string>
     <string name="sc_pref_user_changed_prefs_empty">Everything is default</string>

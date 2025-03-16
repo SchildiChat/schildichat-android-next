@@ -98,6 +98,4 @@
     <string name="sc_pref_client_side_sort_summary">Chats ausschließlich auf der Grundlage einer clientseitigen Berechnung sortieren</string>
     <string name="sc_pref_sort_with_silent_unread_summary">Stummgeschaltete ungelesene Chats über vollständig gelesene Chats sortieren</string>
     <string name="sc_pref_snc_fab_title">Start-Neu-Chat als schwebender Button</string>
-    <string name="sc_pref_open_links_in_custom_tab_title">Links in Apps öffnen</string>
-    <string name="sc_pref_open_links_in_custom_tab_summary">Öffne beim Anklicken von Links vorzugsweise Browserfenster mit nur einer Registerkarte in der App, wenn dein Browser das unterstützt.</string>
 </resources>

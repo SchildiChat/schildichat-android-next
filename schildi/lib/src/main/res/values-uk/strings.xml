@@ -48,7 +48,7 @@
     <string name="sc_pref_dev_quick_options">Швидкі налаштування</string>
     <string name="sc_pref_debug_read_marker">Налагоджувальний маркер читання</string>
     <string name="sc_pref_danger_zone">Небезпечна зона</string>
-    <string name="sc_pref_restore_defaults">За замовчуванням</string>
+    <string name="sc_pref_restore_defaults">Відновити налаштування за замовчуванням</string>
     <string name="sc_pref_restore_element">На смак Element</string>
     <string name="sc_pref_restore_authors_choice">Вибір автора</string>
     <string name="sc_pref_category_general_appearance">Зовнішній вигляд</string>
@@ -84,4 +84,21 @@
     <string name="sc_pseudo_space_spaceless_groups_short">Групи</string>
     <string name="sc_pseudo_space_unread">Непрочитане</string>
     <string name="sc_space_swipe_summary">Перетягніть огляд чату горизонтально, щоб перемикнутися між просторами</string>
+    <string name="sc_pref_dual_mention_unread_counts_title">Комбінований підрахунок згадувань/непрочитаних</string>
+    <string name="sc_pref_dual_mention_unread_counts_title_short">Подвійна кількість згадок</string>
+    <string name="sc_pref_dual_mention_unread_counts_summary">Якщо кількість згадок у виділеному чаті відрізняється від кількості непрочитаних, показувати обидва показники</string>
+    <string name="sc_sync_read_receipt_and_marker_title_short">Синхронізувати маркери прочитності</string>
+    <string name="sc_pref_client_side_sort_by_unread_summary">Сортуйте непрочитані чати вгорі списку</string>
+    <string name="sc_pref_render_silent_unread_title">Показати безмовну кількість непрочитаних</string>
+    <string name="sc_pref_render_silent_unread_summary">Відображати кількість непрочитаних повідомлень також й для заглушених чатів</string>
+    <string name="sc_pref_sort_with_silent_unread_title">Сортувати з приглушеними непрочитаними</string>
+    <string name="sc_pref_sort_with_silent_unread_summary">Сортувати заглушені непрочитані чати над повністю прочитаними чатами</string>
+    <string name="sc_action_apply">Застосувати</string>
+    <string name="sc_pref_client_side_sort_by_unread_title">Сортувати за непрочитаністю</string>
+    <string name="sc_action_low_priority">Низький пріоритет</string>
+    <string name="sc_pref_mark_read_requires_seen_unread_line_title">Позначати прочитаним тільки після повного прочитання</string>
+    <string name="sc_pref_mark_read_requires_seen_unread_line_title_short">Потребувати повного прочитання</string>
+    <string name="sc_pref_mark_read_requires_seen_unread_line_summary">Не позначати чати прочитаними, якщо непрочитаний рядок не було видно після відкриття чату.</string>
+    <string name="sc_pref_category_general">Загальні</string>
+    <string name="sc_pref_category_general_summary">Зовнішній вигляд та поведінка застосунку</string>
 </resources>

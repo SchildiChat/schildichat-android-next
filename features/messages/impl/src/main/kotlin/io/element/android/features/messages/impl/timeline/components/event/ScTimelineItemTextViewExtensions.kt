@@ -26,13 +26,14 @@ import chat.schildi.lib.compose.thenIf
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import chat.schildi.matrixsdk.containsOnlyEmojis
-import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import coil.size.Dimension
-import coil.size.Precision
-import coil.size.Scale
-import coil.size.Size
+import coil3.asDrawable
+import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
+import coil3.size.Dimension
+import coil3.size.Precision
+import coil3.size.Scale
+import coil3.size.Size
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContent
 import io.element.android.libraries.designsystem.text.roundToPx
 import io.element.android.libraries.designsystem.text.toDp
@@ -129,15 +130,15 @@ fun CharSequence.resolveInlineImageSpans(textStyle: TextStyle): CharSequence {
                 .precision(Precision.EXACT) // InlineImage uses original size, so we need to get this right
                 .build()
         )
-        LaunchedEffect(painter.state) {
-            val state = painter.state
+        val state = painter.state.collectAsState().value
+        LaunchedEffect(state) {
             if (state is AsyncImagePainter.State.Error) {
                 Timber.tag("InlineImage").e(state.result.throwable, "Inline image failed to query \"$src\"")
             } else {
                 Timber.tag("InlineImage").v("Inline image \"$src\" state is $state")
             }
         }
-        val drawable = (painter.state as? AsyncImagePainter.State.Success)?.result?.drawable ?: return@mapNotNull null
+        val drawable = (state as? AsyncImagePainter.State.Success)?.result?.image?.asDrawable(context.resources) ?: return@mapNotNull null
         Pair(inSpan, drawable)
     }
     if (spansToReplace.isEmpty()) {

@@ -101,4 +101,26 @@
     <string name="sc_pref_mark_read_requires_seen_unread_line_summary">Не позначати чати прочитаними, якщо непрочитаний рядок не було видно після відкриття чату.</string>
     <string name="sc_pref_category_general">Загальні</string>
     <string name="sc_pref_category_general_summary">Зовнішній вигляд та поведінка застосунку</string>
+    <string name="sc_pref_category_debug_infos">Інформація для налагодження</string>
+    <string name="sc_pref_category_message_context_menu">Контекстне меню повідомлень</string>
+    <string name="sc_pref_category_pinned_messages">Закріплені повідомлення</string>
+    <string name="sc_pref_category_notifications">Сповіщення</string>
+    <string name="sc_pref_chamber_of_secrets_title">Таємна кімната</string>
+    <string name="sc_pref_jump_to_unread_title">Перейти до непрочитаного</string>
+    <string name="sc_pref_jump_to_unread_option_summary">Показати опцію переходу до останнього прочитаного повідомлення</string>
+    <string name="sc_action_jump_to_unread">Перейти до непрочитаного</string>
+    <string name="sc_pref_pinned_message_overlay_title">Накладення закріплених повідомлень</string>
+    <string name="sc_pref_snc_fab_title">Плаваюча кнопка для розпочинання нового чату</string>
+    <string name="sc_pref_user_changed_prefs_empty">Все стандартне</string>
+    <string name="sc_pref_pinned_message_overlay_title_short">Накладення закріплень</string>
+    <string name="sc_pref_user_changed_prefs_title">Налаштування змінені користувачем</string>
+    <string name="sc_pref_user_changed_prefs_summary">Перерахувати всі налаштування, які більше не містять значення за замовчуванням.</string>
+    <string name="sc_pref_category_reactions">Реакції</string>
+    <string name="sc_pref_sc_themes_summary">Вимкнути слідування темі Element.</string>
+    <string name="sc_pref_sc_layout_summary">Вимкнути слідування розкладці Element.</string>
+    <string name="sc_pref_snc_fab_summary">Накладіть на список кімнат кнопку для початку нових чатів, замість того, щоб розміщувати її на панелі дій.</string>
+    <string name="sc_pref_hide_call_toolbar_action_title">Приховати кнопку виклику</string>
+    <string name="sc_pref_hide_call_toolbar_action_summary">Перемістіть дію виклику в меню переповнення та повністю приховуйте, коли чат забороняє дзвінки</string>
+    <string name="sc_pref_danger_zone_summary">Не повідомляйте про помилки після ввімкнення цієї опції.</string>
+    <string name="sc_pref_chamber_of_secrets_summary">Наведені нижче налаштування є експериментальними й можуть спричиняти проблеми. Не повідомляйте про помилки після їх зміни!</string>
 </resources>

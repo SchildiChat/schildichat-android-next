@@ -174,7 +174,7 @@ class FakeMatrixClient(
         return 0
     }
 
-    override suspend fun clearCache() {
+    override suspend fun clearCache() = simulateLongTask {
         clearCacheLambda()
     }
 

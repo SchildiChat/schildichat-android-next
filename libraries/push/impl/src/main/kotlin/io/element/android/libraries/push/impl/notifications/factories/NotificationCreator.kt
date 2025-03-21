@@ -121,7 +121,7 @@ class DefaultNotificationCreator @Inject constructor(
             else -> pendingIntentFactory.createOpenRoomPendingIntent(roomInfo.sessionId, roomInfo.roomId)
         }
 
-        val smallIcon = CommonDrawables.ic_notification_small
+        val smallIcon = CommonDrawables.ic_notification
 
         val containsMissedCall = events.any { it.type == EventType.CALL_NOTIFY }
         val channelId = if (containsMissedCall) {
@@ -222,7 +222,7 @@ class DefaultNotificationCreator @Inject constructor(
     override fun createRoomInvitationNotification(
         inviteNotifiableEvent: InviteNotifiableEvent
     ): Notification {
-        val smallIcon = CommonDrawables.ic_notification_small
+        val smallIcon = CommonDrawables.ic_notification
         val channelId = notificationChannels.getChannelIdForMessage(inviteNotifiableEvent.noisy)
         return NotificationCompat.Builder(context, channelId)
             .setOnlyAlertOnce(true)
@@ -264,7 +264,7 @@ class DefaultNotificationCreator @Inject constructor(
     override fun createSimpleEventNotification(
         simpleNotifiableEvent: SimpleNotifiableEvent,
     ): Notification {
-        val smallIcon = CommonDrawables.ic_notification_small
+        val smallIcon = CommonDrawables.ic_notification
 
         val channelId = notificationChannels.getChannelIdForMessage(simpleNotifiableEvent.noisy)
         return NotificationCompat.Builder(context, channelId)
@@ -297,7 +297,7 @@ class DefaultNotificationCreator @Inject constructor(
     override fun createFallbackNotification(
         fallbackNotifiableEvent: FallbackNotifiableEvent,
     ): Notification {
-        val smallIcon = CommonDrawables.ic_notification_small
+        val smallIcon = CommonDrawables.ic_notification
 
         val channelId = notificationChannels.getChannelIdForMessage(false)
         return NotificationCompat.Builder(context, channelId)
@@ -333,7 +333,7 @@ class DefaultNotificationCreator @Inject constructor(
         noisy: Boolean,
         lastMessageTimestamp: Long
     ): Notification {
-        val smallIcon = CommonDrawables.ic_notification_small
+        val smallIcon = CommonDrawables.ic_notification
         val channelId = notificationChannels.getChannelIdForMessage(noisy)
         return NotificationCompat.Builder(context, channelId)
             .setOnlyAlertOnce(true)
@@ -370,7 +370,7 @@ class DefaultNotificationCreator @Inject constructor(
         return NotificationCompat.Builder(context, notificationChannels.getChannelIdForTest())
             .setContentTitle(buildMeta.applicationName)
             .setContentText(stringProvider.getString(R.string.notification_test_push_notification_content))
-            .setSmallIcon(CommonDrawables.ic_notification_small)
+            .setSmallIcon(CommonDrawables.ic_notification)
             .setLargeIcon(getBitmap(R.drawable.element_logo_green))
             .setColor(accentColor)
             .setPriority(NotificationCompat.PRIORITY_MAX)

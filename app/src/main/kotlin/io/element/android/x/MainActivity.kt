@@ -65,6 +65,7 @@ class MainActivity : NodeActivity() {
             appPreferencesStore = appBindings.preferencesStore(),
             scPreferencesStore = appBindings.scPreferencesStore(),
             enterpriseService = appBindings.enterpriseService(),
+            buildMeta = appBindings.buildMeta()
         ) {
             CompositionLocalProvider(
                 LocalSnackbarDispatcher provides appBindings.snackbarDispatcher(),

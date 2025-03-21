@@ -43,7 +43,6 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Disable Element's pinned message overlay on top of the conversation screen †
 - Access pinned messages via toolbar action when the pinned message overlay is disabled †
 
-- Copy URLs to clipboard in text messages on longclick
 - Copy user MXIDs to clipboard by long-pressing on the member-detail screen
 
 
@@ -71,6 +70,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Render media captions ([MSC2530](https://github.com/matrix-org/matrix-spec-proposals/pull/2530)): has been implemented upstream at v0.4.7
 - Bigger emoji-only messages: upstreamed at v0.5.2
 - Show avatar placeholders instead of blank space for avatars that failed to load
+- Copy URLs to clipboard in text messages on longclick
 
 
 †: Can be partly enabled or disabled by user setting  

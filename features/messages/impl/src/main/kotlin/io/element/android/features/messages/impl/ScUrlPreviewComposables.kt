@@ -62,7 +62,7 @@ import io.element.android.wysiwyg.view.spans.CustomMentionSpan
 
 @Composable
 fun <T>T.takeIfUrlPreviewsEnabledForRoom(room: MatrixRoom): T? {
-    val allowed = if (room.isEncrypted) {
+    val allowed = if (room.info().isEncrypted != false) {
         ScPrefs.URL_PREVIEWS_IN_E2EE_ROOMS.value()
     } else {
         ScPrefs.URL_PREVIEWS.value()

@@ -8,6 +8,8 @@
 package io.element.android.features.messages.impl.timeline.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -29,7 +31,10 @@ import io.element.android.features.messages.impl.timeline.model.event.TimelineIt
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemStateContent
 import io.element.android.features.messages.impl.timeline.protection.TimelineProtectionEvent
 import io.element.android.features.messages.impl.timeline.protection.TimelineProtectionState
+import io.element.android.libraries.designsystem.preview.ElementPreview
+import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.text.toPx
+import io.element.android.libraries.designsystem.theme.LocalBuildMeta
 import io.element.android.libraries.designsystem.theme.highlightedMessageBackgroundColor
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.UserId
@@ -44,6 +49,7 @@ internal fun TimelineItemRow(
     focusedEventId: EventId?,
     onUserDataClick: (UserId) -> Unit,
     onLinkClick: (String) -> Unit,
+    onLinkLongClick: (String) -> Unit,
     onContentClick: (TimelineItem.Event) -> Unit,
     onLongClick: (TimelineItem.Event) -> Unit,
     inReplyToClick: (EventId) -> Unit,
@@ -63,6 +69,7 @@ internal fun TimelineItemRow(
                 onShowContentClick = { timelineProtectionState.eventSink(TimelineProtectionEvent.ShowContent(event.eventId)) },
                 onContentClick = { onContentClick(event) },
                 onLinkClick = onLinkClick,
+                onLinkLongClick = onLinkLongClick,
                 onLongClick = { onLongClick(event) },
                 eventSink = eventSink,
                 modifier = contentModifier,
@@ -123,6 +130,7 @@ internal fun TimelineItemRow(
                             onEventClick = { onContentClick(timelineItem) },
                             onLongClick = { onLongClick(timelineItem) },
                             onLinkClick = onLinkClick,
+                            onLinkLongClick = onLinkLongClick,
                             onUserDataClick = onUserDataClick,
                             inReplyToClick = inReplyToClick,
                             onReactionClick = onReactionClick,
@@ -151,6 +159,7 @@ internal fun TimelineItemRow(
                     inReplyToClick = inReplyToClick,
                     onUserDataClick = onUserDataClick,
                     onLinkClick = onLinkClick,
+                    onLinkLongClick = onLinkLongClick,
                     onReactionClick = onReactionClick,
                     onReactionLongClick = onReactionLongClick,
                     onMoreReactionsClick = onMoreReactionsClick,
@@ -168,8 +177,13 @@ private fun Modifier.focusedEvent(
     focusedEventOffset: Dp
 ): Modifier {
     val highlightedLineColor = ElementTheme.colors.textActionAccent
+    val gradientFirstColor = if (LocalBuildMeta.current.isEnterpriseBuild) {
+        ElementTheme.colors.textActionAccent.copy(alpha = 0.125f)
+    } else {
+        ElementTheme.colors.highlightedMessageBackgroundColor
+    }
     val gradientColors = listOf(
-        ScTheme.exposures.messageHighlightBg ?: ElementTheme.colors.highlightedMessageBackgroundColor,
+        ScTheme.exposures.messageHighlightBg ?: gradientFirstColor,
         ElementTheme.colors.bgCanvasDefault,
     )
     val verticalOffset = focusedEventOffset.toPx()
@@ -192,4 +206,16 @@ private fun Modifier.focusedEvent(
             )
         }
     }.padding(top = 4.dp)
+}
+
+@PreviewsDayNight
+@Composable
+internal fun FocusedEventPreview() = ElementPreview {
+    Box(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()
+            .height(160.dp)
+            .focusedEvent(0.dp),
+    )
 }

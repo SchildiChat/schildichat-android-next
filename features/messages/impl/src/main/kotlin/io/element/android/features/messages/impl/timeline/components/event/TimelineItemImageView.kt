@@ -67,6 +67,7 @@ fun TimelineItemImageView(
     onContentClick: (() -> Unit)?,
     onLongClick: (() -> Unit)?,
     onLinkClick: (String) -> Unit,
+    onLinkLongClick: (String) -> Unit,
     onShowContentClick: () -> Unit,
     onContentLayoutChange: (ContentAvoidingLayoutData) -> Unit,
     modifier: Modifier = Modifier,
@@ -123,7 +124,7 @@ fun TimelineItemImageView(
                     text = caption,
                     style = ElementRichTextEditorStyle.textStyle(),
                     onLinkClickedListener = onLinkClick,
-                    onLinkLongClickedListener = scLinkLongClickListener(),
+                    onLinkLongClickedListener = onLinkLongClick,
                     releaseOnDetach = false,
                     onTextLayout = ContentAvoidingLayout.measureLegacyLastTextLine(onContentLayoutChange = onContentLayoutChange),
                 )
@@ -142,6 +143,7 @@ internal fun TimelineItemImageViewPreview(@PreviewParameter(TimelineItemImageCon
         onContentClick = {},
         onLongClick = {},
         onLinkClick = {},
+        onLinkLongClick = {},
         onContentLayoutChange = {},
     )
 }
@@ -156,6 +158,7 @@ internal fun TimelineItemImageViewHideMediaContentPreview() = ElementPreview {
         onContentClick = {},
         onLongClick = {},
         onLinkClick = {},
+        onLinkLongClick = {},
         onContentLayoutChange = {},
     )
 }

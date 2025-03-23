@@ -123,4 +123,25 @@
     <string name="sc_pref_hide_call_toolbar_action_summary">Перемістіть дію виклику в меню переповнення та повністю приховуйте, коли чат забороняє дзвінки</string>
     <string name="sc_pref_danger_zone_summary">Не повідомляйте про помилки після ввімкнення цієї опції.</string>
     <string name="sc_pref_chamber_of_secrets_summary">Наведені нижче налаштування є експериментальними й можуть спричиняти проблеми. Не повідомляйте про помилки після їх зміни!</string>
+    <string name="sc_pref_screen_advanced_theming_title">Розширена тематизація</string>
+    <string name="sc_pref_space_management_title">Керування просторами</string>
+    <string name="sc_pref_space_management_summary">Додати можливість призначати кімнати просторам з контекстного меню списку кімнат</string>
+    <string name="sc_space_list_permissions_missing_for_following">Простори, якими керують інші</string>
+    <string name="sc_pref_bubble_color_incoming_title">Колір бульбашки вхідного повідомлення</string>
+    <string name="sc_pref_bubble_color_outgoing_title">Колір бульбашки вихідного повідомлення</string>
+    <string name="sc_color_pref_custom_color">Нестандартний колір: %1$s</string>
+    <string name="sc_action_space_management">Призначити простори</string>
+    <string name="sc_action_assign_room_to_spaces">Простори для %1$s</string>
+    <string name="sc_space_is_sub_space_of">В %1$s</string>
+    <string name="sc_space_list_loading">Завантаження просторів…</string>
+    <string name="sc_space_list_empty">У вас немає просторів!</string>
+    <string name="sc_url_previews_in_e2ee_rooms_title">Попередній перегляд посилань у зашифрованих кімнатах</string>
+    <string name="sc_url_previews_in_e2ee_rooms_title_short">Попередній перегляд посилань для E2EE</string>
+    <string name="sc_pref_render_inline_images_title">Вбудовані зображення</string>
+    <string name="sc_pref_render_inline_images_summary">Відображати зображення, такі як користувацькі емодзі, у текстових повідомленнях</string>
+    <string name="sc_pref_screen_advanced_theming_summary">Налаштуйте кольори теми</string>
+    <string name="sc_color_pref_follow_theme_default">Дотримуватися теми за замовчуванням</string>
+    <string name="sc_url_previews_summary">Завантажувати та відображати попередній перегляд посилань у повідомленнях</string>
+    <string name="sc_url_previews_in_e2ee_rooms_summary">Витік часткового вмісту повідомлень на домашній сервер, дозволяючи попередній перегляд посилань у зашифрованих кімнатах</string>
+    <string name="sc_url_previews_title">Попередній перегляд посилань</string>
 </resources>

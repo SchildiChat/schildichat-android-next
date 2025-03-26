@@ -14,4 +14,8 @@ object BuildTimeConfig {
     const val GOOGLE_APP_ID_RELEASE = "1:326900467720:android:675ae0d20ab67aa73b29bd"
     const val GOOGLE_APP_ID_DEBUG = "1:326900467720:android:675ae0d20ab67aa73b29bd"
     const val GOOGLE_APP_ID_NIGHTLY = "1:326900467720:android:675ae0d20ab67aa73b29bd"
+
+    val SERVICES_MAPTILER_APIKEY: String? = null
+    val SERVICES_MAPTILER_LIGHT_MAPID: String? = null
+    val SERVICES_MAPTILER_DARK_MAPID: String? = null
 }

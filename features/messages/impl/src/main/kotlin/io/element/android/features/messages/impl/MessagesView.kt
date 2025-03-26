@@ -58,6 +58,8 @@ import io.element.android.features.messages.impl.actionlist.ActionListView
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemAction
 import io.element.android.features.messages.impl.crypto.identity.IdentityChangeStateView
 import io.element.android.features.messages.impl.emojis.RecentEmojiDataSource
+import io.element.android.features.messages.impl.link.LinkEvents
+import io.element.android.features.messages.impl.link.LinkView
 import io.element.android.features.messages.impl.messagecomposer.AttachmentsBottomSheet
 import io.element.android.features.messages.impl.messagecomposer.DisabledComposerView
 import io.element.android.features.messages.impl.messagecomposer.MessageComposerEvents
@@ -106,6 +108,7 @@ import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.encryption.identity.IdentityState
 import io.element.android.libraries.textcomposer.model.TextEditorState
 import io.element.android.libraries.ui.strings.CommonStrings
+import io.element.android.wysiwyg.link.Link
 import kotlinx.collections.immutable.ImmutableList
 import timber.log.Timber
 import kotlin.random.Random
@@ -213,7 +216,14 @@ fun MessagesView(
                 onContentClick = ::onContentClick,
                 onMessageLongClick = ::onMessageLongClick,
                 onUserDataClick = { hidingKeyboard { onUserDataClick(it) } },
-                onLinkClick = onLinkClick,
+                onLinkClick = { link, customTab ->
+                    if (customTab) {
+                        onLinkClick(link.url, true)
+                        // Do not check those links, they are internal link only
+                    } else {
+                        state.linkState.eventSink(LinkEvents.OnLinkClick(link))
+                    }
+                },
                 onReactionClick = ::onEmojiReactionClick,
                 onReactionLongClick = ::onEmojiReactionLongClick,
                 onMoreReactionsClick = ::onMoreReactionsClick,
@@ -268,6 +278,12 @@ fun MessagesView(
         onUserDataClick = onUserDataClick,
     )
     ReinviteDialog(state = state)
+    LinkView(
+        onLinkValid = { link ->
+            onLinkClick(link.url, false)
+        },
+        state = state.linkState,
+    )
 }
 
 @Composable
@@ -289,7 +305,7 @@ private fun MessagesViewContent(
     state: MessagesState,
     onContentClick: (TimelineItem.Event) -> Unit,
     onUserDataClick: (UserId) -> Unit,
-    onLinkClick: (String, Boolean) -> Unit,
+    onLinkClick: (Link, Boolean) -> Unit,
     onReactionClick: (key: String, TimelineItem.Event) -> Unit,
     onReactionLongClick: (key: String, TimelineItem.Event) -> Unit,
     onMoreReactionsClick: (TimelineItem.Event) -> Unit,
@@ -365,7 +381,7 @@ private fun MessagesViewContent(
                         state = state.timelineState,
                         timelineProtectionState = state.timelineProtectionState,
                         onUserDataClick = onUserDataClick,
-                        onLinkClick = { url -> onLinkClick(url, false) },
+                        onLinkClick = { link -> onLinkClick(link, false) },
                         onContentClick = onContentClick,
                         onMessageLongClick = onMessageLongClick,
                         onSwipeToReply = onSwipeToReply,
@@ -403,7 +419,7 @@ private fun MessagesViewContent(
                     scBeforeSend = {
                         state.timelineState.eventSink(TimelineEvents.MarkAsRead)
                     }.takeIf { syncReadMarkerAndReceipt },
-                    onLinkClick = onLinkClick,
+                    onLinkClick = { url, customTab -> onLinkClick(Link(url), customTab) },
                 )
             },
             sheetContentKey = sheetResizeContentKey.intValue,

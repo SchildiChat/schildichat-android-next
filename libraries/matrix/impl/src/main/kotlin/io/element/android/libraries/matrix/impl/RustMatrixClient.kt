@@ -503,11 +503,16 @@ class RustMatrixClient(
     override fun roomDirectoryService(): RoomDirectoryService = roomDirectoryService
 
     override fun close() {
+        innerNotificationClient.close()
+
         appCoroutineScope.launch {
             roomFactory.destroy()
             rustSyncService.destroy()
             notificationSettingsService.destroy()
+            // This is sync, but it can destroy the `Client` instance and block stopping the sync service
+            notificationProcessSetup.destroy()
         }
+
         sessionCoroutineScope.cancel()
         clientDelegateTaskHandle?.cancelAndDestroy()
         verificationService.destroy()
@@ -515,7 +520,6 @@ class RustMatrixClient(
         sessionDelegate.clearCurrentClient()
         innerRoomListService.close()
         notificationService.close()
-        notificationProcessSetup.destroy()
         encryptionService.close()
         innerClient.close()
     }

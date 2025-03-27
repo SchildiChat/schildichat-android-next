@@ -89,7 +89,7 @@
     <string name="sc_pref_dual_mention_unread_counts_summary">Якщо кількість згадок у виділеному чаті відрізняється від кількості непрочитаних, показувати обидва показники</string>
     <string name="sc_sync_read_receipt_and_marker_title_short">Синхронізувати маркери прочитності</string>
     <string name="sc_pref_client_side_sort_by_unread_summary">Сортуйте непрочитані чати вгорі списку</string>
-    <string name="sc_pref_render_silent_unread_title">Показати безмовну кількість непрочитаних</string>
+    <string name="sc_pref_render_silent_unread_title">Показувати кількість непрочитаних беззвучних повідомлень</string>
     <string name="sc_pref_render_silent_unread_summary">Відображати кількість непрочитаних повідомлень також й для заглушених чатів</string>
     <string name="sc_pref_sort_with_silent_unread_title">Сортувати з приглушеними непрочитаними</string>
     <string name="sc_pref_sort_with_silent_unread_summary">Сортувати заглушені непрочитані чати над повністю прочитаними чатами</string>
@@ -156,7 +156,7 @@
     <string name="sc_upstream_feature_flag_room_list_filters_summary">Спосіб фільтрації чатів Element</string>
     <string name="sc_pref_pinned_message_toolbar_summary">Швидкий доступ до закріплених повідомлень через верхню панель програми</string>
     <string name="sc_pref_pinned_message_overlay_summary">Попередній перегляд закріплених повідомлень у вікні бесіди</string>
-    <string name="sc_pref_pinned_message_toolbar_title">Дія на панелі закріплене повідомлення</string>
+    <string name="sc_pref_pinned_message_toolbar_title">Дія панелі інструментів для закріпленого повідомлення</string>
     <string name="sc_pref_pinned_message_toolbar_title_short">Закріплені на панелі інструментів</string>
     <string name="sc_url_previews_require_explicit_links_title_short">Вимагати явні посилання</string>
     <string name="sc_url_previews_require_explicit_links_summary">Запитуйте попередній перегляд лише для посилань, що починаються з «https://»</string>

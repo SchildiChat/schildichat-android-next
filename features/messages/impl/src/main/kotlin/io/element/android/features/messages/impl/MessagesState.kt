@@ -54,5 +54,6 @@ data class MessagesState(
     val appName: String,
     val pinnedMessagesBannerState: PinnedMessagesBannerState,
     val dmUserVerificationState: IdentityState?,
+    val isRoomEncrypted: Boolean? = null, // SC
     val eventSink: (MessagesEvents) -> Unit
 )

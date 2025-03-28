@@ -544,6 +544,7 @@ private fun MessagesViewTopBar(
                     }
                     else -> Unit
                 }
+                ScNotEncryptedIndicator(state.isRoomEncrypted)
             }
         },
         actions = {

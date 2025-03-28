@@ -263,6 +263,7 @@ class MessagesPresenter @AssistedInject constructor(
             roomCallState = roomCallState,
             pinnedMessagesBannerState = pinnedMessagesBannerState,
             dmUserVerificationState = dmUserVerificationState,
+            isRoomEncrypted = roomInfo.isEncrypted, // SC
             eventSink = { handleEvents(it) }
         )
     }

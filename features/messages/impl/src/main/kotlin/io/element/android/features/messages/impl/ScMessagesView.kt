@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidthIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
@@ -44,6 +45,8 @@ import chat.schildi.lib.preferences.safeLookup
 import chat.schildi.lib.preferences.value
 import chat.schildi.lib.util.formatUnreadCount
 import chat.schildi.theme.ScTheme
+import io.element.android.compound.theme.ElementTheme
+import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.messages.impl.timeline.ScReadState
 import io.element.android.features.messages.impl.timeline.TimelineEvents
 import io.element.android.features.roomcall.api.RoomCallState
@@ -67,6 +70,18 @@ private fun showMarkAsReadQuickAction(): Boolean = LocalScPreferencesStore.curre
 
 @Composable
 internal fun moveCallButtonToOverflow(): Boolean = showMarkAsReadQuickAction()
+
+@Composable
+internal fun ScNotEncryptedIndicator(isRoomEncrypted: Boolean?) {
+    if (isRoomEncrypted == false && ScTheme.yes) {
+        Icon(
+            modifier = Modifier.size(14.dp),
+            imageVector = CompoundIcons.LockOff(),
+            contentDescription = null,
+            tint = ElementTheme.colors.iconInfoPrimary,
+        )
+    }
+}
 
 @Composable
 internal fun RowScope.scMessagesViewTopBarActions(

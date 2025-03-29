@@ -48,6 +48,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import chat.schildi.lib.compose.thenIf
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import chat.schildi.theme.ScTheme
@@ -516,7 +517,7 @@ private fun MessagesViewTopBar(
                         roomName = roomName,
                         roomAvatar = roomAvatar,
                         heroes = heroes,
-                        modifier = titleModifier
+                        modifier = titleModifier.thenIf(ScPrefs.SC_TIMELINE_LAYOUT.value()) { weight(1f, fill = false) }
                     )
                 } else {
                     IconTitlePlaceholdersRowMolecule(

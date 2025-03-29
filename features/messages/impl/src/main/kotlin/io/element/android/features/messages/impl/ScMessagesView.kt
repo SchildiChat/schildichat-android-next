@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredWidthIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
@@ -73,7 +72,7 @@ internal fun moveCallButtonToOverflow(): Boolean = showMarkAsReadQuickAction()
 
 @Composable
 internal fun ScNotEncryptedIndicator(isRoomEncrypted: Boolean?) {
-    if (isRoomEncrypted == false && ScTheme.yes) {
+    if (isRoomEncrypted == false && ScPrefs.SC_TIMELINE_LAYOUT.value()) {
         Icon(
             modifier = Modifier.size(14.dp),
             imageVector = CompoundIcons.LockOff(),

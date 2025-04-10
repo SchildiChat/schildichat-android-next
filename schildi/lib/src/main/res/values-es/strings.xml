@@ -2,10 +2,10 @@
 <resources>
     <string name="sc_onboarding_welcome_title">Bienvenido a SchildiChat</string>
     <string name="sc_action_apply">Aplicar</string>
-    <string name="sc_onboarding_welcome_summary">Trayendo tortugas en la Matrix</string>
+    <string name="sc_onboarding_welcome_summary">Trayendo tortugas a la Matrix</string>
     <string name="sc_pref_sc_themes_title">SC Diseño</string>
     <string name="sc_action_low_priority">Baja prioridad</string>
-    <string name="sc_pref_tweaks_title">Extras tortuga</string>
+    <string name="sc_pref_tweaks_title">Tortu-Extras</string>
     <string name="sc_pref_pl_display_name_summary_warning">No funciona de manera confiable cuando la lista de miembros aún no se obtuvo en su totalidad</string>
     <string name="sc_pref_el_typography_title">Tipografía de Element</string>
     <string name="sc_pref_fast_transitions_title">Transiciones rápidas</string>

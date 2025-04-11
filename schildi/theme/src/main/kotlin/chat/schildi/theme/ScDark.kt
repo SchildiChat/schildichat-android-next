@@ -5,6 +5,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.annotations.CoreColorToken
 import io.element.android.compound.tokens.generated.SemanticColors
+import io.element.android.compound.tokens.generated.internal.DarkColorTokens
 import io.element.android.compound.tokens.generated.internal.DarkColorTokens.colorBlue200
 import io.element.android.compound.tokens.generated.internal.DarkColorTokens.colorBlue500
 import io.element.android.compound.tokens.generated.internal.DarkColorTokens.colorBlue900
@@ -101,6 +102,8 @@ internal val scdSemanticColors = SemanticColors(
     textSuccessPrimary = ScColors.colorAccentGreen,
     textInfoPrimary = ScColors.colorAccentBlueLight,
     textOnSolidPrimary = scl_fgPrimary,
+    textBadgeInfo = scd_fgPrimary,
+    textBadgeAccent = scd_fgPrimary,
     bgSubtlePrimary = scd_bg,
     bgSubtleSecondary =  scd_bgFloating,
     bgSubtleSecondaryLevel0 =  scd_bg,
@@ -114,6 +117,8 @@ internal val scdSemanticColors = SemanticColors(
     bgActionSecondaryRest = scd_bg,
     bgActionSecondaryHovered = scd_bgFloating,
     bgActionSecondaryPressed = scd_bgFloating,
+    bgBadgeAccent = ScColors.colorAccentGreenAlpha_30,
+    bgBadgeInfo = DarkColorTokens.colorAlphaBlue300, // TODO?
     bgCriticalPrimary = colorRed900, // TODO
     bgCriticalHovered = colorRed1000, // TODO
     bgCriticalSubtle = colorRed200, // TODO

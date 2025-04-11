@@ -95,6 +95,7 @@ fun RoomListTopBar(
     displayMenuItems: Boolean,
     displayFilters: Boolean,
     filtersState: RoomListFiltersState,
+    canReportBug: Boolean,
     modifier: Modifier = Modifier,
 ) {
     DefaultRoomListTopBar(
@@ -112,6 +113,7 @@ fun RoomListTopBar(
         displayMenuItems = displayMenuItems,
         displayFilters = displayFilters,
         filtersState = filtersState,
+        canReportBug = canReportBug,
         modifier = modifier,
     )
 }
@@ -133,6 +135,7 @@ private fun DefaultRoomListTopBar(
     displayMenuItems: Boolean,
     displayFilters: Boolean,
     filtersState: RoomListFiltersState,
+    canReportBug: Boolean,
     modifier: Modifier = Modifier,
 ) {
     // We need this to manually clip the top app bar in preview mode
@@ -263,7 +266,7 @@ private fun DefaultRoomListTopBar(
                                             }
                                         )
                                     }
-                                    if (RoomListConfig.SHOW_REPORT_PROBLEM_MENU_ITEM) {
+                                    if (RoomListConfig.SHOW_REPORT_PROBLEM_MENU_ITEM && canReportBug) {
                                         DropdownMenuItem(
                                             onClick = {
                                                 showMenu = false
@@ -344,6 +347,7 @@ internal fun DefaultRoomListTopBarPreview() = ElementPreview {
         displayMenuItems = true,
         displayFilters = true,
         filtersState = aRoomListFiltersState(),
+        canReportBug = true,
         onMenuActionClick = {},
     )
 }
@@ -362,6 +366,7 @@ internal fun DefaultRoomListTopBarWithIndicatorPreview() = ElementPreview {
         displayMenuItems = true,
         displayFilters = true,
         filtersState = aRoomListFiltersState(),
+        canReportBug = true,
         onMenuActionClick = {},
     )
 }

@@ -11,6 +11,8 @@ import android.app.Application
 import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.text.EmojiCompat
 import androidx.startup.AppInitializer
+import io.element.android.appconfig.RageshakeConfig
+import io.element.android.appconfig.isEnabled
 import io.element.android.features.cachecleaner.api.CacheCleanerInitializer
 import io.element.android.libraries.di.DaggerComponentOwner
 import io.element.android.x.di.AppComponent
@@ -25,7 +27,9 @@ class ElementXApplication : Application(), DaggerComponentOwner {
     override fun onCreate() {
         super.onCreate()
         AppInitializer.getInstance(this).apply {
-            initializeComponent(CrashInitializer::class.java)
+            if (RageshakeConfig.isEnabled) {
+                initializeComponent(CrashInitializer::class.java)
+            }
             initializeComponent(PlatformInitializer::class.java)
             initializeComponent(CacheCleanerInitializer::class.java)
             initializeComponent(ScInitializer::class.java) // SC

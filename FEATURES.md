@@ -43,8 +43,6 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Disable Element's pinned message overlay on top of the conversation screen †
 - Access pinned messages via toolbar action when the pinned message overlay is disabled †
 
-- Copy user MXIDs to clipboard by long-pressing on the member-detail screen
-
 
 ## Notifications
 
@@ -71,6 +69,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Bigger emoji-only messages: upstreamed at v0.5.2
 - Show avatar placeholders instead of blank space for avatars that failed to load
 - Copy URLs to clipboard in text messages on longclick
+- Copy user MXIDs to clipboard by long-pressing on the member-detail screen
 
 
 †: Can be partly enabled or disabled by user setting  

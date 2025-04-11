@@ -22,6 +22,7 @@ import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 
@@ -34,6 +35,7 @@ data class RoomListState(
     val contextMenu: ContextMenu,
     val leaveRoomState: LeaveRoomState,
     val filtersState: RoomListFiltersState,
+    val canReportBug: Boolean,
     val searchState: RoomListSearchState,
     val contentState: RoomListContentState,
     val acceptDeclineInviteState: AcceptDeclineInviteState,
@@ -70,6 +72,7 @@ sealed interface RoomListContentState {
     data class Empty(
         val securityBannerState: SecurityBannerState,
     ) : RoomListContentState
+
     data class Rooms(
         val securityBannerState: SecurityBannerState,
         val fullScreenIntentPermissionsState: FullScreenIntentPermissionsState,
@@ -79,5 +82,6 @@ sealed interface RoomListContentState {
         val spaceSelectionHierarchy: ImmutableList<String> = persistentListOf(),
         val totalUnreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts? = null,
         // SC additions end
+        val seenRoomInvites: ImmutableSet<RoomId>,
     ) : RoomListContentState
 }

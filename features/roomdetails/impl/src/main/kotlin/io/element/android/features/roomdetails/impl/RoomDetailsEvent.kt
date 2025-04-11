@@ -11,6 +11,7 @@ sealed interface RoomDetailsEvent {
     data object LeaveRoom : RoomDetailsEvent
     data object MuteNotification : RoomDetailsEvent
     data object UnmuteNotification : RoomDetailsEvent
+    data class CopyToClipboard(val text: String) : RoomDetailsEvent
     data class SetFavorite(val isFavorite: Boolean) : RoomDetailsEvent
     data class SetLowPriority(val isLowPriority: Boolean) : RoomDetailsEvent // SC
 }

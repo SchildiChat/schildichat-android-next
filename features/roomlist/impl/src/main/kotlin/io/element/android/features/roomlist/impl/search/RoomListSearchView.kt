@@ -178,6 +178,7 @@ private fun RoomListSearchContent(
                     if (ScPrefs.SC_OVERVIEW_LAYOUT.value()) {
                         ScRoomSummaryRow(
                             room = room,
+                            isInviteSeen = false, // Same TODO as upstream
                             onClick = ::onRoomClick,
                             eventSink = eventSink,
                             isLastIndex = index == state.results.lastIndex,
@@ -186,6 +187,8 @@ private fun RoomListSearchContent(
                     }
                     RoomSummaryRow(
                         room = room,
+                        // TODO
+                        isInviteSeen = false,
                         onClick = ::onRoomClick,
                         eventSink = eventSink,
                     )

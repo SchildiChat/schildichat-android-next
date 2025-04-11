@@ -15,7 +15,21 @@ object BuildTimeConfig {
     const val GOOGLE_APP_ID_DEBUG = "1:326900467720:android:675ae0d20ab67aa73b29bd"
     const val GOOGLE_APP_ID_NIGHTLY = "1:326900467720:android:675ae0d20ab67aa73b29bd"
 
+    val METADATA_HOST: String? = null
+    val URL_WEBSITE: String? = null
+    val URL_LOGO: String? = null
+    val URL_COPYRIGHT: String? = null
+    val URL_ACCEPTABLE_USE: String? = null
+    val URL_PRIVACY: String? = null
+    val URL_POLICY: String? = null
+    val SUPPORT_EMAIL_ADDRESS: String? = null
+    val SERVICES_MAPTILER_BASE_URL: String? = null
     val SERVICES_MAPTILER_APIKEY: String? = null
     val SERVICES_MAPTILER_LIGHT_MAPID: String? = null
     val SERVICES_MAPTILER_DARK_MAPID: String? = null
+    val SERVICES_POSTHOG_HOST: String? = null
+    val SERVICES_POSTHOG_APIKEY: String? = null
+    val SERVICES_SENTRY_DSN: String? = null
+    val BUG_REPORT_URL: String? = null
+    val BUG_REPORT_APP_NAME: String? = null
 }

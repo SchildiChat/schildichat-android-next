@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import io.element.android.compound.theme.ElementTheme
+import io.element.android.libraries.core.extensions.toSafeLength
 import io.element.android.libraries.designsystem.atomic.atoms.PlaceholderAtom
 import io.element.android.libraries.designsystem.icons.CompoundDrawables
 import io.element.android.libraries.designsystem.preview.ElementPreview
@@ -154,8 +155,10 @@ private fun ReplyToContentText(metadata: InReplyToMetadata?) {
     val text = when (metadata) {
         InReplyToMetadata.Redacted -> stringResource(id = CommonStrings.common_message_removed)
         InReplyToMetadata.UnableToDecrypt -> stringResource(id = CommonStrings.common_waiting_for_decryption_key)
-        is InReplyToMetadata.Text -> metadata.text
-        is InReplyToMetadata.Thumbnail -> metadata.text
+        // Add a limit to the text length to avoid a crash in Compose
+        is InReplyToMetadata.Text -> metadata.text.toSafeLength()
+        // Add a limit to the text length to avoid a crash in Compose
+        is InReplyToMetadata.Thumbnail -> metadata.text.toSafeLength()
         null -> ""
     }
     val iconResourceId = when (metadata) {

@@ -81,6 +81,7 @@ internal val scRowMinHeight = 84.dp
 @Composable
 internal fun ScRoomSummaryRow(
     room: RoomListRoomSummary,
+    isInviteSeen: Boolean,
     onClick: (RoomListRoomSummary) -> Unit,
     eventSink: (RoomListEvents) -> Unit,
     modifier: Modifier = Modifier,
@@ -90,6 +91,7 @@ internal fun ScRoomSummaryRow(
         RoomSummaryDisplayType.ROOM -> {
             ScRoomSummaryRealRow(
                 room = room,
+                isInviteSeen = isInviteSeen,
                 onClick = onClick,
                 onLongClick = {
                     eventSink(RoomListEvents.ShowContextMenu(room))
@@ -102,6 +104,7 @@ internal fun ScRoomSummaryRow(
             RoomSummaryRow(
                 room = room,
                 onClick = onClick,
+                isInviteSeen = isInviteSeen,
                 eventSink = eventSink,
             )
         }
@@ -115,6 +118,7 @@ internal fun ScRoomSummaryRow(
 @Composable
 private fun ScRoomSummaryRealRow(
     room: RoomListRoomSummary,
+    isInviteSeen: Boolean,
     onClick: (RoomListRoomSummary) -> Unit,
     onLongClick: (RoomListRoomSummary) -> Unit,
     modifier: Modifier = Modifier,
@@ -149,7 +153,7 @@ private fun ScRoomSummaryRealRow(
                 ScNameAndTimestampRow(room = room)
             }
             Row(modifier = Modifier.fillMaxWidth()) {
-                ScLastMessageAndIndicatorRow(room = room)
+                ScLastMessageAndIndicatorRow(room = room, isInviteSeen = isInviteSeen)
             }
         }
     }
@@ -199,7 +203,7 @@ private fun RowScope.ScNameAndTimestampRow(room: RoomListRoomSummary) {
 }
 
 @Composable
-private fun RowScope.ScLastMessageAndIndicatorRow(room: RoomListRoomSummary) {
+private fun RowScope.ScLastMessageAndIndicatorRow(room: RoomListRoomSummary, isInviteSeen: Boolean) {
     // Last Message
     val attributedLastMessage = room.lastMessage as? AnnotatedString
         ?: AnnotatedString(room.lastMessage.orEmpty().toString())
@@ -230,12 +234,13 @@ private fun RowScope.ScLastMessageAndIndicatorRow(room: RoomListRoomSummary) {
                 tint = ElementTheme.colors.unreadIndicator,
             )
         }
-        ScUnreadCounter(room)
+        ScUnreadCounter(room, isInviteSeen)
     }
 }
 
 @Composable
-private fun ScUnreadCounter(room: RoomListRoomSummary) {
+private fun ScUnreadCounter(room: RoomListRoomSummary, isInviteSeen: Boolean) {
+    if (isInviteSeen) return
     val highlightCount: Long
     val notificationCount: Long
     val unreadCount: Long
@@ -310,6 +315,7 @@ internal fun ScRoomSummaryRowPreview(@PreviewParameter(RoomListRoomSummaryProvid
         room = data,
         onClick = {},
         eventSink = {},
+        isInviteSeen = false,
         isLastIndex = false,
     )
 }

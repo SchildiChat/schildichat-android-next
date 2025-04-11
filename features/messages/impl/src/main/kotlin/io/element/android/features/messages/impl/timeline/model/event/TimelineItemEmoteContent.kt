@@ -12,12 +12,11 @@ import org.jsoup.nodes.Document
 
 data class TimelineItemEmoteContent(
     override val body: String,
-    override val pillifiedBody: CharSequence = body,
     override val htmlDocument: Document?,
-    override val plainText: String = htmlDocument?.toPlainText() ?: body,
-    override val formattedBody: CharSequence?,
+    override val formattedBody: CharSequence,
     override val formattedCollapsedBody: CharSequence? = null,
     override val isEdited: Boolean,
 ) : TimelineItemTextBasedContent {
     override val type: String = "TimelineItemEmoteContent"
+    override val plainText: String = htmlDocument?.toPlainText() ?: body
 }

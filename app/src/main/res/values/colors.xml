@@ -5,7 +5,7 @@
   ~ Please see LICENSE files in the repository root for full details.
   -->
 <resources>
-    <!-- Must be equal to DarkDesignTokens.colorThemeBg -->
+    <!-- Must be equal to DarkColorTokens.colorThemeBg -->
     <!-- <color name="splashscreen_bg_dark">#FF101317</color> -->
     <color name="splashscreen_bg_dark">#FF212121</color>
     <!-- Must be equal to LightDesignTokens.colorThemeBg -->

@@ -16,14 +16,10 @@ import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.libraries.designsystem.components.Badge
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
-import io.element.android.libraries.designsystem.theme.badgeInfoBackgroundColor
-import io.element.android.libraries.designsystem.theme.badgeInfoContentColor
 import io.element.android.libraries.designsystem.theme.badgeNegativeBackgroundColor
 import io.element.android.libraries.designsystem.theme.badgeNegativeContentColor
 import io.element.android.libraries.designsystem.theme.badgeNeutralBackgroundColor
 import io.element.android.libraries.designsystem.theme.badgeNeutralContentColor
-import io.element.android.libraries.designsystem.theme.badgePositiveBackgroundColor
-import io.element.android.libraries.designsystem.theme.badgePositiveContentColor
 
 object MatrixBadgeAtom {
     data class MatrixBadgeData(
@@ -44,22 +40,22 @@ object MatrixBadgeAtom {
         data: MatrixBadgeData,
     ) {
         val backgroundColor = when (data.type) {
-            Type.Positive -> ScTheme.exposures.greenBg ?: ElementTheme.colors.badgePositiveBackgroundColor
+            Type.Positive -> ScTheme.exposures.greenBg ?: ElementTheme.colors.bgBadgeAccent
             Type.Neutral -> ElementTheme.colors.badgeNeutralBackgroundColor
             Type.Negative -> ElementTheme.colors.badgeNegativeBackgroundColor
-            Type.Info -> ElementTheme.colors.badgeInfoBackgroundColor
+            Type.Info -> ElementTheme.colors.bgBadgeInfo
         }
         val textColor = when (data.type) {
-            Type.Positive -> ScTheme.exposures.greenFg ?: ElementTheme.colors.badgePositiveContentColor
+            Type.Positive -> ScTheme.exposures.greenFg ?: ElementTheme.colors.textBadgeAccent
             Type.Neutral -> ElementTheme.colors.badgeNeutralContentColor
             Type.Negative -> ElementTheme.colors.badgeNegativeContentColor
-            Type.Info -> ElementTheme.colors.badgeInfoContentColor
+            Type.Info -> ElementTheme.colors.textBadgeInfo
         }
         val iconColor = when (data.type) {
-            Type.Positive -> ScTheme.exposures.greenFg ?: ElementTheme.colors.iconSuccessPrimary
+            Type.Positive -> ScTheme.exposures.greenFg ?: ElementTheme.colors.textBadgeAccent
             Type.Neutral -> ElementTheme.colors.iconSecondary
             Type.Negative -> ElementTheme.colors.iconCriticalPrimary
-            Type.Info -> ElementTheme.colors.iconInfoPrimary
+            Type.Info -> ElementTheme.colors.textBadgeInfo
         }
         Badge(
             text = data.text,

@@ -7,7 +7,7 @@
 
 package io.element.android.features.messages.impl.timeline.components.event
 
-import android.text.SpannableString
+import android.text.SpannedString
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.LocalContentColor
@@ -34,14 +34,8 @@ import io.element.android.features.messages.impl.utils.containsOnlyEmojis
 import io.element.android.libraries.androidutils.text.LinkifyHelper
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
-import io.element.android.libraries.matrix.api.core.UserId
-import io.element.android.libraries.matrix.ui.messages.LocalRoomMemberProfilesCache
-import io.element.android.libraries.matrix.ui.messages.RoomMemberProfilesCache
 import io.element.android.libraries.textcomposer.ElementRichTextEditorStyle
-import io.element.android.libraries.textcomposer.mentions.LocalMentionSpanTheme
-import io.element.android.libraries.textcomposer.mentions.MentionSpan
-import io.element.android.libraries.textcomposer.mentions.getMentionSpans
-import io.element.android.libraries.textcomposer.mentions.updateMentionStyles
+import io.element.android.libraries.textcomposer.mentions.LocalMentionSpanUpdater
 import io.element.android.wysiwyg.compose.EditorStyledText
 import io.element.android.wysiwyg.link.Link
 
@@ -55,7 +49,7 @@ fun TimelineItemTextView(
     onContentLayoutChange: (ContentAvoidingLayoutData) -> Unit = {},
 ) {
     val canCollapse = content.formattedCollapsedBody != null
-    val emojiOnly = /*(content.formattedBody == null || content.formattedBody.toString() == content.body) &&*/
+    val emojiOnly = //content.formattedBody.toString() == content.body &&
         !canCollapse && containsOnlyEmojisOrEmotes(content.formattedBody, content.body)
     val collapsed = remember { mutableStateOf(canCollapse) }
     val textStyle = when {
@@ -66,10 +60,10 @@ fun TimelineItemTextView(
         LocalContentColor provides ElementTheme.colors.textPrimary,
         LocalTextStyle provides textStyle,
     ) {
-        val body = scGetTextWithResolvedMentions(content, collapsed, textStyle)
+        val text = scGetTextWithResolvedMentions(content, collapsed, textStyle)
         Box(modifier.semantics { contentDescription = content.plainText }.scCollapseClick(collapsed, canCollapse, onLongClick)) {
             EditorStyledText(
-                text = body,
+                text = text,
                 onLinkClickedListener = onLinkClick,
                 onLinkLongClickedListener = onLinkLongClick,
                 style = ElementRichTextEditorStyle.textStyle(),
@@ -84,38 +78,10 @@ fun TimelineItemTextView(
 @Composable
 internal fun getTextWithResolvedMentions(content: TimelineItemTextBasedContent): CharSequence {
     // SC merge conflict canary: duplicated code into extensions!
-    val userProfileCache = LocalRoomMemberProfilesCache.current
-    val lastCacheUpdate by userProfileCache.lastCacheUpdate.collectAsState()
-    val mentionSpanTheme = LocalMentionSpanTheme.current
-    val formattedBody = content.formattedBody ?: content.pillifiedBody
-    val textWithMentions = remember(formattedBody, mentionSpanTheme, lastCacheUpdate) {
-        // SC merge conflict canary: code copied into extensions!
-        updateMentionSpans(formattedBody, userProfileCache)
-        mentionSpanTheme.updateMentionStyles(formattedBody)
-        formattedBody
-    }
-    // SC merge conflict canary: code copied into extensions!
-    return SpannableString(textWithMentions)
-}
-
-/*private*/ fun updateMentionSpans(text: CharSequence, cache: RoomMemberProfilesCache): Boolean {
-    var changedContents = false
-    for (mentionSpan in text.getMentionSpans()) {
-        when (mentionSpan.type) {
-            MentionSpan.Type.USER -> {
-                val displayName = cache.getDisplayName(UserId(mentionSpan.rawValue)) ?: mentionSpan.rawValue
-                if (mentionSpan.text != displayName) {
-                    changedContents = true
-                    mentionSpan.text = displayName
-                }
-            }
-            // There's no need to do anything for `@room` pills
-            MentionSpan.Type.EVERYONE -> Unit
-            // Nothing yet for room mentions
-            MentionSpan.Type.ROOM -> Unit
-        }
-    }
-    return changedContents
+    val mentionSpanUpdater = LocalMentionSpanUpdater.current
+    val bodyWithResolvedMentions = mentionSpanUpdater.rememberMentionSpans(content.formattedBody)
+    return SpannedString.valueOf(bodyWithResolvedMentions)
+    // SC merge conflict canary: duplicated code into extensions!
 }
 
 @PreviewsDayNight
@@ -135,7 +101,7 @@ internal fun TimelineItemTextViewPreview(
 @Composable
 internal fun TimelineItemTextViewWithLinkifiedUrlPreview() = ElementPreview {
     val content = aTimelineItemTextContent(
-        pillifiedBody = LinkifyHelper.linkify("The link should end after the first '?' (url: github.com/element-hq/element-x-android/README?)?.")
+        formattedBody = LinkifyHelper.linkify("The link should end after the first '?' (url: github.com/element-hq/element-x-android/README?)?.")
     )
     TimelineItemTextView(
         content = content,
@@ -149,7 +115,7 @@ internal fun TimelineItemTextViewWithLinkifiedUrlPreview() = ElementPreview {
 @Composable
 internal fun TimelineItemTextViewWithLinkifiedUrlAndNestedParenthesisPreview() = ElementPreview {
     val content = aTimelineItemTextContent(
-        pillifiedBody = LinkifyHelper.linkify("The link should end after the '(ME)' ((url: github.com/element-hq/element-x-android/READ(ME)))!")
+        formattedBody = LinkifyHelper.linkify("The link should end after the '(ME)' ((url: github.com/element-hq/element-x-android/READ(ME)))!")
     )
     TimelineItemTextView(
         content = content,

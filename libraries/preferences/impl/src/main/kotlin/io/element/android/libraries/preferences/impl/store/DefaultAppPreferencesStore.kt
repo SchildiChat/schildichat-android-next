@@ -22,6 +22,7 @@ import io.element.android.libraries.core.meta.isScBetaBuild
 import io.element.android.libraries.di.AppScope
 import io.element.android.libraries.di.ApplicationContext
 import io.element.android.libraries.matrix.api.tracing.LogLevel
+import io.element.android.libraries.matrix.api.tracing.TraceLogPack
 import io.element.android.libraries.preferences.api.store.AppPreferencesStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -34,6 +35,7 @@ private val customElementCallBaseUrlKey = stringPreferencesKey("elementCallBaseU
 private val themeKey = stringPreferencesKey("theme")
 private val hideImagesAndVideosKey = booleanPreferencesKey("hideImagesAndVideos")
 private val logLevelKey = stringPreferencesKey("logLevel")
+private val traceLogPacksKey = stringPreferencesKey("traceLogPacks")
 
 @ContributesBinding(AppScope::class)
 class DefaultAppPreferencesStore @Inject constructor(
@@ -104,6 +106,23 @@ class DefaultAppPreferencesStore @Inject constructor(
     override fun getTracingLogLevelFlow(): Flow<LogLevel> {
         return store.data.map { prefs ->
             prefs[logLevelKey]?.let { LogLevel.valueOf(it) } ?: buildMeta.defaultLogLevel()
+        }
+    }
+
+    override suspend fun setTracingLogPacks(targets: Set<TraceLogPack>) {
+        val value = targets.joinToString(",") { it.key }
+        store.edit { prefs ->
+            prefs[traceLogPacksKey] = value
+        }
+    }
+
+    override fun getTracingLogPacksFlow(): Flow<Set<TraceLogPack>> {
+        return store.data.map { prefs ->
+            prefs[traceLogPacksKey]
+                ?.split(",")
+                ?.mapNotNull { value -> TraceLogPack.entries.find { it.key == value } }
+                ?.toSet()
+                ?: emptySet()
         }
     }
 

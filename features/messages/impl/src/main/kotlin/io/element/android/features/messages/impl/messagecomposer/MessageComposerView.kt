@@ -117,6 +117,7 @@ internal fun MessageComposerView(
         onDeleteVoiceMessage = onDeleteVoiceMessage,
         onReceiveSuggestion = ::onSuggestionReceived,
         resolveMentionDisplay = state.resolveMentionDisplay,
+        resolveAtRoomMentionDisplay = state.resolveAtRoomMentionDisplay,
         onError = ::onError,
         onTyping = ::onTyping,
         onSelectRichContent = ::sendUri,

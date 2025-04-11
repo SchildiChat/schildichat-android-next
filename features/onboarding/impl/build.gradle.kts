@@ -28,6 +28,7 @@ dependencies {
     implementation(projects.schildi.lib)
 
     implementation(projects.appconfig)
+    implementation(projects.features.rageshake.api)
     implementation(projects.libraries.core)
     implementation(projects.libraries.androidutils)
     implementation(projects.libraries.architecture)

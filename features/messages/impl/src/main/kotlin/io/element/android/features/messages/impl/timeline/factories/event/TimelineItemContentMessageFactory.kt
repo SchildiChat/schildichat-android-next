@@ -70,13 +70,16 @@ class TimelineItemContentMessageFactory @Inject constructor(
         return when (val messageType = content.type) {
             is EmoteMessageType -> {
                 val emoteBody = "* $senderDisambiguatedDisplayName ${messageType.body.trimEnd()}"
+                val formattedBody = parseHtml(messageType.formatted, prefix = "* $senderDisambiguatedDisplayName") ?: textPillificationHelper.pillify(
+                    emoteBody
+                ).safeLinkify()
                 TimelineItemEmoteContent(
                     body = emoteBody,
                     htmlDocument = messageType.formatted?.toHtmlDocument(
                         permalinkParser = permalinkParser,
                         prefix = "* $senderDisambiguatedDisplayName",
                     ),
-                    formattedBody = parseHtml(messageType.formatted, prefix = "* $senderDisambiguatedDisplayName") ?: emoteBody.withLinks(),
+                    formattedBody = formattedBody,
                     formattedCollapsedBody = parseHtmlCollapsed(permalinkParser, messageType.formatted, prefix = "* $senderDisambiguatedDisplayName"),
                     isEdited = content.isEdited,
                 )
@@ -125,10 +128,8 @@ class TimelineItemContentMessageFactory @Inject constructor(
                     val body = messageType.body.trimEnd()
                     TimelineItemTextContent(
                         body = body,
-                        pillifiedBody = textPillificationHelper.pillify(body),
                         htmlDocument = null,
-                        plainText = body,
-                        formattedBody = null,
+                        formattedBody = body,
                         isEdited = content.isEdited,
                     )
                 } else {
@@ -221,21 +222,27 @@ class TimelineItemContentMessageFactory @Inject constructor(
             }
             is NoticeMessageType -> {
                 val body = messageType.body.trimEnd()
+                val formattedBody = parseHtml(messageType.formatted) ?: textPillificationHelper.pillify(
+                    body
+                ).safeLinkify()
+                val htmlDocument = messageType.formatted?.toHtmlDocument(permalinkParser = permalinkParser)
                 TimelineItemNoticeContent(
                     body = body,
-                    htmlDocument = messageType.formatted?.toHtmlDocument(permalinkParser = permalinkParser),
-                    formattedBody = parseHtml(messageType.formatted) ?: body.withLinks(),
+                    htmlDocument = htmlDocument,
+                    formattedBody = formattedBody,
                     formattedCollapsedBody = parseHtmlCollapsed(permalinkParser, messageType.formatted),
                     isEdited = content.isEdited,
                 )
             }
             is TextMessageType -> {
                 val body = messageType.body.trimEnd()
+                val formattedBody = parseHtml(messageType.formatted) ?: textPillificationHelper.pillify(
+                    body
+                ).safeLinkify()
                 TimelineItemTextContent(
                     body = body,
-                    pillifiedBody = textPillificationHelper.pillify(body).safeLinkify(),
                     htmlDocument = messageType.formatted?.toHtmlDocument(permalinkParser = permalinkParser),
-                    formattedBody = parseHtml(messageType.formatted) ?: body.withLinks(),
+                    formattedBody = formattedBody,
                     formattedCollapsedBody = parseHtmlCollapsed(permalinkParser, messageType.formatted),
                     isEdited = content.isEdited,
                 )
@@ -244,9 +251,8 @@ class TimelineItemContentMessageFactory @Inject constructor(
                 val body = messageType.body.trimEnd()
                 TimelineItemTextContent(
                     body = body,
-                    pillifiedBody = textPillificationHelper.pillify(body),
                     htmlDocument = null,
-                    formattedBody = body.withLinks(),
+                    formattedBody = textPillificationHelper.pillify(body).safeLinkify(),
                     isEdited = content.isEdited,
                 )
             }
@@ -268,6 +274,7 @@ class TimelineItemContentMessageFactory @Inject constructor(
         if (formattedBody == null || formattedBody.format != MessageFormat.HTML) return null
         val result = htmlConverterProvider.provide()
             .fromHtmlToSpans(formattedBody.body.escapeHtmlBeforeWysiwyg().trimEnd())
+            .let { textPillificationHelper.pillify(it) }
             .safeLinkify()
         return if (prefix != null) {
             buildSpannedString {

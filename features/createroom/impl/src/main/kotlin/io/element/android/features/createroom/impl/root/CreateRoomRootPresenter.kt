@@ -53,7 +53,9 @@ class CreateRoomRootPresenter @Inject constructor(
         val localCoroutineScope = rememberCoroutineScope()
         val startDmActionState: MutableState<AsyncAction<RoomId>> = remember { mutableStateOf(AsyncAction.Uninitialized) }
 
-        val isRoomDirectorySearchEnabled by featureFlagService.isFeatureEnabledFlow(FeatureFlags.RoomDirectorySearch).collectAsState(initial = false)
+        val isRoomDirectorySearchEnabled by remember {
+            featureFlagService.isFeatureEnabledFlow(FeatureFlags.RoomDirectorySearch)
+        }.collectAsState(initial = false)
 
         fun handleEvents(event: CreateRoomRootEvents) {
             when (event) {

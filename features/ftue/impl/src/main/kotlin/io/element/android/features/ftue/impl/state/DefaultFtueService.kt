@@ -67,7 +67,7 @@ class DefaultFtueService @Inject constructor(
             .onEach { updateState() }
             .launchIn(sessionCoroutineScope)
 
-        analyticsService.didAskUserConsent()
+        analyticsService.didAskUserConsentFlow
             .distinctUntilChanged()
             .onEach { updateState() }
             .launchIn(sessionCoroutineScope)
@@ -122,7 +122,7 @@ class DefaultFtueService @Inject constructor(
     }
 
     private suspend fun needsAnalyticsOptIn(): Boolean {
-        return analyticsService.didAskUserConsent().first().not()
+        return analyticsService.didAskUserConsentFlow.first().not()
     }
 
     private suspend fun shouldAskNotificationPermissions(): Boolean {

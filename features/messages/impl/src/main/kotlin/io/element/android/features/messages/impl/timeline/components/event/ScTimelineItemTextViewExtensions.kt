@@ -5,6 +5,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.SpannedString
 import android.text.style.ImageSpan
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -12,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -39,9 +39,7 @@ import io.element.android.libraries.designsystem.text.roundToPx
 import io.element.android.libraries.designsystem.text.toDp
 import io.element.android.libraries.matrix.api.media.MediaSource
 import io.element.android.libraries.matrix.ui.media.MediaRequestData
-import io.element.android.libraries.matrix.ui.messages.LocalRoomMemberProfilesCache
-import io.element.android.libraries.textcomposer.mentions.LocalMentionSpanTheme
-import io.element.android.libraries.textcomposer.mentions.updateMentionStyles
+import io.element.android.libraries.textcomposer.mentions.LocalMentionSpanUpdater
 import io.element.android.wysiwyg.view.spans.InlineImageSpan
 import timber.log.Timber
 
@@ -89,16 +87,9 @@ private fun getTextWithResolvedMentions(
     content: TimelineItemTextBasedContent,
     textStyle: TextStyle,
 ): CharSequence {
-    val userProfileCache = LocalRoomMemberProfilesCache.current
-    val lastCacheUpdate by userProfileCache.lastCacheUpdate.collectAsState()
-    val mentionSpanTheme = LocalMentionSpanTheme.current
-    val formattedBody = toFormat ?: content.pillifiedBody
-    val textWithMentions = remember(formattedBody, mentionSpanTheme, lastCacheUpdate) {
-        updateMentionSpans(formattedBody, userProfileCache)
-        mentionSpanTheme.updateMentionStyles(formattedBody)
-        formattedBody
-    }.resolveInlineImageSpans(textStyle)
-    return SpannableString(textWithMentions)
+    val mentionSpanUpdater = LocalMentionSpanUpdater.current
+    val bodyWithResolvedMentions = mentionSpanUpdater.rememberMentionSpans(toFormat ?: content.formattedBody).resolveInlineImageSpans(textStyle)
+    return SpannedString.valueOf(bodyWithResolvedMentions)
 }
 
 @Composable

@@ -171,6 +171,7 @@ git_changelog() {
         | grep -v "Switch to alternative Schil" \
         | grep -vi "fastlane" \
         | grep -vi "gitignore" \
+        | grep -vi "gradle" \
         | grep -v "\\[gplay-release\\]" \
         || echo "No significant changes since the last release"
 }

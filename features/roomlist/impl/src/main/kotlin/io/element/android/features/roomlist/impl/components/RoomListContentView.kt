@@ -68,6 +68,7 @@ fun RoomListContentView(
     contentState: RoomListContentState,
     filtersState: RoomListFiltersState,
     onMeasureSpaceBarHeight: (Int) -> Unit = {}, // SC
+    hideInvitesAvatars: Boolean,
     eventSink: (RoomListEvents) -> Unit,
     onSetUpRecoveryClick: () -> Unit,
     onConfirmRecoveryKeyClick: () -> Unit,
@@ -94,6 +95,7 @@ fun RoomListContentView(
             is RoomListContentState.Rooms -> {
                 RoomsView(
                     state = contentState,
+                    hideInvitesAvatars = hideInvitesAvatars,
                     filtersState = filtersState,
                     onMeasureSpaceBarHeight = onMeasureSpaceBarHeight, // SC
                     eventSink = eventSink,
@@ -165,6 +167,7 @@ private fun EmptyView(
 @Composable
 private fun RoomsView(
     state: RoomListContentState.Rooms,
+    hideInvitesAvatars: Boolean,
     filtersState: RoomListFiltersState,
     onMeasureSpaceBarHeight: (Int) -> Unit, // SC
     eventSink: (RoomListEvents) -> Unit,
@@ -183,6 +186,7 @@ private fun RoomsView(
             state = state,
             filtersState = filtersState, // SC
             onMeasureSpaceBarHeight = onMeasureSpaceBarHeight, // SC
+            hideInvitesAvatars = hideInvitesAvatars,
             eventSink = eventSink,
             onSetUpRecoveryClick = onSetUpRecoveryClick,
             onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
@@ -197,6 +201,7 @@ private fun RoomsViewList(
     state: RoomListContentState.Rooms,
     filtersState: RoomListFiltersState, // SC
     onMeasureSpaceBarHeight: (Int) -> Unit, // SC
+    hideInvitesAvatars: Boolean,
     eventSink: (RoomListEvents) -> Unit,
     onSetUpRecoveryClick: () -> Unit,
     onConfirmRecoveryKeyClick: () -> Unit,
@@ -269,6 +274,7 @@ private fun RoomsViewList(
             if (ScPrefs.SC_OVERVIEW_LAYOUT.value()) {
                 ScRoomSummaryRow(
                     room = room,
+                    hideInviteAvatars = hideInvitesAvatars,
                     isInviteSeen = room.displayType == RoomSummaryDisplayType.INVITE &&
                         state.seenRoomInvites.contains(room.roomId),
                     onClick = onRoomClick,
@@ -279,6 +285,7 @@ private fun RoomsViewList(
             }
             RoomSummaryRow(
                 room = room,
+                hideInviteAvatars = hideInvitesAvatars,
                 isInviteSeen = room.displayType == RoomSummaryDisplayType.INVITE &&
                     state.seenRoomInvites.contains(room.roomId),
                 onClick = onRoomClick,
@@ -350,6 +357,7 @@ internal fun RoomListContentViewPreview(@PreviewParameter(RoomListContentStatePr
         filtersState = aRoomListFiltersState(
             filterSelectionStates = RoomListFilter.entries.map { FilterSelectionState(it, isSelected = true) }
         ),
+        hideInvitesAvatars = false,
         eventSink = {},
         onSetUpRecoveryClick = {},
         onConfirmRecoveryKeyClick = {},

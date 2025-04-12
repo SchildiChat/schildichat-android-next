@@ -21,6 +21,7 @@ import io.element.android.libraries.core.meta.isInternalBuild
 import io.element.android.libraries.core.meta.isScBetaBuild
 import io.element.android.libraries.di.AppScope
 import io.element.android.libraries.di.ApplicationContext
+import io.element.android.libraries.matrix.api.media.MediaPreviewValue
 import io.element.android.libraries.matrix.api.tracing.LogLevel
 import io.element.android.libraries.matrix.api.tracing.TraceLogPack
 import io.element.android.libraries.preferences.api.store.AppPreferencesStore
@@ -33,7 +34,8 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 private val developerModeKey = booleanPreferencesKey("developerMode")
 private val customElementCallBaseUrlKey = stringPreferencesKey("elementCallBaseUrl")
 private val themeKey = stringPreferencesKey("theme")
-private val hideImagesAndVideosKey = booleanPreferencesKey("hideImagesAndVideos")
+private val hideInviteAvatarsKey = booleanPreferencesKey("hideInviteAvatars")
+private val timelineMediaPreviewValueKey = stringPreferencesKey("timelineMediaPreviewValue")
 private val logLevelKey = stringPreferencesKey("logLevel")
 private val traceLogPacksKey = stringPreferencesKey("traceLogPacks")
 
@@ -85,15 +87,27 @@ class DefaultAppPreferencesStore @Inject constructor(
         }
     }
 
-    override suspend fun setHideImagesAndVideos(value: Boolean) {
+    override suspend fun setHideInviteAvatars(value: Boolean) {
         store.edit { prefs ->
-            prefs[hideImagesAndVideosKey] = value
+            prefs[hideInviteAvatarsKey] = value
         }
     }
 
-    override fun doesHideImagesAndVideosFlow(): Flow<Boolean> {
+    override fun getHideInviteAvatarsFlow(): Flow<Boolean> {
         return store.data.map { prefs ->
-            prefs[hideImagesAndVideosKey] ?: false
+            prefs[hideInviteAvatarsKey] == true
+        }
+    }
+
+    override suspend fun setTimelineMediaPreviewValue(value: MediaPreviewValue) {
+        store.edit { prefs ->
+            prefs[timelineMediaPreviewValueKey] = value.name
+        }
+    }
+
+    override fun getTimelineMediaPreviewValueFlow(): Flow<MediaPreviewValue> {
+        return store.data.map { prefs ->
+            prefs[timelineMediaPreviewValueKey]?.let { MediaPreviewValue.valueOf(it) } ?: MediaPreviewValue.On
         }
     }
 

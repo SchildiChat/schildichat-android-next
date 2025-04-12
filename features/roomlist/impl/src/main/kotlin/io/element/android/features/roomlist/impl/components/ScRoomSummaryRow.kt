@@ -81,6 +81,7 @@ internal val scRowMinHeight = 84.dp
 @Composable
 internal fun ScRoomSummaryRow(
     room: RoomListRoomSummary,
+    hideInviteAvatars: Boolean,
     isInviteSeen: Boolean,
     onClick: (RoomListRoomSummary) -> Unit,
     eventSink: (RoomListEvents) -> Unit,
@@ -104,6 +105,7 @@ internal fun ScRoomSummaryRow(
             RoomSummaryRow(
                 room = room,
                 onClick = onClick,
+                hideInviteAvatars = hideInviteAvatars,
                 isInviteSeen = isInviteSeen,
                 eventSink = eventSink,
             )
@@ -315,6 +317,7 @@ internal fun ScRoomSummaryRowPreview(@PreviewParameter(RoomListRoomSummaryProvid
         room = data,
         onClick = {},
         eventSink = {},
+        hideInviteAvatars = false,
         isInviteSeen = false,
         isLastIndex = false,
     )

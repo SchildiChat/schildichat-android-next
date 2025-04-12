@@ -24,10 +24,10 @@
     <string name="sc_pref_el_typography_summary">Nutze Element Schrifteinstellungen für größeren Nachrichtentext</string>
     <string name="sc_space_unread_counts_mode_messages">Zähle ungelesene Nachrichten</string>
     <string name="sc_space_unread_counts_mode_chats">Zähle ungelesene Chats</string>
-    <string name="sc_set_read_marker_toast_start">Setze Gelesen-Markierung auf %s</string>
+    <string name="sc_set_read_marker_toast_start">Setze Lesebestätigung auf %s</string>
     <string name="sc_pref_dev_quick_options">Schnelleinstellungen</string>
     <string name="sc_pref_pin_favorites_title">Favoriten pinnen</string>
-    <string name="sc_set_read_marker_implicit_toast_start">Lesezeichen setzen…</string>
+    <string name="sc_set_read_marker_implicit_toast_start">Lesebestätigung setzen…</string>
     <string name="sc_pref_bury_low_priority_summary">Niedrige Priorität in der Liste nach unten sortieren</string>
     <string name="sc_pref_bury_low_priority_title">Niedrige Priorität nach unten</string>
     <string name="sc_pref_client_side_sort_title">Client-seitiges Sortieren</string>
@@ -46,7 +46,7 @@
     <string name="sc_pseudo_space_groups">Alle Gruppen</string>
     <string name="sc_pref_notification_only_alert_once_title">Nur einmal benachrichtigen</string>
     <string name="sc_pref_notification_only_alert_once_summary">Alarmtöne für neue Nachrichten auslassen, wenn bereits eine Benachrichtigung für diesen Chat vorliegt</string>
-    <string name="sc_sync_read_receipt_and_marker_title_short">Sync-Lesezeichen</string>
+    <string name="sc_sync_read_receipt_and_marker_title_short">Synchroner Lesefortschritt</string>
     <string name="sc_pref_pin_favorites_summary">Als Favoriten markierte Chats am Anfang der Liste anzeigen</string>
     <string name="sc_pref_category_chat_sorting">Sortierfolge</string>
     <string name="sc_pref_client_side_sort_by_unread_title">Sortieren nach ungelesen</string>
@@ -54,7 +54,7 @@
     <string name="sc_pref_fast_transitions_title">Schnelle Übergänge</string>
     <string name="sc_space_nav_title">Space-Navigation</string>
     <string name="sc_pref_category_timeline">Chat Ansicht</string>
-    <string name="sc_pref_debug_read_marker">Debug-Lesezeichen</string>
+    <string name="sc_pref_debug_read_marker">Lesebestätigungen debuggen</string>
     <string name="sc_pref_sc_overview_layout_title">SC Übersichtslayout</string>
     <string name="sc_pref_sc_timeline_layout_title">SC Chat Layout</string>
     <string name="sc_pref_restore_element">Geschmack von Element anwenden</string>

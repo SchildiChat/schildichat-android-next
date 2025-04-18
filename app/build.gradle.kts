@@ -48,8 +48,8 @@ android {
     defaultConfig {
         //applicationId = BuildTimeConfig.APPLICATION_ID
         applicationId = "chat.schildi.android"
-        versionCode = 990
-        versionName = "0.9.0-ex_25_3_4"
+        versionCode = 1000
+        versionName = "0.10.0-ex_25_4_2"
         targetSdk = Versions.TARGET_SDK
 
         // Keep abiFilter for the universalApk
@@ -186,7 +186,7 @@ android {
 
 // SC: downstream package name and versioning, overriding Element default config while reducing merge conflicts
 val scVersionMajor = 0
-val scVersionMinor = 9
+val scVersionMinor = 10
 val scVersionPatch = 0
 // Following val is set by increment_version.sh based on the values above
 val scVersionMain = "0.7.6"
@@ -198,8 +198,8 @@ android {
         // Common upstream overrides across all sc variants - only one flavor for this dimension to ensure it's picked up!
         create("sc") {
             dimension = "package"
-            versionCode = 990
-            versionName = "0.9.0-ex_25_3_4"
+            versionCode = 1000
+            versionName = "0.10.0-ex_25_4_2"
             isDefault = true
         }
         // SC variants for different release tracks. Cannot do actual release types for those since fdroid build tools always want `release` builds.

@@ -26,7 +26,8 @@ last_tag=
 
 if [ "$1" = "test" ]; then
     release_type="test"
-    bump_type="auto"
+    #bump_type="auto"
+    bump_type="patch"
     previousTestVersionCode="$2"
     last_tag="$3"
     if echo "$previousTestVersionCode" | grep -q 0\$; then

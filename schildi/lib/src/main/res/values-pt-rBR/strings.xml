@@ -134,4 +134,25 @@
     <string name="sc_pref_message_context_menu_text_selectable_title">Texto selecionável no toque longo em mensagens</string>
     <string name="sc_about_based_on_element_x_version">Baseado no Element X: %1$s</string>
     <string name="sc_pref_fully_expand_message_menu_summary">Abrir o menu de contexto de mensagens totalmente no toque longo</string>
+    <string name="sc_pref_sc_layout_title">Disposição do SC</string>
+    <string name="sc_pref_sc_overview_layout_title">Disposição da visão geral do SC</string>
+    <string name="sc_pref_sc_timeline_layout_title">Disposição de conversas do SC</string>
+    <string name="sc_pref_sc_layout_summary">Desative para seguir disposição do Element.</string>
+    <string name="sc_pref_pl_display_name_summary_warning">Não funciona de forma confiável quando a lista de membros não foi totalmente buscada ainda</string>
+    <string name="sc_pref_el_typography_summary">Usar configurações de fonte do Element com maior texto de mensagem</string>
+    <string name="sc_sync_read_receipt_and_marker_summary">Sempre definir seu recibo de leitura (o que outros veem e o que calcula sua contagem de mensagens não lidas) para a mesma mensagem que o seu marcador de leitura total (a linha de novas mensagens ao ver uma conversa)</string>
+    <string name="sc_client_generated_unread_counts_summary">Calcular contagens de não lidos no dispositivo em vez de confiar em valores relatados pelo servidor</string>
+    <string name="sc_pref_prefer_freeform_reactions_summary">Abrir o seletor de emoji mostrando a entrada reações de forma livre por padrão</string>
+    <string name="sc_pref_notification_only_alert_once_summary">Omitir sons alertas para novas mensagens se já houver uma notificação aberta para a conversa</string>
+    <string name="sc_pref_mark_read_requires_seen_unread_line_summary">Não marcar conversas como lidas quando a linha não lida não foi vista desde a abertura de uma conversa.</string>
+    <string name="sc_pref_pin_favorites_summary">Mostrar conversas marcadas como favoritas no topo da lista</string>
+    <string name="sc_pref_dual_mention_unread_counts_summary">Quando uma contagem de menções da conversa destacada for diferente da contagem de não lidos, mostrar ambas</string>
+    <string name="sc_pref_chamber_of_secrets_summary">Seguintes configurações são altamente experimentais e conhecidas por causar problemas. Não relate erros após mudar elas!</string>
+    <string name="sc_pref_hide_call_toolbar_action_summary">Mover ação de chamada para o menu flutuante, e ocultar totalmente quando a conversa não permitir chamadas</string>
+    <string name="sc_pref_snc_fab_summary">Sobrepor a lista de salas com um botão para iniciar novas conversas, em vez de ter a opção na barra de ações.</string>
+    <string name="sc_pref_pinned_message_toolbar_summary">Ação rápida para acessar mensagens fixas pela barra superior do aplicativo</string>
+    <string name="sc_pref_user_changed_prefs_summary">Listar todas configurações que não são mais o valor padrão.</string>
+    <string name="sc_pref_space_management_summary">Adicionar opção para atribuir salas a espaços pelo menu de contexto da lista de salas</string>
+    <string name="sc_url_previews_in_e2ee_rooms_summary">Vazar conteúdo parcial da mensagem para o seu servidor, permitindo pré-visualizações de endereços em salas criptografadas</string>
+    <string name="sc_pref_message_context_menu_text_selectable_summary">Permitir seleção de texto refinada para copiar e colar no togue longo do menu de mensagem</string>
 </resources>

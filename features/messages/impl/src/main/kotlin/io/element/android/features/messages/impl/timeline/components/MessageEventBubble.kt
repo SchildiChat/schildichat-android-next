@@ -50,6 +50,7 @@ import io.element.android.libraries.designsystem.theme.messageFromMeBackground
 import io.element.android.libraries.designsystem.theme.messageFromOtherBackground
 import io.element.android.libraries.testtags.TestTags
 import io.element.android.libraries.testtags.testTag
+import io.element.android.libraries.ui.utils.time.isTalkbackActive
 
 private val BUBBLE_RADIUS = 12.dp
 private val avatarRadius = AvatarSize.TimelineSender.dp / 2
@@ -99,6 +100,17 @@ fun MessageEventBubble(
         }
     }
 
+    val clickableModifier = if (isTalkbackActive()) {
+        Modifier
+    } else {
+        Modifier.combinedClickable(
+            onClick = onClick,
+            onLongClick = onLongClick,
+            indication = ripple(),
+            interactionSource = interactionSource
+        )
+    }
+
     // Ignore state.isHighlighted for now, we need a design decision on it.
     val backgroundBubbleColor = when {
         ScTheme.yes && state.scIsBgLess -> Color.Transparent
@@ -142,12 +154,7 @@ fun MessageEventBubble(
                         .toDp()
                 )
                 .clip(bubbleShape)
-                .combinedClickable(
-                    onClick = onClick,
-                    onLongClick = onLongClick,
-                    indication = ripple(),
-                    interactionSource = interactionSource
-                ),
+                .then(clickableModifier),
             color = backgroundBubbleColor,
             shape = bubbleShape,
             content = content

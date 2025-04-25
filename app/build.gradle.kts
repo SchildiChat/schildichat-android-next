@@ -372,6 +372,7 @@ licensee {
     allow("Apache-2.0")
     allow("MIT")
     allow("BSD-2-Clause")
+    allow("BSD-3-Clause")
     allowUrl("https://opensource.org/licenses/MIT")
     allowUrl("https://developer.android.com/studio/terms.html")
     allowUrl("https://www.zetetic.net/sqlcipher/license/")

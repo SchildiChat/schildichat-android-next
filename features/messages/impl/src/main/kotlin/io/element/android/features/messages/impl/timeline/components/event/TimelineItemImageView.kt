@@ -33,8 +33,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import chat.schildi.theme.ScTheme
@@ -57,6 +55,7 @@ import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.textcomposer.ElementRichTextEditorStyle
 import io.element.android.libraries.ui.strings.CommonStrings
+import io.element.android.libraries.ui.utils.time.isTalkbackActive
 import io.element.android.wysiwyg.compose.EditorStyledText
 import io.element.android.wysiwyg.link.Link
 
@@ -73,10 +72,9 @@ fun TimelineItemImageView(
     onContentLayoutChange: (ContentAvoidingLayoutData) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val description = stringResource(CommonStrings.common_image)
-    Column(
-        modifier = modifier.semantics { contentDescription = description },
-    ) {
+    val a11yLabel = stringResource(CommonStrings.common_image)
+    val description = content.caption?.let { "$a11yLabel: $it" } ?: a11yLabel
+    Column(modifier = modifier) {
         val containerModifier = if (content.showCaption) {
             Modifier.clip(RoundedCornerShape(ScTheme.exposures.commonLayoutRadius))
         } else {
@@ -95,8 +93,17 @@ fun TimelineItemImageView(
                 AsyncImage(
                     modifier = Modifier
                         .fillMaxWidth()
-                        /*.then(if (isLoaded) Modifier.background(Color.White) else Modifier)*/
-                        .then(if (onContentClick != null) Modifier.combinedClickable(onClick = onContentClick, onLongClick = onLongClick) else Modifier),
+                        //.then(if (isLoaded) Modifier.background(Color.White) else Modifier)
+                        .then(
+                            if (!isTalkbackActive() && onContentClick != null) {
+                                Modifier.combinedClickable(
+                                    onClick = onContentClick,
+                                    onLongClick = onLongClick
+                                )
+                            } else {
+                                Modifier
+                            }
+                        ),
                     model = content.thumbnailMediaRequestData,
                     contentScale = ContentScale.Fit,
                     alignment = Alignment.Center,

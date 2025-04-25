@@ -11,6 +11,8 @@ import config.PushProvidersConfig
 
 object ModulesConfig {
     val pushProvidersConfig = PushProvidersConfig(
+        //includeFirebase = BuildTimeConfig.PUSH_CONFIG_INCLUDE_FIREBASE,
+        //includeUnifiedPush = BuildTimeConfig.PUSH_CONFIG_INCLUDE_UNIFIED_PUSH,
         includeFirebase = false,
         includeUnifiedPush = true,
     )

@@ -155,4 +155,8 @@
     <string name="sc_pref_space_management_summary">Adicionar opção para atribuir salas a espaços pelo menu de contexto da lista de salas</string>
     <string name="sc_url_previews_in_e2ee_rooms_summary">Vazar conteúdo parcial da mensagem para o seu servidor, permitindo pré-visualizações de endereços em salas criptografadas</string>
     <string name="sc_pref_message_context_menu_text_selectable_summary">Permitir seleção de texto refinada para copiar e colar no togue longo do menu de mensagem</string>
+    <string name="sc_space_nav_title">Navegação por espaços</string>
+    <string name="sc_space_nav_summary">Filtrar suas conversas por espaços</string>
+    <string name="sc_space_swipe_summary">Arrastar a visão geral da conversa horizontalmente para trocar de espaços</string>
+    <string name="sc_push_info_title">Informações de notificações em plano de fundo</string>
 </resources>

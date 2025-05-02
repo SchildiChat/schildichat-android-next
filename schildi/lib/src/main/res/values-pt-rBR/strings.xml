@@ -146,7 +146,7 @@
     <string name="sc_pref_notification_only_alert_once_summary">Omitir sons alertas para novas mensagens se já houver uma notificação aberta para a conversa</string>
     <string name="sc_pref_mark_read_requires_seen_unread_line_summary">Não marcar conversas como lidas quando a linha não lida não foi vista desde a abertura de uma conversa.</string>
     <string name="sc_pref_pin_favorites_summary">Mostrar conversas marcadas como favoritas no topo da lista</string>
-    <string name="sc_pref_dual_mention_unread_counts_summary">Quando uma contagem de menções da conversa destacada for diferente da contagem de não lidos, mostrar ambas</string>
+    <string name="sc_pref_dual_mention_unread_counts_summary">Quando a contagem de menções de uma conversa destacada for diferente da contagem de não lidos, mostrar ambas</string>
     <string name="sc_pref_chamber_of_secrets_summary">Seguintes configurações são altamente experimentais e conhecidas por causar problemas. Não relate erros após mudar elas!</string>
     <string name="sc_pref_hide_call_toolbar_action_summary">Mover ação de chamada para o menu flutuante, e ocultar totalmente quando a conversa não permitir chamadas</string>
     <string name="sc_pref_snc_fab_summary">Sobrepor a lista de salas com um botão para iniciar novas conversas, em vez de ter a opção na barra de ações.</string>
@@ -159,4 +159,5 @@
     <string name="sc_space_nav_summary">Filtrar suas conversas por espaços</string>
     <string name="sc_space_swipe_summary">Arrastar a visão geral da conversa horizontalmente para trocar de espaços</string>
     <string name="sc_push_info_title">Informações de notificações em plano de fundo</string>
+    <string name="sc_pref_snc_fab_title_short">CNC como BAF</string>
 </resources>

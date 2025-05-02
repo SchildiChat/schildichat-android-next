@@ -160,4 +160,5 @@
     <string name="sc_space_swipe_summary">Arrastar a visão geral da conversa horizontalmente para trocar de espaços</string>
     <string name="sc_push_info_title">Informações de notificações em plano de fundo</string>
     <string name="sc_pref_snc_fab_title_short">CNC como BAF</string>
+    <string name="sc_pref_dual_mention_unread_counts_title_short">Contagem dupla de menções</string>
 </resources>

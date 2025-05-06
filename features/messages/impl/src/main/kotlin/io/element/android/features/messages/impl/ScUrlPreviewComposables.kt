@@ -55,13 +55,13 @@ import io.element.android.libraries.androidutils.system.openUrlInExternalApp
 import io.element.android.libraries.core.data.tryOrNull
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.matrix.api.media.MediaSource
-import io.element.android.libraries.matrix.api.room.MatrixRoom
+import io.element.android.libraries.matrix.api.room.BaseRoom
 import io.element.android.libraries.matrix.ui.media.MediaRequestData
 import io.element.android.libraries.textcomposer.mentions.MentionSpan
 import io.element.android.wysiwyg.view.spans.CustomMentionSpan
 
 @Composable
-fun <T>T.takeIfUrlPreviewsEnabledForRoom(room: MatrixRoom): T? {
+fun <T>T.takeIfUrlPreviewsEnabledForRoom(room: BaseRoom): T? {
     val allowed = if (room.info().isEncrypted != false) {
         ScPrefs.URL_PREVIEWS_IN_E2EE_ROOMS.value()
     } else {

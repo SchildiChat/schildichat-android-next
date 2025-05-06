@@ -16,13 +16,12 @@ import chat.schildi.lib.preferences.value
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.matrix.api.core.EventId
-import io.element.android.libraries.matrix.api.room.MatrixRoom
+import io.element.android.libraries.matrix.api.room.BaseRoom
 import io.element.android.libraries.matrix.api.timeline.ReceiptType
 import io.element.android.libraries.matrix.api.timeline.Timeline
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlin.math.max
 
 data class ScReadState(
     val lastReadMarkerIndex: MutableIntState,
@@ -33,7 +32,7 @@ data class ScReadState(
     val fullyReadEventId: MutableState<String?>,
 )
 
-fun forceSetReceipts(context: Context, appScope: CoroutineScope, room: MatrixRoom, scReadState: ScReadState, isSendPublicReadReceiptsEnabled: Boolean) {
+fun forceSetReceipts(context: Context, appScope: CoroutineScope, room: BaseRoom, scReadState: ScReadState, isSendPublicReadReceiptsEnabled: Boolean) {
     scReadState.sawUnreadLine.value = true
     appScope.launch {
         val toast = Toast.makeText(context, chat.schildi.lib.R.string.sc_set_read_marker_implicit_toast_start, Toast.LENGTH_LONG)

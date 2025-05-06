@@ -1,7 +1,7 @@
 package io.element.android.features.roomlist.impl
 
 import androidx.compose.runtime.MutableState
-import io.element.android.libraries.matrix.api.room.MatrixRoom
+import io.element.android.libraries.matrix.api.room.BaseRoom
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.takeWhile
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal fun CoroutineScope.handleLowPriorityFlow(
-    room: MatrixRoom,
+    room: BaseRoom,
     contextMenuState: MutableState<RoomListState.ContextMenu>,
     initialState: RoomListState.ContextMenu.Shown,
     isShowingContextMenuFlow: Flow<Boolean>,

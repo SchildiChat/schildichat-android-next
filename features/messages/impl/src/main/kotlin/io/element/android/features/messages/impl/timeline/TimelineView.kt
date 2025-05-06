@@ -300,11 +300,16 @@ private fun BoxScope.TimelineScrollHelper(
     }
     var jumpToLiveHandled by remember { mutableStateOf(true) }
 
-    fun scrollToBottom() {
+    /**
+     * @param force If true, scroll to the bottom even if the user is already seeing the most recent item.
+     * This fixes the issue where the user is seeing typing notification and so the read receipt is not sent
+     * when a new message comes in.
+     */
+    fun scrollToBottom(force: Boolean) {
         coroutineScope.launch {
             if (lazyListState.firstVisibleItemIndex > 10) {
                 lazyListState.scrollToItem(0)
-            } else if (lazyListState.firstVisibleItemIndex != 0) {
+            } else if (force || lazyListState.firstVisibleItemIndex != 0) {
                 lazyListState.animateScrollToItem(0)
             }
         }
@@ -312,7 +317,7 @@ private fun BoxScope.TimelineScrollHelper(
 
     fun jumpToBottom() {
         if (isLive) {
-            scrollToBottom()
+            scrollToBottom(force = false)
         } else {
             jumpToLiveHandled = false
             onJumpToLive()
@@ -335,9 +340,10 @@ private fun BoxScope.TimelineScrollHelper(
     }
 
     LaunchedEffect(canAutoScroll, newEventState) {
-        val shouldScrollToBottom = isScrollFinished && (canAutoScroll || newEventState == NewEventState.FromMe)
+        val shouldScrollToBottom = isScrollFinished &&
+            (canAutoScroll && newEventState == NewEventState.FromOther || newEventState == NewEventState.FromMe)
         if (shouldScrollToBottom) {
-            scrollToBottom()
+            scrollToBottom(force = true)
         }
     }
 

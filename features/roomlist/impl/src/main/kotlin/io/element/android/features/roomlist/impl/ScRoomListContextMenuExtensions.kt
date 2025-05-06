@@ -77,9 +77,6 @@ fun LowPriorityRoomListContextMenuItem(
             ),
             trailingContent = ListItemContent.Switch(
                 checked = contextMenu.isLowPriority,
-                onChange = { isLowPriority ->
-                    onLowPriorityChange(isLowPriority)
-                },
             ),
             onClick = {
                 onLowPriorityChange(!contextMenu.isLowPriority)

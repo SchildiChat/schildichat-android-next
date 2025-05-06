@@ -140,6 +140,7 @@ class RustMatrixAuthenticationService @Inject constructor(
             }.onFailure {
                 clear()
             }.mapFailure { failure ->
+                Timber.e(failure, "Failed to set homeserver to $homeserver")
                 failure.mapAuthenticationException()
             }
         }
@@ -165,6 +166,7 @@ class RustMatrixAuthenticationService @Inject constructor(
 
                 SessionId(sessionData.userId)
             }.mapFailure { failure ->
+                Timber.e(failure, "Failed to login")
                 failure.mapAuthenticationException()
             }
         }
@@ -200,6 +202,7 @@ class RustMatrixAuthenticationService @Inject constructor(
                 pendingOAuthAuthorizationData = oAuthAuthorizationData
                 OidcDetails(url)
             }.mapFailure { failure ->
+                Timber.e(failure, "Failed to get OIDC URL")
                 failure.mapAuthenticationException()
             }
         }
@@ -213,6 +216,7 @@ class RustMatrixAuthenticationService @Inject constructor(
                 }
                 pendingOAuthAuthorizationData = null
             }.mapFailure { failure ->
+                Timber.e(failure, "Failed to cancel OIDC login")
                 failure.mapAuthenticationException()
             }
         }
@@ -246,6 +250,7 @@ class RustMatrixAuthenticationService @Inject constructor(
 
                 SessionId(sessionData.userId)
             }.mapFailure { failure ->
+                Timber.e(failure, "Failed to login with OIDC")
                 failure.mapAuthenticationException()
             }
         }

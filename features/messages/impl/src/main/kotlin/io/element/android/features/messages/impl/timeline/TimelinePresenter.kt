@@ -31,6 +31,7 @@ import io.element.android.features.messages.impl.timeline.factories.TimelineItem
 import io.element.android.features.messages.impl.timeline.factories.TimelineItemsFactoryConfig
 import io.element.android.features.messages.impl.timeline.model.NewEventState
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
+import io.element.android.features.messages.impl.timeline.model.virtual.TimelineItemTypingNotificationModel
 import io.element.android.features.messages.impl.typing.TypingNotificationState
 import io.element.android.features.messages.impl.voicemessages.timeline.RedactedVoiceMessageManager
 import io.element.android.features.poll.api.actions.EndPollAction
@@ -41,7 +42,7 @@ import io.element.android.libraries.core.bool.orFalse
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.UniqueId
-import io.element.android.libraries.matrix.api.room.MatrixRoom
+import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.room.MessageEventType
 import io.element.android.libraries.matrix.api.room.isDm
 import io.element.android.libraries.matrix.api.room.roomMembers
@@ -65,7 +66,7 @@ const val FOCUS_ON_PINNED_EVENT_DEBOUNCE_DURATION_IN_MILLIS = 200L
 
 class TimelinePresenter @AssistedInject constructor(
     timelineItemsFactoryCreator: TimelineItemsFactory.Creator,
-    private val room: MatrixRoom,
+    private val room: JoinedRoom,
     private val dispatchers: CoroutineDispatchers,
     private val appScope: CoroutineScope,
     @Assisted private val navigator: MessagesNavigator,
@@ -152,7 +153,7 @@ class TimelinePresenter @AssistedInject constructor(
                             )
                             return
                         }
-                        println("## sendReadReceiptIfNeeded firstVisibleIndex: ${event.firstIndex}")
+                        Timber.d("## sendReadReceiptIfNeeded firstVisibleIndex: ${event.firstIndex}")
                         appScope.sendReadReceiptIfNeeded(
                             firstVisibleIndex = event.firstIndex,
                             timelineItems = timelineItems,
@@ -300,7 +301,10 @@ class TimelinePresenter @AssistedInject constructor(
         if (newEventState.value == NewEventState.FromMe) {
             return@withContext
         }
-        val newMostRecentItem = timelineItems.firstOrNull()
+        val newMostRecentItem = timelineItems.firstOrNull {
+            // Ignore typing item
+            (it as? TimelineItem.Virtual)?.model !is TimelineItemTypingNotificationModel
+        }
         val prevMostRecentItemIdValue = prevMostRecentItemId.value
         val newMostRecentItemId = newMostRecentItem?.identifier()
         val hasNewEvent = prevMostRecentItemIdValue != null &&

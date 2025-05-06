@@ -61,6 +61,8 @@ fun RoomListView(
     onCreateRoomClick: () -> Unit,
     onRoomSettingsClick: (roomId: RoomId) -> Unit,
     onMenuActionClick: (RoomListMenuAction) -> Unit,
+    onReportRoomClick: (roomId: RoomId) -> Unit,
+    onDeclineInviteAndBlockUser: (roomSummary: RoomListRoomSummary) -> Unit,
     modifier: Modifier = Modifier,
     acceptDeclineInviteView: @Composable () -> Unit,
 ) {
@@ -74,8 +76,18 @@ fun RoomListView(
                     contextMenu = state.contextMenu,
                     roomListState = state, // SC
                     matrixClient = matrixClient, // SC
+                    canReportRoom = state.canReportRoom,
                     eventSink = state.eventSink,
                     onRoomSettingsClick = onRoomSettingsClick,
+                    onReportRoomClick = onReportRoomClick,
+                )
+            }
+            if (state.declineInviteMenu is RoomListState.DeclineInviteMenu.Shown) {
+                RoomListDeclineInviteMenu(
+                    menu = state.declineInviteMenu,
+                    canReportRoom = state.canReportRoom,
+                    eventSink = state.eventSink,
+                    onDeclineAndBlockClick = onDeclineInviteAndBlockUser,
                 )
             }
 
@@ -202,7 +214,9 @@ internal fun RoomListViewPreview(@PreviewParameter(RoomListStateProvider::class)
         onConfirmRecoveryKeyClick = {},
         onCreateRoomClick = {},
         onRoomSettingsClick = {},
+        onReportRoomClick = {},
         onMenuActionClick = {},
+        onDeclineInviteAndBlockUser = {},
         acceptDeclineInviteView = {},
     )
 }

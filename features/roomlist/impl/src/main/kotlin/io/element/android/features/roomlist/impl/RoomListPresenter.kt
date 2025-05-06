@@ -7,7 +7,6 @@
 
 package io.element.android.features.roomlist.impl
 
-import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -34,17 +33,17 @@ import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import im.vector.app.features.analytics.plan.Interaction
+import io.element.android.appconfig.MatrixConfiguration
 import io.element.android.features.invite.api.SeenInvitesStore
-import io.element.android.features.invite.api.response.AcceptDeclineInviteEvents
-import io.element.android.features.invite.api.response.AcceptDeclineInviteState
-import io.element.android.features.invite.api.response.InviteData
-import io.element.android.features.leaveroom.api.LeaveRoomEvent
+import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteEvents.AcceptInvite
+import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteEvents.DeclineInvite
+import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteState
+import io.element.android.features.leaveroom.api.LeaveRoomEvent.ShowConfirmation
 import io.element.android.features.leaveroom.api.LeaveRoomState
 import io.element.android.features.logout.api.direct.DirectLogoutState
 import io.element.android.features.rageshake.api.RageshakeFeatureAvailability
 import io.element.android.features.roomlist.impl.datasource.RoomListDataSource
 import io.element.android.features.roomlist.impl.filters.RoomListFiltersState
-import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.features.roomlist.impl.model.hasNewContent
 import io.element.android.features.roomlist.impl.search.RoomListSearchEvents
 import io.element.android.features.roomlist.impl.search.RoomListSearchState
@@ -147,6 +146,7 @@ class RoomListPresenter @Inject constructor(
         }.collectAsState(initial = false)
 
         val contextMenu = remember { mutableStateOf<RoomListState.ContextMenu>(RoomListState.ContextMenu.Hidden) }
+        val declineInviteMenu = remember { mutableStateOf<RoomListState.DeclineInviteMenu>(RoomListState.DeclineInviteMenu.Hidden) }
 
 
         val spaceNavEnabled = ScPrefs.SPACE_NAV.value()
@@ -168,21 +168,23 @@ class RoomListPresenter @Inject constructor(
                 is RoomListEvents.HideContextMenu -> {
                     contextMenu.value = RoomListState.ContextMenu.Hidden
                 }
-                is RoomListEvents.LeaveRoom -> leaveRoomState.eventSink(LeaveRoomEvent.ShowConfirmation(event.roomId))
+                is RoomListEvents.LeaveRoom -> leaveRoomState.eventSink(ShowConfirmation(event.roomId))
                 is RoomListEvents.SetRoomIsFavorite -> coroutineScope.setRoomIsFavorite(event.roomId, event.isFavorite)
                 is RoomListEvents.SetRoomIsLowPriority -> coroutineScope.launch { client.getRoom(event.roomId)?.use { it.setIsLowPriority(event.isLowPriority) } } // SC
                 is RoomListEvents.MarkAsRead -> coroutineScope.markAsRead(event.roomId)
                 is RoomListEvents.MarkAsUnread -> coroutineScope.markAsUnread(event.roomId)
                 is RoomListEvents.AcceptInvite -> {
                     acceptDeclineInviteState.eventSink(
-                        AcceptDeclineInviteEvents.AcceptInvite(event.roomListRoomSummary.toInviteData())
+                        AcceptInvite(event.roomSummary.toInviteData())
                     )
                 }
                 is RoomListEvents.DeclineInvite -> {
                     acceptDeclineInviteState.eventSink(
-                        AcceptDeclineInviteEvents.DeclineInvite(event.roomListRoomSummary.toInviteData())
+                        DeclineInvite(event.roomSummary.toInviteData(), blockUser = event.blockUser, shouldConfirm = false)
                     )
                 }
+                is RoomListEvents.ShowDeclineInviteMenu -> declineInviteMenu.value = RoomListState.DeclineInviteMenu.Shown(event.roomSummary)
+                RoomListEvents.HideDeclineInviteMenu -> declineInviteMenu.value = RoomListState.DeclineInviteMenu.Hidden
                 is RoomListEvents.ClearCacheOfRoom -> coroutineScope.clearCacheOfRoom(event.roomId)
             }
         }
@@ -197,6 +199,7 @@ class RoomListPresenter @Inject constructor(
             snackbarMessage = snackbarMessage,
             hasNetworkConnection = isOnline,
             contextMenu = contextMenu.value,
+            declineInviteMenu = declineInviteMenu.value,
             leaveRoomState = leaveRoomState,
             filtersState = filtersState,
             canReportBug = canReportBug,
@@ -205,6 +208,7 @@ class RoomListPresenter @Inject constructor(
             acceptDeclineInviteState = acceptDeclineInviteState,
             directLogoutState = directLogoutState,
             hideInvitesAvatars = hideInvitesAvatar,
+            canReportRoom = MatrixConfiguration.CAN_REPORT_ROOM,
             eventSink = ::handleEvents,
         )
     }
@@ -294,19 +298,19 @@ class RoomListPresenter @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun CoroutineScope.showContextMenu(event: RoomListEvents.ShowContextMenu, contextMenuState: MutableState<RoomListState.ContextMenu>) = launch {
         val initialState = RoomListState.ContextMenu.Shown(
-            roomId = event.roomListRoomSummary.roomId,
-            roomName = event.roomListRoomSummary.name,
-            isDm = event.roomListRoomSummary.isDm,
-            isFavorite = event.roomListRoomSummary.isFavorite,
-            isLowPriority = event.roomListRoomSummary.isLowPriority, // SC
+            roomId = event.roomSummary.roomId,
+            roomName = event.roomSummary.name,
+            isDm = event.roomSummary.isDm,
+            isFavorite = event.roomSummary.isFavorite,
+            isLowPriority = event.roomSummary.isLowPriority, // SC
             markAsUnreadFeatureFlagEnabled = featureFlagService.isFeatureEnabled(FeatureFlags.MarkAsUnread),
-            hasNewContent = event.roomListRoomSummary.hasNewContent(scPreferencesStore),
+            hasNewContent = event.roomSummary.hasNewContent(scPreferencesStore),
             eventCacheFeatureFlagEnabled = appPreferencesStore.isDeveloperModeEnabledFlow().first() &&
                 featureFlagService.isFeatureEnabled(FeatureFlags.EventCache),
         )
         contextMenuState.value = initialState
 
-        client.getRoom(event.roomListRoomSummary.roomId)?.use { room ->
+        client.getRoom(event.roomSummary.roomId)?.use { room ->
 
             val isShowingContextMenuFlow = snapshotFlow { contextMenuState.value is RoomListState.ContextMenu.Shown }
                 .distinctUntilChanged()
@@ -364,8 +368,6 @@ class RoomListPresenter @Inject constructor(
 
     private fun CoroutineScope.clearCacheOfRoom(roomId: RoomId) = launch {
         client.getRoom(roomId)?.use { room ->
-            // Ideally we wouldn't have a live timeline at this point, but right now we instantiate one when retrieving the room
-            room.liveTimeline.close()
             room.clearEventCacheStorage()
         }
     }
@@ -388,15 +390,4 @@ class RoomListPresenter @Inject constructor(
             roomListDataSource.subscribeToVisibleRooms(roomIds)
         }
     }
-}
-
-@VisibleForTesting
-internal fun RoomListRoomSummary.toInviteData(): InviteData? {
-    if (inviteSender == null) return null
-    return InviteData(
-        roomId = roomId,
-        roomName = name ?: roomId.value,
-        isDm = isDm,
-        senderId = inviteSender.userId,
-    )
 }

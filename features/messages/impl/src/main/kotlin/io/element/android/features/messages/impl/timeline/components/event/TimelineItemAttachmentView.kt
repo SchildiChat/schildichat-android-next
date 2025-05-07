@@ -22,6 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import chat.schildi.theme.scBubbleFont
+import chat.schildi.theme.scBubbleSmallFont
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayout
 import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayoutData
@@ -88,13 +90,13 @@ private fun TimelineItemAttachmentHeaderView(
                 text = filename,
                 color = ElementTheme.colors.textPrimary,
                 maxLines = 2,
-                style = ElementTheme.typography.fontBodyLgRegular,
+                style = ElementTheme.typography.scBubbleFont,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = fileExtensionAndSize,
                 color = ElementTheme.colors.textSecondary,
-                style = ElementTheme.typography.fontBodySmRegular,
+                style = ElementTheme.typography.scBubbleSmallFont,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 onTextLayout = if (hasCaption) {
@@ -120,7 +122,7 @@ private fun TimelineItemAttachmentCaptionView(
         modifier = modifier,
         text = caption,
         color = ElementTheme.colors.textPrimary,
-        style = ElementTheme.typography.fontBodyLgRegular,
+        style = ElementTheme.typography.scBubbleFont,
         onTextLayout = ContentAvoidingLayout.measureLastTextLine(
             onContentLayoutChange = onContentLayoutChange,
         )

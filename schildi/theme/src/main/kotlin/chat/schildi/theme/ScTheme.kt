@@ -143,3 +143,6 @@ fun Color.fakeAlpha(alpha: Float) = Color(
 val ExposedTypographyTokens.scBubbleFont
     @Composable
     get() = if (ScPrefs.EL_TYPOGRAPHY.value()) fontBodyLgRegular else fontBodyMdRegular
+val ExposedTypographyTokens.scBubbleSmallFont
+    @Composable
+    get() = if (ScPrefs.EL_TYPOGRAPHY.value()) fontBodyXsRegular else fontBodySmRegular

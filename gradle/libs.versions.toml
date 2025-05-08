@@ -3,7 +3,7 @@
 
 [versions]
 # Project
-android_gradle_plugin = "8.9.2"
+android_gradle_plugin = "8.10.0"
 kotlin = "2.1.20"
 kotlinpoet = "2.1.0"
 ksp = "2.1.20-2.0.1"
@@ -169,7 +169,7 @@ jsoup = "org.jsoup:jsoup:1.20.1"
 appyx_core = { module = "com.bumble.appyx:core", version.ref = "appyx" }
 molecule-runtime = "app.cash.molecule:molecule-runtime:2.1.0"
 timber = "com.jakewharton.timber:timber:5.0.1"
-matrix_sdk = "chat.schildi.rustcomponents:sdk-android:0.4.5"
+matrix_sdk = "chat.schildi.rustcomponents:sdk-android:0.4.6"
 matrix_richtexteditor = { module = "chat.schildi:wysiwyg", version.ref = "wysiwyg" }
 matrix_richtexteditor_compose = { module = "chat.schildi:wysiwyg-compose", version.ref = "wysiwyg" }
 sqldelight-driver-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }

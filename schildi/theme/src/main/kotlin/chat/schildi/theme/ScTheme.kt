@@ -2,6 +2,7 @@ package chat.schildi.theme
 
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
+import androidx.activity.compose.LocalActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -13,7 +14,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import chat.schildi.lib.preferences.ScColorPref
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.userColor
@@ -110,7 +110,7 @@ fun ForcedDarkScTheme(
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val wasDarkTheme = !ElementTheme.colors.isLight
-    val activity = LocalContext.current as? ComponentActivity
+    val activity = LocalActivity.current as? ComponentActivity
     DisposableEffect(Unit) {
         onDispose {
             activity?.enableEdgeToEdge(

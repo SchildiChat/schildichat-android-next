@@ -47,6 +47,9 @@ class VectorUnifiedPushMessagingReceiver : MessagingReceiver() {
      */
     override fun onMessage(context: Context, message: ByteArray, instance: String) {
         Timber.tag(loggerTag.value).w("New message")
+        if (ScPushWorker.launch(context, message, instance)) {
+            return
+        }
         coroutineScope.launch {
             val pushData = pushParser.parse(message, instance)
             if (pushData == null) {

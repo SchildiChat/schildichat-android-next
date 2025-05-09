@@ -170,6 +170,9 @@ class DefaultNotificationChannels @Inject constructor(
                 .setLightColor(accentColor)
                 .build()
         )
+
+        // SC addons
+        notificationManager.updateScNotificationChannels(stringProvider)
     }
 
     override fun getChannelForIncomingCall(ring: Boolean): String {

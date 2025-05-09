@@ -19,6 +19,7 @@ setupAnvil()
 
 dependencies {
     implementation(projects.schildi.lib)
+    implementation(libs.androidx.work) // SC
     implementation(libs.dagger)
     implementation(projects.features.enterprise.api)
     implementation(projects.libraries.androidutils)

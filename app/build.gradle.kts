@@ -321,6 +321,7 @@ dependencies {
     implementation(projects.schildi.theme)
     implementation(projects.schildi.lib) // Needed for DI
     implementation(projects.schildi.matrixsdk) // Needed for DI
+    implementation(libs.androidx.work) // Still SC
     implementation(libs.androidx.emoji2)
     implementation(libs.androidx.emoji2.bundled)
     allLibrariesImpl()

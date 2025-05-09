@@ -15,12 +15,15 @@ import io.element.android.libraries.core.log.logger.LoggerTag
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.di.AppScope
 import io.element.android.libraries.matrix.api.auth.MatrixAuthenticationService
+import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.push.impl.history.PushHistoryService
 import io.element.android.libraries.push.impl.history.onDiagnosticPush
 import io.element.android.libraries.push.impl.history.onInvalidPushReceived
 import io.element.android.libraries.push.impl.history.onSuccess
 import io.element.android.libraries.push.impl.history.onUnableToResolveEvent
 import io.element.android.libraries.push.impl.history.onUnableToRetrieveSession
+import io.element.android.libraries.push.impl.history.scOnDeferredPushHandling
+import io.element.android.libraries.push.impl.history.scOnException
 import io.element.android.libraries.push.impl.notifications.NotifiableEventResolver
 import io.element.android.libraries.push.impl.notifications.channels.NotificationChannels
 import io.element.android.libraries.push.impl.notifications.model.NotifiableRingingCallEvent
@@ -59,34 +62,41 @@ class DefaultPushHandler @Inject constructor(
      * @param pushData the data received in the push.
      * @param providerInfo the provider info.
      */
-    override suspend fun handle(pushData: PushData, providerInfo: String) {
+    override suspend fun handle(pushData: PushData, providerInfo: String): Boolean {
         Timber.tag(loggerTag.value).d("## handling pushData: ${pushData.roomId}/${pushData.eventId}")
         if (buildMeta.lowPrivacyLoggingEnabled) {
             Timber.tag(loggerTag.value).d("## pushData: $pushData")
         }
-        incrementPushDataStore.incrementPushCounter()
+        //incrementPushDataStore.incrementPushCounter() // SC: Moved to scHandleReceived()
         // Diagnostic Push
-        if (pushData.eventId == DefaultTestPush.TEST_EVENT_ID) {
+        return if (pushData.eventId == DefaultTestPush.TEST_EVENT_ID) {
             pushHistoryService.onDiagnosticPush(providerInfo)
             diagnosticPushHandler.handlePush()
+            true
         } else {
             handleInternal(pushData, providerInfo)
         }
     }
 
     override suspend fun handleInvalid(providerInfo: String, data: String) {
-        incrementPushDataStore.incrementPushCounter()
+        //incrementPushDataStore.incrementPushCounter() // SC: Moved to scHandleReceived()
         pushHistoryService.onInvalidPushReceived(providerInfo, data)
     }
+
+    override suspend fun scHandleReceived() = incrementPushDataStore.incrementPushCounter()
+    override suspend fun scHandleDeferred(providerInfo: String, pushData: PushData?) =
+        pushHistoryService.scOnDeferredPushHandling(providerInfo, pushData)
 
     /**
      * Internal receive method.
      *
      * @param pushData Object containing message data.
      * @param providerInfo the provider info.
+     *
+     * @return true if handling was successful / should not retry. SC addition.
      */
-    private suspend fun handleInternal(pushData: PushData, providerInfo: String) {
-        try {
+    private suspend fun handleInternal(pushData: PushData, providerInfo: String): Boolean {
+        return try {
             if (buildMeta.lowPrivacyLoggingEnabled) {
                 Timber.tag(loggerTag.value).d("## handleInternal() : $pushData")
             } else {
@@ -119,7 +129,7 @@ class DefaultPushHandler @Inject constructor(
                     roomId = pushData.roomId,
                     reason = reason,
                 )
-                return
+                return true
             }
             notifiableEventResolver.resolveEvent(userId, pushData.roomId, pushData.eventId).fold(
                 onSuccess = { resolvedPushEvent ->
@@ -156,6 +166,7 @@ class DefaultPushHandler @Inject constructor(
                             onRedactedEventReceived.onRedactedEventReceived(resolvedPushEvent)
                         }
                     }
+                    true
                 },
                 onFailure = { failure ->
                     Timber.tag(loggerTag.value).w(failure, "Unable to get a notification data")
@@ -166,10 +177,13 @@ class DefaultPushHandler @Inject constructor(
                         sessionId = userId,
                         reason = failure.message ?: failure.javaClass.simpleName,
                     )
+                    false
                 }
             )
         } catch (e: Exception) {
             Timber.tag(loggerTag.value).e(e, "## handleInternal() failed")
+            pushHistoryService.scOnException(providerInfo, pushData, null, (e.message ?: e.javaClass.name))
+            false
         }
     }
 

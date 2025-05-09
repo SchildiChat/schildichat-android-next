@@ -15,11 +15,15 @@ class FakePushHandler(
     private val handleResult: (PushData, String) -> Unit = { _, _ -> lambdaError() },
     private val handleInvalidResult: (String, String) -> Unit = { _, _ -> lambdaError() },
 ) : PushHandler {
-    override suspend fun handle(pushData: PushData, providerInfo: String) {
+    override suspend fun handle(pushData: PushData, providerInfo: String): Boolean {
         handleResult(pushData, providerInfo)
+        return true
     }
 
     override suspend fun handleInvalid(providerInfo: String, data: String) {
         handleInvalidResult(providerInfo, data)
     }
+
+    override suspend fun scHandleReceived() {}
+    override suspend fun scHandleDeferred(providerInfo: String, pushData: PushData?) {}
 }

@@ -28,10 +28,16 @@
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
-            android:exported="false">
+            android:exported="false"
+            tools:node="merge"> <!-- merge for fork manager - SC -->
             <meta-data
                 android:name='androidx.lifecycle.ProcessLifecycleInitializer'
                 android:value='androidx.startup' />
+            <!-- SC -->
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" /> <!-- SC -->
         </provider>
 
         <activity

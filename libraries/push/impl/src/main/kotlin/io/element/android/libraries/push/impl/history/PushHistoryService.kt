@@ -10,6 +10,7 @@ package io.element.android.libraries.push.impl.history
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.SessionId
+import io.element.android.libraries.pushproviders.api.PushData
 
 interface PushHistoryService {
     /**
@@ -102,4 +103,28 @@ fun PushHistoryService.onDiagnosticPush(
     hasBeenResolved = true,
     includeDeviceState = false,
     comment = "Diagnostic push",
+)
+
+fun PushHistoryService.scOnDeferredPushHandling(
+    providerInfo: String, pushData: PushData?,
+) = onPushReceived(
+    providerInfo = providerInfo,
+    eventId = pushData?.eventId,
+    roomId = pushData?.roomId,
+    sessionId = null,
+    hasBeenResolved = true,
+    includeDeviceState = false,
+    comment = if (pushData == null) "[Deferred] Invalid or ignored push data" else "[Deferred]",
+)
+
+fun PushHistoryService.scOnException(
+    providerInfo: String, pushData: PushData, sessionId: SessionId?, message: String,
+) = onPushReceived(
+    providerInfo = providerInfo,
+    eventId = pushData.eventId,
+    roomId = pushData.roomId,
+    sessionId = sessionId,
+    hasBeenResolved = false,
+    includeDeviceState = true,
+    comment = "Exception: $message",
 )

@@ -182,4 +182,8 @@
     <string name="sc_about_based_on_element_x_version">Based on Element X: %1$s</string>
     <string name="sc_about_git_revision">Built from: %1$s</string>
     <string name="sc_about_device_id">Device: %1$s</string>
+
+    <string name="sc_push_handler_notification_title">Handling push</string>
+    <string name="sc_push_handler_notification_summary">Fetching messages</string>
+    <string name="sc_bg_notification_channel">Background service</string>
 </resources>

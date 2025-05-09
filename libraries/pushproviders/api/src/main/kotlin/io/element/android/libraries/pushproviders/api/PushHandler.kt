@@ -11,10 +11,13 @@ interface PushHandler {
     suspend fun handle(
         pushData: PushData,
         providerInfo: String,
-    )
+    ): Boolean
 
     suspend fun handleInvalid(
         providerInfo: String,
         data: String,
     )
+
+    suspend fun scHandleReceived()
+    suspend fun scHandleDeferred(providerInfo: String, pushData: PushData?)
 }

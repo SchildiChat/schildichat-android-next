@@ -7,7 +7,6 @@
 
 package io.element.android.x
 
-import android.app.Application
 import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.text.EmojiCompat
 import androidx.startup.AppInitializer
@@ -21,7 +20,7 @@ import io.element.android.x.info.logApplicationInfo
 import io.element.android.x.initializer.CrashInitializer
 import io.element.android.x.initializer.PlatformInitializer
 
-class ElementXApplication : Application(), DaggerComponentOwner {
+class ElementXApplication : ScApplication(), DaggerComponentOwner {
     override val daggerComponent: AppComponent = DaggerAppComponent.factory().create(this)
 
     override fun onCreate() {

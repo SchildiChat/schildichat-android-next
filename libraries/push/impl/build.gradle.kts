@@ -25,6 +25,7 @@ android {
 setupAnvil()
 
 dependencies {
+    implementation(projects.schildi.lib)
     implementation(libs.dagger)
     implementation(libs.androidx.corektx)
     implementation(libs.androidx.datastore.preferences)

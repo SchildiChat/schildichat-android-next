@@ -164,4 +164,7 @@
     <string name="sc_about_git_revision">Sestaveno z: %1$s</string>
     <string name="sc_about_device_id">Zařízení: %1$s</string>
     <string name="sc_about_based_on_element_x_version">Založeno na Elementu X: %1$s</string>
+    <string name="sc_bg_notification_channel">Služba na pozadí</string>
+    <string name="sc_push_handler_notification_title">Ovládání push oznámení</string>
+    <string name="sc_push_handler_notification_summary">Stahování zpráv</string>
 </resources>

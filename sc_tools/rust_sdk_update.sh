@@ -34,7 +34,7 @@ echo "           $COMPONENTS_DIR"
 if [ -z "$rust_ver" ]; then
     upstream_tag=`upstream_latest_tag`
 
-    rust_ver="$(git show "$upstream_tag:gradle/libs.versions.toml" | grep "org.matrix.rustcomponents:sdk-android:" | sed 's|.*:\(.*\)"|\1|' | sed 's|\([0-9]*\)\.\([1-9]\)\.\([0-9]\)|\1.0\2.\3|')"
+    rust_ver="$(git show "$upstream_tag:gradle/libs.versions.toml" | grep "org.matrix.rustcomponents:sdk-android:" | sed 's|.*:\(.*\)"|\1|')"
 fi
 
 if [ -z "$rust_ver" ]; then

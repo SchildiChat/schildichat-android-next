@@ -22,6 +22,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -39,6 +40,7 @@ import io.element.android.features.roomlist.impl.components.RoomListMenuAction
 import io.element.android.features.roomlist.impl.components.RoomListTopBar
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.features.roomlist.impl.search.RoomListSearchView
+import io.element.android.libraries.androidutils.throttler.FirstThrottler
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.FloatingActionButton
@@ -66,6 +68,9 @@ fun RoomListView(
     modifier: Modifier = Modifier,
     acceptDeclineInviteView: @Composable () -> Unit,
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val firstThrottler = remember { FirstThrottler(300, coroutineScope) }
+
     ConnectivityIndicatorContainer(
         modifier = modifier,
         isOnline = state.hasNetworkConnection,
@@ -97,9 +102,9 @@ fun RoomListView(
                 state = state,
                 onSetUpRecoveryClick = onSetUpRecoveryClick,
                 onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
-                onRoomClick = onRoomClick,
-                onOpenSettings = onSettingsClick,
-                onCreateRoomClick = onCreateRoomClick,
+                onRoomClick = { if (firstThrottler.canHandle()) onRoomClick(it) },
+                onOpenSettings = { if (firstThrottler.canHandle()) onSettingsClick() },
+                onCreateRoomClick = { if (firstThrottler.canHandle()) onCreateRoomClick() },
                 onMenuActionClick = onMenuActionClick,
                 modifier = Modifier.padding(top = topPadding),
             )
@@ -108,7 +113,7 @@ fun RoomListView(
                 state = state.searchState,
                 eventSink = state.eventSink,
                 hideInvitesAvatars = state.hideInvitesAvatars,
-                onRoomClick = onRoomClick,
+                onRoomClick = { if (firstThrottler.canHandle()) onRoomClick(it) },
                 modifier = Modifier
                     .statusBarsPadding()
                     .padding(top = topPadding)

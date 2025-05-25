@@ -692,6 +692,12 @@ class RustMatrixClient(
         }
     }
 
+    override suspend fun canReportRoom(): Boolean = withContext(sessionDispatcher) {
+        runCatching {
+            innerClient.isReportRoomApiSupported()
+        }.getOrDefault(false)
+    }
+
     private suspend fun File.getCacheSize(
         includeCryptoDb: Boolean = false,
     ): Long = withContext(sessionDispatcher) {

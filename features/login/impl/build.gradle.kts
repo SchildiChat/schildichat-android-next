@@ -27,11 +27,14 @@ android {
 setupAnvil(componentMergingStrategy = ComponentMergingStrategy.KSP)
 
 dependencies {
+    implementation(projects.schildi.lib)
     implementation(projects.appconfig)
     implementation(projects.features.enterprise.api)
+    implementation(projects.features.rageshake.api)
     implementation(projects.libraries.core)
     implementation(projects.libraries.androidutils)
     implementation(projects.libraries.architecture)
+    implementation(projects.libraries.featureflag.api)
     implementation(projects.libraries.matrix.api)
     implementation(projects.libraries.matrix.api)
     implementation(projects.libraries.network)
@@ -57,6 +60,7 @@ dependencies {
     testImplementation(libs.test.truth)
     testImplementation(libs.test.turbine)
     testImplementation(projects.features.enterprise.test)
+    testImplementation(projects.libraries.featureflag.test)
     testImplementation(projects.libraries.matrix.test)
     testImplementation(projects.libraries.oidc.impl)
     testImplementation(projects.libraries.permissions.test)

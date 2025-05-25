@@ -210,7 +210,7 @@ private fun RoomListModalBottomSheetContent(
             ),
             style = ListItemStyle.Destructive,
         )
-        if (contextMenu.eventCacheFeatureFlagEnabled) {
+        if (contextMenu.displayClearRoomCacheAction) {
             ListItem(
                 headlineContent = {
                     Text(text = "Clear cache for this room")

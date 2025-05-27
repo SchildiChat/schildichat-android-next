@@ -1,2 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="sc_action_low_priority">Низкий приоритет</string>
+    <string name="sc_pref_sc_floating_date_title">Плавающая дата</string>
+    <string name="sc_pref_sc_floating_date_summary">Показать дату над сообщением во время прокрутки</string>
+    <string name="sc_pref_pl_display_name_title">Назовите цвета по уровню мощности</string>
+    <string name="sc_pref_fast_transitions_title">Быстрый переход</string>
+    <string name="sc_pref_fast_transitions_summary">Ускорить анимацию окна</string>
+    <string name="sc_pref_compact_app_bar_title">Компактная панель приложения</string>
+    <string name="sc_space_nav_summary">Фильтровать ваши чаты по пространствам</string>
+    <string name="sc_space_nav_title">Промежуточная навигация</string>
+    <string name="sc_compact_root_spaces_summary">Показать иконки без имён для корневых пространств</string>
+    <string name="sc_space_swipe_summary">Перетащите обзор чата горизонтально, чтобы переключиться между пространствами</string>
+    <string name="sc_space_unread_counts_mode_messages">Считать непрочитанные сообщения</string>
+    <string name="sc_space_unread_counts_mode_chats">Считать непрочитанные чаты</string>
+    <string name="sc_space_unread_counts_mode_hide">Скрыть</string>
+    <string name="sc_sync_read_receipt_and_marker_title_short">Синхронизировать маркеры прочтения</string>
+    <string name="sc_pref_mark_read_requires_seen_unread_line_title">Отмечать прочитанным только после полного прочтения</string>
+    <string name="sc_pref_mark_read_requires_seen_unread_line_title_short">Требовать полного прочтения</string>
+    <string name="sc_set_read_marker_toast_start">Установка маркера прочтения на %s</string>
+    <string name="sc_set_read_marker_implicit_toast_start">Установка маркера прочтения…</string>
+    <string name="sc_push_info_title">Push-информация</string>
+    <string name="sc_pref_notification_only_alert_once_title">Оповещать только один раз</string>
+    <string name="sc_action_apply">Применить</string>
+    <string name="sc_pref_el_typography_summary">Использовать настройки шрифта из Element для увеличения размера текста сообщения</string>
+    <string name="sc_pref_compact_app_bar_summary">Никогда не раскрывать верхнюю панель приложения</string>
+    <string name="sc_compact_root_spaces_title">Компактные корневые пространства</string>
+    <string name="sc_pref_sc_layout_title">SC компановка</string>
+    <string name="sc_space_swipe_title">Свайп, чтобы переключаться между пространствами</string>
+    <string name="sc_onboarding_welcome_title">Добро пожаловать в SchildiChat</string>
+    <string name="sc_pref_sc_themes_summary">Отключите, чтобы использовать тему из Element.</string>
+    <string name="sc_space_unread_counts_mode_title">Общее количество непрочитанных</string>
+    <string name="sc_pref_sc_timeline_layout_title">SC компановка беседы</string>
+    <string name="sc_onboarding_welcome_summary">Привносим черепах в Matrix</string>
+    <string name="sc_pref_el_typography_title">Типография Element</string>
+    <string name="sc_pref_sc_overview_layout_title">SC компановка обзора</string>
+    <string name="sc_pref_tweaks_title">Настройка черепахи</string>
+    <string name="sc_push_info_summary">Просмотр информации об отладке push-уведомлений</string>
+    <string name="sc_pref_notification_only_alert_once_summary">Отключить звуковые оповещения для новых сообщений, если для этого чата уже есть открытое оповещение</string>
+    <string name="sc_pref_sc_themes_title">SC тема</string>
+    <string name="sc_sync_read_receipt_and_marker_title">Синхронизировать маркер прочтения и получения</string>
+    <string name="sc_pref_sc_layout_summary">Отключите, чтобы использовать компановку из Element.</string>
+    <string name="sc_pref_pl_display_name_summary_warning">Работает ненадежно, если список участников еще не был полностью загружен</string>
+    <string name="sc_pref_mark_read_requires_seen_unread_line_summary">Не помечать чаты прочитанными, если непрочитанная строка не была видна после открытия чата.</string>
+    <string name="sc_sync_read_receipt_and_marker_summary">Всегда устанавливать маркер прочитанных сообщений (то, что видят другие, и то, что подсчитывает количество ваших непрочитанных сообщений) на то же сообщение, что и маркер полностью прочитанных сообщений (строка новых сообщений при просмотре чата)</string>
+    <string name="sc_client_generated_unread_counts_title">Количество непрочитанных, созданных пользователем</string>
+    <string name="sc_client_generated_unread_counts_summary">Вычислять количество непрочитанных на устройстве вместо того, чтобы доверять значениям с сервера</string>
+</resources>

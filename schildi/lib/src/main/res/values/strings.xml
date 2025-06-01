@@ -69,6 +69,7 @@
     <string name="sc_pref_prefer_fullscreen_reaction_sheet_summary">Let the emoji reaction picker immediately expand fully when opened</string>
     <string name="sc_pseudo_spaces_title">Pseudo spaces</string>
     <string name="sc_pseudo_spaces_summary_experimental">Additional space pages (experimental)</string>
+    <string name="sc_space_all_rooms_summary">You may no longer see all your chats or invites if you disable this.</string>
     <string name="sc_pseudo_space_favorites">Favorites</string>
     <string name="sc_pseudo_space_dms">Direct chats</string>
     <string name="sc_pseudo_space_groups">All groups</string>

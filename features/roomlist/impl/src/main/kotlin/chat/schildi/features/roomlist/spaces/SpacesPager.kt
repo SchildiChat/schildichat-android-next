@@ -160,6 +160,8 @@ private fun ColumnScope.SpacesPager(
         }
     }
 
+    val allowAllRooms = defaultSpace != null || ScPrefs.PSEUDO_SPACE_ALL_ROOMS.value()
+
     // Child spaces if expanded
     if (selectedSpaceIndex != -1 && expandSpaceChildren) {
         val safeSpace = spacesList[selectedSpaceIndex] as? SpaceListDataSource.SpaceHierarchyItem
@@ -194,7 +196,7 @@ private fun ColumnScope.SpacesPager(
             val decay: DecayAnimationSpec<Float> = rememberSplineBasedDecay()
             // Note: we have spacesList.size+1 tabs
             val canSwipeUp = selectedTab < spacesList.size
-            val canSwipeDown = selectedTab > 0
+            val canSwipeDown = if (allowAllRooms) selectedTab > 0 else selectedTab > 1
             Box(
                 Modifier
                     .weight(1f, fill = true)
@@ -261,15 +263,16 @@ private fun ColumnScope.SpacesPager(
             MaterialTheme.colorScheme.primary,
         label = "tabIndicatorColor"
     ).value
+    val selectedTabRendered = selectedTab.correctDownIfNot(allowAllRooms)
     ScrollableTabRow(
-        selectedTabIndex = selectedTab,
+        selectedTabIndex = selectedTabRendered,
         edgePadding = 0.dp,
         minTabWidth = 0.dp,
         containerColor = MaterialTheme.colorScheme.secondaryContainer,
         indicator = { tabPositions ->
             Box(
                 Modifier
-                    .tabIndicatorOffset(tabPositions.getOrNull(selectedTab) ?: tabPositions[0])
+                    .tabIndicatorOffset(tabPositions.getOrNull(selectedTabRendered) ?: tabPositions[0])
                     .fillMaxWidth()
                     .padding(horizontal = 4.dp)
                     .height(3.dp)
@@ -281,18 +284,20 @@ private fun ColumnScope.SpacesPager(
             onSpaceBarHeightUpdate()
         },
     ) {
-        if (defaultSpace != null) {
-            SpaceTab(defaultSpace, selectedTab == 0, expandSpaceChildren, false, compactTabs) {
-                expandSpaceChildren = false
-                if (selectedTab != 0) {
-                    selectSpace(null, parentSelection)
+        if (allowAllRooms) {
+            if (defaultSpace != null) {
+                SpaceTab(defaultSpace, selectedTab == 0, expandSpaceChildren, false, compactTabs) {
+                    expandSpaceChildren = false
+                    if (selectedTab != 0) {
+                        selectSpace(null, parentSelection)
+                    }
                 }
-            }
-        } else {
-            ShowAllTab(totalUnreadCounts, selectedTab == 0, expandSpaceChildren, compactTabs) {
-                expandSpaceChildren = false
-                if (selectedTab != 0) {
-                    selectSpace(null, parentSelection)
+            } else {
+                ShowAllTab(totalUnreadCounts, selectedTab == 0, expandSpaceChildren, compactTabs) {
+                    expandSpaceChildren = false
+                    if (selectedTab != 0) {
+                        selectSpace(null, parentSelection)
+                    }
                 }
             }
         }
@@ -323,6 +328,9 @@ private fun ColumnScope.SpacesPager(
         }
     }
 }
+
+private fun Int.correctDownIfNot(condition: Boolean) = if (condition) this else dec()
+private fun Int.correctUpIfNot(condition: Boolean) = if (condition) this else inc()
 
 private fun selectSpaceIndex(
     index: Int,

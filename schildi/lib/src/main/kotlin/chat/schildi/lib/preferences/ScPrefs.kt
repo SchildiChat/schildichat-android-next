@@ -57,6 +57,7 @@ object ScPrefs {
         dependencies = SPACE_NAV.asDependencies(),
     )
     val SPACE_SWIPE = ScBoolPref("SPACE_SWIPE", true, R.string.sc_space_swipe_title, R.string.sc_space_swipe_summary, upstreamChoice = false, authorsChoice = true, dependencies = SPACE_NAV.asDependencies())
+    val PSEUDO_SPACE_ALL_ROOMS = ScBoolPref("PSEUDO_SPACE_ALL_CHATS", true, R.string.sc_space_all_rooms_title, R.string.sc_space_all_rooms_summary, dependencies = SPACE_NAV.asDependencies())
     val PSEUDO_SPACE_FAVORITES = ScBoolPref("PSEUDO_SPACE_FAVORITES", false, R.string.sc_pseudo_space_favorites, null, dependencies = SPACE_NAV.asDependencies())
     val PSEUDO_SPACE_DMS = ScBoolPref("PSEUDO_SPACE_DMS", false, R.string.sc_pseudo_space_dms, null, dependencies = SPACE_NAV.asDependencies())
     val PSEUDO_SPACE_GROUPS = ScBoolPref("PSEUDO_SPACE_GROUPS", false, R.string.sc_pseudo_space_groups, null, dependencies = SPACE_NAV.asDependencies())
@@ -163,6 +164,7 @@ object ScPrefs {
             COMPACT_ROOT_SPACES,
             ScPrefScreen(R.string.sc_pseudo_spaces_title, R.string.sc_pseudo_spaces_summary_experimental, listOf(
                 ScPrefCategory(R.string.sc_pseudo_spaces_title, null, listOf(
+                    PSEUDO_SPACE_ALL_ROOMS,
                     PSEUDO_SPACE_FAVORITES,
                     PSEUDO_SPACE_DMS,
                     PSEUDO_SPACE_GROUPS,
@@ -257,6 +259,7 @@ object ScPrefs {
             SPACE_NAV,
             COMPACT_ROOT_SPACES,
             ScPrefCategory(R.string.sc_pseudo_spaces_title, null, listOf(
+                PSEUDO_SPACE_ALL_ROOMS,
                 PSEUDO_SPACE_FAVORITES,
                 PSEUDO_SPACE_DMS,
                 PSEUDO_SPACE_GROUPS,

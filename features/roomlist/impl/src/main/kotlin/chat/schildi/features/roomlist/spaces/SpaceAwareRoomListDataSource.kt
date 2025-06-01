@@ -2,9 +2,9 @@ package chat.schildi.features.roomlist.spaces
 
 import chat.schildi.lib.preferences.ScAppStateStore
 import chat.schildi.lib.preferences.ScPreferencesStore
+import chat.schildi.lib.preferences.ScPrefs
 import io.element.android.features.roomlist.impl.datasource.RoomListDataSource
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
-import io.element.android.libraries.matrix.api.MatrixClient
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -89,10 +89,11 @@ class SpaceAwareRoomListDataSource @Inject constructor(
         // Filter by space with the room id list built in the previous flow
         combine(
             _selectedSpaceItem,
-           roomListDataSource.allRooms
-        ) { selectedSpace, allRoomsValue ->
+            roomListDataSource.allRooms,
+            scPreferencesStore.settingFlow(ScPrefs.PSEUDO_SPACE_ALL_ROOMS),
+        ) { selectedSpace, allRoomsValue, allowAllRooms ->
             // Do the actual filtering
-            selectedSpace?.applyFilter(allRoomsValue) ?: allRoomsValue
+            selectedSpace?.applyFilter(allRoomsValue) ?: allRoomsValue.takeIf { allowAllRooms } ?: persistentListOf()
         }
             .onEach {
                 _spaceRooms.emit(it)

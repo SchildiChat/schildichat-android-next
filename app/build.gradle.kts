@@ -253,6 +253,12 @@ android {
         }
     }
 }
+// SC: Disable baseline profiles to fix reproducible builds - https://github.com/SchildiChat/schildichat-android-next/issues/65
+tasks.whenTaskAdded {
+    if (name.contains("ArtProfile")) {
+        enabled = false
+    }
+}
 // SC: Disable unused upstream configs
 androidComponents {
     beforeVariants { variantBuilder ->

@@ -8,6 +8,7 @@
 package io.element.android.features.roomlist.impl.datasource
 
 import chat.schildi.features.roomlist.ScInboxSettingsSource
+import chat.schildi.lib.preferences.ScPreferencesStore
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.libraries.androidutils.diff.DiffCacheUpdater
 import io.element.android.libraries.androidutils.diff.MutableListDiffCache
@@ -38,6 +39,7 @@ class RoomListDataSource @Inject constructor(
     private val coroutineDispatchers: CoroutineDispatchers,
     private val notificationSettingsService: NotificationSettingsService,
     private val scInboxSettingsSource: ScInboxSettingsSource,
+    scPreferencesStore: ScPreferencesStore,
     private val appScope: CoroutineScope,
     private val dateTimeObserver: DateTimeObserver,
 ) {
@@ -54,7 +56,7 @@ class RoomListDataSource @Inject constructor(
         old?.roomId == new?.roomId
     }
 
-    val allRooms: Flow<ImmutableList<RoomListRoomSummary>> = _allRooms
+    val allRooms: Flow<ImmutableList<RoomListRoomSummary>> = _allRooms.applyInviteFilterSetting(scPreferencesStore)
 
     val loadingState = roomListService.allRooms.loadingState
 

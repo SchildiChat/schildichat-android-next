@@ -44,6 +44,8 @@ object ScPrefs {
         )
     )
     val DUAL_MENTION_UNREAD_COUNTS = ScBoolPref("DUAL_MENTION_UNREAD_COUNTS", false, R.string.sc_pref_dual_mention_unread_counts_title, R.string.sc_pref_dual_mention_unread_counts_summary, authorsChoice = true, dependencies = SC_OVERVIEW_LAYOUT.asDependencies())
+    val HIDE_INVITES = ScBoolPref("HIDE_INVITES", false, R.string.sc_pref_hide_invites_title, R.string.sc_pref_hide_invites_summary, authorsChoice = true)
+
     // Spaces
     val SPACE_NAV = ScBoolPref("SPACE_NAV", true, R.string.sc_space_nav_title, R.string.sc_space_nav_summary, upstreamChoice = false, authorsChoice = true)
     val COMPACT_ROOT_SPACES = ScBoolPref("COMPACT_ROOT_SPACES", false, R.string.sc_compact_root_spaces_title, R.string.sc_compact_root_spaces_summary, authorsChoice = true, dependencies = SPACE_NAV.asDependencies())
@@ -150,6 +152,7 @@ object ScPrefs {
             ELEMENT_ROOM_LIST_FILTERS,
             SNC_FAB,
             RENDER_SILENT_UNREAD,
+            HIDE_INVITES,
             ScPrefCategory(R.string.sc_pref_category_chat_sorting, null, listOf(
                 SORT_BY_UNREAD,
                 SORT_WITH_SILENT_UNREAD,
@@ -271,6 +274,7 @@ object ScPrefs {
             ), dependencies = SPACE_NAV.asDependencies()),
         )),
         ScPrefCategory(R.string.sc_pref_category_misc, null, listOf(
+            HIDE_INVITES,
             DUAL_MENTION_UNREAD_COUNTS.copy(titleRes = R.string.sc_pref_dual_mention_unread_counts_title_short),
             CLIENT_GENERATED_UNREAD_COUNTS,
             SYNC_READ_RECEIPT_AND_MARKER.copy(titleRes = R.string.sc_sync_read_receipt_and_marker_title_short),

@@ -100,6 +100,8 @@
     <string name="sc_pref_user_changed_prefs_empty">Everything is default</string>
     <string name="sc_pref_hide_call_toolbar_action_title">Hide call action</string>
     <string name="sc_pref_hide_call_toolbar_action_summary">Move call action into overflow menu, and hide completely when the chat does not allow calls</string>
+    <string name="sc_pref_hide_invites_title">Hide invites</string>
+    <string name="sc_pref_hide_invites_summary">Do not show any invites in the app. Note there is another setting to not notify for invites in notification settings.</string>
 
     <string name="sc_pref_dev_quick_options">Quick settings</string>
     <string name="sc_pref_debug_read_marker">Debug read marker</string>

@@ -7,7 +7,9 @@
 
 package io.element.android.features.roomlist.impl.search
 
+import chat.schildi.lib.preferences.ScPreferencesStore
 import io.element.android.features.roomlist.impl.datasource.RoomListRoomSummaryFactory
+import io.element.android.features.roomlist.impl.datasource.applyInviteFilterSetting
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.matrix.api.roomlist.RoomList
@@ -27,6 +29,7 @@ private const val PAGE_SIZE = 30
 class RoomListSearchDataSource @Inject constructor(
     roomListService: RoomListService,
     coroutineDispatchers: CoroutineDispatchers,
+    scPreferencesStore: ScPreferencesStore,
     private val roomSummaryFactory: RoomListRoomSummaryFactory,
 ) {
     private val roomList = roomListService.createRoomList(
@@ -35,12 +38,13 @@ class RoomListSearchDataSource @Inject constructor(
         source = RoomList.Source.All,
     )
 
-    val roomSummaries: Flow<PersistentList<RoomListRoomSummary>> = roomList.filteredSummaries
+    val roomSummaries/*: Flow<PersistentList<RoomListRoomSummary>>*/ = roomList.filteredSummaries
         .map { roomSummaries ->
             roomSummaries
                 .map(roomSummaryFactory::create)
                 .toPersistentList()
         }
+        .applyInviteFilterSetting(scPreferencesStore)
         .flowOn(coroutineDispatchers.computation)
 
     suspend fun setIsActive(isActive: Boolean) = coroutineScope {

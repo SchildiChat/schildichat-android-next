@@ -34,6 +34,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Differentiate notices from normal text messages by adding some transparency
 - Render collapsible `<details>` tags in messages
 - Suggest and record frequently used emoji reactions (synced with desktop clients via `io.element.recent_emoji` account data)
+- URL previews (optionally also in encrypted chats) †
 
 - Allow sending freeform reactions
 - Don't waste horizontal space in message bubbles with forced line-breaks that do not make full use of the available width

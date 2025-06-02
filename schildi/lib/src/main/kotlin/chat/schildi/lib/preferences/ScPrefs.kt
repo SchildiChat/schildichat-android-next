@@ -151,7 +151,6 @@ object ScPrefs {
             COMPACT_APP_BAR,
             ELEMENT_ROOM_LIST_FILTERS,
             SNC_FAB,
-            RENDER_SILENT_UNREAD,
             HIDE_INVITES,
             ScPrefCategory(R.string.sc_pref_category_chat_sorting, null, listOf(
                 SORT_BY_UNREAD,
@@ -159,12 +158,17 @@ object ScPrefs {
                 PIN_FAVORITES,
                 BURY_LOW_PRIORITY,
             )),
+            ScPrefCategory(R.string.sc_pref_category_unread_counts, null, listOf(
+                RENDER_SILENT_UNREAD,
+                DUAL_MENTION_UNREAD_COUNTS,
+            )),
         )),
         ScPrefScreen(R.string.sc_pref_category_spaces, null, listOf(
             SPACE_NAV,
             SPACE_UNREAD_COUNTS,
             SPACE_SWIPE,
             COMPACT_ROOT_SPACES,
+            SPACE_MANAGEMENT,
             ScPrefScreen(R.string.sc_pseudo_spaces_title, R.string.sc_pseudo_spaces_summary_experimental, listOf(
                 ScPrefCategory(R.string.sc_pseudo_spaces_title, null, listOf(
                     PSEUDO_SPACE_ALL_ROOMS,
@@ -187,6 +191,11 @@ object ScPrefs {
             FLOATING_DATE,
             HIDE_CALL_TOOLBAR_ACTION,
             REPLY_PREVIEW_LINE_COUNT,
+            ScPrefCategory(R.string.sc_url_previews_title, null, listOf(
+                URL_PREVIEWS,
+                URL_PREVIEWS_IN_E2EE_ROOMS,
+                URL_PREVIEWS_REQUIRE_EXPLICIT_LINKS,
+            )),
             ScPrefCategory(R.string.sc_pref_category_pinned_messages, null, listOf(
                 PINNED_MESSAGE_OVERLAY,
                 PINNED_MESSAGE_TOOLBAR_ACTION,
@@ -204,18 +213,9 @@ object ScPrefs {
             NOTIFICATION_ONLY_ALERT_ONCE,
         )),
         ScPrefScreen(R.string.sc_pref_screen_experimental_title, R.string.sc_pref_screen_experimental_summary, listOf(
-            ScPrefCategory(R.string.sc_pref_category_chat_overview, null, listOf(
-                DUAL_MENTION_UNREAD_COUNTS,
-                SPACE_MANAGEMENT,
-            )),
             ScPrefCategory(R.string.sc_pref_category_timeline, null, listOf(
                 PL_DISPLAY_NAME,
                 JUMP_TO_UNREAD,
-            )),
-            ScPrefCategory(R.string.sc_url_previews_title, null, listOf(
-                URL_PREVIEWS,
-                URL_PREVIEWS_IN_E2EE_ROOMS,
-                URL_PREVIEWS_REQUIRE_EXPLICIT_LINKS,
             )),
         )),
         ScPrefCategory(R.string.sc_pref_category_debug_infos, null, listOf(

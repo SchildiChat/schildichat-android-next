@@ -125,6 +125,7 @@
     <string name="sc_pref_category_misc">Misc</string>
     <string name="sc_pref_category_debug_infos">Debug infos</string>
     <string name="sc_pref_category_message_context_menu">Message context menu</string>
+    <string name="sc_pref_category_unread_counts">Unread counts</string>
 
     <string name="sc_pref_screen_experimental_title">Experimental</string>
     <string name="sc_pref_screen_experimental_summary">Unstable features, expect bugs</string>

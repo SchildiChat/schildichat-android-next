@@ -114,7 +114,7 @@ fun ManageSpacesRoomListContextMenuItems(
     // Only nullable as hack to not break previews and be lazy with building new node/overhead demanded by upstream architecture
     matrixClient: MatrixClient? = null,
 ) {
-    if (ScPrefs.SPACE_MANAGEMENT.value()) {
+    if (ScPrefs.SPACE_NAV.value()) {
         var showManagementDialog by remember { mutableStateOf(false) }
         if (showManagementDialog) {
             ManageParentSpacesDialog(

@@ -318,6 +318,8 @@ fun <T>ScListPref<T>.Rendered(initial: Any, onChange: (Any) -> Unit) {
         },
         supportingContent = summaryRes?.let {
             { Text(stringResource(it)) }
+        } ?: {
+            Text(selectedName)
         },
         onClick = { if (enabled) openDialog.value = true },
         enabled = enabled,

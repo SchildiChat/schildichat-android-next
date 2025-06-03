@@ -1,0 +1,4 @@
+- Update codebase to Element X v25.05.4
+- Allow hiding the "all chats" tab when space navigation is enabled
+- Add setting to hide invites from inbox
+- Move some settings out of the experimental section

@@ -167,4 +167,8 @@
     <string name="sc_bg_notification_channel">Služba na pozadí</string>
     <string name="sc_push_handler_notification_title">Ovládání push oznámení</string>
     <string name="sc_push_handler_notification_summary">Stahování zpráv</string>
+    <string name="sc_space_all_rooms_summary">Pokud tuto funkci deaktivujete, možná již neuvidíte všechny své chaty nebo pozvánky.</string>
+    <string name="sc_pref_hide_invites_title">Skrýt pozvánky</string>
+    <string name="sc_pref_hide_invites_summary">Nezobrazovat v aplikaci žádné pozvánky. Upozorňujeme, že v nastavení oznámení existuje další nastavení, které umožňuje nezobrazovat oznámení o pozvánkách.</string>
+    <string name="sc_pref_category_unread_counts">Počet nepřečtených</string>
 </resources>

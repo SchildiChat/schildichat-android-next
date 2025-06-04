@@ -41,6 +41,9 @@ internal fun CallMenuItem(
     modifier: Modifier = Modifier,
 ) {
     when (roomCallState) {
+        RoomCallState.Unavailable -> {
+            Box(modifier)
+        }
         is RoomCallState.StandBy -> {
             if (moveCallButtonToOverflow() || ScPrefs.HIDE_CALL_TOOLBAR_ACTION.value()) return // SC-condition
             StandByCallMenuItem(

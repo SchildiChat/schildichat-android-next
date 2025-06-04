@@ -20,11 +20,11 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.matrix.rustcomponents.sdk.Room
 import org.matrix.rustcomponents.sdk.RoomListEntriesDynamicFilterKind
 import org.matrix.rustcomponents.sdk.RoomListEntriesListener
 import org.matrix.rustcomponents.sdk.RoomListEntriesUpdate
 import org.matrix.rustcomponents.sdk.RoomListInterface
-import org.matrix.rustcomponents.sdk.RoomListItem
 import org.matrix.rustcomponents.sdk.RoomListLoadingState
 import org.matrix.rustcomponents.sdk.RoomListLoadingStateListener
 import org.matrix.rustcomponents.sdk.RoomListServiceInterface
@@ -139,7 +139,7 @@ internal fun RoomListServiceInterface.syncIndicator(): Flow<RoomListServiceSyncI
         )
     }.buffer(Channel.UNLIMITED)
 
-internal fun RoomListServiceInterface.roomOrNull(roomId: String): RoomListItem? {
+internal fun RoomListServiceInterface.roomOrNull(roomId: String): Room? {
     return tryOrNull(
         onError = { Timber.e(it, "Failed finding room with id=$roomId.") }
     ) {

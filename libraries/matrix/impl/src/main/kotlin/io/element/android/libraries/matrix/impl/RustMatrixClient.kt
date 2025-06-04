@@ -154,7 +154,7 @@ class RustMatrixClient(
     )
     private val notificationProcessSetup = NotificationProcessSetup.SingleProcess(innerSyncService)
     private val innerNotificationClient = runBlocking { innerClient.notificationClient(notificationProcessSetup) }
-    private val notificationService = RustNotificationService(innerNotificationClient, dispatchers, clock)
+    private val notificationService = RustNotificationService(sessionId, innerNotificationClient, dispatchers, clock)
     private val notificationSettingsService = RustNotificationSettingsService(innerClient, sessionCoroutineScope, dispatchers)
     private val encryptionService = RustEncryptionService(
         client = innerClient,
@@ -192,7 +192,6 @@ class RustMatrixClient(
 
     private val roomMembershipObserver = RoomMembershipObserver()
     private val roomFactory = RustRoomFactory(
-        innerClient = innerClient,
         roomListService = roomListService,
         innerRoomListService = innerRoomListService,
         sessionId = sessionId,

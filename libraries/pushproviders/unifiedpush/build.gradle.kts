@@ -44,9 +44,8 @@ dependencies {
     implementation(libs.serialization.json)
 
     // UnifiedPush library
-    api(libs.unifiedpush)
-    api(libs.unifiedpush.fcm)
-
+    implementation(libs.unifiedpush)
+    implementation(libs.unifiedpush.fcm)
     testImplementation(libs.coroutines.test)
     testImplementation(libs.test.junit)
     testImplementation(libs.test.robolectric)

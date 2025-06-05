@@ -16,11 +16,15 @@ import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import androidx.work.WorkerParameters
+import chat.schildi.lib.preferences.ScPreferencesStore
+import chat.schildi.lib.preferences.ScPrefs
 import dagger.assisted.Assisted
 import io.element.android.libraries.core.log.logger.LoggerTag
 import io.element.android.libraries.pushproviders.api.PushHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -92,12 +96,10 @@ class ScPushWorker(
             instance: String,
             pushHandler: PushHandler,
             pushParser: UnifiedPushParser,
+            scPreferencesStore: ScPreferencesStore,
             coroutineScope: CoroutineScope
         ): Boolean {
-            return if (Build.VERSION.SDK_INT < 31) {
-                // On old devices, non-worker approach is more reliable
-                false
-            } else {
+            return if (runBlocking { scPreferencesStore.settingFlow(ScPrefs.NOTIFICATION_WORKER).first() }) {
                 val id = "sc_push_${Pair(message, instance).hashCode()}"
                 val ts = System.currentTimeMillis()
                 Timber.tag(loggerTag.value).d("Launching push worker $id at $ts")
@@ -130,6 +132,8 @@ class ScPushWorker(
                     pushHandler.scHandleDeferred(instance, pushData)
                 }
                 true
+            } else {
+                false
             }
         }
         private const val PARAM_MESSAGE = "message"

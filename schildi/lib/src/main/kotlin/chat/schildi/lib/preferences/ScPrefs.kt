@@ -1,9 +1,13 @@
 package chat.schildi.lib.preferences
 
+import android.os.Build
 import chat.schildi.lib.R
 import io.element.android.libraries.ui.strings.CommonStrings
 
 object ScPrefs {
+
+    // On old devices, non-worker approach is more reliable
+    val DEFAULT_ENABLE_NOTIFICATION_WORKER = Build.VERSION.SDK_INT >= 31
 
     object SpaceUnreadCountMode {
         const val MESSAGES = "MESSAGES"
@@ -110,6 +114,7 @@ object ScPrefs {
     val SC_RESTORE_ADVANCED_THEME_DEFAULTS = ScActionablePref("SC_RESTORE_ADVANCED_THEME_DEFAULTS", R.string.sc_pref_restore_defaults)
     val SC_RESTORE_UPSTREAM = ScActionablePref("SC_RESTORE_UPSTREAM", R.string.sc_pref_restore_element, dependencies = SC_DANGER_ZONE.asDependencies())
     val SC_RESTORE_AUTHORS_CHOICE = ScActionablePref("SC_RESTORE_AUTHORS_CHOICE", R.string.sc_pref_restore_authors_choice, dependencies = SC_DANGER_ZONE.asDependencies())
+    val NOTIFICATION_WORKER = ScBoolPref("NOTIFICATION_WORKER", DEFAULT_ENABLE_NOTIFICATION_WORKER, R.string.sc_pref_notification_worker_title, R.string.sc_pref_notification_worker_summary, dependencies = SC_DANGER_ZONE.asDependencies())
 
     // Tests to be removed before release
     /*
@@ -226,6 +231,7 @@ object ScPrefs {
             SC_DANGER_ZONE,
             ScPrefScreen(R.string.sc_pref_chamber_of_secrets_title, null, listOf(
                 ScDisclaimerPref("SC_CHAMBER_OF_SECRETS_DISCLAIMER", R.string.sc_pref_chamber_of_secrets_summary),
+                NOTIFICATION_WORKER,
                 CLIENT_GENERATED_UNREAD_COUNTS,
                 SYNC_READ_RECEIPT_AND_MARKER,
                 MARK_READ_REQUIRES_SEEN_UNREAD_LINE,

@@ -131,6 +131,8 @@
     <string name="sc_pref_screen_experimental_summary">Unstable features, expect bugs</string>
     <string name="sc_pref_chamber_of_secrets_title">Chamber of Secrets</string>
     <string name="sc_pref_chamber_of_secrets_summary">Following settings are highly experimental and known to cause issues. Do not report bugs after changing these!</string>
+    <string name="sc_pref_notification_worker_title">Notification worker</string>
+    <string name="sc_pref_notification_worker_summary">Improved notification reliability with network-aware retries</string>
 
     <string name="sc_action_mark_as_read">Mark as read</string>
     <string name="sc_action_mark_as_unread">Mark as unread</string>

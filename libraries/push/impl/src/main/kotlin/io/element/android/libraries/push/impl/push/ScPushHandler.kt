@@ -7,6 +7,9 @@
 
 package io.element.android.libraries.push.impl.push
 
+import chat.schildi.lib.preferences.ScAppStateStore
+import chat.schildi.lib.preferences.ScPreferencesStore
+import chat.schildi.lib.preferences.ScPrefs
 import com.squareup.anvil.annotations.ContributesBinding
 import io.element.android.features.call.api.CallType
 import io.element.android.features.call.api.ElementCallEntryPoint
@@ -22,10 +25,10 @@ import io.element.android.libraries.push.impl.history.onSuccess
 import io.element.android.libraries.push.impl.history.onUnableToResolveEvent
 import io.element.android.libraries.push.impl.history.onUnableToRetrieveSession
 import io.element.android.libraries.push.impl.history.scOnDeferredPushHandling
+import io.element.android.libraries.push.impl.history.scOnException
+import io.element.android.libraries.push.impl.notifications.NotifiableEventResolver
 import io.element.android.libraries.push.impl.notifications.NotificationEventRequest
-import io.element.android.libraries.push.impl.notifications.NotificationResolverQueue
 import io.element.android.libraries.push.impl.notifications.channels.NotificationChannels
-import io.element.android.libraries.push.impl.notifications.model.NotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.NotifiableRingingCallEvent
 import io.element.android.libraries.push.impl.notifications.model.ResolvedPushEvent
 import io.element.android.libraries.push.impl.test.DefaultTestPush
@@ -34,23 +37,26 @@ import io.element.android.libraries.pushproviders.api.PushData
 import io.element.android.libraries.pushproviders.api.PushHandler
 import io.element.android.libraries.pushstore.api.UserPushStoreFactory
 import io.element.android.libraries.pushstore.api.clientsecret.PushClientSecret
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-private val loggerTag = LoggerTag("DefaultPushHandler", LoggerTag.PushLoggerTag)
+private val loggerTag = LoggerTag("ScPushHandler", LoggerTag.PushLoggerTag)
 
+/**
+ * Copy of DefaultPushHandler from v25.05.4 in order to drop event batch processing, we want per-message workers for reliability.
+ * TODO can we make the diff to upstream smaller again somehow? E.g. have the worker to listen for the first notification queue result for the query, and re-insert if necesarry?
+ */
 @SingleIn(AppScope::class)
-//@ContributesBinding(AppScope::class)
-class DefaultPushHandler @Inject constructor(
+@ContributesBinding(AppScope::class)
+class ScPushHandler @Inject constructor(
     private val onNotifiableEventReceived: OnNotifiableEventReceived,
     private val onRedactedEventReceived: OnRedactedEventReceived,
+    private val notifiableEventResolver: NotifiableEventResolver,
     private val incrementPushDataStore: IncrementPushDataStore,
     private val userPushStoreFactory: UserPushStoreFactory,
+    private val scAppStateStore: ScAppStateStore,
+    private val scPreferencesStore: ScPreferencesStore,
     private val pushClientSecret: PushClientSecret,
     private val buildMeta: BuildMeta,
     private val matrixAuthenticationService: MatrixAuthenticationService,
@@ -58,88 +64,10 @@ class DefaultPushHandler @Inject constructor(
     private val elementCallEntryPoint: ElementCallEntryPoint,
     private val notificationChannels: NotificationChannels,
     private val pushHistoryService: PushHistoryService,
-    private val resolverQueue: NotificationResolverQueue,
-    private val appCoroutineScope: CoroutineScope,
+    private val upstreamPushHandler: DefaultPushHandler,
 ) : PushHandler {
-    init {
-        processPushEventResults()
-    }
 
-    override suspend fun scHandleReceived() = incrementPushDataStore.incrementPushCounter()
-    override suspend fun scHandleDeferred(providerInfo: String, pushData: PushData?) =
-        pushHistoryService.scOnDeferredPushHandling(providerInfo, pushData)
-
-    /**
-     * Process the push notification event results emitted by the [resolverQueue].
-     */
-    private fun processPushEventResults() {
-        resolverQueue.results
-            .map { (requests, resolvedEvents) ->
-                for (request in requests) {
-                    // Log the result of the push notification event
-                    val result = resolvedEvents[request]
-                    if (result?.isSuccess == true) {
-                        pushHistoryService.onSuccess(
-                            providerInfo = request.providerInfo,
-                            eventId = request.eventId,
-                            roomId = request.roomId,
-                            sessionId = request.sessionId,
-                            comment = "Push handled successfully",
-                        )
-                    } else {
-                        pushHistoryService.onUnableToResolveEvent(
-                            providerInfo = request.providerInfo,
-                            eventId = request.eventId,
-                            roomId = request.roomId,
-                            sessionId = request.sessionId,
-                            reason = "Push not handled",
-                        )
-                    }
-                }
-
-                val events = mutableListOf<NotifiableEvent>()
-                val redactions = mutableListOf<ResolvedPushEvent.Redaction>()
-
-                @Suppress("LoopWithTooManyJumpStatements")
-                for (result in resolvedEvents.values) {
-                    val event = result.getOrNull() ?: continue
-                    val userPushStore = userPushStoreFactory.getOrCreate(event.sessionId)
-                    val areNotificationsEnabled = userPushStore.getNotificationEnabledForDevice().first()
-                    // If notifications are disabled for this session and device, we don't want to show the notification
-                    // But if it's a ringing call, we want to show it anyway
-                    val isRingingCall = (event as? ResolvedPushEvent.Event)?.notifiableEvent is NotifiableRingingCallEvent
-                    if (!areNotificationsEnabled && !isRingingCall) continue
-
-                    // We categorise each result into either a NotifiableEvent or a Redaction
-                    when (event) {
-                        is ResolvedPushEvent.Event -> {
-                            events.add(event.notifiableEvent)
-                        }
-                        is ResolvedPushEvent.Redaction -> {
-                            redactions.add(event)
-                        }
-                    }
-                }
-
-                // Process redactions of messages
-                if (redactions.isNotEmpty()) {
-                    onRedactedEventReceived.onRedactedEventsReceived(redactions)
-                }
-
-                // Find and process ringing call notifications separately
-                val (ringingCallEvents, nonRingingCallEvents) = events.partition { it is NotifiableRingingCallEvent }
-                for (ringingCallEvent in ringingCallEvents) {
-                    Timber.tag(loggerTag.value).d("Ringing call event: $ringingCallEvent")
-                    handleRingingCallEvent(ringingCallEvent as NotifiableRingingCallEvent)
-                }
-
-                // Finally, process other notifications (messages, invites, generic notifications, etc.)
-                if (nonRingingCallEvents.isNotEmpty()) {
-                    onNotifiableEventReceived.onNotifiableEventsReceived(nonRingingCallEvents)
-                }
-            }
-            .launchIn(appCoroutineScope)
-    }
+    private suspend fun shouldUseUpstream() = scPreferencesStore.settingFlow(ScPrefs.NOTIFICATION_WORKER).first().not()
 
     /**
      * Called when message is received.
@@ -148,34 +76,46 @@ class DefaultPushHandler @Inject constructor(
      * @param providerInfo the provider info.
      */
     override suspend fun handle(pushData: PushData, providerInfo: String): Boolean {
+        if (shouldUseUpstream()) {
+            return upstreamPushHandler.handle(pushData, providerInfo)
+        }
         Timber.tag(loggerTag.value).d("## handling pushData: ${pushData.roomId}/${pushData.eventId}")
         if (buildMeta.lowPrivacyLoggingEnabled) {
             Timber.tag(loggerTag.value).d("## pushData: $pushData")
         }
-        incrementPushDataStore.incrementPushCounter()
+        //incrementPushDataStore.incrementPushCounter() // SC: Moved to scHandleReceived()
         // Diagnostic Push
-        if (pushData.eventId == DefaultTestPush.TEST_EVENT_ID) {
+        return if (pushData.eventId == DefaultTestPush.TEST_EVENT_ID) {
             pushHistoryService.onDiagnosticPush(providerInfo)
             diagnosticPushHandler.handlePush()
+            true
         } else {
             handleInternal(pushData, providerInfo)
         }
-        return true
     }
 
     override suspend fun handleInvalid(providerInfo: String, data: String) {
-        incrementPushDataStore.incrementPushCounter()
+        if (shouldUseUpstream()) {
+            return upstreamPushHandler.handleInvalid(providerInfo, data)
+        }
+        //incrementPushDataStore.incrementPushCounter() // SC: Moved to scHandleReceived()
         pushHistoryService.onInvalidPushReceived(providerInfo, data)
     }
+
+    override suspend fun scHandleReceived() = incrementPushDataStore.incrementPushCounter()
+    override suspend fun scHandleDeferred(providerInfo: String, pushData: PushData?) =
+        pushHistoryService.scOnDeferredPushHandling(providerInfo, pushData)
 
     /**
      * Internal receive method.
      *
      * @param pushData Object containing message data.
      * @param providerInfo the provider info.
+     *
+     * @return true if handling was successful / should not retry. SC addition.
      */
-    private suspend fun handleInternal(pushData: PushData, providerInfo: String) {
-        try {
+    private suspend fun handleInternal(pushData: PushData, providerInfo: String): Boolean {
+        return try {
             if (buildMeta.lowPrivacyLoggingEnabled) {
                 Timber.tag(loggerTag.value).d("## handleInternal() : $pushData")
             } else {
@@ -208,21 +148,66 @@ class DefaultPushHandler @Inject constructor(
                     roomId = pushData.roomId,
                     reason = reason,
                 )
-                return
+                return true
             }
+            val request = NotificationEventRequest(sessionId = userId, roomId = pushData.roomId, eventId = pushData.eventId, providerInfo = providerInfo)
+            notifiableEventResolver.resolveEvents(userId, listOf(request)).fold(
+                onSuccess = { resolvedPushEvents ->
+                    resolvedPushEvents.forEach { (request, result) ->
+                        val resolvedPushEvent = result.getOrNull()
+                        pushHistoryService.onSuccess(
+                            providerInfo = providerInfo,
+                            eventId = pushData.eventId,
+                            roomId = pushData.roomId,
+                            sessionId = userId,
+                            comment = resolvedPushEvent?.javaClass?.simpleName.toString(),
+                        )
 
-            appCoroutineScope.launch {
-                val notificationEventRequest = NotificationEventRequest(
-                    sessionId = userId,
-                    roomId = pushData.roomId,
-                    eventId = pushData.eventId,
-                    providerInfo = providerInfo,
-                )
-                Timber.d("Queueing notification: $notificationEventRequest")
-                resolverQueue.enqueue(notificationEventRequest)
-            }
+                        when (resolvedPushEvent) {
+                            is ResolvedPushEvent.Event -> {
+                                when (val notifiableEvent = resolvedPushEvent.notifiableEvent) {
+                                    is NotifiableRingingCallEvent -> {
+                                        Timber.tag(loggerTag.value).d("Notifiable event ${pushData.eventId} is ringing call: $notifiableEvent")
+                                        onNotifiableEventReceived.onNotifiableEventsReceived(listOf(notifiableEvent))
+                                        handleRingingCallEvent(notifiableEvent)
+                                    }
+                                    else -> {
+                                        Timber.tag(loggerTag.value).d("Notifiable event ${pushData.eventId} is normal event: $notifiableEvent")
+                                        val userPushStore = userPushStoreFactory.getOrCreate(userId)
+                                        val areNotificationsEnabled = userPushStore.getNotificationEnabledForDevice().first()
+                                        if (areNotificationsEnabled) {
+                                            onNotifiableEventReceived.onNotifiableEventsReceived(listOf(notifiableEvent))
+                                        } else {
+                                            Timber.tag(loggerTag.value).i("Notification are disabled for this device, ignore push.")
+                                        }
+                                        scAppStateStore.onPushReceived(userPushStore.getPushProviderName())
+                                    }
+                                }
+                            }
+                            is ResolvedPushEvent.Redaction -> {
+                                onRedactedEventReceived.onRedactedEventsReceived(listOf(resolvedPushEvent))
+                            }
+                            null -> {}
+                        }
+                    }
+                    resolvedPushEvents.any { it.value.isSuccess }
+                },
+                onFailure = { failure ->
+                    Timber.tag(loggerTag.value).w(failure, "Unable to get a notification data")
+                    pushHistoryService.onUnableToResolveEvent(
+                        providerInfo = providerInfo,
+                        eventId = pushData.eventId,
+                        roomId = pushData.roomId,
+                        sessionId = userId,
+                        reason = failure.message ?: failure.javaClass.simpleName,
+                    )
+                    false
+                }
+            )
         } catch (e: Exception) {
             Timber.tag(loggerTag.value).e(e, "## handleInternal() failed")
+            pushHistoryService.scOnException(providerInfo, pushData, null, (e.message ?: e.javaClass.name))
+            false
         }
     }
 

@@ -171,4 +171,6 @@
     <string name="sc_pref_hide_invites_title">Skrýt pozvánky</string>
     <string name="sc_pref_hide_invites_summary">Nezobrazovat v aplikaci žádné pozvánky. Upozorňujeme, že v nastavení oznámení existuje další nastavení, které umožňuje nezobrazovat oznámení o pozvánkách.</string>
     <string name="sc_pref_category_unread_counts">Počet nepřečtených</string>
+    <string name="sc_pref_notification_worker_summary">Vylepšená spolehlivost oznámení díky opakovaným pokusům s ohledem na síť</string>
+    <string name="sc_pref_notification_worker_title">Pracovník pro oznamování</string>
 </resources>

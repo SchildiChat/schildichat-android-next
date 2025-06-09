@@ -10,6 +10,7 @@ package io.element.android.libraries.matrix.impl
 import chat.schildi.lib.preferences.ScPreferencesStore
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.di.CacheDirectory
+import io.element.android.libraries.di.annotations.AppCoroutineScope
 import io.element.android.libraries.featureflag.api.FeatureFlagService
 import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.matrix.impl.analytics.UtdTracker
@@ -41,6 +42,7 @@ import javax.inject.Inject
 class RustMatrixClientFactory @Inject constructor(
     private val baseDirectory: File,
     @CacheDirectory private val cacheDirectory: File,
+    @AppCoroutineScope
     private val appCoroutineScope: CoroutineScope,
     private val coroutineDispatchers: CoroutineDispatchers,
     private val sessionStore: SessionStore,

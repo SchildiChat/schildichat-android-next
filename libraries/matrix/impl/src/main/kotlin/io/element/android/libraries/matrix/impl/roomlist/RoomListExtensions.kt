@@ -141,7 +141,7 @@ internal fun RoomListServiceInterface.syncIndicator(): Flow<RoomListServiceSyncI
 
 internal fun RoomListServiceInterface.roomOrNull(roomId: String): Room? {
     return tryOrNull(
-        onError = { Timber.e(it, "Failed finding room with id=$roomId.") }
+        onException = { Timber.e(it, "Failed finding room with id=$roomId.") }
     ) {
         room(roomId)
     }

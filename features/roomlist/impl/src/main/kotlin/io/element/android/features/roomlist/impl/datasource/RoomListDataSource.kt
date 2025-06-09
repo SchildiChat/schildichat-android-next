@@ -14,6 +14,7 @@ import io.element.android.libraries.androidutils.diff.DiffCacheUpdater
 import io.element.android.libraries.androidutils.diff.MutableListDiffCache
 import io.element.android.libraries.androidutils.system.DateTimeObserver
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
+import io.element.android.libraries.di.annotations.SessionCoroutineScope
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.notificationsettings.NotificationSettingsService
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
@@ -40,7 +41,8 @@ class RoomListDataSource @Inject constructor(
     private val notificationSettingsService: NotificationSettingsService,
     private val scInboxSettingsSource: ScInboxSettingsSource,
     scPreferencesStore: ScPreferencesStore,
-    private val appScope: CoroutineScope,
+    @SessionCoroutineScope
+    private val sessionCoroutineScope: CoroutineScope,
     private val dateTimeObserver: DateTimeObserver,
 ) {
     init {
@@ -82,7 +84,7 @@ class RoomListDataSource @Inject constructor(
             .onEach {
                 roomListService.allRooms.rebuildSummaries()
             }
-            .launchIn(appScope)
+            .launchIn(sessionCoroutineScope)
     }
 
     private fun observeDateTimeChanges() {
@@ -93,7 +95,7 @@ class RoomListDataSource @Inject constructor(
                     is DateTimeObserver.Event.DateChanged -> rebuildAllRoomSummaries()
                 }
             }
-            .launchIn(appScope)
+            .launchIn(sessionCoroutineScope)
     }
 
     private suspend fun replaceWith(roomSummaries: List<RoomSummary>) = withContext(coroutineDispatchers.computation) {

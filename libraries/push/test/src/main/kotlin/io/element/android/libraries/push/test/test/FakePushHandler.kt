@@ -7,6 +7,7 @@
 
 package io.element.android.libraries.push.test.test
 
+import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.pushproviders.api.PushData
 import io.element.android.libraries.pushproviders.api.PushHandler
 import io.element.android.tests.testutils.lambda.lambdaError
@@ -26,4 +27,5 @@ class FakePushHandler(
 
     override suspend fun scHandleReceived() {}
     override suspend fun scHandleDeferred(providerInfo: String, pushData: PushData?) {}
+    override suspend fun scHandleLookupFailure(providerInfo: String, pushData: PushData) {}
 }

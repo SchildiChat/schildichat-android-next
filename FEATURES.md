@@ -48,6 +48,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 ## Notifications
 
 - Setting to only alert once for successive messages in the same chat
+- Notify about failures to resolve notifications
 
 
 ## Experimental/unstable features

@@ -65,6 +65,10 @@ class ScPushWorker(
                 Result.retry()
             } else {
                 Timber.tag(loggerTag.value).d("Failure: Handling push from worker $id, tags: ${tags.joinToString()}, attempt: ${params.runAttemptCount}")
+                pushHandler.scHandleLookupFailure(
+                    providerInfo = "${UnifiedPushConfig.NAME} - $instance",
+                    pushData = pushData,
+                )
                 Result.failure()
             }
         }

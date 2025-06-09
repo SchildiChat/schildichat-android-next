@@ -15,8 +15,18 @@ object ScPrefs {
         const val HIDE = "HIDE"
     }
 
+    // Developer options
+    private const val SC_DEVELOPER_OPTIONS_CATEGORY_KEY = "SC_DEVELOPER_OPTIONS_CATEGORY"
     private val SC_DANGER_ZONE = ScBoolPref("SC_DANGER_ZONE", false, R.string.sc_pref_danger_zone, R.string.sc_pref_danger_zone_summary, authorsChoice = true)
-    private val SC_DEVELOPER_OPTIONS_CATEGORY_KEY = "SC_DEVELOPER_OPTIONS_CATEGORY"
+    val SC_PUSH_INFO = ScActionablePref("SC_PUSH_INFO", R.string.sc_push_info_title, R.string.sc_push_info_summary)
+    val SC_USER_CHANGED_SETTINGS = ScActionablePref("SC_USER_CHANGED_SETTINGS", R.string.sc_pref_user_changed_prefs_title, R.string.sc_pref_user_changed_prefs_summary)
+    val SC_DEV_QUICK_OPTIONS = ScBoolPref("SC_DEV_QUICK_OPTIONS", false, R.string.sc_pref_dev_quick_options, authorsChoice = true)
+    val READ_MARKER_DEBUG = ScBoolPref("READ_MARKER_DEBUG", false, R.string.sc_pref_debug_read_marker, authorsChoice = true, upstreamChoice = false)
+    val SC_RESTORE_DEFAULTS = ScActionablePref("SC_RESTORE_DEFAULTS", R.string.sc_pref_restore_defaults, dependencies = SC_DANGER_ZONE.asDependencies())
+    val SC_RESTORE_ADVANCED_THEME_DEFAULTS = ScActionablePref("SC_RESTORE_ADVANCED_THEME_DEFAULTS", R.string.sc_pref_restore_defaults)
+    val SC_RESTORE_UPSTREAM = ScActionablePref("SC_RESTORE_UPSTREAM", R.string.sc_pref_restore_element, dependencies = SC_DANGER_ZONE.asDependencies())
+    val SC_RESTORE_AUTHORS_CHOICE = ScActionablePref("SC_RESTORE_AUTHORS_CHOICE", R.string.sc_pref_restore_authors_choice, dependencies = SC_DANGER_ZONE.asDependencies())
+    val NOTIFICATION_WORKER = ScBoolPref("NOTIFICATION_WORKER", DEFAULT_ENABLE_NOTIFICATION_WORKER, R.string.sc_pref_notification_worker_title, R.string.sc_pref_notification_worker_summary, dependencies = SC_DANGER_ZONE.asDependencies())
 
     // Appearance
     val SC_THEME = ScBoolPref("SC_THEMES", true, R.string.sc_pref_sc_themes_title, R.string.sc_pref_sc_themes_summary, upstreamChoice = false)
@@ -25,6 +35,7 @@ object ScPrefs {
     // General behavior
     val FAST_TRANSITIONS = ScBoolPref("FAST_TRANSITIONS", true, R.string.sc_pref_fast_transitions_title, R.string.sc_pref_fast_transitions_summary, upstreamChoice = false)
     val NOTIFICATION_ONLY_ALERT_ONCE = ScBoolPref("NOTIFICATION_ONLY_ALERT_ONCE", false, R.string.sc_pref_notification_only_alert_once_title, R.string.sc_pref_notification_only_alert_once_summary, upstreamChoice = false)
+    val NOTIFY_FAILED_NOTIFICATION_LOOKUP = ScBoolPref("NOTIFY_FAILED_NOTIFICATION_LOOKUP", true, R.string.sc_pref_notify_failed_notification_lookup_title, R.string.sc_pref_notify_failed_notification_lookup_summary, upstreamChoice = false, disabledValue = false, dependencies = NOTIFICATION_WORKER.asDependencies())
 
     // Chat overview
     val COMPACT_APP_BAR = ScBoolPref("COMPACT_APP_BAR", true, R.string.sc_pref_compact_app_bar_title, R.string.sc_pref_compact_app_bar_summary, upstreamChoice = false)
@@ -104,17 +115,6 @@ object ScPrefs {
     // Advanced theming options - Dark theme
     val BUBBLE_BG_DARK_OUTGOING = ScColorPref("BUBBLE_BG_DARK_OUTGOING", R.string.sc_pref_bubble_color_outgoing_title)
     val BUBBLE_BG_DARK_INCOMING = ScColorPref("BUBBLE_BG_DARK_INCOMING", R.string.sc_pref_bubble_color_incoming_title)
-
-    // Developer options
-    val SC_PUSH_INFO = ScActionablePref("SC_PUSH_INFO", R.string.sc_push_info_title, R.string.sc_push_info_summary)
-    val SC_USER_CHANGED_SETTINGS = ScActionablePref("SC_USER_CHANGED_SETTINGS", R.string.sc_pref_user_changed_prefs_title, R.string.sc_pref_user_changed_prefs_summary)
-    val SC_DEV_QUICK_OPTIONS = ScBoolPref("SC_DEV_QUICK_OPTIONS", false, R.string.sc_pref_dev_quick_options, authorsChoice = true)
-    val READ_MARKER_DEBUG = ScBoolPref("READ_MARKER_DEBUG", false, R.string.sc_pref_debug_read_marker, authorsChoice = true, upstreamChoice = false)
-    val SC_RESTORE_DEFAULTS = ScActionablePref("SC_RESTORE_DEFAULTS", R.string.sc_pref_restore_defaults, dependencies = SC_DANGER_ZONE.asDependencies())
-    val SC_RESTORE_ADVANCED_THEME_DEFAULTS = ScActionablePref("SC_RESTORE_ADVANCED_THEME_DEFAULTS", R.string.sc_pref_restore_defaults)
-    val SC_RESTORE_UPSTREAM = ScActionablePref("SC_RESTORE_UPSTREAM", R.string.sc_pref_restore_element, dependencies = SC_DANGER_ZONE.asDependencies())
-    val SC_RESTORE_AUTHORS_CHOICE = ScActionablePref("SC_RESTORE_AUTHORS_CHOICE", R.string.sc_pref_restore_authors_choice, dependencies = SC_DANGER_ZONE.asDependencies())
-    val NOTIFICATION_WORKER = ScBoolPref("NOTIFICATION_WORKER", DEFAULT_ENABLE_NOTIFICATION_WORKER, R.string.sc_pref_notification_worker_title, R.string.sc_pref_notification_worker_summary, dependencies = SC_DANGER_ZONE.asDependencies())
 
     // Tests to be removed before release
     /*
@@ -214,6 +214,7 @@ object ScPrefs {
         )),
         ScPrefScreen(R.string.sc_pref_category_notifications, null, listOf(
             NOTIFICATION_ONLY_ALERT_ONCE,
+            NOTIFY_FAILED_NOTIFICATION_LOOKUP,
         )),
         ScPrefScreen(R.string.sc_pref_screen_experimental_title, R.string.sc_pref_screen_experimental_summary, listOf(
             ScPrefCategory(R.string.sc_pref_category_timeline, null, listOf(

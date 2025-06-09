@@ -50,6 +50,8 @@
     <string name="sc_push_info_summary">View debug info related to push notifications</string>
     <string name="sc_pref_notification_only_alert_once_title">Only alert once</string>
     <string name="sc_pref_notification_only_alert_once_summary">Omit alert sounds for new messages if there is already an open notification for that chat</string>
+    <string name="sc_pref_notify_failed_notification_lookup_title">Warn on notification failure</string>
+    <string name="sc_pref_notify_failed_notification_lookup_summary">Notify when the app received a push but fails to lookup the related message</string>
     <string name="sc_pref_pin_favorites_title">Pin favorites</string>
     <string name="sc_pref_pin_favorites_summary">Show chats marked as favorite on top of the list</string>
     <string name="sc_pref_bury_low_priority_title">Low priority on bottom</string>
@@ -191,5 +193,8 @@
 
     <string name="sc_push_handler_notification_title">Handling push</string>
     <string name="sc_push_handler_notification_summary">Fetching messages</string>
+    <string name="sc_notification_lookup_failure_title">You may have unread notifications</string>
+    <string name="sc_notification_lookup_failure_summary">Failed to look up message for notification</string>
     <string name="sc_bg_notification_channel">Background service</string>
+    <string name="sc_push_failure_notification_channel">Notification failures</string>
 </resources>

@@ -7,15 +7,27 @@
 
 package io.element.android.libraries.push.impl.push
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.PendingIntentCompat
+import androidx.core.graphics.drawable.IconCompat
 import com.squareup.anvil.annotations.ContributesBinding
 import io.element.android.features.call.api.CallType
 import io.element.android.features.call.api.ElementCallEntryPoint
+import io.element.android.libraries.core.extensions.runCatchingExceptions
 import io.element.android.libraries.core.log.logger.LoggerTag
 import io.element.android.libraries.core.meta.BuildMeta
+import io.element.android.libraries.designsystem.utils.CommonDrawables
 import io.element.android.libraries.di.AppScope
+import io.element.android.libraries.di.ApplicationContext
 import io.element.android.libraries.di.SingleIn
 import io.element.android.libraries.di.annotations.AppCoroutineScope
 import io.element.android.libraries.matrix.api.auth.MatrixAuthenticationService
+import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.push.impl.history.PushHistoryService
 import io.element.android.libraries.push.impl.history.onDiagnosticPush
 import io.element.android.libraries.push.impl.history.onInvalidPushReceived
@@ -26,6 +38,8 @@ import io.element.android.libraries.push.impl.history.scOnDeferredPushHandling
 import io.element.android.libraries.push.impl.notifications.NotificationEventRequest
 import io.element.android.libraries.push.impl.notifications.NotificationResolverQueue
 import io.element.android.libraries.push.impl.notifications.channels.NotificationChannels
+import io.element.android.libraries.push.impl.notifications.channels.SC_NOTIFICATION_FAILURE_NOTIFICATION_CHANNEL_ID
+import io.element.android.libraries.push.impl.notifications.factories.PendingIntentFactory
 import io.element.android.libraries.push.impl.notifications.model.NotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.NotifiableRingingCallEvent
 import io.element.android.libraries.push.impl.notifications.model.ResolvedPushEvent
@@ -70,6 +84,10 @@ class DefaultPushHandler @Inject constructor(
     override suspend fun scHandleReceived() = incrementPushDataStore.incrementPushCounter()
     override suspend fun scHandleDeferred(providerInfo: String, pushData: PushData?) =
         pushHistoryService.scOnDeferredPushHandling(providerInfo, pushData)
+    override suspend fun scHandleLookupFailure(providerInfo: String, pushData: PushData) {
+        // SC should already have done that...
+        Timber.e("ScPushHandler did not take care of scHandleLookupFailure")
+    }
 
     /**
      * Process the push notification event results emitted by the [resolverQueue].

@@ -20,4 +20,5 @@ interface PushHandler {
 
     suspend fun scHandleReceived()
     suspend fun scHandleDeferred(providerInfo: String, pushData: PushData?)
+    suspend fun scHandleLookupFailure(providerInfo: String, pushData: PushData)
 }

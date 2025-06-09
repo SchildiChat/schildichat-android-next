@@ -7,17 +7,28 @@
 
 package io.element.android.libraries.push.impl.push
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.graphics.drawable.IconCompat
 import chat.schildi.lib.preferences.ScAppStateStore
 import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
 import com.squareup.anvil.annotations.ContributesBinding
 import io.element.android.features.call.api.CallType
 import io.element.android.features.call.api.ElementCallEntryPoint
+import io.element.android.libraries.core.extensions.runCatchingExceptions
 import io.element.android.libraries.core.log.logger.LoggerTag
 import io.element.android.libraries.core.meta.BuildMeta
+import io.element.android.libraries.designsystem.utils.CommonDrawables
 import io.element.android.libraries.di.AppScope
+import io.element.android.libraries.di.ApplicationContext
 import io.element.android.libraries.di.SingleIn
 import io.element.android.libraries.matrix.api.auth.MatrixAuthenticationService
+import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.push.impl.history.PushHistoryService
 import io.element.android.libraries.push.impl.history.onDiagnosticPush
 import io.element.android.libraries.push.impl.history.onInvalidPushReceived
@@ -29,6 +40,8 @@ import io.element.android.libraries.push.impl.history.scOnException
 import io.element.android.libraries.push.impl.notifications.NotifiableEventResolver
 import io.element.android.libraries.push.impl.notifications.NotificationEventRequest
 import io.element.android.libraries.push.impl.notifications.channels.NotificationChannels
+import io.element.android.libraries.push.impl.notifications.channels.SC_NOTIFICATION_FAILURE_NOTIFICATION_CHANNEL_ID
+import io.element.android.libraries.push.impl.notifications.factories.PendingIntentFactory
 import io.element.android.libraries.push.impl.notifications.model.NotifiableRingingCallEvent
 import io.element.android.libraries.push.impl.notifications.model.ResolvedPushEvent
 import io.element.android.libraries.push.impl.test.DefaultTestPush
@@ -65,6 +78,10 @@ class ScPushHandler @Inject constructor(
     private val notificationChannels: NotificationChannels,
     private val pushHistoryService: PushHistoryService,
     private val upstreamPushHandler: DefaultPushHandler,
+    private val notificationManager: NotificationManagerCompat,
+    private val pendingIntentFactory: PendingIntentFactory,
+    @ApplicationContext
+    private val context: Context,
 ) : PushHandler {
 
     private suspend fun shouldUseUpstream() = scPreferencesStore.settingFlow(ScPrefs.NOTIFICATION_WORKER).first().not()
@@ -105,6 +122,35 @@ class ScPushHandler @Inject constructor(
     override suspend fun scHandleReceived() = incrementPushDataStore.incrementPushCounter()
     override suspend fun scHandleDeferred(providerInfo: String, pushData: PushData?) =
         pushHistoryService.scOnDeferredPushHandling(providerInfo, pushData)
+
+    override suspend fun scHandleLookupFailure(providerInfo: String, pushData: PushData) {
+        if (!scPreferencesStore.settingFlow(ScPrefs.NOTIFY_FAILED_NOTIFICATION_LOOKUP).first()) return
+        val clientSecret = pushData.clientSecret
+        // clientSecret should not be null. If this happens, restore default session
+        val userId = clientSecret?.let {
+            // Get userId from client secret
+            pushClientSecret.getUserIdFromSecret(clientSecret)
+        } ?: matrixAuthenticationService.getLatestSessionId()
+        if (userId == null) {
+            Timber.w("Unable to get a session on push failure")
+        }
+        val notification = NotificationCompat.Builder(context, SC_NOTIFICATION_FAILURE_NOTIFICATION_CHANNEL_ID)
+            .setSmallIcon(IconCompat.createWithResource(context, CommonDrawables.ic_notification))
+            .setContentTitle(context.getString(chat.schildi.lib.R.string.sc_notification_lookup_failure_title))
+            .setContentText(context.getString(chat.schildi.lib.R.string.sc_notification_lookup_failure_summary))
+            .setContentIntent(userId?.let { pendingIntentFactory.createOpenSessionPendingIntent(userId) })
+            .setAutoCancel(true)
+            .build()
+        runCatchingExceptions {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                Timber.tag(loggerTag.value).w("Failed to notify about notification failure, missing permission")
+                return
+            }
+            notificationManager.notify("FAILED_PUSH_LOOKUP".hashCode(), notification)
+        }.onFailure {
+            Timber.tag(loggerTag.value).e(it, "Failed to notify about notification failure")
+        }
+    }
 
     /**
      * Internal receive method.

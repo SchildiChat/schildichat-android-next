@@ -7,6 +7,7 @@ import io.element.android.services.toolbox.api.strings.StringProvider
 
 // Note, hardcoded also in ScPushHandler
 internal const val SC_APP_BG_SERVICE_NOTIFICATION_CHANNEL_ID = "SC_APP_BG_SERVICE_NOTIFICATION_CHANNEL_ID"
+internal const val SC_NOTIFICATION_FAILURE_NOTIFICATION_CHANNEL_ID = "SC_NOTIFICATION_FAILURE_NOTIFICATION_CHANNEL_ID"
 
 fun NotificationManagerCompat.updateScNotificationChannels(stringProvider: StringProvider) {
     createNotificationChannel(
@@ -18,6 +19,15 @@ fun NotificationManagerCompat.updateScNotificationChannels(stringProvider: Strin
             .setDescription(stringProvider.getString(R.string.sc_bg_notification_channel))
             .setSound(null, null)
             .setLightsEnabled(true)
+            .build()
+    )
+    createNotificationChannel(
+        NotificationChannelCompat.Builder(
+            SC_NOTIFICATION_FAILURE_NOTIFICATION_CHANNEL_ID,
+            NotificationManagerCompat.IMPORTANCE_DEFAULT,
+        )
+            .setName(stringProvider.getString(R.string.sc_push_failure_notification_channel).ifEmpty { "Notification failures" })
+            .setDescription(stringProvider.getString(R.string.sc_push_failure_notification_channel))
             .build()
     )
 }

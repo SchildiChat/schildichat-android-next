@@ -34,6 +34,7 @@ import io.element.android.anvilannotations.ContributesNode
 import io.element.android.libraries.architecture.NodeInputs
 import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.di.SessionScope
+import io.element.android.libraries.di.annotations.SessionCoroutineScope
 import io.element.android.libraries.preferences.api.store.AppPreferencesStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -46,7 +47,8 @@ class ScTweaksSettingsNode @AssistedInject constructor(
     presenterFactory: ScTweaksSettingsPresenter.Factory,
     private val appPreferencesStore: AppPreferencesStore,
     private val scPreferencesStore: ScPreferencesStore,
-    private val appCoroutineScope: CoroutineScope,
+    @SessionCoroutineScope
+    private val sessionCoroutineScope: CoroutineScope,
 ) : Node(buildContext, plugins = plugins) {
 
     data class Inputs(
@@ -104,7 +106,7 @@ class ScTweaksSettingsNode @AssistedInject constructor(
             if (pref.sKey in ScPrefs.prefsToExcludeFromBatchSet) {
                 return@forEachPreference
             }
-            appCoroutineScope.launch {
+            sessionCoroutineScope.launch {
                 to(pref)?.let {
                     scPreferencesStore.setSettingTypesafe(pref, it)
                 }
@@ -112,7 +114,7 @@ class ScTweaksSettingsNode @AssistedInject constructor(
         }
     }
 
-    private fun setUpstreamSettingsToPreset(authorsChoice: Boolean) = appCoroutineScope.launch {
+    private fun setUpstreamSettingsToPreset(authorsChoice: Boolean) = sessionCoroutineScope.launch {
         // "View source" setting
         appPreferencesStore.setDeveloperModeEnabled(authorsChoice)
     }

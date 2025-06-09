@@ -128,7 +128,7 @@ class TimelinePresenter @AssistedInject constructor(
         }.collectAsState(initial = true)
 
         val scReadState = createScReadState(room.liveTimeline)
-        ScReadTracker(appScope, scReadState, isSendPublicReadReceiptsEnabled, room.liveTimeline, navigator::onBackPressed)
+        ScReadTracker(sessionCoroutineScope, scReadState, isSendPublicReadReceiptsEnabled, room.liveTimeline, navigator::onBackPressed)
         val syncReadReceiptAndMarker = ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.state()
         val context = LocalContext.current
 
@@ -136,7 +136,7 @@ class TimelinePresenter @AssistedInject constructor(
             when (event) {
                 // SC start
                 is TimelineEvents.OnUnreadLineVisible -> scReadState.sawUnreadLine.value = true
-                is TimelineEvents.MarkAsRead -> forceSetReceipts(context, appScope, room, scReadState, isSendPublicReadReceiptsEnabled)
+                is TimelineEvents.MarkAsRead -> forceSetReceipts(context, sessionCoroutineScope, room, scReadState, isSendPublicReadReceiptsEnabled)
                 // SC end
                 is TimelineEvents.LoadMore -> {
                     localScope.launch {
@@ -149,7 +149,7 @@ class TimelinePresenter @AssistedInject constructor(
                             newEventState.value = NewEventState.None
                         }
                         if (syncReadReceiptAndMarker.value) {
-                            appScope.scOnScrollFinished(
+                            sessionCoroutineScope.scOnScrollFinished(
                                 dispatchers = dispatchers,
                                 scReadState = scReadState,
                                 firstVisibleIndex = event.firstIndex,

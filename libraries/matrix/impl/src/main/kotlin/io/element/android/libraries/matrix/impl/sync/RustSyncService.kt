@@ -13,9 +13,11 @@ import io.element.android.libraries.matrix.api.sync.SyncService
 import io.element.android.libraries.matrix.api.sync.SyncState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -67,6 +69,7 @@ class RustSyncService(
         inner.destroy()
     }
 
+    @OptIn(FlowPreview::class)
     override val syncState: StateFlow<SyncState> =
         inner.stateFlow()
             .map(SyncServiceState::toSyncState)
@@ -74,6 +77,7 @@ class RustSyncService(
                 Timber.i("Sync state=$state")
             }
             .distinctUntilChanged()
+            .debounce(1000)
             .stateIn(sessionCoroutineScope, SharingStarted.Eagerly, SyncState.Idle)
 
     override val isOnline: StateFlow<Boolean> = syncState.mapState { it != SyncState.Offline }

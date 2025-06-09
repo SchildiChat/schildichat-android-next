@@ -36,6 +36,7 @@ object ScPrefs {
     val FAST_TRANSITIONS = ScBoolPref("FAST_TRANSITIONS", true, R.string.sc_pref_fast_transitions_title, R.string.sc_pref_fast_transitions_summary, upstreamChoice = false)
     val NOTIFICATION_ONLY_ALERT_ONCE = ScBoolPref("NOTIFICATION_ONLY_ALERT_ONCE", false, R.string.sc_pref_notification_only_alert_once_title, R.string.sc_pref_notification_only_alert_once_summary, upstreamChoice = false)
     val NOTIFY_FAILED_NOTIFICATION_LOOKUP = ScBoolPref("NOTIFY_FAILED_NOTIFICATION_LOOKUP", true, R.string.sc_pref_notify_failed_notification_lookup_title, R.string.sc_pref_notify_failed_notification_lookup_summary, upstreamChoice = false, disabledValue = false, dependencies = NOTIFICATION_WORKER.asDependencies())
+    val SHOW_SYNCING_INDICATOR = ScBoolPref("SHOW_SYNCING_INDICATOR", true, R.string.sc_pref_syncing_indicator_title, R.string.sc_pref_syncing_indicator_summary, upstreamChoice = true, authorsChoice = true)
 
     // Chat overview
     val COMPACT_APP_BAR = ScBoolPref("COMPACT_APP_BAR", true, R.string.sc_pref_compact_app_bar_title, R.string.sc_pref_compact_app_bar_summary, upstreamChoice = false)
@@ -148,6 +149,7 @@ object ScPrefs {
             )),
             ScPrefCategory(R.string.sc_pref_category_general_behaviour, null, listOf(
                 FAST_TRANSITIONS,
+                SHOW_SYNCING_INDICATOR,
             )),
         )),
         ScPrefScreen(R.string.sc_pref_category_chat_overview, null, listOf(
@@ -251,6 +253,7 @@ object ScPrefs {
         ELEMENT_ROOM_LIST_FILTERS, // Used to be: ScUpstreamFeatureFlagAliasPref(FeatureFlags.RoomListFilters, R.string.sc_upstream_feature_flag_room_list_filters),
         SNC_FAB.copy(titleRes = R.string.sc_pref_snc_fab_title_short),
         RENDER_SILENT_UNREAD,
+        SHOW_SYNCING_INDICATOR,
         ScPrefCategory(R.string.sc_pref_category_chat_sorting, null, listOf(
             SORT_BY_UNREAD,
             SORT_WITH_SILENT_UNREAD,

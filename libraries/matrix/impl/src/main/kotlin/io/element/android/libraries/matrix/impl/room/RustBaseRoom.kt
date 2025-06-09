@@ -276,6 +276,11 @@ class RustBaseRoom(
             innerRoom.setIsLowPriority(isLowPriority, null)
         }
     }
+    override suspend fun forceSendSingleReadReceipt(receiptType: ReceiptType, eventId: EventId): Result<Unit> = withContext(roomDispatcher) {
+        runCatchingExceptions {
+            innerRoom.forceSendSingleReceipt(receiptType.toRustReceiptType(), eventId.value)
+        }
+    }
     // SC end
 
     override suspend fun saveComposerDraft(composerDraft: ComposerDraft): Result<Unit> = withContext(roomDispatcher) {

@@ -2,7 +2,6 @@ package io.element.android.features.messages.impl.timeline
 
 import android.content.Context
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableIntState
@@ -10,9 +9,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
-import chat.schildi.lib.preferences.ScPrefs
-import chat.schildi.lib.preferences.value
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.matrix.api.core.EventId
@@ -61,59 +57,6 @@ fun createScReadState(timeline: Timeline): ScReadState {
         sawUnreadLine,
         fullyReadEventId,
     )
-}
-
-@Composable
-fun ScReadTracker(
-    appScope: CoroutineScope,
-    scUnreadState: ScReadState,
-    isSendPublicReadReceiptsEnabled: Boolean,
-    timeline: Timeline,
-    onBackPressed: () -> Unit
-) {
-    val clickedBack = remember { mutableStateOf(false) }
-    val context = LocalContext.current
-
-    if (ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.value()) {
-        val debug = ScPrefs.READ_MARKER_DEBUG.value()
-        val allowMarkAsRead = scUnreadState.sawUnreadLine.value || !ScPrefs.MARK_READ_REQUIRES_SEEN_UNREAD_LINE.value()
-        BackHandler(enabled = !clickedBack.value && allowMarkAsRead && scUnreadState.readMarkerToSet.value != null) {
-            scUnreadState.readMarkerToSet.value?.let { eventId ->
-                appScope.launch {
-                    val toast = Toast.makeText(
-                        context,
-                        if (debug)
-                            context.getString(chat.schildi.lib.R.string.sc_set_read_marker_toast_start, eventId.value)
-                        else
-                            context.getString(chat.schildi.lib.R.string.sc_set_read_marker_implicit_toast_start),
-                        Toast.LENGTH_LONG
-                    )
-                    toast.show()
-                    // TODO? force only necessary when latest message sent by self and unread-count is not zero?
-                    timeline.forceSendReadReceipt(eventId, if (isSendPublicReadReceiptsEnabled) ReceiptType.READ else ReceiptType.READ_PRIVATE)
-                    timeline.forceSendReadReceipt(eventId, ReceiptType.FULLY_READ)
-                    toast.cancel()
-                    onBackPressed()
-                }
-            }
-            clickedBack.value = true
-        }
-        // TODO doesn't work, timeline get's closed before send?
-        /*
-        OnLifecycleEvent { _, event ->
-            if (event == Lifecycle.Event.ON_PAUSE && sawUnreadLine.value) {
-                timber.log.Timber.i("SC_DBG SET ${readMarkerToSet.value}")
-                readMarkerToSet.value?.let { eventId ->
-                    appScope.launch {
-                        timeline.sendReadReceipt(eventId, if (isSendPublicReadReceiptsEnabled) ReceiptType.READ else ReceiptType.READ_PRIVATE)
-                        timeline.sendReadReceipt(eventId, ReceiptType.FULLY_READ)
-                        timber.log.Timber.i("SC_DBG SET DONE $eventId")
-                    }
-                }
-            }
-        }
-         */
-    }
 }
 
 // Use this to define some offset next time upstream adds individual `item()` calls in the lazy column below the actual timeline's `items()` call.

@@ -177,6 +177,7 @@ interface BaseRoom : Closeable {
     suspend fun addSpaceChild(childId: RoomId): Result<Unit>
     suspend fun removeSpaceChild(childId: RoomId): Result<Unit>
     suspend fun setIsLowPriority(isLowPriority: Boolean): Result<Unit>
+    suspend fun forceSendSingleReadReceipt(receiptType: ReceiptType, eventId: EventId): Result<Unit>
     // SC end
 
     /**

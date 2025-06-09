@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.state
+import chat.schildi.lib.preferences.value
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -128,7 +129,6 @@ class TimelinePresenter @AssistedInject constructor(
         }.collectAsState(initial = true)
 
         val scReadState = createScReadState(room.liveTimeline)
-        ScReadTracker(sessionCoroutineScope, scReadState, isSendPublicReadReceiptsEnabled, room.liveTimeline, navigator::onBackPressed)
         val syncReadReceiptAndMarker = ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.state()
         val context = LocalContext.current
 
@@ -202,9 +202,18 @@ class TimelinePresenter @AssistedInject constructor(
             }
         }
 
+        val syncedRR = ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.value()
         DisposableEffect(Unit) {
             onDispose {
-                markAsFullyRead(room.roomId)
+                if (syncedRR) {
+                    markAsFullyRead(
+                        room.roomId,
+                        scReadState.readMarkerToSet.value,
+                        if (isSendPublicReadReceiptsEnabled) ReceiptType.READ else ReceiptType.READ_PRIVATE
+                    )
+                } else {
+                    markAsFullyRead(room.roomId, null, null)
+                }
             }
         }
 

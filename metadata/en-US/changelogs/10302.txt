@@ -1,0 +1,2 @@
+- Update codebase to Element X v25.06.2
+- Notify when the app receives a push but fails to look up the message

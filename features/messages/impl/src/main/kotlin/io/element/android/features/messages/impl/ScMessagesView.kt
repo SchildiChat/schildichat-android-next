@@ -206,17 +206,15 @@ internal fun RowScope.scMessagesViewTopBarActions(
                         .padding(horizontal = 4.dp),
                 )
             }
-            scReadState?.fullyReadEventId?.value?.takeIfIsValidEventId()?.let {
-                Text(
-                    text = "FR=$it",
-                    maxLines = 1,
-                    color = MaterialTheme.colorScheme.secondary,
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier
-                        .padding(horizontal = 4.dp)
-                        .align(Alignment.CenterHorizontally),
-                )
-            }
+            Text(
+                text = "FR=${scReadState?.fullyReadEventId?.value}",
+                maxLines = 1,
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier
+                    .padding(horizontal = 4.dp)
+                    .align(Alignment.CenterHorizontally),
+            )
         }
     }
 }

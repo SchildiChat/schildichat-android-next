@@ -173,4 +173,13 @@
     <string name="sc_pref_category_unread_counts">Počet nepřečtených</string>
     <string name="sc_pref_notification_worker_summary">Vylepšená spolehlivost oznámení díky opakovaným pokusům s ohledem na síť</string>
     <string name="sc_pref_notification_worker_title">Pracovník pro oznamování</string>
+    <string name="sc_pref_notify_failed_notification_lookup_title">Upozornit na selhání oznámení</string>
+    <string name="sc_pref_notify_failed_notification_lookup_summary">Upozornit, když aplikace přijala push zprávu, ale nedokáže vyhledat související zprávu</string>
+    <string name="sc_pref_syncing_indicator_title">Indikátor synchronizace</string>
+    <string name="sc_pref_syncing_indicator_summary">Stav synchronizace překryvu v horní části obrazovky</string>
+    <string name="sc_notification_lookup_failure_title">Můžete mít nepřečtená oznámení</string>
+    <string name="sc_notification_lookup_failure_summary">Nepodařilo se vyhledat zprávu pro oznámení</string>
+    <string name="sc_push_failure_notification_channel">Chyby oznámení</string>
+    <string name="sc_pref_debounce_offline_state_summary">Ignorovat rychlé přechody do offline stavu</string>
+    <string name="sc_pref_debounce_offline_state_title">Odskok offline stavu</string>
 </resources>

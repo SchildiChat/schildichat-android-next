@@ -106,6 +106,8 @@
     <string name="sc_pref_hide_invites_summary">Do not show any invites in the app. Note there is another setting to not notify for invites in notification settings.</string>
     <string name="sc_pref_syncing_indicator_title">Sync indicator</string>
     <string name="sc_pref_syncing_indicator_summary">Overlay sync status at the top of the screen</string>
+    <string name="sc_pref_debounce_offline_state_title">Debounce offline state</string>
+    <string name="sc_pref_debounce_offline_state_summary">Ignore fast chances to offline state</string>
 
     <string name="sc_pref_dev_quick_options">Quick settings</string>
     <string name="sc_pref_debug_read_marker">Debug read marker</string>

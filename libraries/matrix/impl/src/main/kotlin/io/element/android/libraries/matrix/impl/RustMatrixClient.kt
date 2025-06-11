@@ -148,6 +148,7 @@ class RustMatrixClient(
     private val rustSyncService = RustSyncService(
         inner = innerSyncService,
         dispatcher = sessionDispatcher,
+        scPreferencesStore = scPreferencesStore,
         sessionCoroutineScope = sessionCoroutineScope
     )
     private val pushersService = RustPushersService(

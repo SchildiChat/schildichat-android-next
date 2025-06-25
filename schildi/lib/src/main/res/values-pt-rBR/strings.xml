@@ -164,7 +164,7 @@
     <string name="sc_space_all_rooms_summary">Você poderá não ver mais as suas conversas e convites se desabilitar isto.</string>
     <string name="sc_pref_hide_invites_title">Esconder convites</string>
     <string name="sc_pref_hide_invites_summary">Não mostrar convites no aplicativo. Note que há outra configuração para não notificar para convites nas configurações de notificação.</string>
-    <string name="sc_pref_mark_read_requires_seen_unread_line_title_short">Requer leitura completa</string>
+    <string name="sc_pref_mark_read_requires_seen_unread_line_title_short">Exigir leitura completa</string>
     <string name="sc_pref_category_unread_counts">Contagem de não-lidos</string>
     <string name="sc_space_empty_summary">Navegue para outro espaço para encontrar as suas conversas</string>
     <string name="sc_pref_pinned_message_toolbar_title_short">Fixado na barra de ferramentas</string>

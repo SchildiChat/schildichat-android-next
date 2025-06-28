@@ -199,6 +199,9 @@ class TimelinePresenter @AssistedInject constructor(
                 is TimelineEvents.ComputeVerifiedUserSendFailure -> {
                     resolveVerifiedUserSendFailureState.eventSink(ResolveVerifiedUserSendFailureEvents.ComputeForMessage(event.event))
                 }
+                is TimelineEvents.NavigateToRoom -> {
+                    navigator.onNavigateToRoom(event.roomId)
+                }
             }
         }
 
@@ -287,8 +290,9 @@ class TimelinePresenter @AssistedInject constructor(
                     userHasPermissionToSendMessage = userHasPermissionToSendMessage,
                     userHasPermissionToSendReaction = userHasPermissionToSendReaction,
                     roomCallState = roomCallState,
-                    pinnedEventIds = roomInfo.pinnedEventIds.orEmpty(),
+                    pinnedEventIds = roomInfo.pinnedEventIds,
                     typingNotificationState = typingNotificationState,
+                    predecessorRoom = room.predecessorRoom(),
                 )
             }
         }

@@ -16,6 +16,7 @@ import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.push.api.GetCurrentPushProvider
 import io.element.android.libraries.push.api.PushService
 import io.element.android.libraries.push.api.history.PushHistoryItem
+import io.element.android.libraries.push.impl.push.MutableBatteryOptimizationStore
 import io.element.android.libraries.push.impl.store.PushDataStore
 import io.element.android.libraries.push.impl.test.TestPush
 import io.element.android.libraries.pushproviders.api.Distributor
@@ -39,6 +40,7 @@ class DefaultPushService @Inject constructor(
     private val sessionObserver: SessionObserver,
     private val pushClientSecretStore: PushClientSecretStore,
     private val pushDataStore: PushDataStore,
+    private val mutableBatteryOptimizationStore: MutableBatteryOptimizationStore,
 ) : PushService, SessionListener {
     init {
         observeSessions()
@@ -140,5 +142,9 @@ class DefaultPushService @Inject constructor(
 
     override suspend fun resetPushHistory() {
         pushDataStore.reset()
+    }
+
+    override suspend fun resetBatteryOptimizationState() {
+        mutableBatteryOptimizationStore.reset()
     }
 }

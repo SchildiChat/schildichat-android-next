@@ -63,7 +63,7 @@ import io.element.android.features.roomlist.impl.model.RoomListRoomSummary
 import io.element.android.features.roomlist.impl.model.RoomListRoomSummaryProvider
 import io.element.android.features.roomlist.impl.model.RoomSummaryDisplayType
 import io.element.android.libraries.core.extensions.orEmpty
-import io.element.android.libraries.designsystem.components.avatar.CompositeAvatar
+import io.element.android.libraries.designsystem.components.avatar.RoomAvatar
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
@@ -141,8 +141,9 @@ private fun ScRoomSummaryRealRow(
             .padding(horizontal = 16.dp, vertical = 11.dp)
             .height(IntrinsicSize.Min),
     ) {
-        CompositeAvatar(
+        RoomAvatar(
             avatarData = room.avatarData,
+            isTombstoned = room.isTombstoned,
             heroes = room.heroes,
             modifier = Modifier.align(Alignment.CenterVertically)
         )
@@ -207,13 +208,17 @@ private fun RowScope.ScNameAndTimestampRow(room: RoomListRoomSummary) {
 @Composable
 private fun RowScope.ScLastMessageAndIndicatorRow(room: RoomListRoomSummary, isInviteSeen: Boolean) {
     // Last Message
-    val attributedLastMessage = room.lastMessage as? AnnotatedString
-        ?: AnnotatedString(room.lastMessage.orEmpty().toString())
+    val messagePreview = if (room.isTombstoned) {
+        stringResource(io.element.android.features.roomlist.impl.R.string.screen_roomlist_tombstoned_room_description)
+    } else {
+        room.lastMessage.orEmpty()
+    }
+    val annotatedMessagePreview = messagePreview as? AnnotatedString ?: AnnotatedString(text = messagePreview.toString())
     Text(
         modifier = Modifier
             .weight(1f)
             .padding(end = 16.dp),
-        text = attributedLastMessage,
+        text = annotatedMessagePreview,
         color = ElementTheme.roomListRoomMessage(),
         style = ElementTheme.typography.fontBodyMdRegular,
         minLines = 2,

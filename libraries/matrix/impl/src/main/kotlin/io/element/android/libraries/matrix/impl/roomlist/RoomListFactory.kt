@@ -29,6 +29,11 @@ import org.matrix.rustcomponents.sdk.RoomListService
 import kotlin.coroutines.CoroutineContext
 import org.matrix.rustcomponents.sdk.RoomList as InnerRoomList
 
+private val ROOM_LIST_RUST_FILTERS = listOf(
+    RoomListEntriesDynamicFilterKind.NonLeft,
+    RoomListEntriesDynamicFilterKind.DeduplicateVersions
+)
+
 internal class RoomListFactory(
     private val innerRoomListService: RoomListService,
     private val sessionCoroutineScope: CoroutineScope,
@@ -58,12 +63,12 @@ internal class RoomListFactory(
 
         coroutineScope.launch(coroutineContext) {
             innerRoomList = innerProvider()
-            innerRoomList?.let { innerRoomList ->
+            innerRoomList.let { innerRoomList ->
                 innerRoomList.entriesFlow(
                     pageSize = pageSize,
                     roomListDynamicEvents = dynamicEvents,
-                    initialFilterKind = RoomListEntriesDynamicFilterKind.NonLeft,
                     initialInboxSettings = initialInboxSettings,
+                    initialFilterKind = RoomListEntriesDynamicFilterKind.All(ROOM_LIST_RUST_FILTERS),
                 ).onEach { update ->
                     processor.postUpdate(update)
                 }.launchIn(this)

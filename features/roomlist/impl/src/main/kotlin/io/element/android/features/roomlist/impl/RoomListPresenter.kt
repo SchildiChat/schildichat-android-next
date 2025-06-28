@@ -63,6 +63,7 @@ import io.element.android.libraries.matrix.api.sync.SyncService
 import io.element.android.libraries.matrix.api.timeline.ReceiptType
 import io.element.android.libraries.preferences.api.store.AppPreferencesStore
 import io.element.android.libraries.preferences.api.store.SessionPreferencesStore
+import io.element.android.libraries.push.api.battery.BatteryOptimizationState
 import io.element.android.libraries.push.api.notifications.NotificationCleaner
 import io.element.android.services.analytics.api.AnalyticsService
 import io.element.android.services.analyticsproviders.api.trackers.captureInteraction
@@ -107,6 +108,7 @@ class RoomListPresenter @Inject constructor(
     private val analyticsService: AnalyticsService,
     private val acceptDeclineInvitePresenter: Presenter<AcceptDeclineInviteState>,
     private val fullScreenIntentPermissionsPresenter: Presenter<FullScreenIntentPermissionsState>,
+    private val batteryOptimizationPresenter: Presenter<BatteryOptimizationState>,
     private val notificationCleaner: NotificationCleaner,
     private val logoutPresenter: Presenter<DirectLogoutState>,
     private val appPreferencesStore: AppPreferencesStore,
@@ -289,6 +291,7 @@ class RoomListPresenter @Inject constructor(
                     // SC end
                     securityBannerState = securityBannerState,
                     fullScreenIntentPermissionsState = fullScreenIntentPermissionsPresenter.present(),
+                    batteryOptimizationState = batteryOptimizationPresenter.present(),
                     summaries = roomSummaries.dataOrNull().orEmpty().toPersistentList(),
                     seenRoomInvites = seenRoomInvites.toPersistentSet(),
                 )

@@ -49,6 +49,7 @@ data class RoomListRoomSummary(
     val isDm: Boolean,
     val isFavorite: Boolean,
     val inviteSender: InviteSender?,
+    val isTombstoned: Boolean,
     val heroes: ImmutableList<AvatarData>,
 ) {
     val isHighlighted = userDefinedNotificationMode != RoomNotificationMode.MUTE &&

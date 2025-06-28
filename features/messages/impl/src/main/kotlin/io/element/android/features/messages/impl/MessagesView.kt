@@ -85,14 +85,14 @@ import io.element.android.features.messages.impl.voicemessages.composer.VoiceMes
 import io.element.android.features.networkmonitor.api.ui.ConnectivityIndicatorView
 import io.element.android.features.roomcall.api.RoomCallState
 import io.element.android.libraries.androidutils.ui.hideKeyboard
-import io.element.android.libraries.designsystem.atomic.molecules.IconTitlePlaceholdersRowMolecule
+import io.element.android.libraries.designsystem.atomic.molecules.ComposerAlertMolecule
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
-import io.element.android.libraries.designsystem.components.avatar.AvatarSize
-import io.element.android.libraries.designsystem.components.avatar.CompositeAvatar
+import io.element.android.libraries.designsystem.components.avatar.RoomAvatar
 import io.element.android.libraries.designsystem.components.button.BackButton
 import io.element.android.libraries.designsystem.components.dialogs.ConfirmationDialog
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
+import io.element.android.libraries.designsystem.text.toAnnotatedString
 import io.element.android.libraries.designsystem.theme.components.BottomSheetDragHandle
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.Scaffold
@@ -104,8 +104,10 @@ import io.element.android.libraries.designsystem.utils.OnLifecycleEvent
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarHost
 import io.element.android.libraries.designsystem.utils.snackbar.rememberSnackbarHostState
 import io.element.android.libraries.matrix.api.core.EventId
+import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.encryption.identity.IdentityState
+import io.element.android.libraries.matrix.api.room.tombstone.SuccessorRoom
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.textcomposer.model.TextEditorState
 import io.element.android.libraries.ui.strings.CommonStrings
@@ -194,8 +196,9 @@ fun MessagesView(
             Column {
                 ConnectivityIndicatorView(isOnline = state.hasNetworkConnection)
                 MessagesViewTopBar(
-                    roomName = state.roomName.dataOrNull(),
-                    roomAvatar = state.roomAvatar.dataOrNull(),
+                    roomName = state.roomName,
+                    roomAvatar = state.roomAvatar,
+                    isTombstoned = state.isTombstoned,
                     heroes = state.heroes,
                     roomCallState = state.roomCallState,
                     dmUserIdentityState = state.dmUserVerificationState,
@@ -218,8 +221,8 @@ fun MessagesView(
                 onMessageLongClick = ::onMessageLongClick,
                 onUserDataClick = {
                     hidingKeyboard {
-                   state.eventSink(MessagesEvents.OnUserClicked(it))
-                }
+                        state.eventSink(MessagesEvents.OnUserClicked(it))
+                    }
                 },
                 onLinkClick = { link, customTab ->
                     if (customTab) {
@@ -426,6 +429,9 @@ private fun MessagesViewContent(
                     scBeforeSend = {
                         state.timelineState.eventSink(TimelineEvents.MarkAsRead)
                     }.takeIf { syncReadMarkerAndReceipt },
+                    onRoomSuccessorClick = { roomId ->
+                        state.timelineState.eventSink(TimelineEvents.NavigateToRoom(roomId = roomId))
+                    },
                     onLinkClick = { url, customTab -> onLinkClick(Link(url), customTab) },
                 )
             },
@@ -441,53 +447,60 @@ private fun MessagesViewComposerBottomSheetContents(
     subcomposing: Boolean,
     state: MessagesState,
     scBeforeSend: (() -> Unit)?,
+    onRoomSuccessorClick: (RoomId) -> Unit,
     onLinkClick: (String, Boolean) -> Unit,
 ) {
-    if (state.userEventPermissions.canSendMessage) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            SuggestionsPickerView(
-                modifier = Modifier
-                    .heightIn(max = 230.dp)
-                    // Consume all scrolling, preventing the bottom sheet from being dragged when interacting with the list of suggestions
-                    .nestedScroll(object : NestedScrollConnection {
-                        override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
-                            return available
-                        }
-                    }),
-                roomId = state.roomId,
-                roomName = state.roomName.dataOrNull(),
-                roomAvatarData = state.roomAvatar.dataOrNull(),
-                suggestions = state.composerState.suggestions,
-                onSelectSuggestion = {
-                    state.composerState.eventSink(MessageComposerEvents.InsertSuggestion(it))
+    when {
+        state.successorRoom != null -> {
+            SuccessorRoomBanner(roomSuccessor = state.successorRoom, onRoomSuccessorClick = onRoomSuccessorClick)
+        }
+        state.userEventPermissions.canSendMessage -> {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                SuggestionsPickerView(
+                    modifier = Modifier
+                        .heightIn(max = 230.dp)
+                        // Consume all scrolling, preventing the bottom sheet from being dragged when interacting with the list of suggestions
+                        .nestedScroll(object : NestedScrollConnection {
+                            override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
+                                return available
+                            }
+                        }),
+                    roomId = state.roomId,
+                    roomName = state.roomName,
+                    roomAvatarData = state.roomAvatar,
+                    suggestions = state.composerState.suggestions,
+                    onSelectSuggestion = {
+                        state.composerState.eventSink(MessageComposerEvents.InsertSuggestion(it))
+                    }
+                )
+                // Do not show the identity change if user is composing a Rich message or is seeing suggestion(s).
+                if (state.composerState.suggestions.isEmpty() &&
+                    state.composerState.textEditorState is TextEditorState.Markdown) {
+                    IdentityChangeStateView(
+                        state = state.identityChangeState,
+                        onLinkClick = onLinkClick,
+                    )
                 }
-            )
-            // Do not show the identity change if user is composing a Rich message or is seeing suggestion(s).
-            if (state.composerState.suggestions.isEmpty() &&
-                state.composerState.textEditorState is TextEditorState.Markdown) {
-                IdentityChangeStateView(
-                    state = state.identityChangeState,
-                    onLinkClick = onLinkClick,
-                )
-            }
-            val verificationViolation = state.identityChangeState.roomMemberIdentityStateChanges.firstOrNull {
-                it.identityState == IdentityState.VerificationViolation
-            }
-            if (verificationViolation != null) {
-                DisabledComposerView(modifier = Modifier.fillMaxWidth())
-            } else {
-                MessageComposerView(
-                    state = state.composerState,
-                    voiceMessageState = state.voiceMessageComposerState,
-                    subcomposing = subcomposing,
-                    enableVoiceMessages = state.enableVoiceMessages,
-                    modifier = Modifier.fillMaxWidth(),
-                    scBeforeSend = scBeforeSend,
-                )
+                val verificationViolation = state.identityChangeState.roomMemberIdentityStateChanges.firstOrNull {
+                    it.identityState == IdentityState.VerificationViolation
+                }
+                if (verificationViolation != null) {
+                    DisabledComposerView(modifier = Modifier.fillMaxWidth())
+                } else {
+                    MessageComposerView(
+                        state = state.composerState,
+                        voiceMessageState = state.voiceMessageComposerState,
+                        subcomposing = subcomposing,
+                        enableVoiceMessages = state.enableVoiceMessages,
+                        modifier = Modifier.fillMaxWidth(),
+                        scBeforeSend = scBeforeSend,
+                    )
+                }
             }
         }
-    } else {
-        CantSendMessageBanner()
+        else -> {
+            CantSendMessageBanner()
+        }
     }
 }
 
@@ -495,7 +508,8 @@ private fun MessagesViewComposerBottomSheetContents(
 @Composable
 private fun MessagesViewTopBar(
     roomName: String?,
-    roomAvatar: AvatarData?,
+    roomAvatar: AvatarData,
+    isTombstoned: Boolean,
     heroes: ImmutableList<AvatarData>,
     roomCallState: RoomCallState,
     dmUserIdentityState: IdentityState?,
@@ -519,19 +533,13 @@ private fun MessagesViewTopBar(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 val titleModifier = Modifier.weight(1f, fill = false)
-                if (roomName != null && roomAvatar != null) {
-                    RoomAvatarAndNameRow(
-                        roomName = roomName,
-                        roomAvatar = roomAvatar,
-                        heroes = heroes,
-                        modifier = titleModifier.thenIf(ScPrefs.SC_TIMELINE_LAYOUT.value()) { weight(1f, fill = false) }
-                    )
-                } else {
-                    IconTitlePlaceholdersRowMolecule(
-                        iconSize = AvatarSize.TimelineRoom.dp,
-                        modifier = titleModifier
-                    )
-                }
+                RoomAvatarAndNameRow(
+                    roomName = roomName,
+                    roomAvatar = roomAvatar,
+                    isTombstoned = isTombstoned,
+                    heroes = heroes,
+                    modifier = titleModifier.thenIf(ScPrefs.SC_TIMELINE_LAYOUT.value()) { weight(1f, fill = false) }
+                )
 
                 when (dmUserIdentityState) {
                     IdentityState.Verified -> {
@@ -567,23 +575,26 @@ private fun MessagesViewTopBar(
 
 @Composable
 private fun RoomAvatarAndNameRow(
-    roomName: String,
+    roomName: String?,
     roomAvatar: AvatarData,
     heroes: ImmutableList<AvatarData>,
+    isTombstoned: Boolean,
     modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CompositeAvatar(
+        RoomAvatar(
             avatarData = roomAvatar,
             heroes = heroes,
+            isTombstoned = isTombstoned,
         )
         Text(
             modifier = Modifier.padding(horizontal = 8.dp),
-            text = roomName,
+            text = roomName ?: stringResource(CommonStrings.common_no_room_name),
             style = ElementTheme.typography.fontBodyLgMedium,
+            fontStyle = FontStyle.Italic.takeIf { roomName == null },
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
@@ -608,6 +619,22 @@ private fun CantSendMessageBanner() {
             fontStyle = FontStyle.Italic,
         )
     }
+}
+
+@Composable
+private fun SuccessorRoomBanner(
+    roomSuccessor: SuccessorRoom,
+    onRoomSuccessorClick: (RoomId) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    ComposerAlertMolecule(
+        avatar = null,
+        content = stringResource(R.string.screen_room_timeline_tombstoned_room_message).toAnnotatedString(),
+        onSubmitClick = { onRoomSuccessorClick(roomSuccessor.roomId) },
+        modifier = modifier,
+        isCritical = false,
+        submitText = stringResource(R.string.screen_room_timeline_tombstoned_room_action)
+    )
 }
 
 @PreviewsDayNight

@@ -12,8 +12,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
-import chat.schildi.features.roomlist.spaces.SpaceListDataSource
-import chat.schildi.features.roomlist.spaces.SpaceUnreadCountsDataSource
+import chat.schildi.features.home.spaces.SpaceListDataSource
+import chat.schildi.features.home.spaces.SpaceUnreadCountsDataSource
 import io.element.android.features.leaveroom.api.LeaveRoomState
 import io.element.android.features.roomlist.impl.InvitesState
 import io.element.android.features.roomlist.impl.RoomListState

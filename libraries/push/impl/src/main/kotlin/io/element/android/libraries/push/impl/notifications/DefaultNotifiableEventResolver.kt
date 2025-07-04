@@ -25,6 +25,7 @@ import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.core.ThreadId
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.media.MediaPreviewValue
+import io.element.android.libraries.matrix.api.media.getMediaPreviewValue
 import io.element.android.libraries.matrix.api.notification.NotificationContent
 import io.element.android.libraries.matrix.api.notification.NotificationData
 import io.element.android.libraries.matrix.api.permalink.PermalinkParser
@@ -42,7 +43,6 @@ import io.element.android.libraries.matrix.api.timeline.item.event.TextMessageTy
 import io.element.android.libraries.matrix.api.timeline.item.event.VideoMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.VoiceMessageType
 import io.element.android.libraries.matrix.ui.messages.toPlainText
-import io.element.android.libraries.preferences.api.store.AppPreferencesStore
 import io.element.android.libraries.push.impl.R
 import io.element.android.libraries.push.impl.notifications.model.FallbackNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.InviteNotifiableEvent
@@ -51,7 +51,6 @@ import io.element.android.libraries.push.impl.notifications.model.ResolvedPushEv
 import io.element.android.libraries.ui.strings.CommonStrings
 import io.element.android.services.toolbox.api.strings.StringProvider
 import io.element.android.services.toolbox.api.systemclock.SystemClock
-import kotlinx.coroutines.flow.first
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -80,7 +79,6 @@ class DefaultNotifiableEventResolver @Inject constructor(
     @ApplicationContext private val context: Context,
     private val permalinkParser: PermalinkParser,
     private val callNotificationEventResolver: CallNotificationEventResolver,
-    private val appPreferencesStore: AppPreferencesStore,
 ) : NotifiableEventResolver {
     override suspend fun resolveEvents(
         sessionId: SessionId,
@@ -118,6 +116,7 @@ class DefaultNotifiableEventResolver @Inject constructor(
     ): Result<ResolvedPushEvent> = runCatchingExceptions {
         when (val content = this.content) {
             is NotificationContent.MessageLike.RoomMessage -> {
+                val showMediaPreview = client.mediaPreviewService().getMediaPreviewValue() == MediaPreviewValue.On
                 val senderDisambiguatedDisplayName = getDisambiguatedDisplayName(content.senderId)
                 val messageBody = descriptionFromMessageContent(content, senderDisambiguatedDisplayName)
                 val notifiableMessageEvent = buildNotifiableMessageEvent(
@@ -131,8 +130,8 @@ class DefaultNotifiableEventResolver @Inject constructor(
                     senderDisambiguatedDisplayName = senderDisambiguatedDisplayName,
                     body = messageBody,
                     caption = (content.messageType as? MessageTypeWithAttachment)?.caption,
-                    imageUriString = content.fetchImageIfPresent(client)?.toString(),
-                    imageMimeType = content.getImageMimetype(),
+                    imageUriString = if (showMediaPreview) content.fetchImageIfPresent(client)?.toString() else null,
+                    imageMimeType = if (showMediaPreview) content.getImageMimetype() else null,
                     roomName = roomDisplayName,
                     roomIsDm = isDm,
                     roomAvatarPath = roomAvatarUrl,
@@ -325,9 +324,6 @@ class DefaultNotifiableEventResolver @Inject constructor(
     }
 
     private suspend fun NotificationContent.MessageLike.RoomMessage.fetchImageIfPresent(client: MatrixClient): Uri? {
-        if (appPreferencesStore.getTimelineMediaPreviewValueFlow().first() != MediaPreviewValue.On) {
-            return null
-        }
         val fileResult = when (val messageType = messageType) {
             is ImageMessageType -> notificationMediaRepoFactory.create(client)
                 .getMediaFile(
@@ -351,10 +347,7 @@ class DefaultNotifiableEventResolver @Inject constructor(
             .getOrNull()
     }
 
-    private suspend fun NotificationContent.MessageLike.RoomMessage.getImageMimetype(): String? {
-        if (appPreferencesStore.getTimelineMediaPreviewValueFlow().first() != MediaPreviewValue.On) {
-            return null
-        }
+    private fun NotificationContent.MessageLike.RoomMessage.getImageMimetype(): String? {
         return when (val messageType = messageType) {
             is ImageMessageType -> messageType.info?.mimetype
             is VideoMessageType -> null // Use the thumbnail here?

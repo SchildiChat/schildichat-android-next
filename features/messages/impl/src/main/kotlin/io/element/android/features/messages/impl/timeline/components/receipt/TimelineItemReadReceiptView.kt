@@ -38,6 +38,7 @@ import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.messages.impl.timeline.model.ReadReceiptData
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
+import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.components.avatar.getBestName
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
@@ -66,11 +67,11 @@ fun TimelineItemReadReceiptView(
                 ReadReceiptsAvatars(
                     receipts = state.receipts,
                     modifier = Modifier
-                            .clip(RoundedCornerShape(4.dp))
-                            .clickable {
-                                onReadReceiptsClick()
-                            }
-                            .padding(2.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .clickable {
+                            onReadReceiptsClick()
+                        }
+                        .padding(2.dp)
                 )
             }
         }
@@ -115,9 +116,9 @@ private fun ReadReceiptsRow(
 ) {
     Row(
         modifier = modifier
-                .fillMaxWidth()
-                .height(AvatarSize.TimelineReadReceipt.dp + 8.dp)
-                .padding(horizontal = if (ScTheme.scTimeline) 12.dp else 18.dp),
+            .fillMaxWidth()
+            .height(AvatarSize.TimelineReadReceipt.dp + 8.dp)
+            .padding(horizontal = if (ScTheme.scTimeline) 12.dp else 18.dp),
         horizontalArrangement = if (ScTheme.scTimeline) Arrangement.Start else Arrangement.End,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -157,15 +158,16 @@ private fun ReadReceiptsAvatars(
                 .forEachIndexed { index, readReceiptData ->
                     Box(
                         modifier = Modifier
-                                .padding(end = (12.dp + avatarStrokeSize * 2) * index)
-                                .size(size = avatarSize + avatarStrokeSize * 2)
-                                .clip(CircleShape)
-                                .background(avatarStrokeColor)
-                                .zIndex(index.toFloat()),
+                            .padding(end = (12.dp + avatarStrokeSize * 2) * index)
+                            .size(size = avatarSize + avatarStrokeSize * 2)
+                            .clip(CircleShape)
+                            .background(avatarStrokeColor)
+                            .zIndex(index.toFloat()),
                         contentAlignment = Alignment.Center,
                     ) {
                         Avatar(
                             avatarData = readReceiptData.avatarData,
+                            avatarType = AvatarType.User,
                         )
                     }
                 }

@@ -31,7 +31,6 @@ import io.element.android.libraries.architecture.coverage.ExcludeFromCoverage
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.designsystem.components.list.ListItemContent
 import io.element.android.libraries.designsystem.components.preferences.PreferencePage
-import io.element.android.libraries.designsystem.icons.CompoundDrawables
 import io.element.android.libraries.designsystem.preview.ElementPreviewDark
 import io.element.android.libraries.designsystem.preview.ElementPreviewLight
 import io.element.android.libraries.designsystem.preview.PreviewWithLargeHeight
@@ -288,7 +287,7 @@ private fun ColumnScope.Footer(
 private fun DeveloperPreferencesView(onOpenDeveloperSettings: () -> Unit) {
     ListItem(
         headlineContent = { Text(stringResource(id = CommonStrings.common_developer_options)) },
-        leadingContent = ListItemContent.Icon(IconSource.Resource(CompoundDrawables.ic_compound_code)),
+        leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Code())),
         onClick = onOpenDeveloperSettings
     )
 }

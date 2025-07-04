@@ -19,6 +19,7 @@ import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.createroom.CreateRoomParameters
 import io.element.android.libraries.matrix.api.encryption.EncryptionService
 import io.element.android.libraries.matrix.api.media.MatrixMediaLoader
+import io.element.android.libraries.matrix.api.media.MediaPreviewService
 import io.element.android.libraries.matrix.api.notification.NotificationService
 import io.element.android.libraries.matrix.api.notificationsettings.NotificationSettingsService
 import io.element.android.libraries.matrix.api.oidc.AccountManagementAction
@@ -76,6 +77,7 @@ interface MatrixClient {
     fun notificationSettingsService(): NotificationSettingsService
     fun encryptionService(): EncryptionService
     fun roomDirectoryService(): RoomDirectoryService
+    fun mediaPreviewService(): MediaPreviewService
     suspend fun getCacheSize(): Long
 
     /**
@@ -168,6 +170,11 @@ interface MatrixClient {
      * Check if the user can report a room.
      */
     suspend fun canReportRoom(): Boolean
+
+    /**
+     * Return true if Livekit Rtc is supported, i.e. if Element Call is available.
+     */
+    suspend fun isLivekitRtcSupported(): Boolean
 }
 
 /**

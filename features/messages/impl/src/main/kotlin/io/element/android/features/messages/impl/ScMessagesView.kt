@@ -46,6 +46,7 @@ import chat.schildi.lib.util.formatUnreadCount
 import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
+import io.element.android.features.messages.impl.pinned.banner.PinnedMessagesBannerState
 import io.element.android.features.messages.impl.timeline.ScReadState
 import io.element.android.features.messages.impl.timeline.TimelineEvents
 import io.element.android.features.roomcall.api.RoomCallState
@@ -99,7 +100,7 @@ internal fun RowScope.scMessagesViewTopBarActions(
         }
     }
     if (ScPrefs.PINNED_MESSAGE_TOOLBAR_ACTION.value()) {
-        val count = state.pinnedMessagesBannerState.pinnedMessagesCount()
+        val count = (state.pinnedMessagesBannerState as? PinnedMessagesBannerState.Visible)?.pinnedMessagesCount() ?: 0
         if (count > 0) {
             UnclippedIconButton(onClick = onViewAllPinnedMessagesClick) {
                 BoxWithCount(count) {

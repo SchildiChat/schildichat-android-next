@@ -246,11 +246,11 @@ private fun HomeScaffold(
                         onCreateRoomClick = onCreateRoomClick,
                         // FAB height is 56dp, bottom padding is 16dp, we add 8dp as extra margin -> 56+16+8 = 80,
                         // and include provided bottom padding
-                        contentBottomPadding = (if (ScPrefs.SNC_FAB.value()) 80.dp else 0.dp) + padding.calculateBottomPadding(),
+                        contentBottomPadding = (if (ScPrefs.SNC_FAB.value()) 80.dp else 0.dp) + (if (ScPrefs.SPACE_NAV.value()) 0.dp else padding.calculateBottomPadding()),
                         modifier = Modifier
                             .padding(
                                 top = padding.calculateTopPadding(),
-                                bottom = 0.dp,
+                                bottom = if (ScPrefs.SPACE_NAV.value()) padding.calculateBottomPadding() else 0.dp,
                                 start = padding.calculateStartPadding(LocalLayoutDirection.current),
                                 end = padding.calculateEndPadding(LocalLayoutDirection.current),
                             )

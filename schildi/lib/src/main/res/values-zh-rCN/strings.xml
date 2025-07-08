@@ -131,4 +131,6 @@
     <string name="sc_url_previews_in_e2ee_rooms_title_short">E2EE 链接预览</string>
     <string name="sc_pref_category_reactions">回应</string>
     <string name="sc_pref_render_inline_images_summary">在文本消息中渲染图像，比如自定义表情</string>
+    <string name="sc_onboarding_welcome_summary">将 Turtle 带入 Matrix</string>
+    <string name="sc_pref_tweaks_title">Turtle 变动</string>
 </resources>

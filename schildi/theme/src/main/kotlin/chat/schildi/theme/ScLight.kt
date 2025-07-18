@@ -5,7 +5,6 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.annotations.CoreColorToken
 import io.element.android.compound.tokens.generated.SemanticColors
-import io.element.android.compound.tokens.generated.internal.DarkColorTokens
 import io.element.android.compound.tokens.generated.internal.LightColorTokens
 
 val scl_fgPrimary = ScColors.colorBlackAlpha_de
@@ -113,6 +112,7 @@ internal val sclSemanticColors = SemanticColors(
     bgCriticalHovered = LightColorTokens.colorRed1000, // TODO
     bgCriticalSubtle = LightColorTokens.colorRed200, // TODO
     bgCriticalSubtleHovered = LightColorTokens.colorRed300, // TODO
+    borderAccentSubtle = scl_accent,
     bgSuccessSubtle = ScColors.colorAccentGreen.copy(alpha=0.2f),
     bgInfoSubtle = ScColors.colorAccentBluePale,
     borderDisabled = scl_divider,
@@ -141,11 +141,29 @@ internal val sclSemanticColors = SemanticColors(
     iconInfoPrimary = ScColors.colorAccentBlue,
     iconOnSolidPrimary = scd_fgPrimary,
     bgAccentRest = scl_accent,
+    bgAccentSelected = scl_accent,
     bgAccentHovered = scl_accent,
     bgAccentPressed = scl_accent,
     bgBadgeAccent = ScColors.colorAccentGreenAlpha_21,
+    bgBadgeDefault = ScColors.colorWhite_e0,
     bgBadgeInfo = LightColorTokens.colorAlphaBlue1100, // TODO?
     // TODO-start
+    gradientActionStop1 = LightColorTokens.colorGreen500,
+    gradientActionStop2 = LightColorTokens.colorGreen700,
+    gradientActionStop3 = LightColorTokens.colorGreen900,
+    gradientActionStop4 = LightColorTokens.colorGreen1100,
+    gradientInfoStop1 = LightColorTokens.colorAlphaBlue500,
+    gradientInfoStop2 = LightColorTokens.colorAlphaBlue400,
+    gradientInfoStop3 = LightColorTokens.colorAlphaBlue300,
+    gradientInfoStop4 = LightColorTokens.colorAlphaBlue200,
+    gradientInfoStop5 = LightColorTokens.colorAlphaBlue100,
+    gradientInfoStop6 = LightColorTokens.colorTransparent,
+    gradientSubtleStop1 = LightColorTokens.colorAlphaGreen500,
+    gradientSubtleStop2 = LightColorTokens.colorAlphaGreen400,
+    gradientSubtleStop3 = LightColorTokens.colorAlphaGreen300,
+    gradientSubtleStop4 = LightColorTokens.colorAlphaGreen200,
+    gradientSubtleStop5 = LightColorTokens.colorAlphaGreen100,
+    gradientSubtleStop6 = LightColorTokens.colorTransparent,
     bgDecorative1 = LightColorTokens.colorLime300,
     bgDecorative2 = LightColorTokens.colorCyan300,
     bgDecorative3 = LightColorTokens.colorFuchsia300,

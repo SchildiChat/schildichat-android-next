@@ -56,7 +56,6 @@ import io.element.android.compound.theme.ElementTheme
 import io.element.android.libraries.designsystem.components.preferences.PreferencePage
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.preview.ElementPreview
-import io.element.android.libraries.designsystem.theme.badgeNegativeContentColor
 import io.element.android.libraries.designsystem.theme.components.Surface
 import timber.log.Timber
 
@@ -192,7 +191,7 @@ private fun UserChangedSettingsDialog(show: MutableState<Boolean>) {
                 val categoryColor = MaterialTheme.colorScheme.onSurfaceVariant
                 val prefColor = MaterialTheme.colorScheme.onSurface
                 val prefEnabledColor = ElementTheme.colors.bgAccentPressed
-                val prefDisabledColor = ElementTheme.colors.badgeNegativeContentColor
+                val prefDisabledColor = ElementTheme.colors.textCriticalPrimary
                 val changedPrefs = LocalScPreferencesStore.current.combinedSettingValueAndEnabledFlow { getValue, isEnabled ->
                     buildAnnotatedString {
                         buildNestedSettingsString(

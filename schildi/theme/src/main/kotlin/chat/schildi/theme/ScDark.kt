@@ -118,11 +118,13 @@ internal val scdSemanticColors = SemanticColors(
     bgActionSecondaryHovered = scd_bgFloating,
     bgActionSecondaryPressed = scd_bgFloating,
     bgBadgeAccent = ScColors.colorAccentGreenAlpha_30,
+    bgBadgeDefault = ScColors.colorGray_61,
     bgBadgeInfo = DarkColorTokens.colorAlphaBlue300, // TODO?
     bgCriticalPrimary = colorRed900, // TODO
     bgCriticalHovered = colorRed1000, // TODO
     bgCriticalSubtle = colorRed200, // TODO
     bgCriticalSubtleHovered = colorRed300, // TODO
+    borderAccentSubtle = scd_accent,
     bgSuccessSubtle = ScColors.colorAccentGreen.copy(alpha=0.2f),
     bgInfoSubtle = ScColors.colorAccentBlueDark,
     borderDisabled = scd_divider,
@@ -151,9 +153,27 @@ internal val scdSemanticColors = SemanticColors(
     iconInfoPrimary = ScColors.colorAccentBlue,
     iconOnSolidPrimary = scl_fgPrimary,
     bgAccentRest = scd_accent,
+    bgAccentSelected = scd_accent,
     bgAccentHovered = scd_accent,
     bgAccentPressed = scd_accent,
-    // TODO-start (yes, upstream has light tokens for dark theme here as well, as of compount v0.0.6)
+    // TODO-start
+    gradientActionStop1 = DarkColorTokens.colorGreen1100,
+    gradientActionStop2 = DarkColorTokens.colorGreen900,
+    gradientActionStop3 = DarkColorTokens.colorGreen700,
+    gradientActionStop4 = DarkColorTokens.colorGreen500,
+    gradientInfoStop1 = DarkColorTokens.colorAlphaBlue500,
+    gradientInfoStop2 = DarkColorTokens.colorAlphaBlue400,
+    gradientInfoStop3 = DarkColorTokens.colorAlphaBlue300,
+    gradientInfoStop4 = DarkColorTokens.colorAlphaBlue200,
+    gradientInfoStop5 = DarkColorTokens.colorAlphaBlue100,
+    gradientInfoStop6 = DarkColorTokens.colorTransparent,
+    gradientSubtleStop1 = DarkColorTokens.colorAlphaGreen500,
+    gradientSubtleStop2 = DarkColorTokens.colorAlphaGreen400,
+    gradientSubtleStop3 = DarkColorTokens.colorAlphaGreen300,
+    gradientSubtleStop4 = DarkColorTokens.colorAlphaGreen200,
+    gradientSubtleStop5 = DarkColorTokens.colorAlphaGreen100,
+    gradientSubtleStop6 = DarkColorTokens.colorTransparent,
+    // yes, upstream has light tokens for dark theme here as well, as of compound v0.0.6
     bgDecorative1 = LightColorTokens.colorLime300,
     bgDecorative2 = LightColorTokens.colorCyan300,
     bgDecorative3 = LightColorTokens.colorFuchsia300,

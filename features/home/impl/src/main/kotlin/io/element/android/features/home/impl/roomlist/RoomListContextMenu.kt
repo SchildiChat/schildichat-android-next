@@ -195,7 +195,6 @@ private fun RoomListModalBottomSheetContent(
                 leadingContent = ListItemContent.Icon(
                     iconSource = IconSource.Vector(
                         CompoundIcons.ChatProblem(),
-                        contentDescription = stringResource(CommonStrings.action_report_room),
                     )
                 ),
                 style = ListItemStyle.Destructive,

@@ -174,7 +174,7 @@ private fun RowScope.ScNameAndTimestampRow(room: RoomListRoomSummary) {
             .padding(end = 16.dp),
         style = ElementTheme.typography.fontBodyLgMedium,
         text = room.name ?: stringResource(id = CommonStrings.common_no_room_name),
-        color = ElementTheme.roomListRoomName(),
+        color = ElementTheme.colors.roomListRoomName,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis
     )
@@ -185,7 +185,7 @@ private fun RowScope.ScNameAndTimestampRow(room: RoomListRoomSummary) {
                 imageVector = Icons.Default.Star,
                 contentDescription = null,
                 modifier = Modifier.size(16.dp),
-                tint = ElementTheme.roomListRoomMessageDate(),
+                tint = ElementTheme.colors.roomListRoomMessageDate,
             )
         }
         // Low prio
@@ -194,7 +194,7 @@ private fun RowScope.ScNameAndTimestampRow(room: RoomListRoomSummary) {
                 imageVector = Icons.Default.Archive,
                 contentDescription = null,
                 modifier = Modifier.size(16.dp),
-                tint = ElementTheme.roomListRoomMessageDate(),
+                tint = ElementTheme.colors.roomListRoomMessageDate,
             )
         }
         // Timestamp
@@ -202,7 +202,7 @@ private fun RowScope.ScNameAndTimestampRow(room: RoomListRoomSummary) {
             Text(
                 text = room.timestamp,
                 style = ElementTheme.typography.fontBodySmMedium,
-                color = ElementTheme.roomListRoomMessageDate(),
+                color = ElementTheme.colors.roomListRoomMessageDate,
             )
         }
     }
@@ -222,7 +222,7 @@ private fun RowScope.ScLastMessageAndIndicatorRow(room: RoomListRoomSummary, isI
             .weight(1f)
             .padding(end = 16.dp),
         text = annotatedMessagePreview,
-        color = ElementTheme.roomListRoomMessage(),
+        color = ElementTheme.colors.roomListRoomMessage,
         style = ElementTheme.typography.fontBodyMdRegular,
         minLines = 2,
         maxLines = 2,

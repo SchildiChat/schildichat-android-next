@@ -29,6 +29,7 @@ import io.element.android.libraries.di.ApplicationContext
 import io.element.android.libraries.di.SingleIn
 import io.element.android.libraries.matrix.api.auth.MatrixAuthenticationService
 import io.element.android.libraries.matrix.api.core.SessionId
+import io.element.android.libraries.matrix.api.exception.NotificationResolverException
 import io.element.android.libraries.push.impl.history.PushHistoryService
 import io.element.android.libraries.push.impl.history.onDiagnosticPush
 import io.element.android.libraries.push.impl.history.onInvalidPushReceived
@@ -236,7 +237,14 @@ class ScPushHandler @Inject constructor(
                             null -> {}
                         }
                     }
-                    resolvedPushEvents.any { it.value.isSuccess }
+                    resolvedPushEvents.any { it.value.isSuccess } || run {
+                        val failures = resolvedPushEvents.mapNotNull { it.value.exceptionOrNull() }
+                        Timber.tag(loggerTag.value).w("Unable to get a notification data with following failures: [${failures.joinToString()}]")
+                        // Still return success if there's no retriable errors in here, i.e. there will be no notifiable notification even after retry
+                        failures.none {
+                            it.canRetry()
+                        }
+                    }
                 },
                 onFailure = { failure ->
                     Timber.tag(loggerTag.value).w(failure, "Unable to get a notification data")
@@ -247,7 +255,7 @@ class ScPushHandler @Inject constructor(
                         sessionId = userId,
                         reason = failure.message ?: failure.javaClass.simpleName,
                     )
-                    false
+                    !failure.canRetry()
                 }
             )
         } catch (e: Exception) {
@@ -256,6 +264,10 @@ class ScPushHandler @Inject constructor(
             false
         }
     }
+
+    private fun Throwable.canRetry() =
+        // Not sure if event-not-found is retriable. Element seems to think it's worth showing an "You have a new message" notification.
+        this !is NotificationResolverException.EventFilteredOut //&& this !is NotificationResolverException.EventNotFound
 
     private suspend fun handleRingingCallEvent(notifiableEvent: NotifiableRingingCallEvent) {
         Timber.i("## handleInternal() : Incoming call.")

@@ -381,7 +381,7 @@ private fun JumpToBottomButton(
             shape = CircleShape,
             modifier = Modifier.size(36.dp),
             containerColor = ElementTheme.colors.bgSubtleSecondary,
-            contentColor = ElementTheme.colors.iconSecondary
+            contentColor = ElementTheme.colors.iconSecondary,
         ) {
             Icon(
                 modifier = Modifier

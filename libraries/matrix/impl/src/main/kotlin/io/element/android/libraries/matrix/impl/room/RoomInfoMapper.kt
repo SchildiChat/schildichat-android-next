@@ -35,7 +35,7 @@ class RoomInfoMapper {
     fun map(rustRoomInfo: RustRoomInfo): RoomInfo = rustRoomInfo.let {
         return RoomInfo(
             id = RoomId(it.id),
-            creator = it.creator?.let(::UserId),
+            creators = it.creators.orEmpty().map(::UserId).toImmutableList(),
             name = it.displayName,
             rawName = it.rawName,
             topic = it.topic,
@@ -77,6 +77,8 @@ class RoomInfoMapper {
             // SC end
             historyVisibility = it.historyVisibility.map(),
             successorRoom = it.successorRoom?.map(),
+            roomVersion = it.roomVersion,
+            privilegedCreatorRole = it.privilegedCreatorsRole,
         )
     }
 }

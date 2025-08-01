@@ -39,6 +39,7 @@ import io.element.android.libraries.push.impl.notifications.FallbackNotification
 import io.element.android.libraries.push.impl.notifications.NotificationEventRequest
 import io.element.android.libraries.push.impl.notifications.NotificationResolverQueue
 import io.element.android.libraries.push.impl.notifications.channels.NotificationChannels
+import io.element.android.libraries.push.impl.notifications.model.FallbackNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.NotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.NotifiableRingingCallEvent
 import io.element.android.libraries.push.impl.notifications.model.ResolvedPushEvent
@@ -110,13 +111,23 @@ class DefaultPushHandler @Inject constructor(
                     } else {
                         result.fold(
                             onSuccess = {
-                                pushHistoryService.onSuccess(
-                                    providerInfo = request.providerInfo,
-                                    eventId = request.eventId,
-                                    roomId = request.roomId,
-                                    sessionId = request.sessionId,
-                                    comment = "Push handled successfully",
-                                )
+                                if (it is ResolvedPushEvent.Event && it.notifiableEvent is FallbackNotifiableEvent) {
+                                    pushHistoryService.onUnableToResolveEvent(
+                                        providerInfo = request.providerInfo,
+                                        eventId = request.eventId,
+                                        roomId = request.roomId,
+                                        sessionId = request.sessionId,
+                                        reason = it.notifiableEvent.cause.orEmpty(),
+                                    )
+                                } else {
+                                    pushHistoryService.onSuccess(
+                                        providerInfo = request.providerInfo,
+                                        eventId = request.eventId,
+                                        roomId = request.roomId,
+                                        sessionId = request.sessionId,
+                                        comment = "Push handled successfully",
+                                    )
+                                }
                             },
                             onFailure = { exception ->
                                 if (exception is NotificationResolverException.EventFilteredOut) {
@@ -160,7 +171,14 @@ class DefaultPushHandler @Inject constructor(
                             }
                             else -> {
                                 Timber.tag(loggerTag.value).e(exception, "Failed to resolve push event")
-                                ResolvedPushEvent.Event(fallbackNotificationFactory.create(request.sessionId, request.roomId, request.eventId))
+                                ResolvedPushEvent.Event(
+                                    fallbackNotificationFactory.create(
+                                        sessionId = request.sessionId,
+                                        roomId = request.roomId,
+                                        eventId = request.eventId,
+                                        cause = exception.message,
+                                    )
+                                )
                             }
                         }
                     }.getOrNull() ?: continue

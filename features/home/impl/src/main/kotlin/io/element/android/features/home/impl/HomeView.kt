@@ -298,12 +298,11 @@ private fun HomeScaffold(
                 FloatingActionButton(
                     containerColor = ElementTheme.colors.iconPrimary,
                     modifier = Modifier.addSpaceNavPadding(spaceBarHeight.intValue),
-                    onClick = onCreateRoomClick
+                    onClick = onCreateRoomClick,
                 ) {
                     Icon(
                         imageVector = CompoundIcons.Plus(),
                         contentDescription = stringResource(id = R.string.screen_roomlist_a11y_create_message),
-                        tint = ElementTheme.colors.iconOnSolidPrimary,
                     )
                 }
             }

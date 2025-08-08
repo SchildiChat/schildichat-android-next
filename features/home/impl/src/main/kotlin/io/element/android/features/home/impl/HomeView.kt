@@ -261,15 +261,21 @@ private fun HomeScaffold(
                         contentPadding = PaddingValues(
                             // FAB height is 56dp, bottom padding is 16dp, we add 8dp as extra margin -> 56+16+8 = 80,
                             // and include provided bottom padding
-                            bottom = (if (ScPrefs.SNC_FAB.value()) 80.dp else 0.dp) + (if (ScPrefs.SPACE_NAV.value()) 0.dp else padding.calculateBottomPadding()),
-                            top = padding.calculateTopPadding()
+                            // Disable contentPadding due to navigation issue using the keyboard
+                            // See https://issuetracker.google.com/issues/436432313
+                            bottom = (if (ScPrefs.SNC_FAB.value()) 80.dp else 0.dp),
+                            // bottom = (if (ScPrefs.SNC_FAB.value()) 80.dp else 0.dp) + (if (ScPrefs.SPACE_NAV.value()) 0.dp else padding.calculateBottomPadding()),
+                            // top = padding.calculateTopPadding()
                         ),
                         modifier = Modifier
                             .padding(
                                 PaddingValues(
-                                    bottom = if (ScPrefs.SPACE_NAV.value()) padding.calculateBottomPadding() else 0.dp,
                                     start = padding.calculateStartPadding(LocalLayoutDirection.current),
                                     end = padding.calculateEndPadding(LocalLayoutDirection.current),
+                                    // Remove these two lines once https://issuetracker.google.com/issues/436432313 has been fixed
+                                    bottom = padding.calculateBottomPadding(),
+                                    //bottom = if (ScPrefs.SPACE_NAV.value()) padding.calculateBottomPadding() else 0.dp, // SC, keep this one when the other bottom one is removed upstream
+                                    top = padding.calculateTopPadding()
                                 )
                             )
                             .consumeWindowInsets(padding)

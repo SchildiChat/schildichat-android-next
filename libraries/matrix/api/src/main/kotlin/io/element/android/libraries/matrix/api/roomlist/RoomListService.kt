@@ -42,6 +42,7 @@ interface RoomListService {
     fun createRoomList(
         pageSize: Int,
         initialFilter: RoomListFilter,
+        isSpaceList: Boolean = false, // SC
         source: RoomList.Source,
     ): DynamicRoomList
 

@@ -35,8 +35,7 @@ interface RoomList {
      * To apply some dynamic filtering on top of that, use [DynamicRoomList].
      */
     enum class Source {
-        All,
-        SPACES
+        All
     }
 
     /**

@@ -12,7 +12,6 @@ import io.element.android.libraries.matrix.api.roomlist.RoomList
 import io.element.android.libraries.matrix.api.roomlist.RoomListFilter
 import io.element.android.libraries.matrix.api.roomlist.RoomSummary
 import io.element.android.libraries.matrix.api.roomlist.ScSdkInboxSettings
-import io.element.android.libraries.matrix.api.roomlist.ScSdkRoomSortOrder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,6 +46,7 @@ internal class RoomListFactory(
     fun createRoomList(
         pageSize: Int,
         coroutineContext: CoroutineContext,
+        isSpaceList: Boolean,
         coroutineScope: CoroutineScope = sessionCoroutineScope,
         initialFilter: RoomListFilter = RoomListFilter.all(),
         initialInboxSettings: ScSdkInboxSettings? = null,
@@ -69,7 +69,7 @@ internal class RoomListFactory(
                     pageSize = pageSize,
                     roomListDynamicEvents = dynamicEvents,
                     initialInboxSettings = initialInboxSettings,
-                    initialFilterKind = RoomListEntriesDynamicFilterKind.All(ROOM_LIST_RUST_FILTERS),
+                    initialFilterKind = RoomListEntriesDynamicFilterKind.All(ROOM_LIST_RUST_FILTERS.initialFilterForSpaces(isSpaceList)),
                 ).onEach { update ->
                     processor.postUpdate(update)
                 }.launchIn(this)

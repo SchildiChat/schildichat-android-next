@@ -249,6 +249,7 @@ private fun RoomMemberActionsBottomSheet(
                 overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
+                        .copyTextOnLongPress(user.userId.toString())
                         .padding(horizontal = 16.dp)
                         .fillMaxWidth()
             )

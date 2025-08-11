@@ -25,7 +25,7 @@ if [ -z "$JAVA_HOME" ]; then
     fi
 fi
 if [ -z "$ANDROID_NDK_HOME" ]; then
-    ANDROID_NDK_HOME="$HOME/AndroidSdk/ndk/27.2.12479018"
+    ANDROID_NDK_HOME="$HOME/AndroidSdk/ndk/28.2.13676359"
     if [ -d "$ANDROID_NDK_HOME" ]; then
         export ANDROID_NDK_HOME="$ANDROID_NDK_HOME"
     else

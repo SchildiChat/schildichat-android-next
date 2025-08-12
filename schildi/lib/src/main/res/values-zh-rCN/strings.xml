@@ -133,4 +133,7 @@
     <string name="sc_pref_render_inline_images_summary">在文本消息中渲染图像，比如自定义表情</string>
     <string name="sc_onboarding_welcome_summary">将 Turtle 带入 Matrix</string>
     <string name="sc_pref_tweaks_title">Turtle 变动</string>
+    <string name="sc_pref_mark_read_requires_seen_unread_line_title">仅在读完时标记已读</string>
+    <string name="sc_pref_mark_read_requires_seen_unread_line_summary">不要在我刚打开聊天窗口时将聊天标记为已读。</string>
+    <string name="sc_pref_notify_failed_notification_lookup_title">通知失败时发送警告</string>
 </resources>

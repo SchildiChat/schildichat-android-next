@@ -1,0 +1,4 @@
+- Update codebase to Element X v25.08.2
+- Copy mxid on long press in room member bottom sheet
+- Apply the "Fully expand message menu" setting also to the room list menu bottom sheet
+- Support 16KB page size

@@ -175,7 +175,7 @@ jsoup = "org.jsoup:jsoup:1.21.1"
 appyx_core = { module = "com.bumble.appyx:core", version.ref = "appyx" }
 molecule-runtime = "app.cash.molecule:molecule-runtime:2.1.0"
 timber = "com.jakewharton.timber:timber:5.0.1"
-matrix_sdk = "chat.schildi.rustcomponents:sdk-android:0.4.17"
+matrix_sdk = "chat.schildi.rustcomponents:sdk-android:0.4.18"
 matrix_richtexteditor = { module = "chat.schildi:wysiwyg", version.ref = "wysiwyg" }
 matrix_richtexteditor_compose = { module = "chat.schildi:wysiwyg-compose", version.ref = "wysiwyg" }
 sqldelight-driver-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }

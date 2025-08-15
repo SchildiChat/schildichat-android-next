@@ -13,8 +13,8 @@
   <string name="screen_change_account_provider_other">"Інше"</string>
   <string name="screen_change_account_provider_subtitle">"Використати іншого провайдера облікових записів, наприклад, власний приватний сервер або робочий обліковий запис."</string>
   <string name="screen_change_account_provider_title">"Змінити провайдера облікового запису"</string>
-  <string name="screen_change_server_error_element_pro_required_message">"Необхідно встановити застосунок SchildiChat Pro на %1$s. Завантажте його з магазину."</string>
-  <string name="screen_change_server_error_element_pro_required_title">"Потрібен SchildiChat Pro"</string>
+  <string name="screen_change_server_error_element_pro_required_message">"Необхідно встановити застосунок Element Pro на %1$s. Завантажте його з магазину."</string>
+  <string name="screen_change_server_error_element_pro_required_title">"Потрібен Element Pro"</string>
   <string name="screen_change_server_error_invalid_homeserver">"Не вдалося під\'єднатися до цього домашнього сервера. Перевірте правильність введеної URL-адреси домашнього сервера. Якщо URL-адреса правильна, зверніться по додаткову допомогу до адміністратора домашнього сервера."</string>
   <string name="screen_change_server_error_invalid_well_known">"Сервер недоступний через помилку у файлі well-known:
 %1$s"</string>

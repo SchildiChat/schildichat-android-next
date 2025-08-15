@@ -28,6 +28,7 @@ dependencies {
     implementation(projects.schildi.lib)
 
     implementation(projects.appconfig)
+    implementation(projects.features.enterprise.api)
     implementation(projects.services.toolbox.api)
     implementation(projects.libraries.androidutils)
     implementation(projects.libraries.core)
@@ -52,6 +53,7 @@ dependencies {
     testImplementation(libs.test.truth)
     testImplementation(libs.test.turbine)
     testImplementation(libs.test.mockk)
+    testImplementation(projects.features.enterprise.test)
     testImplementation(projects.libraries.matrix.test)
     testImplementation(projects.libraries.sessionStorage.implMemory)
     testImplementation(projects.libraries.sessionStorage.test)

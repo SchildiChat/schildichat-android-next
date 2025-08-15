@@ -288,7 +288,7 @@ fun MessagesView(
                 state = state,
                 onLinkClick = { url, customTab -> onLinkClick(url, customTab) },
                 onRoomSuccessorClick = { roomId ->
-                    state.timelineState.eventSink(TimelineEvents.NavigateToRoom(roomId = roomId))
+                    state.timelineState.eventSink(TimelineEvents.NavigateToPredecessorOrSuccessorRoom(roomId = roomId))
                 },
                 scBeforeSend = {
                     state.timelineState.eventSink(TimelineEvents.MarkAsRead)
@@ -394,7 +394,7 @@ private fun MessagesViewContent(
             enableTextFormatting = state.enableTextFormatting,
         )
 
-        if (state.enableVoiceMessages && state.voiceMessageComposerState.showPermissionRationaleDialog) {
+        if (state.voiceMessageComposerState.showPermissionRationaleDialog) {
             VoiceMessagePermissionRationaleDialog(
                 onContinue = {
                     state.voiceMessageComposerState.eventSink(VoiceMessageComposerEvents.AcceptPermissionRationale)
@@ -405,7 +405,7 @@ private fun MessagesViewContent(
                 appName = state.appName
             )
         }
-        if (state.enableVoiceMessages && state.voiceMessageComposerState.showSendFailureDialog) {
+        if (state.voiceMessageComposerState.showSendFailureDialog) {
             VoiceMessageSendingFailedDialog(
                 onDismiss = { state.voiceMessageComposerState.eventSink(VoiceMessageComposerEvents.DismissSendFailureDialog) },
             )
@@ -482,7 +482,6 @@ private fun MessagesViewComposerBottomSheetContents(
                     MessageComposerView(
                         state = state.composerState,
                         voiceMessageState = state.voiceMessageComposerState,
-                        enableVoiceMessages = state.enableVoiceMessages,
                         modifier = Modifier.fillMaxWidth(),
                         scBeforeSend = scBeforeSend,
                     )

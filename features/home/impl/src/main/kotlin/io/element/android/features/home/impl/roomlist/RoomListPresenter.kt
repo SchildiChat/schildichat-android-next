@@ -48,8 +48,6 @@ import io.element.android.features.leaveroom.api.LeaveRoomState
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.coroutine.mapState
-import io.element.android.libraries.featureflag.api.FeatureFlagService
-import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.fullscreenintent.api.FullScreenIntentPermissionsState
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
@@ -94,7 +92,6 @@ class RoomListPresenter @Inject constructor(
     private val spaceAwareRoomListDataSource: SpaceAwareRoomListDataSource,
     private val spaceListDataSource: SpaceListDataSource,
     private val spaceUnreadCountsDataSource: SpaceUnreadCountsDataSource,
-    private val featureFlagService: FeatureFlagService,
     private val filtersPresenter: Presenter<RoomListFiltersState>,
     private val searchPresenter: Presenter<RoomListSearchState>,
     private val sessionPreferencesStore: SessionPreferencesStore,
@@ -286,7 +283,6 @@ class RoomListPresenter @Inject constructor(
             isDm = event.roomSummary.isDm,
             isFavorite = event.roomSummary.isFavorite,
             isLowPriority = event.roomSummary.isLowPriority, // SC
-            markAsUnreadFeatureFlagEnabled = featureFlagService.isFeatureEnabled(FeatureFlags.MarkAsUnread),
             hasNewContent = event.roomSummary.hasNewContent(scPreferencesStore),
             displayClearRoomCacheAction = appPreferencesStore.isDeveloperModeEnabledFlow().first(),
         )

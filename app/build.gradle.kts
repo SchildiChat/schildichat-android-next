@@ -112,7 +112,7 @@ android {
             resValue("string", "app_name", "$baseAppName dbg")
             resValue(
                 "string",
-                "login_redirect_scheme",
+                "login_redirect_scheme_upstream", // SC: we have non-_upstream it in resources to better combine build flavor+type
                 "$oidcRedirectSchemeBase.debug",
             )
             applicationIdSuffix = ".debug"
@@ -123,7 +123,7 @@ android {
             resValue("string", "app_name", baseAppName)
             resValue(
                 "string",
-                "login_redirect_scheme",
+                "login_redirect_scheme_upstream", // SC: we have non-_upstream it in resources to better combine build flavor+type
                 oidcRedirectSchemeBase,
             )
             signingConfig = signingConfigs.getByName("debug")
@@ -145,7 +145,7 @@ android {
             resValue("string", "app_name", "$baseAppName nightly")
             resValue(
                 "string",
-                "login_redirect_scheme",
+                "login_redirect_scheme_upstream", // SC: we have non-_upstream it in resources to better combine build flavor+type
                 "$oidcRedirectSchemeBase.nightly",
             )
             matchingFallbacks += listOf("release")

@@ -2,6 +2,7 @@ package io.element.android.x
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.work.Configuration
 import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
@@ -11,12 +12,20 @@ import io.element.android.libraries.di.DaggerComponentOwner
 import io.element.android.libraries.pushproviders.unifiedpush.ScPushWorker
 import io.element.android.libraries.pushproviders.unifiedpush.UnifiedPushParser
 import io.element.android.x.di.AppBindings
+import timber.log.Timber
 
 abstract class ScApplication : Application(), Configuration.Provider, DaggerComponentOwner {
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder()
             .setWorkerFactory(ScWorkerFactory())
             .build()
+
+    // Timber not yet initialized in ScApplication onCreate
+    @Suppress("LogNotTimber")
+    override fun onCreate() {
+        super.onCreate()
+        Log.v("SchildiNext", "Launch ${BuildConfig.APPLICATION_ID}, OIDC scheme is ${getString(R.string.login_redirect_scheme)}")
+    }
 }
 
 class ScWorkerFactory : WorkerFactory() {

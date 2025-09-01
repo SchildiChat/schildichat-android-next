@@ -79,7 +79,7 @@ fun RoomListTopBar(
     areSearchResultsDisplayed: Boolean,
     // SC start
     selectedSpaceName: String?,
-    onCreateRoomClick: () -> Unit,
+    onStartChatClick: () -> Unit,
     // SC end
     onToggleSearch: () -> Unit,
     onMenuActionClick: (RoomListMenuAction) -> Unit,
@@ -98,7 +98,7 @@ fun RoomListTopBar(
         areSearchResultsDisplayed = areSearchResultsDisplayed,
         // SC start
         selectedSpaceName = selectedSpaceName,
-        onCreateRoomClick = onCreateRoomClick,
+        onStartChatClick = onStartChatClick,
         // SC end
         onOpenSettings = onOpenSettings,
         onSearchClick = onToggleSearch,
@@ -121,7 +121,7 @@ private fun DefaultRoomListTopBar(
     areSearchResultsDisplayed: Boolean,
     // SC start
     selectedSpaceName: String? = null,
-    onCreateRoomClick: () -> Unit = {},
+    onStartChatClick: () -> Unit = {},
     // SC end
     scrollBehavior: TopAppBarScrollBehavior,
     onOpenSettings: () -> Unit,
@@ -212,7 +212,7 @@ private fun DefaultRoomListTopBar(
                                     expanded = showMenu,
                                     onDismissRequest = { showMenu = false }
                                 ) {
-                                    ScRoomListDropdownEntriesTop(onClick = { showMenu = false }, onMenuActionClick = onMenuActionClick, onCreateRoomClick = onCreateRoomClick)
+                                    ScRoomListDropdownEntriesTop(onClick = { showMenu = false }, onMenuActionClick = onMenuActionClick, onStartChatClick = onStartChatClick)
                                     if (RoomListConfig.SHOW_INVITE_MENU_ITEM) {
                                         DropdownMenuItem(
                                             onClick = {

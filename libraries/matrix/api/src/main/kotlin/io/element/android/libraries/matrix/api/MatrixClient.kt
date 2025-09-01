@@ -10,7 +10,6 @@ package io.element.android.libraries.matrix.api
 import io.element.android.libraries.core.data.tryOrNull
 import io.element.android.libraries.matrix.api.core.DeviceId
 import io.element.android.libraries.matrix.api.core.MatrixPatterns
-import io.element.android.libraries.matrix.api.core.ProgressCallback
 import io.element.android.libraries.matrix.api.core.RoomAlias
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.RoomIdOrAlias
@@ -58,6 +57,7 @@ interface MatrixClient {
     suspend fun setAccountData(eventType: String, content: String) // SC
     suspend fun getUrlPreviewJson(url: String): String // SC
     suspend fun findDM(userId: UserId): Result<RoomId?>
+    suspend fun getJoinedRoomIds(): Result<Set<RoomId>>
     suspend fun ignoreUser(userId: UserId): Result<Unit>
     suspend fun unignoreUser(userId: UserId): Result<Unit>
     suspend fun createRoom(createRoomParams: CreateRoomParameters): Result<RoomId>
@@ -98,7 +98,7 @@ interface MatrixClient {
      */
     suspend fun getUserProfile(): Result<MatrixUser>
     suspend fun getAccountManagementUrl(action: AccountManagementAction?): Result<String?>
-    suspend fun uploadMedia(mimeType: String, data: ByteArray, progressCallback: ProgressCallback?): Result<String>
+    suspend fun uploadMedia(mimeType: String, data: ByteArray): Result<String>
     fun roomMembershipObserver(): RoomMembershipObserver
 
     /**

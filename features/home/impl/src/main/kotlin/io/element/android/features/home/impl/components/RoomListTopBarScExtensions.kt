@@ -19,13 +19,13 @@ import io.element.android.libraries.ui.strings.CommonStrings
 fun ScRoomListDropdownEntriesTop(
     onClick: () -> Unit,
     onMenuActionClick: (RoomListMenuAction) -> Unit,
-    onCreateRoomClick: () -> Unit,
+    onStartChatClick: () -> Unit,
 ) {
     if (!ScPrefs.SNC_FAB.value()) {
         DropdownMenuItem(
             onClick = {
                 onClick()
-                onCreateRoomClick()
+                onStartChatClick()
             },
             text = { Text(stringResource(id = io.element.android.libraries.ui.strings.R.string.action_start_chat)) },
             leadingIcon = {

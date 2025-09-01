@@ -39,6 +39,7 @@ import io.element.android.features.messages.impl.attachments.Attachment
 import io.element.android.features.messages.impl.emojis.RecentEmojiDataSource
 import io.element.android.features.messages.impl.messagecomposer.MessageComposerEvents
 import io.element.android.features.messages.impl.messagecomposer.MessageComposerPresenter
+import io.element.android.features.messages.impl.timeline.TimelineController
 import io.element.android.features.messages.impl.timeline.TimelineEvents
 import io.element.android.features.messages.impl.timeline.TimelinePresenter
 import io.element.android.features.messages.impl.timeline.di.LocalTimelineItemPresenterFactories
@@ -61,12 +62,14 @@ import io.element.android.libraries.di.annotations.SessionCoroutineScope
 import io.element.android.libraries.matrix.api.analytics.toAnalyticsViewRoom
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.core.ThreadId
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.core.toRoomIdOrAlias
 import io.element.android.libraries.matrix.api.permalink.PermalinkData
 import io.element.android.libraries.matrix.api.permalink.PermalinkParser
-import io.element.android.libraries.matrix.api.room.BaseRoom
+import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.room.alias.matches
+import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.matrix.api.timeline.item.TimelineItemDebugInfo
 import io.element.android.libraries.mediaplayer.api.MediaPlayer
 import io.element.android.libraries.ui.strings.CommonStrings
@@ -81,9 +84,8 @@ class MessagesNode @AssistedInject constructor(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
     @ApplicationContext private val context: Context,
-    @SessionCoroutineScope
-    private val sessionCoroutineScope: CoroutineScope,
-    private val room: BaseRoom,
+    @SessionCoroutineScope private val sessionCoroutineScope: CoroutineScope,
+    private val room: JoinedRoom,
     private val analyticsService: AnalyticsService,
     messageComposerPresenterFactory: MessageComposerPresenter.Factory,
     timelinePresenterFactory: TimelinePresenter.Factory,
@@ -98,11 +100,16 @@ class MessagesNode @AssistedInject constructor(
     private val knockRequestsBannerRenderer: KnockRequestsBannerRenderer,
     private val roomMemberModerationRenderer: RoomMemberModerationRenderer,
 ) : Node(buildContext, plugins = plugins), MessagesNavigator {
+    private val timelineController = TimelineController(room, room.liveTimeline)
     private val presenter = presenterFactory.create(
         navigator = this,
-        composerPresenter = messageComposerPresenterFactory.create(this),
-        timelinePresenter = timelinePresenterFactory.create(this),
-        actionListPresenter = actionListPresenterFactory.create(TimelineItemActionPostProcessor.Default)
+        composerPresenter = messageComposerPresenterFactory.create(timelineController, this),
+        timelinePresenter = timelinePresenterFactory.create(timelineController = timelineController, this),
+        actionListPresenter = actionListPresenterFactory.create(
+            postProcessor = TimelineItemActionPostProcessor.Default,
+            timelineMode = timelineController.mainTimelineMode()
+        ),
+        timelineController = timelineController,
     )
     private val callbacks = plugins<Callback>()
 
@@ -115,7 +122,7 @@ class MessagesNode @AssistedInject constructor(
 
     interface Callback : Plugin {
         fun onRoomDetailsClick()
-        fun onEventClick(isLive: Boolean, event: TimelineItem.Event): Boolean
+        fun onEventClick(timelineMode: Timeline.Mode, event: TimelineItem.Event): Boolean
         fun onPreviewAttachments(attachments: ImmutableList<Attachment>)
         fun onUserDataClick(userId: UserId)
         fun onPermalinkClick(data: PermalinkData)
@@ -128,6 +135,7 @@ class MessagesNode @AssistedInject constructor(
         fun onJoinCallClick(roomId: RoomId)
         fun onViewAllPinnedEvents()
         fun onViewKnockRequests()
+        fun onOpenThread(threadRootId: ThreadId, focusedEventId: EventId?)
     }
 
     override fun onBuilt() {
@@ -147,12 +155,12 @@ class MessagesNode @AssistedInject constructor(
         callbacks.forEach { it.onRoomDetailsClick() }
     }
 
-    private fun onEventClick(isLive: Boolean, event: TimelineItem.Event): Boolean {
+    private fun onEventClick(timelineMode: Timeline.Mode, event: TimelineItem.Event): Boolean {
         // Note: cannot use `callbacks.all { it.onEventClick(event) }` because:
         // - if callbacks is empty, it will return true and we want to return false.
         // - if a callback returns false, the other callback will not be invoked.
         return callbacks.takeIf { it.isNotEmpty() }
-            ?.map { it.onEventClick(isLive, event) }
+            ?.map { it.onEventClick(timelineMode, event) }
             ?.all { it }
             .orFalse()
     }
@@ -223,9 +231,7 @@ class MessagesNode @AssistedInject constructor(
         callbacks.forEach { it.onEditPollClick(eventId) }
     }
 
-    override fun onBackPressed() { // SC
-        navigateUp()
-    }
+    override fun onBackPressed() = navigateUp() // SC
 
     override fun onPreviewAttachment(attachments: ImmutableList<Attachment>) {
         callbacks.forEach { it.onPreviewAttachments(attachments) }
@@ -238,6 +244,10 @@ class MessagesNode @AssistedInject constructor(
             val permalinkData = PermalinkData.RoomLink(roomId.toRoomIdOrAlias(), viaParameters = serverNames.toImmutableList())
             callbacks.forEach { it.onPermalinkClick(permalinkData) }
         }
+    }
+
+    override fun onOpenThread(threadRootId: ThreadId, focusedEventId: EventId?) {
+        callbacks.forEach { it.onOpenThread(threadRootId, focusedEventId) }
     }
 
     private fun onViewAllPinnedMessagesClick() {
@@ -284,7 +294,18 @@ class MessagesNode @AssistedInject constructor(
                 recentEmojiDataSource = recentEmojiDataSource, // SC
                 onBackClick = this::navigateUp,
                 onRoomDetailsClick = this::onRoomDetailsClick,
-                onEventContentClick = this::onEventClick,
+                onEventContentClick = { isLive, event ->
+                    if (isLive) {
+                        onEventClick(timelineController.mainTimelineMode(), event)
+                    } else {
+                        val detachedTimelineMode = timelineController.detachedTimelineMode()
+                        if (detachedTimelineMode != null) {
+                            onEventClick(detachedTimelineMode, event)
+                        } else {
+                            false
+                        }
+                    }
+                },
                 onUserDataClick = this::onUserDataClick,
                 onLinkClick = { url, customTab -> onLinkClick(activity, isDark, url, state.timelineState.eventSink, customTab) },
                 onSendLocationClick = this::onSendLocationClick,

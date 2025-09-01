@@ -21,6 +21,7 @@ import io.element.android.features.messages.impl.attachments.Attachment
 import io.element.android.libraries.architecture.NodeInputs
 import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.di.RoomScope
+import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.mediaviewer.api.local.LocalMediaRenderer
 
 @ContributesNode(RoomScope::class)
@@ -30,7 +31,10 @@ class AttachmentsPreviewNode @AssistedInject constructor(
     presenterFactory: AttachmentsPreviewPresenter.Factory,
     private val localMediaRenderer: LocalMediaRenderer,
 ) : Node(buildContext, plugins = plugins) {
-    data class Inputs(val attachment: Attachment) : NodeInputs
+    data class Inputs(
+        val attachment: Attachment,
+        val timelineMode: Timeline.Mode,
+    ) : NodeInputs
 
     private val inputs: Inputs = inputs()
 
@@ -40,6 +44,7 @@ class AttachmentsPreviewNode @AssistedInject constructor(
 
     private val presenter = presenterFactory.create(
         attachment = inputs.attachment,
+        timelineMode = inputs.timelineMode,
         onDoneListener = onDoneListener,
     )
 

@@ -3,6 +3,7 @@ package chat.schildi.features.home.spaces
 import chat.schildi.lib.preferences.ScAppStateStore
 import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
+import dev.zacsweers.metro.Inject
 import io.element.android.features.home.impl.datasource.RoomListDataSource
 import io.element.android.features.home.impl.model.RoomListRoomSummary
 import kotlinx.collections.immutable.ImmutableList
@@ -22,9 +23,9 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
-class SpaceAwareRoomListDataSource @Inject constructor(
+@Inject
+class SpaceAwareRoomListDataSource(
     private val scPreferencesStore: ScPreferencesStore,
 ) {
 

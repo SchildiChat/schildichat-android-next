@@ -21,7 +21,7 @@ interface MessagesNavigator {
     fun onReportContentClick(eventId: EventId, senderId: UserId)
     fun onEditPollClick(eventId: EventId)
     fun onBackPressed() // SC
-    fun onPreviewAttachment(attachments: ImmutableList<Attachment>)
+    fun onPreviewAttachment(attachments: ImmutableList<Attachment>, inReplyToEventId: EventId?)
     fun onNavigateToRoom(roomId: RoomId, serverNames: List<String>)
     fun onOpenThread(threadRootId: ThreadId, focusedEventId: EventId?)
 }

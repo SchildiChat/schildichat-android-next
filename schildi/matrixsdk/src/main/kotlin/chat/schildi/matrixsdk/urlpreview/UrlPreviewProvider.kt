@@ -1,13 +1,13 @@
 package chat.schildi.matrixsdk.urlpreview
 
 import android.content.Context
-import io.element.android.libraries.di.ApplicationContext
+import dev.zacsweers.metro.Inject
+import io.element.android.libraries.di.annotations.ApplicationContext
 import io.element.android.libraries.matrix.api.MatrixClient
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import timber.log.Timber
@@ -15,7 +15,6 @@ import java.io.File
 import java.io.InputStream
 import java.security.MessageDigest
 import java.util.concurrent.locks.ReentrantLock
-import javax.inject.Inject
 import kotlin.concurrent.withLock
 
 sealed interface UrlPreviewLookup
@@ -47,7 +46,8 @@ private data class UrlPreviewFileCache(
 private const val PREVIEW_CACHE_LIFETIME_MILLIS = 7L * 24 * 60 * 60 * 1_000
 const val DEBUG_URL_PREVIEWS = true
 
-class UrlPreviewProvider @Inject constructor(
+@Inject
+class UrlPreviewProvider(
     @ApplicationContext
     private val context: Context,
     private val client: MatrixClient

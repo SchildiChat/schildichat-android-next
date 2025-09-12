@@ -11,17 +11,16 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.squareup.anvil.annotations.ContributesBinding
-import io.element.android.libraries.di.AppScope
-import io.element.android.libraries.di.ApplicationContext
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import io.element.android.libraries.di.annotations.ApplicationContext
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import javax.inject.Inject
 
 private val Context.scAppStateDataStore: DataStore<Preferences> by preferencesDataStore(name = "schildinext-appstate")
 private val KEY_SPACE_SELECTION = stringPreferencesKey("SPACE_SELECTION")
@@ -46,7 +45,8 @@ interface ScAppStateStore {
 }
 
 @ContributesBinding(AppScope::class)
-class DefaultScAppStateStore @Inject constructor(
+@Inject
+class DefaultScAppStateStore(
     @ApplicationContext context: Context,
 ) : ScAppStateStore {
     override val store = context.scAppStateDataStore

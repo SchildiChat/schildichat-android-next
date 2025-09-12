@@ -17,7 +17,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import chat.schildi.features.home.spaces.SpaceListDataSource
+import dev.zacsweers.metro.Inject
 import io.element.android.features.home.impl.roomlist.RoomListState
+import io.element.android.features.home.impl.spaces.HomeSpacesState
 import io.element.android.features.logout.api.direct.DirectLogoutState
 import io.element.android.features.rageshake.api.RageshakeFeatureAvailability
 import io.element.android.libraries.architecture.Presenter
@@ -28,15 +30,16 @@ import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.indicator.api.IndicatorService
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.sync.SyncService
-import javax.inject.Inject
 
-class HomePresenter @Inject constructor(
+@Inject
+class HomePresenter(
     private val client: MatrixClient,
     private val syncService: SyncService,
     private val snackbarDispatcher: SnackbarDispatcher,
     private val indicatorService: IndicatorService,
     private val roomListPresenter: Presenter<RoomListState>,
     val spaceListDataSource: SpaceListDataSource,
+    private val homeSpacesPresenter: Presenter<HomeSpacesState>,
     private val logoutPresenter: Presenter<DirectLogoutState>,
     private val rageshakeFeatureAvailability: RageshakeFeatureAvailability,
     private val featureFlagService: FeatureFlagService,
@@ -47,6 +50,7 @@ class HomePresenter @Inject constructor(
         val isOnline by syncService.isOnline.collectAsState()
         val canReportBug by remember { rageshakeFeatureAvailability.isAvailable() }.collectAsState(false)
         val roomListState = roomListPresenter.present()
+        val homeSpacesState = homeSpacesPresenter.present()
         val isSpaceFeatureEnabled by remember {
             featureFlagService.isFeatureEnabledFlow(FeatureFlags.Space)
         }.collectAsState(initial = false)
@@ -72,6 +76,12 @@ class HomePresenter @Inject constructor(
             }
         }
 
+        LaunchedEffect(homeSpacesState.spaceRooms.isEmpty()) {
+            // If the last space is left, ensure that the Chat view is rendered.
+            if (homeSpacesState.spaceRooms.isEmpty()) {
+                currentHomeNavigationBarItemOrdinal = HomeNavigationBarItem.Chats.ordinal
+            }
+        }
         val snackbarMessage by snackbarDispatcher.collectSnackbarMessageAsState()
         return HomeState(
             matrixUser = matrixUser.value,
@@ -79,6 +89,7 @@ class HomePresenter @Inject constructor(
             hasNetworkConnection = isOnline,
             currentHomeNavigationBarItem = currentHomeNavigationBarItem,
             roomListState = roomListState,
+            homeSpacesState = homeSpacesState,
             snackbarMessage = snackbarMessage,
             canReportBug = canReportBug,
             directLogoutState = directLogoutState,

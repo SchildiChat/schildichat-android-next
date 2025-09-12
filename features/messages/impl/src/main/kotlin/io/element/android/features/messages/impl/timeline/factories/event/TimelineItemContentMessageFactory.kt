@@ -11,6 +11,7 @@ import android.text.style.URLSpan
 import androidx.core.text.buildSpannedString
 import androidx.core.text.getSpans
 import androidx.core.text.toSpannable
+import dev.zacsweers.metro.Inject
 import io.element.android.features.location.api.Location
 import io.element.android.features.messages.api.timeline.HtmlConverterProvider
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemAudioContent
@@ -49,10 +50,10 @@ import io.element.android.libraries.mediaviewer.api.util.FileExtensionExtractor
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import timber.log.Timber
-import javax.inject.Inject
 import kotlin.time.Duration
 
-class TimelineItemContentMessageFactory @Inject constructor(
+@Inject
+class TimelineItemContentMessageFactory(
     private val fileSizeFormatter: FileSizeFormatter,
     private val fileExtensionExtractor: FileExtensionExtractor,
     private val htmlConverterProvider: HtmlConverterProvider,

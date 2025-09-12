@@ -3,15 +3,16 @@ package chat.schildi.features.home
 import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.safeLookup
+import dev.zacsweers.metro.Inject
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
 import io.element.android.libraries.matrix.api.roomlist.ScSdkInboxSettings
 import io.element.android.libraries.matrix.api.roomlist.ScSdkRoomSortOrder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import javax.inject.Inject
 
-class ScInboxSettingsSource @Inject constructor(
+@Inject
+class ScInboxSettingsSource(
     private val scPreferencesStore: ScPreferencesStore,
     private val roomListService: RoomListService,
 ) {

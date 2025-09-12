@@ -43,6 +43,7 @@ import io.element.android.libraries.matrix.api.room.join.JoinRule
 import io.element.android.libraries.matrix.api.roomdirectory.RoomDirectoryService
 import io.element.android.libraries.matrix.api.roomdirectory.RoomVisibility
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
+import io.element.android.libraries.matrix.api.spaces.SpaceService
 import io.element.android.libraries.matrix.api.sync.SlidingSyncVersion
 import io.element.android.libraries.matrix.api.sync.SyncService
 import io.element.android.libraries.matrix.api.sync.SyncState
@@ -72,6 +73,7 @@ import io.element.android.libraries.matrix.impl.roomdirectory.map
 import io.element.android.libraries.matrix.impl.roomlist.RoomListFactory
 import io.element.android.libraries.matrix.impl.roomlist.RustRoomListService
 import io.element.android.libraries.matrix.impl.roomlist.roomOrNull
+import io.element.android.libraries.matrix.impl.spaces.RustSpaceService
 import io.element.android.libraries.matrix.impl.sync.RustSyncService
 import io.element.android.libraries.matrix.impl.sync.map
 import io.element.android.libraries.matrix.impl.usersearch.UserProfileMapper
@@ -145,6 +147,7 @@ class RustMatrixClient(
     private val sessionDispatcher = dispatchers.io.limitedParallelism(64)
 
     private val innerRoomListService = innerSyncService.roomListService()
+    private val innerSpaceService = innerClient.spaceService()
 
     private val rustSyncService = RustSyncService(
         inner = innerSyncService,
@@ -186,6 +189,12 @@ class RustMatrixClient(
         ),
         roomSyncSubscriber = roomSyncSubscriber,
         scPreferencesStore = scPreferencesStore,
+    )
+
+    override val spaceService: SpaceService = RustSpaceService(
+        innerSpaceService = innerSpaceService,
+        sessionCoroutineScope = sessionCoroutineScope,
+        sessionDispatcher = sessionDispatcher,
     )
 
     private val verificationService = RustSessionVerificationService(
@@ -567,6 +576,7 @@ class RustMatrixClient(
 
         sessionDelegate.clearCurrentClient()
         innerRoomListService.close()
+        innerSpaceService.close()
         notificationService.close()
         encryptionService.close()
         innerClient.close()

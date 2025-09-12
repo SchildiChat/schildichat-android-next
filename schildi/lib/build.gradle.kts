@@ -1,4 +1,4 @@
-import extension.setupAnvil
+import extension.setupDependencyInjection
 
 plugins {
     id("io.element.android-compose-library")
@@ -10,11 +10,10 @@ android {
     namespace = "chat.schildi.lib"
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 dependencies {
     implementation(projects.libraries.di)
-    implementation(libs.dagger)
 
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.serialization.json)

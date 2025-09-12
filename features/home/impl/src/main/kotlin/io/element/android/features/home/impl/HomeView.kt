@@ -29,7 +29,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -58,6 +57,7 @@ import io.element.android.features.home.impl.roomlist.RoomListDeclineInviteMenu
 import io.element.android.features.home.impl.roomlist.RoomListEvents
 import io.element.android.features.home.impl.roomlist.RoomListState
 import io.element.android.features.home.impl.search.RoomListSearchView
+import io.element.android.features.home.impl.spaces.HomeSpacesView
 import io.element.android.features.networkmonitor.api.ui.ConnectivityIndicatorContainer
 import io.element.android.libraries.androidutils.throttler.FirstThrottler
 import io.element.android.libraries.designsystem.preview.ElementPreview
@@ -69,7 +69,6 @@ import io.element.android.libraries.designsystem.theme.components.NavigationBarI
 import io.element.android.libraries.designsystem.theme.components.NavigationBarItem
 import io.element.android.libraries.designsystem.theme.components.NavigationBarText
 import io.element.android.libraries.designsystem.theme.components.Scaffold
-import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarHost
 import io.element.android.libraries.designsystem.utils.snackbar.rememberSnackbarHostState
 import io.element.android.libraries.matrix.api.MatrixClient
@@ -215,7 +214,7 @@ private fun HomeScaffold(
             )
         },
         bottomBar = {
-            if (state.isSpaceFeatureEnabled) {
+            if (state.showNavigationBar) {
                 NavigationBar(
                     containerColor = Color.Transparent,
                     modifier = Modifier
@@ -284,19 +283,17 @@ private fun HomeScaffold(
                     )
                 }
                 HomeNavigationBarItem.Spaces -> {
-                    Box(
+                    HomeSpacesView(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(padding)
                             .consumeWindowInsets(padding)
-                    ) {
-                        Text(
-                            modifier = Modifier.align(Alignment.Center),
-                            text = "Spaces are coming soon!",
-                            style = ElementTheme.typography.fontBodyLgRegular,
-                            color = ElementTheme.colors.textPrimary,
-                        )
-                    }
+                            .hazeSource(state = hazeState),
+                        state = state.homeSpacesState,
+                        onSpaceClick = { spaceId ->
+                            // TODO
+                        }
+                    )
                 }
             }
         },

@@ -12,8 +12,9 @@ import android.graphics.Bitmap
 import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
 import coil3.ImageLoader
-import com.squareup.anvil.annotations.ContributesBinding
-import io.element.android.libraries.di.AppScope
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.push.api.notifications.NotificationBitmapLoader
@@ -23,7 +24,6 @@ import io.element.android.libraries.push.impl.notifications.factories.isSmartRep
 import io.element.android.libraries.push.impl.notifications.model.NotifiableMessageEvent
 import io.element.android.services.toolbox.api.strings.StringProvider
 import kotlinx.coroutines.flow.first
-import javax.inject.Inject
 
 interface RoomGroupMessageCreator {
     suspend fun createRoomMessage(
@@ -36,7 +36,8 @@ interface RoomGroupMessageCreator {
 }
 
 @ContributesBinding(AppScope::class)
-class DefaultRoomGroupMessageCreator @Inject constructor(
+@Inject
+class DefaultRoomGroupMessageCreator(
     private val scPreferencesStore: ScPreferencesStore,
     private val bitmapLoader: NotificationBitmapLoader,
     private val stringProvider: StringProvider,

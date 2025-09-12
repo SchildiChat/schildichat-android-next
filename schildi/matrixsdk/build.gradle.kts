@@ -1,4 +1,4 @@
-import extension.setupAnvil
+import extension.setupDependencyInjection
 
 plugins {
     id("io.element.android-compose-library")
@@ -11,13 +11,12 @@ android {
     namespace = "chat.schildi.matrixsdk"
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 dependencies {
     implementation(projects.libraries.di)
-    implementation(libs.dagger)
     implementation(libs.serialization.json)
     implementation(libs.androidx.emoji2)
     implementation(project(":libraries:matrix:api"))
-    implementation(project(":anvilannotations"))
+    implementation(project(":annotations"))
 }

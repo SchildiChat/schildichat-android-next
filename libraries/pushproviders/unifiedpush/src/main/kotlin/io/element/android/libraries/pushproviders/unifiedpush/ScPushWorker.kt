@@ -18,7 +18,7 @@ import androidx.work.WorkRequest
 import androidx.work.WorkerParameters
 import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
-import dagger.assisted.Assisted
+import dev.zacsweers.metro.Assisted
 import io.element.android.libraries.core.log.logger.LoggerTag
 import io.element.android.libraries.pushproviders.api.PushHandler
 import kotlinx.coroutines.CoroutineScope

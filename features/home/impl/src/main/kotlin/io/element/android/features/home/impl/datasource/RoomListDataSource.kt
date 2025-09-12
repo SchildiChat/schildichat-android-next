@@ -9,6 +9,7 @@ package io.element.android.features.home.impl.datasource
 
 import chat.schildi.features.home.ScInboxSettingsSource
 import chat.schildi.lib.preferences.ScPreferencesStore
+import dev.zacsweers.metro.Inject
 import io.element.android.features.home.impl.model.RoomListRoomSummary
 import io.element.android.libraries.androidutils.diff.DiffCacheUpdater
 import io.element.android.libraries.androidutils.diff.MutableListDiffCache
@@ -31,10 +32,10 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
-class RoomListDataSource @Inject constructor(
+@Inject
+class RoomListDataSource(
     private val roomListService: RoomListService,
     private val roomListRoomSummaryFactory: RoomListRoomSummaryFactory,
     private val coroutineDispatchers: CoroutineDispatchers,

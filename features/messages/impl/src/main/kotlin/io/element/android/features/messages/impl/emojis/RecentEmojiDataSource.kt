@@ -5,6 +5,7 @@ import chat.schildi.matrixsdk.RecentEmojiItem
 import chat.schildi.matrixsdk.RecentEmojiSerializer
 import chat.schildi.matrixsdk.isValidRecentEmoji
 import chat.schildi.matrixsdk.recordSelection
+import dev.zacsweers.metro.Inject
 import io.element.android.libraries.matrix.api.MatrixClient
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -14,9 +15,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
-class RecentEmojiDataSource @Inject constructor(
+@Inject
+class RecentEmojiDataSource(
     private val client: MatrixClient,
 ) {
 

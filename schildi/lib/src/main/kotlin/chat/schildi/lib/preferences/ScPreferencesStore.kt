@@ -10,16 +10,16 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
-import com.squareup.anvil.annotations.ContributesBinding
-import io.element.android.libraries.di.AppScope
-import io.element.android.libraries.di.ApplicationContext
-import io.element.android.libraries.di.SingleIn
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
+import io.element.android.libraries.di.annotations.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
-import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -46,7 +46,8 @@ fun <T>ScPref<T>.safeLookup(getPref: (ScPref<*>) -> Any?): T {
 
 @ContributesBinding(AppScope::class)
 @SingleIn(AppScope::class)
-class DefaultScPreferencesStore @Inject constructor(
+@Inject
+class DefaultScPreferencesStore(
     @ApplicationContext context: Context,
 ) : ScPreferencesStore {
     private val store = context.scPrefDataStore

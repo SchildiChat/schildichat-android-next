@@ -8,13 +8,12 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import io.element.android.libraries.architecture.bindings
-import io.element.android.libraries.di.DaggerComponentOwner
+import io.element.android.libraries.di.DependencyInjectionGraphOwner
 import io.element.android.libraries.pushproviders.unifiedpush.ScPushWorker
 import io.element.android.libraries.pushproviders.unifiedpush.UnifiedPushParser
 import io.element.android.x.di.AppBindings
-import timber.log.Timber
 
-abstract class ScApplication : Application(), Configuration.Provider, DaggerComponentOwner {
+abstract class ScApplication : Application(), Configuration.Provider, DependencyInjectionGraphOwner {
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder()
             .setWorkerFactory(ScWorkerFactory())

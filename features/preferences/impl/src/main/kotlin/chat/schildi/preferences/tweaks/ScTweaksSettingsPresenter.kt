@@ -26,14 +26,15 @@ import chat.schildi.lib.preferences.collectScPrefs
 import chat.schildi.lib.preferences.formatPushInfoOverview
 import chat.schildi.lib.preferences.prefValMap
 import chat.schildi.lib.preferences.settingState
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.Inject
 import io.element.android.libraries.architecture.Presenter
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class ScTweaksSettingsPresenter @AssistedInject constructor(
+@Inject
+class ScTweaksSettingsPresenter(
     private val scPreferencesStore: ScPreferencesStore,
     private val scAppStateStore: ScAppStateStore,
     @Assisted prefScreen: ScPrefScreen?,

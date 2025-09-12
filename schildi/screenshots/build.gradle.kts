@@ -1,7 +1,7 @@
 import extension.allFeaturesImpl
 import extension.allLibrariesImpl
 import extension.allServicesImpl
-import extension.setupAnvil
+import extension.setupDependencyInjection
 
 plugins {
     id("io.element.android-compose-library")
@@ -12,7 +12,7 @@ android {
     namespace = "chat.schildi.screenshots"
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 dependencies {
     implementation(projects.schildi.theme)
@@ -20,7 +20,7 @@ dependencies {
     allServicesImpl()
     allFeaturesImpl(project)
     implementation(projects.features.call)
-    implementation(projects.anvilannotations)
+    implementation(projects.annotations)
     implementation(projects.appnav)
     implementation(projects.appconfig)
 
@@ -43,9 +43,6 @@ dependencies {
     implementation(libs.serialization.json)
 
     implementation(libs.matrix.emojibase.bindings)
-
-    implementation(libs.dagger)
-    //kapt(libs.dagger.compiler)
 
     testImplementation(libs.test.junit)
     testImplementation(libs.test.robolectric)

@@ -21,7 +21,7 @@ fun getLocalProperty(key: String, file: String = "local.properties"): Any? {
 
 pluginManagement {
     repositories {
-        includeBuild("plugins")
+                includeBuild("plugins")
         gradlePluginPortal()
         google()
         mavenCentral()
@@ -30,7 +30,7 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        google()
+                google()
         mavenCentral()
         maven {
             url = URI("https://www.jitpack.io")
@@ -81,8 +81,8 @@ include(":tests:detekt-rules")
 include(":tests:konsist")
 include(":tests:uitests")
 include(":tests:testutils")
-include(":anvilannotations")
-include(":anvilcodegen")
+include(":annotations")
+include(":codegen")
 
 fun includeProjects(directory: File, path: String, maxDepth: Int = 1) {
     directory.listFiles().orEmpty().also { it.sort() }.forEach { file ->

@@ -19,15 +19,16 @@ import chat.schildi.lib.preferences.safeLookup
 import chat.schildi.lib.preferences.value
 import chat.schildi.matrixsdk.ROOM_ACCOUNT_DATA_SPACE_ORDER
 import chat.schildi.matrixsdk.SpaceOrderSerializer
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import io.element.android.features.home.impl.datasource.RoomListRoomSummaryFactory
 import io.element.android.features.home.impl.model.RoomListRoomSummary
 import io.element.android.features.home.impl.model.RoomSummaryDisplayType
 import io.element.android.libraries.androidutils.diff.DiffCacheUpdater
 import io.element.android.libraries.androidutils.diff.MutableListDiffCache
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
-import io.element.android.libraries.di.ApplicationContext
 import io.element.android.libraries.di.SessionScope
-import io.element.android.libraries.di.SingleIn
+import io.element.android.libraries.di.annotations.ApplicationContext
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.room.MatrixSpaceChildInfo
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
@@ -47,13 +48,13 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import javax.inject.Inject
 
 private const val REAL_SPACE_ID_PREFIX = "s:"
 private const val PSEUDO_SPACE_ID_PREFIX = "p:"
 
 @SingleIn(SessionScope::class)
-class SpaceListDataSource @Inject constructor(
+@Inject
+class SpaceListDataSource(
     private val client: MatrixClient,
     private val roomListService: RoomListService,
     private val roomListRoomSummaryFactory: RoomListRoomSummaryFactory,

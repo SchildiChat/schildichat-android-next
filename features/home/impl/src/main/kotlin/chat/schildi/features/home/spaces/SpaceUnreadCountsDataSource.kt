@@ -3,6 +3,7 @@ package chat.schildi.features.home.spaces
 import androidx.compose.runtime.Immutable
 import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
+import dev.zacsweers.metro.Inject
 import io.element.android.features.home.impl.datasource.RoomListDataSource
 import io.element.android.features.home.impl.model.RoomListRoomSummary
 import io.element.android.features.home.impl.model.RoomSummaryDisplayType
@@ -19,9 +20,9 @@ import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import javax.inject.Inject
 
-class SpaceUnreadCountsDataSource @Inject constructor(
+@Inject
+class SpaceUnreadCountsDataSource(
     private val scPreferencesStore: ScPreferencesStore,
     private val roomListService: RoomListService,
 ) {

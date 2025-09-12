@@ -1,4 +1,4 @@
-import extension.setupAnvil
+import extension.setupDependencyInjection
 
 /*
  * Copyright 2023, 2024 New Vector Ltd.
@@ -15,12 +15,11 @@ android {
     namespace = "io.element.android.libraries.preferences.impl"
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 dependencies {
     implementation(projects.schildi.lib)
     api(projects.libraries.preferences.api)
-    implementation(libs.dagger)
     implementation(libs.androidx.datastore.preferences)
     implementation(projects.libraries.androidutils)
     implementation(projects.libraries.di)

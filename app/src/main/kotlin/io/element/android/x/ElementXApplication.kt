@@ -10,16 +10,16 @@ package io.element.android.x
 import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.text.EmojiCompat
 import androidx.startup.AppInitializer
+import dev.zacsweers.metro.createGraphFactory
 import io.element.android.features.cachecleaner.api.CacheCleanerInitializer
-import io.element.android.libraries.di.DaggerComponentOwner
-import io.element.android.x.di.AppComponent
-import io.element.android.x.di.DaggerAppComponent
+import io.element.android.libraries.di.DependencyInjectionGraphOwner
+import io.element.android.x.di.AppGraph
 import io.element.android.x.info.logApplicationInfo
 import io.element.android.x.initializer.CrashInitializer
 import io.element.android.x.initializer.PlatformInitializer
 
-class ElementXApplication : ScApplication(), DaggerComponentOwner {
-    override val daggerComponent: AppComponent = DaggerAppComponent.factory().create(this)
+class ElementXApplication : ScApplication(), DependencyInjectionGraphOwner {
+    override val graph: AppGraph = createGraphFactory<AppGraph.Factory>().create(this)
 
     override fun onCreate() {
         super.onCreate()

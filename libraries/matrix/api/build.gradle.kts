@@ -27,19 +27,19 @@ android {
     defaultConfig {
         buildConfigFieldStr(
             name = "CLIENT_URI",
-            value = BuildTimeConfig.URL_WEBSITE ?: "https://element.io"
+            value = BuildTimeConfig.URL_WEBSITE ?: "https://schildi.chat"
         )
         buildConfigFieldStr(
             name = "LOGO_URI",
-            value = BuildTimeConfig.URL_LOGO ?: "https://element.io/mobile-icon.png"
+            value = BuildTimeConfig.URL_LOGO ?: "https://schildi.chat/img/icon-next.png"
         )
         buildConfigFieldStr(
             name = "TOS_URI",
-            value = BuildTimeConfig.URL_ACCEPTABLE_USE ?: "https://element.io/acceptable-use-policy-terms"
+            value = BuildTimeConfig.URL_ACCEPTABLE_USE ?: "https://schildi.chat/android/next/privacy/"
         )
         buildConfigFieldStr(
             name = "POLICY_URI",
-            value = BuildTimeConfig.URL_POLICY ?: "https://element.io/privacy"
+            value = BuildTimeConfig.URL_POLICY ?: "https://schildi.chat/android/next/privacy/"
         )
     }
 }

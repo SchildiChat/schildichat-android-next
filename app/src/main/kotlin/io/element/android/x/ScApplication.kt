@@ -23,7 +23,7 @@ abstract class ScApplication : Application(), Configuration.Provider, Dependency
     @Suppress("LogNotTimber")
     override fun onCreate() {
         super.onCreate()
-        Log.v("SchildiNext", "Launch ${BuildConfig.APPLICATION_ID}, OIDC scheme is ${getString(R.string.login_redirect_scheme)}")
+        Log.v("SchildiNext", "Launch ${BuildConfig.APPLICATION_ID}, OIDC scheme is ${getString(R.string.login_redirect_scheme)} (upstream: ${getString(R.string.login_redirect_scheme_upstream)})")
     }
 }
 

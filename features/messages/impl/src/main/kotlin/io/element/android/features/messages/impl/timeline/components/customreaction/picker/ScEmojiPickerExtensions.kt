@@ -20,6 +20,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.TextFields
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -42,6 +43,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import chat.schildi.lib.R
+import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.value
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.emojibasebindings.Emoji
@@ -57,9 +60,11 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-val SC_EMOJI_PICKER_SIZE = EmojibaseCategory.entries.size + 2
+@Composable
+fun scEmojiPickerSize() = EmojibaseCategory.entries.size + 2 + (if (ScPrefs.ALWAYS_SHOW_REACTION_SEARCH_BAR.value()) 0 else 1)
 const val PAGE_RECENT_EMOJI = 0
-val PAGE_FREEFORM_REACTION = SC_EMOJI_PICKER_SIZE - 1
+val PAGE_FREEFORM_REACTION = EmojibaseCategory.entries.size + 1
+val PAGE_SEARCH = EmojibaseCategory.entries.size + 2
 fun Int.removeScPickerOffset() = this - 1
 fun Int.addScPickerOffset() = this + 1
 
@@ -82,7 +87,7 @@ fun ScEmojiPickerTabsStart(pagerState: PagerState) {
 }
 
 @Composable
-fun ScEmojiPickerTabsEnd(pagerState: PagerState) {
+fun ScEmojiPickerTabsEnd(pagerState: PagerState, launchSearch: () -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     Tab(
         icon = {
@@ -96,6 +101,18 @@ fun ScEmojiPickerTabsEnd(pagerState: PagerState) {
             coroutineScope.launch { pagerState.animateScrollToPage(PAGE_FREEFORM_REACTION) }
         }
     )
+    if (!ScPrefs.ALWAYS_SHOW_REACTION_SEARCH_BAR.value()) {
+        Tab(
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = stringResource(id = io.element.android.libraries.ui.strings.R.string.action_search),
+                )
+            },
+            selected = pagerState.currentPage == PAGE_SEARCH,
+            onClick = launchSearch,
+        )
+    }
 }
 
 @Composable
@@ -104,7 +121,8 @@ fun scEmojiPickerPage(
     selectedIndex: Int,
     selectedEmojis: ImmutableSet<String>,
     recentEmojiDataSource: RecentEmojiDataSource?,
-    onSelectCustomEmoji: (String) -> Unit
+    onSelectCustomEmoji: (String) -> Unit,
+    launchSearch: () -> Unit,
 ): Boolean {
     return when (index) {
         PAGE_RECENT_EMOJI -> {
@@ -171,6 +189,13 @@ fun scEmojiPickerPage(
                 } else {
                     focusManager.clearFocus()
                 }
+            }
+            true
+        }
+        PAGE_SEARCH -> {
+            // Shouldn't be reachable by clicking the search icon, but still by swiping
+            if (selectedIndex == index) {
+                LaunchedEffect(Unit) { launchSearch() }
             }
             true
         }

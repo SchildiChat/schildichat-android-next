@@ -102,6 +102,7 @@ object ScPrefs {
     val MARK_READ_REQUIRES_SEEN_UNREAD_LINE = ScBoolPref("MARK_READ_REQUIRES_SEEN_UNREAD_LINE", true, R.string.sc_pref_mark_read_requires_seen_unread_line_title, R.string.sc_pref_mark_read_requires_seen_unread_line_summary, authorsChoice = false, dependencies = SYNC_READ_RECEIPT_AND_MARKER.asDependencies())
     val PREFER_FREEFORM_REACTIONS = ScBoolPref("PREFER_FREEFORM_REACTIONS", false, R.string.sc_pref_prefer_freeform_reactions_title, R.string.sc_pref_prefer_freeform_reactions_summary, authorsChoice = false)
     val PREFER_FULLSCREEN_REACTION_SHEET = ScBoolPref("PREFER_FULLSCREEN_REACTION_SHEET", false, R.string.sc_pref_prefer_fullscreen_reaction_sheet_title, R.string.sc_pref_prefer_fullscreen_reaction_sheet_summary, authorsChoice = false, upstreamChoice = false)
+    val ALWAYS_SHOW_REACTION_SEARCH_BAR = ScBoolPref("ALWAYS_SHOW_REACTION_SEARCH_BAR", false, R.string.sc_pref_always_show_reaction_search_bar_title, R.string.sc_pref_always_show_reaction_search_bar_summary, authorsChoice = false, upstreamChoice = true)
     val JUMP_TO_UNREAD = ScBoolPref("JUMP_TO_UNREAD", false, R.string.sc_pref_jump_to_unread_title, R.string.sc_pref_jump_to_unread_option_summary, authorsChoice = true, upstreamChoice = false)
     val RENDER_INLINE_IMAGES = ScBoolPref("RENDER_INLINE_IMAGES", true, R.string.sc_pref_render_inline_images_title, R.string.sc_pref_render_inline_images_summary, authorsChoice = true, upstreamChoice = false)
     val URL_PREVIEWS = ScBoolPref("URL_PREVIEWS", false, R.string.sc_url_previews_title, R.string.sc_url_previews_summary, authorsChoice = true, upstreamChoice = false)
@@ -212,6 +213,7 @@ object ScPrefs {
             ScPrefCategory(R.string.sc_pref_category_reactions, null, listOf(
                 PREFER_FREEFORM_REACTIONS,
                 PREFER_FULLSCREEN_REACTION_SHEET,
+                ALWAYS_SHOW_REACTION_SEARCH_BAR,
             )),
         )),
         ScPrefScreen(R.string.sc_pref_category_notifications, null, listOf(
@@ -302,6 +304,11 @@ object ScPrefs {
         PINNED_MESSAGE_TOOLBAR_ACTION.copy(titleRes = R.string.sc_pref_pinned_message_toolbar_title_short),
         RENDER_INLINE_IMAGES,
         MESSAGE_CONTEXT_MENU_TEXT_SELECTABLE.copy(titleRes = R.string.sc_pref_message_context_menu_text_selectable_title_short),
+        ScPrefCategory(R.string.sc_pref_category_reactions, null, listOf(
+            PREFER_FREEFORM_REACTIONS,
+            PREFER_FULLSCREEN_REACTION_SHEET,
+            ALWAYS_SHOW_REACTION_SEARCH_BAR,
+        )),
         ScPrefCategory(R.string.sc_pref_screen_experimental_title, null, listOf(
             URL_PREVIEWS,
             URL_PREVIEWS_IN_E2EE_ROOMS.copy(titleRes = R.string.sc_url_previews_in_e2ee_rooms_title_short),

@@ -28,6 +28,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalFocusManager
@@ -36,6 +38,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.value
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.libraries.architecture.coverage.ExcludeFromCoverage
@@ -70,6 +74,17 @@ fun <T> SearchBar(
 ) {
     val focusManager = LocalFocusManager.current
 
+    val focusRequester = remember { FocusRequester() }
+    if (!ScPrefs.ALWAYS_SHOW_REACTION_SEARCH_BAR.value()) {
+        if (active) {
+            LaunchedEffect(Unit) {
+                focusRequester.requestFocus()
+            }
+        } else {
+            return // Nothing to draw for non-sticky search bar
+        }
+    }
+
     val updatedOnQueryChange by rememberUpdatedState(onQueryChange)
     LaunchedEffect(active) {
         if (!active) {
@@ -81,6 +96,7 @@ fun <T> SearchBar(
     SearchBar(
         inputField = {
             SearchBarDefaults.InputField(
+                modifier = Modifier.focusRequester(focusRequester), // SC
                 query = query,
                 onQueryChange = updatedOnQueryChange,
                 onSearch = { focusManager.clearFocus() },

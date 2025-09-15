@@ -156,7 +156,7 @@
     <string name="sc_upstream_feature_flag_room_list_filters_summary">Спосіб фільтрації чатів Element</string>
     <string name="sc_pref_pinned_message_toolbar_summary">Швидкий доступ до закріплених повідомлень через верхню панель програми</string>
     <string name="sc_pref_pinned_message_overlay_summary">Попередній перегляд закріплених повідомлень у вікні бесіди</string>
-    <string name="sc_pref_pinned_message_toolbar_title">Дія панелі інструментів для закріпленого повідомлення</string>
+    <string name="sc_pref_pinned_message_toolbar_title">Дія для закріпленого повідомлення на панелі інструментів</string>
     <string name="sc_pref_pinned_message_toolbar_title_short">Закріплені на панелі інструментів</string>
     <string name="sc_url_previews_require_explicit_links_title_short">Вимагати явні посилання</string>
     <string name="sc_url_previews_require_explicit_links_summary">Запитуйте попередній перегляд лише для посилань, що починаються з «https://»</string>
@@ -164,4 +164,24 @@
     <string name="sc_pref_snc_fab_title_short">SNC як FAB</string>
     <string name="sc_reply_preview_line_count_title">Кількість рядків попереднього перегляду відповіді</string>
     <string name="event_placeholder_location">Розташування</string>
+    <string name="sc_pref_notify_failed_notification_lookup_title">Попереджати про невдале сповіщення</string>
+    <string name="sc_pref_notify_failed_notification_lookup_summary">Повідомляти, коли застосунок отримав пуш-повідомлення, але не знайшов відповідного повідомлення</string>
+    <string name="sc_space_all_rooms_summary">Ви можете більше не бачити всіх своїх чатів або запрошень, якщо ви відключите це.</string>
+    <string name="sc_pref_hide_invites_title">Приховати запрошення</string>
+    <string name="sc_pref_hide_invites_summary">Не показувати жодних запрошень в застосунку. Зауважте, що в налаштуваннях сповіщень є інше налаштування для відключення запрошень.</string>
+    <string name="sc_pref_syncing_indicator_title">Індикатор синхронізації</string>
+    <string name="sc_pref_syncing_indicator_summary">Показувати стан синхронізації в верхній частині екрану</string>
+    <string name="sc_pref_debounce_offline_state_summary">Ігнорувати часті переходи в офлайн</string>
+    <string name="sc_pref_debounce_offline_state_title">Часті переходи в офлайн</string>
+    <string name="sc_pref_always_show_reaction_search_bar_title">Закріпити рядок пошуку реакцій</string>
+    <string name="sc_pref_always_show_reaction_search_bar_summary">Завжди показувати рядок пошуку рекацій вгорі селектора реакцій</string>
+    <string name="sc_pref_notification_worker_summary">Покращена надійність сповіщень завдяки повторним спробам з моніторингом стану мережі</string>
+    <string name="sc_bg_notification_channel">Фоновий сервіс</string>
+    <string name="sc_push_failure_notification_channel">Збої сповіщень</string>
+    <string name="sc_pref_category_unread_counts">Кількість непрочитаних</string>
+    <string name="sc_pref_notification_worker_title">Обробник сповіщень</string>
+    <string name="sc_push_handler_notification_title">Управління push-сповіщеннями</string>
+    <string name="sc_push_handler_notification_summary">Отримання повідомлень</string>
+    <string name="sc_notification_lookup_failure_title">У вас можуть бути непрочитані сповіщення</string>
+    <string name="sc_notification_lookup_failure_summary">Не вдалося знайти повідомлення для сповіщення</string>
 </resources>

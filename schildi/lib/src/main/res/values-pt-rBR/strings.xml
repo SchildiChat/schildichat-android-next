@@ -177,4 +177,5 @@
     <string name="sc_pref_syncing_indicator_summary">Sobrepor status de sincronização no topo da tela</string>
     <string name="sc_push_handler_notification_summary">Buscando mensagens</string>
     <string name="sc_notification_lookup_failure_title">Você pode ter notificações não lidas</string>
+    <string name="sc_pref_always_show_reaction_search_bar_summary">Sempre mostrar a barra de pesquisa de reações acima do seletor de reações</string>
 </resources>

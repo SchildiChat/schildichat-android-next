@@ -46,6 +46,7 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
@@ -68,6 +69,10 @@ import io.element.android.features.messages.impl.pinned.banner.PinnedMessagesBan
 import io.element.android.features.messages.impl.timeline.FOCUS_ON_PINNED_EVENT_DEBOUNCE_DURATION_IN_MILLIS
 import io.element.android.features.messages.impl.timeline.TimelineEvents
 import io.element.android.features.messages.impl.timeline.TimelineView
+import io.element.android.features.messages.impl.timeline.aGroupedEvents
+import io.element.android.features.messages.impl.timeline.aTimelineItemDaySeparator
+import io.element.android.features.messages.impl.timeline.aTimelineItemEvent
+import io.element.android.features.messages.impl.timeline.aTimelineState
 import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionBottomSheet
 import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionEvents
 import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryEvents
@@ -75,6 +80,9 @@ import io.element.android.features.messages.impl.timeline.components.reactionsum
 import io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet.ReadReceiptBottomSheet
 import io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet.ReadReceiptBottomSheetEvents
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
+import io.element.android.features.messages.impl.timeline.model.TimelineItemGroupPosition
+import io.element.android.features.messages.impl.timeline.model.event.aTimelineItemStateEventContent
+import io.element.android.features.messages.impl.timeline.model.event.aTimelineItemTextContent
 import io.element.android.features.messages.impl.topbars.MessagesViewTopBar
 import io.element.android.features.messages.impl.topbars.ThreadTopBar
 import io.element.android.features.messages.impl.voicemessages.composer.VoiceMessagePermissionRationaleDialog
@@ -103,10 +111,12 @@ import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.encryption.identity.IdentityState
 import io.element.android.libraries.matrix.api.room.tombstone.SuccessorRoom
 import io.element.android.libraries.matrix.api.timeline.Timeline
+import io.element.android.libraries.matrix.api.timeline.item.event.LocalEventSendState
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.textcomposer.model.TextEditorState
 import io.element.android.libraries.ui.strings.CommonStrings
 import io.element.android.wysiwyg.link.Link
+import kotlinx.collections.immutable.persistentListOf
 import timber.log.Timber
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -559,6 +569,60 @@ private fun SuccessorRoomBanner(
 internal fun MessagesViewPreview(@PreviewParameter(MessagesStateProvider::class) state: MessagesState) = ElementPreview {
     MessagesView(
         state = state,
+        onBackClick = {},
+        onRoomDetailsClick = {},
+        onEventContentClick = { _, _ -> false },
+        onUserDataClick = {},
+        onLinkClick = { _, _ -> },
+        onSendLocationClick = {},
+        onCreatePollClick = {},
+        onJoinCallClick = {},
+        onViewAllPinnedMessagesClick = { },
+        forceJumpToBottomVisibility = true,
+        knockRequestsBannerView = {},
+    )
+}
+
+@Preview
+@Composable
+internal fun MessagesViewA11yPreview() = ElementPreview {
+    val content = aTimelineItemTextContent(
+        body = "A message content"
+    )
+    MessagesView(
+        state = aMessagesState(
+            roomName = "A DM with a very looong name",
+            dmUserVerificationState = IdentityState.VerificationViolation,
+            timelineState = aTimelineState(
+                timelineItems = persistentListOf(
+                    // 1 items with isMine = false
+                    aTimelineItemEvent(
+                        isMine = false,
+                        content = content,
+                        groupPosition = TimelineItemGroupPosition.None,
+                        sendState = LocalEventSendState.Failed.Unknown("Message failed to send"),
+                    ),
+                    // A state event on top of it
+                    aTimelineItemEvent(
+                        isMine = false,
+                        content = aTimelineItemStateEventContent(),
+                        groupPosition = TimelineItemGroupPosition.None
+                    ),
+                    // 1 item with isMine = true
+                    aTimelineItemEvent(
+                        isMine = true,
+                        content = content,
+                        groupPosition = TimelineItemGroupPosition.None
+                    ),
+                    // A grouped event on top of it
+                    aGroupedEvents(),
+                    // A day separator
+                    aTimelineItemDaySeparator(),
+                ),
+                // Render a focused event for an event with sender information displayed
+                focusedEventIndex = 2,
+            )
+        ),
         onBackClick = {},
         onRoomDetailsClick = {},
         onEventContentClick = { _, _ -> false },

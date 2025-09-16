@@ -59,6 +59,7 @@ fun <T> SearchBar(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     showBackButton: Boolean = true,
+    focusRequester: FocusRequester = remember { FocusRequester() },
     resultState: SearchBarResultState<T> = SearchBarResultState.Initial(),
     shape: Shape = SearchBarDefaults.inputFieldShape,
     tonalElevation: Dp = SearchBarDefaults.TonalElevation,
@@ -73,17 +74,6 @@ fun <T> SearchBar(
     resultHandler: @Composable ColumnScope.(T) -> Unit = {},
 ) {
     val focusManager = LocalFocusManager.current
-
-    val focusRequester = remember { FocusRequester() }
-    if (!ScPrefs.ALWAYS_SHOW_REACTION_SEARCH_BAR.value()) {
-        if (active) {
-            LaunchedEffect(Unit) {
-                focusRequester.requestFocus()
-            }
-        } else {
-            return // Nothing to draw for non-sticky search bar
-        }
-    }
 
     val updatedOnQueryChange by rememberUpdatedState(onQueryChange)
     LaunchedEffect(active) {

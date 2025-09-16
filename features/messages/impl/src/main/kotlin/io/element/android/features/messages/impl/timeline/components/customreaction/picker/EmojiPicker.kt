@@ -65,7 +65,7 @@ fun EmojiPicker(
     )
 
     Column(modifier) {
-        SearchBar(
+        ScEmojiPickerSearchBar(
             modifier = Modifier.padding(bottom = 10.dp),
             query = state.searchQuery,
             onQueryChange = { state.eventSink(EmojiPickerEvents.UpdateSearchQuery(it)) },

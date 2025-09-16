@@ -1,0 +1,2 @@
+- Update codebase to Element X v25.09.1
+- Fix OIDC login

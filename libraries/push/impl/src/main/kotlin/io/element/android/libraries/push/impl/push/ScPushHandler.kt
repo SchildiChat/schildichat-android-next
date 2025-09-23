@@ -29,6 +29,7 @@ import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.designsystem.utils.CommonDrawables
 import io.element.android.libraries.di.annotations.ApplicationContext
 import io.element.android.libraries.matrix.api.auth.MatrixAuthenticationService
+import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.exception.NotificationResolverException
 import io.element.android.libraries.push.impl.history.PushHistoryService
 import io.element.android.libraries.push.impl.history.onDiagnosticPush
@@ -51,6 +52,7 @@ import io.element.android.libraries.pushproviders.api.PushData
 import io.element.android.libraries.pushproviders.api.PushHandler
 import io.element.android.libraries.pushstore.api.UserPushStoreFactory
 import io.element.android.libraries.pushstore.api.clientsecret.PushClientSecret
+import io.element.android.libraries.sessionstorage.api.SessionStore
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
@@ -73,7 +75,7 @@ class ScPushHandler(
     private val scPreferencesStore: ScPreferencesStore,
     private val pushClientSecret: PushClientSecret,
     private val buildMeta: BuildMeta,
-    private val matrixAuthenticationService: MatrixAuthenticationService,
+    private val sessionStore: SessionStore,
     private val diagnosticPushHandler: DiagnosticPushHandler,
     private val elementCallEntryPoint: ElementCallEntryPoint,
     private val notificationChannels: NotificationChannels,
@@ -131,7 +133,7 @@ class ScPushHandler(
         val userId = clientSecret?.let {
             // Get userId from client secret
             pushClientSecret.getUserIdFromSecret(clientSecret)
-        } ?: matrixAuthenticationService.getLatestSessionId()
+        } ?: sessionStore.getLatestSessionId()
         if (userId == null) {
             Timber.w("Unable to get a session on push failure")
         }
@@ -168,32 +170,15 @@ class ScPushHandler(
             } else {
                 Timber.tag(loggerTag.value).d("## handleInternal()")
             }
-            val clientSecret = pushData.clientSecret
-            // clientSecret should not be null. If this happens, restore default session
-            var reason = if (clientSecret == null) "No client secret" else ""
-            val userId = clientSecret?.let {
-                // Get userId from client secret
-                pushClientSecret.getUserIdFromSecret(clientSecret).also {
-                    if (it == null) {
-                        reason = "Unable to get userId from client secret"
-                    }
-                }
-            }
-                ?: run {
-                    matrixAuthenticationService.getLatestSessionId().also {
-                        if (it == null) {
-                            if (reason.isNotEmpty()) reason += " - "
-                            reason += "Unable to get latest sessionId"
-                        }
-                    }
-                }
+            // Get userId from client secret
+            val userId = pushClientSecret.getUserIdFromSecret(pushData.clientSecret)
             if (userId == null) {
-                Timber.w("Unable to get a session")
+                Timber.w("Unable to userId from client secret")
                 pushHistoryService.onUnableToRetrieveSession(
                     providerInfo = providerInfo,
                     eventId = pushData.eventId,
                     roomId = pushData.roomId,
-                    reason = reason,
+                    reason = "Unable to get userId from client secret",
                 )
                 return true
             }
@@ -279,8 +264,11 @@ class ScPushHandler(
             senderName = notifiableEvent.senderDisambiguatedDisplayName,
             avatarUrl = notifiableEvent.roomAvatarUrl,
             timestamp = notifiableEvent.timestamp,
+            expirationTimestamp = notifiableEvent.expirationTimestamp,
             notificationChannelId = notificationChannels.getChannelForIncomingCall(ring = true),
             textContent = notifiableEvent.description,
         )
     }
 }
+
+private suspend fun SessionStore.getLatestSessionId() = getLatestSession()?.userId?.let(::SessionId)

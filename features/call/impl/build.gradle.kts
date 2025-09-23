@@ -1,6 +1,7 @@
 import extension.buildConfigFieldStr
 import extension.readLocalProperty
 import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 /*
  * Copyright 2024 New Vector Ltd.
@@ -90,12 +91,7 @@ dependencies {
     implementation(projects.schildi.lib)
     implementation(projects.schildi.theme)
 
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.molecule.runtime)
-    testImplementation(libs.test.truth)
-    testImplementation(libs.test.turbine)
-    testImplementation(libs.test.robolectric)
-    testImplementation(libs.test.mockk)
+    testCommonDependencies(libs, true)
     testImplementation(projects.features.call.test)
     testImplementation(projects.libraries.featureflag.test)
     testImplementation(projects.libraries.preferences.test)
@@ -103,7 +99,5 @@ dependencies {
     testImplementation(projects.libraries.push.test)
     testImplementation(projects.services.analytics.test)
     testImplementation(projects.services.appnavstate.test)
-    testImplementation(projects.tests.testutils)
-    testImplementation(libs.androidx.compose.ui.test.junit)
-    testReleaseImplementation(libs.androidx.compose.ui.test.manifest)
+    testImplementation(projects.services.toolbox.test)
 }

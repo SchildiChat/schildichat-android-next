@@ -291,7 +291,7 @@ private fun HomeScaffold(
                             .hazeSource(state = hazeState),
                         state = state.homeSpacesState,
                         onSpaceClick = { spaceId ->
-                            // TODO
+                            onRoomClick(spaceId)
                         }
                     )
                 }

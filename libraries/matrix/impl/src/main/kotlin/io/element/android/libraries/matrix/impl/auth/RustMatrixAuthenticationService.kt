@@ -35,11 +35,9 @@ import io.element.android.libraries.matrix.impl.keys.PassphraseGenerator
 import io.element.android.libraries.matrix.impl.mapper.toSessionData
 import io.element.android.libraries.matrix.impl.paths.SessionPaths
 import io.element.android.libraries.matrix.impl.paths.SessionPathsFactory
-import io.element.android.libraries.sessionstorage.api.LoggedInState
 import io.element.android.libraries.sessionstorage.api.LoginType
 import io.element.android.libraries.sessionstorage.api.SessionStore
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
@@ -84,14 +82,6 @@ class RustMatrixAuthenticationService(
         sessionPaths?.deleteRecursively()
         return sessionPathsFactory.create()
             .also { sessionPaths = it }
-    }
-
-    override fun loggedInStateFlow(): Flow<LoggedInState> {
-        return sessionStore.isLoggedIn()
-    }
-
-    override suspend fun getLatestSessionId(): SessionId? = withContext(coroutineDispatchers.io) {
-        sessionStore.getLatestSession()?.userId?.let { SessionId(it) }
     }
 
     override suspend fun restoreSession(sessionId: SessionId): Result<MatrixClient> = withContext(coroutineDispatchers.io) {
@@ -161,7 +151,7 @@ class RustMatrixAuthenticationService(
                     )
                 val matrixClient = rustMatrixClientFactory.create(client)
                 newMatrixClientObservers.forEach { it.invoke(matrixClient) }
-                sessionStore.storeData(sessionData)
+                sessionStore.addSession(sessionData)
 
                 // Clean up the strong reference held here since it's no longer necessary
                 currentClient = null
@@ -185,7 +175,7 @@ class RustMatrixAuthenticationService(
                     sessionPaths = currentSessionPaths,
                 )
                 clear()
-                sessionStore.storeData(sessionData)
+                sessionStore.addSession(sessionData)
                 SessionId(sessionData.userId)
             }
         }
@@ -253,7 +243,7 @@ class RustMatrixAuthenticationService(
 
                 val matrixClient = rustMatrixClientFactory.create(client)
                 newMatrixClientObservers.forEach { it.invoke(matrixClient) }
-                sessionStore.storeData(sessionData)
+                sessionStore.addSession(sessionData)
 
                 // Clean up the strong reference held here since it's no longer necessary
                 currentClient = null
@@ -298,7 +288,7 @@ class RustMatrixAuthenticationService(
                     )
                 val matrixClient = rustMatrixClientFactory.create(client)
                 newMatrixClientObservers.forEach { it.invoke(matrixClient) }
-                sessionStore.storeData(sessionData)
+                sessionStore.addSession(sessionData)
 
                 // Clean up the strong reference held here since it's no longer necessary
                 currentClient = null

@@ -54,8 +54,6 @@ import io.element.android.libraries.ui.utils.time.isTalkbackActive
 private val BUBBLE_RADIUS = 12.dp
 private val avatarRadius = AvatarSize.TimelineSender.dp / 2
 
-// Design says: The maximum width of a bubble is still 3/4 of the screen width. But try with 78% now.
-private const val BUBBLE_WIDTH_RATIO = 0.78f
 private val MIN_BUBBLE_WIDTH = 80.dp
 
 @Composable
@@ -67,37 +65,6 @@ fun MessageEventBubble(
     modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit = {},
 ) {
-    val isScTheme = ScTheme.yes
-    val bubbleRadius = ScTheme.exposures.bubbleRadius
-    fun bubbleShape(): Shape {
-        if (isScTheme) return RoundedCornerShape(bubbleRadius)
-        val topLeftCorner = if (state.cutTopStart) 0.dp else BUBBLE_RADIUS
-        return when (state.groupPosition) {
-            TimelineItemGroupPosition.First -> if (state.isMine) {
-                RoundedCornerShape(BUBBLE_RADIUS, BUBBLE_RADIUS, 0.dp, BUBBLE_RADIUS)
-            } else {
-                RoundedCornerShape(topLeftCorner, BUBBLE_RADIUS, BUBBLE_RADIUS, 0.dp)
-            }
-            TimelineItemGroupPosition.Middle -> if (state.isMine) {
-                RoundedCornerShape(BUBBLE_RADIUS, 0.dp, 0.dp, BUBBLE_RADIUS)
-            } else {
-                RoundedCornerShape(0.dp, BUBBLE_RADIUS, BUBBLE_RADIUS, 0.dp)
-            }
-            TimelineItemGroupPosition.Last -> if (state.isMine) {
-                RoundedCornerShape(BUBBLE_RADIUS, 0.dp, BUBBLE_RADIUS, BUBBLE_RADIUS)
-            } else {
-                RoundedCornerShape(0.dp, BUBBLE_RADIUS, BUBBLE_RADIUS, BUBBLE_RADIUS)
-            }
-            TimelineItemGroupPosition.None ->
-                RoundedCornerShape(
-                    topLeftCorner,
-                    BUBBLE_RADIUS,
-                    BUBBLE_RADIUS,
-                    BUBBLE_RADIUS
-                )
-        }
-    }
-
     val clickableModifier = if (isTalkbackActive()) {
         Modifier
     } else {
@@ -112,12 +79,8 @@ fun MessageEventBubble(
     }
 
     // Ignore state.isHighlighted for now, we need a design decision on it.
-    val backgroundBubbleColor = when {
-        ScTheme.yes && state.scIsBgLess -> Color.Transparent
-        state.isMine -> ScTheme.bubbleBgOutgoing ?: ElementTheme.colors.messageFromMeBackground
-        else -> ScTheme.bubbleBgIncoming ?: ElementTheme.colors.messageFromOtherBackground
-    }
-    val bubbleShape = bubbleShape()
+    val backgroundBubbleColor = scMessageBubbleBg(state) ?: MessageEventBubbleDefaults.backgroundBubbleColor(state.isMine)
+    val bubbleShape = scMessageBubbleShape() ?: remember(state) { MessageEventBubbleDefaults.shape(state.cutTopStart, state.groupPosition, state.isMine) }
     val radiusPx = (avatarRadius + SENDER_AVATAR_BORDER_WIDTH).toPx()
     val yOffsetPx = -(NEGATIVE_MARGIN_FOR_BUBBLE + avatarRadius).toPx()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
@@ -152,7 +115,7 @@ fun MessageEventBubble(
                 .testTag(TestTags.messageBubble)
                 .widthIn(
                     min = MIN_BUBBLE_WIDTH,
-                    max = (constraints.maxWidth * BUBBLE_WIDTH_RATIO)
+                    max = (constraints.maxWidth * MessageEventBubbleDefaults.BUBBLE_WIDTH_RATIO)
                         .toInt()
                         .toDp()
                 )
@@ -160,6 +123,48 @@ fun MessageEventBubble(
             content = content,
         )
     }
+}
+
+object MessageEventBubbleDefaults {
+    fun shape(cutTopStart: Boolean, groupPosition: TimelineItemGroupPosition, isMine: Boolean): Shape {
+        val topLeftCorner = if (cutTopStart) 0.dp else BUBBLE_RADIUS
+        return when (groupPosition) {
+            TimelineItemGroupPosition.First -> if (isMine) {
+                RoundedCornerShape(BUBBLE_RADIUS, BUBBLE_RADIUS, 0.dp, BUBBLE_RADIUS)
+            } else {
+                RoundedCornerShape(topLeftCorner, BUBBLE_RADIUS, BUBBLE_RADIUS, 0.dp)
+            }
+            TimelineItemGroupPosition.Middle -> if (isMine) {
+                RoundedCornerShape(BUBBLE_RADIUS, 0.dp, 0.dp, BUBBLE_RADIUS)
+            } else {
+                RoundedCornerShape(0.dp, BUBBLE_RADIUS, BUBBLE_RADIUS, 0.dp)
+            }
+            TimelineItemGroupPosition.Last -> if (isMine) {
+                RoundedCornerShape(BUBBLE_RADIUS, 0.dp, BUBBLE_RADIUS, BUBBLE_RADIUS)
+            } else {
+                RoundedCornerShape(0.dp, BUBBLE_RADIUS, BUBBLE_RADIUS, BUBBLE_RADIUS)
+            }
+            TimelineItemGroupPosition.None ->
+                RoundedCornerShape(
+                    topLeftCorner,
+                    BUBBLE_RADIUS,
+                    BUBBLE_RADIUS,
+                    BUBBLE_RADIUS
+                )
+        }
+    }
+
+    @Composable
+    fun backgroundBubbleColor(isMine: Boolean): Color {
+        return if (isMine) {
+            ElementTheme.colors.messageFromMeBackground
+        } else {
+            ElementTheme.colors.messageFromOtherBackground
+        }
+    }
+
+    // Design says: The maximum width of a bubble is still 3/4 of the screen width. But try with 78% now.
+    const val BUBBLE_WIDTH_RATIO = 0.78f
 }
 
 @PreviewsDayNight

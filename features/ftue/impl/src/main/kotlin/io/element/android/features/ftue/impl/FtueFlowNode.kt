@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
-import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
@@ -30,18 +29,16 @@ import io.element.android.features.ftue.impl.notifications.NotificationsOptInNod
 import io.element.android.features.ftue.impl.sessionverification.FtueSessionVerificationFlowNode
 import io.element.android.features.ftue.impl.state.DefaultFtueService
 import io.element.android.features.ftue.impl.state.FtueStep
+import io.element.android.features.ftue.impl.state.InternalFtueState
 import io.element.android.features.lockscreen.api.LockScreenEntryPoint
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.designsystem.theme.components.CircularProgressIndicator
 import io.element.android.libraries.di.SessionScope
-import io.element.android.services.analytics.api.AnalyticsService
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 
@@ -50,9 +47,8 @@ import timber.log.Timber
 class FtueFlowNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
-    private val ftueState: DefaultFtueService,
+    private val defaultFtueService: DefaultFtueService,
     private val analyticsEntryPoint: AnalyticsEntryPoint,
-    private val analyticsService: AnalyticsService,
     private val lockScreenEntryPoint: LockScreenEntryPoint,
 ) : BaseFlowNode<FtueFlowNode.NavTarget>(
     backstack = BackStack(
@@ -81,19 +77,11 @@ class FtueFlowNode(
 
     override fun onBuilt() {
         super.onBuilt()
-
-        lifecycle.subscribe(onCreate = {
-            moveToNextStepIfNeeded()
-        })
-
-        analyticsService.didAskUserConsentFlow
-            .distinctUntilChanged()
-            .onEach { moveToNextStepIfNeeded() }
-            .launchIn(lifecycleScope)
-
-        ftueState.isVerificationStatusKnown
-            .filter { it }
-            .onEach { moveToNextStepIfNeeded() }
+        defaultFtueService.ftueStepStateFlow
+            .filterIsInstance(InternalFtueState.Incomplete::class)
+            .onEach {
+                showStep(it.nextStep)
+            }
             .launchIn(lifecycleScope)
     }
 
@@ -105,7 +93,7 @@ class FtueFlowNode(
             is NavTarget.SessionVerification -> {
                 val callback = object : FtueSessionVerificationFlowNode.Callback {
                     override fun onDone() {
-                        moveToNextStepIfNeeded()
+                        defaultFtueService.onUserCompletedSessionVerification()
                     }
                 }
                 createNode<FtueSessionVerificationFlowNode>(buildContext, listOf(callback))
@@ -113,7 +101,7 @@ class FtueFlowNode(
             NavTarget.NotificationsOptIn -> {
                 val callback = object : NotificationsOptInNode.Callback {
                     override fun onNotificationsOptInFinished() {
-                        moveToNextStepIfNeeded()
+                        defaultFtueService.updateFtueStep()
                     }
                 }
                 createNode<NotificationsOptInNode>(buildContext, listOf(callback))
@@ -124,7 +112,7 @@ class FtueFlowNode(
             NavTarget.LockScreenSetup -> {
                 val callback = object : LockScreenEntryPoint.Callback {
                     override fun onSetupDone() {
-                        moveToNextStepIfNeeded()
+                        defaultFtueService.updateFtueStep()
                     }
                 }
                 lockScreenEntryPoint.nodeBuilder(this, buildContext, LockScreenEntryPoint.Target.Setup)
@@ -134,8 +122,8 @@ class FtueFlowNode(
         }
     }
 
-    private fun moveToNextStepIfNeeded() = lifecycleScope.launch {
-        when (ftueState.getNextStep().also { Timber.tag("SC_FTUE").d("Next step from flow node: $it") }) {
+    private fun showStep(ftueStep: FtueStep) {
+        when (ftueStep) {
             FtueStep.WaitingForInitialState -> {
                 backstack.newRoot(NavTarget.Placeholder)
             }
@@ -151,7 +139,6 @@ class FtueFlowNode(
             FtueStep.LockscreenSetup -> {
                 backstack.newRoot(NavTarget.LockScreenSetup)
             }
-            null -> Unit
         }
     }
 

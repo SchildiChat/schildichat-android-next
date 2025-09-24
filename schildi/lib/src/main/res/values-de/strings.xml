@@ -164,4 +164,11 @@
     <string name="sc_pref_category_pinned_messages">Angepinnte Nachrichten</string>
     <string name="sc_pref_category_notifications">Benachrichtigungen</string>
     <string name="sc_pref_danger_zone_summary">Bitte melde keine Fehler nach Aktivierung.</string>
+    <string name="sc_pref_notify_failed_notification_lookup_title">Bei Benachrichtigungsfehler warnen</string>
+    <string name="sc_pref_notify_failed_notification_lookup_summary">Benachrichtigen, wenn die App eine Push-Nachricht empfangen hat, aber die zugehörige Nachricht nicht finden kann</string>
+    <string name="sc_space_all_rooms_summary">Wenn diese Option deaktiviert ist, werden möglicherweise nicht mehr alle Chats oder Einladungen angezeigt.</string>
+    <string name="sc_pref_hide_invites_title">Einladungen ausblenden</string>
+    <string name="sc_pref_hide_invites_summary">Verbirgt alle Einladungen in der App. Beachte, dass es in den Benachrichtigungseinstellungen eine weitere Option gibt, um keine Benachrichtigungen für Einladungen zu erhalten.</string>
+    <string name="sc_pref_syncing_indicator_title">Synchronisierungsanzeige</string>
+    <string name="sc_pref_syncing_indicator_summary">Synchronisierungsstatus oben auf dem Bildschirm einblenden</string>
 </resources>

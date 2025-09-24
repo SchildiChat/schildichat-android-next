@@ -37,6 +37,7 @@ dependencies {
     implementation(libs.coil.gif)
     implementation(libs.coil.network.okhttp)
     implementation(libs.jsoup)
+    implementation(projects.libraries.previewutils)
 
     testCommonDependencies(libs, true)
     testImplementation(projects.libraries.matrix.test)

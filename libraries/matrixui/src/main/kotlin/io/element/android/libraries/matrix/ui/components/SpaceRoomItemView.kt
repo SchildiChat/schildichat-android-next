@@ -20,8 +20,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,6 +33,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
@@ -41,8 +44,12 @@ import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.modifiers.onKeyboardContextMenuAction
+import io.element.android.libraries.designsystem.preview.ElementPreview
+import io.element.android.libraries.designsystem.preview.PreviewsDayNight
+import io.element.android.libraries.designsystem.theme.components.ButtonSize
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.Text
+import io.element.android.libraries.designsystem.theme.components.TextButton
 import io.element.android.libraries.designsystem.theme.unreadIndicator
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
 import io.element.android.libraries.matrix.api.room.join.JoinRule
@@ -59,6 +66,7 @@ fun SpaceRoomItemView(
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
+    trailingAction: @Composable (() -> Unit)? = null,
 ) {
     SpaceRoomItemScaffold(
         modifier = modifier,
@@ -67,16 +75,14 @@ fun SpaceRoomItemView(
         hideAvatars = hideAvatars,
         onClick = onClick,
         onLongClick = onLongClick,
+        trailingAction = trailingAction,
     ) {
         NameAndIndicatorRow(
-            isSpace = spaceRoom.isSpace,
-            name = spaceRoom.name,
-            showIndicator = showUnreadIndicator
+            isSpace = spaceRoom.isSpace, name = spaceRoom.name, showIndicator = showUnreadIndicator
         )
         Spacer(modifier = Modifier.height(1.dp))
         SubtitleRow(
-            visibilityIcon = spaceRoom.visibilityIcon(),
-            subtitle = spaceRoom.subtitle()
+            visibilityIcon = spaceRoom.visibilityIcon(), subtitle = spaceRoom.subtitle()
         )
         Spacer(modifier = Modifier.height(1.dp))
         Text(
@@ -166,7 +172,8 @@ private fun SpaceRoomItemScaffold(
     onLongClick: () -> Unit,
     hideAvatars: Boolean,
     modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit
+    trailingAction: @Composable (() -> Unit)? = null,
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     val clickModifier = Modifier
         .combinedClickable(
@@ -174,8 +181,7 @@ private fun SpaceRoomItemScaffold(
             onLongClick = onLongClick,
             onLongClickLabel = stringResource(CommonStrings.action_open_context_menu),
             indication = ripple(),
-            interactionSource = remember { MutableInteractionSource() }
-        )
+            interactionSource = remember { MutableInteractionSource() })
         .onKeyboardContextMenuAction { onLongClick }
     Row(
         modifier = modifier
@@ -194,6 +200,10 @@ private fun SpaceRoomItemScaffold(
             modifier = Modifier.weight(1f),
             content = content,
         )
+        if (trailingAction != null) {
+            Spacer(modifier = Modifier.width(16.dp))
+            trailingAction()
+        }
     }
 }
 
@@ -232,4 +242,17 @@ private fun SpaceRoom.visibilityIcon(): ImageVector? {
     } else {
         CompoundIcons.LockSolid()
     }
+}
+
+@Composable
+@PreviewsDayNight
+internal fun SpaceRoomItemViewPreview(@PreviewParameter(SpaceRoomProvider::class) spaceRoom: SpaceRoom) = ElementPreview {
+    SpaceRoomItemView(
+        spaceRoom = spaceRoom,
+        showUnreadIndicator = spaceRoom.state == CurrentUserMembership.INVITED,
+        hideAvatars = false,
+        onClick = {},
+        onLongClick = {},
+        modifier = Modifier.fillMaxWidth()
+    )
 }

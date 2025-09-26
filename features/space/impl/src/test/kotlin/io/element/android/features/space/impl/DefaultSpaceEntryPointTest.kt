@@ -15,10 +15,12 @@ import io.element.android.features.space.api.SpaceEntryPoint
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.FakeMatrixClient
+import io.element.android.libraries.matrix.test.room.join.FakeJoinRoom
 import io.element.android.libraries.matrix.test.spaces.FakeSpaceRoomList
 import io.element.android.libraries.matrix.test.spaces.FakeSpaceService
 import io.element.android.tests.testutils.lambda.lambdaError
 import io.element.android.tests.testutils.node.TestParentNode
+import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 
@@ -27,7 +29,7 @@ class DefaultSpaceEntryPointTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Test
-    fun `test node builder`() {
+    fun `test node builder`() = runTest {
         val entryPoint = DefaultSpaceEntryPoint()
         val nodeInputs = SpaceEntryPoint.Inputs(A_ROOM_ID)
         val parentNode = TestParentNode.create { buildContext, plugins ->
@@ -44,6 +46,10 @@ class DefaultSpaceEntryPointTest {
                             )
                         ),
                         seenInvitesStore = InMemorySeenInvitesStore(),
+                        joinRoom = FakeJoinRoom(
+                        lambda = { _, _, _ -> Result.success(Unit) },
+                        ),
+                        sessionCoroutineScope = backgroundScope,
                     )
                 },
             )

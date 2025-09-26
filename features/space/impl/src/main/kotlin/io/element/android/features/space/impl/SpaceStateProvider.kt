@@ -47,6 +47,7 @@ fun aSpaceState(
     ),
     children: List<SpaceRoom> = emptyList(),
     seenSpaceInvites: Set<RoomId> = emptySet(),
+    joiningRooms: Set<RoomId> = emptySet(),
     hideInvitesAvatar: Boolean = false,
     hasMoreToLoad: Boolean = false,
 ) = SpaceState(
@@ -55,6 +56,7 @@ fun aSpaceState(
     seenSpaceInvites = seenSpaceInvites.toImmutableSet(),
     hideInvitesAvatar = hideInvitesAvatar,
     hasMoreToLoad = hasMoreToLoad,
+    joiningRooms = joiningRooms.toImmutableSet(),
     eventSink = {})
 
 private fun aListOfSpaceRooms(): List<SpaceRoom> {

@@ -18,5 +18,6 @@ data class SpaceState(
     val seenSpaceInvites: ImmutableSet<RoomId>,
     val hideInvitesAvatar: Boolean,
     val hasMoreToLoad: Boolean,
+    val joiningRooms: ImmutableSet<RoomId>,
     val eventSink: (SpaceEvents) -> Unit
 )

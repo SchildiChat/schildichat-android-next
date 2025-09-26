@@ -64,7 +64,7 @@ fun HomeSpacesView(
                     },
                     onLongClick = {
                         // TODO
-                    }
+                    },
                 )
             }
         }

@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
@@ -35,9 +37,11 @@ import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.components.button.BackButton
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
+import io.element.android.libraries.designsystem.theme.components.ButtonSize
 import io.element.android.libraries.designsystem.theme.components.CircularProgressIndicator
 import io.element.android.libraries.designsystem.theme.components.Scaffold
 import io.element.android.libraries.designsystem.theme.components.Text
+import io.element.android.libraries.designsystem.theme.components.TextButton
 import io.element.android.libraries.designsystem.theme.components.TopAppBar
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
@@ -96,6 +100,7 @@ private fun SpaceViewContent(
         state.children.forEach { spaceRoom ->
             item {
                 val isInvitation = spaceRoom.state == CurrentUserMembership.INVITED
+                val isCurrentlyJoining = spaceRoom.roomId in state.joiningRooms
                 SpaceRoomItemView(
                     spaceRoom = spaceRoom,
                     showUnreadIndicator = isInvitation && spaceRoom.roomId !in state.seenSpaceInvites,
@@ -105,6 +110,9 @@ private fun SpaceViewContent(
                     },
                     onLongClick = {
                         // TODO
+                    },
+                    trailingAction = spaceRoom.trailingAction(isCurrentlyJoining = isCurrentlyJoining) {
+                        state.eventSink(SpaceEvents.Join(spaceRoom))
                     }
                 )
             }
@@ -188,6 +196,27 @@ private fun SpaceAvatarAndNameRow(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
+    }
+}
+
+private fun SpaceRoom.trailingAction(
+    isCurrentlyJoining: Boolean,
+    onClick: () -> Unit
+): @Composable (() -> Unit)? {
+    return when (state) {
+        null, CurrentUserMembership.LEFT -> {
+            @Composable {
+                CompositionLocalProvider(LocalContentColor provides ElementTheme.colors.textActionAccent) {
+                    TextButton(
+                        text = stringResource(CommonStrings.action_join),
+                        onClick = onClick,
+                        size = ButtonSize.LargeLowPadding,
+                        showProgress = isCurrentlyJoining,
+                    )
+                }
+            }
+        }
+        else -> null
     }
 }
 

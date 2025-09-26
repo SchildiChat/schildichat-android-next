@@ -14,15 +14,18 @@ import io.element.android.features.invite.api.SeenInvitesStore
 import io.element.android.features.invite.test.InMemorySeenInvitesStore
 import io.element.android.features.space.api.SpaceEntryPoint
 import io.element.android.libraries.matrix.api.MatrixClient
+import io.element.android.libraries.matrix.api.room.join.JoinRoom
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.FakeMatrixClient
+import io.element.android.libraries.matrix.test.room.join.FakeJoinRoom
 import io.element.android.libraries.matrix.test.spaces.FakeSpaceRoomList
 import io.element.android.libraries.matrix.test.spaces.FakeSpaceService
 import io.element.android.libraries.previewutils.room.aSpaceRoom
 import io.element.android.tests.testutils.lambda.lambdaRecorder
 import io.element.android.tests.testutils.test
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -153,15 +156,20 @@ class SpacePresenterTest {
         }
     }
 
-    private fun createSpacePresenter(
+    private fun TestScope.createSpacePresenter(
         inputs: SpaceEntryPoint.Inputs = SpaceEntryPoint.Inputs(A_ROOM_ID),
         client: MatrixClient = FakeMatrixClient(),
         seenInvitesStore: SeenInvitesStore = InMemorySeenInvitesStore(),
+        joinRoom: JoinRoom = FakeJoinRoom(
+            lambda = { _, _, _ -> Result.success(Unit) },
+        ),
     ): SpacePresenter {
         return SpacePresenter(
             inputs = inputs,
             client = client,
             seenInvitesStore = seenInvitesStore,
+            joinRoom = joinRoom,
+            sessionCoroutineScope = backgroundScope,
         )
     }
 }

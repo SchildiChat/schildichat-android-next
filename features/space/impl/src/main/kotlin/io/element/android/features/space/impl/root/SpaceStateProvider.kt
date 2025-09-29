@@ -20,9 +20,8 @@ import kotlinx.collections.immutable.toImmutableSet
 open class SpaceStateProvider : PreviewParameterProvider<SpaceState> {
     override val values: Sequence<SpaceState>
         get() = sequenceOf(
+            aSpaceState(),
             aSpaceState(
-
-            ), aSpaceState(
             parentSpace = aSpaceRoom(
                 name = null,
                 numJoinedMembers = 5,
@@ -30,11 +29,14 @@ open class SpaceStateProvider : PreviewParameterProvider<SpaceState> {
                 worldReadable = true,
             ),
             hasMoreToLoad = true,
-        ), aSpaceState(
+        ),
+            aSpaceState(
             hasMoreToLoad = true,
             children = aListOfSpaceRooms(),
-        ), aSpaceState(
-            hasMoreToLoad = false, children = aListOfSpaceRooms()
+        ),
+            aSpaceState(
+            hasMoreToLoad = false,
+                children = aListOfSpaceRooms()
         )
             // Add other states here
         )
@@ -59,7 +61,8 @@ fun aSpaceState(
     hideInvitesAvatar = hideInvitesAvatar,
     hasMoreToLoad = hasMoreToLoad,
     joinActions = joiningRooms.associateWith { AsyncAction.Uninitialized }.toImmutableMap(),
-    eventSink = {})
+    eventSink = {}
+)
 
 private fun aListOfSpaceRooms(): List<SpaceRoom> {
     return listOf(

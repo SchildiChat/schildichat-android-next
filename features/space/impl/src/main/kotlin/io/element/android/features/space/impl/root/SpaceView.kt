@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
@@ -77,7 +76,8 @@ fun SpaceView(
         modifier = modifier,
         topBar = {
             SpaceViewTopBar(
-                currentSpace = state.currentSpace, onBackClick = onBackClick,
+                currentSpace = state.currentSpace,
+                onBackClick = onBackClick,
                 onLeaveSpaceClick = onLeaveSpaceClick,
                 onShareSpace = onShareSpace,
             )
@@ -90,12 +90,12 @@ fun SpaceView(
                     state = state,
                     onRoomClick = onRoomClick
                 )
+                JoinRoomFailureEffect(
+                    hasAnyFailure = state.hasAnyFailure,
+                    eventSink = state.eventSink
+                )
             }
         },
-    )
-    JoinRoomFailureEffect(
-        hasAnyFailure = state.hasAnyFailure,
-        eventSink = state.eventSink
     )
 }
 
@@ -105,14 +105,15 @@ private fun JoinRoomFailureEffect(
     eventSink: (SpaceEvents) -> Unit,
 ) {
     val asyncIndicatorState = rememberAsyncIndicatorState()
-    AsyncIndicatorHost(modifier = Modifier.statusBarsPadding(), asyncIndicatorState)
+    val updatedEventSink by rememberUpdatedState(eventSink)
+    AsyncIndicatorHost(modifier = Modifier, asyncIndicatorState)
     LaunchedEffect(hasAnyFailure) {
         if (hasAnyFailure) {
             asyncIndicatorState.enqueue {
                 AsyncIndicator.Failure(text = stringResource(CommonStrings.common_something_went_wrong))
             }
             delay(AsyncIndicator.DURATION_SHORT)
-            eventSink(SpaceEvents.ClearFailures)
+            updatedEventSink(SpaceEvents.ClearFailures)
         } else {
             asyncIndicatorState.clear()
         }
@@ -256,7 +257,6 @@ private fun SpaceViewTopBar(
                 )
                  */
             }
-
         },
     )
 }

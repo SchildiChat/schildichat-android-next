@@ -11,6 +11,6 @@ import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 
 sealed interface SpaceEvents {
     data object LoadMore : SpaceEvents
-    data class Join(val spaceRoom: SpaceRoom): SpaceEvents
+    data class Join(val spaceRoom: SpaceRoom) : SpaceEvents
     data object ClearFailures : SpaceEvents
 }

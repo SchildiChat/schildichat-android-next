@@ -5,14 +5,16 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.features.space.impl
+package io.element.android.features.space.impl.root
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.previewutils.room.aSpaceRoom
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.collections.immutable.toImmutableSet
 
 open class SpaceStateProvider : PreviewParameterProvider<SpaceState> {
@@ -56,7 +58,7 @@ fun aSpaceState(
     seenSpaceInvites = seenSpaceInvites.toImmutableSet(),
     hideInvitesAvatar = hideInvitesAvatar,
     hasMoreToLoad = hasMoreToLoad,
-    joiningRooms = joiningRooms.toImmutableSet(),
+    joinActions = joiningRooms.associateWith { AsyncAction.Uninitialized }.toImmutableMap(),
     eventSink = {})
 
 private fun aListOfSpaceRooms(): List<SpaceRoom> {

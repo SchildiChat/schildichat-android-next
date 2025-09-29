@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
@@ -34,6 +35,9 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
+import io.element.android.libraries.designsystem.components.async.AsyncIndicator
+import io.element.android.libraries.designsystem.components.async.AsyncIndicatorHost
+import io.element.android.libraries.designsystem.components.async.rememberAsyncIndicatorState
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
@@ -58,22 +62,22 @@ import io.element.android.libraries.matrix.ui.components.SpaceRoomItemView
 import io.element.android.libraries.matrix.ui.model.getAvatarData
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.delay
 
 @Composable
 fun SpaceView(
     state: SpaceState,
     onBackClick: () -> Unit,
-    onLeaveSpaceClick: () -> Unit,
     onRoomClick: (spaceRoom: SpaceRoom) -> Unit,
     onShareSpace: () -> Unit,
+    onLeaveSpaceClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
         topBar = {
             SpaceViewTopBar(
-                state = state,
-                onBackClick = onBackClick,
+                currentSpace = state.currentSpace, onBackClick = onBackClick,
                 onLeaveSpaceClick = onLeaveSpaceClick,
                 onShareSpace = onShareSpace,
             )
@@ -89,6 +93,30 @@ fun SpaceView(
             }
         },
     )
+    JoinRoomFailureEffect(
+        hasAnyFailure = state.hasAnyFailure,
+        eventSink = state.eventSink
+    )
+}
+
+@Composable
+private fun JoinRoomFailureEffect(
+    hasAnyFailure: Boolean,
+    eventSink: (SpaceEvents) -> Unit,
+) {
+    val asyncIndicatorState = rememberAsyncIndicatorState()
+    AsyncIndicatorHost(modifier = Modifier.statusBarsPadding(), asyncIndicatorState)
+    LaunchedEffect(hasAnyFailure) {
+        if (hasAnyFailure) {
+            asyncIndicatorState.enqueue {
+                AsyncIndicator.Failure(text = stringResource(CommonStrings.common_something_went_wrong))
+            }
+            delay(AsyncIndicator.DURATION_SHORT)
+            eventSink(SpaceEvents.ClearFailures)
+        } else {
+            asyncIndicatorState.clear()
+        }
+    }
 }
 
 @Composable
@@ -115,7 +143,7 @@ private fun SpaceViewContent(
         state.children.forEach { spaceRoom ->
             item {
                 val isInvitation = spaceRoom.state == CurrentUserMembership.INVITED
-                val isCurrentlyJoining = spaceRoom.roomId in state.joiningRooms
+                val isCurrentlyJoining = state.isJoining(spaceRoom.roomId)
                 SpaceRoomItemView(
                     spaceRoom = spaceRoom,
                     showUnreadIndicator = isInvitation && spaceRoom.roomId !in state.seenSpaceInvites,
@@ -163,13 +191,12 @@ private fun LoadingMoreIndicator(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SpaceViewTopBar(
-    state: SpaceState,
+    currentSpace: SpaceRoom?,
     onBackClick: () -> Unit,
     @Suppress("unused") onLeaveSpaceClick: () -> Unit,
     onShareSpace: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val currentSpace = state.currentSpace
     TopAppBar(
         modifier = modifier,
         navigationIcon = {
@@ -229,6 +256,7 @@ private fun SpaceViewTopBar(
                 )
                  */
             }
+
         },
     )
 }
@@ -290,9 +318,9 @@ internal fun SpaceViewPreview(
 ) = ElementPreview {
     SpaceView(
         state = state,
-        onBackClick = {},
-        onLeaveSpaceClick = {},
         onRoomClick = {},
         onShareSpace = {},
+        onLeaveSpaceClick = {},
+        onBackClick = {},
     )
 }

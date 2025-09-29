@@ -17,10 +17,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import im.vector.app.features.analytics.plan.JoinedRoom
 import dev.zacsweers.metro.AssistedInject
+import im.vector.app.features.analytics.plan.JoinedRoom
 import io.element.android.features.invite.api.SeenInvitesStore
 import io.element.android.features.space.api.SpaceEntryPoint
+import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.coroutine.mapState
 import io.element.android.libraries.di.annotations.SessionCoroutineScope
@@ -34,14 +35,14 @@ import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
 import io.element.android.libraries.matrix.ui.safety.rememberHideInvitesAvatar
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toPersistentMap
 import kotlinx.collections.immutable.toPersistentSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlin.jvm.optionals.getOrNull
 
-@AssistedInject
-class SpacePresenter(
+@AssistedInject class SpacePresenter(
     @Assisted private val inputs: SpaceEntryPoint.Inputs,
     private val client: MatrixClient,
     private val seenInvitesStore: SeenInvitesStore,
@@ -76,15 +77,12 @@ class SpacePresenter(
         }.collectAsState()
 
         val currentSpace by spaceRoomList.currentSpaceFlow.collectAsState()
-        val joiningRooms = remember { mutableStateOf(emptySet<RoomId>()) }
+        val joinActions = remember { mutableStateOf(emptyMap<RoomId, AsyncAction<Unit>>()) }
 
-        LaunchedEffect(children, joiningRooms.value) {
-            val joinedChildren = children
-                .filter { it.state == CurrentUserMembership.JOINED }
-                .map { it.roomId }
-                .toSet()
-            joiningRooms.value.let { currentlyJoining ->
-                joiningRooms.value = currentlyJoining - joinedChildren
+        LaunchedEffect(children) {
+            val joinedChildren = children.filter { it.state == CurrentUserMembership.JOINED }.map { it.roomId }.toSet()
+            joinActions.value.let { currentlyJoining ->
+                joinActions.value = currentlyJoining - joinedChildren
             }
         }
 
@@ -92,7 +90,13 @@ class SpacePresenter(
             when (event) {
                 SpaceEvents.LoadMore -> localCoroutineScope.paginate()
                 is SpaceEvents.Join -> {
-                    sessionCoroutineScope.joinRoom(event.spaceRoom, joiningRooms)
+                    sessionCoroutineScope.joinRoom(event.spaceRoom, joinActions)
+                }
+                SpaceEvents.ClearFailures -> {
+                    val failedActions = joinActions.value
+                        .filterValues { it is AsyncAction.Failure }
+                        .mapValues { AsyncAction.Uninitialized }
+                    joinActions.value = joinActions.value + failedActions
                 }
             }
         }
@@ -102,21 +106,21 @@ class SpacePresenter(
             seenSpaceInvites = seenSpaceInvites,
             hideInvitesAvatar = hideInvitesAvatar,
             hasMoreToLoad = hasMoreToLoad,
-            joiningRooms = joiningRooms.value.toPersistentSet(),
+            joinActions = joinActions.value.toPersistentMap(),
             eventSink = ::handleEvents,
         )
     }
 
     private fun CoroutineScope.joinRoom(
-        spaceRoom: SpaceRoom, joiningRooms: MutableState<Set<RoomId>>
+        spaceRoom: SpaceRoom, joiningRooms: MutableState<Map<RoomId, AsyncAction<Unit>>>
     ) = launch {
-        joiningRooms.value = joiningRooms.value + spaceRoom.roomId
+        joiningRooms.value = joiningRooms.value + mapOf(spaceRoom.roomId to AsyncAction.Loading)
         joinRoom.invoke(
             roomIdOrAlias = spaceRoom.roomId.toRoomIdOrAlias(),
             serverNames = spaceRoom.via,
             trigger = JoinedRoom.Trigger.SpaceHierarchy,
         ).onFailure {
-            joiningRooms.value = joiningRooms.value - spaceRoom.roomId
+            joiningRooms.value = joiningRooms.value + mapOf(spaceRoom.roomId to AsyncAction.Failure(it))
         }
     }
 

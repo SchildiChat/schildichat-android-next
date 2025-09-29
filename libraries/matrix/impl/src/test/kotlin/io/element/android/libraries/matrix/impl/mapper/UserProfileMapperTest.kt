@@ -5,7 +5,7 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.libraries.matrix.impl.usersearch
+package io.element.android.libraries.matrix.impl.mapper
 
 import com.google.common.truth.Truth.assertThat
 import io.element.android.libraries.matrix.api.user.MatrixUser
@@ -16,7 +16,7 @@ import org.junit.Test
 class UserProfileMapperTest {
     @Test
     fun map() {
-        assertThat(UserProfileMapper.map(aRustUserProfile(A_USER_ID.value, "displayName", "avatarUrl")))
+        assertThat(aRustUserProfile(A_USER_ID.value, "displayName", "avatarUrl").map())
             .isEqualTo(MatrixUser(A_USER_ID, "displayName", "avatarUrl"))
     }
 }

@@ -215,9 +215,7 @@ private fun ContentInitial(
                     .padding(top = 24.dp),
             ) {
                 VerificationUserProfileContent(
-                    userId = request.details.senderProfile.userId,
-                    displayName = request.details.senderProfile.displayName,
-                    avatarUrl = request.details.senderProfile.avatarUrl,
+                    user = request.details.senderProfile,
                 )
             }
         }

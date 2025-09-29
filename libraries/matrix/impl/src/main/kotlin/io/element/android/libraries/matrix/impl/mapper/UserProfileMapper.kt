@@ -5,17 +5,14 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.libraries.matrix.impl.usersearch
+package io.element.android.libraries.matrix.impl.mapper
 
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import org.matrix.rustcomponents.sdk.UserProfile
 
-object UserProfileMapper {
-    fun map(userProfile: UserProfile): MatrixUser =
-        MatrixUser(
-            userId = UserId(userProfile.userId),
-            displayName = userProfile.displayName,
-            avatarUrl = userProfile.avatarUrl,
-        )
-}
+fun UserProfile.map() = MatrixUser(
+    userId = UserId(userId),
+    displayName = displayName,
+    avatarUrl = avatarUrl,
+)

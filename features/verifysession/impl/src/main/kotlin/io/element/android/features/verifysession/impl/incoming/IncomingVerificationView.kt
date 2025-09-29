@@ -26,6 +26,7 @@ import androidx.compose.ui.semantics.focused
 import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
@@ -290,5 +291,13 @@ private fun IncomingVerificationBottomMenu(
 internal fun IncomingVerificationViewPreview(@PreviewParameter(IncomingVerificationStateProvider::class) state: IncomingVerificationState) = ElementPreview {
     IncomingVerificationView(
         state = state,
+    )
+}
+
+@Preview
+@Composable
+internal fun IncomingVerificationViewA11yPreview() = ElementPreview {
+    IncomingVerificationView(
+        state = anIncomingVerificationState(),
     )
 }

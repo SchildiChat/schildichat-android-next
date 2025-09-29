@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -32,6 +33,9 @@ import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.utils.CommonDrawables
 import io.element.android.libraries.matrix.api.core.UserId
 
+/**
+ * Ref: https://www.figma.com/design/lMrKOhS8BEb75GXVq7FnNI/ER-96--User-Verification-by-Emoji?node-id=116-52049
+ */
 @Composable
 fun VerificationUserProfileContent(
     userId: UserId,
@@ -42,7 +46,6 @@ fun VerificationUserProfileContent(
     val avatarData = remember(userId, displayName, avatarUrl) {
         AvatarData(id = userId.value, name = displayName, url = avatarUrl, size = AvatarSize.UserVerification)
     }
-
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -55,7 +58,7 @@ fun VerificationUserProfileContent(
             avatarData = avatarData,
             avatarType = AvatarType.User,
         )
-        Spacer(modifier = Modifier.padding(12.dp))
+        Spacer(modifier = Modifier.width(12.dp))
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(text = displayName ?: userId.value, style = ElementTheme.typography.fontBodyLgMedium, color = ElementTheme.colors.textPrimary)
 

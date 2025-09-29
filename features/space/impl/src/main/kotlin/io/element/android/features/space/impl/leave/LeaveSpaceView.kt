@@ -155,9 +155,8 @@ private fun LeaveSpaceHeader(
             ),
             subTitle =
                 if (state.selectableSpaceRooms is AsyncData.Success && state.selectableSpaceRooms.data.isNotEmpty()) {
-                    val count = state.selectableSpaceRooms.data.size
                     if (state.hasOnlyLastAdminRoom) {
-                        pluralStringResource(R.plurals.screen_leave_space_subtitle_only_last_admin, count, count)
+                        stringResource(R.string.screen_leave_space_subtitle_only_last_admin)
                     } else {
                         stringResource(R.string.screen_leave_space_subtitle)
                     }

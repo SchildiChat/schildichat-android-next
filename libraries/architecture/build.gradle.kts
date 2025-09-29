@@ -25,7 +25,6 @@ dependencies {
     api(libs.appyx.core)
     api(libs.androidx.lifecycle.runtime)
     api(libs.molecule.runtime)
-    implementation(projects.libraries.designsystem)
 
     testCommonDependencies(libs)
 }

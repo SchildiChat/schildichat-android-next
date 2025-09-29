@@ -155,7 +155,7 @@ class IncomingVerificationPresenter(
             StateMachineState.RejectingIncomingVerification,
             null -> {
                 Step.Initial(
-                    deviceDisplayName = sessionVerificationRequestDetails.senderProfile.displayName ?: sessionVerificationRequestDetails.deviceId.value,
+                    deviceDisplayName = sessionVerificationRequestDetails.deviceDisplayName,
                     deviceId = sessionVerificationRequestDetails.deviceId,
                     formattedSignInTime = formattedSignInTime,
                     isWaiting = machineState == StateMachineState.AcceptingIncomingVerification ||

@@ -19,6 +19,7 @@ fun RustSessionVerificationRequestDetails.map() = SessionVerificationRequestDeta
     senderProfile = senderProfile.map(),
     flowId = FlowId(flowId),
     deviceId = DeviceId(deviceId),
+    deviceDisplayName = deviceDisplayName,
     firstSeenTimestamp = firstSeenTimestamp.toLong(),
 )
 

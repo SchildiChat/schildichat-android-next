@@ -62,6 +62,7 @@ internal fun anIncomingSessionVerificationRequest() = VerificationRequest.Incomi
         ),
         flowId = FlowId("1234"),
         deviceId = DeviceId("ILAKNDNASDLK"),
+        deviceDisplayName = "a device name",
         firstSeenTimestamp = 0,
     )
 )
@@ -75,6 +76,7 @@ internal fun anIncomingUserVerificationRequest() = VerificationRequest.Incoming.
         ),
         flowId = FlowId("1234"),
         deviceId = DeviceId("ILAKNDNASDLK"),
+        deviceDisplayName = "a device name",
         firstSeenTimestamp = 0,
     )
 )

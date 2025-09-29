@@ -18,6 +18,7 @@ data class SessionVerificationRequestDetails(
     val senderProfile: SenderProfile,
     val flowId: FlowId,
     val deviceId: DeviceId,
+    val deviceDisplayName: String?,
     val firstSeenTimestamp: Long,
 ) : Parcelable {
     @Parcelize

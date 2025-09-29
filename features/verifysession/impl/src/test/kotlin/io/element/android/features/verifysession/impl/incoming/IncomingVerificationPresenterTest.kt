@@ -295,11 +295,12 @@ private val anIncomingSessionVerificationRequest = VerificationRequest.Incoming.
     details = SessionVerificationRequestDetails(
         senderProfile = SessionVerificationRequestDetails.SenderProfile(
             userId = A_USER_ID,
-            displayName = "a device name",
+            displayName = "a user name",
             avatarUrl = null,
         ),
         flowId = FlowId("flowId"),
         deviceId = A_DEVICE_ID,
+        deviceDisplayName = "a device name",
         firstSeenTimestamp = A_TIMESTAMP,
     )
 )

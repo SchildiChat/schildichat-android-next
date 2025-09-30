@@ -29,7 +29,7 @@ import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.di.SessionScope
-import io.element.android.libraries.ui.common.nodes.loadingNode
+import io.element.android.libraries.ui.common.nodes.emptyNode
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -95,7 +95,7 @@ class LockScreenSettingsFlowNode(
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         return when (navTarget) {
             NavTarget.Loading -> {
-                loadingNode(buildContext, showProgressIndicator = false)
+                emptyNode(buildContext)
             }
             NavTarget.Unlock -> {
                 val callback = object : PinUnlockNode.Callback {

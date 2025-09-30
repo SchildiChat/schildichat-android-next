@@ -80,7 +80,7 @@ import io.element.android.libraries.matrix.api.permalink.PermalinkData
 import io.element.android.libraries.matrix.api.verification.SessionVerificationServiceListener
 import io.element.android.libraries.matrix.api.verification.VerificationRequest
 import io.element.android.libraries.push.api.notifications.conversations.NotificationConversationService
-import io.element.android.libraries.ui.common.nodes.loadingNode
+import io.element.android.libraries.ui.common.nodes.emptyNode
 import io.element.android.services.appnavstate.api.AppNavigationStateService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
@@ -281,7 +281,7 @@ class LoggedInFlowNode(
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         return when (navTarget) {
-            NavTarget.Placeholder -> loadingNode(buildContext, showProgressIndicator = false)
+            NavTarget.Placeholder -> emptyNode(buildContext)
             NavTarget.LoggedInPermanent -> {
                 val callback = object : LoggedInNode.Callback {
                     override fun navigateToNotificationTroubleshoot() {

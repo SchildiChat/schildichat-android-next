@@ -7,21 +7,23 @@
 
 package io.element.android.libraries.ui.common.nodes
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.ui.Alignment
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.node.node
-import io.element.android.libraries.designsystem.theme.components.CircularProgressIndicator
+import io.element.android.compound.theme.ElementTheme
 
-fun loadingNode(
+/**
+ * Ref: https://www.figma.com/design/0MMNu7cTOzLOlWb7ctTkv3/Element-X?node-id=1518-85323
+ */
+fun emptyNode(
     buildContext: BuildContext,
-    showProgressIndicator: Boolean = true,
 ): Node = node(buildContext) { modifier ->
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        if (showProgressIndicator) {
-            CircularProgressIndicator()
-        }
-    }
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(ElementTheme.colors.bgCanvasDefault),
+    )
 }

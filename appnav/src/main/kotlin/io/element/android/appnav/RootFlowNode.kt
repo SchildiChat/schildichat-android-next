@@ -56,7 +56,7 @@ import io.element.android.libraries.oidc.api.OidcAction
 import io.element.android.libraries.oidc.api.OidcActionFlow
 import io.element.android.libraries.sessionstorage.api.LoggedInState
 import io.element.android.libraries.sessionstorage.api.SessionStore
-import io.element.android.libraries.ui.common.nodes.loadingNode
+import io.element.android.libraries.ui.common.nodes.emptyNode
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -216,7 +216,7 @@ import timber.log.Timber
         return when (navTarget) {
             is NavTarget.LoggedInFlow -> {
                 val matrixClient = matrixSessionCache.getOrNull(navTarget.sessionId)
-                    ?: return loadingNode(buildContext, showProgressIndicator = false).also {
+                    ?: return emptyNode(buildContext).also {
                         Timber.w("Couldn't find any session, go through SplashScreen")
                     }
                 val inputs = LoggedInAppScopeFlowNode.Inputs(matrixClient)
@@ -249,7 +249,7 @@ import timber.log.Timber
                     )
                 ).build()
             }
-            NavTarget.SplashScreen -> loadingNode(buildContext)
+            NavTarget.SplashScreen -> emptyNode(buildContext)
             NavTarget.BugReport -> {
                 val callback = object : BugReportEntryPoint.Callback {
                     override fun onDone() {

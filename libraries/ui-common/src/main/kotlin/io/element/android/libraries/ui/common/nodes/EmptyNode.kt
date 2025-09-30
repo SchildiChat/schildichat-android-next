@@ -29,7 +29,9 @@ fun emptyNode(
 }
 
 @Composable
-private fun EmptyView(modifier: Modifier) = Box(
+private fun EmptyView(
+    modifier: Modifier = Modifier,
+) = Box(
     modifier = modifier
         .fillMaxSize()
         .background(ElementTheme.colors.bgCanvasDefault),

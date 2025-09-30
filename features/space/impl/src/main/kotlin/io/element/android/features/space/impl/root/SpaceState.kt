@@ -7,6 +7,7 @@
 
 package io.element.android.features.space.impl.root
 
+import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteState
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
@@ -21,6 +22,7 @@ data class SpaceState(
     val hideInvitesAvatar: Boolean,
     val hasMoreToLoad: Boolean,
     val joinActions: ImmutableMap<RoomId, AsyncAction<Unit>>,
+    val acceptDeclineInviteState: AcceptDeclineInviteState,
     val eventSink: (SpaceEvents) -> Unit
 ) {
     fun isJoining(spaceId: RoomId): Boolean = joinActions[spaceId] == AsyncAction.Loading

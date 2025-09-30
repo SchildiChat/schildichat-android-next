@@ -18,8 +18,23 @@ class SpaceRoomProvider : PreviewParameterProvider<SpaceRoom> {
     override val values: Sequence<SpaceRoom> = sequenceOf(
         aSpaceRoom(
             roomType = RoomType.Room,
-            name = "Room name",
+            name = "Room name with topic",
             topic = "Room topic that is quite long and might be truncated"
+        ),
+        aSpaceRoom(
+            roomType = RoomType.Room,
+            name = "Room name no topic",
+        ),
+        aSpaceRoom(
+            roomType = RoomType.Room,
+            name = "Room name with topic",
+            topic = "Room topic that is quite long and might be truncated",
+            state = CurrentUserMembership.INVITED,
+        ),
+        aSpaceRoom(
+            roomType = RoomType.Room,
+            name = "Room name no topic",
+            state = CurrentUserMembership.INVITED,
         ),
         aSpaceRoom(
             numJoinedMembers = 5,

@@ -8,6 +8,8 @@
 package io.element.android.features.space.impl.root
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteEvents
+import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteState
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
@@ -54,6 +56,7 @@ fun aSpaceState(
     joiningRooms: Set<RoomId> = emptySet(),
     hideInvitesAvatar: Boolean = false,
     hasMoreToLoad: Boolean = false,
+    acceptDeclineInviteState: AcceptDeclineInviteState = anAcceptDeclineInviteState(),
 ) = SpaceState(
     currentSpace = parentSpace,
     children = children.toImmutableList(),
@@ -61,7 +64,18 @@ fun aSpaceState(
     hideInvitesAvatar = hideInvitesAvatar,
     hasMoreToLoad = hasMoreToLoad,
     joinActions = joiningRooms.associateWith { AsyncAction.Uninitialized }.toImmutableMap(),
+    acceptDeclineInviteState = acceptDeclineInviteState,
     eventSink = {}
+)
+
+internal fun anAcceptDeclineInviteState(
+    acceptAction: AsyncAction<RoomId> = AsyncAction.Uninitialized,
+    declineAction: AsyncAction<RoomId> = AsyncAction.Uninitialized,
+    eventSink: (AcceptDeclineInviteEvents) -> Unit = {}
+) = AcceptDeclineInviteState(
+    acceptAction = acceptAction,
+    declineAction = declineAction,
+    eventSink = eventSink,
 )
 
 private fun aListOfSpaceRooms(): List<SpaceRoom> {

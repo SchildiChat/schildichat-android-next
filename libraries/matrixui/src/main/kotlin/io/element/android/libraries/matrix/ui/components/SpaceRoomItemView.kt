@@ -63,6 +63,7 @@ fun SpaceRoomItemView(
     onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
     trailingAction: @Composable (() -> Unit)? = null,
+    bottomAction: @Composable (() -> Unit)? = null,
 ) {
     SpaceRoomItemScaffold(
         modifier = modifier,
@@ -84,21 +85,21 @@ fun SpaceRoomItemView(
             subtitle = spaceRoom.subtitle()
         )
         Spacer(modifier = Modifier.height(1.dp))
-        Text(
-            modifier = Modifier.weight(1f),
-            style = ElementTheme.typography.fontBodyMdRegular,
-            text = spaceRoom.info(),
-            fontStyle = FontStyle.Italic.takeIf { spaceRoom.name == null },
-            color = ElementTheme.colors.textSecondary,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-        if (spaceRoom.state == CurrentUserMembership.INVITED) {
-            Spacer(modifier = Modifier.height(12.dp))
-            InviteButtonsRowMolecule(
-                onAcceptClick = {},
-                onDeclineClick = {},
+        val info = spaceRoom.info()
+        if (info.isNotBlank()) {
+            Text(
+                modifier = Modifier.weight(1f),
+                style = ElementTheme.typography.fontBodyMdRegular,
+                text = info,
+                fontStyle = FontStyle.Italic.takeIf { spaceRoom.name == null },
+                color = ElementTheme.colors.textSecondary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
+        }
+        if (bottomAction != null) {
+            Spacer(modifier = Modifier.height(12.dp))
+            bottomAction()
         }
     }
 }
@@ -253,6 +254,11 @@ internal fun SpaceRoomItemViewPreview(@PreviewParameter(SpaceRoomProvider::class
         hideAvatars = false,
         onClick = {},
         onLongClick = {},
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        bottomAction = if (spaceRoom.state == CurrentUserMembership.INVITED) {
+            { InviteButtonsRowMolecule({}, {}) }
+        } else {
+            null
+        }
     )
 }

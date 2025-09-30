@@ -13,4 +13,6 @@ sealed interface SpaceEvents {
     data object LoadMore : SpaceEvents
     data class Join(val spaceRoom: SpaceRoom) : SpaceEvents
     data object ClearFailures : SpaceEvents
+    data class AcceptInvite(val spaceRoom: SpaceRoom) : SpaceEvents
+    data class DeclineInvite(val spaceRoom: SpaceRoom) : SpaceEvents
 }

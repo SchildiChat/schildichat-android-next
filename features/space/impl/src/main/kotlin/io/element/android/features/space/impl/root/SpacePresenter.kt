@@ -9,7 +9,6 @@ package io.element.android.features.space.impl.root
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,6 +19,9 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import im.vector.app.features.analytics.plan.JoinedRoom
 import io.element.android.features.invite.api.SeenInvitesStore
+import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteEvents
+import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteState
+import io.element.android.features.invite.api.toInviteData
 import io.element.android.features.space.api.SpaceEntryPoint
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
@@ -47,6 +49,7 @@ import kotlin.jvm.optionals.getOrNull
     private val client: MatrixClient,
     private val seenInvitesStore: SeenInvitesStore,
     private val joinRoom: JoinRoom,
+    private val acceptDeclineInvitePresenter: Presenter<AcceptDeclineInviteState>,
     @SessionCoroutineScope private val sessionCoroutineScope: CoroutineScope,
 ) : Presenter<SpaceState> {
     @AssistedFactory fun interface Factory {
@@ -77,26 +80,39 @@ import kotlin.jvm.optionals.getOrNull
         }.collectAsState()
 
         val currentSpace by spaceRoomList.currentSpaceFlow.collectAsState()
-        val joinActions = remember { mutableStateOf(emptyMap<RoomId, AsyncAction<Unit>>()) }
+        val (joinActions, setJoinActions) = remember { mutableStateOf(emptyMap<RoomId, AsyncAction<Unit>>()) }
 
         LaunchedEffect(children) {
-            val joinedChildren = children.filter { it.state == CurrentUserMembership.JOINED }.map { it.roomId }.toSet()
-            joinActions.value.let { currentlyJoining ->
-                joinActions.value = currentlyJoining - joinedChildren
-            }
+            // Remove joined children from the join actions
+            val joinedChildren = children
+                .filter { it.state == CurrentUserMembership.JOINED }
+                .map { it.roomId }
+            setJoinActions(joinActions - joinedChildren)
         }
+
+        val acceptDeclineInviteState = acceptDeclineInvitePresenter.present()
 
         fun handleEvents(event: SpaceEvents) {
             when (event) {
                 SpaceEvents.LoadMore -> localCoroutineScope.paginate()
                 is SpaceEvents.Join -> {
-                    sessionCoroutineScope.joinRoom(event.spaceRoom, joinActions)
+                    sessionCoroutineScope.joinRoom(event.spaceRoom, joinActions, setJoinActions)
                 }
                 SpaceEvents.ClearFailures -> {
-                    val failedActions = joinActions.value
+                    val failedActions = joinActions
                         .filterValues { it is AsyncAction.Failure }
                         .mapValues { AsyncAction.Uninitialized }
-                    joinActions.value = joinActions.value + failedActions
+                    setJoinActions(joinActions + failedActions)
+                }
+                is SpaceEvents.AcceptInvite -> {
+                    acceptDeclineInviteState.eventSink(
+                        AcceptDeclineInviteEvents.AcceptInvite(event.spaceRoom.toInviteData())
+                    )
+                }
+                is SpaceEvents.DeclineInvite -> {
+                    acceptDeclineInviteState.eventSink(
+                        AcceptDeclineInviteEvents.DeclineInvite(invite = event.spaceRoom.toInviteData(), shouldConfirm = true, blockUser = false)
+                    )
                 }
             }
         }
@@ -106,21 +122,24 @@ import kotlin.jvm.optionals.getOrNull
             seenSpaceInvites = seenSpaceInvites,
             hideInvitesAvatar = hideInvitesAvatar,
             hasMoreToLoad = hasMoreToLoad,
-            joinActions = joinActions.value.toPersistentMap(),
+            joinActions = joinActions.toPersistentMap(),
+            acceptDeclineInviteState = acceptDeclineInviteState,
             eventSink = ::handleEvents,
         )
     }
 
     private fun CoroutineScope.joinRoom(
-        spaceRoom: SpaceRoom, joiningRooms: MutableState<Map<RoomId, AsyncAction<Unit>>>
+        spaceRoom: SpaceRoom,
+        joinActions: Map<RoomId, AsyncAction<Unit>>,
+        setJoinActions: (Map<RoomId, AsyncAction<Unit>>) -> Unit
     ) = launch {
-        joiningRooms.value = joiningRooms.value + mapOf(spaceRoom.roomId to AsyncAction.Loading)
+        setJoinActions(joinActions + mapOf(spaceRoom.roomId to AsyncAction.Loading))
         joinRoom.invoke(
             roomIdOrAlias = spaceRoom.roomId.toRoomIdOrAlias(),
             serverNames = spaceRoom.via,
             trigger = JoinedRoom.Trigger.SpaceHierarchy,
         ).onFailure {
-            joiningRooms.value = joiningRooms.value + mapOf(spaceRoom.roomId to AsyncAction.Failure(it))
+            setJoinActions(joinActions + mapOf(spaceRoom.roomId to AsyncAction.Failure(it)))
         }
     }
 

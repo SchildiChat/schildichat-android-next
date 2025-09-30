@@ -18,6 +18,7 @@ import com.bumble.appyx.core.plugin.Plugin
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
+import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteView
 import io.element.android.features.space.api.SpaceEntryPoint
 import io.element.android.libraries.androidutils.R
 import io.element.android.libraries.androidutils.system.startSharePlainTextIntent
@@ -36,6 +37,7 @@ class SpaceNode(
     @Assisted plugins: List<Plugin>,
     presenterFactory: SpacePresenter.Factory,
     private val matrixClient: MatrixClient,
+    private val acceptDeclineInviteView: AcceptDeclineInviteView,
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
         fun onOpenRoom(roomId: RoomId, viaParameters: List<String>)
@@ -78,6 +80,18 @@ class SpaceNode(
             },
             onShareSpace = {
                 onShareRoom(context)
+            },
+            acceptDeclineInviteView = {
+                acceptDeclineInviteView.Render(
+                    state = state.acceptDeclineInviteState,
+                    onAcceptInviteSuccess = { roomId ->
+                        callback.onOpenRoom(roomId, emptyList())
+                    },
+                    onDeclineInviteSuccess = { roomId ->
+                        // No action needed
+                    },
+                    modifier = Modifier
+                )
             },
             modifier = modifier
         )

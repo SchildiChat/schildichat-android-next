@@ -11,8 +11,10 @@ package io.element.android.features.space.impl.root
 
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.invite.api.SeenInvitesStore
+import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteState
 import io.element.android.features.invite.test.InMemorySeenInvitesStore
 import io.element.android.features.space.api.SpaceEntryPoint
+import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.room.join.JoinRoom
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
@@ -163,12 +165,14 @@ class SpacePresenterTest {
         joinRoom: JoinRoom = FakeJoinRoom(
             lambda = { _, _, _ -> Result.success(Unit) },
         ),
+        acceptDeclineInvitePresenter: Presenter<AcceptDeclineInviteState> = Presenter { anAcceptDeclineInviteState() },
     ): SpacePresenter {
         return SpacePresenter(
             inputs = inputs,
             client = client,
             seenInvitesStore = seenInvitesStore,
             joinRoom = joinRoom,
+            acceptDeclineInvitePresenter = acceptDeclineInvitePresenter,
             sessionCoroutineScope = backgroundScope,
         )
     }

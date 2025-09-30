@@ -34,6 +34,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
+import io.element.android.libraries.designsystem.atomic.molecules.InviteButtonsRowMolecule
 import io.element.android.libraries.designsystem.components.async.AsyncIndicator
 import io.element.android.libraries.designsystem.components.async.AsyncIndicatorHost
 import io.element.android.libraries.designsystem.components.async.rememberAsyncIndicatorState
@@ -71,6 +72,7 @@ fun SpaceView(
     onShareSpace: () -> Unit,
     onLeaveSpaceClick: () -> Unit,
     modifier: Modifier = Modifier,
+    acceptDeclineInviteView: @Composable () -> Unit,
 ) {
     Scaffold(
         modifier = modifier,
@@ -94,6 +96,7 @@ fun SpaceView(
                     hasAnyFailure = state.hasAnyFailure,
                     eventSink = state.eventSink
                 )
+                acceptDeclineInviteView()
             }
         },
     )
@@ -157,7 +160,15 @@ private fun SpaceViewContent(
                     },
                     trailingAction = spaceRoom.trailingAction(isCurrentlyJoining = isCurrentlyJoining) {
                         state.eventSink(SpaceEvents.Join(spaceRoom))
-                    }
+                    },
+                    bottomAction = spaceRoom.inviteButtons(
+                        onAcceptClick = {
+                            state.eventSink(SpaceEvents.AcceptInvite(spaceRoom))
+                        },
+                        onDeclineClick = {
+                            state.eventSink(SpaceEvents.DeclineInvite(spaceRoom))
+                        }
+                    )
                 )
             }
         }
@@ -311,6 +322,23 @@ private fun SpaceRoom.trailingAction(
     }
 }
 
+private fun SpaceRoom.inviteButtons(
+    onAcceptClick: () -> Unit,
+    onDeclineClick: () -> Unit,
+): @Composable (() -> Unit)? {
+    return when (state) {
+        CurrentUserMembership.INVITED -> {
+            @Composable {
+                InviteButtonsRowMolecule(
+                    onAcceptClick = onAcceptClick,
+                    onDeclineClick = onDeclineClick,
+                )
+            }
+        }
+        else -> null
+    }
+}
+
 @PreviewsDayNight
 @Composable
 internal fun SpaceViewPreview(
@@ -321,6 +349,7 @@ internal fun SpaceViewPreview(
         onRoomClick = {},
         onShareSpace = {},
         onLeaveSpaceClick = {},
+        acceptDeclineInviteView = {},
         onBackClick = {},
     )
 }

@@ -71,6 +71,12 @@ fun LeaveSpaceView(
 ) {
     Scaffold(
         modifier = modifier,
+        topBar = {
+            LeaveSpaceHeader(
+                state = state,
+                onBackClick = onCancel,
+            )
+        },
         containerColor = ElementTheme.colors.bgCanvasDefault,
     ) { padding ->
         Column(
@@ -81,10 +87,6 @@ fun LeaveSpaceView(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            LeaveSpaceHeader(
-                state = state,
-                onBackClick = onCancel,
-            )
             LazyColumn(
                 modifier = Modifier
                     .weight(1f),

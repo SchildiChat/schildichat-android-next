@@ -216,7 +216,7 @@ import timber.log.Timber
         return when (navTarget) {
             is NavTarget.LoggedInFlow -> {
                 val matrixClient = matrixSessionCache.getOrNull(navTarget.sessionId)
-                    ?: return loadingNode(buildContext).also {
+                    ?: return loadingNode(buildContext, showProgressIndicator = false).also {
                         Timber.w("Couldn't find any session, go through SplashScreen")
                     }
                 val inputs = LoggedInAppScopeFlowNode.Inputs(matrixClient)

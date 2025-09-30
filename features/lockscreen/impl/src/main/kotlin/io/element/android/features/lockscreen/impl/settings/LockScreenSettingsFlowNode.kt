@@ -95,7 +95,7 @@ class LockScreenSettingsFlowNode(
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         return when (navTarget) {
             NavTarget.Loading -> {
-                loadingNode(buildContext)
+                loadingNode(buildContext, showProgressIndicator = false)
             }
             NavTarget.Unlock -> {
                 val callback = object : PinUnlockNode.Callback {

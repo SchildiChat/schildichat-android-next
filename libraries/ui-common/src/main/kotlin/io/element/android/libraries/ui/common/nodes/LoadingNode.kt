@@ -15,8 +15,13 @@ import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.node.node
 import io.element.android.libraries.designsystem.theme.components.CircularProgressIndicator
 
-fun loadingNode(buildContext: BuildContext): Node = node(buildContext) { modifier ->
+fun loadingNode(
+    buildContext: BuildContext,
+    showProgressIndicator: Boolean = true,
+): Node = node(buildContext) { modifier ->
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator()
+        if (showProgressIndicator) {
+            CircularProgressIndicator()
+        }
     }
 }

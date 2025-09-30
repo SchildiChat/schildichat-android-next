@@ -281,7 +281,7 @@ class LoggedInFlowNode(
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         return when (navTarget) {
-            NavTarget.Placeholder -> loadingNode(buildContext)
+            NavTarget.Placeholder -> loadingNode(buildContext, showProgressIndicator = false)
             NavTarget.LoggedInPermanent -> {
                 val callback = object : LoggedInNode.Callback {
                     override fun navigateToNotificationTroubleshoot() {

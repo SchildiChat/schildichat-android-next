@@ -1,5 +1,3 @@
-import extension.setupDependencyInjection
-
 /*
  * Copyright 2025 New Vector Ltd.
  *
@@ -15,10 +13,7 @@ android {
     namespace = "io.element.android.libraries.ui.common"
 }
 
-setupDependencyInjection()
-
 dependencies {
-    implementation(projects.libraries.architecture)
+    implementation(libs.appyx.core)
     implementation(projects.libraries.designsystem)
-    implementation(projects.libraries.di)
 }

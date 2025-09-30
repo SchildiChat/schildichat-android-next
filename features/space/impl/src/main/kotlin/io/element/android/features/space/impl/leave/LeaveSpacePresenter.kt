@@ -9,65 +9,79 @@ package io.element.android.features.space.impl.leave
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import dev.zacsweers.metro.Inject
+import androidx.compose.runtime.setValue
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.Presenter
+import io.element.android.libraries.architecture.map
 import io.element.android.libraries.architecture.runUpdatingState
 import io.element.android.libraries.matrix.api.core.RoomId
-import io.element.android.libraries.matrix.api.spaces.SpaceRoom
-import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
-import kotlinx.collections.immutable.ImmutableList
+import io.element.android.libraries.matrix.api.spaces.LeaveSpaceHandle
+import io.element.android.libraries.matrix.api.spaces.LeaveSpaceRoom
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentSetOf
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlin.jvm.optionals.getOrNull
 
-@Inject
+@AssistedInject
 class LeaveSpacePresenter(
-    private val spaceRoomList: SpaceRoomList,
+    @Assisted private val leaveSpaceHandle: LeaveSpaceHandle,
 ) : Presenter<LeaveSpaceState> {
+    @AssistedFactory
+    fun interface Factory {
+        fun create(leaveSpaceHandle: LeaveSpaceHandle): LeaveSpacePresenter
+    }
+
     @Composable
     override fun present(): LeaveSpaceState {
         val coroutineScope = rememberCoroutineScope()
-        val currentSpace by spaceRoomList.currentSpaceFlow.collectAsState()
+        var currentSpace: LeaveSpaceRoom? by remember { mutableStateOf(null) }
         val leaveSpaceAction = remember {
             mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized)
         }
         val selectedRoomIds = remember {
             mutableStateOf<ImmutableSet<RoomId>>(persistentSetOf())
         }
-        val joinedSpaceRooms by produceState(emptyList()) {
-            // TODO Get the joined room from the SDK, should also have the isLastAdmin boolean
-            val rooms = emptyList<SpaceRoom>()
-            // By default select all rooms
-            selectedRoomIds.value = rooms.map { it.roomId }.toPersistentSet()
-            value = rooms
+        val leaveSpaceRooms by produceState(AsyncData.Loading()) {
+            val rooms = leaveSpaceHandle.rooms()
+            val (currentRoom, otherRooms) = rooms.getOrNull()
+                .orEmpty()
+                .partition { it.spaceRoom.roomId == leaveSpaceHandle.id }
+            currentSpace = currentRoom.firstOrNull()
+            // By default select all rooms that can be left
+            selectedRoomIds.value = otherRooms
+                .filter { it.isLastAdmin.not() }
+                .map { it.spaceRoom.roomId }
+                .toPersistentSet()
+            value = rooms.fold(
+                onSuccess = { AsyncData.Success(otherRooms) },
+                onFailure = { AsyncData.Failure(it) }
+            )
         }
-        val selectableSpaceRooms by produceState<AsyncData<ImmutableList<SelectableSpaceRoom>>>(
-            initialValue = AsyncData.Uninitialized,
-            key1 = joinedSpaceRooms,
+        val selectableSpaceRooms by produceState(
+            initialValue = AsyncData.Loading(),
+            key1 = leaveSpaceRooms,
             key2 = selectedRoomIds.value,
         ) {
-            value = AsyncData.Success(
-                joinedSpaceRooms.map {
+            value = leaveSpaceRooms.map { list ->
+                list.orEmpty().map { room ->
                     SelectableSpaceRoom(
-                        spaceRoom = it,
-                        // TODO Get this value from the SDK
-                        isLastAdmin = false,
-                        isSelected = selectedRoomIds.value.contains(it.roomId),
+                        spaceRoom = room.spaceRoom,
+                        isLastAdmin = room.isLastAdmin,
+                        isSelected = selectedRoomIds.value.contains(room.spaceRoom.roomId),
                     )
-                }.toPersistentList()
-            )
+                }.toImmutableList()
+            }
         }
 
         fun handleEvents(event: LeaveSpaceEvents) {
@@ -102,7 +116,8 @@ class LeaveSpacePresenter(
         }
 
         return LeaveSpaceState(
-            spaceName = currentSpace.getOrNull()?.name,
+            spaceName = currentSpace?.spaceRoom?.name,
+            isLastAdmin = currentSpace?.isLastAdmin == true,
             selectableSpaceRooms = selectableSpaceRooms,
             leaveSpaceAction = leaveSpaceAction.value,
             eventSink = ::handleEvents,
@@ -111,11 +126,10 @@ class LeaveSpacePresenter(
 
     private fun CoroutineScope.leaveSpace(
         leaveSpaceAction: MutableState<AsyncAction<Unit>>,
-        @Suppress("unused") selectedRoomIds: Set<RoomId>,
+        selectedRoomIds: Set<RoomId>,
     ) = launch {
         runUpdatingState(leaveSpaceAction) {
-            // TODO SDK API call to leave all the rooms and space
-            Result.failure(Exception("Not implemented"))
+            leaveSpaceHandle.leave(selectedRoomIds.toList())
         }
     }
 }

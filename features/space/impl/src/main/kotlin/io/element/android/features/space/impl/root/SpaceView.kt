@@ -252,11 +252,16 @@ private fun SpaceViewTopBar(
                         showMenu = false
                         onLeaveSpaceClick()
                     },
-                    text = { Text(stringResource(id = CommonStrings.action_leave)) },
+                    text = {
+                        Text(
+                            text = stringResource(id = CommonStrings.action_leave),
+                            color = ElementTheme.colors.textCriticalPrimary,
+                        )
+                    },
                     leadingIcon = {
                         Icon(
                             imageVector = CompoundIcons.Leave(),
-                            tint = ElementTheme.colors.iconSecondary,
+                            tint = ElementTheme.colors.iconCriticalPrimary,
                             contentDescription = null,
                         )
                     }

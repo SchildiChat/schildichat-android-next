@@ -9,8 +9,10 @@
 
 package io.element.android.features.space.impl.leave
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -85,41 +87,42 @@ fun LeaveSpaceView(
                 .imePadding()
                 .consumeWindowInsets(padding)
                 .fillMaxSize()
-                .padding(16.dp)
         ) {
             LazyColumn(
                 modifier = Modifier
                     .weight(1f),
             ) {
-                when (state.selectableSpaceRooms) {
-                    is AsyncData.Success -> {
-                        // List rooms where the user is the only admin
-                        state.selectableSpaceRooms.data.forEach { selectableSpaceRoom ->
-                            item {
-                                SpaceItem(
-                                    selectableSpaceRoom = selectableSpaceRoom,
-                                    showCheckBox = state.hasOnlyLastAdminRoom.not(),
-                                    onClick = {
-                                        state.eventSink(LeaveSpaceEvents.ToggleRoomSelection(selectableSpaceRoom.spaceRoom.roomId))
-                                    }
-                                )
+                if (state.isLastAdmin.not()) {
+                    when (state.selectableSpaceRooms) {
+                        is AsyncData.Success -> {
+                            // List rooms where the user is the only admin
+                            state.selectableSpaceRooms.data.forEach { selectableSpaceRoom ->
+                                item {
+                                    SpaceItem(
+                                        selectableSpaceRoom = selectableSpaceRoom,
+                                        showCheckBox = state.hasOnlyLastAdminRoom.not(),
+                                        onClick = {
+                                            state.eventSink(LeaveSpaceEvents.ToggleRoomSelection(selectableSpaceRoom.spaceRoom.roomId))
+                                        }
+                                    )
+                                }
                             }
                         }
-                    }
-                    is AsyncData.Failure -> item {
-                        AsyncFailure(
-                            throwable = state.selectableSpaceRooms.error,
-                            onRetry = null,
-                        )
-                    }
-                    is AsyncData.Loading,
-                    AsyncData.Uninitialized -> item {
-                        AsyncLoading()
+                        is AsyncData.Failure -> item {
+                            AsyncFailure(
+                                throwable = state.selectableSpaceRooms.error,
+                                onRetry = null,
+                            )
+                        }
+                        is AsyncData.Loading,
+                        AsyncData.Uninitialized -> item {
+                            AsyncLoading()
+                        }
                     }
                 }
             }
             LeaveSpaceButtons(
-                showLeaveButton = state.selectableSpaceRooms is AsyncData.Success,
+                showLeaveButton = state.showLeaveButton,
                 selectedRoomsCount = state.selectedRoomsCount,
                 onLeaveSpace = {
                     state.eventSink(LeaveSpaceEvents.LeaveSpace)
@@ -132,6 +135,7 @@ fun LeaveSpaceView(
     AsyncActionView(
         async = state.leaveSpaceAction,
         onSuccess = { /* Nothing to do, the screen will be dismissed automatically */ },
+        errorMessage = { stringResource(CommonStrings.error_unknown) },
         onErrorDismiss = { state.eventSink(LeaveSpaceEvents.CloseError) },
     )
 }
@@ -152,11 +156,13 @@ private fun LeaveSpaceHeader(
             modifier = Modifier.padding(top = 0.dp, bottom = 8.dp, start = 24.dp, end = 24.dp),
             iconStyle = BigIcon.Style.AlertSolid,
             title = stringResource(
-                R.string.screen_leave_space_title,
+                if (state.isLastAdmin) R.string.screen_leave_space_title_last_admin else R.string.screen_leave_space_title,
                 state.spaceName ?: stringResource(CommonStrings.common_space)
             ),
             subTitle =
-                if (state.selectableSpaceRooms is AsyncData.Success && state.selectableSpaceRooms.data.isNotEmpty()) {
+                if (state.isLastAdmin) {
+                    stringResource(R.string.screen_leave_space_subtitle_last_admin)
+                } else if (state.selectableSpaceRooms is AsyncData.Success && state.selectableSpaceRooms.data.isNotEmpty()) {
                     if (state.hasOnlyLastAdminRoom) {
                         stringResource(R.string.screen_leave_space_subtitle_only_last_admin)
                     } else {
@@ -168,32 +174,33 @@ private fun LeaveSpaceHeader(
         )
         if (state.showQuickAction) {
             if (state.areAllSelected) {
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .clickable {
-                            state.eventSink(LeaveSpaceEvents.DeselectAllRooms)
-                        }
-                        .padding(vertical = 8.dp, horizontal = 8.dp),
-                    text = stringResource(CommonStrings.common_deselect_all),
-                    color = ElementTheme.colors.textActionPrimary,
-                    style = ElementTheme.typography.fontBodyMdMedium,
-                )
+                QuickActionButton(CommonStrings.common_deselect_all) {
+                    state.eventSink(LeaveSpaceEvents.DeselectAllRooms)
+                }
             } else {
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .clickable {
-                            state.eventSink(LeaveSpaceEvents.SelectAllRooms)
-                        }
-                        .padding(vertical = 8.dp, horizontal = 8.dp),
-                    text = stringResource(CommonStrings.common_select_all),
-                    color = ElementTheme.colors.textActionPrimary,
-                    style = ElementTheme.typography.fontBodyMdMedium,
-                )
+                QuickActionButton(resId = CommonStrings.common_select_all) {
+                    state.eventSink(LeaveSpaceEvents.SelectAllRooms)
+                }
             }
         }
     }
+}
+
+@Composable
+private fun ColumnScope.QuickActionButton(
+    @StringRes resId: Int,
+    onClick: () -> Unit,
+) {
+    Text(
+        modifier = Modifier
+            .align(Alignment.End)
+            .padding(end = 8.dp)
+            .clickable(onClick = onClick)
+            .padding(8.dp),
+        text = stringResource(resId),
+        color = ElementTheme.colors.textActionPrimary,
+        style = ElementTheme.typography.fontBodyMdMedium,
+    )
 }
 
 @Composable
@@ -204,7 +211,7 @@ private fun LeaveSpaceButtons(
     onCancel: () -> Unit,
 ) {
     ButtonColumnMolecule(
-        modifier = Modifier.padding(top = 16.dp)
+        modifier = Modifier.padding(16.dp)
     ) {
         if (showLeaveButton) {
             val text = if (selectedRoomsCount > 0) {
@@ -220,6 +227,8 @@ private fun LeaveSpaceButtons(
                 destructive = true,
             )
         }
+        // TODO For least admin space, add a button to open the settings.
+        // See https://www.figma.com/design/kcnHxunG1LDWXsJhaNuiHz/ER-145--Spaces-on-Element-X?node-id=4622-59600
         TextButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(CommonStrings.action_cancel),
@@ -302,18 +311,15 @@ private fun SpaceItem(
                     )
                 }
                 // Number of members
-                val subTitle = buildString {
-                    append(
-                        pluralStringResource(
-                            CommonPlurals.common_member_count,
-                            room.numJoinedMembers,
-                            room.numJoinedMembers
-                        )
-                    )
-                    if (selectableSpaceRoom.isLastAdmin) {
-                        append(" ")
-                        append(stringResource(R.string.screen_leave_space_last_admin_info))
-                    }
+                val membersCount = pluralStringResource(
+                    CommonPlurals.common_member_count,
+                    room.numJoinedMembers,
+                    room.numJoinedMembers
+                )
+                val subTitle = if (selectableSpaceRoom.isLastAdmin) {
+                    stringResource(R.string.screen_leave_space_last_admin_info, membersCount)
+                } else {
+                    membersCount
                 }
                 Text(
                     modifier = Modifier.padding(end = 16.dp),

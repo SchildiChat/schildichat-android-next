@@ -24,22 +24,23 @@ open class SpaceStateProvider : PreviewParameterProvider<SpaceState> {
         get() = sequenceOf(
             aSpaceState(),
             aSpaceState(
-            parentSpace = aSpaceRoom(
-                name = null,
-                numJoinedMembers = 5,
-                childrenCount = 10,
-                worldReadable = true,
+                parentSpace = aSpaceRoom(
+                    name = null,
+                    numJoinedMembers = 5,
+                    childrenCount = 10,
+                    worldReadable = true,
+                ),
+                hasMoreToLoad = true,
             ),
-            hasMoreToLoad = true,
-        ),
             aSpaceState(
-            hasMoreToLoad = true,
-            children = aListOfSpaceRooms(),
-        ),
+                hasMoreToLoad = true,
+                children = aListOfSpaceRooms(),
+            ),
             aSpaceState(
-            hasMoreToLoad = false,
-                children = aListOfSpaceRooms()
-        )
+                hasMoreToLoad = false,
+                children = aListOfSpaceRooms(),
+                joiningRooms = setOf(RoomId("!spaceId0:example.com")),
+            )
             // Add other states here
         )
 }
@@ -63,7 +64,7 @@ fun aSpaceState(
     seenSpaceInvites = seenSpaceInvites.toImmutableSet(),
     hideInvitesAvatar = hideInvitesAvatar,
     hasMoreToLoad = hasMoreToLoad,
-    joinActions = joiningRooms.associateWith { AsyncAction.Uninitialized }.toImmutableMap(),
+    joinActions = joiningRooms.associateWith { AsyncAction.Loading }.toImmutableMap(),
     acceptDeclineInviteState = acceptDeclineInviteState,
     eventSink = {}
 )

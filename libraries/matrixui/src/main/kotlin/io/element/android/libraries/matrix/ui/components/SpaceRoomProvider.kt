@@ -24,6 +24,7 @@ class SpaceRoomProvider : PreviewParameterProvider<SpaceRoom> {
         aSpaceRoom(
             roomType = RoomType.Room,
             name = "Room name no topic",
+            state = CurrentUserMembership.LEFT,
         ),
         aSpaceRoom(
             roomType = RoomType.Room,
@@ -48,6 +49,7 @@ class SpaceRoomProvider : PreviewParameterProvider<SpaceRoom> {
             worldReadable = true,
             avatarUrl = "anUrl",
             roomId = RoomId("!spaceId1:example.com"),
+            state = CurrentUserMembership.LEFT,
         ),
         aSpaceRoom(
             name = null,

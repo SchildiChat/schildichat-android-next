@@ -259,6 +259,17 @@ internal fun SpaceRoomItemViewPreview(@PreviewParameter(SpaceRoomProvider::class
             { InviteButtonsRowMolecule({}, {}) }
         } else {
             null
+        },
+        trailingAction = when (spaceRoom.state) {
+            null, CurrentUserMembership.LEFT -> {
+                {
+                    JoinButton(
+                        showProgress = spaceRoom.state == CurrentUserMembership.LEFT,
+                        onClick = { },
+                    )
+                }
+            }
+            else -> null
         }
     )
 }

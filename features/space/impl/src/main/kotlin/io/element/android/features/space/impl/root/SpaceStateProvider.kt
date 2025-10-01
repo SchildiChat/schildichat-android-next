@@ -59,6 +59,7 @@ fun aSpaceState(
     hideInvitesAvatar: Boolean = false,
     hasMoreToLoad: Boolean = false,
     acceptDeclineInviteState: AcceptDeclineInviteState = anAcceptDeclineInviteState(),
+    eventSink: (SpaceEvents) -> Unit = { },
 ) = SpaceState(
     currentSpace = parentSpace,
     children = children.toImmutableList(),
@@ -67,7 +68,7 @@ fun aSpaceState(
     hasMoreToLoad = hasMoreToLoad,
     joinActions = joinActions.toImmutableMap(),
     acceptDeclineInviteState = acceptDeclineInviteState,
-    eventSink = {}
+    eventSink = eventSink,
 )
 
 private fun aListOfSpaceRooms(): List<SpaceRoom> {

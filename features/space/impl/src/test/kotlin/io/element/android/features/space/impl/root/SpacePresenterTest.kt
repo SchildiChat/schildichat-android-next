@@ -12,13 +12,10 @@ package io.element.android.features.space.impl.root
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.invite.api.SeenInvitesStore
 import io.element.android.features.invite.test.InMemorySeenInvitesStore
-import io.element.android.features.space.api.SpaceEntryPoint
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
-import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.matrix.test.spaces.FakeSpaceRoomList
-import io.element.android.libraries.matrix.test.spaces.FakeSpaceService
 import io.element.android.libraries.previewutils.room.aSpaceRoom
 import io.element.android.tests.testutils.lambda.lambdaRecorder
 import io.element.android.tests.testutils.test
@@ -33,17 +30,8 @@ class SpacePresenterTest {
         val paginateResult = lambdaRecorder<Result<Unit>> {
             Result.success(Unit)
         }
-        val presenter = createSpacePresenter(
-            client = FakeMatrixClient(
-                spaceService = FakeSpaceService(
-                    spaceRoomListResult = {
-                        FakeSpaceRoomList(
-                            paginateResult = paginateResult,
-                        )
-                    },
-                ),
-            ),
-        )
+        val spaceRoomList = FakeSpaceRoomList(paginateResult = paginateResult)
+        val presenter = createSpacePresenter(spaceRoomList = spaceRoomList)
         presenter.test {
             val state = awaitItem()
             assertThat(state.currentSpace).isNull()
@@ -61,17 +49,8 @@ class SpacePresenterTest {
         val paginateResult = lambdaRecorder<Result<Unit>> {
             Result.success(Unit)
         }
-        val presenter = createSpacePresenter(
-            client = FakeMatrixClient(
-                spaceService = FakeSpaceService(
-                    spaceRoomListResult = {
-                        FakeSpaceRoomList(
-                            paginateResult = paginateResult,
-                        )
-                    },
-                ),
-            ),
-        )
+        val spaceRoomList = FakeSpaceRoomList(paginateResult = paginateResult)
+        val presenter = createSpacePresenter(spaceRoomList = spaceRoomList)
         presenter.test {
             val state = awaitItem()
             advanceUntilIdle()
@@ -84,25 +63,20 @@ class SpacePresenterTest {
 
     @Test
     fun `present - has more to load value`() = runTest {
-        val fakeSpaceRoomList = FakeSpaceRoomList(
-            paginateResult = { Result.success(Unit) },
-        )
-        val presenter = createSpacePresenter(
-            client = FakeMatrixClient(
-                spaceService = FakeSpaceService(
-                    spaceRoomListResult = { fakeSpaceRoomList },
-                ),
-            ),
-        )
+        val paginateResult = lambdaRecorder<Result<Unit>> {
+            Result.success(Unit)
+        }
+        val spaceRoomList = FakeSpaceRoomList(paginateResult = paginateResult)
+        val presenter = createSpacePresenter(spaceRoomList = spaceRoomList)
         presenter.test {
             val state = awaitItem()
             advanceUntilIdle()
             assertThat(state.hasMoreToLoad).isTrue()
-            fakeSpaceRoomList.emitPaginationStatus(
+            spaceRoomList.emitPaginationStatus(
                 SpaceRoomList.PaginationStatus.Idle(hasMoreToLoad = false)
             )
             assertThat(awaitItem().hasMoreToLoad).isFalse()
-            fakeSpaceRoomList.emitPaginationStatus(
+            spaceRoomList.emitPaginationStatus(
                 SpaceRoomList.PaginationStatus.Idle(hasMoreToLoad = true)
             )
             assertThat(awaitItem().hasMoreToLoad).isTrue()
@@ -111,56 +85,46 @@ class SpacePresenterTest {
 
     @Test
     fun `present - current space value`() = runTest {
-        val fakeSpaceRoomList = FakeSpaceRoomList(
-            paginateResult = { Result.success(Unit) },
-        )
-        val presenter = createSpacePresenter(
-            client = FakeMatrixClient(
-                spaceService = FakeSpaceService(
-                    spaceRoomListResult = { fakeSpaceRoomList },
-                ),
-            ),
-        )
+        val paginateResult = lambdaRecorder<Result<Unit>> {
+            Result.success(Unit)
+        }
+        val spaceRoomList = FakeSpaceRoomList(paginateResult = paginateResult)
+        val presenter = createSpacePresenter(spaceRoomList = spaceRoomList)
         presenter.test {
             val state = awaitItem()
             advanceUntilIdle()
             assertThat(state.currentSpace).isNull()
             val aSpace = aSpaceRoom()
-            fakeSpaceRoomList.emitCurrentSpace(aSpace)
+            spaceRoomList.emitCurrentSpace(aSpace)
             assertThat(awaitItem().currentSpace).isEqualTo(aSpace)
         }
     }
 
     @Test
     fun `present - children value`() = runTest {
-        val fakeSpaceRoomList = FakeSpaceRoomList(
-            paginateResult = { Result.success(Unit) },
-        )
-        val presenter = createSpacePresenter(
-            client = FakeMatrixClient(
-                spaceService = FakeSpaceService(
-                    spaceRoomListResult = { fakeSpaceRoomList },
-                ),
-            ),
-        )
+        val paginateResult = lambdaRecorder<Result<Unit>> {
+            Result.success(Unit)
+        }
+        val spaceRoomList = FakeSpaceRoomList(paginateResult = paginateResult)
+        val presenter = createSpacePresenter(spaceRoomList = spaceRoomList)
         presenter.test {
             val state = awaitItem()
             advanceUntilIdle()
             assertThat(state.children).isEmpty()
             val aSpace = aSpaceRoom()
-            fakeSpaceRoomList.emitSpaceRooms(listOf(aSpace))
+            spaceRoomList.emitSpaceRooms(listOf(aSpace))
             assertThat(awaitItem().children).containsExactly(aSpace)
         }
     }
 
     private fun createSpacePresenter(
-        inputs: SpaceEntryPoint.Inputs = SpaceEntryPoint.Inputs(A_ROOM_ID),
         client: MatrixClient = FakeMatrixClient(),
+        spaceRoomList: SpaceRoomList = FakeSpaceRoomList(),
         seenInvitesStore: SeenInvitesStore = InMemorySeenInvitesStore(),
     ): SpacePresenter {
         return SpacePresenter(
-            inputs = inputs,
             client = client,
+            spaceRoomList = spaceRoomList,
             seenInvitesStore = seenInvitesStore,
         )
     }

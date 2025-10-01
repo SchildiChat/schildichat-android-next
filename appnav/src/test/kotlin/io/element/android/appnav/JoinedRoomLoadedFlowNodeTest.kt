@@ -17,7 +17,7 @@ import com.bumble.appyx.navmodel.backstack.activeElement
 import com.bumble.appyx.testing.junit4.util.MainDispatcherRule
 import com.bumble.appyx.testing.unit.common.helper.parentNodeTestHelper
 import com.google.common.truth.Truth.assertThat
-import io.element.android.appnav.di.RoomComponentFactory
+import io.element.android.appnav.di.RoomGraphFactory
 import io.element.android.appnav.room.RoomNavigationTarget
 import io.element.android.appnav.room.joined.JoinedRoomLoadedFlowNode
 import io.element.android.features.messages.api.MessagesEntryPoint
@@ -70,7 +70,7 @@ class JoinedRoomLoadedFlowNodeTest {
         }
     }
 
-    private class FakeRoomComponentFactory : RoomComponentFactory {
+    private class FakeRoomGraphFactory : RoomGraphFactory {
         override fun create(room: JoinedRoom): Any {
             return Unit
         }
@@ -110,7 +110,7 @@ class JoinedRoomLoadedFlowNodeTest {
         roomDetailsEntryPoint = roomDetailsEntryPoint,
         appNavigationStateService = FakeAppNavigationStateService(),
         sessionCoroutineScope = this,
-        roomComponentFactory = FakeRoomComponentFactory(),
+        roomGraphFactory = FakeRoomGraphFactory(),
         matrixClient = FakeMatrixClient(),
         activeRoomsHolder = activeRoomsHolder,
     )

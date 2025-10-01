@@ -19,7 +19,7 @@ import com.bumble.appyx.core.plugin.Plugin
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
-import io.element.android.appnav.di.RoomComponentFactory
+import io.element.android.appnav.di.RoomGraphFactory
 import io.element.android.features.changeroommemberroes.api.ChangeRoomMemberRolesEntryPoint
 import io.element.android.features.changeroommemberroes.api.ChangeRoomMemberRolesListType
 import io.element.android.libraries.architecture.NodeInputs
@@ -36,7 +36,7 @@ import kotlinx.parcelize.Parcelize
 class ChangeRoomMemberRolesRootNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
-    roomComponentFactory: RoomComponentFactory,
+    roomGraphFactory: RoomGraphFactory,
 ) : ParentNode<ChangeRoomMemberRolesRootNode.NavTarget>(
     navModel = PermanentNavModel(
         navTargets = setOf(NavTarget),
@@ -54,7 +54,7 @@ class ChangeRoomMemberRolesRootNode(
 
     private val inputs = inputs<Inputs>()
 
-    override val graph = roomComponentFactory.create(inputs.joinedRoom)
+    override val graph = roomGraphFactory.create(inputs.joinedRoom)
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         return createNode<ChangeRolesNode>(

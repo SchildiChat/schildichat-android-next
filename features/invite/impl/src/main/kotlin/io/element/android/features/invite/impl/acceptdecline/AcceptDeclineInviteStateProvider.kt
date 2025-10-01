@@ -9,9 +9,9 @@ package io.element.android.features.invite.impl.acceptdecline
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.element.android.features.invite.api.InviteData
-import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteEvents
 import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteState
 import io.element.android.features.invite.api.acceptdecline.ConfirmingDeclineInvite
+import io.element.android.features.invite.api.acceptdecline.anAcceptDeclineInviteState
 import io.element.android.features.invite.impl.AcceptInvite
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.core.RoomId
@@ -51,13 +51,3 @@ open class AcceptDeclineInviteStateProvider : PreviewParameterProvider<AcceptDec
             ),
         )
 }
-
-private fun anAcceptDeclineInviteState(
-    acceptAction: AsyncAction<RoomId> = AsyncAction.Uninitialized,
-    declineAction: AsyncAction<RoomId> = AsyncAction.Uninitialized,
-    eventSink: (AcceptDeclineInviteEvents) -> Unit = {}
-) = AcceptDeclineInviteState(
-    acceptAction = acceptAction,
-    declineAction = declineAction,
-    eventSink = eventSink,
-)

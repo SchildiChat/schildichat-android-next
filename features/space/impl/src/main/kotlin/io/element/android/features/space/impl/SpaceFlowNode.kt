@@ -13,6 +13,7 @@ import android.os.Parcelable
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
@@ -22,13 +23,16 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.features.space.api.SpaceEntryPoint
+import io.element.android.features.space.impl.di.SpaceFlowGraph
 import io.element.android.features.space.impl.leave.LeaveSpaceNode
 import io.element.android.features.space.impl.root.SpaceNode
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.architecture.inputs
+import io.element.android.libraries.di.DependencyInjectionGraphOwner
 import io.element.android.libraries.di.SessionScope
+import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
 import kotlinx.parcelize.Parcelize
 
@@ -37,6 +41,8 @@ import kotlinx.parcelize.Parcelize
 class SpaceFlowNode(
     @Assisted val buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
+    matrixClient: MatrixClient,
+    graphFactory: SpaceFlowGraph.Factory,
 ) : BaseFlowNode<SpaceFlowNode.NavTarget>(
     backstack = BackStack(
         initialElement = NavTarget.Root,
@@ -44,9 +50,11 @@ class SpaceFlowNode(
     ),
     buildContext = buildContext,
     plugins = plugins,
-) {
+), DependencyInjectionGraphOwner {
     private val inputs: SpaceEntryPoint.Inputs = inputs()
     private val callback = plugins.filterIsInstance<SpaceEntryPoint.Callback>().single()
+    private val spaceRoomList = matrixClient.spaceService.spaceRoomList(inputs.roomId)
+    override val graph = graphFactory.create(spaceRoomList)
 
     sealed interface NavTarget : Parcelable {
         @Parcelize
@@ -54,6 +62,15 @@ class SpaceFlowNode(
 
         @Parcelize
         data object Leave : NavTarget
+    }
+
+    override fun onBuilt() {
+        super.onBuilt()
+        lifecycle.subscribe(
+            onDestroy = {
+                spaceRoomList.destroy()
+            }
+        )
     }
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {

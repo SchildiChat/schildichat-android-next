@@ -8,26 +8,31 @@
 package io.element.android.libraries.matrix.impl.spaces
 
 import io.element.android.libraries.core.extensions.runCatchingExceptions
+import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import uniffi.matrix_sdk_ui.SpaceRoomListPaginationState
 import java.util.Optional
 import org.matrix.rustcomponents.sdk.SpaceRoomList as InnerSpaceRoomList
 
 class RustSpaceRoomList(
+    override val roomId: RoomId,
     private val innerProvider: suspend () -> InnerSpaceRoomList,
-    sessionCoroutineScope: CoroutineScope,
+    private val coroutineScope: CoroutineScope,
     spaceRoomMapper: SpaceRoomMapper,
 ) : SpaceRoomList {
-    private val inner = CompletableDeferred<InnerSpaceRoomList>()
+    private val innerCompletable = CompletableDeferred<InnerSpaceRoomList>()
 
     override val currentSpaceFlow = MutableStateFlow<Optional<SpaceRoom>>(Optional.empty())
 
@@ -41,37 +46,45 @@ class RustSpaceRoomList(
     )
 
     init {
-        sessionCoroutineScope.launch {
-            inner.complete(innerProvider())
-        }
-        sessionCoroutineScope.launch {
-            inner.await().paginationStateFlow()
+        coroutineScope.launch {
+            val inner = innerProvider()
+            innerCompletable.complete(inner)
+
+            inner.paginationStateFlow()
                 .onEach { paginationStatus ->
                     paginationStatusFlow.emit(paginationStatus.into())
                 }
-                .collect()
-        }
+                .launchIn(this)
 
-        sessionCoroutineScope.launch {
-            inner.await().spaceListUpdateFlow()
+            inner.spaceListUpdateFlow()
                 .onEach { updates ->
                     spaceListUpdateProcessor.postUpdates(updates)
                 }
-                .collect()
-        }
-        sessionCoroutineScope.launch {
-            inner.await().spaceUpdateFlow()
+                .launchIn(this)
+
+            inner.spaceUpdateFlow()
                 .map { space -> space.map(spaceRoomMapper::map) }
                 .onEach { space ->
                     currentSpaceFlow.emit(space)
                 }
-                .collect()
+                .launchIn(this)
         }
     }
 
     override suspend fun paginate(): Result<Unit> {
         return runCatchingExceptions {
-            inner.await().paginate()
+            innerCompletable.await().paginate()
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun destroy() {
+        Timber.d("Destroying SpaceRoomList $roomId")
+        coroutineScope.cancel()
+        try {
+            innerCompletable.getCompleted().destroy()
+        } catch (_: Exception) {
+            // Ignore, we just want to make sure it's completed
         }
     }
 

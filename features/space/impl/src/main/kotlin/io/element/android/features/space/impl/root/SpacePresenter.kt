@@ -13,11 +13,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import dev.zacsweers.metro.Assisted
-import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.Inject
 import io.element.android.features.invite.api.SeenInvitesStore
-import io.element.android.features.space.api.SpaceEntryPoint
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.coroutine.mapState
 import io.element.android.libraries.matrix.api.MatrixClient
@@ -31,19 +28,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlin.jvm.optionals.getOrNull
 
-@AssistedInject
+@Inject
 class SpacePresenter(
-    @Assisted private val inputs: SpaceEntryPoint.Inputs,
+    private val spaceRoomList: SpaceRoomList,
     private val client: MatrixClient,
     private val seenInvitesStore: SeenInvitesStore,
 ) : Presenter<SpaceState> {
-    @AssistedFactory
-    fun interface Factory {
-        fun create(inputs: SpaceEntryPoint.Inputs): SpacePresenter
-    }
-
-    private val spaceRoomList = client.spaceService.spaceRoomList(inputs.roomId)
-
     @Composable
     override fun present(): SpaceState {
         LaunchedEffect(Unit) {

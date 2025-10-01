@@ -15,17 +15,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import dev.zacsweers.metro.Assisted
-import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
-import io.element.android.features.space.api.SpaceEntryPoint
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.architecture.runUpdatingState
-import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
+import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentSetOf
@@ -37,16 +34,8 @@ import kotlin.jvm.optionals.getOrNull
 
 @Inject
 class LeaveSpacePresenter(
-    @Assisted private val inputs: SpaceEntryPoint.Inputs,
-    matrixClient: MatrixClient,
+    private val spaceRoomList: SpaceRoomList,
 ) : Presenter<LeaveSpaceState> {
-    @AssistedFactory
-    fun interface Factory {
-        fun create(inputs: SpaceEntryPoint.Inputs): LeaveSpacePresenter
-    }
-
-    private val spaceRoomList = matrixClient.spaceService.spaceRoomList(inputs.roomId)
-
     @Composable
     override fun present(): LeaveSpaceState {
         val coroutineScope = rememberCoroutineScope()

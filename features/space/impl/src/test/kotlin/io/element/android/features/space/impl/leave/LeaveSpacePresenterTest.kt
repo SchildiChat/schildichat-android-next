@@ -10,15 +10,11 @@
 package io.element.android.features.space.impl.leave
 
 import com.google.common.truth.Truth.assertThat
-import io.element.android.features.space.api.SpaceEntryPoint
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
-import io.element.android.libraries.matrix.api.MatrixClient
-import io.element.android.libraries.matrix.test.A_ROOM_ID
+import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
 import io.element.android.libraries.matrix.test.A_SPACE_NAME
-import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.matrix.test.spaces.FakeSpaceRoomList
-import io.element.android.libraries.matrix.test.spaces.FakeSpaceService
 import io.element.android.libraries.previewutils.room.aSpaceRoom
 import io.element.android.tests.testutils.test
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,15 +25,7 @@ import org.junit.Test
 class LeaveSpacePresenterTest {
     @Test
     fun `present - initial state`() = runTest {
-        val presenter = createLeaveSpacePresenter(
-            matrixClient = FakeMatrixClient(
-                spaceService = FakeSpaceService(
-                    spaceRoomListResult = {
-                        FakeSpaceRoomList()
-                    },
-                ),
-            ),
-        )
+        val presenter = createLeaveSpacePresenter()
         presenter.test {
             val state = awaitItem()
             assertThat(state.spaceName).isNull()
@@ -51,11 +39,7 @@ class LeaveSpacePresenterTest {
     fun `present - current space name`() = runTest {
         val fakeSpaceRoomList = FakeSpaceRoomList()
         val presenter = createLeaveSpacePresenter(
-            matrixClient = FakeMatrixClient(
-                spaceService = FakeSpaceService(
-                    spaceRoomListResult = { fakeSpaceRoomList },
-                ),
-            ),
+            spaceRoomList = fakeSpaceRoomList,
         )
         presenter.test {
             val state = awaitItem()
@@ -71,12 +55,10 @@ class LeaveSpacePresenterTest {
     }
 
     private fun createLeaveSpacePresenter(
-        inputs: SpaceEntryPoint.Inputs = SpaceEntryPoint.Inputs(A_ROOM_ID),
-        matrixClient: MatrixClient = FakeMatrixClient(),
+        spaceRoomList: SpaceRoomList = FakeSpaceRoomList(),
     ): LeaveSpacePresenter {
         return LeaveSpacePresenter(
-            inputs = inputs,
-            matrixClient = matrixClient,
+            spaceRoomList = spaceRoomList,
         )
     }
 }

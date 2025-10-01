@@ -11,9 +11,11 @@ package io.element.android.libraries.matrix.impl.spaces
 
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
+import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
 import io.element.android.libraries.matrix.impl.fixtures.factories.aRustSpaceRoom
 import io.element.android.libraries.matrix.impl.fixtures.fakes.FakeFfiSpaceRoomList
+import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_ROOM_ID_2
 import io.element.android.tests.testutils.lambda.lambdaRecorder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -84,13 +86,15 @@ class RustSpaceRoomListTest {
     }
 
     private fun TestScope.createRustSpaceRoomList(
+        roomId: RoomId = A_ROOM_ID,
         innerSpaceRoomList: InnerSpaceRoomList = FakeFfiSpaceRoomList(),
         innerProvider: suspend () -> InnerSpaceRoomList = { innerSpaceRoomList },
         spaceRoomMapper: SpaceRoomMapper = SpaceRoomMapper(),
     ): RustSpaceRoomList {
         return RustSpaceRoomList(
+            roomId = roomId,
             innerProvider = innerProvider,
-            sessionCoroutineScope = backgroundScope,
+            coroutineScope = backgroundScope,
             spaceRoomMapper = spaceRoomMapper,
         )
     }

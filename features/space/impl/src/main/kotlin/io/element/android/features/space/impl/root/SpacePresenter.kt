@@ -14,15 +14,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import dev.zacsweers.metro.Assisted
-import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.Inject
 import im.vector.app.features.analytics.plan.JoinedRoom
 import io.element.android.features.invite.api.SeenInvitesStore
 import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteEvents
 import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteState
 import io.element.android.features.invite.api.toInviteData
-import io.element.android.features.space.api.SpaceEntryPoint
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.coroutine.mapState
@@ -44,20 +41,15 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlin.jvm.optionals.getOrNull
 
-@AssistedInject class SpacePresenter(
-    @Assisted private val inputs: SpaceEntryPoint.Inputs,
+@Inject
+class SpacePresenter(
+    private val spaceRoomList: SpaceRoomList,
     private val client: MatrixClient,
     private val seenInvitesStore: SeenInvitesStore,
     private val joinRoom: JoinRoom,
     private val acceptDeclineInvitePresenter: Presenter<AcceptDeclineInviteState>,
     @SessionCoroutineScope private val sessionCoroutineScope: CoroutineScope,
 ) : Presenter<SpaceState> {
-    @AssistedFactory fun interface Factory {
-        fun create(inputs: SpaceEntryPoint.Inputs): SpacePresenter
-    }
-
-    private val spaceRoomList = client.spaceService.spaceRoomList(inputs.roomId)
-
     @Composable
     override fun present(): SpaceState {
         LaunchedEffect(Unit) {

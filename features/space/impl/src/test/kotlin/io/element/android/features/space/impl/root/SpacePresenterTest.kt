@@ -11,27 +11,39 @@ package io.element.android.features.space.impl.root
 
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.invite.api.SeenInvitesStore
+import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteEvents
 import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteState
 import io.element.android.features.invite.api.acceptdecline.anAcceptDeclineInviteState
+import io.element.android.features.invite.api.toInviteData
 import io.element.android.features.invite.test.InMemorySeenInvitesStore
 import io.element.android.features.space.api.SpaceEntryPoint
+import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.matrix.api.MatrixClient
+import io.element.android.libraries.matrix.api.core.RoomIdOrAlias
+import io.element.android.libraries.matrix.api.core.toRoomIdOrAlias
+import io.element.android.libraries.matrix.api.room.CurrentUserMembership
 import io.element.android.libraries.matrix.api.room.join.JoinRoom
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
+import io.element.android.libraries.matrix.test.AN_EXCEPTION
 import io.element.android.libraries.matrix.test.A_ROOM_ID
+import io.element.android.libraries.matrix.test.A_ROOM_ID_2
 import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.matrix.test.room.join.FakeJoinRoom
 import io.element.android.libraries.matrix.test.spaces.FakeSpaceRoomList
 import io.element.android.libraries.matrix.test.spaces.FakeSpaceService
 import io.element.android.libraries.previewutils.room.aSpaceRoom
+import io.element.android.tests.testutils.EventsRecorder
 import io.element.android.tests.testutils.lambda.lambdaRecorder
+import io.element.android.tests.testutils.lambda.value
 import io.element.android.tests.testutils.test
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import im.vector.app.features.analytics.plan.JoinedRoom as AnalyticsJoinedRoom
 
 class SpacePresenterTest {
     @Test
@@ -57,6 +69,8 @@ class SpacePresenterTest {
             assertThat(state.seenSpaceInvites).isEmpty()
             assertThat(state.hideInvitesAvatar).isFalse()
             assertThat(state.hasMoreToLoad).isTrue()
+            assertThat(state.joinActions).isEmpty()
+            assertThat(state.acceptDeclineInviteState).isEqualTo(anAcceptDeclineInviteState())
             advanceUntilIdle()
             paginateResult.assertions().isCalledOnce()
         }
@@ -156,6 +170,180 @@ class SpacePresenterTest {
             val aSpace = aSpaceRoom()
             fakeSpaceRoomList.emitSpaceRooms(listOf(aSpace))
             assertThat(awaitItem().children).containsExactly(aSpace)
+        }
+    }
+
+    @Test
+    fun `present - join a room success`() = runTest {
+        val joinRoom = lambdaRecorder<RoomIdOrAlias, List<String>, AnalyticsJoinedRoom.Trigger, Result<Unit>> { _, _, _ ->
+            Result.success(Unit)
+        }
+        val serverNames = listOf("via1", "via2")
+        val aNotJoinedRoom = aSpaceRoom(
+            roomId = A_ROOM_ID_2,
+            via = serverNames,
+            state = null,
+        )
+        val fakeSpaceRoomList = FakeSpaceRoomList(
+            initialSpaceRoomsValue = listOf(
+                aSpaceRoom(
+                    roomId = A_ROOM_ID,
+                    state = CurrentUserMembership.JOINED,
+                ),
+                aNotJoinedRoom,
+            ),
+            paginateResult = { Result.success(Unit) },
+        )
+        val presenter = createSpacePresenter(
+            client = FakeMatrixClient(
+                spaceService = FakeSpaceService(
+                    spaceRoomListResult = { fakeSpaceRoomList },
+                ),
+            ),
+            joinRoom = FakeJoinRoom(
+                lambda = joinRoom,
+            ),
+        )
+        presenter.test {
+            skipItems(1)
+            val state = awaitItem()
+            assertThat(state.joinActions[A_ROOM_ID_2]).isNull()
+            state.eventSink(SpaceEvents.Join(aNotJoinedRoom))
+            val joiningState = awaitItem()
+            assertThat(joiningState.joinActions[A_ROOM_ID_2]).isEqualTo(AsyncAction.Loading)
+            // Let the joinRoom call complete
+            advanceUntilIdle()
+            runCurrent()
+            // The room is joined
+            fakeSpaceRoomList.emitSpaceRooms(
+                listOf(
+                    aSpaceRoom(
+                        roomId = A_ROOM_ID,
+                        state = CurrentUserMembership.JOINED,
+                    ),
+                    aNotJoinedRoom.copy(state = CurrentUserMembership.JOINED),
+                )
+            )
+            skipItems(1)
+            val joinedState = awaitItem()
+            // Joined room is removed from the join actions
+            assertThat(joinedState.joinActions).doesNotContainKey(A_ROOM_ID_2)
+            joinRoom.assertions().isCalledOnce().with(
+                value(A_ROOM_ID_2.toRoomIdOrAlias()),
+                value(serverNames),
+                value(AnalyticsJoinedRoom.Trigger.SpaceHierarchy),
+            )
+        }
+    }
+
+    @Test
+    fun `present - join a room failure`() = runTest {
+        val aNotJoinedRoom = aSpaceRoom(
+            roomId = A_ROOM_ID_2,
+            state = null,
+        )
+        val fakeSpaceRoomList = FakeSpaceRoomList(
+            initialSpaceRoomsValue = listOf(
+                aSpaceRoom(
+                    roomId = A_ROOM_ID,
+                    state = CurrentUserMembership.JOINED,
+                ),
+                aNotJoinedRoom,
+            ),
+            paginateResult = { Result.success(Unit) },
+        )
+        val presenter = createSpacePresenter(
+            client = FakeMatrixClient(
+                spaceService = FakeSpaceService(
+                    spaceRoomListResult = { fakeSpaceRoomList },
+                ),
+            ),
+            joinRoom = FakeJoinRoom(
+                lambda = { _, _, _ -> Result.failure(AN_EXCEPTION) },
+            ),
+        )
+        presenter.test {
+            skipItems(1)
+            val state = awaitItem()
+            assertThat(state.joinActions[A_ROOM_ID_2]).isNull()
+            state.eventSink(SpaceEvents.Join(aNotJoinedRoom))
+            val joiningState = awaitItem()
+            assertThat(joiningState.joinActions[A_ROOM_ID_2]).isEqualTo(AsyncAction.Loading)
+            val errorState = awaitItem()
+            // Joined room is removed from the join actions
+            assertThat(errorState.joinActions[A_ROOM_ID_2]!!.isFailure()).isTrue()
+            // Clear error
+            errorState.eventSink(SpaceEvents.ClearFailures)
+            val clearedState = awaitItem()
+            assertThat(clearedState.joinActions[A_ROOM_ID_2]).isEqualTo(AsyncAction.Uninitialized)
+        }
+    }
+
+    @Test
+    fun `present - accept invite is transmitted to acceptDeclineInviteState`() {
+        `invite action is transmitted to acceptDeclineInviteState`(
+            acceptInvite = true,
+        )
+    }
+
+    @Test
+    fun `present - decline invite is transmitted to acceptDeclineInviteState`() {
+        `invite action is transmitted to acceptDeclineInviteState`(
+            acceptInvite = false,
+        )
+    }
+
+    private fun `invite action is transmitted to acceptDeclineInviteState`(
+        acceptInvite: Boolean,
+    ) = runTest {
+        val eventRecorder = EventsRecorder<AcceptDeclineInviteEvents>()
+        val anInvitedRoom = aSpaceRoom(
+            roomId = A_ROOM_ID_2,
+            state = CurrentUserMembership.INVITED,
+        )
+        val fakeSpaceRoomList = FakeSpaceRoomList(
+            initialSpaceRoomsValue = listOf(
+                aSpaceRoom(
+                    roomId = A_ROOM_ID,
+                    state = CurrentUserMembership.JOINED,
+                ),
+                anInvitedRoom,
+            ),
+            paginateResult = { Result.success(Unit) },
+        )
+        val presenter = createSpacePresenter(
+            client = FakeMatrixClient(
+                spaceService = FakeSpaceService(
+                    spaceRoomListResult = { fakeSpaceRoomList },
+                ),
+            ),
+            acceptDeclineInvitePresenter = {
+                anAcceptDeclineInviteState(
+                    eventSink = eventRecorder,
+                )
+            },
+        )
+        presenter.test {
+            skipItems(1)
+            val state = awaitItem()
+            assertThat(state.joinActions[A_ROOM_ID_2]).isNull()
+            if (acceptInvite) {
+                state.eventSink(SpaceEvents.AcceptInvite(anInvitedRoom))
+                eventRecorder.assertSingle(
+                    AcceptDeclineInviteEvents.AcceptInvite(
+                        invite = anInvitedRoom.toInviteData(),
+                    )
+                )
+            } else {
+                state.eventSink(SpaceEvents.DeclineInvite(anInvitedRoom))
+                eventRecorder.assertSingle(
+                    AcceptDeclineInviteEvents.DeclineInvite(
+                        invite = anInvitedRoom.toInviteData(),
+                        shouldConfirm = true,
+                        blockUser = false,
+                    )
+                )
+            }
         }
     }
 

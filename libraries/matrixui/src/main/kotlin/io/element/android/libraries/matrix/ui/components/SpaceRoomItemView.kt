@@ -31,6 +31,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
@@ -41,6 +42,8 @@ import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.modifiers.onKeyboardContextMenuAction
+import io.element.android.libraries.designsystem.preview.ElementPreview
+import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.unreadIndicator
@@ -59,6 +62,8 @@ fun SpaceRoomItemView(
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
+    trailingAction: @Composable (() -> Unit)? = null,
+    bottomAction: @Composable (() -> Unit)? = null,
 ) {
     SpaceRoomItemScaffold(
         modifier = modifier,
@@ -67,6 +72,7 @@ fun SpaceRoomItemView(
         hideAvatars = hideAvatars,
         onClick = onClick,
         onLongClick = onLongClick,
+        trailingAction = trailingAction,
     ) {
         NameAndIndicatorRow(
             isSpace = spaceRoom.isSpace,
@@ -79,21 +85,21 @@ fun SpaceRoomItemView(
             subtitle = spaceRoom.subtitle()
         )
         Spacer(modifier = Modifier.height(1.dp))
-        Text(
-            modifier = Modifier.weight(1f),
-            style = ElementTheme.typography.fontBodyMdRegular,
-            text = spaceRoom.info(),
-            fontStyle = FontStyle.Italic.takeIf { spaceRoom.name == null },
-            color = ElementTheme.colors.textSecondary,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-        if (spaceRoom.state == CurrentUserMembership.INVITED) {
-            Spacer(modifier = Modifier.height(12.dp))
-            InviteButtonsRowMolecule(
-                onAcceptClick = {},
-                onDeclineClick = {},
+        val info = spaceRoom.info()
+        if (info.isNotBlank()) {
+            Text(
+                modifier = Modifier.weight(1f),
+                style = ElementTheme.typography.fontBodyMdRegular,
+                text = info,
+                fontStyle = FontStyle.Italic.takeIf { spaceRoom.name == null },
+                color = ElementTheme.colors.textSecondary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
+        }
+        if (bottomAction != null) {
+            Spacer(modifier = Modifier.height(12.dp))
+            bottomAction()
         }
     }
 }
@@ -166,7 +172,8 @@ private fun SpaceRoomItemScaffold(
     onLongClick: () -> Unit,
     hideAvatars: Boolean,
     modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit
+    trailingAction: @Composable (() -> Unit)? = null,
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     val clickModifier = Modifier
         .combinedClickable(
@@ -194,6 +201,10 @@ private fun SpaceRoomItemScaffold(
             modifier = Modifier.weight(1f),
             content = content,
         )
+        if (trailingAction != null) {
+            Spacer(modifier = Modifier.width(16.dp))
+            trailingAction()
+        }
     }
 }
 
@@ -232,4 +243,33 @@ private fun SpaceRoom.visibilityIcon(): ImageVector? {
     } else {
         CompoundIcons.LockSolid()
     }
+}
+
+@Composable
+@PreviewsDayNight
+internal fun SpaceRoomItemViewPreview(@PreviewParameter(SpaceRoomProvider::class) spaceRoom: SpaceRoom) = ElementPreview {
+    SpaceRoomItemView(
+        spaceRoom = spaceRoom,
+        showUnreadIndicator = spaceRoom.state == CurrentUserMembership.INVITED,
+        hideAvatars = false,
+        onClick = {},
+        onLongClick = {},
+        modifier = Modifier.fillMaxWidth(),
+        bottomAction = if (spaceRoom.state == CurrentUserMembership.INVITED) {
+            { InviteButtonsRowMolecule({}, {}) }
+        } else {
+            null
+        },
+        trailingAction = when (spaceRoom.state) {
+            null, CurrentUserMembership.LEFT -> {
+                {
+                    JoinButton(
+                        showProgress = spaceRoom.state == CurrentUserMembership.LEFT,
+                        onClick = { },
+                    )
+                }
+            }
+            else -> null
+        }
+    )
 }

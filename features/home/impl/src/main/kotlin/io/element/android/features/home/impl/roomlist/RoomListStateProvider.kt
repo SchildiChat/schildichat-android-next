@@ -16,14 +16,12 @@ import io.element.android.features.home.impl.model.aRoomListRoomSummary
 import io.element.android.features.home.impl.model.anInviteSender
 import io.element.android.features.home.impl.search.RoomListSearchState
 import io.element.android.features.home.impl.search.aRoomListSearchState
-import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteEvents
 import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteState
+import io.element.android.features.invite.api.acceptdecline.anAcceptDeclineInviteState
 import io.element.android.features.leaveroom.api.LeaveRoomEvent
 import io.element.android.features.leaveroom.api.LeaveRoomState
-import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
-import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.push.api.battery.aBatteryOptimizationState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -75,16 +73,6 @@ internal fun aLeaveRoomState(
 ) = object : LeaveRoomState {
     override val eventSink: (LeaveRoomEvent) -> Unit = eventSink
 }
-
-internal fun anAcceptDeclineInviteState(
-    acceptAction: AsyncAction<RoomId> = AsyncAction.Uninitialized,
-    declineAction: AsyncAction<RoomId> = AsyncAction.Uninitialized,
-    eventSink: (AcceptDeclineInviteEvents) -> Unit = {}
-) = AcceptDeclineInviteState(
-    acceptAction = acceptAction,
-    declineAction = declineAction,
-    eventSink = eventSink,
-)
 
 internal fun aRoomListRoomSummaryList(): ImmutableList<RoomListRoomSummary> {
     return persistentListOf(

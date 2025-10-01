@@ -9,8 +9,8 @@ package io.element.android.features.joinroom.impl
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.element.android.features.invite.api.InviteData
-import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteEvents
 import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteState
+import io.element.android.features.invite.api.acceptdecline.anAcceptDeclineInviteState
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
@@ -217,16 +217,6 @@ fun aJoinRoomState(
     hideInviteAvatars = hideInviteAvatars,
     canReportRoom = canReportRoom,
     eventSink = eventSink
-)
-
-internal fun anAcceptDeclineInviteState(
-    acceptAction: AsyncAction<RoomId> = AsyncAction.Uninitialized,
-    declineAction: AsyncAction<RoomId> = AsyncAction.Uninitialized,
-    eventSink: (AcceptDeclineInviteEvents) -> Unit = {}
-) = AcceptDeclineInviteState(
-    acceptAction = acceptAction,
-    declineAction = declineAction,
-    eventSink = eventSink,
 )
 
 internal fun anInviteSender(

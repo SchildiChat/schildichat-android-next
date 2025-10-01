@@ -8,10 +8,15 @@
 package io.element.android.features.space.impl.root
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteState
+import io.element.android.features.invite.api.acceptdecline.anAcceptDeclineInviteState
+import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.room.CurrentUserMembership
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.previewutils.room.aSpaceRoom
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.collections.immutable.toImmutableSet
 
 open class SpaceStateProvider : PreviewParameterProvider<SpaceState> {
@@ -33,8 +38,9 @@ open class SpaceStateProvider : PreviewParameterProvider<SpaceState> {
             ),
             aSpaceState(
                 hasMoreToLoad = false,
-                children = aListOfSpaceRooms()
-            ),
+                children = aListOfSpaceRooms(),
+                joiningRooms = setOf(RoomId("!spaceId0:example.com")),
+            )
             // Add other states here
         )
 }
@@ -48,21 +54,36 @@ fun aSpaceState(
     ),
     children: List<SpaceRoom> = emptyList(),
     seenSpaceInvites: Set<RoomId> = emptySet(),
+    joiningRooms: Set<RoomId> = emptySet(),
+    joinActions: Map<RoomId, AsyncAction<Unit>> = joiningRooms.associateWith { AsyncAction.Loading },
     hideInvitesAvatar: Boolean = false,
     hasMoreToLoad: Boolean = false,
+    acceptDeclineInviteState: AcceptDeclineInviteState = anAcceptDeclineInviteState(),
+    eventSink: (SpaceEvents) -> Unit = { },
 ) = SpaceState(
     currentSpace = parentSpace,
     children = children.toImmutableList(),
     seenSpaceInvites = seenSpaceInvites.toImmutableSet(),
     hideInvitesAvatar = hideInvitesAvatar,
     hasMoreToLoad = hasMoreToLoad,
-    eventSink = {}
+    joinActions = joinActions.toImmutableMap(),
+    acceptDeclineInviteState = acceptDeclineInviteState,
+    eventSink = eventSink,
 )
 
 private fun aListOfSpaceRooms(): List<SpaceRoom> {
     return listOf(
-        aSpaceRoom(roomId = RoomId("!spaceId0:example.com")),
-        aSpaceRoom(roomId = RoomId("!spaceId1:example.com")),
-        aSpaceRoom(roomId = RoomId("!spaceId2:example.com")),
+        aSpaceRoom(
+            roomId = RoomId("!spaceId0:example.com"),
+            state = null,
+        ),
+        aSpaceRoom(
+            roomId = RoomId("!spaceId1:example.com"),
+            state = CurrentUserMembership.JOINED,
+        ),
+        aSpaceRoom(
+            roomId = RoomId("!spaceId2:example.com"),
+            state = CurrentUserMembership.INVITED,
+        ),
     )
 }

@@ -141,8 +141,8 @@ class LoggedInFlowNode(
     }
 
     private val loggedInFlowProcessor = LoggedInEventProcessor(
-        snackbarDispatcher,
-        matrixClient.roomMembershipObserver(),
+        snackbarDispatcher = snackbarDispatcher,
+        roomMembershipObserver = matrixClient.roomMembershipObserver,
     )
 
     private val verificationListener = object : SessionVerificationServiceListener {
@@ -189,7 +189,7 @@ class LoggedInFlowNode(
                 // TODO We do not support Space yet, so directly navigate to main space
                 appNavigationStateService.onNavigateToSpace(id, MAIN_SPACE)
                 loggedInFlowProcessor.observeEvents(sessionCoroutineScope)
-                matrixClient.sessionVerificationService().setListener(verificationListener)
+                matrixClient.sessionVerificationService.setListener(verificationListener)
                 mediaPreviewConfigMigration()
 
                 sessionCoroutineScope.launch {
@@ -218,7 +218,7 @@ class LoggedInFlowNode(
                 appNavigationStateService.onLeavingSpace(id)
                 appNavigationStateService.onLeavingSession(id)
                 loggedInFlowProcessor.stopObserving()
-                matrixClient.sessionVerificationService().setListener(null)
+                matrixClient.sessionVerificationService.setListener(null)
             }
         )
         setupSendingQueue()

@@ -82,7 +82,7 @@ class CreateAccountPresenter(
             tryOrNull {
                 // Wait until the session is verified
                 val client = clientProvider.getOrRestore(sessionId).getOrThrow()
-                val sessionVerificationService = client.sessionVerificationService()
+                val sessionVerificationService = client.sessionVerificationService
                 withTimeout(10.seconds) { sessionVerificationService.sessionVerifiedStatus.first { it.isVerified() } }
             }
             loggedInState.value = AsyncAction.Success(sessionId)

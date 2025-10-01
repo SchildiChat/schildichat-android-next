@@ -30,9 +30,10 @@ import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.permalink.PermalinkData
 import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
+import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.matrix.test.A_USER_ID
-import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.matrix.test.room.FakeBaseRoom
+import io.element.android.libraries.matrix.test.roomlist.FakeRoomListService
 import io.element.android.libraries.matrix.ui.messages.RoomMemberProfilesCache
 import io.element.android.libraries.matrix.ui.messages.RoomNamesCache
 import io.element.android.libraries.mediaviewer.api.MediaViewerEntryPoint
@@ -60,7 +61,8 @@ class DefaultMessagesEntryPointTest {
             MessagesFlowNode(
                 buildContext = buildContext,
                 plugins = plugins,
-                matrixClient = FakeMatrixClient(),
+                roomListService = FakeRoomListService(),
+                sessionId = A_SESSION_ID,
                 sendLocationEntryPoint = object : SendLocationEntryPoint {
                     override fun builder(timelineMode: Timeline.Mode) = lambdaError()
                 },

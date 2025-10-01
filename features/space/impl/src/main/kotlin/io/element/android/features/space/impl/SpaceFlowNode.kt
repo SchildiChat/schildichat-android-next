@@ -32,8 +32,8 @@ import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.di.DependencyInjectionGraphOwner
 import io.element.android.libraries.di.SessionScope
-import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.spaces.SpaceService
 import kotlinx.parcelize.Parcelize
 
 @ContributesNode(SessionScope::class)
@@ -41,7 +41,7 @@ import kotlinx.parcelize.Parcelize
 class SpaceFlowNode(
     @Assisted val buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
-    matrixClient: MatrixClient,
+    spaceService: SpaceService,
     graphFactory: SpaceFlowGraph.Factory,
 ) : BaseFlowNode<SpaceFlowNode.NavTarget>(
     backstack = BackStack(
@@ -53,7 +53,7 @@ class SpaceFlowNode(
 ), DependencyInjectionGraphOwner {
     private val inputs: SpaceEntryPoint.Inputs = inputs()
     private val callback = plugins.filterIsInstance<SpaceEntryPoint.Callback>().single()
-    private val spaceRoomList = matrixClient.spaceService.spaceRoomList(inputs.roomId)
+    private val spaceRoomList = spaceService.spaceRoomList(inputs.roomId)
     override val graph = graphFactory.create(spaceRoomList)
 
     sealed interface NavTarget : Parcelable {

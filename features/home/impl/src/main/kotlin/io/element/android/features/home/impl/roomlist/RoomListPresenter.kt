@@ -39,7 +39,6 @@ import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.fullscreenintent.api.FullScreenIntentPermissionsState
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
-import io.element.android.libraries.matrix.api.encryption.EncryptionService
 import io.element.android.libraries.matrix.api.encryption.RecoveryState
 import io.element.android.libraries.matrix.api.roomlist.RoomList
 import io.element.android.libraries.matrix.api.timeline.ReceiptType
@@ -84,7 +83,7 @@ class RoomListPresenter(
     private val appPreferencesStore: AppPreferencesStore,
     private val seenInvitesStore: SeenInvitesStore,
 ) : Presenter<RoomListState> {
-    private val encryptionService: EncryptionService = client.encryptionService()
+    private val encryptionService = client.encryptionService
 
     @Composable
     override fun present(): RoomListState {

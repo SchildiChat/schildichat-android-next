@@ -62,9 +62,9 @@ import io.element.android.libraries.dateformatter.api.DateFormatter
 import io.element.android.libraries.dateformatter.api.DateFormatterMode
 import io.element.android.libraries.dateformatter.api.toHumanReadableDuration
 import io.element.android.libraries.di.RoomScope
-import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.core.ThreadId
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.core.toRoomIdOrAlias
@@ -73,6 +73,7 @@ import io.element.android.libraries.matrix.api.permalink.PermalinkData
 import io.element.android.libraries.matrix.api.room.BaseRoom
 import io.element.android.libraries.matrix.api.room.alias.matches
 import io.element.android.libraries.matrix.api.room.joinedRoomMembers
+import io.element.android.libraries.matrix.api.roomlist.RoomListService
 import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.matrix.api.timeline.item.TimelineItemDebugInfo
 import io.element.android.libraries.matrix.ui.messages.RoomMemberProfilesCache
@@ -95,7 +96,8 @@ import kotlinx.parcelize.Parcelize
 class MessagesFlowNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
-    private val matrixClient: MatrixClient,
+    private val roomListService: RoomListService,
+    private val sessionId: SessionId,
     private val sendLocationEntryPoint: SendLocationEntryPoint,
     private val showLocationEntryPoint: ShowLocationEntryPoint,
     private val createPollEntryPoint: CreatePollEntryPoint,
@@ -194,7 +196,7 @@ class MessagesFlowNode(
             }
             .launchIn(lifecycleScope)
 
-        matrixClient.roomListService
+        roomListService
             .allRooms
             .summaries
             .onEach {
@@ -221,11 +223,13 @@ class MessagesFlowNode(
                     }
 
                     override fun onPreviewAttachments(attachments: ImmutableList<Attachment>, inReplyToEventId: EventId?) {
-                        backstack.push(NavTarget.AttachmentPreview(
-                            attachment = attachments.first(),
-                            timelineMode = Timeline.Mode.Live,
-                            inReplyToEventId = inReplyToEventId,
-                        ))
+                        backstack.push(
+                            NavTarget.AttachmentPreview(
+                                attachment = attachments.first(),
+                                timelineMode = Timeline.Mode.Live,
+                                inReplyToEventId = inReplyToEventId,
+                            )
+                        )
                     }
 
                     override fun onUserDataClick(userId: UserId) {
@@ -262,7 +266,7 @@ class MessagesFlowNode(
 
                     override fun onJoinCallClick(roomId: RoomId) {
                         val callType = CallType.RoomCall(
-                            sessionId = matrixClient.sessionId,
+                            sessionId = sessionId,
                             roomId = roomId,
                         )
                         analyticsService.captureInteraction(Interaction.Name.MobileRoomCallButton)
@@ -348,18 +352,20 @@ class MessagesFlowNode(
             }
             is NavTarget.CreatePoll -> {
                 createPollEntryPoint.nodeBuilder(this, buildContext)
-                    .params(CreatePollEntryPoint.Params(
-                        timelineMode = navTarget.timelineMode,
-                        mode = CreatePollMode.NewPoll
-                    ))
+                    .params(
+                        CreatePollEntryPoint.Params(
+                            timelineMode = navTarget.timelineMode,
+                            mode = CreatePollMode.NewPoll
+                        )
+                    )
                     .build()
             }
             is NavTarget.EditPoll -> {
                 createPollEntryPoint.nodeBuilder(this, buildContext)
                     .params(
                         CreatePollEntryPoint.Params(
-                        timelineMode = navTarget.timelineMode,
-                        mode = CreatePollMode.EditPoll(eventId = navTarget.eventId)
+                            timelineMode = navTarget.timelineMode,
+                            mode = CreatePollMode.EditPoll(eventId = navTarget.eventId)
                         )
                     )
                     .build()
@@ -412,11 +418,13 @@ class MessagesFlowNode(
                     }
 
                     override fun onPreviewAttachments(attachments: ImmutableList<Attachment>, inReplyToEventId: EventId?) {
-                        backstack.push(NavTarget.AttachmentPreview(
-                            attachment = attachments.first(),
-                            timelineMode = Timeline.Mode.Thread(navTarget.threadRootId),
-                            inReplyToEventId = inReplyToEventId,
-                        ))
+                        backstack.push(
+                            NavTarget.AttachmentPreview(
+                                attachment = attachments.first(),
+                                timelineMode = Timeline.Mode.Thread(navTarget.threadRootId),
+                                inReplyToEventId = inReplyToEventId,
+                            )
+                        )
                     }
 
                     override fun onUserDataClick(userId: UserId) {
@@ -453,7 +461,7 @@ class MessagesFlowNode(
 
                     override fun onJoinCallClick(roomId: RoomId) {
                         val callType = CallType.RoomCall(
-                            sessionId = matrixClient.sessionId,
+                            sessionId = sessionId,
                             roomId = roomId,
                         )
                         analyticsService.captureInteraction(Interaction.Name.MobileRoomCallButton)

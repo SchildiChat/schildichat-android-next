@@ -7,6 +7,7 @@
 
 package io.element.android.libraries.matrix.impl.spaces
 
+import io.element.android.libraries.core.coroutine.childScope
 import io.element.android.libraries.core.extensions.runCatchingExceptions
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
@@ -54,9 +55,11 @@ class RustSpaceService(
     }
 
     override fun spaceRoomList(id: RoomId): SpaceRoomList {
+        val childCoroutineScope = sessionCoroutineScope.childScope(sessionDispatcher, "SpaceRoomListScope-$this")
         return RustSpaceRoomList(
+            roomId = id,
             innerProvider = { innerSpaceService.spaceRoomList(id.value) },
-            sessionCoroutineScope = sessionCoroutineScope,
+            coroutineScope = childCoroutineScope,
             spaceRoomMapper = spaceRoomMapper,
         )
     }

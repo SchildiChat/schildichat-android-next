@@ -18,36 +18,33 @@ import com.bumble.appyx.core.plugin.Plugin
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
-import io.element.android.features.space.api.SpaceEntryPoint
+import io.element.android.features.space.impl.di.SpaceFlowScope
 import io.element.android.libraries.androidutils.R
 import io.element.android.libraries.androidutils.system.startSharePlainTextIntent
-import io.element.android.libraries.architecture.inputs
-import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@ContributesNode(SessionScope::class)
+@ContributesNode(SpaceFlowScope::class)
 @AssistedInject
 class SpaceNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
-    presenterFactory: SpacePresenter.Factory,
+    private val presenter: SpacePresenter,
     private val matrixClient: MatrixClient,
+    private val spaceRoomList: SpaceRoomList,
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
         fun onOpenRoom(roomId: RoomId, viaParameters: List<String>)
         fun onLeaveSpace()
     }
-
-    private val inputs: SpaceEntryPoint.Inputs = inputs()
     private val callback = plugins.filterIsInstance<Callback>().single()
-    private val presenter = presenterFactory.create(inputs)
 
     private fun onShareRoom(context: Context) = lifecycleScope.launch {
-        matrixClient.getRoom(inputs.roomId)?.use { room ->
+        matrixClient.getRoom(spaceRoomList.roomId)?.use { room ->
             room.getPermalink()
                 .onSuccess { permalink ->
                     context.startSharePlainTextIntent(

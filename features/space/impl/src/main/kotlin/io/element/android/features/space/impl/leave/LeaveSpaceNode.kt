@@ -15,20 +15,15 @@ import com.bumble.appyx.core.plugin.Plugin
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
-import io.element.android.features.space.api.SpaceEntryPoint
-import io.element.android.libraries.architecture.inputs
-import io.element.android.libraries.di.SessionScope
+import io.element.android.features.space.impl.di.SpaceFlowScope
 
-@ContributesNode(SessionScope::class)
+@ContributesNode(SpaceFlowScope::class)
 @AssistedInject
 class LeaveSpaceNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
-    presenterFactory: LeaveSpacePresenter.Factory,
+    private val presenter: LeaveSpacePresenter,
 ) : Node(buildContext, plugins = plugins) {
-    private val inputs: SpaceEntryPoint.Inputs = inputs()
-    private val presenter = presenterFactory.create(inputs)
-
     @Composable
     override fun View(modifier: Modifier) {
         val state = presenter.present()

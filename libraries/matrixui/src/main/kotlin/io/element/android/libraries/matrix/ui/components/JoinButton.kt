@@ -10,6 +10,7 @@ package io.element.android.libraries.matrix.ui.components
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.libraries.designsystem.theme.components.ButtonSize
@@ -20,9 +21,11 @@ import io.element.android.libraries.ui.strings.CommonStrings
 fun JoinButton(
     showProgress: Boolean,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     CompositionLocalProvider(LocalContentColor provides ElementTheme.colors.textActionAccent) {
         TextButton(
+            modifier = modifier,
             text = stringResource(CommonStrings.action_join),
             onClick = onClick,
             size = ButtonSize.LargeLowPadding,

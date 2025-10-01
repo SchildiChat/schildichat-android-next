@@ -55,6 +55,7 @@ fun aSpaceState(
     children: List<SpaceRoom> = emptyList(),
     seenSpaceInvites: Set<RoomId> = emptySet(),
     joiningRooms: Set<RoomId> = emptySet(),
+    joinActions: Map<RoomId, AsyncAction<Unit>> = joiningRooms.associateWith { AsyncAction.Loading },
     hideInvitesAvatar: Boolean = false,
     hasMoreToLoad: Boolean = false,
     acceptDeclineInviteState: AcceptDeclineInviteState = anAcceptDeclineInviteState(),
@@ -64,7 +65,7 @@ fun aSpaceState(
     seenSpaceInvites = seenSpaceInvites.toImmutableSet(),
     hideInvitesAvatar = hideInvitesAvatar,
     hasMoreToLoad = hasMoreToLoad,
-    joinActions = joiningRooms.associateWith { AsyncAction.Loading }.toImmutableMap(),
+    joinActions = joinActions.toImmutableMap(),
     acceptDeclineInviteState = acceptDeclineInviteState,
     eventSink = {}
 )

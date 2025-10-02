@@ -33,7 +33,6 @@ import io.element.android.libraries.dateformatter.test.FakeDateFormatter
 import io.element.android.libraries.eventformatter.api.TimelineEventFormatter
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.timeline.item.event.EventContent
-import io.element.android.libraries.matrix.api.user.CurrentSessionIdHolder
 import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.matrix.test.permalink.FakePermalinkParser
 import io.element.android.libraries.mediaviewer.test.util.FileExtensionExtractorWithoutValidation
@@ -78,7 +77,7 @@ internal fun TestScope.aTimelineItemsFactory(
                         stateFactory = TimelineItemContentStateFactory(timelineEventFormatter),
                         failedToParseMessageFactory = TimelineItemContentFailedToParseMessageFactory(),
                         failedToParseStateFactory = TimelineItemContentFailedToParseStateFactory(),
-                        currentSessionIdHolder = CurrentSessionIdHolder(matrixClient),
+                        sessionId = matrixClient.sessionId,
                     ),
                     matrixClient = matrixClient,
                     dateFormatter = FakeDateFormatter(),

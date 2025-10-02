@@ -19,9 +19,8 @@ import io.element.android.features.verifysession.api.OutgoingVerificationEntryPo
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.UserId
-import io.element.android.libraries.matrix.api.user.CurrentSessionIdHolder
+import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.matrix.test.A_USER_ID
-import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.mediaviewer.api.MediaViewerEntryPoint
 import io.element.android.tests.testutils.lambda.lambdaError
 import io.element.android.tests.testutils.node.TestParentNode
@@ -43,7 +42,7 @@ class DefaultUserProfileEntryPointTest {
             UserProfileFlowNode(
                 buildContext = buildContext,
                 plugins = plugins,
-                sessionIdHolder = CurrentSessionIdHolder(FakeMatrixClient()),
+                sessionId = A_SESSION_ID,
                 elementCallEntryPoint = object : ElementCallEntryPoint {
                     override fun startCall(callType: CallType) = lambdaError()
                     override suspend fun handleIncomingCall(

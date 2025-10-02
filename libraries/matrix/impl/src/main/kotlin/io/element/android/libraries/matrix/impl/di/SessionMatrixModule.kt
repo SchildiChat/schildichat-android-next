@@ -13,6 +13,7 @@ import dev.zacsweers.metro.Provides
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.di.annotations.SessionCoroutineScope
 import io.element.android.libraries.matrix.api.MatrixClient
+import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.encryption.EncryptionService
 import io.element.android.libraries.matrix.api.media.MatrixMediaLoader
 import io.element.android.libraries.matrix.api.media.MediaPreviewService
@@ -27,6 +28,11 @@ import kotlinx.coroutines.CoroutineScope
 @BindingContainer
 @ContributesTo(SessionScope::class)
 object SessionMatrixModule {
+    @Provides
+    fun providesSessionId(matrixClient: MatrixClient): SessionId {
+        return matrixClient.sessionId
+    }
+
     @Provides
     fun providesSessionVerificationService(matrixClient: MatrixClient): SessionVerificationService {
         return matrixClient.sessionVerificationService()

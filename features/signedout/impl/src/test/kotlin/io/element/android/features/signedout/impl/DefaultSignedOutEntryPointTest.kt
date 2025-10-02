@@ -28,7 +28,7 @@ class DefaultSignedOutEntryPointTest {
                 buildContext = buildContext,
                 plugins = plugins,
                 presenterFactory = { sessionId ->
-                    assertThat(sessionId).isEqualTo(A_SESSION_ID.value)
+                    assertThat(sessionId).isEqualTo(A_SESSION_ID)
                     createSignedOutPresenter()
                 }
             )

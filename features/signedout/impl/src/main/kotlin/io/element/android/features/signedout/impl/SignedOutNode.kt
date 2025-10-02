@@ -32,7 +32,7 @@ class SignedOutNode(
     ) : NodeInputs
 
     private val inputs: Inputs = inputs()
-    private val presenter = presenterFactory.create(inputs.sessionId.value)
+    private val presenter = presenterFactory.create(inputs.sessionId)
 
     @Composable
     override fun View(modifier: Modifier) {

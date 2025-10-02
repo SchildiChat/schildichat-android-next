@@ -27,10 +27,11 @@ import androidx.media3.transformer.ProgressHolder
 import androidx.media3.transformer.TransformationRequest
 import androidx.media3.transformer.Transformer
 import androidx.media3.transformer.VideoEncoderSettings
+import dev.zacsweers.metro.Inject
 import io.element.android.libraries.androidutils.file.createTmpFile
 import io.element.android.libraries.androidutils.file.safeDelete
 import io.element.android.libraries.core.extensions.runCatchingExceptions
-import io.element.android.libraries.di.ApplicationContext
+import io.element.android.libraries.di.annotations.ApplicationContext
 import io.element.android.libraries.preferences.api.store.VideoCompressionPreset
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -42,9 +43,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
-import javax.inject.Inject
 
-class VideoCompressor @Inject constructor(
+@Inject
+class VideoCompressor(
     @ApplicationContext private val context: Context,
 ) {
     @OptIn(UnstableApi::class)
@@ -61,8 +62,8 @@ class VideoCompressor @Inject constructor(
         val width = metadata?.width ?: Int.MAX_VALUE
         val height = metadata?.height ?: Int.MAX_VALUE
 
-        val videoResizeEffect = videoCompressorConfig.videoCompressorHelper?.let {
-            val outputSize = it.getOutputSize(Size(width, height))
+        val videoResizeEffect = run {
+            val outputSize = videoCompressorConfig.videoCompressorHelper.getOutputSize(Size(width, height))
             if (metadata?.rotation == 90 || metadata?.rotation == 270) {
                 // If the video is rotated, we need to swap width and height
                 Presentation.createForWidthAndHeight(
@@ -89,19 +90,14 @@ class VideoCompressor @Inject constructor(
         val inputMediaItem = MediaItem.fromUri(uri)
         val outputMediaItem = EditedMediaItem.Builder(inputMediaItem)
             .setFrameRate(newFrameRate)
-            .run {
-                if (videoResizeEffect != null) {
-                    setEffects(Effects(emptyList(), listOf(videoResizeEffect)))
-                } else {
-                    this
-                }
-            }
+            .setEffects(Effects(emptyList(), listOf(videoResizeEffect)))
             .build()
 
         val encoderFactory = DefaultEncoderFactory.Builder(context)
             .setRequestedVideoEncoderSettings(
                 VideoEncoderSettings.Builder()
-                    .setBitrateMode(MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_CBR)
+                    // Use VBR which is generally better for quality and compatibility, although slightly worse for file size
+                    .setBitrateMode(MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR)
                     .setBitrate(newBitrate)
                     .build()
             )

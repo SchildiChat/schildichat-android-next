@@ -27,7 +27,11 @@ class VideoCompressorHelper(
     fun getOutputSize(inputSize: Size): Size {
         val resultMajor = min(inputSize.major(), maxSize)
         val aspectRatio = inputSize.major().toFloat() / inputSize.minor().toFloat()
-        return Size(resultMajor, (resultMajor / aspectRatio).roundToInt())
+        return if (inputSize.isLandscape()) {
+            Size(resultMajor, (resultMajor / aspectRatio).roundToInt())
+        } else {
+            Size((resultMajor / aspectRatio).roundToInt(), resultMajor)
+        }
     }
 
     /**
@@ -42,5 +46,6 @@ class VideoCompressorHelper(
     }
 }
 
-internal fun Size.major(): Int = if (width > height) width else height
-internal fun Size.minor(): Int = if (width < height) width else height
+private fun Size.isLandscape(): Boolean = width > height
+private fun Size.major(): Int = if (isLandscape()) width else height
+private fun Size.minor(): Int = if (isLandscape()) height else width

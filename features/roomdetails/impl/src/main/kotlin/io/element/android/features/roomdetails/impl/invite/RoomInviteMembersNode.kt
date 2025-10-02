@@ -8,15 +8,16 @@
 package io.element.android.features.roomdetails.impl.invite
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedInject
 import im.vector.app.features.analytics.plan.MobileScreen
-import io.element.android.anvilannotations.ContributesNode
+import io.element.android.annotations.ContributesNode
 import io.element.android.features.invitepeople.api.InvitePeoplePresenter
 import io.element.android.features.invitepeople.api.InvitePeopleRenderer
 import io.element.android.libraries.di.RoomScope
@@ -24,7 +25,8 @@ import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.services.analytics.api.AnalyticsService
 
 @ContributesNode(RoomScope::class)
-class RoomInviteMembersNode @AssistedInject constructor(
+@AssistedInject
+class RoomInviteMembersNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
     private val analyticsService: AnalyticsService,
@@ -48,11 +50,18 @@ class RoomInviteMembersNode @AssistedInject constructor(
     @Composable
     override fun View(modifier: Modifier) {
         val state = invitePeoplePresenter.present()
+
+        // Once invites have been sent successfully, close the Invite view.
+        LaunchedEffect(state.sendInvitesAction) {
+            if (state.sendInvitesAction.isReady()) {
+                navigateUp()
+            }
+        }
+
         RoomInviteMembersView(
             state = state,
             modifier = modifier,
-            onBackClick = { navigateUp() },
-            onDone = { navigateUp() }
+            onBackClick = { navigateUp() }
         ) {
             invitePeopleRenderer.Render(state, Modifier)
         }

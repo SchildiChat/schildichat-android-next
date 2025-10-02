@@ -11,7 +11,6 @@ import com.google.common.truth.Truth.assertThat
 import io.element.android.appconfig.OnBoardingConfig
 import io.element.android.features.enterprise.api.EnterpriseService
 import io.element.android.features.enterprise.test.FakeEnterpriseService
-import io.element.android.features.login.impl.DefaultLoginUserStory
 import io.element.android.features.login.impl.accesscontrol.DefaultAccountProviderAccessControl
 import io.element.android.features.login.impl.login.LoginHelper
 import io.element.android.features.login.impl.web.FakeWebClientUrlForAuthenticationRetriever
@@ -30,6 +29,9 @@ import io.element.android.libraries.matrix.test.auth.FakeMatrixAuthenticationSer
 import io.element.android.libraries.matrix.test.core.aBuildMeta
 import io.element.android.libraries.oidc.api.OidcActionFlow
 import io.element.android.libraries.oidc.test.customtab.FakeOidcActionFlow
+import io.element.android.libraries.sessionstorage.api.SessionStore
+import io.element.android.libraries.sessionstorage.test.InMemorySessionStore
+import io.element.android.libraries.sessionstorage.test.aSessionData
 import io.element.android.libraries.wellknown.api.WellknownRetriever
 import io.element.android.tests.testutils.WarmUpRule
 import io.element.android.tests.testutils.test
@@ -80,7 +82,36 @@ class OnBoardingPresenterTest {
             assertThat(initialState.productionApplicationName).isEqualTo("B")
             assertThat(initialState.canCreateAccount).isEqualTo(OnBoardingConfig.CAN_CREATE_ACCOUNT)
             assertThat(initialState.canReportBug).isFalse()
+            assertThat(initialState.isAddingAccount).isFalse()
             assertThat(awaitItem().canLoginWithQrCode).isTrue()
+        }
+    }
+
+    @Test
+    fun `present - initial state adding account`() = runTest {
+        val presenter = createPresenter(
+            sessionStore = InMemorySessionStore(
+                initialList = listOf(
+                    aSessionData()
+                )
+            )
+        )
+        presenter.test {
+            skipItems(1)
+            val initialState = awaitItem()
+            assertThat(initialState.isAddingAccount).isTrue()
+        }
+    }
+
+    @Test
+    fun `present - on boarding logo`() = runTest {
+        val presenter = createPresenter(
+            onBoardingLogoResIdProvider = OnBoardingLogoResIdProvider { 42 },
+        )
+        presenter.test {
+            skipItems(1)
+            val initialState = awaitItem()
+            assertThat(initialState.onBoardingLogoResId).isEqualTo(42)
         }
     }
 
@@ -224,6 +255,8 @@ private fun createPresenter(
     wellknownRetriever: WellknownRetriever = FakeWellknownRetriever(),
     rageshakeFeatureAvailability: () -> Flow<Boolean> = { flowOf(true) },
     loginHelper: LoginHelper = createLoginHelper(),
+    onBoardingLogoResIdProvider: OnBoardingLogoResIdProvider = OnBoardingLogoResIdProvider { null },
+    sessionStore: SessionStore = InMemorySessionStore(),
 ) = OnBoardingPresenter(
     params = params,
     buildMeta = buildMeta,
@@ -234,16 +267,16 @@ private fun createPresenter(
     ),
     rageshakeFeatureAvailability = rageshakeFeatureAvailability,
     loginHelper = loginHelper,
+    onBoardingLogoResIdProvider = onBoardingLogoResIdProvider,
+    sessionStore = sessionStore,
 )
 
 fun createLoginHelper(
     oidcActionFlow: OidcActionFlow = FakeOidcActionFlow(),
     authenticationService: MatrixAuthenticationService = FakeMatrixAuthenticationService(),
-    defaultLoginUserStory: DefaultLoginUserStory = DefaultLoginUserStory(),
     webClientUrlForAuthenticationRetriever: WebClientUrlForAuthenticationRetriever = FakeWebClientUrlForAuthenticationRetriever(),
 ): LoginHelper = LoginHelper(
     oidcActionFlow = oidcActionFlow,
     authenticationService = authenticationService,
-    defaultLoginUserStory = defaultLoginUserStory,
     webClientUrlForAuthenticationRetriever = webClientUrlForAuthenticationRetriever,
 )

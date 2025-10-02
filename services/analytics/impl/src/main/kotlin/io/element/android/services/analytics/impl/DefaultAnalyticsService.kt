@@ -7,14 +7,17 @@
 
 package io.element.android.services.analytics.impl
 
-import com.squareup.anvil.annotations.ContributesBinding
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
+import dev.zacsweers.metro.binding
 import im.vector.app.features.analytics.itf.VectorAnalyticsEvent
 import im.vector.app.features.analytics.itf.VectorAnalyticsScreen
 import im.vector.app.features.analytics.plan.SuperProperties
 import im.vector.app.features.analytics.plan.UserProperties
-import io.element.android.libraries.di.AppScope
-import io.element.android.libraries.di.SingleIn
 import io.element.android.libraries.di.annotations.AppCoroutineScope
+import io.element.android.libraries.sessionstorage.api.SessionStore
 import io.element.android.libraries.sessionstorage.api.observer.SessionListener
 import io.element.android.libraries.sessionstorage.api.observer.SessionObserver
 import io.element.android.services.analytics.api.AnalyticsService
@@ -27,17 +30,18 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 import java.util.concurrent.atomic.AtomicBoolean
-import javax.inject.Inject
 
 @SingleIn(AppScope::class)
-@ContributesBinding(AppScope::class, boundType = AnalyticsService::class, rank = ContributesBinding.RANK_HIGHEST)
-class DefaultAnalyticsService @Inject constructor(
+@ContributesBinding(AppScope::class, binding = binding<AnalyticsService>())
+@Inject
+class DefaultAnalyticsService(
     private val analyticsProviders: Set<@JvmSuppressWildcards AnalyticsProvider>,
     private val analyticsStore: AnalyticsStore,
 //    private val lateInitUserPropertiesFactory: LateInitUserPropertiesFactory,
     @AppCoroutineScope
     private val coroutineScope: CoroutineScope,
     private val sessionObserver: SessionObserver,
+    private val sessionStore: SessionStore,
 ) : AnalyticsService, SessionListener {
     // Cache for the store values
     private val userConsent = AtomicBoolean(false)
@@ -68,10 +72,6 @@ class DefaultAnalyticsService @Inject constructor(
         analyticsStore.setDidAskUserConsent()
     }
 
-    override suspend fun reset() {
-        analyticsStore.setDidAskUserConsent(false)
-    }
-
     override suspend fun setAnalyticsId(analyticsId: String) {
         Timber.tag(analyticsTag.value).d("setAnalyticsId($analyticsId)")
         analyticsStore.setAnalyticsId(analyticsId)
@@ -82,8 +82,10 @@ class DefaultAnalyticsService @Inject constructor(
     }
 
     override suspend fun onSessionDeleted(userId: String) {
-        // Delete the store
-        analyticsStore.reset()
+        // Delete the store when the last session is deleted
+        if (sessionStore.getAllSessions().isEmpty()) {
+            analyticsStore.reset()
+        }
     }
 
     private fun observeUserConsent() {

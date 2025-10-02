@@ -30,6 +30,7 @@ import io.element.android.libraries.matrix.api.room.RoomMembershipObserver
 import io.element.android.libraries.matrix.api.room.alias.ResolvedRoomAlias
 import io.element.android.libraries.matrix.api.roomdirectory.RoomDirectoryService
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
+import io.element.android.libraries.matrix.api.spaces.SpaceService
 import io.element.android.libraries.matrix.api.sync.SlidingSyncVersion
 import io.element.android.libraries.matrix.api.user.MatrixSearchUserResults
 import io.element.android.libraries.matrix.api.user.MatrixUser
@@ -42,6 +43,7 @@ import io.element.android.libraries.matrix.test.notificationsettings.FakeNotific
 import io.element.android.libraries.matrix.test.pushers.FakePushersService
 import io.element.android.libraries.matrix.test.roomdirectory.FakeRoomDirectoryService
 import io.element.android.libraries.matrix.test.roomlist.FakeRoomListService
+import io.element.android.libraries.matrix.test.spaces.FakeSpaceService
 import io.element.android.libraries.matrix.test.sync.FakeSyncService
 import io.element.android.libraries.matrix.test.verification.FakeSessionVerificationService
 import io.element.android.tests.testutils.lambda.lambdaError
@@ -65,6 +67,7 @@ class FakeMatrixClient(
     private val userDisplayName: String? = A_USER_NAME,
     private val userAvatarUrl: String? = AN_AVATAR_URL,
     override val roomListService: RoomListService = FakeRoomListService(),
+    override val spaceService: SpaceService = FakeSpaceService(),
     override val mediaLoader: MatrixMediaLoader = FakeMatrixMediaLoader(),
     private val sessionVerificationService: FakeSessionVerificationService = FakeSessionVerificationService(),
     private val pushersService: FakePushersService = FakePushersService(),
@@ -87,7 +90,6 @@ class FakeMatrixClient(
     private val canDeactivateAccountResult: () -> Boolean = { lambdaError() },
     private val deactivateAccountResult: (String, Boolean) -> Result<Unit> = { _, _ -> lambdaError() },
     private val currentSlidingSyncVersionLambda: () -> Result<SlidingSyncVersion> = { lambdaError() },
-    private val availableSlidingSyncVersionsLambda: () -> Result<List<SlidingSyncVersion>> = { lambdaError() },
     private val ignoreUserResult: (UserId) -> Result<Unit> = { lambdaError() },
     private var unIgnoreUserResult: (UserId) -> Result<Unit> = { Result.success(Unit) },
     private val canReportRoomLambda: () -> Boolean = { false },
@@ -95,6 +97,8 @@ class FakeMatrixClient(
     override val ignoredUsersFlow: StateFlow<ImmutableList<UserId>> = MutableStateFlow(persistentListOf()),
     private val getMaxUploadSizeResult: () -> Result<Long> = { lambdaError() },
     private val getJoinedRoomIdsResult: () -> Result<Set<RoomId>> = { Result.success(emptySet()) },
+    private val getRecentEmojisLambda: () -> Result<List<String>> = { Result.success(emptyList()) },
+    private val addRecentEmojiLambda: (String) -> Result<Unit> = { Result.success(Unit) },
 ) : MatrixClient {
     var setDisplayNameCalled: Boolean = false
         private set
@@ -336,10 +340,6 @@ class FakeMatrixClient(
         return currentSlidingSyncVersionLambda()
     }
 
-    override suspend fun availableSlidingSyncVersions(): Result<List<SlidingSyncVersion>> {
-        return availableSlidingSyncVersionsLambda()
-    }
-
     override suspend fun canReportRoom(): Boolean {
         return canReportRoomLambda()
     }
@@ -350,5 +350,13 @@ class FakeMatrixClient(
 
     override suspend fun getMaxFileUploadSize(): Result<Long> {
         return getMaxUploadSizeResult()
+    }
+
+    override suspend fun addRecentEmoji(emoji: String): Result<Unit> {
+        return addRecentEmojiLambda(emoji)
+    }
+
+    override suspend fun getRecentEmojis(): Result<List<String>> {
+        return getRecentEmojisLambda()
     }
 }

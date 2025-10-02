@@ -73,6 +73,7 @@ import io.element.android.tests.testutils.ensureCalledOnce
 import io.element.android.tests.testutils.pressBack
 import io.element.android.tests.testutils.setSafeContent
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
@@ -369,6 +370,7 @@ class MessagesViewTest {
                     displayEmojiReactions = true,
                     actions = persistentListOf(TimelineItemAction.Edit),
                     verifiedUserSendFailure = VerifiedUserSendFailure.None,
+                    recentEmojis = persistentListOf(),
                 )
             ),
         )
@@ -461,6 +463,7 @@ class MessagesViewTest {
                     displayEmojiReactions = true,
                     verifiedUserSendFailure = VerifiedUserSendFailure.None,
                     actions = persistentListOf(TimelineItemAction.Edit),
+                    recentEmojis = persistentListOf(),
                 ),
             ),
             customReactionState = aCustomReactionState(
@@ -490,6 +493,7 @@ class MessagesViewTest {
                     displayEmojiReactions = true,
                     verifiedUserSendFailure = aChangedIdentitySendFailure(),
                     actions = persistentListOf(),
+                    recentEmojis = persistentListOf(),
                 ),
             ),
             timelineState = aTimelineState(eventSink = eventsRecorder)
@@ -518,13 +522,13 @@ class MessagesViewTest {
                 target = CustomReactionState.Target.Success(
                     event = timelineItem,
                     emojibaseStore = EmojibaseStore(
-                        categories = mapOf(
-                            EmojibaseCategory.People to listOf(
+                        categories = persistentMapOf(
+                            EmojibaseCategory.People to persistentListOf(
                                 Emoji(
                                     hexcode = "",
                                     label = "",
-                                    tags = emptyList(),
-                                    shortcodes = emptyList(),
+                                    tags = persistentListOf(),
+                                    shortcodes = persistentListOf(),
                                     unicode = aUnicode,
                                     skins = null,
                                 )

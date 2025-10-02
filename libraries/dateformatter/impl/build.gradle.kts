@@ -1,4 +1,5 @@
-import extension.setupAnvil
+import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 /*
  * Copyright 2022-2024 New Vector Ltd.
@@ -11,7 +12,7 @@ plugins {
     id("io.element.android-compose-library")
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 android {
     namespace = "io.element.android.libraries.dateformatter.impl"
@@ -31,7 +32,6 @@ android {
     }
 
     dependencies {
-        implementation(libs.dagger)
         implementation(projects.libraries.core)
         implementation(projects.libraries.designsystem)
         implementation(projects.libraries.di)
@@ -41,13 +41,8 @@ android {
         api(projects.libraries.dateformatter.api)
         api(libs.datetime)
 
-        testImplementation(libs.test.junit)
-        testImplementation(libs.test.truth)
-        testImplementation(libs.test.turbine)
-        testImplementation(libs.test.robolectric)
+        testCommonDependencies(libs, true)
         testImplementation(projects.libraries.dateformatter.test)
         testImplementation(projects.services.toolbox.test)
-        testImplementation(projects.tests.testutils)
-        testImplementation(libs.androidx.compose.ui.test.junit)
     }
 }

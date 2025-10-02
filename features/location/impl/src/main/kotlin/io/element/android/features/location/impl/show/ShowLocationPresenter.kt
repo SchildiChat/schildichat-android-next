@@ -14,9 +14,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import io.element.android.features.location.api.Location
 import io.element.android.features.location.impl.common.MapDefaults
 import io.element.android.features.location.impl.common.actions.LocationActions
@@ -26,15 +26,16 @@ import io.element.android.features.location.impl.common.permissions.PermissionsS
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.meta.BuildMeta
 
-class ShowLocationPresenter @AssistedInject constructor(
+@AssistedInject
+class ShowLocationPresenter(
+    @Assisted private val location: Location,
+    @Assisted private val description: String?,
     permissionsPresenterFactory: PermissionsPresenter.Factory,
     private val locationActions: LocationActions,
     private val buildMeta: BuildMeta,
-    @Assisted private val location: Location,
-    @Assisted private val description: String?
 ) : Presenter<ShowLocationState> {
     @AssistedFactory
-    interface Factory {
+    fun interface Factory {
         fun create(location: Location, description: String?): ShowLocationPresenter
     }
 

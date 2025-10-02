@@ -26,6 +26,7 @@ import io.element.android.features.messages.impl.pinned.banner.aLoadedPinnedMess
 import io.element.android.features.messages.impl.timeline.TimelineController
 import io.element.android.features.messages.impl.timeline.TimelineEvents
 import io.element.android.features.messages.impl.timeline.aTimelineState
+import io.element.android.features.messages.impl.timeline.model.TimelineItemThreadInfo
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemFileContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemImageContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextContent
@@ -46,12 +47,17 @@ import io.element.android.libraries.core.mimetype.MimeTypes
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarDispatcher
+import io.element.android.libraries.featureflag.api.FeatureFlags
+import io.element.android.libraries.featureflag.test.FakeFeatureFlagService
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.core.ThreadId
 import io.element.android.libraries.matrix.api.core.UserId
+import io.element.android.libraries.matrix.api.core.toThreadId
 import io.element.android.libraries.matrix.api.encryption.identity.IdentityState
 import io.element.android.libraries.matrix.api.media.MediaSource
 import io.element.android.libraries.matrix.api.permalink.PermalinkParser
+import io.element.android.libraries.matrix.api.recentemojis.AddRecentEmoji
 import io.element.android.libraries.matrix.api.room.MessageEventType
 import io.element.android.libraries.matrix.api.room.RoomMembersState
 import io.element.android.libraries.matrix.api.room.RoomMembershipState
@@ -67,8 +73,10 @@ import io.element.android.libraries.matrix.test.A_CAPTION
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.matrix.test.A_SESSION_ID_2
+import io.element.android.libraries.matrix.test.A_THREAD_ID
 import io.element.android.libraries.matrix.test.A_USER_ID
 import io.element.android.libraries.matrix.test.A_USER_ID_2
+import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.matrix.test.core.aBuildMeta
 import io.element.android.libraries.matrix.test.encryption.FakeEncryptionService
 import io.element.android.libraries.matrix.test.permalink.FakePermalinkParser
@@ -154,9 +162,9 @@ class MessagesPresenterTest {
     @Test
     fun `present - handle toggling a reaction`() = runTest {
         val coroutineDispatchers = testCoroutineDispatchers(useUnconfinedTestDispatcher = true)
-        val toggleReactionSuccess = lambdaRecorder { _: String, _: EventOrTransactionId -> Result.success(Unit) }
+        val toggleReactionSuccess = lambdaRecorder { _: String, _: EventOrTransactionId -> Result.success(true) }
         val toggleReactionFailure =
-            lambdaRecorder { _: String, _: EventOrTransactionId -> Result.failure<Unit>(IllegalStateException("Failed to send reaction")) }
+            lambdaRecorder { _: String, _: EventOrTransactionId -> Result.failure<Boolean>(IllegalStateException("Failed to send reaction")) }
 
         val timeline = FakeTimeline().apply {
             this.toggleReactionLambda = toggleReactionSuccess
@@ -194,7 +202,11 @@ class MessagesPresenterTest {
     @Test
     fun `present - handle toggling a reaction twice`() = runTest {
         val coroutineDispatchers = testCoroutineDispatchers(useUnconfinedTestDispatcher = true)
-        val toggleReactionSuccess = lambdaRecorder { _: String, _: EventOrTransactionId -> Result.success(Unit) }
+        var toggle = false
+        val toggleReactionSuccess = lambdaRecorder { _: String, _: EventOrTransactionId ->
+            toggle = !toggle
+            Result.success(toggle)
+        }
 
         val timeline = FakeTimeline().apply {
             this.toggleReactionLambda = toggleReactionSuccess
@@ -784,8 +796,8 @@ class MessagesPresenterTest {
                 canUserPinUnpinResult = { Result.success(true) },
                 canUserSendMessageResult = { _, messageEventType ->
                     when (messageEventType) {
-                        MessageEventType.ROOM_MESSAGE -> Result.success(true)
-                        MessageEventType.REACTION -> Result.success(true)
+                        MessageEventType.RoomMessage -> Result.success(true)
+                        MessageEventType.Reaction -> Result.success(true)
                         else -> lambdaError()
                     }
                 },
@@ -810,8 +822,8 @@ class MessagesPresenterTest {
                 canUserPinUnpinResult = { Result.success(true) },
                 canUserSendMessageResult = { _, messageEventType ->
                     when (messageEventType) {
-                        MessageEventType.ROOM_MESSAGE -> Result.success(false)
-                        MessageEventType.REACTION -> Result.success(false)
+                        MessageEventType.RoomMessage -> Result.success(false)
+                        MessageEventType.Reaction -> Result.success(false)
                         else -> lambdaError()
                     }
                 },
@@ -1158,6 +1170,74 @@ class MessagesPresenterTest {
         }
     }
 
+    @Test
+    fun `present - handle action reply in thread for an event in a thread`() = runTest {
+        val openThreadLambda = lambdaRecorder { _: ThreadId, _: EventId? -> }
+        val presenter = createMessagesPresenter(
+            navigator = FakeMessagesNavigator(onOpenThreadLambda = openThreadLambda),
+            featureFlagService = FakeFeatureFlagService(
+                initialState = mapOf(FeatureFlags.Threads.key to true)
+            ),
+        )
+        presenter.testWithLifecycleOwner {
+            val initialState = awaitItem()
+            initialState.eventSink(MessagesEvents.HandleAction(
+                action = TimelineItemAction.ReplyInThread,
+                event = aMessageEvent(threadInfo = TimelineItemThreadInfo.ThreadResponse(A_THREAD_ID))
+            ))
+            awaitItem()
+            openThreadLambda.assertions().isCalledOnce().with(value(A_THREAD_ID), value(null))
+        }
+    }
+
+    @Test
+    fun `present - handle action reply in thread to start a new thread`() = runTest {
+        val openThreadLambda = lambdaRecorder { _: ThreadId, _: EventId? -> }
+        val presenter = createMessagesPresenter(
+            navigator = FakeMessagesNavigator(onOpenThreadLambda = openThreadLambda),
+            featureFlagService = FakeFeatureFlagService(
+                initialState = mapOf(FeatureFlags.Threads.key to true)
+            ),
+        )
+        presenter.testWithLifecycleOwner {
+            val initialState = awaitItem()
+            initialState.eventSink(MessagesEvents.HandleAction(
+                action = TimelineItemAction.ReplyInThread,
+                event = aMessageEvent(
+                    // The event id will be used as the thread id instead
+                    eventId = AN_EVENT_ID,
+                    threadInfo = null,
+                )
+            ))
+            awaitItem()
+            openThreadLambda.assertions().isCalledOnce().with(value(AN_EVENT_ID.toThreadId()), value(null))
+        }
+    }
+
+    @Test
+    fun `present - handle action reply in a thread with threads disabled`() = runTest {
+        val composerRecorder = EventsRecorder<MessageComposerEvents>()
+        val presenter = createMessagesPresenter(
+            featureFlagService = FakeFeatureFlagService(
+                initialState = mapOf(FeatureFlags.Threads.key to false)
+            ),
+            messageComposerPresenter = { aMessageComposerState(eventSink = composerRecorder) },
+        )
+        presenter.testWithLifecycleOwner {
+            val initialState = awaitItem()
+            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.ReplyInThread, aMessageEvent()))
+            awaitItem()
+            composerRecorder.assertSingle(
+                MessageComposerEvents.SetMode(
+                    composerMode = MessageComposerMode.Reply(
+                        replyToDetails = InReplyToDetails.Loading(AN_EVENT_ID),
+                        hideImage = false,
+                    )
+                )
+            )
+        }
+    }
+
     private fun TestScope.createMessagesPresenter(
         coroutineDispatchers: CoroutineDispatchers = testCoroutineDispatchers(),
         joinedRoom: FakeJoinedRoom = FakeJoinedRoom(
@@ -1189,7 +1269,9 @@ class MessagesPresenterTest {
             aRoomMemberModerationState()
         },
         encryptionService: FakeEncryptionService = FakeEncryptionService(),
+        featureFlagService: FakeFeatureFlagService = FakeFeatureFlagService(),
         actionListEventSink: (ActionListEvents) -> Unit = {},
+        addRecentEmoji: AddRecentEmoji = AddRecentEmoji(FakeMatrixClient(), testCoroutineDispatchers()),
     ): MessagesPresenter {
         return MessagesPresenter(
             room = joinedRoom,
@@ -1217,6 +1299,8 @@ class MessagesPresenterTest {
             permalinkParser = permalinkParser,
             encryptionService = encryptionService,
             analyticsService = analyticsService,
+            featureFlagService = featureFlagService,
+            addRecentEmoji = addRecentEmoji,
         )
     }
 }

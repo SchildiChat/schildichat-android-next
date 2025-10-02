@@ -29,6 +29,8 @@ import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.tests.testutils.lambda.lambdaError
 import io.element.android.tests.testutils.simulateLongTask
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.test.TestScope
@@ -59,7 +61,7 @@ class FakeBaseRoom(
     private val markAsReadResult: (ReceiptType) -> Result<Unit> = { Result.success(Unit) },
     private val powerLevelsResult: () -> Result<RoomPowerLevelsValues> = { lambdaError() },
     private val leaveRoomLambda: () -> Result<Unit> = { lambdaError() },
-    private val updateMembersResult: () -> Unit = { lambdaError() },
+    private var updateMembersResult: () -> Unit = { lambdaError() },
     private val getMembersResult: (Int) -> Result<List<RoomMember>> = { lambdaError() },
     private val saveComposerDraftLambda: (ComposerDraft) -> Result<Unit> = { _: ComposerDraft -> Result.success(Unit) },
     private val loadComposerDraftLambda: () -> Result<ComposerDraft?> = { Result.success<ComposerDraft?>(null) },
@@ -69,12 +71,19 @@ class FakeBaseRoom(
     private val forgetResult: () -> Result<Unit> = { lambdaError() },
     private val reportRoomResult: (String?) -> Result<Unit> = { lambdaError() },
     private val predecessorRoomResult: () -> PredecessorRoom? = { null },
+    private val threadRootIdForEventResult: (EventId) -> Result<ThreadId?> = { lambdaError() },
 ) : BaseRoom {
     private val _roomInfoFlow: MutableStateFlow<RoomInfo> = MutableStateFlow(initialRoomInfo)
     override val roomInfoFlow: StateFlow<RoomInfo> = _roomInfoFlow
 
     fun givenRoomInfo(roomInfo: RoomInfo) {
         _roomInfoFlow.tryEmit(roomInfo)
+    }
+
+    private val declineCallFlowMap: MutableMap<EventId, MutableSharedFlow<UserId>> = mutableMapOf()
+
+    suspend fun givenDecliner(userId: UserId, forNotificationEventId: EventId) {
+        declineCallFlowMap[forNotificationEventId]?.emit(userId)
     }
 
     override val membersStateFlow: MutableStateFlow<RoomMembersState> = MutableStateFlow(RoomMembersState.Unknown)
@@ -222,7 +231,24 @@ class FakeBaseRoom(
 
     override suspend fun reportRoom(reason: String?) = reportRoomResult(reason)
 
+    override suspend fun declineCall(notificationEventId: EventId): Result<Unit> {
+        return Result.success(Unit)
+    }
+
+    override suspend fun subscribeToCallDecline(notificationEventId: EventId): Flow<UserId> {
+        val flow = declineCallFlowMap.getOrPut(notificationEventId, { MutableSharedFlow() })
+        return flow
+    }
+
     override fun predecessorRoom(): PredecessorRoom? = predecessorRoomResult()
+
+    fun givenUpdateMembersResult(result: () -> Unit) {
+        updateMembersResult = result
+    }
+
+    override suspend fun threadRootIdForEvent(eventId: EventId): Result<ThreadId?> {
+        return threadRootIdForEventResult(eventId)
+    }
 }
 
 fun defaultRoomPowerLevelValues() = RoomPowerLevelsValues(

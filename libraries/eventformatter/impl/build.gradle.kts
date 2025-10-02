@@ -1,4 +1,5 @@
-import extension.setupAnvil
+import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 /*
  * Copyright 2023, 2024 New Vector Ltd.
@@ -21,7 +22,7 @@ android {
     }
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 dependencies {
     implementation(projects.libraries.core)
@@ -32,9 +33,7 @@ dependencies {
     implementation(projects.services.toolbox.api)
     api(projects.libraries.eventformatter.api)
 
+    testCommonDependencies(libs)
     testImplementation(projects.services.toolbox.impl)
-    testImplementation(libs.test.junit)
-    testImplementation(libs.test.robolectric)
-    testImplementation(libs.test.truth)
     testImplementation(projects.libraries.matrix.test)
 }

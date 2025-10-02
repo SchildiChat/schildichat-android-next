@@ -13,8 +13,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedInject
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.architecture.runCatchingUpdatingState
@@ -25,11 +25,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.jvm.optionals.getOrElse
 
-class RoomAliasResolverPresenter @AssistedInject constructor(
+@AssistedInject
+class RoomAliasResolverPresenter(
     @Assisted private val roomAlias: RoomAlias,
     private val matrixClient: MatrixClient,
 ) : Presenter<RoomAliasResolverState> {
-    interface Factory {
+    fun interface Factory {
         fun create(
             roomAlias: RoomAlias,
         ): RoomAliasResolverPresenter

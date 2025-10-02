@@ -25,12 +25,12 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.hazeEffect
@@ -49,6 +49,7 @@ import io.element.android.features.home.impl.roomlist.RoomListDeclineInviteMenu
 import io.element.android.features.home.impl.roomlist.RoomListEvents
 import io.element.android.features.home.impl.roomlist.RoomListState
 import io.element.android.features.home.impl.search.RoomListSearchView
+import io.element.android.features.home.impl.spaces.HomeSpacesView
 import io.element.android.features.networkmonitor.api.ui.ConnectivityIndicatorContainer
 import io.element.android.libraries.androidutils.throttler.FirstThrottler
 import io.element.android.libraries.designsystem.preview.ElementPreview
@@ -60,7 +61,6 @@ import io.element.android.libraries.designsystem.theme.components.NavigationBarI
 import io.element.android.libraries.designsystem.theme.components.NavigationBarItem
 import io.element.android.libraries.designsystem.theme.components.NavigationBarText
 import io.element.android.libraries.designsystem.theme.components.Scaffold
-import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarHost
 import io.element.android.libraries.designsystem.utils.snackbar.rememberSnackbarHostState
 import io.element.android.libraries.matrix.api.core.RoomId
@@ -171,12 +171,15 @@ private fun HomeScaffold(
         topBar = {
             RoomListTopBar(
                 title = stringResource(state.currentHomeNavigationBarItem.labelRes),
-                matrixUser = state.matrixUser,
+                currentUserAndNeighbors = state.currentUserAndNeighbors,
                 showAvatarIndicator = state.showAvatarIndicator,
                 areSearchResultsDisplayed = roomListState.searchState.isSearchActive,
                 onToggleSearch = { roomListState.eventSink(RoomListEvents.ToggleSearchResults) },
                 onMenuActionClick = onMenuActionClick,
                 onOpenSettings = onOpenSettings,
+                onAccountSwitch = {
+                    state.eventSink(HomeEvents.SwitchToAccount(it))
+                },
                 scrollBehavior = scrollBehavior,
                 displayMenuItems = state.displayActions,
                 displayFilters = roomListState.displayFilters && state.currentHomeNavigationBarItem == HomeNavigationBarItem.Chats,
@@ -194,7 +197,7 @@ private fun HomeScaffold(
             )
         },
         bottomBar = {
-            if (state.isSpaceFeatureEnabled) {
+            if (state.showNavigationBar) {
                 NavigationBar(
                     containerColor = Color.Transparent,
                     modifier = Modifier
@@ -261,19 +264,17 @@ private fun HomeScaffold(
                     )
                 }
                 HomeNavigationBarItem.Spaces -> {
-                    Box(
+                    HomeSpacesView(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(padding)
                             .consumeWindowInsets(padding)
-                    ) {
-                        Text(
-                            modifier = Modifier.align(Alignment.Center),
-                            text = "Spaces are coming soon!",
-                            style = ElementTheme.typography.fontBodyLgRegular,
-                            color = ElementTheme.colors.textPrimary,
-                        )
-                    }
+                            .hazeSource(state = hazeState),
+                        state = state.homeSpacesState,
+                        onSpaceClick = { spaceId ->
+                            onRoomClick(spaceId)
+                        }
+                    )
                 }
             }
         },
@@ -300,6 +301,25 @@ internal fun RoomListRoomSummary.contentType() = displayType.ordinal
 internal fun HomeViewPreview(@PreviewParameter(HomeStateProvider::class) state: HomeState) = ElementPreview {
     HomeView(
         homeState = state,
+        onRoomClick = {},
+        onSettingsClick = {},
+        onSetUpRecoveryClick = {},
+        onConfirmRecoveryKeyClick = {},
+        onStartChatClick = {},
+        onRoomSettingsClick = {},
+        onReportRoomClick = {},
+        onMenuActionClick = {},
+        onDeclineInviteAndBlockUser = {},
+        acceptDeclineInviteView = {},
+        leaveRoomView = {}
+    )
+}
+
+@Preview
+@Composable
+internal fun HomeViewA11yPreview() = ElementPreview {
+    HomeView(
+        homeState = aHomeState(),
         onRoomClick = {},
         onSettingsClick = {},
         onSetUpRecoveryClick = {},

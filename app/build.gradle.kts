@@ -13,7 +13,6 @@ import com.android.build.gradle.tasks.GenerateBuildConfig
 import com.google.firebase.appdistribution.gradle.firebaseAppDistribution
 import config.BuildTimeConfig
 import extension.AssetCopyTask
-import extension.ComponentMergingStrategy
 import extension.GitBranchNameValueSource
 import extension.GitRevisionValueSource
 import extension.allEnterpriseImpl
@@ -23,8 +22,9 @@ import extension.allServicesImpl
 import extension.buildConfigFieldStr
 import extension.koverDependencies
 import extension.locales
-import extension.setupAnvil
+import extension.setupDependencyInjection
 import extension.setupKover
+import extension.testCommonDependencies
 import java.util.Locale
 
 plugins {
@@ -37,7 +37,7 @@ plugins {
     alias(libs.plugins.licensee)
     alias(libs.plugins.kotlin.serialization)
     // To be able to update the firebase.xml files, uncomment and build the project
-    // id("com.google.gms.google-services")
+    // alias(libs.plugins.gms.google.services)
 }
 
 setupKover()
@@ -103,7 +103,8 @@ android {
     }
 
     val baseAppName = BuildTimeConfig.APPLICATION_NAME
-    logger.warnInBox("Building ${defaultConfig.applicationId} ($baseAppName)")
+    val buildType = if (isEnterpriseBuild) "Enterprise" else "FOSS"
+    logger.warnInBox("Building ${defaultConfig.applicationId} ($baseAppName) [$buildType]")
 
     buildTypes {
         val oidcRedirectSchemeBase = BuildTimeConfig.METADATA_HOST_REVERSED ?: "io.element.android"
@@ -247,11 +248,7 @@ knit {
     }
 }
 
-setupAnvil(
-    generateDaggerCode = true,
-    generateDaggerFactoriesUsingAnvil = false,
-    componentMergingStrategy = ComponentMergingStrategy.KSP,
-)
+setupDependencyInjection()
 
 dependencies {
     allLibrariesImpl()
@@ -260,6 +257,7 @@ dependencies {
         allEnterpriseImpl(project)
         implementation(projects.appicon.enterprise)
     } else {
+        implementation(projects.features.enterprise.implFoss)
         implementation(projects.appicon.element)
     }
     allFeaturesImpl(project)
@@ -293,12 +291,7 @@ dependencies {
 
     implementation(libs.matrix.emojibase.bindings)
 
-    testImplementation(libs.test.junit)
-    testImplementation(libs.test.robolectric)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.molecule.runtime)
-    testImplementation(libs.test.truth)
-    testImplementation(libs.test.turbine)
+    testCommonDependencies(libs)
     testImplementation(projects.libraries.matrix.test)
     testImplementation(projects.services.toolbox.test)
 

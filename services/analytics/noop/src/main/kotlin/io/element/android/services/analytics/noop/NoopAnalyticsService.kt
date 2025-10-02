@@ -7,22 +7,23 @@
 
 package io.element.android.services.analytics.noop
 
-import com.squareup.anvil.annotations.ContributesBinding
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import im.vector.app.features.analytics.itf.VectorAnalyticsEvent
 import im.vector.app.features.analytics.itf.VectorAnalyticsScreen
 import im.vector.app.features.analytics.plan.SuperProperties
 import im.vector.app.features.analytics.plan.UserProperties
-import io.element.android.libraries.di.AppScope
-import io.element.android.libraries.di.SingleIn
 import io.element.android.services.analytics.api.AnalyticsService
 import io.element.android.services.analyticsproviders.api.AnalyticsProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import javax.inject.Inject
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-class NoopAnalyticsService @Inject constructor() : AnalyticsService {
+@Inject
+class NoopAnalyticsService : AnalyticsService {
     override fun getAvailableAnalyticsProviders(): Set<AnalyticsProvider> = emptySet()
     override val userConsentFlow: Flow<Boolean> = flowOf(false)
     override suspend fun setUserConsent(userConsent: Boolean) = Unit
@@ -30,7 +31,6 @@ class NoopAnalyticsService @Inject constructor() : AnalyticsService {
     override suspend fun setDidAskUserConsent() = Unit
     override val analyticsIdFlow: Flow<String> = flowOf("")
     override suspend fun setAnalyticsId(analyticsId: String) = Unit
-    override suspend fun reset() = Unit
     override fun capture(event: VectorAnalyticsEvent) = Unit
     override fun screen(screen: VectorAnalyticsScreen) = Unit
     override fun updateUserProperties(userProperties: UserProperties) = Unit

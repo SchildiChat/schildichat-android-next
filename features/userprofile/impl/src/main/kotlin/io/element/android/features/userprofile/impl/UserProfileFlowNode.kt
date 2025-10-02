@@ -17,9 +17,9 @@ import com.bumble.appyx.core.plugin.plugins
 import com.bumble.appyx.navmodel.backstack.BackStack
 import com.bumble.appyx.navmodel.backstack.operation.pop
 import com.bumble.appyx.navmodel.backstack.operation.push
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
-import io.element.android.anvilannotations.ContributesNode
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedInject
+import io.element.android.annotations.ContributesNode
 import io.element.android.features.call.api.CallType
 import io.element.android.features.call.api.ElementCallEntryPoint
 import io.element.android.features.userprofile.api.UserProfileEntryPoint
@@ -33,18 +33,19 @@ import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.core.UserId
-import io.element.android.libraries.matrix.api.user.CurrentSessionIdHolder
 import io.element.android.libraries.matrix.api.verification.VerificationRequest
 import io.element.android.libraries.mediaviewer.api.MediaViewerEntryPoint
 import kotlinx.parcelize.Parcelize
 
 @ContributesNode(SessionScope::class)
-class UserProfileFlowNode @AssistedInject constructor(
+@AssistedInject
+class UserProfileFlowNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
     private val elementCallEntryPoint: ElementCallEntryPoint,
-    private val sessionIdHolder: CurrentSessionIdHolder,
+    private val sessionId: SessionId,
     private val mediaViewerEntryPoint: MediaViewerEntryPoint,
     private val outgoingVerificationEntryPoint: OutgoingVerificationEntryPoint,
 ) : BaseFlowNode<UserProfileFlowNode.NavTarget>(
@@ -81,7 +82,7 @@ class UserProfileFlowNode @AssistedInject constructor(
                     }
 
                     override fun onStartCall(dmRoomId: RoomId) {
-                        elementCallEntryPoint.startCall(CallType.RoomCall(sessionId = sessionIdHolder.current, roomId = dmRoomId))
+                        elementCallEntryPoint.startCall(CallType.RoomCall(sessionId = sessionId, roomId = dmRoomId))
                     }
 
                     override fun onVerifyUser(userId: UserId) {
@@ -98,7 +99,7 @@ class UserProfileFlowNode @AssistedInject constructor(
                     }
 
                     override fun onViewInTimeline(eventId: EventId) {
-                       // Cannot happen
+                        // Cannot happen
                     }
                 }
                 mediaViewerEntryPoint.nodeBuilder(this, buildContext)

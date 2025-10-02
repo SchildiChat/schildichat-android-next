@@ -7,11 +7,14 @@
 
 package io.element.android.features.messages.impl.timeline
 
-import com.squareup.anvil.annotations.ContributesBinding
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
+import dev.zacsweers.metro.binding
 import io.element.android.features.messages.impl.timeline.di.LiveTimeline
 import io.element.android.libraries.di.RoomScope
-import io.element.android.libraries.di.SingleIn
 import io.element.android.libraries.matrix.api.core.EventId
+import io.element.android.libraries.matrix.api.core.ThreadId
 import io.element.android.libraries.matrix.api.room.CreateTimelineParams
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.timeline.MatrixTimelineItem
@@ -34,15 +37,15 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.io.Closeable
 import java.util.Optional
-import javax.inject.Inject
 
 /**
  * This controller is responsible of using the right timeline to display messages and make associated actions.
  * It can be focused on the live timeline or on a detached timeline (focusing an unknown event).
  */
 @SingleIn(RoomScope::class)
-@ContributesBinding(RoomScope::class, boundType = TimelineProvider::class)
-class TimelineController @Inject constructor(
+@ContributesBinding(RoomScope::class, binding = binding<TimelineProvider>())
+@Inject
+class TimelineController(
     private val room: JoinedRoom,
     @LiveTimeline private val liveTimeline: Timeline,
 ) : Closeable, TimelineProvider {
@@ -72,21 +75,26 @@ class TimelineController @Inject constructor(
         }
     }
 
-    suspend fun focusOnEvent(eventId: EventId): Result<Unit> {
-        return room.createTimeline(CreateTimelineParams.Focused(eventId))
-            .onFailure {
-                if (it is CancellationException) {
-                    throw it
-                }
-            }
-            .map { newDetachedTimeline ->
-                detachedTimelineFlow.getAndUpdate { current ->
-                    if (current.isPresent) {
-                        current.get().close()
+    suspend fun focusOnEvent(eventId: EventId, threadRootId: ThreadId?): Result<EventFocusResult> {
+        return if (threadRootId != null) {
+            Result.success(EventFocusResult.IsInThread(threadRootId))
+        } else {
+            room.createTimeline(CreateTimelineParams.Focused(eventId))
+                .onFailure {
+                    if (it is CancellationException) {
+                        throw it
                     }
-                    Optional.of(newDetachedTimeline)
                 }
-            }
+                .map { newDetachedTimeline ->
+                    detachedTimelineFlow.getAndUpdate { current ->
+                        if (current.isPresent) {
+                            current.get().close()
+                        }
+                        Optional.of(newDetachedTimeline)
+                    }
+                    EventFocusResult.FocusedOnLive
+                }
+        }
     }
 
     /**
@@ -133,4 +141,9 @@ class TimelineController @Inject constructor(
     override fun activeTimelineFlow(): StateFlow<Timeline> {
         return currentTimelineFlow
     }
+}
+
+sealed interface EventFocusResult {
+    data object FocusedOnLive : EventFocusResult
+    data class IsInThread(val threadId: ThreadId) : EventFocusResult
 }

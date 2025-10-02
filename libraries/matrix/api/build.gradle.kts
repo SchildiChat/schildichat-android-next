@@ -1,6 +1,7 @@
 import config.BuildTimeConfig
 import extension.buildConfigFieldStr
-import extension.setupAnvil
+import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 /*
  * Copyright 2022-2024 New Vector Ltd.
@@ -14,6 +15,8 @@ plugins {
     id("kotlin-parcelize")
     alias(libs.plugins.kotlin.serialization)
 }
+
+setupDependencyInjection()
 
 android {
     namespace = "io.element.android.libraries.matrix.api"
@@ -42,11 +45,8 @@ android {
     }
 }
 
-setupAnvil()
-
 dependencies {
     implementation(projects.libraries.di)
-    implementation(libs.dagger)
     implementation(projects.libraries.androidutils)
     implementation(projects.libraries.core)
     implementation(projects.services.analytics.api)
@@ -55,7 +55,6 @@ dependencies {
     implementation(libs.coroutines.core)
     api(projects.libraries.architecture)
 
-    testImplementation(libs.test.junit)
-    testImplementation(libs.test.truth)
+    testCommonDependencies(libs)
     testImplementation(projects.libraries.matrix.test)
 }

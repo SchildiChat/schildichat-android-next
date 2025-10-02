@@ -7,18 +7,20 @@
 
 package io.element.android.features.messages.impl.timeline.factories.event
 
+import dev.zacsweers.metro.Inject
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemEventContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemStateEventContent
 import io.element.android.libraries.core.extensions.orEmpty
 import io.element.android.libraries.eventformatter.api.TimelineEventFormatter
-import io.element.android.libraries.matrix.api.timeline.item.event.EventTimelineItem
-import javax.inject.Inject
+import io.element.android.libraries.matrix.api.core.UserId
+import io.element.android.libraries.matrix.api.timeline.item.event.EventContent
 
-class TimelineItemContentStateFactory @Inject constructor(
+@Inject
+class TimelineItemContentStateFactory(
     private val timelineEventFormatter: TimelineEventFormatter,
 ) {
-    fun create(eventTimelineItem: EventTimelineItem): TimelineItemEventContent {
-        val text = timelineEventFormatter.format(eventTimelineItem)
+    fun create(eventContent: EventContent, isOutgoing: Boolean, sender: UserId, senderDisambiguatedDisplayName: String): TimelineItemEventContent {
+        val text = timelineEventFormatter.format(eventContent, isOutgoing, sender, senderDisambiguatedDisplayName)
         return TimelineItemStateEventContent(text.orEmpty().toString())
     }
 }

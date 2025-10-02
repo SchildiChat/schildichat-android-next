@@ -17,13 +17,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import io.element.android.features.messages.impl.attachments.Attachment
 import io.element.android.features.messages.impl.attachments.video.MediaOptimizationSelectorPresenter
 import io.element.android.libraries.androidutils.file.TemporaryUriDeleter
 import io.element.android.libraries.androidutils.file.safeDelete
+import io.element.android.libraries.androidutils.hash.hash
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.core.coroutine.firstInstanceOf
@@ -48,10 +49,12 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class AttachmentsPreviewPresenter @AssistedInject constructor(
+@AssistedInject
+class AttachmentsPreviewPresenter(
     @Assisted private val attachment: Attachment,
     @Assisted private val onDoneListener: OnDoneListener,
     @Assisted private val timelineMode: Timeline.Mode,
+    @Assisted private val inReplyToEventId: EventId?,
     mediaSenderFactory: MediaSender.Factory,
     private val permalinkBuilder: PermalinkBuilder,
     private val temporaryUriDeleter: TemporaryUriDeleter,
@@ -65,6 +68,7 @@ class AttachmentsPreviewPresenter @AssistedInject constructor(
             attachment: Attachment,
             timelineMode: Timeline.Mode,
             onDoneListener: OnDoneListener,
+            inReplyToEventId: EventId?,
         ): AttachmentsPreviewPresenter
     }
 
@@ -180,7 +184,7 @@ class AttachmentsPreviewPresenter @AssistedInject constructor(
                                 caption = caption,
                                 sendActionState = sendActionState,
                                 dismissAfterSend = false,
-                                inReplyToEventId = null,
+                                inReplyToEventId = inReplyToEventId,
                             )
 
                             // Clean up the pre-processed media after it's been sent
@@ -261,6 +265,7 @@ class AttachmentsPreviewPresenter @AssistedInject constructor(
             mediaOptimizationConfig = mediaOptimizationConfig,
         ).fold(
             onSuccess = { mediaUploadInfo ->
+                Timber.d("Media ${mediaUploadInfo.file.path.orEmpty().hash()} finished processing, it's now ready to upload")
                 sendActionState.value = SendActionState.Sending.ReadyToUpload(mediaUploadInfo)
             },
             onFailure = {

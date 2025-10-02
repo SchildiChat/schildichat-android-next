@@ -5,7 +5,8 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-import extension.setupAnvil
+import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 plugins {
     id("io.element.android-compose-library")
@@ -21,7 +22,7 @@ android {
     }
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 dependencies {
     api(projects.features.reportroom.api)
@@ -32,14 +33,6 @@ dependencies {
     implementation(projects.libraries.designsystem)
     implementation(projects.libraries.uiStrings)
 
-    testImplementation(libs.test.junit)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.molecule.runtime)
-    testImplementation(libs.test.truth)
-    testImplementation(libs.test.turbine)
+    testCommonDependencies(libs, true)
     testImplementation(projects.libraries.matrix.test)
-    testImplementation(projects.tests.testutils)
-    testImplementation(libs.androidx.compose.ui.test.junit)
-    testReleaseImplementation(libs.androidx.compose.ui.test.manifest)
-    testImplementation(libs.test.robolectric)
 }

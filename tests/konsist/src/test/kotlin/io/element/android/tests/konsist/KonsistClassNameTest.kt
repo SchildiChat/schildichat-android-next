@@ -20,6 +20,7 @@ import com.lemonappdev.konsist.api.ext.list.withoutName
 import com.lemonappdev.konsist.api.ext.list.withoutNameStartingWith
 import com.lemonappdev.konsist.api.verify.assertEmpty
 import com.lemonappdev.konsist.api.verify.assertTrue
+import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.Presenter
 import org.junit.Test
 
@@ -45,12 +46,23 @@ class KonsistClassNameTest {
     }
 
     @Test
+    fun `Classes extending 'BaseFlowNode' should have 'FlowNode' suffix`() {
+        Konsist.scopeFromProject()
+            .classes()
+            .withAllParentsOf(BaseFlowNode::class)
+            .assertTrue {
+                it.name.endsWith("FlowNode")
+            }
+    }
+
+    @Test
     fun `Classes extending 'PreviewParameterProvider' name MUST end with 'Provider' and MUST contain provided class name`() {
         Konsist.scopeFromProduction()
             .classes()
             .withAllParentsOf(PreviewParameterProvider::class)
             .withoutName(
                 "AspectRatioProvider",
+                "LoginModeViewErrorProvider",
                 "OverlapRatioProvider",
                 "TextFileContentProvider",
             )

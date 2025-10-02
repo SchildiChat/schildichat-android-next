@@ -1,4 +1,5 @@
-import extension.setupAnvil
+import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 /*
  * Copyright 2022-2024 New Vector Ltd.
@@ -11,14 +12,13 @@ plugins {
     id("io.element.android-library")
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 android {
     namespace = "io.element.android.services.appnavstate.impl"
 }
 
 dependencies {
-    implementation(libs.dagger)
     implementation(projects.libraries.core)
     implementation(projects.libraries.di)
     implementation(projects.libraries.matrix.api)
@@ -29,10 +29,7 @@ dependencies {
 
     api(projects.services.appnavstate.api)
 
-    testImplementation(libs.test.junit)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.test.truth)
+    testCommonDependencies(libs)
     testImplementation(projects.libraries.matrix.test)
-    testImplementation(projects.tests.testutils)
     testImplementation(projects.services.appnavstate.test)
 }

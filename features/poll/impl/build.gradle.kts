@@ -1,4 +1,5 @@
-import extension.setupAnvil
+import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 /*
  * Copyright 2023, 2024 New Vector Ltd.
@@ -21,7 +22,7 @@ android {
     }
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 dependencies {
     api(projects.features.poll.api)
@@ -35,18 +36,10 @@ dependencies {
     implementation(projects.libraries.dateformatter.api)
     implementation(projects.libraries.uiStrings)
 
-    testImplementation(libs.test.junit)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.molecule.runtime)
-    testImplementation(libs.test.truth)
-    testImplementation(libs.test.turbine)
-    testImplementation(libs.test.robolectric)
+    testCommonDependencies(libs, true)
     testImplementation(projects.libraries.matrix.test)
     testImplementation(projects.services.analytics.test)
     testImplementation(projects.features.messages.test)
-    testImplementation(projects.tests.testutils)
     testImplementation(projects.libraries.dateformatter.test)
     testImplementation(projects.features.poll.test)
-    testImplementation(libs.androidx.compose.ui.test.junit)
-    testReleaseImplementation(libs.androidx.compose.ui.test.manifest)
 }

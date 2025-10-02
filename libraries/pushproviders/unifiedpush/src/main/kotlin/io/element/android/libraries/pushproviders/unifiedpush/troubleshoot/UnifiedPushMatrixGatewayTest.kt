@@ -7,9 +7,10 @@
 
 package io.element.android.libraries.pushproviders.unifiedpush.troubleshoot
 
-import com.squareup.anvil.annotations.ContributesMultibinding
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoSet
+import dev.zacsweers.metro.Inject
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
-import io.element.android.libraries.di.AppScope
 import io.element.android.libraries.pushproviders.unifiedpush.UnifiedPushApiFactory
 import io.element.android.libraries.pushproviders.unifiedpush.UnifiedPushConfig
 import io.element.android.libraries.pushproviders.unifiedpush.UnifiedPushCurrentUserPushConfigProvider
@@ -20,10 +21,10 @@ import io.element.android.libraries.troubleshoot.api.test.TestFilterData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@ContributesMultibinding(AppScope::class)
-class UnifiedPushMatrixGatewayTest @Inject constructor(
+@ContributesIntoSet(AppScope::class)
+@Inject
+class UnifiedPushMatrixGatewayTest(
     private val unifiedPushApiFactory: UnifiedPushApiFactory,
     private val coroutineDispatchers: CoroutineDispatchers,
     private val unifiedPushCurrentUserPushConfigProvider: UnifiedPushCurrentUserPushConfigProvider,
@@ -47,7 +48,7 @@ class UnifiedPushMatrixGatewayTest @Inject constructor(
         if (config == null) {
             delegate.updateState(
                 description = "No current push provider",
-                status = NotificationTroubleshootTestState.Status.Failure(false)
+                status = NotificationTroubleshootTestState.Status.Failure()
             )
         } else {
             val gatewayBaseUrl = config.url.removeSuffix("/_matrix/push/v1/notify")
@@ -64,13 +65,13 @@ class UnifiedPushMatrixGatewayTest @Inject constructor(
                     } else {
                         delegate.updateState(
                             description = "${config.url} is not a Matrix gateway.",
-                            status = NotificationTroubleshootTestState.Status.Failure(false)
+                            status = NotificationTroubleshootTestState.Status.Failure()
                         )
                     }
                 } catch (throwable: Throwable) {
                     delegate.updateState(
                         description = "Fail to check the gateway ${config.url}: ${throwable.localizedMessage}",
-                        status = NotificationTroubleshootTestState.Status.Failure(false)
+                        status = NotificationTroubleshootTestState.Status.Failure()
                     )
                 }
             }

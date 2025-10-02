@@ -12,16 +12,17 @@ import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
-import io.element.android.anvilannotations.ContributesNode
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedInject
+import io.element.android.annotations.ContributesNode
 import io.element.android.libraries.architecture.NodeInputs
 import io.element.android.libraries.architecture.inputs
-import io.element.android.libraries.di.AppScope
 import io.element.android.libraries.matrix.api.core.SessionId
 
 @ContributesNode(AppScope::class)
-class SignedOutNode @AssistedInject constructor(
+@AssistedInject
+class SignedOutNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
     presenterFactory: SignedOutPresenter.Factory,
@@ -31,7 +32,7 @@ class SignedOutNode @AssistedInject constructor(
     ) : NodeInputs
 
     private val inputs: Inputs = inputs()
-    private val presenter = presenterFactory.create(inputs.sessionId.value)
+    private val presenter = presenterFactory.create(inputs.sessionId)
 
     @Composable
     override fun View(modifier: Modifier) {

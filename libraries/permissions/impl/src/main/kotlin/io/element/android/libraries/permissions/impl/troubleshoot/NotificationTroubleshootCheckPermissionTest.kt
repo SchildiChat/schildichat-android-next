@@ -9,11 +9,13 @@ package io.element.android.libraries.permissions.impl.troubleshoot
 
 import android.Manifest
 import android.os.Build
-import com.squareup.anvil.annotations.ContributesMultibinding
-import io.element.android.libraries.di.AppScope
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoSet
+import dev.zacsweers.metro.Inject
 import io.element.android.libraries.permissions.api.PermissionStateProvider
 import io.element.android.libraries.permissions.impl.R
 import io.element.android.libraries.permissions.impl.action.PermissionActions
+import io.element.android.libraries.troubleshoot.api.test.NotificationTroubleshootNavigator
 import io.element.android.libraries.troubleshoot.api.test.NotificationTroubleshootTest
 import io.element.android.libraries.troubleshoot.api.test.NotificationTroubleshootTestDelegate
 import io.element.android.libraries.troubleshoot.api.test.NotificationTroubleshootTestState
@@ -21,10 +23,10 @@ import io.element.android.services.toolbox.api.sdk.BuildVersionSdkIntProvider
 import io.element.android.services.toolbox.api.strings.StringProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
-import javax.inject.Inject
 
-@ContributesMultibinding(AppScope::class)
-class NotificationTroubleshootCheckPermissionTest @Inject constructor(
+@ContributesIntoSet(AppScope::class)
+@Inject
+class NotificationTroubleshootCheckPermissionTest(
     private val permissionStateProvider: PermissionStateProvider,
     private val sdkVersionProvider: BuildVersionSdkIntProvider,
     private val permissionActions: PermissionActions,
@@ -53,7 +55,10 @@ class NotificationTroubleshootCheckPermissionTest @Inject constructor(
 
     override suspend fun reset() = delegate.reset()
 
-    override suspend fun quickFix(coroutineScope: CoroutineScope) {
+    override suspend fun quickFix(
+        coroutineScope: CoroutineScope,
+        navigator: NotificationTroubleshootNavigator,
+    ) {
         // Do not bother about asking the permission inline, just lead the user to the settings
         permissionActions.openSettings()
     }

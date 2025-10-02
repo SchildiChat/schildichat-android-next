@@ -7,6 +7,7 @@
 
 package io.element.android.libraries.matrix.impl.timeline
 
+import io.element.android.libraries.androidutils.hash.hash
 import io.element.android.libraries.core.extensions.runCatchingExceptions
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
@@ -122,7 +123,7 @@ class RustTimeline(
     )
 
     override val forwardPaginationStatus = MutableStateFlow(
-        Timeline.PaginationStatus(isPaginating = false, hasMoreToLoad = mode !is Timeline.Mode.FocusedOnEvent)
+        Timeline.PaginationStatus(isPaginating = false, hasMoreToLoad = mode is Timeline.Mode.FocusedOnEvent)
     )
 
     init {
@@ -220,7 +221,6 @@ class RustTimeline(
                         items = items,
                         hasMoreToLoadBackward = backwardPaginationStatus.hasMoreToLoad,
                         hasMoreToLoadForward = forwardPaginationStatus.hasMoreToLoad,
-                        timelineMode = mode,
                     )
                 }
                 .let { items ->
@@ -338,6 +338,7 @@ class RustTimeline(
         formattedCaption: String?,
         inReplyToEventId: EventId?,
     ): Result<MediaUploadHandler> {
+        Timber.d("Sending image ${file.path.hash()}")
         return sendAttachment(listOfNotNull(file, thumbnailFile)) {
             inner.sendImage(
                 params = UploadParameters(
@@ -363,6 +364,7 @@ class RustTimeline(
         formattedCaption: String?,
         inReplyToEventId: EventId?,
     ): Result<MediaUploadHandler> {
+        Timber.d("Sending video ${file.path.hash()}")
         return sendAttachment(listOfNotNull(file, thumbnailFile)) {
             inner.sendVideo(
                 params = UploadParameters(
@@ -387,6 +389,7 @@ class RustTimeline(
         formattedCaption: String?,
         inReplyToEventId: EventId?,
     ): Result<MediaUploadHandler> {
+        Timber.d("Sending audio ${file.path.hash()}")
         return sendAttachment(listOf(file)) {
             inner.sendAudio(
                 params = UploadParameters(
@@ -410,6 +413,7 @@ class RustTimeline(
         formattedCaption: String?,
         inReplyToEventId: EventId?,
     ): Result<MediaUploadHandler> {
+        Timber.d("Sending file ${file.path.hash()}")
         return sendAttachment(listOf(file)) {
             inner.sendFile(
                 params = UploadParameters(
@@ -426,7 +430,7 @@ class RustTimeline(
         }
     }
 
-    override suspend fun toggleReaction(emoji: String, eventOrTransactionId: EventOrTransactionId): Result<Unit> = withContext(dispatcher) {
+    override suspend fun toggleReaction(emoji: String, eventOrTransactionId: EventOrTransactionId): Result<Boolean> = withContext(dispatcher) {
         runCatchingExceptions {
             inner.toggleReaction(
                 key = emoji,

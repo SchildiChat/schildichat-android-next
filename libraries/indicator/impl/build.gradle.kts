@@ -1,4 +1,5 @@
-import extension.setupAnvil
+import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 /*
  * Copyright 2022-2024 New Vector Ltd.
@@ -11,14 +12,13 @@ plugins {
     id("io.element.android-compose-library")
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 android {
     namespace = "io.element.android.libraries.indicator.impl"
 }
 
 dependencies {
-    implementation(libs.dagger)
     implementation(projects.libraries.di)
     implementation(projects.libraries.featureflag.api)
     implementation(projects.libraries.matrix.api)
@@ -27,11 +27,7 @@ dependencies {
 
     api(projects.libraries.indicator.api)
 
+    testCommonDependencies(libs)
     testImplementation(projects.libraries.featureflag.test)
     testImplementation(projects.libraries.matrix.test)
-    testImplementation(libs.test.junit)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.molecule.runtime)
-    testImplementation(libs.test.turbine)
-    testImplementation(libs.test.truth)
 }

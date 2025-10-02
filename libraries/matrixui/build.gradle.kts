@@ -1,4 +1,5 @@
-import extension.setupAnvil
+import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 /*
  * Copyright 2022-2024 New Vector Ltd.
@@ -21,7 +22,7 @@ android {
     }
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 dependencies {
     implementation(projects.libraries.di)
@@ -36,18 +37,10 @@ dependencies {
     implementation(libs.coil.gif)
     implementation(libs.coil.network.okhttp)
     implementation(libs.jsoup)
+    implementation(projects.libraries.previewutils)
 
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.test.junit)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.molecule.runtime)
-    testImplementation(libs.test.truth)
-    testImplementation(libs.test.turbine)
+    testCommonDependencies(libs, true)
     testImplementation(projects.libraries.matrix.test)
     testImplementation(projects.libraries.dateformatter.test)
-    testImplementation(projects.tests.testutils)
-    testImplementation(libs.test.mockk)
-    testImplementation(libs.test.robolectric)
-    testImplementation(libs.androidx.compose.ui.test.junit)
     testImplementation(projects.libraries.sessionStorage.test)
 }

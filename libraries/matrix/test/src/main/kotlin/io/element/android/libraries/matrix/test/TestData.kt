@@ -25,6 +25,7 @@ const val A_USER_NAME_2 = "Bob"
 const val A_PASSWORD = "password"
 const val A_PASSPHRASE = "passphrase"
 const val A_SECRET = "secret"
+const val AN_APPLICATION_NAME = "AppName"
 
 val A_USER_ID = UserId("@alice:server.org")
 val A_USER_ID_2 = UserId("@bob:server.org")
@@ -63,6 +64,8 @@ const val A_REPLY = "OK, I'll be there!"
 const val ANOTHER_MESSAGE = "Hello universe!"
 const val A_CAPTION = "A media caption"
 const val A_REASON = "A reason"
+
+const val A_SPACE_NAME = "A space name"
 
 const val A_REDACTION_REASON = "A redaction reason"
 

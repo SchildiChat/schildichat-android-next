@@ -1,4 +1,5 @@
-import extension.setupAnvil
+import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 /*
  * Copyright 2023, 2024 New Vector Ltd.
@@ -15,10 +16,9 @@ android {
     namespace = "io.element.android.libraries.pushproviders.unifiedpush"
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 dependencies {
-    implementation(libs.dagger)
     implementation(projects.features.enterprise.api)
     implementation(projects.libraries.androidutils)
     implementation(projects.libraries.core)
@@ -42,19 +42,16 @@ dependencies {
     implementation(libs.serialization.json)
 
     // UnifiedPush library
-    implementation(libs.unifiedpush)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.test.junit)
-    testImplementation(libs.test.robolectric)
-    testImplementation(libs.test.truth)
-    testImplementation(libs.test.turbine)
+    api(libs.unifiedpush)
+
+    testCommonDependencies(libs)
     testImplementation(libs.kotlinx.collections.immutable)
     testImplementation(projects.features.enterprise.test)
     testImplementation(projects.libraries.matrix.test)
     testImplementation(projects.libraries.push.test)
     testImplementation(projects.libraries.pushproviders.test)
     testImplementation(projects.libraries.pushstore.test)
-    testImplementation(projects.tests.testutils)
+    testImplementation(projects.libraries.troubleshoot.test)
     testImplementation(projects.services.toolbox.test)
     testImplementation(projects.services.appnavstate.test)
 }

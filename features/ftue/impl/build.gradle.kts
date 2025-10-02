@@ -1,4 +1,5 @@
-import extension.setupAnvil
+import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 /*
  * Copyright 2023, 2024 New Vector Ltd.
@@ -22,7 +23,7 @@ android {
     }
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 dependencies {
     api(projects.features.ftue.api)
@@ -33,6 +34,7 @@ dependencies {
     implementation(projects.libraries.matrixui)
     implementation(projects.libraries.designsystem)
     implementation(projects.libraries.preferences.api)
+    implementation(projects.libraries.uiCommon)
     implementation(projects.libraries.uiStrings)
     implementation(projects.libraries.testtags)
     implementation(projects.features.analytics.api)
@@ -46,14 +48,7 @@ dependencies {
     implementation(projects.services.toolbox.api)
     implementation(projects.appconfig)
 
-    testImplementation(libs.test.junit)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.molecule.runtime)
-    testImplementation(libs.test.truth)
-    testImplementation(libs.test.turbine)
-    testImplementation(libs.test.robolectric)
-    testImplementation(libs.androidx.compose.ui.test.junit)
-    testReleaseImplementation(libs.androidx.compose.ui.test.manifest)
+    testCommonDependencies(libs, true)
     testImplementation(projects.libraries.matrix.test)
     testImplementation(projects.services.analytics.test)
     testImplementation(projects.services.analytics.noop)
@@ -61,5 +56,4 @@ dependencies {
     testImplementation(projects.libraries.preferences.test)
     testImplementation(projects.features.lockscreen.test)
     testImplementation(projects.services.toolbox.test)
-    testImplementation(projects.tests.testutils)
 }

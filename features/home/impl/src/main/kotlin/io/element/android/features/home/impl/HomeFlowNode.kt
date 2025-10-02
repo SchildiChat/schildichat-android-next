@@ -25,10 +25,10 @@ import com.bumble.appyx.core.plugin.plugins
 import com.bumble.appyx.navmodel.backstack.BackStack
 import com.bumble.appyx.navmodel.backstack.operation.pop
 import com.bumble.appyx.navmodel.backstack.operation.push
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedInject
 import im.vector.app.features.analytics.plan.MobileScreen
-import io.element.android.anvilannotations.ContributesNode
+import io.element.android.annotations.ContributesNode
 import io.element.android.features.changeroommemberroes.api.ChangeRoomMemberRolesEntryPoint
 import io.element.android.features.changeroommemberroes.api.ChangeRoomMemberRolesListType
 import io.element.android.features.home.api.HomeEntryPoint
@@ -44,7 +44,7 @@ import io.element.android.features.reportroom.api.ReportRoomEntryPoint
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.appyx.launchMolecule
-import io.element.android.libraries.deeplink.usecase.InviteFriendsUseCase
+import io.element.android.libraries.deeplink.api.usecase.InviteFriendsUseCase
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
@@ -56,7 +56,8 @@ import kotlinx.coroutines.withContext
 import kotlinx.parcelize.Parcelize
 
 @ContributesNode(SessionScope::class)
-class HomeFlowNode @AssistedInject constructor(
+@AssistedInject
+class HomeFlowNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
     private val matrixClient: MatrixClient,
@@ -163,7 +164,7 @@ class HomeFlowNode @AssistedInject constructor(
         stateFlow.value.roomListState.eventSink(RoomListEvents.LeaveRoom(roomId, needsConfirmation = false))
     }
 
-    fun rootNode(buildContext: BuildContext): Node {
+    private fun rootNode(buildContext: BuildContext): Node {
         return node(buildContext) { modifier ->
             val state by stateFlow.collectAsState()
             val activity = requireNotNull(LocalActivity.current)

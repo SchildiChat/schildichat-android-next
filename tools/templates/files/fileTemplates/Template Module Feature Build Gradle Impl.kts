@@ -1,4 +1,5 @@
-import extension.setupAnvil
+import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 plugins {
     id("io.element.android-compose-library")
@@ -9,7 +10,7 @@ android {
     namespace = "io.element.android.features.${MODULE_NAME}.impl"
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 dependencies {
     api(projects.features.${MODULE_NAME}.api)
@@ -19,10 +20,6 @@ dependencies {
     implementation(projects.libraries.matrixui)
     implementation(projects.libraries.designsystem)
 
-    testImplementation(libs.test.junit)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.molecule.runtime)
-    testImplementation(libs.test.truth)
-    testImplementation(libs.test.turbine)
+    testCommonDependencies(libs)
     testImplementation(projects.libraries.matrix.test)
 }

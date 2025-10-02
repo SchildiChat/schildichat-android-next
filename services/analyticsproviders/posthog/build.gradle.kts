@@ -1,6 +1,7 @@
 import config.BuildTimeConfig
 import extension.buildConfigFieldStr
-import extension.setupAnvil
+import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 /*
  * Copyright 2023, 2024 New Vector Ltd.
@@ -31,10 +32,9 @@ android {
     }
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 dependencies {
-    implementation(libs.dagger)
     implementation(libs.posthog) {
         exclude("com.android.support", "support-annotations")
     }
@@ -43,9 +43,5 @@ dependencies {
     implementation(projects.libraries.di)
     implementation(projects.services.analyticsproviders.api)
 
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.test.truth)
-    testImplementation(libs.test.junit)
-    testImplementation(projects.tests.testutils)
-    testImplementation(libs.test.mockk)
+    testCommonDependencies(libs)
 }

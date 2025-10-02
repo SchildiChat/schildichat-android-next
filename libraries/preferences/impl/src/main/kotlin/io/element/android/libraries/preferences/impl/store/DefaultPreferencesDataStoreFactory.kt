@@ -11,21 +11,35 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.squareup.anvil.annotations.ContributesBinding
-import io.element.android.libraries.di.AppScope
-import io.element.android.libraries.di.ApplicationContext
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
+import io.element.android.libraries.androidutils.preferences.DefaultPreferencesCorruptionHandlerFactory
+import io.element.android.libraries.di.annotations.ApplicationContext
 import io.element.android.libraries.preferences.api.store.PreferenceDataStoreFactory
-import javax.inject.Inject
+import java.util.concurrent.ConcurrentHashMap
 
+@SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-class DefaultPreferencesDataStoreFactory @Inject constructor(
+@Inject
+class DefaultPreferencesDataStoreFactory(
     @ApplicationContext private val context: Context,
 ) : PreferenceDataStoreFactory {
+    private val dataStoreHolders = ConcurrentHashMap<String, DataStoreHolder>()
+
     private class DataStoreHolder(name: String) {
-        val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = name)
+        val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
+            name = name,
+            corruptionHandler = DefaultPreferencesCorruptionHandlerFactory.replaceWithEmpty(),
+        )
     }
+
     override fun create(name: String): DataStore<Preferences> {
-        return with(DataStoreHolder(name)) {
+        val holder = dataStoreHolders.getOrPut(name) {
+            DataStoreHolder(name)
+        }
+        return with(holder) {
             context.dataStore
         }
     }

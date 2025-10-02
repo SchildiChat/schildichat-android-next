@@ -7,9 +7,9 @@
 
 package io.element.android.features.poll.impl.data
 
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import io.element.android.libraries.core.extensions.flatMap
 import io.element.android.libraries.core.extensions.runCatchingExceptions
 import io.element.android.libraries.matrix.api.core.EventId
@@ -26,13 +26,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 
-class PollRepository @AssistedInject constructor(
+@AssistedInject
+class PollRepository(
     private val room: JoinedRoom,
     private val defaultTimelineProvider: TimelineProvider,
     @Assisted private val timelineMode: Timeline.Mode,
 ) {
     @AssistedFactory
-    interface Factory {
+    fun interface Factory {
         fun create(
             timelineMode: Timeline.Mode,
         ): PollRepository

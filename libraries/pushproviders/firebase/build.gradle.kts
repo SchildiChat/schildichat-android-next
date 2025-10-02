@@ -8,7 +8,8 @@
 @file:Suppress("UnstableApiUsage")
 
 import config.BuildTimeConfig
-import extension.setupAnvil
+import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 plugins {
     id("io.element.android-library")
@@ -45,10 +46,9 @@ android {
     }
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 dependencies {
-    implementation(libs.dagger)
     implementation(libs.androidx.corektx)
     implementation(projects.features.enterprise.api)
     implementation(projects.libraries.architecture)
@@ -69,18 +69,13 @@ dependencies {
         exclude(group = "com.google.firebase", module = "firebase-measurement-connector")
     }
 
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.test.junit)
-    testImplementation(libs.test.truth)
-    testImplementation(libs.test.turbine)
-    testImplementation(libs.test.robolectric)
+    testCommonDependencies(libs)
     testImplementation(libs.kotlinx.collections.immutable)
     testImplementation(projects.features.enterprise.test)
     testImplementation(projects.libraries.matrix.test)
     testImplementation(projects.libraries.push.test)
     testImplementation(projects.libraries.pushstore.test)
-    testImplementation(projects.libraries.sessionStorage.implMemory)
     testImplementation(projects.libraries.sessionStorage.test)
-    testImplementation(projects.tests.testutils)
+    testImplementation(projects.libraries.troubleshoot.test)
     testImplementation(projects.services.toolbox.test)
 }

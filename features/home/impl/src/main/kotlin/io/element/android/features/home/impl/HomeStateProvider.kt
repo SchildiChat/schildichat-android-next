@@ -13,12 +13,15 @@ import io.element.android.features.home.impl.roomlist.RoomListStateProvider
 import io.element.android.features.home.impl.roomlist.aRoomListState
 import io.element.android.features.home.impl.roomlist.aRoomsContentState
 import io.element.android.features.home.impl.roomlist.generateRoomListRoomSummaryList
+import io.element.android.features.home.impl.spaces.HomeSpacesState
+import io.element.android.features.home.impl.spaces.aHomeSpacesState
 import io.element.android.features.logout.api.direct.DirectLogoutState
 import io.element.android.features.logout.api.direct.aDirectLogoutState
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarMessage
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.ui.strings.CommonStrings
+import kotlinx.collections.immutable.toPersistentList
 
 open class HomeStateProvider : PreviewParameterProvider<HomeState> {
     override val values: Sequence<HomeState>
@@ -34,6 +37,8 @@ open class HomeStateProvider : PreviewParameterProvider<HomeState> {
                         summaries = generateRoomListRoomSummaryList(),
                     )
                 ),
+                // For the bottom nav bar to be visible in the preview, the user must be member of at least one space
+                homeSpacesState = aHomeSpacesState(),
             ),
             aHomeState(
                 isSpaceFeatureEnabled = true,
@@ -46,17 +51,19 @@ open class HomeStateProvider : PreviewParameterProvider<HomeState> {
 
 internal fun aHomeState(
     matrixUser: MatrixUser = MatrixUser(userId = UserId("@id:domain"), displayName = "User#1"),
+    currentUserAndNeighbors: List<MatrixUser> = listOf(matrixUser),
     showAvatarIndicator: Boolean = false,
     hasNetworkConnection: Boolean = true,
     snackbarMessage: SnackbarMessage? = null,
     currentHomeNavigationBarItem: HomeNavigationBarItem = HomeNavigationBarItem.Chats,
     roomListState: RoomListState = aRoomListState(),
+    homeSpacesState: HomeSpacesState = aHomeSpacesState(),
     canReportBug: Boolean = true,
     isSpaceFeatureEnabled: Boolean = false,
     directLogoutState: DirectLogoutState = aDirectLogoutState(),
     eventSink: (HomeEvents) -> Unit = {}
 ) = HomeState(
-    matrixUser = matrixUser,
+    currentUserAndNeighbors = currentUserAndNeighbors.toPersistentList(),
     showAvatarIndicator = showAvatarIndicator,
     hasNetworkConnection = hasNetworkConnection,
     snackbarMessage = snackbarMessage,
@@ -64,6 +71,7 @@ internal fun aHomeState(
     directLogoutState = directLogoutState,
     currentHomeNavigationBarItem = currentHomeNavigationBarItem,
     roomListState = roomListState,
+    homeSpacesState = homeSpacesState,
     isSpaceFeatureEnabled = isSpaceFeatureEnabled,
     eventSink = eventSink,
 )

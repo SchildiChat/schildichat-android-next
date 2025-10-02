@@ -31,6 +31,7 @@ import io.element.android.libraries.matrix.api.room.RoomMembershipObserver
 import io.element.android.libraries.matrix.api.room.alias.ResolvedRoomAlias
 import io.element.android.libraries.matrix.api.roomdirectory.RoomDirectoryService
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
+import io.element.android.libraries.matrix.api.spaces.SpaceService
 import io.element.android.libraries.matrix.api.sync.SlidingSyncVersion
 import io.element.android.libraries.matrix.api.sync.SyncService
 import io.element.android.libraries.matrix.api.user.MatrixSearchUserResults
@@ -47,6 +48,7 @@ interface MatrixClient {
     val deviceId: DeviceId
     val userProfile: StateFlow<MatrixUser>
     val roomListService: RoomListService
+    val spaceService: SpaceService
     val mediaLoader: MatrixMediaLoader
     val sessionCoroutineScope: CoroutineScope
     val ignoredUsersFlow: StateFlow<ImmutableList<UserId>>
@@ -154,11 +156,6 @@ interface MatrixClient {
      */
     suspend fun currentSlidingSyncVersion(): Result<SlidingSyncVersion>
 
-    /**
-     * Returns the available sliding sync versions for the current user.
-     */
-    suspend fun availableSlidingSyncVersions(): Result<List<SlidingSyncVersion>>
-
     fun canDeactivateAccount(): Boolean
     suspend fun deactivateAccount(password: String, eraseData: Boolean): Result<Unit>
 
@@ -176,6 +173,16 @@ interface MatrixClient {
      * Returns the maximum file upload size allowed by the Matrix server.
      */
     suspend fun getMaxFileUploadSize(): Result<Long>
+
+    /**
+     * Returns the list of shared recent emoji reactions for this account.
+     */
+    suspend fun getRecentEmojis(): Result<List<String>>
+
+    /**
+     * Adds an emoji to the list of recent emoji reactions for this account.
+     */
+    suspend fun addRecentEmoji(emoji: String): Result<Unit>
 }
 
 /**

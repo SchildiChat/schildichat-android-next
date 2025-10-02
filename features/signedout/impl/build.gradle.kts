@@ -1,4 +1,5 @@
-import extension.setupAnvil
+import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 /*
  * Copyright 2023, 2024 New Vector Ltd.
@@ -16,7 +17,7 @@ android {
     namespace = "io.element.android.features.signedout.impl"
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 dependencies {
     api(projects.features.signedout.api)
@@ -27,13 +28,7 @@ dependencies {
     implementation(projects.libraries.designsystem)
     implementation(projects.libraries.uiStrings)
 
-    testImplementation(libs.test.junit)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.molecule.runtime)
-    testImplementation(libs.test.truth)
-    testImplementation(libs.test.turbine)
+    testCommonDependencies(libs)
     testImplementation(projects.libraries.matrix.test)
-    testImplementation(projects.libraries.sessionStorage.implMemory)
     testImplementation(projects.libraries.sessionStorage.test)
-    testImplementation(projects.tests.testutils)
 }

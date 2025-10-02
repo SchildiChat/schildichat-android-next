@@ -15,6 +15,7 @@ import io.element.android.tests.testutils.simulateLongTask
 import org.matrix.rustcomponents.sdk.Client
 import org.matrix.rustcomponents.sdk.ClientDelegate
 import org.matrix.rustcomponents.sdk.Encryption
+import org.matrix.rustcomponents.sdk.HomeserverLoginDetails
 import org.matrix.rustcomponents.sdk.IgnoredUsersListener
 import org.matrix.rustcomponents.sdk.NoPointer
 import org.matrix.rustcomponents.sdk.NotificationClient
@@ -25,6 +26,7 @@ import org.matrix.rustcomponents.sdk.PusherKind
 import org.matrix.rustcomponents.sdk.RoomDirectorySearch
 import org.matrix.rustcomponents.sdk.Session
 import org.matrix.rustcomponents.sdk.SessionVerificationController
+import org.matrix.rustcomponents.sdk.SpaceService
 import org.matrix.rustcomponents.sdk.SyncService
 import org.matrix.rustcomponents.sdk.SyncServiceBuilder
 import org.matrix.rustcomponents.sdk.TaskHandle
@@ -40,6 +42,8 @@ class FakeFfiClient(
     private val session: Session = aRustSession(),
     private val clearCachesResult: () -> Unit = { lambdaError() },
     private val withUtdHook: (UnableToDecryptDelegate) -> Unit = { lambdaError() },
+    private val getProfileResult: (String) -> UserProfile = { UserProfile(userId = userId, displayName = null, avatarUrl = null) },
+    private val homeserverLoginDetailsResult: () -> HomeserverLoginDetails = { lambdaError() },
     private val closeResult: () -> Unit = {},
 ) : Client(NoPointer) {
     override fun userId(): String = userId
@@ -52,6 +56,7 @@ class FakeFfiClient(
     override suspend fun cachedAvatarUrl(): String? = null
     override suspend fun restoreSession(session: Session) = Unit
     override fun syncService(): SyncServiceBuilder = FakeFfiSyncServiceBuilder()
+    override fun spaceService(): SpaceService = FakeFfiSpaceService()
     override fun roomDirectorySearch(): RoomDirectorySearch = FakeFfiRoomDirectorySearch()
     override suspend fun setPusher(
         identifiers: PusherIdentifiers,
@@ -69,12 +74,18 @@ class FakeFfiClient(
     override suspend fun ignoredUsers(): List<String> {
         return emptyList()
     }
+
     override fun subscribeToIgnoredUsers(listener: IgnoredUsersListener): TaskHandle {
         return FakeFfiTaskHandle()
     }
 
     override suspend fun getProfile(userId: String): UserProfile {
-        return UserProfile(userId = userId, displayName = null, avatarUrl = null)
+        return getProfileResult(userId)
     }
+
+    override suspend fun homeserverLoginDetails(): HomeserverLoginDetails {
+        return homeserverLoginDetailsResult()
+    }
+
     override fun close() = closeResult()
 }

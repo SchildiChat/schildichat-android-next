@@ -12,10 +12,11 @@ import app.cash.molecule.moleculeFlow
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.libraries.matrix.api.core.SessionId
+import io.element.android.libraries.matrix.test.AN_APPLICATION_NAME
 import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.matrix.test.core.aBuildMeta
 import io.element.android.libraries.sessionstorage.api.SessionStore
-import io.element.android.libraries.sessionstorage.impl.memory.InMemorySessionStore
+import io.element.android.libraries.sessionstorage.test.InMemorySessionStore
 import io.element.android.libraries.sessionstorage.test.aSessionData
 import io.element.android.tests.testutils.WarmUpRule
 import kotlinx.coroutines.test.runTest
@@ -26,21 +27,19 @@ class SignedOutPresenterTest {
     @get:Rule
     val warmUpRule = WarmUpRule()
 
-    private val appName = "AppName"
-
     @Test
     fun `present - initial state`() = runTest {
         val aSessionData = aSessionData()
-        val sessionStore = InMemorySessionStore().apply {
-            storeData(aSessionData)
-        }
+        val sessionStore = InMemorySessionStore(
+            initialList = listOf(aSessionData)
+        )
         val presenter = createSignedOutPresenter(sessionStore = sessionStore)
         moleculeFlow(RecompositionMode.Immediate) {
             presenter.present()
         }.test {
             skipItems(1)
             val initialState = awaitItem()
-            assertThat(initialState.appName).isEqualTo(appName)
+            assertThat(initialState.appName).isEqualTo(AN_APPLICATION_NAME)
             assertThat(initialState.signedOutSession).isEqualTo(aSessionData)
         }
     }
@@ -48,9 +47,9 @@ class SignedOutPresenterTest {
     @Test
     fun `present - sign in again`() = runTest {
         val aSessionData = aSessionData()
-        val sessionStore = InMemorySessionStore().apply {
-            storeData(aSessionData)
-        }
+        val sessionStore = InMemorySessionStore(
+            initialList = listOf(aSessionData)
+        )
         val presenter = createSignedOutPresenter(sessionStore = sessionStore)
         moleculeFlow(RecompositionMode.Immediate) {
             presenter.present()
@@ -64,15 +63,15 @@ class SignedOutPresenterTest {
             assertThat(sessionStore.getAllSessions()).isEmpty()
         }
     }
+}
 
-    private fun createSignedOutPresenter(
-        sessionId: SessionId = A_SESSION_ID,
-        sessionStore: SessionStore = InMemorySessionStore(),
-    ): SignedOutPresenter {
-        return SignedOutPresenter(
-            sessionId = sessionId.value,
-            sessionStore = sessionStore,
-            buildMeta = aBuildMeta(applicationName = appName),
-        )
-    }
+internal fun createSignedOutPresenter(
+    sessionId: SessionId = A_SESSION_ID,
+    sessionStore: SessionStore = InMemorySessionStore(),
+): SignedOutPresenter {
+    return SignedOutPresenter(
+        sessionId = sessionId,
+        sessionStore = sessionStore,
+        buildMeta = aBuildMeta(applicationName = AN_APPLICATION_NAME),
+    )
 }

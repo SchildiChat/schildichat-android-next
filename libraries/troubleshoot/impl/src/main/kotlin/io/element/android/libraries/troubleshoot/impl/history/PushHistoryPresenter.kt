@@ -14,17 +14,36 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
+import io.element.android.libraries.matrix.api.MatrixClient
+import io.element.android.libraries.matrix.api.core.EventId
+import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.push.api.PushService
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class PushHistoryPresenter @Inject constructor(
+fun interface PushHistoryNavigator {
+    fun navigateTo(roomId: RoomId, eventId: EventId)
+}
+
+@AssistedInject
+class PushHistoryPresenter(
+    @Assisted private val pushHistoryNavigator: PushHistoryNavigator,
     private val pushService: PushService,
+    matrixClient: MatrixClient,
 ) : Presenter<PushHistoryState> {
+    @AssistedFactory
+    fun interface Factory {
+        fun create(pushHistoryNavigator: PushHistoryNavigator): PushHistoryPresenter
+    }
+
+    private val sessionId = matrixClient.sessionId
+
     @Composable
     override fun present(): PushHistoryState {
         val coroutineScope = rememberCoroutineScope()
@@ -40,6 +59,7 @@ class PushHistoryPresenter @Inject constructor(
             }
         }.collectAsState(emptyList())
         var resetAction: AsyncAction<Unit> by remember { mutableStateOf(AsyncAction.Uninitialized) }
+        var showNotSameAccountError by remember { mutableStateOf(false) }
 
         fun handleEvents(event: PushHistoryEvents) {
             when (event) {
@@ -59,6 +79,14 @@ class PushHistoryPresenter @Inject constructor(
                 }
                 PushHistoryEvents.ClearDialog -> {
                     resetAction = AsyncAction.Uninitialized
+                    showNotSameAccountError = false
+                }
+                is PushHistoryEvents.NavigateTo -> {
+                    if (event.sessionId != sessionId) {
+                        showNotSameAccountError = true
+                    } else {
+                        pushHistoryNavigator.navigateTo(event.roomId, event.eventId)
+                    }
                 }
             }
         }
@@ -68,6 +96,7 @@ class PushHistoryPresenter @Inject constructor(
             pushHistoryItems = pushHistory.toImmutableList(),
             showOnlyErrors = showOnlyErrors,
             resetAction = resetAction,
+            showNotSameAccountError = showNotSameAccountError,
             eventSink = ::handleEvents
         )
     }

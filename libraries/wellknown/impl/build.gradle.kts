@@ -1,4 +1,5 @@
-import extension.setupAnvil
+import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 /*
  * Copyright 2025 New Vector Ltd.
@@ -17,7 +18,7 @@ android {
     namespace = "io.element.android.libraries.wellknown.impl"
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 dependencies {
     api(projects.libraries.wellknown.api)
@@ -31,12 +32,8 @@ dependencies {
     implementation(projects.libraries.matrix.api)
     implementation(projects.libraries.network)
 
-    testImplementation(projects.tests.testutils)
-    testImplementation(libs.test.junit)
-    testImplementation(libs.test.truth)
-    testImplementation(libs.test.robolectric)
+    testCommonDependencies(libs)
     testImplementation(libs.coroutines.core)
-    testImplementation(libs.coroutines.test)
     testImplementation(projects.libraries.matrix.test)
     testImplementation(projects.services.toolbox.test)
 }

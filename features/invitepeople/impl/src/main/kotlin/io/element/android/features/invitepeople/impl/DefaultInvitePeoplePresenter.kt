@@ -16,16 +16,18 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import com.squareup.anvil.annotations.ContributesBinding
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesBinding
 import io.element.android.features.invitepeople.api.InvitePeopleEvents
 import io.element.android.features.invitepeople.api.InvitePeoplePresenter
 import io.element.android.features.invitepeople.api.InvitePeopleState
+import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.map
 import io.element.android.libraries.architecture.runCatchingUpdatingState
+import io.element.android.libraries.architecture.runUpdatingState
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.designsystem.theme.components.SearchBarResultState
 import io.element.android.libraries.di.SessionScope
@@ -49,7 +51,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class DefaultInvitePeoplePresenter @AssistedInject constructor(
+@AssistedInject
+class DefaultInvitePeoplePresenter(
     @Assisted private val joinedRoom: JoinedRoom?,
     @Assisted private val roomId: RoomId,
     private val userRepository: UserRepository,
@@ -72,6 +75,8 @@ class DefaultInvitePeoplePresenter @AssistedInject constructor(
         var searchQuery by rememberSaveable { mutableStateOf("") }
         var searchActive by rememberSaveable { mutableStateOf(false) }
         val showSearchLoader = rememberSaveable { mutableStateOf(false) }
+        val sendInvitesAction = remember { mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized) }
+
         val room by produceState(if (joinedRoom != null) AsyncData.Success(joinedRoom) else AsyncData.Loading()) {
             if (joinedRoom == null) {
                 val result = matrixClient.getJoinedRoom(roomId)
@@ -115,7 +120,7 @@ class DefaultInvitePeoplePresenter @AssistedInject constructor(
                 }
                 is InvitePeopleEvents.SendInvites -> {
                     room.dataOrNull()?.let {
-                        sessionCoroutineScope.sendInvites(it, selectedUsers.value)
+                        sessionCoroutineScope.sendInvites(it, selectedUsers.value, sendInvitesAction)
                     }
                 }
                 is InvitePeopleEvents.CloseSearch -> {
@@ -127,12 +132,13 @@ class DefaultInvitePeoplePresenter @AssistedInject constructor(
 
         return DefaultInvitePeopleState(
             room = room.map { },
-            canInvite = selectedUsers.value.isNotEmpty(),
+            canInvite = selectedUsers.value.isNotEmpty() && !sendInvitesAction.value.isLoading(),
             selectedUsers = selectedUsers.value,
             searchQuery = searchQuery,
             isSearchActive = searchActive,
             searchResults = searchResults.value,
             showSearchLoader = showSearchLoader.value,
+            sendInvitesAction = sendInvitesAction.value,
             eventSink = ::handleEvents,
         )
     }
@@ -140,16 +146,21 @@ class DefaultInvitePeoplePresenter @AssistedInject constructor(
     private fun CoroutineScope.sendInvites(
         room: JoinedRoom,
         selectedUsers: List<MatrixUser>,
+        sendInvitesAction: MutableState<AsyncAction<Unit>>,
     ) = launch {
-        val anyInviteFailed = selectedUsers
-            .map { room.inviteUserById(it.userId) }
-            .any { it.isFailure }
+        sendInvitesAction.runUpdatingState {
+            val anyInviteFailed = selectedUsers
+                .map { room.inviteUserById(it.userId) }
+                .any { it.isFailure }
 
-        if (anyInviteFailed) {
-            appErrorStateService.showError(
-                titleRes = CommonStrings.common_unable_to_invite_title,
-                bodyRes = CommonStrings.common_unable_to_invite_message,
-            )
+            if (anyInviteFailed) {
+                appErrorStateService.showError(
+                    titleRes = CommonStrings.common_unable_to_invite_title,
+                    bodyRes = CommonStrings.common_unable_to_invite_message,
+                )
+            }
+
+            Result.success(Unit)
         }
     }
 

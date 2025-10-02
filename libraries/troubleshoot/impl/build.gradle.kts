@@ -1,4 +1,5 @@
-import extension.setupAnvil
+import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 /*
  * Copyright 2023, 2024 New Vector Ltd.
@@ -21,10 +22,9 @@ android {
     }
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 dependencies {
-    implementation(libs.dagger)
     implementation(projects.libraries.architecture)
     implementation(projects.libraries.designsystem)
     implementation(projects.libraries.di)
@@ -34,16 +34,8 @@ dependencies {
     api(projects.libraries.push.api)
     implementation(projects.services.analytics.api)
 
-    testImplementation(libs.test.junit)
-    testImplementation(libs.test.robolectric)
-    testImplementation(libs.molecule.runtime)
-    testImplementation(libs.test.truth)
-    testImplementation(libs.test.turbine)
-    testImplementation(libs.coroutines.test)
+    testCommonDependencies(libs, true)
     testImplementation(projects.services.analytics.test)
-    testImplementation(projects.tests.testutils)
     testImplementation(projects.libraries.matrix.test)
     testImplementation(projects.libraries.push.test)
-    testImplementation(libs.androidx.compose.ui.test.junit)
-    testReleaseImplementation(libs.androidx.compose.ui.test.manifest)
 }

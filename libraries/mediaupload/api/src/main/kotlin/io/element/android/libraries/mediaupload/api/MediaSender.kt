@@ -8,9 +8,10 @@
 package io.element.android.libraries.mediaupload.api
 
 import android.net.Uri
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import io.element.android.libraries.androidutils.hash.hash
 import io.element.android.libraries.core.extensions.flatMap
 import io.element.android.libraries.core.extensions.flatMapCatching
 import io.element.android.libraries.matrix.api.core.EventId
@@ -20,9 +21,12 @@ import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.timeline.Timeline
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import timber.log.Timber
+import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
-class MediaSender @AssistedInject constructor(
+@AssistedInject
+class MediaSender(
     private val preProcessor: MediaPreProcessor,
     private val room: JoinedRoom,
     @Assisted private val timelineMode: Timeline.Mode,
@@ -43,6 +47,7 @@ class MediaSender @AssistedInject constructor(
         mimeType: String,
         mediaOptimizationConfig: MediaOptimizationConfig,
     ): Result<MediaUploadInfo> {
+        Timber.d("Pre-processing media | uri: ${mediaId(uri)} | mimeType: $mimeType")
         return preProcessor
             .process(
                 uri = uri,
@@ -58,7 +63,9 @@ class MediaSender @AssistedInject constructor(
         formattedCaption: String?,
         inReplyToEventId: EventId?,
     ): Result<Unit> {
+        val mediaLogId = mediaId(mediaUploadInfo.file)
         return getTimeline().flatMap {
+            Timber.d("Started sending media $mediaLogId using timeline: ${it.mode}")
             it.sendMedia(
                 uploadInfo = mediaUploadInfo,
                 caption = caption,
@@ -66,7 +73,7 @@ class MediaSender @AssistedInject constructor(
                 inReplyToEventId = inReplyToEventId,
             )
         }
-            .handleSendResult()
+            .handleSendResult(mediaLogId)
     }
 
     suspend fun sendMedia(
@@ -92,7 +99,7 @@ class MediaSender @AssistedInject constructor(
                     inReplyToEventId = inReplyToEventId,
                 )
             }
-            .handleSendResult()
+            .handleSendResult(mediaId(uri))
     }
 
     suspend fun sendVoiceMessage(
@@ -122,17 +129,19 @@ class MediaSender @AssistedInject constructor(
                     inReplyToEventId = inReplyToEventId,
                 )
             }
-            .handleSendResult()
+            .handleSendResult(mediaId(uri))
     }
 
-    private fun Result<Unit>.handleSendResult() = this
+    private fun Result<Unit>.handleSendResult(mediaId: String) = this
         .onFailure { error ->
             val job = ongoingUploadJobs.remove(Job)
+            Timber.e(error, "Sending media $mediaId failed. Removing ongoing upload job. Total: ${ongoingUploadJobs.size}")
             if (error !is CancellationException) {
                 job?.cancel()
             }
         }
         .onSuccess {
+            Timber.d("Sent media $mediaId successfully. Removing ongoing upload job. Total: ${ongoingUploadJobs.size}")
             ongoingUploadJobs.remove(Job)
         }
 
@@ -195,6 +204,7 @@ class MediaSender @AssistedInject constructor(
         @Suppress("RunCatchingNotAllowed")
         return handler
             .mapCatching { uploadHandler ->
+                Timber.d("Added ongoing upload job, total: ${ongoingUploadJobs.size + 1}")
                 ongoingUploadJobs[Job] = uploadHandler
                 uploadHandler.await()
             }
@@ -214,3 +224,6 @@ class MediaSender @AssistedInject constructor(
      */
     fun cleanUp() = preProcessor.cleanUp()
 }
+
+private fun mediaId(uri: Uri?): String = uri?.path.orEmpty().hash()
+private fun mediaId(file: File): String = file.path.orEmpty().hash()

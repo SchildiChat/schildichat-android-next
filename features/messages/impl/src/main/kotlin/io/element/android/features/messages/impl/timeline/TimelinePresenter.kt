@@ -20,9 +20,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import io.element.android.features.messages.impl.MessagesNavigator
 import io.element.android.features.messages.impl.crypto.sendfailure.resolve.ResolveVerifiedUserSendFailureEvents
 import io.element.android.features.messages.impl.crypto.sendfailure.resolve.ResolveVerifiedUserSendFailureState
@@ -44,6 +44,7 @@ import io.element.android.libraries.featureflag.api.FeatureFlagService
 import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.UniqueId
+import io.element.android.libraries.matrix.api.core.asEventId
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.room.MessageEventType
 import io.element.android.libraries.matrix.api.room.isDm
@@ -67,7 +68,8 @@ import timber.log.Timber
 
 const val FOCUS_ON_PINNED_EVENT_DEBOUNCE_DURATION_IN_MILLIS = 200L
 
-class TimelinePresenter @AssistedInject constructor(
+@AssistedInject
+class TimelinePresenter(
     timelineItemsFactoryCreator: TimelineItemsFactory.Creator,
     private val room: JoinedRoom,
     private val dispatchers: CoroutineDispatchers,
@@ -116,8 +118,8 @@ class TimelinePresenter @AssistedInject constructor(
 
         val syncUpdateFlow = room.syncUpdateFlow.collectAsState()
 
-        val userHasPermissionToSendMessage by room.canSendMessageAsState(type = MessageEventType.ROOM_MESSAGE, updateKey = syncUpdateFlow.value)
-        val userHasPermissionToSendReaction by room.canSendMessageAsState(type = MessageEventType.REACTION, updateKey = syncUpdateFlow.value)
+        val userHasPermissionToSendMessage by room.canSendMessageAsState(type = MessageEventType.RoomMessage, updateKey = syncUpdateFlow.value)
+        val userHasPermissionToSendReaction by room.canSendMessageAsState(type = MessageEventType.Reaction, updateKey = syncUpdateFlow.value)
 
         val prevMostRecentItemId = rememberSaveable { mutableStateOf<UniqueId?>(null) }
 
@@ -136,7 +138,7 @@ class TimelinePresenter @AssistedInject constructor(
         }.collectAsState(initial = true)
 
         val displayThreadSummaries by produceState(false) {
-            value = featureFlagService.isFeatureEnabled(FeatureFlags.HideThreadedEvents)
+            value = featureFlagService.isFeatureEnabled(FeatureFlags.Threads)
         }
 
         fun handleEvents(event: TimelineEvents) {
@@ -206,7 +208,7 @@ class TimelinePresenter @AssistedInject constructor(
                 is TimelineEvents.NavigateToPredecessorOrSuccessorRoom -> {
                     // Navigate to the predecessor or successor room
                     val serverNames = calculateServerNamesForRoom(room)
-                    navigator.onNavigateToRoom(event.roomId, serverNames)
+                    navigator.onNavigateToRoom(event.roomId, null, serverNames)
                 }
                 is TimelineEvents.OpenThread -> {
                     navigator.onOpenThread(
@@ -256,13 +258,39 @@ class TimelinePresenter @AssistedInject constructor(
                 }
                 is FocusRequestState.Loading -> {
                     val eventId = currentFocusRequestState.eventId
-                    timelineController.focusOnEvent(eventId)
-                        .onSuccess {
-                            focusRequestState = FocusRequestState.Success(eventId = eventId)
-                        }
-                        .onFailure {
-                            focusRequestState = FocusRequestState.Failure(it)
-                        }
+                    val threadId = room.threadRootIdForEvent(eventId).getOrElse {
+                        focusRequestState = FocusRequestState.Failure(it)
+                        return@LaunchedEffect
+                    }
+
+                    if (timelineController.mainTimelineMode() is Timeline.Mode.Thread && threadId == null) {
+                        // We are in a thread timeline, and the event isn't part of a thread, we need to navigate back to the room
+                        focusRequestState = FocusRequestState.None
+                        navigator.onNavigateToRoom(room.roomId, eventId, calculateServerNamesForRoom(room))
+                    } else {
+                        timelineController.focusOnEvent(eventId, threadId)
+                            .onSuccess { result ->
+                                when (result) {
+                                    is EventFocusResult.FocusedOnLive -> {
+                                        focusRequestState = FocusRequestState.Success(eventId = eventId)
+                                    }
+                                    is EventFocusResult.IsInThread -> {
+                                        val currentThreadId = (timelineController.mainTimelineMode() as? Timeline.Mode.Thread)?.threadRootId
+                                        if (currentThreadId == result.threadId) {
+                                            // It's the same thread, we just focus on the event
+                                            focusRequestState = FocusRequestState.Success(eventId = eventId)
+                                        } else {
+                                            focusRequestState = FocusRequestState.Success(eventId = result.threadId.asEventId())
+                                            // It's part of a thread we're not in, let's open it in another timeline
+                                            navigator.onOpenThread(result.threadId, eventId)
+                                        }
+                                    }
+                                }
+                            }
+                            .onFailure {
+                                focusRequestState = FocusRequestState.Failure(it)
+                            }
+                    }
                 }
                 else -> Unit
             }
@@ -340,7 +368,7 @@ class TimelinePresenter @AssistedInject constructor(
             newMostRecentItemId != prevMostRecentItemIdValue
 
         if (hasNewEvent) {
-            val newMostRecentEvent = newMostRecentItem as? TimelineItem.Event
+            val newMostRecentEvent = newMostRecentItem
             // Scroll to bottom if the new event is from me, even if sent from another device
             val fromMe = newMostRecentEvent?.isMine == true
             newEventState.value = if (fromMe) {

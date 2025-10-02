@@ -1,4 +1,5 @@
-import extension.setupAnvil
+import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 /*
  * Copyright 2022-2024 New Vector Ltd.
@@ -16,7 +17,7 @@ android {
     namespace = "io.element.android.libraries.matrix.impl"
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 dependencies {
     releaseImplementation(libs.matrix.sdk)
@@ -35,24 +36,18 @@ dependencies {
     implementation(projects.services.analytics.api)
     implementation(projects.services.toolbox.api)
     api(projects.libraries.matrix.api)
-    implementation(libs.dagger)
     implementation(projects.libraries.core)
-    implementation("net.java.dev.jna:jna:5.17.0@aar")
+    implementation("net.java.dev.jna:jna:5.18.1@aar")
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.serialization.json)
     implementation(libs.kotlinx.collections.immutable)
 
-    testImplementation(libs.test.junit)
-    testImplementation(libs.test.truth)
-    testImplementation(libs.test.robolectric)
+    testCommonDependencies(libs)
     testImplementation(projects.libraries.featureflag.test)
     testImplementation(projects.libraries.matrix.test)
     testImplementation(projects.libraries.preferences.test)
-    testImplementation(projects.libraries.sessionStorage.implMemory)
+    testImplementation(projects.libraries.previewutils)
     testImplementation(projects.libraries.sessionStorage.test)
     testImplementation(projects.services.analytics.test)
     testImplementation(projects.services.toolbox.test)
-    testImplementation(projects.tests.testutils)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.test.turbine)
 }

@@ -1,4 +1,5 @@
-import extension.setupAnvil
+import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 /*
  * Copyright 2022-2024 New Vector Ltd.
@@ -11,29 +12,24 @@ plugins {
     id("io.element.android-compose-library")
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 android {
     namespace = "io.element.android.services.apperror.impl"
 }
 
 dependencies {
-    implementation(libs.dagger)
     implementation(projects.libraries.core)
     implementation(projects.libraries.di)
     implementation(projects.libraries.designsystem)
     implementation(projects.libraries.uiStrings)
     implementation(projects.services.toolbox.api)
-    implementation(projects.anvilannotations)
 
     implementation(libs.coroutines.core)
     implementation(libs.androidx.corektx)
 
     api(projects.services.apperror.api)
 
-    testImplementation(libs.test.junit)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.test.turbine)
-    testImplementation(libs.test.truth)
+    testCommonDependencies(libs)
     testImplementation(projects.services.toolbox.test)
 }

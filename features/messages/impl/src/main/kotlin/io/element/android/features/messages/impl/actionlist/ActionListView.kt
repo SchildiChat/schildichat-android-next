@@ -13,6 +13,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,9 +21,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,6 +38,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -56,7 +63,6 @@ import io.element.android.features.messages.impl.timeline.a11y.a11yReactionActio
 import io.element.android.features.messages.impl.timeline.components.MessageShieldView
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemAudioContent
-import io.element.android.features.messages.impl.timeline.model.event.TimelineItemCallNotifyContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemEncryptedContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemFileContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemImageContent
@@ -64,6 +70,7 @@ import io.element.android.features.messages.impl.timeline.model.event.TimelineIt
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemLocationContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemPollContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemRedactedContent
+import io.element.android.features.messages.impl.timeline.model.event.TimelineItemRtcNotificationContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemStateContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemStickerContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContent
@@ -90,6 +97,8 @@ import io.element.android.libraries.matrix.ui.messages.sender.SenderName
 import io.element.android.libraries.matrix.ui.messages.sender.SenderNameMode
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -218,6 +227,7 @@ private fun ActionListViewContent(
                 if (target.displayEmojiReactions) {
                     item {
                         EmojiReactionsRow(
+                            recentEmojis = target.recentEmojis,
                             highlightedEmojis = target.event.reactionsState.highlightedKeys,
                             onEmojiReactionClick = onEmojiReactionClick,
                             onCustomReactionClick = onCustomReactionClick,
@@ -306,7 +316,7 @@ private fun MessageSummary(
         is TimelineItemLegacyCallInviteContent -> {
             content = { ContentForBody(textContent) }
         }
-        is TimelineItemCallNotifyContent -> {
+        is TimelineItemRtcNotificationContent -> {
             content = { ContentForBody(stringResource(CommonStrings.common_call_started)) }
         }
     }
@@ -335,43 +345,67 @@ private fun MessageSummary(
 }
 
 private val emojiRippleRadius = 24.dp
+private val suggestedEmojis = persistentListOf("👍️", "👎️", "🔥", "❤️", "👏")
 
 @Composable
 private fun EmojiReactionsRow(
+    recentEmojis: ImmutableList<String>,
     highlightedEmojis: ImmutableList<String>,
     onEmojiReactionClick: (String) -> Unit,
     onCustomReactionClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier.padding(horizontal = 24.dp, vertical = 16.dp)
+        modifier = modifier.padding(end = 16.dp, top = 16.dp, bottom = 16.dp),
     ) {
-        // TODO use most recently used emojis here when available from the Rust SDK
-        val defaultEmojis = sequenceOf(
-            "👍️",
-            "👎️",
-            "🔥",
-            "❤️",
-            "👏"
-        )
-        for (emoji in defaultEmojis) {
-            val isHighlighted = highlightedEmojis.contains(emoji)
-            EmojiButton(
-                modifier = Modifier
-                    // Make it appear after the more useful actions for the accessibility service
-                    .semantics {
-                        traversalIndex = 1f
-                    },
-                emoji = emoji,
-                isHighlighted = isHighlighted,
-                onClick = onEmojiReactionClick
-            )
+        val backgroundColor = ElementTheme.colors.bgCanvasDefault
+
+        val emojis = remember(recentEmojis) {
+            (suggestedEmojis + recentEmojis.filter { it !in suggestedEmojis })
+                .take(100)
+                .toImmutableList()
         }
-        Box(
+
+        LazyRow(
             modifier = Modifier
-                .size(48.dp),
-            contentAlignment = Alignment.Center,
+                .weight(1f, fill = true)
+                .drawWithContent {
+                    val gradientWidth = 24.dp.toPx()
+                    val width = size.width
+                    drawContent()
+
+                    drawRect(
+                        brush = Brush.horizontalGradient(
+                            0.0f to Color.Transparent,
+                            1.0f to backgroundColor,
+                            startX = width - gradientWidth,
+                            endX = width,
+                        ),
+                        topLeft = Offset(width - gradientWidth, 0f),
+                        size = Size(gradientWidth, size.height)
+                    )
+                },
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            items(emojis) { emoji ->
+                val isHighlighted = highlightedEmojis.contains(emoji)
+                EmojiButton(
+                    modifier = Modifier
+                        // Make it appear after the more useful actions for the accessibility service
+                        .semantics {
+                            traversalIndex = 1f
+                        },
+                    emoji = emoji,
+                    isHighlighted = isHighlighted,
+                    onClick = onEmojiReactionClick
+                )
+            }
+        }
+
+        Box(
+            modifier = Modifier.padding(end = 10.dp).requiredSize(48.dp),
+            contentAlignment = Alignment.CenterEnd,
         ) {
             Icon(
                 imageVector = CompoundIcons.ReactionAdd(),

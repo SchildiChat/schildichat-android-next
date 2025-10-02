@@ -7,9 +7,10 @@
 
 package io.element.android.features.call.impl.utils
 
-import com.squareup.anvil.annotations.ContributesBinding
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
 import io.element.android.libraries.core.extensions.runCatchingExceptions
-import io.element.android.libraries.di.AppScope
 import io.element.android.libraries.matrix.api.MatrixClientProvider
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.SessionId
@@ -18,12 +19,12 @@ import io.element.android.libraries.matrix.api.widget.CallWidgetSettingsProvider
 import io.element.android.libraries.preferences.api.store.AppPreferencesStore
 import io.element.android.services.appnavstate.api.ActiveRoomsHolder
 import kotlinx.coroutines.flow.firstOrNull
-import javax.inject.Inject
 
 private const val EMBEDDED_CALL_WIDGET_BASE_URL = "https://appassets.androidplatform.net/element-call/index.html"
 
 @ContributesBinding(AppScope::class)
-class DefaultCallWidgetProvider @Inject constructor(
+@Inject
+class DefaultCallWidgetProvider(
     private val matrixClientsProvider: MatrixClientProvider,
     private val appPreferencesStore: AppPreferencesStore,
     private val callWidgetSettingsProvider: CallWidgetSettingsProvider,
@@ -44,8 +45,14 @@ class DefaultCallWidgetProvider @Inject constructor(
         val customBaseUrl = appPreferencesStore.getCustomElementCallBaseUrlFlow().firstOrNull()
         val baseUrl = customBaseUrl ?: EMBEDDED_CALL_WIDGET_BASE_URL
 
-        val isEncrypted = room.info().isEncrypted ?: room.getUpdatedIsEncrypted().getOrThrow()
-        val widgetSettings = callWidgetSettingsProvider.provide(baseUrl, encrypted = isEncrypted, direct = room.isDm())
+        val roomInfo = room.info()
+        val isEncrypted = roomInfo.isEncrypted ?: room.getUpdatedIsEncrypted().getOrThrow()
+        val widgetSettings = callWidgetSettingsProvider.provide(
+            baseUrl = baseUrl,
+            encrypted = isEncrypted,
+            direct = room.isDm(),
+            hasActiveCall = roomInfo.hasRoomCall,
+        )
         val callUrl = room.generateWidgetWebViewUrl(
             widgetSettings = widgetSettings,
             clientId = clientId,

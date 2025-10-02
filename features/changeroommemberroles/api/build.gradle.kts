@@ -1,5 +1,3 @@
-import extension.setupAnvil
-
 /*
  * Copyright 2025 New Vector Ltd.
  *
@@ -16,10 +14,7 @@ android {
     namespace = "io.element.android.features.changeroommemberroles.api"
 }
 
-setupAnvil()
-
 dependencies {
-    implementation(projects.anvilannotations)
     implementation(projects.libraries.architecture)
     implementation(projects.libraries.core)
     implementation(projects.libraries.matrix.api)

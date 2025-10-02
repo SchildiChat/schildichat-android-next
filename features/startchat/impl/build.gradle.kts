@@ -1,5 +1,5 @@
-import extension.ComponentMergingStrategy
-import extension.setupAnvil
+import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 /*
  * Copyright 2022-2024 New Vector Ltd.
@@ -23,7 +23,7 @@ android {
     }
 }
 
-setupAnvil(componentMergingStrategy = ComponentMergingStrategy.KSP)
+setupDependencyInjection()
 
 dependencies {
     implementation(projects.libraries.core)
@@ -33,7 +33,7 @@ dependencies {
     implementation(projects.libraries.designsystem)
     implementation(projects.libraries.uiStrings)
     implementation(projects.libraries.androidutils)
-    implementation(projects.libraries.deeplink)
+    implementation(projects.libraries.deeplink.api)
     implementation(projects.libraries.mediapickers.api)
     implementation(projects.libraries.mediaupload.api)
     implementation(projects.libraries.permissions.api)
@@ -44,13 +44,7 @@ dependencies {
     implementation(projects.features.createroom.api)
     api(projects.features.startchat.api)
 
-    testImplementation(libs.test.junit)
-    testImplementation(libs.test.mockk)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.molecule.runtime)
-    testImplementation(libs.test.truth)
-    testImplementation(libs.test.turbine)
-    testImplementation(libs.test.robolectric)
+    testCommonDependencies(libs, true)
     testImplementation(projects.services.analytics.test)
     testImplementation(projects.libraries.matrix.test)
     testImplementation(projects.libraries.mediapickers.test)
@@ -59,7 +53,4 @@ dependencies {
     testImplementation(projects.libraries.usersearch.test)
     testImplementation(projects.features.startchat.test)
     testImplementation(projects.libraries.featureflag.test)
-    testImplementation(projects.tests.testutils)
-    testImplementation(libs.androidx.compose.ui.test.junit)
-    testReleaseImplementation(libs.androidx.compose.ui.test.manifest)
 }

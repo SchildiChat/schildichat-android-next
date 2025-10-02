@@ -157,7 +157,10 @@ private fun OutgoingVerificationHeader(step: Step, request: VerificationRequest.
         }
         Step.Canceled -> CommonStrings.common_verification_failed
         Step.Ready -> R.string.screen_session_verification_compare_emojis_title
-        Step.Completed -> CommonStrings.common_verification_complete
+        Step.Completed -> when (request) {
+            is VerificationRequest.Outgoing.CurrentSession -> R.string.screen_session_verification_device_verified
+            is VerificationRequest.Outgoing.User -> CommonStrings.common_verification_complete
+        }
         is Step.Verifying -> when (step.data) {
             is SessionVerificationData.Decimals -> R.string.screen_session_verification_compare_numbers_title
             is SessionVerificationData.Emojis -> R.string.screen_session_verification_compare_emojis_title
@@ -187,7 +190,7 @@ private fun OutgoingVerificationHeader(step: Step, request: VerificationRequest.
         is Step.Exit -> return
     }
     val timeLimitMessage = if (step.isTimeLimited) {
-        stringResource(CommonStrings.a11y_time_limited_action_required)
+        stringResource(CommonStrings.a11y_session_verification_time_limited_action_required)
     } else {
         ""
     }

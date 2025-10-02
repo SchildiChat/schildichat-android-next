@@ -8,20 +8,23 @@
 package io.element.android.libraries.pushstore.impl
 
 import android.content.Context
-import com.squareup.anvil.annotations.ContributesBinding
-import io.element.android.libraries.di.AppScope
-import io.element.android.libraries.di.ApplicationContext
-import io.element.android.libraries.di.SingleIn
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
+import io.element.android.libraries.di.annotations.ApplicationContext
 import io.element.android.libraries.matrix.api.core.SessionId
+import io.element.android.libraries.preferences.api.store.PreferenceDataStoreFactory
 import io.element.android.libraries.pushstore.api.UserPushStore
 import io.element.android.libraries.pushstore.api.UserPushStoreFactory
 import java.util.concurrent.ConcurrentHashMap
-import javax.inject.Inject
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-class DefaultUserPushStoreFactory @Inject constructor(
+@Inject
+class DefaultUserPushStoreFactory(
     @ApplicationContext private val context: Context,
+    private val preferenceDataStoreFactory: PreferenceDataStoreFactory,
 ) : UserPushStoreFactory {
     // We can have only one class accessing a single data store, so keep a cache of them.
     private val cache = ConcurrentHashMap<SessionId, UserPushStore>()
@@ -29,7 +32,8 @@ class DefaultUserPushStoreFactory @Inject constructor(
         return cache.getOrPut(userId) {
             UserPushStoreDataStore(
                 context = context,
-                userId = userId
+                userId = userId,
+                factory = preferenceDataStoreFactory,
             )
         }
     }

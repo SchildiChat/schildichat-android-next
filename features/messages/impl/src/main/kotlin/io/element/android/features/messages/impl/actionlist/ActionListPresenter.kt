@@ -14,10 +14,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import com.squareup.anvil.annotations.ContributesBinding
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesBinding
 import io.element.android.features.messages.impl.UserEventPermissions
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemAction
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemActionComparator
@@ -25,12 +25,13 @@ import io.element.android.features.messages.impl.actionlist.model.TimelineItemAc
 import io.element.android.features.messages.impl.crypto.sendfailure.VerifiedUserSendFailure
 import io.element.android.features.messages.impl.crypto.sendfailure.VerifiedUserSendFailureFactory
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
-import io.element.android.features.messages.impl.timeline.model.event.TimelineItemCallNotifyContent
+import io.element.android.features.messages.impl.timeline.model.TimelineItemThreadInfo
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemEventContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemEventContentWithAttachment
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemLegacyCallInviteContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemPollContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemRedactedContent
+import io.element.android.features.messages.impl.timeline.model.event.TimelineItemRtcNotificationContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemStateContent
 import io.element.android.features.messages.impl.timeline.model.event.canBeCopied
 import io.element.android.features.messages.impl.timeline.model.event.canBeForwarded
@@ -39,7 +40,10 @@ import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.dateformatter.api.DateFormatter
 import io.element.android.libraries.dateformatter.api.DateFormatterMode
 import io.element.android.libraries.di.RoomScope
+import io.element.android.libraries.featureflag.api.FeatureFlagService
+import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.matrix.api.core.EventId
+import io.element.android.libraries.matrix.api.recentemojis.GetRecentEmojis
 import io.element.android.libraries.matrix.api.room.BaseRoom
 import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.preferences.api.store.AppPreferencesStore
@@ -59,7 +63,8 @@ interface ActionListPresenter : Presenter<ActionListState> {
     }
 }
 
-class DefaultActionListPresenter @AssistedInject constructor(
+@AssistedInject
+class DefaultActionListPresenter(
     @Assisted
     private val postProcessor: TimelineItemActionPostProcessor,
     @Assisted
@@ -68,6 +73,8 @@ class DefaultActionListPresenter @AssistedInject constructor(
     private val room: BaseRoom,
     private val userSendFailureFactory: VerifiedUserSendFailureFactory,
     private val dateFormatter: DateFormatter,
+    private val featureFlagService: FeatureFlagService,
+    private val getRecentEmojis: GetRecentEmojis,
 ) : ActionListPresenter {
     @AssistedFactory
     @ContributesBinding(RoomScope::class)
@@ -95,6 +102,8 @@ class DefaultActionListPresenter @AssistedInject constructor(
             room.roomInfoFlow.map { it.pinnedEventIds }
         }.collectAsState(initial = persistentListOf())
 
+        val isThreadsEnabled = featureFlagService.isFeatureEnabledFlow(FeatureFlags.Threads).collectAsState(false)
+
         fun handleEvents(event: ActionListEvents) {
             when (event) {
                 ActionListEvents.Clear -> target.value = ActionListState.Target.None
@@ -104,6 +113,7 @@ class DefaultActionListPresenter @AssistedInject constructor(
                     isDeveloperModeEnabled = isDeveloperModeEnabled,
                     pinnedEventIds = pinnedEventIds,
                     target = target,
+                    isThreadsEnabled = isThreadsEnabled.value,
                 )
             }
         }
@@ -119,7 +129,8 @@ class DefaultActionListPresenter @AssistedInject constructor(
         usersEventPermissions: UserEventPermissions,
         isDeveloperModeEnabled: Boolean,
         pinnedEventIds: ImmutableList<EventId>,
-        target: MutableState<ActionListState.Target>
+        target: MutableState<ActionListState.Target>,
+        isThreadsEnabled: Boolean,
     ) = launch {
         target.value = ActionListState.Target.Loading(timelineItem)
 
@@ -128,6 +139,7 @@ class DefaultActionListPresenter @AssistedInject constructor(
             usersEventPermissions = usersEventPermissions,
             isDeveloperModeEnabled = isDeveloperModeEnabled,
             isEventPinned = pinnedEventIds.contains(timelineItem.eventId),
+            isThreadsEnabled = isThreadsEnabled,
         )
 
         val verifiedUserSendFailure = userSendFailureFactory.create(timelineItem.localSendState)
@@ -143,26 +155,36 @@ class DefaultActionListPresenter @AssistedInject constructor(
                 ),
                 displayEmojiReactions = displayEmojiReactions,
                 verifiedUserSendFailure = verifiedUserSendFailure,
-                actions = actions.toImmutableList()
+                actions = actions.toImmutableList(),
+                recentEmojis = getRecentEmojis().getOrNull()?.toImmutableList() ?: persistentListOf()
             )
         } else {
             target.value = ActionListState.Target.None
         }
     }
 
-    private suspend fun buildActions(
+    private fun buildActions(
         timelineItem: TimelineItem.Event,
         usersEventPermissions: UserEventPermissions,
         isDeveloperModeEnabled: Boolean,
         isEventPinned: Boolean,
+        isThreadsEnabled: Boolean,
     ): List<TimelineItemAction> {
         val canRedact = timelineItem.isMine && usersEventPermissions.canRedactOwn || !timelineItem.isMine && usersEventPermissions.canRedactOther
         return buildSet {
             if (timelineItem.canBeRepliedTo && usersEventPermissions.canSendMessage) {
-                if (timelineMode !is Timeline.Mode.Thread && timelineItem.threadInfo.threadRootId != null) {
+                if (isThreadsEnabled && timelineMode !is Timeline.Mode.Thread && timelineItem.isRemote) {
+                    // If threads are enabled, we can reply in thread if the item is remote
                     add(TimelineItemAction.ReplyInThread)
-                } else {
                     add(TimelineItemAction.Reply)
+                } else {
+                    if (!isThreadsEnabled && timelineItem.threadInfo is TimelineItemThreadInfo.ThreadResponse) {
+                        // If threads are not enabled, we can reply in a thread if the item is already in the thread
+                        add(TimelineItemAction.ReplyInThread)
+                    } else {
+                        // Otherwise, we can only reply in the room
+                        add(TimelineItemAction.Reply)
+                    }
                 }
             }
             if (timelineItem.isRemote && timelineItem.content.canBeForwarded()) {
@@ -224,7 +246,7 @@ class DefaultActionListPresenter @AssistedInject constructor(
 private fun Iterable<TimelineItemAction>.postFilter(content: TimelineItemEventContent): Iterable<TimelineItemAction> {
     return filter { action ->
         when (content) {
-            is TimelineItemCallNotifyContent,
+            is TimelineItemRtcNotificationContent,
             is TimelineItemLegacyCallInviteContent,
             is TimelineItemStateContent -> action == TimelineItemAction.ViewSource
             is TimelineItemRedactedContent -> {

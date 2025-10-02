@@ -15,9 +15,9 @@ import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
 import com.bumble.appyx.core.plugin.plugins
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
-import io.element.android.anvilannotations.ContributesNode
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedInject
+import io.element.android.annotations.ContributesNode
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.logout.api.direct.DirectLogoutEvents
 import io.element.android.features.logout.api.direct.DirectLogoutView
@@ -26,13 +26,15 @@ import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.user.MatrixUser
 
 @ContributesNode(SessionScope::class)
-class PreferencesRootNode @AssistedInject constructor(
+@AssistedInject
+class PreferencesRootNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
     private val presenter: PreferencesRootPresenter,
     private val directLogoutView: DirectLogoutView,
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
+        fun onAddAccount()
         fun onOpenBugReport()
         fun onSecureBackupClick()
         fun onOpenAnalytics()
@@ -45,6 +47,10 @@ class PreferencesRootNode @AssistedInject constructor(
         fun onOpenBlockedUsers()
         fun onSignOutClick()
         fun onOpenAccountDeactivation()
+    }
+
+    private fun onAddAccount() {
+        plugins<Callback>().forEach { it.onAddAccount() }
     }
 
     private fun onOpenBugReport() {
@@ -118,6 +124,7 @@ class PreferencesRootNode @AssistedInject constructor(
             state = state,
             modifier = modifier,
             onBackClick = this::navigateUp,
+            onAddAccountClick = this::onAddAccount,
             onOpenRageShake = this::onOpenBugReport,
             onOpenAnalytics = this::onOpenAnalytics,
             onOpenAbout = this::onOpenAbout,

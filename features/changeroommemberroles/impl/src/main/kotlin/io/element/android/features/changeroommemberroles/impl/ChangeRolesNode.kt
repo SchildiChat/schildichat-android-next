@@ -14,9 +14,9 @@ import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
-import io.element.android.anvilannotations.ContributesNode
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedInject
+import io.element.android.annotations.ContributesNode
 import io.element.android.features.changeroommemberroes.api.ChangeRoomMemberRolesListType
 import io.element.android.libraries.architecture.NodeInputs
 import io.element.android.libraries.architecture.appyx.launchMolecule
@@ -26,7 +26,8 @@ import io.element.android.libraries.matrix.api.room.RoomMember
 import kotlinx.coroutines.flow.first
 
 @ContributesNode(RoomScope::class)
-class ChangeRolesNode @AssistedInject constructor(
+@AssistedInject
+class ChangeRolesNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
     presenterFactory: ChangeRolesPresenter.Factory,
@@ -36,16 +37,7 @@ class ChangeRolesNode @AssistedInject constructor(
     ) : NodeInputs
 
     private val inputs: Inputs = inputs()
-
-    private val presenter = presenterFactory.run {
-        val role = when (inputs.listType) {
-            ChangeRoomMemberRolesListType.Admins -> RoomMember.Role.Admin
-            ChangeRoomMemberRolesListType.Moderators -> RoomMember.Role.Moderator
-            ChangeRoomMemberRolesListType.SelectNewOwnersWhenLeaving -> RoomMember.Role.Owner(isCreator = false)
-        }
-        create(role)
-    }
-
+    private val presenter = presenterFactory.create(inputs.listType.toRoomMemberRole())
     private val stateFlow = launchMolecule { presenter.present() }
 
     suspend fun waitForRoleChanged() {
@@ -61,4 +53,10 @@ class ChangeRolesNode @AssistedInject constructor(
             navigateUp = this::navigateUp,
         )
     }
+}
+
+internal fun ChangeRoomMemberRolesListType.toRoomMemberRole() = when (this) {
+    ChangeRoomMemberRolesListType.Admins -> RoomMember.Role.Admin
+    ChangeRoomMemberRolesListType.Moderators -> RoomMember.Role.Moderator
+    ChangeRoomMemberRolesListType.SelectNewOwnersWhenLeaving -> RoomMember.Role.Owner(isCreator = false)
 }

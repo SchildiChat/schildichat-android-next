@@ -7,11 +7,16 @@
 
 package io.element.android.features.messages.impl.timeline.factories.event
 
-import io.element.android.features.messages.impl.timeline.model.event.TimelineItemCallNotifyContent
+import dev.zacsweers.metro.Inject
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemEventContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemLegacyCallInviteContent
+import io.element.android.features.messages.impl.timeline.model.event.TimelineItemRtcNotificationContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemUnknownContent
+import io.element.android.libraries.matrix.api.core.EventId
+import io.element.android.libraries.matrix.api.core.SessionId
+import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.timeline.item.event.CallNotifyContent
+import io.element.android.libraries.matrix.api.timeline.item.event.EventContent
 import io.element.android.libraries.matrix.api.timeline.item.event.EventTimelineItem
 import io.element.android.libraries.matrix.api.timeline.item.event.FailedToParseMessageLikeContent
 import io.element.android.libraries.matrix.api.timeline.item.event.FailedToParseStateContent
@@ -19,6 +24,7 @@ import io.element.android.libraries.matrix.api.timeline.item.event.LegacyCallInv
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageContent
 import io.element.android.libraries.matrix.api.timeline.item.event.PollContent
 import io.element.android.libraries.matrix.api.timeline.item.event.ProfileChangeContent
+import io.element.android.libraries.matrix.api.timeline.item.event.ProfileTimelineDetails
 import io.element.android.libraries.matrix.api.timeline.item.event.RedactedContent
 import io.element.android.libraries.matrix.api.timeline.item.event.RoomMembershipContent
 import io.element.android.libraries.matrix.api.timeline.item.event.StateContent
@@ -26,9 +32,9 @@ import io.element.android.libraries.matrix.api.timeline.item.event.StickerConten
 import io.element.android.libraries.matrix.api.timeline.item.event.UnableToDecryptContent
 import io.element.android.libraries.matrix.api.timeline.item.event.UnknownContent
 import io.element.android.libraries.matrix.api.timeline.item.event.getDisambiguatedDisplayName
-import javax.inject.Inject
 
-class TimelineItemContentFactory @Inject constructor(
+@Inject
+class TimelineItemContentFactory(
     private val messageFactory: TimelineItemContentMessageFactory,
     private val redactedMessageFactory: TimelineItemContentRedactedFactory,
     private val stickerFactory: TimelineItemContentStickerFactory,
@@ -39,28 +45,55 @@ class TimelineItemContentFactory @Inject constructor(
     private val stateFactory: TimelineItemContentStateFactory,
     private val failedToParseMessageFactory: TimelineItemContentFailedToParseMessageFactory,
     private val failedToParseStateFactory: TimelineItemContentFailedToParseStateFactory,
+    private val sessionId: SessionId,
 ) {
     suspend fun create(eventTimelineItem: EventTimelineItem): TimelineItemEventContent {
-        return when (val itemContent = eventTimelineItem.content) {
+        return create(
+            itemContent = eventTimelineItem.content,
+            eventId = eventTimelineItem.eventId,
+            isEditable = eventTimelineItem.isEditable,
+            sender = eventTimelineItem.sender,
+            senderProfile = eventTimelineItem.senderProfile,
+        )
+    }
+
+    suspend fun create(
+        itemContent: EventContent,
+        eventId: EventId?,
+        isEditable: Boolean,
+        sender: UserId,
+        senderProfile: ProfileTimelineDetails,
+    ): TimelineItemEventContent {
+        val isOutgoing = sessionId == sender
+        return when (itemContent) {
             is FailedToParseMessageLikeContent -> failedToParseMessageFactory.create(itemContent)
             is FailedToParseStateContent -> failedToParseStateFactory.create(itemContent)
             is MessageContent -> {
-                val senderDisambiguatedDisplayName = eventTimelineItem.senderProfile.getDisambiguatedDisplayName(eventTimelineItem.sender)
+                val senderDisambiguatedDisplayName = senderProfile.getDisambiguatedDisplayName(sender)
                 messageFactory.create(
                     content = itemContent,
                     senderDisambiguatedDisplayName = senderDisambiguatedDisplayName,
-                    eventId = eventTimelineItem.eventId,
+                    eventId = eventId,
                 )
             }
-            is ProfileChangeContent -> profileChangeFactory.create(eventTimelineItem)
+            is ProfileChangeContent -> {
+                val senderDisambiguatedDisplayName = senderProfile.getDisambiguatedDisplayName(sender)
+                profileChangeFactory.create(itemContent, isOutgoing, sender, senderDisambiguatedDisplayName)
+            }
             is RedactedContent -> redactedMessageFactory.create(itemContent)
-            is RoomMembershipContent -> roomMembershipFactory.create(eventTimelineItem)
+            is RoomMembershipContent -> {
+                val senderDisambiguatedDisplayName = senderProfile.getDisambiguatedDisplayName(sender)
+                roomMembershipFactory.create(itemContent, isOutgoing, sender, senderDisambiguatedDisplayName)
+            }
             is LegacyCallInviteContent -> TimelineItemLegacyCallInviteContent
-            is StateContent -> stateFactory.create(eventTimelineItem)
+            is StateContent -> {
+                val senderDisambiguatedDisplayName = senderProfile.getDisambiguatedDisplayName(sender)
+                stateFactory.create(itemContent, isOutgoing, sender, senderDisambiguatedDisplayName)
+            }
             is StickerContent -> stickerFactory.create(itemContent)
-            is PollContent -> pollFactory.create(eventTimelineItem, itemContent)
+            is PollContent -> pollFactory.create(eventId, isEditable, isOutgoing, itemContent)
             is UnableToDecryptContent -> utdFactory.create(itemContent)
-            is CallNotifyContent -> TimelineItemCallNotifyContent()
+            is CallNotifyContent -> TimelineItemRtcNotificationContent()
             is UnknownContent -> TimelineItemUnknownContent
         }
     }

@@ -8,16 +8,16 @@
 package io.element.android.appnav.intent
 
 import android.content.Intent
+import dev.zacsweers.metro.Inject
 import io.element.android.features.login.api.LoginIntentResolver
 import io.element.android.features.login.api.LoginParams
-import io.element.android.libraries.deeplink.DeeplinkData
-import io.element.android.libraries.deeplink.DeeplinkParser
+import io.element.android.libraries.deeplink.api.DeeplinkData
+import io.element.android.libraries.deeplink.api.DeeplinkParser
 import io.element.android.libraries.matrix.api.permalink.PermalinkData
 import io.element.android.libraries.matrix.api.permalink.PermalinkParser
 import io.element.android.libraries.oidc.api.OidcAction
 import io.element.android.libraries.oidc.api.OidcIntentResolver
 import timber.log.Timber
-import javax.inject.Inject
 
 sealed interface ResolvedIntent {
     data class Navigation(val deeplinkData: DeeplinkData) : ResolvedIntent
@@ -27,7 +27,8 @@ sealed interface ResolvedIntent {
     data class IncomingShare(val intent: Intent) : ResolvedIntent
 }
 
-class IntentResolver @Inject constructor(
+@Inject
+class IntentResolver(
     private val deeplinkParser: DeeplinkParser,
     private val loginIntentResolver: LoginIntentResolver,
     private val oidcIntentResolver: OidcIntentResolver,

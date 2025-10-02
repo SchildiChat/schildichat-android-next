@@ -7,26 +7,36 @@
 
 package io.element.android.features.logout.impl
 
-import com.squareup.anvil.annotations.ContributesBinding
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
 import io.element.android.features.logout.api.LogoutUseCase
-import io.element.android.libraries.di.AppScope
 import io.element.android.libraries.matrix.api.MatrixClientProvider
-import io.element.android.libraries.matrix.api.auth.MatrixAuthenticationService
-import javax.inject.Inject
+import io.element.android.libraries.matrix.api.core.SessionId
+import io.element.android.libraries.sessionstorage.api.SessionStore
+import timber.log.Timber
 
 @ContributesBinding(AppScope::class)
-class DefaultLogoutUseCase @Inject constructor(
-    private val authenticationService: MatrixAuthenticationService,
+@Inject
+class DefaultLogoutUseCase(
+    private val sessionStore: SessionStore,
     private val matrixClientProvider: MatrixClientProvider,
 ) : LogoutUseCase {
-    override suspend fun logout(ignoreSdkError: Boolean) {
-        val currentSession = authenticationService.getLatestSessionId()
-        if (currentSession != null) {
-            matrixClientProvider.getOrRestore(currentSession)
-                .getOrThrow()
-                .logout(userInitiated = true, ignoreSdkError = true)
-        } else {
-            error("No session to sign out")
-        }
+    override suspend fun logoutAll(ignoreSdkError: Boolean) {
+        sessionStore.getAllSessions()
+            .map { sessionData ->
+                SessionId(sessionData.userId)
+            }
+            .forEach { sessionId ->
+                Timber.d("Logging out sessionId: $sessionId")
+                matrixClientProvider.getOrRestore(sessionId).fold(
+                    onSuccess = { client ->
+                        client.logout(userInitiated = true, ignoreSdkError = ignoreSdkError)
+                    },
+                    onFailure = { error ->
+                        Timber.e(error, "Failed to get or restore MatrixClient for sessionId: $sessionId")
+                    }
+                )
+            }
     }
 }

@@ -12,13 +12,23 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import io.element.android.libraries.architecture.Presenter
+import io.element.android.libraries.troubleshoot.api.test.NotificationTroubleshootNavigator
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class TroubleshootNotificationsPresenter @Inject constructor(
+@AssistedInject
+class TroubleshootNotificationsPresenter(
+    @Assisted private val navigator: NotificationTroubleshootNavigator,
     private val troubleshootTestSuite: TroubleshootTestSuite,
 ) : Presenter<TroubleshootNotificationsState> {
+    @AssistedFactory
+    fun interface Factory {
+        fun create(navigator: NotificationTroubleshootNavigator): TroubleshootNotificationsPresenter
+    }
+
     @Composable
     override fun present(): TroubleshootNotificationsState {
         val coroutineScope = rememberCoroutineScope()
@@ -33,7 +43,11 @@ class TroubleshootNotificationsPresenter @Inject constructor(
                     troubleshootTestSuite.runTestSuite(this)
                 }
                 is TroubleshootNotificationsEvents.QuickFix -> coroutineScope.launch {
-                    troubleshootTestSuite.quickFix(event.testIndex, this)
+                    troubleshootTestSuite.quickFix(
+                        testIndex = event.testIndex,
+                        coroutineScope = this,
+                        navigator = navigator,
+                    )
                 }
                 TroubleshootNotificationsEvents.RetryFailedTests -> coroutineScope.launch {
                     troubleshootTestSuite.retryFailedTest(this)

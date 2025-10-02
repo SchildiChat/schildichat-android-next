@@ -71,7 +71,7 @@ enum class FeatureFlags(
     Space(
         key = "feature.space",
         title = "Spaces",
-        description = "Spaces are under active development, only developers should enable this flog for now.",
+        description = "Spaces are under active development, only developers should enable this flag for now.",
         defaultValue = { false },
         isFinished = false,
     ),
@@ -93,11 +93,19 @@ enum class FeatureFlags(
         // False so it's displayed in the developer options screen
         isFinished = false,
     ),
-    HideThreadedEvents(
+    Threads(
         key = "feature.thread_timeline",
         title = "Threads",
         description = "Renders thread messages as a dedicated timeline. Restarting the app is required for this setting to fully take effect.",
         defaultValue = { false },
         isFinished = false,
-    )
+    ),
+    MultiAccount(
+        key = "feature.multi_account",
+        title = "Multi accounts",
+        description = "Allow the application to connect to multiple accounts at the same time." +
+            "\n\nWARNING: this feature is EXPERIMENTAL and UNSTABLE.",
+        defaultValue = { false },
+        isFinished = false,
+    ),
 }

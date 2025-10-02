@@ -1,4 +1,5 @@
-import extension.setupAnvil
+import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 /*
  * Copyright 2023, 2024 New Vector Ltd.
@@ -15,15 +16,12 @@ android {
     namespace = "io.element.android.features.cachecleaner.impl"
 }
 
-setupAnvil()
+setupDependencyInjection()
 
 dependencies {
     api(projects.features.cachecleaner.api)
     implementation(projects.libraries.core)
     implementation(projects.libraries.architecture)
 
-    testImplementation(libs.test.junit)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.test.truth)
-    testImplementation(projects.tests.testutils)
+    testCommonDependencies(libs)
 }

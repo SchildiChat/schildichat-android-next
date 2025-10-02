@@ -11,9 +11,9 @@ import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.architecture.runCatchingUpdatingState
@@ -31,7 +31,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 
-class SharePresenter @AssistedInject constructor(
+@AssistedInject
+class SharePresenter(
     @Assisted private val intent: Intent,
     @SessionCoroutineScope
     private val sessionCoroutineScope: CoroutineScope,
@@ -42,7 +43,7 @@ class SharePresenter @AssistedInject constructor(
     private val mediaOptimizationConfigProvider: MediaOptimizationConfigProvider,
 ) : Presenter<ShareState> {
     @AssistedFactory
-    interface Factory {
+    fun interface Factory {
         fun create(intent: Intent): SharePresenter
     }
 

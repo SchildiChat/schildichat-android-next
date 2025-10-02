@@ -57,7 +57,7 @@ interface MatrixClient {
     val encryptionService: EncryptionService
     val roomDirectoryService: RoomDirectoryService
     val mediaPreviewService: MediaPreviewService
-    val mediaLoader: MatrixMediaLoader
+    val matrixMediaLoader: MatrixMediaLoader
     val sessionCoroutineScope: CoroutineScope
     val ignoredUsersFlow: StateFlow<ImmutableList<UserId>>
     val roomMembershipObserver: RoomMembershipObserver

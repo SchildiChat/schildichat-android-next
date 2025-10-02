@@ -72,7 +72,7 @@ class DefaultNotificationMediaRepo(
         ): DefaultNotificationMediaRepo
     }
 
-    private val matrixMediaLoader = client.mediaLoader
+    private val matrixMediaLoader = client.matrixMediaLoader
 
     override suspend fun getMediaFile(
         mediaSource: MediaSource,

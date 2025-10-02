@@ -49,7 +49,7 @@ class DefaultImageLoaderHolder(
         return synchronized(map) {
             map.getOrPut(client.sessionId) {
                 loggedInImageLoaderFactory
-                    .newImageLoader(client)
+                    .newImageLoader(client.matrixMediaLoader)
             }
         }
     }

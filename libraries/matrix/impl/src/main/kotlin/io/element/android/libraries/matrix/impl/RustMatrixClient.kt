@@ -213,7 +213,7 @@ class RustMatrixClient(
         featureFlagService = featureFlagService,
     )
 
-    override val mediaLoader: MatrixMediaLoader = RustMediaLoader(
+    override val matrixMediaLoader: MatrixMediaLoader = RustMediaLoader(
         baseCacheDirectory = baseCacheDirectory,
         dispatchers = dispatchers,
         innerClient = innerClient,

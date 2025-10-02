@@ -10,7 +10,7 @@ package io.element.android.libraries.matrix.ui.media
 import androidx.test.platform.app.InstrumentationRegistry
 import coil3.ImageLoader
 import com.google.common.truth.Truth.assertThat
-import io.element.android.libraries.matrix.api.MatrixClient
+import io.element.android.libraries.matrix.api.media.MatrixMediaLoader
 import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.sessionstorage.test.observer.FakeSessionObserver
@@ -27,7 +27,7 @@ class DefaultImageLoaderHolderTest {
     @Test
     fun `get - returns the same ImageLoader for the same client`() {
         val context = InstrumentationRegistry.getInstrumentation().context
-        val lambda = lambdaRecorder<MatrixClient, ImageLoader> { ImageLoader.Builder(context).build() }
+        val lambda = lambdaRecorder<MatrixMediaLoader, ImageLoader> { ImageLoader.Builder(context).build() }
 
         val holder = DefaultImageLoaderHolder(
             loggedInImageLoaderFactory = FakeLoggedInImageLoaderFactory(lambda),
@@ -39,14 +39,14 @@ class DefaultImageLoaderHolderTest {
         assert(imageLoader1 === imageLoader2)
         lambda.assertions()
             .isCalledOnce()
-            .with(value(client))
+            .with(value(client.matrixMediaLoader))
     }
 
     @Test
     fun `when session is deleted, the image loader is deleted`() = runTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val lambda =
-            lambdaRecorder<MatrixClient, ImageLoader> { ImageLoader.Builder(context).build() }
+            lambdaRecorder<MatrixMediaLoader, ImageLoader> { ImageLoader.Builder(context).build() }
         val sessionObserver = FakeSessionObserver()
         val holder = DefaultImageLoaderHolder(
             loggedInImageLoaderFactory = FakeLoggedInImageLoaderFactory(lambda),
@@ -65,7 +65,7 @@ class DefaultImageLoaderHolderTest {
     fun `when session is created, nothing happen`() = runTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val lambda =
-            lambdaRecorder<MatrixClient, ImageLoader> { ImageLoader.Builder(context).build() }
+            lambdaRecorder<MatrixMediaLoader, ImageLoader> { ImageLoader.Builder(context).build() }
         val sessionObserver = FakeSessionObserver()
         DefaultImageLoaderHolder(
             loggedInImageLoaderFactory = FakeLoggedInImageLoaderFactory(lambda),

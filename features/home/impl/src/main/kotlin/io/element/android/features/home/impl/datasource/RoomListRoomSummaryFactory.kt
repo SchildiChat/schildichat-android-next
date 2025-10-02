@@ -69,6 +69,7 @@ class RoomListRoomSummaryFactory(
                 user.getAvatarData(size = AvatarSize.RoomListItem)
             }.toImmutableList(),
             isTombstoned = roomInfo.successorRoom != null,
+            isSpace = roomInfo.isSpace,
         )
     }
 }

@@ -103,6 +103,15 @@ open class RoomListRoomSummaryProvider : PreviewParameterProvider<RoomListRoomSu
                     ),
                 ),
                 aRoomListRoomSummary(
+                    name = "A space invite",
+                    displayType = RoomSummaryDisplayType.INVITE,
+                    inviteSender = anInviteSender(
+                        userId = UserId("@bob:matrix.org"),
+                        displayName = "Bob",
+                    ),
+                    isSpace = true
+                ),
+                aRoomListRoomSummary(
                     name = "A knocked room",
                     displayType = RoomSummaryDisplayType.KNOCKED,
                 ),
@@ -151,6 +160,7 @@ internal fun aRoomListRoomSummary(
     canonicalAlias: RoomAlias? = null,
     heroes: List<AvatarData> = emptyList(),
     isTombstoned: Boolean = false,
+    isSpace: Boolean = false,
 ) = RoomListRoomSummary(
     id = id,
     roomId = RoomId(id),
@@ -172,4 +182,5 @@ internal fun aRoomListRoomSummary(
     canonicalAlias = canonicalAlias,
     heroes = heroes.toImmutableList(),
     isTombstoned = isTombstoned,
+    isSpace = isSpace
 )

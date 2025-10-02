@@ -32,7 +32,6 @@ dependencies {
     implementation(projects.libraries.di)
     implementation(projects.libraries.matrix.api)
     implementation(projects.services.toolbox.api)
-    implementation(libs.inject)
     implementation(libs.androidx.exifinterface)
     implementation(libs.androidx.media3.transformer)
     implementation(libs.androidx.media3.effect)

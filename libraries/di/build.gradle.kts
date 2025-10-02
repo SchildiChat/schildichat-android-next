@@ -11,6 +11,5 @@ plugins {
 }
 
 dependencies {
-    api(libs.inject)
     api(libs.metro.runtime)
 }

@@ -215,7 +215,6 @@ matrix_emojibase_bindings = "io.element.android:emojibase-bindings:1.4.3"
 sigpwned_emoji4j = "com.sigpwned:emoji4j-core:16.0.0"
 
 # Di
-inject = "javax.inject:javax.inject:1"
 metro_runtime = { module = "dev.zacsweers.metro:runtime", version.ref = "metro" }
 
 # Element Call
@@ -237,6 +236,7 @@ kotlin_android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin_jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin_serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+# Note: used in DependencyInjectionExtensions.kt
 metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 ktlint = "org.jlleitschuh.gradle.ktlint:13.1.0"

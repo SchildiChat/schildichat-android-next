@@ -65,13 +65,13 @@ object SessionMatrixModule {
     }
 
     @Provides
-    fun provideMediaLoader(matrixClient: MatrixClient): MatrixMediaLoader {
+    fun providesMatrixMediaLoader(matrixClient: MatrixClient): MatrixMediaLoader {
         return matrixClient.mediaLoader
     }
 
     @SessionCoroutineScope
     @Provides
-    fun provideSessionCoroutineScope(matrixClient: MatrixClient): CoroutineScope {
+    fun providesSessionCoroutineScope(matrixClient: MatrixClient): CoroutineScope {
         return matrixClient.sessionCoroutineScope
     }
 

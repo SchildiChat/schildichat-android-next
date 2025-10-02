@@ -9,6 +9,8 @@ package io.element.android.libraries.matrix.impl.spaces
 
 import io.element.android.libraries.core.extensions.runCatchingExceptions
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.room.CurrentUserMembership
+import io.element.android.libraries.matrix.api.room.RoomMembershipObserver
 import io.element.android.libraries.matrix.api.spaces.LeaveSpaceHandle
 import io.element.android.libraries.matrix.api.spaces.LeaveSpaceRoom
 import kotlinx.coroutines.CompletableDeferred
@@ -21,6 +23,7 @@ import org.matrix.rustcomponents.sdk.LeaveSpaceHandle as RustLeaveSpaceHandle
 class RustLeaveSpaceHandle(
     override val id: RoomId,
     private val spaceRoomMapper: SpaceRoomMapper,
+    private val roomMembershipObserver: RoomMembershipObserver,
     sessionCoroutineScope: CoroutineScope,
     private val innerProvider: suspend () -> RustLeaveSpaceHandle,
 ) : LeaveSpaceHandle {
@@ -45,6 +48,12 @@ class RustLeaveSpaceHandle(
         // Ensure the space is included and is the last room to be left
         val roomToLeave = roomIds - id + id
         inner.await().leave(roomToLeave.map { it.value })
+    }.onSuccess {
+        roomMembershipObserver.notifyUserLeftRoom(
+            roomId = id,
+            isSpace = true,
+            membershipBeforeLeft = CurrentUserMembership.JOINED,
+        )
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

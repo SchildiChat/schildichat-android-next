@@ -10,6 +10,7 @@ package io.element.android.libraries.matrix.impl.spaces
 import io.element.android.libraries.core.coroutine.childScope
 import io.element.android.libraries.core.extensions.runCatchingExceptions
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.room.RoomMembershipObserver
 import io.element.android.libraries.matrix.api.spaces.LeaveSpaceHandle
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
@@ -38,6 +39,7 @@ class RustSpaceService(
     private val innerSpaceService: ClientSpaceService,
     private val sessionCoroutineScope: CoroutineScope,
     private val sessionDispatcher: CoroutineDispatcher,
+    private val roomMembershipObserver: RoomMembershipObserver,
 ) : SpaceService {
     private val spaceRoomMapper = SpaceRoomMapper()
     override val spaceRoomsFlow = MutableSharedFlow<List<SpaceRoom>>(replay = 1, extraBufferCapacity = 1)
@@ -69,6 +71,7 @@ class RustSpaceService(
         return RustLeaveSpaceHandle(
             id = spaceId,
             spaceRoomMapper = spaceRoomMapper,
+            roomMembershipObserver = roomMembershipObserver,
             sessionCoroutineScope = sessionCoroutineScope,
         ) {
             innerSpaceService.leaveSpace(spaceId.value)

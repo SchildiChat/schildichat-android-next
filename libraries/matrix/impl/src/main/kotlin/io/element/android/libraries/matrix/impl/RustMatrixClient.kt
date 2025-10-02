@@ -147,6 +147,8 @@ class RustMatrixClient(
     private val innerRoomListService = innerSyncService.roomListService()
     private val innerSpaceService = innerClient.spaceService()
 
+    private val roomMembershipObserver = RoomMembershipObserver()
+
     private val rustSyncService = RustSyncService(
         inner = innerSyncService,
         dispatcher = sessionDispatcher,
@@ -189,6 +191,7 @@ class RustMatrixClient(
 
     override val spaceService: SpaceService = RustSpaceService(
         innerSpaceService = innerSpaceService,
+        roomMembershipObserver = roomMembershipObserver,
         sessionCoroutineScope = sessionCoroutineScope,
         sessionDispatcher = sessionDispatcher,
     )
@@ -200,7 +203,7 @@ class RustMatrixClient(
     )
 
     private val roomInfoMapper = RoomInfoMapper()
-    private val roomMembershipObserver = RoomMembershipObserver()
+
     private val roomFactory = RustRoomFactory(
         roomListService = roomListService,
         innerRoomListService = innerRoomListService,

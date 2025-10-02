@@ -58,11 +58,12 @@ sealed interface RoomListFilter {
     data object Invite : RoomListFilter
 
     /**
-     * A filter that matches either Group or People rooms.
+     * A filter that matches either Group,People rooms or Space.
      */
     sealed interface Category : RoomListFilter {
         data object Group : Category
         data object People : Category
+        data object Space : Category
     }
 
     /**

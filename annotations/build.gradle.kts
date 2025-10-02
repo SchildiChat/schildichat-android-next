@@ -8,7 +8,3 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     id("com.android.lint")
 }
-
-dependencies {
-    api(libs.inject)
-}

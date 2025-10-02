@@ -18,7 +18,6 @@ android {
         implementation(projects.libraries.uiStrings)
         implementation(projects.libraries.core)
         implementation(projects.libraries.di)
-        implementation(libs.inject)
 
         testCommonDependencies(libs)
     }

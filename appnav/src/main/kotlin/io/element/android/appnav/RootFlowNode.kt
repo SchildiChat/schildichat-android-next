@@ -64,7 +64,9 @@ import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 
-@ContributesNode(AppScope::class) @AssistedInject class RootFlowNode(
+@ContributesNode(AppScope::class)
+@AssistedInject
+class RootFlowNode(
     @Assisted val buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
     private val sessionStore: SessionStore,

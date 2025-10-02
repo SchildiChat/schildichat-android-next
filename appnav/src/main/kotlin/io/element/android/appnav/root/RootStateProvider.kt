@@ -8,6 +8,7 @@
 package io.element.android.appnav.root
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import io.element.android.features.announcement.api.anAnnouncementState
 import io.element.android.features.rageshake.api.crash.aCrashDetectionState
 import io.element.android.features.rageshake.api.detection.aRageshakeDetectionState
 import io.element.android.services.apperror.api.AppErrorState
@@ -33,5 +34,6 @@ open class RootStateProvider : PreviewParameterProvider<RootState> {
 fun aRootState() = RootState(
     rageshakeDetectionState = aRageshakeDetectionState(),
     crashDetectionState = aCrashDetectionState(),
+    announcementState = anAnnouncementState(),
     errorState = AppErrorState.NoError,
 )

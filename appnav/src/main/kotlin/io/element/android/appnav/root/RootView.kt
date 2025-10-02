@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import io.element.android.features.announcement.api.AnnouncementState
 import io.element.android.features.rageshake.api.crash.CrashDetectionEvents
 import io.element.android.features.rageshake.api.crash.CrashDetectionView
 import io.element.android.features.rageshake.api.detection.RageshakeDetectionEvents
@@ -27,6 +28,7 @@ import io.element.android.services.apperror.impl.AppErrorView
 fun RootView(
     state: RootState,
     onOpenBugReport: () -> Unit,
+    announcementRenderer: @Composable (AnnouncementState, Modifier) -> Unit,
     modifier: Modifier = Modifier,
     children: @Composable BoxScope.() -> Unit,
 ) {
@@ -42,6 +44,11 @@ fun RootView(
             state.rageshakeDetectionState.eventSink(RageshakeDetectionEvents.Dismiss)
             onOpenBugReport.invoke()
         }
+
+        announcementRenderer(
+            state.announcementState,
+            Modifier,
+        )
 
         RageshakeDetectionView(
             state = state.rageshakeDetectionState,
@@ -63,6 +70,7 @@ internal fun RootViewPreview(@PreviewParameter(RootStateProvider::class) rootSta
     RootView(
         state = rootState,
         onOpenBugReport = {},
+        announcementRenderer = { _, _ -> },
     ) {
         Text("Children")
     }

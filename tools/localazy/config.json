@@ -23,6 +23,12 @@
       ]
     },
     {
+      "name" : ":features:announcement:impl",
+      "includeRegex" : [
+        "screen\\.space_announcement\\..*"
+      ]
+    },
+    {
       "name" : ":features:logout:impl",
       "includeRegex" : [
         "screen_signout_.*"

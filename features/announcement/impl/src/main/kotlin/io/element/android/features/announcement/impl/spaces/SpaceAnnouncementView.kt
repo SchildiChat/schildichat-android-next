@@ -49,9 +49,7 @@ fun SpaceAnnouncementView(
         eventSink(SpaceAnnouncementEvents.Continue)
     }
 
-    BackHandler {
-        state.eventSink(SpaceAnnouncementEvents.Continue)
-    }
+    BackHandler(onBack = ::onContinue)
     HeaderFooterPage(
         modifier = modifier,
         isScrollable = true,

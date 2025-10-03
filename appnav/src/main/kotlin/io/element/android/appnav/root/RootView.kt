@@ -27,7 +27,6 @@ import io.element.android.services.apperror.impl.AppErrorView
 fun RootView(
     state: RootState,
     onOpenBugReport: () -> Unit,
-    announcementRenderer: @Composable (Modifier) -> Unit,
     modifier: Modifier = Modifier,
     children: @Composable BoxScope.() -> Unit,
 ) {
@@ -43,8 +42,6 @@ fun RootView(
             state.rageshakeDetectionState.eventSink(RageshakeDetectionEvents.Dismiss)
             onOpenBugReport.invoke()
         }
-
-        announcementRenderer(Modifier)
 
         RageshakeDetectionView(
             state = state.rageshakeDetectionState,
@@ -66,7 +63,6 @@ internal fun RootViewPreview(@PreviewParameter(RootStateProvider::class) rootSta
     RootView(
         state = rootState,
         onOpenBugReport = {},
-        announcementRenderer = { },
     ) {
         Text("Children")
     }

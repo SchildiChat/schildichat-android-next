@@ -174,9 +174,6 @@ class RootFlowNode(
             state = state,
             modifier = modifier,
             onOpenBugReport = this::onOpenBugReport,
-            announcementRenderer = { announcementModifier ->
-                announcementService.Render(announcementModifier)
-            }
         ) {
             val backstackSlider = rememberBackstackSlider<NavTarget>(
                 transitionSpec = { spring(stiffness = Spring.StiffnessMediumLow) },
@@ -192,6 +189,7 @@ class RootFlowNode(
                 }
             }
             BackstackView(transitionHandler = transitionHandler)
+            announcementService.Render(Modifier)
         }
     }
 

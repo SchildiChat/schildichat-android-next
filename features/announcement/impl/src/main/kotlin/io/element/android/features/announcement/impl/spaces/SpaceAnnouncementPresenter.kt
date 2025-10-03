@@ -13,12 +13,10 @@ import dev.zacsweers.metro.Inject
 import io.element.android.features.announcement.impl.store.AnnouncementStore
 import io.element.android.features.announcement.impl.store.AnnouncementStore.SpaceAnnouncement
 import io.element.android.libraries.architecture.Presenter
-import io.element.android.libraries.core.meta.BuildMeta
 import kotlinx.coroutines.launch
 
 @Inject
 class SpaceAnnouncementPresenter(
-    private val buildMeta: BuildMeta,
     private val announcementStore: AnnouncementStore,
 ) : Presenter<SpaceAnnouncementState> {
     @Composable
@@ -34,8 +32,6 @@ class SpaceAnnouncementPresenter(
         }
 
         return SpaceAnnouncementState(
-            applicationName = buildMeta.applicationName,
-            desktopApplicationName = buildMeta.desktopApplicationName,
             eventSink = ::handleEvents
         )
     }

@@ -17,11 +17,7 @@ open class SpaceAnnouncementStateProvider : PreviewParameterProvider<SpaceAnnoun
 }
 
 fun aSpaceAnnouncementState(
-    applicationName: String = "Element",
-    desktopApplicationName: String = "Element",
     eventSink: (SpaceAnnouncementEvents) -> Unit = {},
 ) = SpaceAnnouncementState(
-    applicationName = applicationName,
-    desktopApplicationName = desktopApplicationName,
     eventSink = eventSink,
 )

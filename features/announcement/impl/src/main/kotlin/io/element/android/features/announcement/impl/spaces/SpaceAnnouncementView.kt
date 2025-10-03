@@ -55,11 +55,10 @@ fun SpaceAnnouncementView(
         isScrollable = true,
         contentPadding = PaddingValues(top = 24.dp, start = 16.dp, end = 16.dp, bottom = 24.dp),
         header = {
-            SpaceAnnouncementHeader(state = state)
+            SpaceAnnouncementHeader()
         },
         content = {
             SpaceAnnouncementContent(
-                state = state,
                 modifier = Modifier.padding(horizontal = 8.dp),
             )
         },
@@ -73,17 +72,13 @@ fun SpaceAnnouncementView(
 
 @Composable
 private fun SpaceAnnouncementHeader(
-    state: SpaceAnnouncementState,
     modifier: Modifier = Modifier,
 ) {
     IconTitleSubtitleMolecule(
         modifier = modifier.padding(top = 16.dp, bottom = 16.dp),
         title = stringResource(id = R.string.screen_space_announcement_title),
         showBetaLabel = true,
-        subTitle = stringResource(
-            id = R.string.screen_space_announcement_subtitle,
-            state.applicationName
-        ),
+        subTitle = stringResource(id = R.string.screen_space_announcement_subtitle),
         iconStyle = BigIcon.Style.Default(
             vectorIcon = CompoundIcons.WorkspaceSolid(),
             usePrimaryTint = true,
@@ -93,7 +88,6 @@ private fun SpaceAnnouncementHeader(
 
 @Composable
 private fun SpaceAnnouncementContent(
-    state: SpaceAnnouncementState,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -103,7 +97,7 @@ private fun SpaceAnnouncementContent(
             modifier = Modifier.fillMaxWidth(),
             items = persistentListOf(
                 InfoListItem(
-                    message = stringResource(id = R.string.screen_space_announcement_item1, state.desktopApplicationName),
+                    message = stringResource(id = R.string.screen_space_announcement_item1),
                     iconVector = CompoundIcons.VisibilityOn(),
                 ),
                 InfoListItem(
@@ -116,11 +110,11 @@ private fun SpaceAnnouncementContent(
                 ),
                 InfoListItem(
                     message = stringResource(id = R.string.screen_space_announcement_item4),
-                    iconVector = CompoundIcons.Leave(),
+                    iconVector = CompoundIcons.Explore(),
                 ),
                 InfoListItem(
                     message = stringResource(id = R.string.screen_space_announcement_item5),
-                    iconVector = CompoundIcons.Explore(),
+                    iconVector = CompoundIcons.Leave(),
                 ),
             ),
             textStyle = ElementTheme.typography.fontBodyLgMedium,

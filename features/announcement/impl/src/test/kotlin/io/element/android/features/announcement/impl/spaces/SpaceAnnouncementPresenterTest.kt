@@ -10,26 +10,12 @@ package io.element.android.features.announcement.impl.spaces
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.announcement.impl.store.AnnouncementStore
 import io.element.android.features.announcement.impl.store.InMemoryAnnouncementStore
-import io.element.android.libraries.core.meta.BuildMeta
-import io.element.android.libraries.matrix.test.AN_APPLICATION_NAME
-import io.element.android.libraries.matrix.test.AN_APPLICATION_NAME_DESKTOP
-import io.element.android.libraries.matrix.test.core.aBuildMeta
 import io.element.android.tests.testutils.test
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class SpaceAnnouncementPresenterTest {
-    @Test
-    fun `present - initial state`() = runTest {
-        val presenter = createSpaceAnnouncementPresenter()
-        presenter.test {
-            val state = awaitItem()
-            assertThat(state.applicationName).isEqualTo(AN_APPLICATION_NAME)
-            assertThat(state.desktopApplicationName).isEqualTo(AN_APPLICATION_NAME_DESKTOP)
-        }
-    }
-
     @Test
     fun `present - when user continues, the store is updated`() = runTest {
         val store = InMemoryAnnouncementStore()
@@ -46,12 +32,7 @@ class SpaceAnnouncementPresenterTest {
 }
 
 private fun createSpaceAnnouncementPresenter(
-    buildMeta: BuildMeta = aBuildMeta(
-        applicationName = AN_APPLICATION_NAME,
-        desktopApplicationName = AN_APPLICATION_NAME_DESKTOP,
-    ),
     announcementStore: AnnouncementStore = InMemoryAnnouncementStore(),
 ) = SpaceAnnouncementPresenter(
-    buildMeta = buildMeta,
     announcementStore = announcementStore,
 )

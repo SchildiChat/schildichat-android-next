@@ -8,7 +8,5 @@
 package io.element.android.features.announcement.impl.spaces
 
 data class SpaceAnnouncementState(
-    val applicationName: String,
-    val desktopApplicationName: String,
     val eventSink: (SpaceAnnouncementEvents) -> Unit
 )

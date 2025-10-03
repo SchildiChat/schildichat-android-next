@@ -101,10 +101,10 @@ files = [
 def main():
     for file in files:
         # Open file for read
-        with open("./compound/src/main/res/drawable/" + file, 'r') as f:
+        with open("./libraries/compound/src/main/res/drawable/" + file, 'r') as f:
             data = f.read().split("\n")
         # Open file to write
-        with open("./compound/src/main/res/drawable/" + file, 'w') as f:
+        with open("./libraries/compound/src/main/res/drawable/" + file, 'w') as f:
             # Write new data
             # write the 3 first lines in data
             for i in range(3):

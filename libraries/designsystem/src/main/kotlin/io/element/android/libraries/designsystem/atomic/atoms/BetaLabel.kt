@@ -14,48 +14,31 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.element.android.compound.annotations.CoreColorToken
 import io.element.android.compound.theme.ElementTheme
-import io.element.android.compound.tokens.generated.internal.DarkColorTokens
-import io.element.android.compound.tokens.generated.internal.LightColorTokens
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.Text
 
-@OptIn(CoreColorToken::class)
 @Composable
 fun BetaLabel(
     modifier: Modifier = Modifier,
 ) {
-    val (backgroundColor, borderColor, textColor) = if (ElementTheme.isLightTheme) {
-        listOf(
-            LightColorTokens.colorGreen300,
-            LightColorTokens.colorGreen700,
-            LightColorTokens.colorGreen900,
-        )
-    } else {
-        listOf(
-            DarkColorTokens.colorGreen300,
-            DarkColorTokens.colorGreen700,
-            DarkColorTokens.colorGreen900,
-        )
-    }
     val shape = RoundedCornerShape(size = 6.dp)
     Text(
         modifier = modifier
             .border(
                 width = 1.dp,
-                color = borderColor,
+                color = ElementTheme.colors.borderInfoSubtle,
                 shape = shape,
             )
             .background(
-                color = backgroundColor,
+                color = ElementTheme.colors.bgInfoSubtle,
                 shape = shape,
             )
             .padding(horizontal = 8.dp, vertical = 4.dp),
         text = "BETA",
         style = ElementTheme.typography.fontBodySmMedium,
-        color = textColor,
+        color = ElementTheme.colors.textInfoPrimary,
     )
 }
 

@@ -36,6 +36,15 @@ class KonsistComposableTest {
                 "OutlinedButton",
                 "SimpleAlertDialogContent",
                 "TextButton",
+                "AvatarColorsPreviewLight",
+                "AvatarColorsPreviewDark",
+                "IconsCompoundPreviewLight",
+                "IconsCompoundPreviewRtl",
+                "IconsCompoundPreviewDark",
+                "CompoundSemanticColorsLight",
+                "CompoundSemanticColorsLightHc",
+                "CompoundSemanticColorsDark",
+                "CompoundSemanticColorsDarkHc",
             )
             .assertTrue(
                 additionalMessage =

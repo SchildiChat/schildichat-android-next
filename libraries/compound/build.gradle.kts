@@ -12,13 +12,6 @@ plugins {
 android {
     namespace = "io.element.android.compound"
 
-    defaultConfig {
-        vectorDrawables {
-            useSupportLibrary = true
-            generatedDensities()
-        }
-    }
-
     dependencies {
         implementation(libs.showkase)
     }

@@ -19,16 +19,17 @@ import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import io.element.android.features.announcement.api.AnnouncementService
 import io.element.android.features.announcement.api.AnnouncementState
-import io.element.android.features.announcement.impl.spaces.SpaceAnnouncementPresenter
+import io.element.android.features.announcement.impl.spaces.SpaceAnnouncementState
 import io.element.android.features.announcement.impl.spaces.SpaceAnnouncementView
 import io.element.android.features.announcement.impl.store.AnnouncementStore
+import io.element.android.libraries.architecture.Presenter
 import kotlinx.coroutines.flow.first
 
 @ContributesBinding(AppScope::class)
 @Inject
 class DefaultAnnouncementService(
     private val announcementStore: AnnouncementStore,
-    private val spaceAnnouncementPresenter: SpaceAnnouncementPresenter,
+    private val spaceAnnouncementPresenter: Presenter<SpaceAnnouncementState>,
 ) : AnnouncementService {
     override suspend fun onEnteringSpaceTab() {
         val currentValue = announcementStore.spaceAnnouncementFlow().first()

@@ -13,6 +13,8 @@ import dev.zacsweers.metro.Binds
 import dev.zacsweers.metro.ContributesTo
 import io.element.android.features.announcement.api.AnnouncementState
 import io.element.android.features.announcement.impl.AnnouncementPresenter
+import io.element.android.features.announcement.impl.spaces.SpaceAnnouncementPresenter
+import io.element.android.features.announcement.impl.spaces.SpaceAnnouncementState
 import io.element.android.libraries.architecture.Presenter
 
 @ContributesTo(AppScope::class)
@@ -20,4 +22,7 @@ import io.element.android.libraries.architecture.Presenter
 interface AnnouncementModule {
     @Binds
     fun bindAnnouncementPresenter(presenter: AnnouncementPresenter): Presenter<AnnouncementState>
+
+    @Binds
+    fun bindSpaceAnnouncementPresenter(presenter: SpaceAnnouncementPresenter): Presenter<SpaceAnnouncementState>
 }

@@ -5,7 +5,7 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.features.announcement.api
+package io.element.android.features.announcement.impl
 
 data class AnnouncementState(
     val showSpaceAnnouncement: Boolean,

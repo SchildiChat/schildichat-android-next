@@ -15,7 +15,6 @@ interface AnnouncementService {
 
     @Composable
     fun Render(
-        state: AnnouncementState,
         modifier: Modifier,
     )
 }

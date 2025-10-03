@@ -13,7 +13,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import dev.zacsweers.metro.Inject
 import im.vector.app.features.analytics.plan.SuperProperties
-import io.element.android.features.announcement.api.AnnouncementState
 import io.element.android.features.rageshake.api.crash.CrashDetectionState
 import io.element.android.features.rageshake.api.detection.RageshakeDetectionState
 import io.element.android.libraries.architecture.Presenter
@@ -25,7 +24,6 @@ import io.element.android.services.apperror.api.AppErrorStateService
 class RootPresenter(
     private val crashDetectionPresenter: Presenter<CrashDetectionState>,
     private val rageshakeDetectionPresenter: Presenter<RageshakeDetectionState>,
-    private val announcementPresenter: Presenter<AnnouncementState>,
     private val appErrorStateService: AppErrorStateService,
     private val analyticsService: AnalyticsService,
     private val sdkMetadata: SdkMetadata,
@@ -34,7 +32,6 @@ class RootPresenter(
     override fun present(): RootState {
         val rageshakeDetectionState = rageshakeDetectionPresenter.present()
         val crashDetectionState = crashDetectionPresenter.present()
-        val announcementState = announcementPresenter.present()
         val appErrorState by appErrorStateService.appErrorStateFlow.collectAsState()
 
         LaunchedEffect(Unit) {
@@ -51,7 +48,6 @@ class RootPresenter(
             rageshakeDetectionState = rageshakeDetectionState,
             crashDetectionState = crashDetectionState,
             errorState = appErrorState,
-            announcementState = announcementState,
         )
     }
 }

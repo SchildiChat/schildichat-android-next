@@ -36,9 +36,11 @@ class DefaultAnnouncementServiceTest {
 
     private fun createDefaultAnnouncementService(
         announcementStore: AnnouncementStore = InMemoryAnnouncementStore(),
+        announcementPresenter: Presenter<AnnouncementState> = Presenter { anAnnouncementState() },
         spaceAnnouncementPresenter: Presenter<SpaceAnnouncementState> = Presenter { aSpaceAnnouncementState() },
     ) = DefaultAnnouncementService(
         announcementStore = announcementStore,
+        announcementPresenter = announcementPresenter,
         spaceAnnouncementPresenter = spaceAnnouncementPresenter,
     )
 }

@@ -18,7 +18,6 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import io.element.android.features.announcement.api.AnnouncementService
-import io.element.android.features.announcement.api.AnnouncementState
 import io.element.android.features.announcement.impl.spaces.SpaceAnnouncementState
 import io.element.android.features.announcement.impl.spaces.SpaceAnnouncementView
 import io.element.android.features.announcement.impl.store.AnnouncementStore
@@ -29,6 +28,7 @@ import kotlinx.coroutines.flow.first
 @Inject
 class DefaultAnnouncementService(
     private val announcementStore: AnnouncementStore,
+    private val announcementPresenter: Presenter<AnnouncementState>,
     private val spaceAnnouncementPresenter: Presenter<SpaceAnnouncementState>,
 ) : AnnouncementService {
     override suspend fun onEnteringSpaceTab() {
@@ -39,10 +39,11 @@ class DefaultAnnouncementService(
     }
 
     @Composable
-    override fun Render(state: AnnouncementState, modifier: Modifier) {
+    override fun Render(modifier: Modifier) {
+        val announcementState = announcementPresenter.present()
         Box(modifier = modifier.fillMaxSize()) {
             AnimatedVisibility(
-                visible = state.showSpaceAnnouncement,
+                visible = announcementState.showSpaceAnnouncement,
                 enter = fadeIn(),
                 exit = fadeOut(),
             ) {

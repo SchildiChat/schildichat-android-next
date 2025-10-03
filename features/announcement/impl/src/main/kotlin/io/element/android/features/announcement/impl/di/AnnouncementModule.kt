@@ -11,8 +11,8 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.Binds
 import dev.zacsweers.metro.ContributesTo
-import io.element.android.features.announcement.api.AnnouncementState
 import io.element.android.features.announcement.impl.AnnouncementPresenter
+import io.element.android.features.announcement.impl.AnnouncementState
 import io.element.android.features.announcement.impl.spaces.SpaceAnnouncementPresenter
 import io.element.android.features.announcement.impl.spaces.SpaceAnnouncementState
 import io.element.android.libraries.architecture.Presenter

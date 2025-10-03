@@ -12,7 +12,6 @@ import app.cash.molecule.moleculeFlow
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.appnav.root.RootPresenter
-import io.element.android.features.announcement.api.anAnnouncementState
 import io.element.android.features.rageshake.api.crash.aCrashDetectionState
 import io.element.android.features.rageshake.api.detection.aRageshakeDetectionState
 import io.element.android.libraries.matrix.test.FakeSdkMetadata
@@ -72,7 +71,6 @@ class RootPresenterTest {
         return RootPresenter(
             crashDetectionPresenter = { aCrashDetectionState() },
             rageshakeDetectionPresenter = { aRageshakeDetectionState() },
-            announcementPresenter = { anAnnouncementState() },
             appErrorStateService = appErrorService,
             analyticsService = FakeAnalyticsService(),
             sdkMetadata = FakeSdkMetadata("sha")

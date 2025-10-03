@@ -174,8 +174,8 @@ class RootFlowNode(
             state = state,
             modifier = modifier,
             onOpenBugReport = this::onOpenBugReport,
-            announcementRenderer = { state, announcementModifier ->
-                announcementService.Render(state, announcementModifier)
+            announcementRenderer = { announcementModifier ->
+                announcementService.Render(announcementModifier)
             }
         ) {
             val backstackSlider = rememberBackstackSlider<NavTarget>(

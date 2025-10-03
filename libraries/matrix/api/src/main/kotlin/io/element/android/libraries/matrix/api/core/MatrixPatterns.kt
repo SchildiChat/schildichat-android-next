@@ -70,14 +70,6 @@ object MatrixPatterns {
     }
 
     /**
-     * Tells if a string is a valid space id. This is an alias for [isRoomId]
-     *
-     * @param str the string to test
-     * @return true if the string is a valid space Id
-     */
-    fun isSpaceId(str: String?) = isRoomId(str)
-
-    /**
      * Tells if a string is a valid room id.
      *
      * @param str the string to test

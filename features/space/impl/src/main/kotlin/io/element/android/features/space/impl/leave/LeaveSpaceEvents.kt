@@ -10,6 +10,7 @@ package io.element.android.features.space.impl.leave
 import io.element.android.libraries.matrix.api.core.RoomId
 
 sealed interface LeaveSpaceEvents {
+    data object Retry : LeaveSpaceEvents
     data object SelectAllRooms : LeaveSpaceEvents
     data object DeselectAllRooms : LeaveSpaceEvents
     data class ToggleRoomSelection(val roomId: RoomId) : LeaveSpaceEvents

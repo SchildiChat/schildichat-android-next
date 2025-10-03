@@ -20,6 +20,7 @@ class LeaveSpaceStateTest {
             selectableSpaceRooms = AsyncData.Loading()
         )
         assertThat(sut.showQuickAction).isFalse()
+        assertThat(sut.showLeaveButton).isFalse()
         assertThat(sut.areAllSelected).isTrue()
         assertThat(sut.hasOnlyLastAdminRoom).isFalse()
         assertThat(sut.selectedRoomsCount).isEqualTo(0)
@@ -33,7 +34,25 @@ class LeaveSpaceStateTest {
             )
         )
         assertThat(sut.showQuickAction).isFalse()
+        assertThat(sut.showLeaveButton).isTrue()
         assertThat(sut.areAllSelected).isTrue()
+        assertThat(sut.hasOnlyLastAdminRoom).isFalse()
+        assertThat(sut.selectedRoomsCount).isEqualTo(0)
+    }
+
+    @Test
+    fun `test last admin`() {
+        val sut = aLeaveSpaceState(
+            isLastAdmin = true,
+            selectableSpaceRooms = AsyncData.Success(
+                persistentListOf(
+                    aSelectableSpaceRoom(isLastAdmin = false, isSelected = false),
+                )
+            )
+        )
+        assertThat(sut.showQuickAction).isFalse()
+        assertThat(sut.showLeaveButton).isFalse()
+        assertThat(sut.areAllSelected).isFalse()
         assertThat(sut.hasOnlyLastAdminRoom).isFalse()
         assertThat(sut.selectedRoomsCount).isEqualTo(0)
     }
@@ -49,6 +68,7 @@ class LeaveSpaceStateTest {
             )
         )
         assertThat(sut.showQuickAction).isTrue()
+        assertThat(sut.showLeaveButton).isTrue()
         assertThat(sut.areAllSelected).isFalse()
         assertThat(sut.hasOnlyLastAdminRoom).isFalse()
         assertThat(sut.selectedRoomsCount).isEqualTo(1)
@@ -65,6 +85,7 @@ class LeaveSpaceStateTest {
             )
         )
         assertThat(sut.showQuickAction).isTrue()
+        assertThat(sut.showLeaveButton).isTrue()
         assertThat(sut.areAllSelected).isTrue()
         assertThat(sut.hasOnlyLastAdminRoom).isFalse()
         assertThat(sut.selectedRoomsCount).isEqualTo(2)
@@ -82,6 +103,7 @@ class LeaveSpaceStateTest {
             )
         )
         assertThat(sut.showQuickAction).isTrue()
+        assertThat(sut.showLeaveButton).isTrue()
         assertThat(sut.areAllSelected).isTrue()
         assertThat(sut.hasOnlyLastAdminRoom).isFalse()
         assertThat(sut.selectedRoomsCount).isEqualTo(2)
@@ -98,6 +120,7 @@ class LeaveSpaceStateTest {
             )
         )
         assertThat(sut.showQuickAction).isFalse()
+        assertThat(sut.showLeaveButton).isTrue()
         assertThat(sut.areAllSelected).isTrue()
         assertThat(sut.hasOnlyLastAdminRoom).isTrue()
         assertThat(sut.selectedRoomsCount).isEqualTo(0)

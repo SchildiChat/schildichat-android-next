@@ -7,14 +7,6 @@
 
 package io.element.android.features.announcement.api
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-
-interface AnnouncementService {
-    suspend fun showAnnouncement(announcement: Announcement)
-
-    @Composable
-    fun Render(
-        modifier: Modifier,
-    )
+enum class Announcement {
+    Space,
 }

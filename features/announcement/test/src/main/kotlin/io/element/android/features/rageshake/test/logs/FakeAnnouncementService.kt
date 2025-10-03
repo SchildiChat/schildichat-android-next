@@ -9,15 +9,16 @@ package io.element.android.features.rageshake.test.logs
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import io.element.android.features.announcement.api.Announcement
 import io.element.android.features.announcement.api.AnnouncementService
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakeAnnouncementService(
-    val onEnteringSpaceTabResult: () -> Unit = { lambdaError() },
+    val showAnnouncementResult: (Announcement) -> Unit = { lambdaError() },
     val renderResult: (Modifier) -> Unit = { lambdaError() },
 ) : AnnouncementService {
-    override suspend fun onEnteringSpaceTab() {
-        onEnteringSpaceTabResult()
+    override suspend fun showAnnouncement(announcement: Announcement) {
+        showAnnouncementResult(announcement)
     }
 
     @Composable

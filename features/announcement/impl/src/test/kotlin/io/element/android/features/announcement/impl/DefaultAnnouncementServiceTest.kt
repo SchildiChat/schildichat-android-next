@@ -8,6 +8,7 @@
 package io.element.android.features.announcement.impl
 
 import com.google.common.truth.Truth.assertThat
+import io.element.android.features.announcement.api.Announcement
 import io.element.android.features.announcement.impl.spaces.SpaceAnnouncementState
 import io.element.android.features.announcement.impl.spaces.aSpaceAnnouncementState
 import io.element.android.features.announcement.impl.store.AnnouncementStore
@@ -19,18 +20,18 @@ import org.junit.Test
 
 class DefaultAnnouncementServiceTest {
     @Test
-    fun `when entering space tab, space announcement is set to show only if it was never shown`() = runTest {
+    fun `when showing Space announcement, space announcement is set to show only if it was never shown`() = runTest {
         val announcementStore = InMemoryAnnouncementStore()
         val sut = createDefaultAnnouncementService(
             announcementStore = announcementStore,
         )
         assertThat(announcementStore.spaceAnnouncementFlow().first()).isEqualTo(AnnouncementStore.SpaceAnnouncement.NeverShown)
-        sut.onEnteringSpaceTab()
+        sut.showAnnouncement(Announcement.Space)
         assertThat(announcementStore.spaceAnnouncementFlow().first()).isEqualTo(AnnouncementStore.SpaceAnnouncement.Show)
         // Simulate user close the announcement
         announcementStore.setSpaceAnnouncementValue(AnnouncementStore.SpaceAnnouncement.Shown)
         // Entering again the space tab should not change the value
-        sut.onEnteringSpaceTab()
+        sut.showAnnouncement(Announcement.Space)
         assertThat(announcementStore.spaceAnnouncementFlow().first()).isEqualTo(AnnouncementStore.SpaceAnnouncement.Shown)
     }
 

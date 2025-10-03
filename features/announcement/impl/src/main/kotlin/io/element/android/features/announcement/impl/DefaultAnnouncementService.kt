@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import io.element.android.features.announcement.api.Announcement
 import io.element.android.features.announcement.api.AnnouncementService
 import io.element.android.features.announcement.impl.spaces.SpaceAnnouncementState
 import io.element.android.features.announcement.impl.spaces.SpaceAnnouncementView
@@ -31,7 +32,13 @@ class DefaultAnnouncementService(
     private val announcementPresenter: Presenter<AnnouncementState>,
     private val spaceAnnouncementPresenter: Presenter<SpaceAnnouncementState>,
 ) : AnnouncementService {
-    override suspend fun onEnteringSpaceTab() {
+    override suspend fun showAnnouncement(announcement: Announcement) {
+        when (announcement) {
+            Announcement.Space -> showSpaceAnnouncement()
+        }
+    }
+
+    private suspend fun showSpaceAnnouncement() {
         val currentValue = announcementStore.spaceAnnouncementFlow().first()
         if (currentValue == AnnouncementStore.SpaceAnnouncement.NeverShown) {
             announcementStore.setSpaceAnnouncementValue(AnnouncementStore.SpaceAnnouncement.Show)

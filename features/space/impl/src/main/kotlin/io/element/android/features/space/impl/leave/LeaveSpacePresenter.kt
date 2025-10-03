@@ -8,10 +8,11 @@
 package io.element.android.features.space.impl.leave
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -26,10 +27,9 @@ import io.element.android.libraries.architecture.runUpdatingState
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.spaces.LeaveSpaceHandle
 import io.element.android.libraries.matrix.api.spaces.LeaveSpaceRoom
-import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toPersistentSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -42,43 +42,55 @@ class LeaveSpacePresenter(
         fun create(leaveSpaceHandle: LeaveSpaceHandle): LeaveSpacePresenter
     }
 
+    data class LeaveSpaceRooms(
+        val current: LeaveSpaceRoom?,
+        val others: List<LeaveSpaceRoom>,
+    )
+
     @Composable
     override fun present(): LeaveSpaceState {
         val coroutineScope = rememberCoroutineScope()
-        var currentSpace: LeaveSpaceRoom? by remember { mutableStateOf(null) }
+        var retryCount by remember { mutableIntStateOf(0) }
         val leaveSpaceAction = remember {
             mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized)
         }
-        val selectedRoomIds = remember {
-            mutableStateOf<ImmutableSet<RoomId>>(persistentSetOf())
+        var selectedRoomIds by remember {
+            mutableStateOf<Collection<RoomId>>(setOf())
         }
-        val leaveSpaceRooms by produceState(AsyncData.Loading()) {
+        var leaveSpaceRooms by remember {
+            mutableStateOf<AsyncData<LeaveSpaceRooms>>(AsyncData.Loading())
+        }
+        LaunchedEffect(retryCount) {
             val rooms = leaveSpaceHandle.rooms()
             val (currentRoom, otherRooms) = rooms.getOrNull()
                 .orEmpty()
                 .partition { it.spaceRoom.roomId == leaveSpaceHandle.id }
-            currentSpace = currentRoom.firstOrNull()
             // By default select all rooms that can be left
-            selectedRoomIds.value = otherRooms
+            selectedRoomIds = otherRooms
                 .filter { it.isLastAdmin.not() }
                 .map { it.spaceRoom.roomId }
-                .toPersistentSet()
-            value = rooms.fold(
-                onSuccess = { AsyncData.Success(otherRooms) },
+            leaveSpaceRooms = rooms.fold(
+                onSuccess = {
+                    AsyncData.Success(
+                        LeaveSpaceRooms(
+                            current = currentRoom.firstOrNull(),
+                            others = otherRooms.toImmutableList(),
+                        )
+                    )
+                },
                 onFailure = { AsyncData.Failure(it) }
             )
         }
-        val selectableSpaceRooms by produceState(
-            initialValue = AsyncData.Loading(),
-            key1 = leaveSpaceRooms,
-            key2 = selectedRoomIds.value,
-        ) {
-            value = leaveSpaceRooms.map { list ->
-                list.orEmpty().map { room ->
+        var selectableSpaceRooms by remember {
+            mutableStateOf<AsyncData<ImmutableList<SelectableSpaceRoom>>>(AsyncData.Loading())
+        }
+        LaunchedEffect(selectedRoomIds, leaveSpaceRooms) {
+            selectableSpaceRooms = leaveSpaceRooms.map {
+                it?.others.orEmpty().map { room ->
                     SelectableSpaceRoom(
                         spaceRoom = room.spaceRoom,
                         isLastAdmin = room.isLastAdmin,
-                        isSelected = selectedRoomIds.value.contains(room.spaceRoom.roomId),
+                        isSelected = selectedRoomIds.contains(room.spaceRoom.roomId),
                     )
                 }.toImmutableList()
             }
@@ -86,28 +98,29 @@ class LeaveSpacePresenter(
 
         fun handleEvents(event: LeaveSpaceEvents) {
             when (event) {
+                LeaveSpaceEvents.Retry -> {
+                    leaveSpaceRooms = AsyncData.Loading()
+                    retryCount += 1
+                }
                 LeaveSpaceEvents.DeselectAllRooms -> {
-                    selectedRoomIds.value = persistentSetOf()
+                    selectedRoomIds = persistentSetOf()
                 }
                 LeaveSpaceEvents.SelectAllRooms -> {
-                    selectedRoomIds.value = selectableSpaceRooms.dataOrNull()
+                    selectedRoomIds = selectableSpaceRooms.dataOrNull()
                         .orEmpty()
                         .filter { it.isLastAdmin.not() }
                         .map { it.spaceRoom.roomId }
-                        .toPersistentSet()
                 }
                 is LeaveSpaceEvents.ToggleRoomSelection -> {
-                    val currentSet = selectedRoomIds.value
-                    selectedRoomIds.value = if (currentSet.contains(event.roomId)) {
-                        currentSet - event.roomId
+                    selectedRoomIds = if (selectedRoomIds.contains(event.roomId)) {
+                        selectedRoomIds - event.roomId
                     } else {
-                        currentSet + event.roomId
+                        selectedRoomIds + event.roomId
                     }
-                        .toPersistentSet()
                 }
                 LeaveSpaceEvents.LeaveSpace -> coroutineScope.leaveSpace(
                     leaveSpaceAction = leaveSpaceAction,
-                    selectedRoomIds = selectedRoomIds.value,
+                    selectedRoomIds = selectedRoomIds,
                 )
                 LeaveSpaceEvents.CloseError -> {
                     leaveSpaceAction.value = AsyncAction.Uninitialized
@@ -116,8 +129,8 @@ class LeaveSpacePresenter(
         }
 
         return LeaveSpaceState(
-            spaceName = currentSpace?.spaceRoom?.name,
-            isLastAdmin = currentSpace?.isLastAdmin == true,
+            spaceName = leaveSpaceRooms.dataOrNull()?.current?.spaceRoom?.name,
+            isLastAdmin = leaveSpaceRooms.dataOrNull()?.current?.isLastAdmin == true,
             selectableSpaceRooms = selectableSpaceRooms,
             leaveSpaceAction = leaveSpaceAction.value,
             eventSink = ::handleEvents,
@@ -126,7 +139,7 @@ class LeaveSpacePresenter(
 
     private fun CoroutineScope.leaveSpace(
         leaveSpaceAction: MutableState<AsyncAction<Unit>>,
-        selectedRoomIds: Set<RoomId>,
+        selectedRoomIds: Collection<RoomId>,
     ) = launch {
         runUpdatingState(leaveSpaceAction) {
             leaveSpaceHandle.leave(selectedRoomIds.toList())

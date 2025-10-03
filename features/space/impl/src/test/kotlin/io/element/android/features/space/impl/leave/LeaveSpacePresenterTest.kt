@@ -60,9 +60,15 @@ class LeaveSpacePresenterTest {
             val state = awaitItem()
             assertThat(state.selectableSpaceRooms.isLoading()).isTrue()
             assertThat(state.leaveSpaceAction).isEqualTo(AsyncAction.Uninitialized)
-            skipItems(2)
+            skipItems(3)
             val stateError = awaitItem()
             assertThat(stateError.selectableSpaceRooms.isFailure()).isTrue()
+            // Retry
+            stateError.eventSink(LeaveSpaceEvents.Retry)
+            skipItems(1)
+            val stateLoadingAgain = awaitItem()
+            assertThat(stateLoadingAgain.selectableSpaceRooms.isLoading()).isTrue()
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -166,7 +172,7 @@ class LeaveSpacePresenterTest {
             )
         )
         presenter.test {
-            skipItems(3)
+            skipItems(4)
             val state = awaitItem()
             state.eventSink(LeaveSpaceEvents.LeaveSpace)
             val stateLeaving = awaitItem()

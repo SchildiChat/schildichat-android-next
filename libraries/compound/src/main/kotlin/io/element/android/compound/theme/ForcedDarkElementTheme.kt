@@ -9,13 +9,13 @@ package io.element.android.compound.theme
 
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
+import androidx.activity.compose.LocalActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 
 /**
  * Can be used to force a composable in dark theme.
@@ -28,7 +28,7 @@ fun ForcedDarkElementTheme(
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val wasDarkTheme = !ElementTheme.colors.isLight
-    val activity = LocalContext.current as? ComponentActivity
+    val activity = LocalActivity.current as? ComponentActivity
     DisposableEffect(Unit) {
         onDispose {
             activity?.enableEdgeToEdge(

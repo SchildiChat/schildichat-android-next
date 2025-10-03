@@ -10,6 +10,7 @@ package io.element.android.compound.theme
 import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
+import androidx.activity.compose.LocalActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
@@ -135,7 +136,7 @@ fun ElementTheme(
     }
 
     if (applySystemBarsUpdate) {
-        val activity = LocalContext.current as? ComponentActivity
+        val activity = LocalActivity.current as? ComponentActivity
         LaunchedEffect(statusBarColorScheme, darkTheme, lightStatusBar) {
             activity?.enableEdgeToEdge(
                 // For Status bar use the background color of the app

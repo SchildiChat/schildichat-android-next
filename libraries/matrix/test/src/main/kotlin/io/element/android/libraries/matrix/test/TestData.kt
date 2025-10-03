@@ -26,6 +26,7 @@ const val A_PASSWORD = "password"
 const val A_PASSPHRASE = "passphrase"
 const val A_SECRET = "secret"
 const val AN_APPLICATION_NAME = "AppName"
+const val AN_APPLICATION_NAME_DESKTOP = "AppNameDesktop"
 
 val A_USER_ID = UserId("@alice:server.org")
 val A_USER_ID_2 = UserId("@bob:server.org")

@@ -77,7 +77,7 @@ object ElementTheme {
         get() = LocalCompoundColors.current.isLight
 }
 
-/* Global variables (application level) */
+// Global variables (application level)
 internal val LocalCompoundColors = staticCompositionLocalOf { compoundColorsLight }
 
 /**
@@ -100,7 +100,8 @@ fun ElementTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     applySystemBarsUpdate: Boolean = true,
     lightStatusBar: Boolean = !darkTheme,
-    dynamicColor: Boolean = false, /* true to enable MaterialYou */
+    // true to enable MaterialYou
+    dynamicColor: Boolean = false,
     compoundLight: SemanticColors = compoundColorsLight,
     compoundDark: SemanticColors = compoundColorsDark,
     materialColorsLight: ColorScheme = compoundLight.toMaterialColorScheme(),

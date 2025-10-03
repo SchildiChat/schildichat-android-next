@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.map
 enum class Theme {
     System,
     Dark,
-    Light;
+    Light,
 }
 
 val themes = listOf(Theme.System, Theme.Dark, Theme.Light)

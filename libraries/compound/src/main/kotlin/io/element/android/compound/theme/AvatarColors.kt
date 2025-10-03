@@ -20,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 /**
  * Data class to hold avatar colors.
@@ -53,7 +55,7 @@ internal fun AvatarColorsPreviewLight() {
         val chunks = avatarColors().chunked(4)
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             for (chunk in chunks) {
-                AvatarColorRow(chunk)
+                AvatarColorRow(chunk.toImmutableList())
             }
         }
     }
@@ -66,14 +68,14 @@ internal fun AvatarColorsPreviewDark() {
         val chunks = avatarColors().chunked(4)
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             for (chunk in chunks) {
-                AvatarColorRow(chunk)
+                AvatarColorRow(chunk.toImmutableList())
             }
         }
     }
 }
 
 @Composable
-private fun AvatarColorRow(colors: List<AvatarColors>) {
+private fun AvatarColorRow(colors: ImmutableList<AvatarColors>) {
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         colors.forEach { color ->
             Box(

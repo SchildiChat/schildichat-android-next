@@ -38,6 +38,8 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 @Preview(widthDp = 730, heightDp = 1800)
 @Composable
@@ -90,14 +92,14 @@ private fun IconsCompoundPreview(
     }
     IconsPreview(
         title = title,
-        content = content.toList(),
+        content = content.toImmutableList(),
     )
 }
 
 @Composable
 internal fun IconsPreview(
     title: String,
-    content: List<@Composable ColumnScope.() -> Unit>,
+    content: ImmutableList<@Composable ColumnScope.() -> Unit>,
 ) = Surface {
     Column(
         modifier = Modifier

@@ -19,7 +19,7 @@ import io.element.android.compound.theme.ElementTheme
 
 @Preview
 @Composable
-fun TypographyPreview() = ElementTheme {
+internal fun TypographyPreview() = ElementTheme {
     Surface {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             with(ElementTheme.materialTypography) {

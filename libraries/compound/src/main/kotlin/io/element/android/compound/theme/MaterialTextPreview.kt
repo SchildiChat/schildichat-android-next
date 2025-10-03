@@ -119,7 +119,6 @@ private fun MaterialPreview(
     }
 }
 
-
 @Composable
 private fun TextPreview(
     name: String,

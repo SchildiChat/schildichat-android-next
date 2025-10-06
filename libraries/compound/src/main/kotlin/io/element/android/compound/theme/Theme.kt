@@ -18,8 +18,6 @@ enum class Theme {
     Light,
 }
 
-val themes = listOf(Theme.System, Theme.Dark, Theme.Light)
-
 @Composable
 fun Theme.isDark(): Boolean {
     return when (this) {

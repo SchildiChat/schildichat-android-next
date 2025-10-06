@@ -34,6 +34,7 @@ import io.element.android.libraries.matrix.test.AN_EXCEPTION
 import io.element.android.libraries.matrix.test.A_USER_ID
 import io.element.android.libraries.matrix.test.A_USER_NAME
 import io.element.android.libraries.matrix.test.FakeMatrixClient
+import io.element.android.libraries.matrix.test.core.aBuildMeta
 import io.element.android.libraries.matrix.test.sync.FakeSyncService
 import io.element.android.libraries.sessionstorage.api.SessionStore
 import io.element.android.libraries.sessionstorage.test.InMemorySessionStore
@@ -51,6 +52,8 @@ import org.junit.Test
 class HomePresenterTest {
     @get:Rule
     val warmUpRule = WarmUpRule()
+
+    private val isSpaceEnabled = FeatureFlags.Space.defaultValue(aBuildMeta())
 
     @Test
     fun `present - should start with no user and then load user with success`() = runTest {
@@ -75,6 +78,7 @@ class HomePresenterTest {
         moleculeFlow(RecompositionMode.Immediate) {
             presenter.present()
         }.test {
+            if (isSpaceEnabled) skipItems(1)
             val initialState = awaitItem()
             assertThat(initialState.currentUserAndNeighbors.first()).isEqualTo(
                 MatrixUser(A_USER_ID, null, null)
@@ -86,8 +90,8 @@ class HomePresenterTest {
                 MatrixUser(A_USER_ID, A_USER_NAME, AN_AVATAR_URL)
             )
             assertThat(withUserState.showAvatarIndicator).isFalse()
-            assertThat(withUserState.isSpaceFeatureEnabled).isFalse()
-            assertThat(withUserState.showNavigationBar).isFalse()
+            assertThat(withUserState.isSpaceFeatureEnabled).isEqualTo(isSpaceEnabled)
+            assertThat(withUserState.showNavigationBar).isEqualTo(isSpaceEnabled)
         }
     }
 
@@ -138,6 +142,7 @@ class HomePresenterTest {
         moleculeFlow(RecompositionMode.Immediate) {
             presenter.present()
         }.test {
+            if (isSpaceEnabled) skipItems(1)
             val initialState = awaitItem()
             assertThat(initialState.showAvatarIndicator).isFalse()
             indicatorService.setShowRoomListTopBarIndicator(true)
@@ -162,6 +167,7 @@ class HomePresenterTest {
         moleculeFlow(RecompositionMode.Immediate) {
             presenter.present()
         }.test {
+            if (isSpaceEnabled) skipItems(1)
             val initialState = awaitItem()
             assertThat(initialState.currentUserAndNeighbors.first()).isEqualTo(MatrixUser(matrixClient.sessionId))
             // No new state is coming
@@ -182,6 +188,7 @@ class HomePresenterTest {
         moleculeFlow(RecompositionMode.Immediate) {
             presenter.present()
         }.test {
+            if (isSpaceEnabled) skipItems(1)
             val initialState = awaitItem()
             assertThat(initialState.currentHomeNavigationBarItem).isEqualTo(HomeNavigationBarItem.Chats)
             initialState.eventSink(HomeEvents.SelectHomeNavigationBarItem(HomeNavigationBarItem.Spaces))

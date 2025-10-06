@@ -71,8 +71,7 @@ enum class FeatureFlags(
     Space(
         key = "feature.space",
         title = "Spaces",
-        description = "Spaces are under active development, only developers should enable this flag for now.",
-        defaultValue = { false },
+        defaultValue = { true },
         isFinished = false,
     ),
     PrintLogsToLogcat(

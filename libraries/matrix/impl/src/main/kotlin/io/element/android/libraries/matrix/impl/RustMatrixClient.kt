@@ -121,9 +121,9 @@ import org.matrix.rustcomponents.sdk.SyncService as ClientSyncService
 class RustMatrixClient(
     private val innerClient: Client,
     private val sessionStore: SessionStore,
-    private val appCoroutineScope: CoroutineScope,
     private val sessionDelegate: RustClientSessionDelegate,
     private val innerSyncService: ClientSyncService,
+    appCoroutineScope: CoroutineScope,
     dispatchers: CoroutineDispatchers,
     baseCacheDirectory: File,
     clock: SystemClock,

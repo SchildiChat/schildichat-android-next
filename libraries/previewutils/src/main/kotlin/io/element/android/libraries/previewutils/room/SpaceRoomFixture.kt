@@ -16,7 +16,7 @@ import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.matrix.api.user.MatrixUser
 
 fun aSpaceRoom(
-    name: String? = "Space name",
+    rawName: String? = "Space name",
     avatarUrl: String? = null,
     canonicalAlias: RoomAlias? = null,
     childrenCount: Int = 0,
@@ -29,9 +29,10 @@ fun aSpaceRoom(
     state: CurrentUserMembership? = null,
     topic: String? = null,
     worldReadable: Boolean = false,
+    isDirect: Boolean? = null,
     via: List<String> = emptyList(),
 ) = SpaceRoom(
-    name = name,
+    rawName = rawName,
     avatarUrl = avatarUrl,
     canonicalAlias = canonicalAlias,
     childrenCount = childrenCount,
@@ -45,4 +46,5 @@ fun aSpaceRoom(
     topic = topic,
     worldReadable = worldReadable,
     via = via,
+    isDirect = isDirect
 )

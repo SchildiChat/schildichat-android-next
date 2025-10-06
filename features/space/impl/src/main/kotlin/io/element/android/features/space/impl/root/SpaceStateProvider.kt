@@ -25,7 +25,7 @@ open class SpaceStateProvider : PreviewParameterProvider<SpaceState> {
             aSpaceState(),
             aSpaceState(
                 parentSpace = aSpaceRoom(
-                    name = null,
+                    rawName = null,
                     numJoinedMembers = 5,
                     childrenCount = 10,
                     worldReadable = true,

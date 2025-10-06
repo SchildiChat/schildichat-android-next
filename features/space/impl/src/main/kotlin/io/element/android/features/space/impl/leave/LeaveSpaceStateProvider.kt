@@ -30,7 +30,7 @@ class LeaveSpaceStateProvider : PreviewParameterProvider<LeaveSpaceState> {
                     persistentListOf(
                         aSelectableSpaceRoom(
                             spaceRoom = aSpaceRoom(
-                                name = "A long space name that should be truncated",
+                                rawName = "A long space name that should be truncated",
                                 worldReadable = true,
                             ),
                             isLastAdmin = true,

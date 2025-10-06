@@ -15,7 +15,7 @@ import io.element.android.libraries.matrix.api.room.join.JoinRule
 import io.element.android.libraries.matrix.api.user.MatrixUser
 
 data class SpaceRoom(
-    val name: String?,
+    val rawName: String?,
     val avatarUrl: String?,
     val canonicalAlias: RoomAlias?,
     val childrenCount: Int,
@@ -32,6 +32,18 @@ data class SpaceRoom(
      * The via parameters of the room.
      */
     val via: List<String>,
+    val isDirect: Boolean?,
 ) {
     val isSpace = roomType == RoomType.Space
+
+    /**
+     * Temporary logic to compute a name for direct rooms with no name.
+     * This will be replaced by sdk logic in the future.
+     */
+    val name = if (rawName == null && isDirect == true && heroes.size == 1) {
+        val dmRecipient = heroes.first()
+        dmRecipient.displayName
+    } else {
+        rawName
+    }
 }

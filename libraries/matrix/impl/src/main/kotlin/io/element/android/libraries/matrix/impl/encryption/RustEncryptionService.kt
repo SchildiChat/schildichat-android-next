@@ -46,7 +46,7 @@ import org.matrix.rustcomponents.sdk.BackupUploadState as RustBackupUploadState
 import org.matrix.rustcomponents.sdk.EnableRecoveryProgress as RustEnableRecoveryProgress
 import org.matrix.rustcomponents.sdk.SteadyStateException as RustSteadyStateException
 
-internal class RustEncryptionService(
+class RustEncryptionService(
     client: Client,
     syncService: RustSyncService,
     sessionCoroutineScope: CoroutineScope,

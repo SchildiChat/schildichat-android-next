@@ -616,7 +616,7 @@ class RoomListPresenterTest {
                 roomLastMessageFormatter = roomLastMessageFormatter,
             ),
             coroutineDispatchers = testCoroutineDispatchers(),
-            notificationSettingsService = client.notificationSettingsService(),
+            notificationSettingsService = client.notificationSettingsService,
             sessionCoroutineScope = backgroundScope,
             dateTimeObserver = FakeDateTimeObserver(),
         ),

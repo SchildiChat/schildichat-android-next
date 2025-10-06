@@ -10,10 +10,10 @@ package io.element.android.libraries.matrix.ui.media
 import coil3.ImageLoader
 import coil3.fetch.Fetcher
 import coil3.request.Options
-import io.element.android.libraries.matrix.api.MatrixClient
+import io.element.android.libraries.matrix.api.media.MatrixMediaLoader
 
 internal class MediaRequestDataFetcherFactory(
-    private val client: MatrixClient
+    private val matrixMediaLoader: MatrixMediaLoader,
 ) : Fetcher.Factory<MediaRequestData> {
     override fun create(
         data: MediaRequestData,
@@ -21,7 +21,7 @@ internal class MediaRequestDataFetcherFactory(
         imageLoader: ImageLoader
     ): Fetcher {
         return CoilMediaFetcher(
-            mediaLoader = client.mediaLoader,
+            mediaLoader = matrixMediaLoader,
             mediaData = data,
         )
     }

@@ -242,7 +242,7 @@ class CallScreenPresenter(
             }
             coroutineScope.launch {
                 Timber.d("Observing sync state in-call for sessionId: ${roomCallType.sessionId}")
-                client.syncService().syncState
+                client.syncService.syncState
                     .collect { state ->
                         if (state != SyncState.Running) {
                             appForegroundStateService.updateIsInCallState(true)

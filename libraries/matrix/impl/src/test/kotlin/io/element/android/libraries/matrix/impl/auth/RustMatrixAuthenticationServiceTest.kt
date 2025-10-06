@@ -53,7 +53,6 @@ class RustMatrixAuthenticationServiceTest {
         val baseDirectory = File("/base")
         val cacheDirectory = File("/cache")
         val rustMatrixClientFactory = createRustMatrixClientFactory(
-            baseDirectory = baseDirectory,
             cacheDirectory = cacheDirectory,
             sessionStore = sessionStore,
             clientBuilderProvider = clientBuilderProvider,

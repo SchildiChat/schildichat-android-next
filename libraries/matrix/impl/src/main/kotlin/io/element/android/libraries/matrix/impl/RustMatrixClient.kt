@@ -120,7 +120,6 @@ import org.matrix.rustcomponents.sdk.SyncService as ClientSyncService
 
 class RustMatrixClient(
     private val innerClient: Client,
-    private val baseDirectory: File,
     private val sessionStore: SessionStore,
     private val appCoroutineScope: CoroutineScope,
     private val sessionDelegate: RustClientSessionDelegate,
@@ -551,7 +550,7 @@ class RustMatrixClient(
     }
 
     override suspend fun getCacheSize(): Long {
-        return baseDirectory.getCacheSize()
+        return getCacheSize(includeCryptoDb = false)
     }
 
     override suspend fun clearCache() {
@@ -714,7 +713,7 @@ class RustMatrixClient(
         }
     }
 
-    private suspend fun File.getCacheSize(
+    private suspend fun getCacheSize(
         includeCryptoDb: Boolean = false,
     ): Long = withContext(sessionDispatcher) {
         val sessionDirectory = sessionPathsProvider.provides(sessionId) ?: return@withContext 0L

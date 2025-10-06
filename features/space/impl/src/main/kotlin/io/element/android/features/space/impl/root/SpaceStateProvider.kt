@@ -13,8 +13,10 @@ import io.element.android.features.invite.api.acceptdecline.anAcceptDeclineInvit
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
+import io.element.android.libraries.matrix.api.room.join.JoinRule
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.previewutils.room.aSpaceRoom
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.collections.immutable.toImmutableSet
@@ -23,6 +25,16 @@ open class SpaceStateProvider : PreviewParameterProvider<SpaceState> {
     override val values: Sequence<SpaceState>
         get() = sequenceOf(
             aSpaceState(),
+            aSpaceState(
+                parentSpace = aSpaceRoom(
+                    joinRule = JoinRule.Public
+                )
+            ),
+            aSpaceState(
+                parentSpace = aSpaceRoom(
+                    joinRule = JoinRule.Restricted(persistentListOf())
+                )
+            ),
             aSpaceState(
                 parentSpace = aSpaceRoom(
                     rawName = null,

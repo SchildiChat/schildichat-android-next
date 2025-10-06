@@ -34,7 +34,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
-import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.libraries.designsystem.atomic.atoms.UnreadIndicatorAtom
 import io.element.android.libraries.designsystem.atomic.molecules.InviteButtonsRowMolecule
 import io.element.android.libraries.designsystem.components.avatar.Avatar
@@ -48,9 +47,11 @@ import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.unreadIndicator
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
-import io.element.android.libraries.matrix.api.room.join.JoinRule
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
+import io.element.android.libraries.matrix.api.spaces.SpaceRoomVisibility
 import io.element.android.libraries.matrix.ui.model.getAvatarData
+import io.element.android.libraries.matrix.ui.model.icon
+import io.element.android.libraries.matrix.ui.model.label
 import io.element.android.libraries.ui.strings.CommonPlurals
 import io.element.android.libraries.ui.strings.CommonStrings
 
@@ -117,8 +118,8 @@ private fun SubtitleRow(
         if (visibilityIcon != null) {
             Icon(
                 modifier = Modifier
-                    .size(16.dp)
-                    .padding(end = 4.dp),
+                        .size(16.dp)
+                        .padding(end = 4.dp),
                 imageVector = visibilityIcon,
                 contentDescription = null,
                 tint = ElementTheme.colors.iconTertiary,
@@ -176,20 +177,20 @@ private fun SpaceRoomItemScaffold(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val clickModifier = Modifier
-        .combinedClickable(
-            onClick = onClick,
-            onLongClick = onLongClick,
-            onLongClickLabel = stringResource(CommonStrings.action_open_context_menu),
-            indication = ripple(),
-            interactionSource = remember { MutableInteractionSource() }
-        )
-        .onKeyboardContextMenuAction { onLongClick }
+            .combinedClickable(
+                    onClick = onClick,
+                    onLongClick = onLongClick,
+                    onLongClickLabel = stringResource(CommonStrings.action_open_context_menu),
+                    indication = ripple(),
+                    interactionSource = remember { MutableInteractionSource() }
+            )
+            .onKeyboardContextMenuAction { onLongClick }
     Row(
         modifier = modifier
-            .fillMaxWidth()
-            .then(clickModifier)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .height(IntrinsicSize.Min),
+                .fillMaxWidth()
+                .then(clickModifier)
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .height(IntrinsicSize.Min),
     ) {
         Avatar(
             avatarData = avatarData,
@@ -212,11 +213,7 @@ private fun SpaceRoomItemScaffold(
 @ReadOnlyComposable
 private fun SpaceRoom.subtitle(): String {
     return if (isSpace) {
-        if (joinRule == JoinRule.Public) {
-            stringResource(CommonStrings.common_public_space)
-        } else {
-            stringResource(CommonStrings.common_private_space)
-        }
+        visibility.label
     } else {
         pluralStringResource(CommonPlurals.common_member_count, numJoinedMembers, numJoinedMembers)
     }
@@ -226,11 +223,7 @@ private fun SpaceRoom.subtitle(): String {
 @ReadOnlyComposable
 private fun SpaceRoom.info(): String {
     return if (isSpace) {
-        stringResource(
-            CommonStrings.screen_space_list_details,
-            pluralStringResource(CommonPlurals.common_rooms, childrenCount, childrenCount),
-            pluralStringResource(CommonPlurals.common_member_count, numJoinedMembers, numJoinedMembers),
-        )
+        pluralStringResource(CommonPlurals.common_member_count, numJoinedMembers, numJoinedMembers)
     } else {
         topic.orEmpty()
     }
@@ -238,10 +231,11 @@ private fun SpaceRoom.info(): String {
 
 @Composable
 private fun SpaceRoom.visibilityIcon(): ImageVector? {
-    return if (joinRule == JoinRule.Public) {
-        CompoundIcons.Public()
+    // Don't show any icon for restricted rooms as it's the default and would add noise
+    return if (visibility == SpaceRoomVisibility.Restricted) {
+        null
     } else {
-        CompoundIcons.LockSolid()
+        visibility.icon
     }
 }
 

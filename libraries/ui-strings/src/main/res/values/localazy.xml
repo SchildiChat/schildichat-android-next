@@ -94,6 +94,7 @@
   <string name="action_forgot_password">"Forgot password?"</string>
   <string name="action_forward">"Forward"</string>
   <string name="action_go_back">"Go back"</string>
+  <string name="action_go_to_settings">"Go to settings"</string>
   <string name="action_ignore">"Ignore"</string>
   <string name="action_invite">"Invite"</string>
   <string name="action_invite_friends">"Invite people"</string>
@@ -319,6 +320,7 @@ Reason: %1$s."</string>
   <string name="common_settings">"Settings"</string>
   <string name="common_share_space">"Share space"</string>
   <string name="common_shared_location">"Shared location"</string>
+  <string name="common_shared_space">"Shared space"</string>
   <string name="common_signing_out">"Signing out"</string>
   <string name="common_something_went_wrong">"Something went wrong"</string>
   <string name="common_something_went_wrong_message">"We encountered an issue. Please try again."</string>
@@ -427,6 +429,7 @@ Are you sure you want to continue?"</string>
   <string name="screen_create_poll_remove_accessibility_label">"Remove %1$s"</string>
   <string name="screen_create_poll_settings_section_title">"Settings"</string>
   <string name="screen_labs_enable_threads">"Enable thread replies"</string>
+  <string name="screen_labs_enable_threads_description">"Restarting the app is required to apply changes"</string>
   <string name="screen_labs_header_description">"Try out our latest ideas in development. These features are not finalised; they may be unstable, may change."</string>
   <string name="screen_labs_header_title">"Feeling experimental?"</string>
   <string name="screen_labs_title">"Labs"</string>

@@ -223,7 +223,9 @@ private fun aPushMessage(
 private fun aPushEndpoint(
     url: String = "anEndpoint",
     pubKeySet: PublicKeySet? = null,
+    temporary: Boolean = false,
 ) = PushEndpoint(
     url = url,
     pubKeySet = pubKeySet,
+    temporary = temporary,
 )

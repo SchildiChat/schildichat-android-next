@@ -181,19 +181,28 @@ tasks.register("runQualityChecks") {
 // Make sure to delete old screenshots before recording new ones
 subprojects {
     val snapshotsDir = File("${project.projectDir}/src/test/snapshots")
-    val snapshotsDir2 = File("${project.projectDir}/screenshots")
     val removeOldScreenshotsTask = tasks.register("removeOldSnapshots") {
-        onlyIf { snapshotsDir.exists() || snapshotsDir2.exists() }
+        onlyIf { snapshotsDir.exists() }
         doFirst {
             println("Delete previous screenshots located at $snapshotsDir\n")
             snapshotsDir.deleteRecursively()
-            println("Delete previous screenshots located at $snapshotsDir2\n")
-            snapshotsDir2.deleteRecursively()
         }
     }
     tasks.findByName("recordPaparazzi")?.dependsOn(removeOldScreenshotsTask)
     tasks.findByName("recordPaparazziDebug")?.dependsOn(removeOldScreenshotsTask)
     tasks.findByName("recordPaparazziRelease")?.dependsOn(removeOldScreenshotsTask)
+}
+
+// Make sure to delete old snapshot before recording new ones
+subprojects {
+    val screenshotsDir = File("${project.projectDir}/screenshots")
+    val removeOldScreenshotsTask = tasks.register("removeOldScreenshots") {
+        onlyIf { screenshotsDir.exists() }
+        doFirst {
+            println("Delete previous screenshots located at $screenshotsDir\n")
+            screenshotsDir.deleteRecursively()
+        }
+    }
     tasks.findByName("recordRoborazzi")?.dependsOn(removeOldScreenshotsTask)
     tasks.findByName("recordRoborazziDebug")?.dependsOn(removeOldScreenshotsTask)
     tasks.findByName("recordRoborazziRelease")?.dependsOn(removeOldScreenshotsTask)

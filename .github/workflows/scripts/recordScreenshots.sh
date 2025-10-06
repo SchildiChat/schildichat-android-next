@@ -56,6 +56,9 @@ echo "Deleting previous screenshots"
 echo "Record screenshots"
 ./gradlew recordPaparazziDebug --stacktrace $GRADLE_ARGS
 
+echo "Deleting previous screenshots"
+./gradlew removeOldScreenshots --stacktrace --warn $GRADLE_ARGS
+
 echo "Record screenshots (Compound)"
 ./gradlew :libraries:compound:recordRoborazziDebug --stacktrace -PpreDexEnable=false --max-workers 4 --warn $GRADLE_ARGS
 

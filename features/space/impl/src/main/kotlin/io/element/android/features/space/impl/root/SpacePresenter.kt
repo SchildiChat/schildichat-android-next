@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import dev.zacsweers.metro.Inject
 import im.vector.app.features.analytics.plan.JoinedRoom
 import io.element.android.features.invite.api.SeenInvitesStore
@@ -32,6 +33,7 @@ import io.element.android.libraries.matrix.api.room.join.JoinRoom
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
 import io.element.android.libraries.matrix.ui.safety.rememberHideInvitesAvatar
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.collections.immutable.toPersistentMap
@@ -50,18 +52,22 @@ class SpacePresenter(
     private val acceptDeclineInvitePresenter: Presenter<AcceptDeclineInviteState>,
     @SessionCoroutineScope private val sessionCoroutineScope: CoroutineScope,
 ) : Presenter<SpaceState> {
+    private var children by mutableStateOf(persistentListOf<SpaceRoom>())
+
     @Composable
     override fun present(): SpaceState {
         LaunchedEffect(Unit) {
             paginate()
+            spaceRoomList.spaceRoomsFlow.collect { children = it.toPersistentList() }
         }
+
         val hideInvitesAvatar by client.rememberHideInvitesAvatar()
         val seenSpaceInvites by remember {
             seenInvitesStore.seenRoomIds().map { it.toPersistentSet() }
         }.collectAsState(persistentSetOf())
 
         val localCoroutineScope = rememberCoroutineScope()
-        val children by spaceRoomList.spaceRoomsFlow.collectAsState(emptyList())
+
         val hasMoreToLoad by remember {
             spaceRoomList.paginationStatusFlow.mapState { status ->
                 when (status) {
@@ -110,7 +116,7 @@ class SpacePresenter(
         }
         return SpaceState(
             currentSpace = currentSpace.getOrNull(),
-            children = children.toPersistentList(),
+            children = children,
             seenSpaceInvites = seenSpaceInvites,
             hideInvitesAvatar = hideInvitesAvatar,
             hasMoreToLoad = hasMoreToLoad,

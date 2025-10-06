@@ -78,6 +78,7 @@ jobs:
           name: tests-and-screenshot-tests-results
           path: |
             **/build/paparazzi/failures/
+            **/build/roborazzi/failures/
             **/build/reports/tests/*UnitTest/
 
       # https://github.com/codecov/codecov-action

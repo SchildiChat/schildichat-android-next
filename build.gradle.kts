@@ -15,6 +15,7 @@ plugins {
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.dependencycheck) apply false
+    alias(libs.plugins.roborazzi) apply false
     alias(libs.plugins.dependencyanalysis)
     alias(libs.plugins.detekt)
     alias(libs.plugins.ktlint)
@@ -190,6 +191,21 @@ subprojects {
     tasks.findByName("recordPaparazzi")?.dependsOn(removeOldScreenshotsTask)
     tasks.findByName("recordPaparazziDebug")?.dependsOn(removeOldScreenshotsTask)
     tasks.findByName("recordPaparazziRelease")?.dependsOn(removeOldScreenshotsTask)
+}
+
+// Make sure to delete old snapshot before recording new ones
+subprojects {
+    val screenshotsDir = File("${project.projectDir}/screenshots")
+    val removeOldScreenshotsTask = tasks.register("removeOldScreenshots") {
+        onlyIf { screenshotsDir.exists() }
+        doFirst {
+            println("Delete previous screenshots located at $screenshotsDir\n")
+            screenshotsDir.deleteRecursively()
+        }
+    }
+    tasks.findByName("recordRoborazzi")?.dependsOn(removeOldScreenshotsTask)
+    tasks.findByName("recordRoborazziDebug")?.dependsOn(removeOldScreenshotsTask)
+    tasks.findByName("recordRoborazziRelease")?.dependsOn(removeOldScreenshotsTask)
 }
 
 subprojects {

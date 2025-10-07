@@ -65,6 +65,7 @@
   <string name="troubleshoot_notifications_test_current_push_provider_description">"Ermittele den Namen des aktuellen Anbieters."</string>
   <string name="troubleshoot_notifications_test_current_push_provider_failure">"Kein Dienst für Push-Benachrichtigungen ausgewählt."</string>
   <string name="troubleshoot_notifications_test_current_push_provider_success">"Aktueller Push-Dienst: %1$s."</string>
+  <string name="troubleshoot_notifications_test_current_push_provider_success_with_distributor">"Aktueller Push-Dienst: %1$s (%2$s)"</string>
   <string name="troubleshoot_notifications_test_current_push_provider_title">"Aktueller Push-Dienst"</string>
   <string name="troubleshoot_notifications_test_detect_push_provider_description">"Stelle sicher, dass die Anwendung mindestens einen Push-Dienst hat."</string>
   <string name="troubleshoot_notifications_test_detect_push_provider_failure">"Keine Unterstützung für Push-Dienst gefunden."</string>

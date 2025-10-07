@@ -32,6 +32,7 @@ import io.element.android.libraries.matrix.api.roomdirectory.RoomDirectoryServic
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
 import io.element.android.libraries.matrix.api.spaces.SpaceService
 import io.element.android.libraries.matrix.api.sync.SlidingSyncVersion
+import io.element.android.libraries.matrix.api.sync.SyncService
 import io.element.android.libraries.matrix.api.user.MatrixSearchUserResults
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.api.verification.SessionVerificationService
@@ -68,15 +69,16 @@ class FakeMatrixClient(
     private val userAvatarUrl: String? = AN_AVATAR_URL,
     override val roomListService: RoomListService = FakeRoomListService(),
     override val spaceService: SpaceService = FakeSpaceService(),
-    override val mediaLoader: MatrixMediaLoader = FakeMatrixMediaLoader(),
-    private val sessionVerificationService: FakeSessionVerificationService = FakeSessionVerificationService(),
-    private val pushersService: FakePushersService = FakePushersService(),
-    private val notificationService: FakeNotificationService = FakeNotificationService(),
-    private val notificationSettingsService: FakeNotificationSettingsService = FakeNotificationSettingsService(),
-    private val syncService: FakeSyncService = FakeSyncService(),
-    private val encryptionService: FakeEncryptionService = FakeEncryptionService(),
-    private val roomDirectoryService: RoomDirectoryService = FakeRoomDirectoryService(),
-    private val mediaPreviewService: MediaPreviewService = FakeMediaPreviewService(),
+    override val matrixMediaLoader: MatrixMediaLoader = FakeMatrixMediaLoader(),
+    override val sessionVerificationService: SessionVerificationService = FakeSessionVerificationService(),
+    override val pushersService: PushersService = FakePushersService(),
+    override val notificationService: NotificationService = FakeNotificationService(),
+    override val notificationSettingsService: NotificationSettingsService = FakeNotificationSettingsService(),
+    override val syncService: SyncService = FakeSyncService(),
+    override val encryptionService: EncryptionService = FakeEncryptionService(),
+    override val roomDirectoryService: RoomDirectoryService = FakeRoomDirectoryService(),
+    override val mediaPreviewService: MediaPreviewService = FakeMediaPreviewService(),
+    override val roomMembershipObserver: RoomMembershipObserver = RoomMembershipObserver(),
     private val accountManagementUrlResult: (AccountManagementAction?) -> Result<String?> = { lambdaError() },
     private val resolveRoomAliasResult: (RoomAlias) -> Result<Optional<ResolvedRoomAlias>> = {
         Result.success(
@@ -174,10 +176,6 @@ class FakeMatrixClient(
         return searchUserResults[searchTerm] ?: Result.failure(IllegalStateException("No response defined for $searchTerm"))
     }
 
-    override fun syncService() = syncService
-
-    override fun roomDirectoryService() = roomDirectoryService
-
     override suspend fun getCacheSize(): Long {
         return 0
     }
@@ -236,19 +234,6 @@ class FakeMatrixClient(
 
     override suspend fun knockRoom(roomIdOrAlias: RoomIdOrAlias, message: String, serverNames: List<String>): Result<RoomInfo?> {
         return knockRoomLambda(roomIdOrAlias, message, serverNames)
-    }
-
-    override fun sessionVerificationService(): SessionVerificationService = sessionVerificationService
-
-    override fun pushersService(): PushersService = pushersService
-
-    override fun notificationService(): NotificationService = notificationService
-    override fun notificationSettingsService(): NotificationSettingsService = notificationSettingsService
-    override fun encryptionService(): EncryptionService = encryptionService
-    override fun mediaPreviewService(): MediaPreviewService = mediaPreviewService
-
-    override fun roomMembershipObserver(): RoomMembershipObserver {
-        return RoomMembershipObserver()
     }
 
     // Mocks

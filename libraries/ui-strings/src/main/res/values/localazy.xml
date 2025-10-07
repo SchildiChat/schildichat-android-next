@@ -94,6 +94,7 @@
   <string name="action_forgot_password">"Forgot password?"</string>
   <string name="action_forward">"Forward"</string>
   <string name="action_go_back">"Go back"</string>
+  <string name="action_go_to_settings">"Go to settings"</string>
   <string name="action_ignore">"Ignore"</string>
   <string name="action_invite">"Invite"</string>
   <string name="action_invite_friends">"Invite people"</string>
@@ -110,6 +111,7 @@
   <string name="action_manage_account">"Manage account"</string>
   <string name="action_manage_devices">"Manage devices"</string>
   <string name="action_message">"Message"</string>
+  <string name="action_minimize">"Minimise"</string>
   <string name="action_next">"Next"</string>
   <string name="action_no">"No"</string>
   <string name="action_not_now">"Not now"</string>
@@ -176,6 +178,7 @@
   <string name="common_android_shortcuts_remove_reason_session_logged_out">"You were logged out of the session"</string>
   <string name="common_appearance">"Appearance"</string>
   <string name="common_audio">"Audio"</string>
+  <string name="common_beta">"Beta"</string>
   <string name="common_blocked_users">"Blocked users"</string>
   <string name="common_bubbles">"Bubbles"</string>
   <string name="common_call_started">"Call started"</string>
@@ -225,6 +228,7 @@ Reason: %1$s."</string>
   <string name="common_install_apk_android">"Install APK"</string>
   <string name="common_invite_unknown_profile">"This Matrix ID can\'t be found, so the invite might not be received."</string>
   <string name="common_leaving_room">"Leaving room"</string>
+  <string name="common_leaving_space">"Leaving space"</string>
   <string name="common_light">"Light"</string>
   <string name="common_line_copied_to_clipboard">"Line copied to clipboard"</string>
   <string name="common_link_copied_to_clipboard">"Link copied to clipboard"</string>
@@ -314,6 +318,7 @@ Reason: %1$s."</string>
   <string name="common_settings">"Settings"</string>
   <string name="common_share_space">"Share space"</string>
   <string name="common_shared_location">"Shared location"</string>
+  <string name="common_shared_space">"Shared space"</string>
   <string name="common_signing_out">"Signing out"</string>
   <string name="common_something_went_wrong">"Something went wrong"</string>
   <string name="common_something_went_wrong_message">"We encountered an issue. Please try again."</string>

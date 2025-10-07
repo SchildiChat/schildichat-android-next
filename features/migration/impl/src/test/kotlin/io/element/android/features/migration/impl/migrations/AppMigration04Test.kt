@@ -28,7 +28,7 @@ class AppMigration04Test {
 
         val migration = AppMigration04(context)
 
-        migration.migrate()
+        migration.migrate(true)
 
         // Check that the file has been deleted
         assertThat(file.exists()).isFalse()

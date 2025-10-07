@@ -30,7 +30,7 @@ class DefaultOnMissedCallNotificationHandler(
     ) {
         // Resolve the event and add a notification for it, at this point it should no longer be a ringing one
         val notificationData = matrixClientProvider.getOrRestore(sessionId).getOrNull()
-            ?.notificationService()
+            ?.notificationService
             ?.getNotifications(mapOf(roomId to listOf(eventId)))
             ?.getOrNull()
             ?.get(eventId)

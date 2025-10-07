@@ -94,6 +94,7 @@
   <string name="action_forgot_password">"Passwort vergessen?"</string>
   <string name="action_forward">"Weiterleiten"</string>
   <string name="action_go_back">"Zurück"</string>
+  <string name="action_go_to_settings">"Zu den Einstellungen"</string>
   <string name="action_ignore">"Ignorieren"</string>
   <string name="action_invite">"Einladen"</string>
   <string name="action_invite_friends">"Nutzer einladen"</string>
@@ -110,6 +111,7 @@
   <string name="action_manage_account">"Konto verwalten"</string>
   <string name="action_manage_devices">"Geräte verwalten"</string>
   <string name="action_message">"Nachricht"</string>
+  <string name="action_minimize">"Minimieren"</string>
   <string name="action_next">"Weiter"</string>
   <string name="action_no">"Nein"</string>
   <string name="action_not_now">"Später"</string>
@@ -176,6 +178,7 @@
   <string name="common_android_shortcuts_remove_reason_session_logged_out">"Du wurdest aus der Sitzung abgemeldet."</string>
   <string name="common_appearance">"Erscheinungsbild"</string>
   <string name="common_audio">"Audio"</string>
+  <string name="common_beta">"Beta"</string>
   <string name="common_blocked_users">"Blockierte Nutzer"</string>
   <string name="common_bubbles">"Sprechblasen"</string>
   <string name="common_call_started">"Anruf gestartet"</string>
@@ -314,6 +317,7 @@ Grund: %1$s."</string>
   <string name="common_settings">"Einstellungen"</string>
   <string name="common_share_space">"Space teilen"</string>
   <string name="common_shared_location">"Geteilter Standort"</string>
+  <string name="common_shared_space">"Gemeinsamer Space"</string>
   <string name="common_signing_out">"Abmelden"</string>
   <string name="common_something_went_wrong">"Es ist ein Fehler aufgetreten."</string>
   <string name="common_something_went_wrong_message">"Wir haben ein Problem festgestellt. Bitte versuch es erneut."</string>

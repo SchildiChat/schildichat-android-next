@@ -15,9 +15,10 @@ import io.element.android.features.networkmonitor.api.NetworkMonitor
 import io.element.android.features.networkmonitor.api.NetworkStatus
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.core.coroutine.childScope
-import io.element.android.libraries.matrix.api.MatrixClient
+import io.element.android.libraries.matrix.api.sync.SyncService
 import io.element.android.libraries.matrix.api.sync.SyncState
 import io.element.android.services.appnavstate.api.AppForegroundStateService
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
@@ -32,21 +33,23 @@ import kotlin.time.Duration.Companion.seconds
 
 @AssistedInject
 class SyncOrchestrator(
-    @Assisted matrixClient: MatrixClient,
+    @Assisted private val syncService: SyncService,
+    @Assisted sessionCoroutineScope: CoroutineScope,
     private val appForegroundStateService: AppForegroundStateService,
     private val networkMonitor: NetworkMonitor,
     dispatchers: CoroutineDispatchers,
 ) {
     @AssistedFactory
     interface Factory {
-        fun create(matrixClient: MatrixClient): SyncOrchestrator
+        fun create(
+            syncService: SyncService,
+            sessionCoroutineScope: CoroutineScope,
+        ): SyncOrchestrator
     }
-
-    private val syncService = matrixClient.syncService()
 
     private val tag = "SyncOrchestrator"
 
-    private val coroutineScope = matrixClient.sessionCoroutineScope.childScope(dispatchers.io, tag)
+    private val coroutineScope = sessionCoroutineScope.childScope(dispatchers.io, tag)
 
     private val started = AtomicBoolean(false)
 

@@ -34,6 +34,7 @@ import io.element.android.appnav.intent.ResolvedIntent
 import io.element.android.appnav.root.RootNavStateFlowFactory
 import io.element.android.appnav.root.RootPresenter
 import io.element.android.appnav.root.RootView
+import io.element.android.features.announcement.api.AnnouncementService
 import io.element.android.features.login.api.LoginParams
 import io.element.android.features.login.api.accesscontrol.AccountProviderAccessControl
 import io.element.android.features.rageshake.api.bugreport.BugReportEntryPoint
@@ -64,7 +65,9 @@ import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 
-@ContributesNode(AppScope::class) @AssistedInject class RootFlowNode(
+@ContributesNode(AppScope::class)
+@AssistedInject
+class RootFlowNode(
     @Assisted val buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
     private val sessionStore: SessionStore,
@@ -79,6 +82,7 @@ import timber.log.Timber
     private val oidcActionFlow: OidcActionFlow,
     private val bugReporter: BugReporter,
     private val featureFlagService: FeatureFlagService,
+    private val announcementService: AnnouncementService,
 ) : BaseFlowNode<RootFlowNode.NavTarget>(
     backstack = BackStack(
         initialElement = NavTarget.SplashScreen,
@@ -185,6 +189,7 @@ import timber.log.Timber
                 }
             }
             BackstackView(transitionHandler = transitionHandler)
+            announcementService.Render(Modifier)
         }
     }
 

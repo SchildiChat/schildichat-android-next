@@ -134,10 +134,9 @@ private fun SpaceViewContent(
                     avatarData = currentSpace.getAvatarData(AvatarSize.SpaceHeader),
                     name = currentSpace.name,
                     topic = currentSpace.topic,
-                    joinRule = currentSpace.joinRule,
+                    visibility = currentSpace.visibility,
                     heroes = currentSpace.heroes.toImmutableList(),
                     numberOfMembers = currentSpace.numJoinedMembers,
-                    numberOfRooms = currentSpace.childrenCount,
                 )
             }
         }
@@ -202,7 +201,7 @@ private fun LoadingMoreIndicator(
 private fun SpaceViewTopBar(
     currentSpace: SpaceRoom?,
     onBackClick: () -> Unit,
-    @Suppress("unused") onLeaveSpaceClick: () -> Unit,
+    onLeaveSpaceClick: () -> Unit,
     onShareSpace: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -247,23 +246,25 @@ private fun SpaceViewTopBar(
                         )
                     }
                 )
-                /*
-                // TODO re-enable when we have SDK APIs to leave a space
                 DropdownMenuItem(
                     onClick = {
                         showMenu = false
                         onLeaveSpaceClick()
                     },
-                    text = { Text(stringResource(id = CommonStrings.action_leave)) },
+                    text = {
+                        Text(
+                            text = stringResource(id = CommonStrings.action_leave),
+                            color = ElementTheme.colors.textCriticalPrimary,
+                        )
+                    },
                     leadingIcon = {
                         Icon(
                             imageVector = CompoundIcons.Leave(),
-                            tint = ElementTheme.colors.iconSecondary,
+                            tint = ElementTheme.colors.iconCriticalPrimary,
                             contentDescription = null,
                         )
                     }
                 )
-                 */
             }
         },
     )

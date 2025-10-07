@@ -21,6 +21,7 @@ import io.element.android.libraries.matrix.api.encryption.IdentityResetHandle
 import io.element.android.libraries.matrix.api.encryption.RecoveryState
 import io.element.android.libraries.matrix.api.encryption.identity.IdentityState
 import io.element.android.libraries.matrix.api.sync.SyncState
+import io.element.android.libraries.matrix.impl.exception.mapClientException
 import io.element.android.libraries.matrix.impl.sync.RustSyncService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
@@ -46,7 +47,7 @@ import org.matrix.rustcomponents.sdk.EnableRecoveryProgress as RustEnableRecover
 import org.matrix.rustcomponents.sdk.SteadyStateException as RustSteadyStateException
 import org.matrix.rustcomponents.sdk.RecoveryException as RustRecoveryException
 
-internal class RustEncryptionService(
+class RustEncryptionService(
     client: Client,
     syncService: RustSyncService,
     sessionCoroutineScope: CoroutineScope,
@@ -91,6 +92,20 @@ internal class RustEncryptionService(
     override val isLastDevice: StateFlow<Boolean> = flow {
         while (currentCoroutineContext().isActive) {
             val result = isLastDevice().getOrDefault(false)
+            emit(result)
+            delay(5_000)
+        }
+    }
+        .stateIn(sessionCoroutineScope, SharingStarted.Eagerly, false)
+
+    /**
+     * Check if the user has any devices available to verify against every 5 seconds.
+     * TODO This is a temporary workaround, when we will have a way to observe
+     * the sessions, this code will have to be updated.
+     */
+    override val hasDevicesToVerifyAgainst: StateFlow<Boolean> = flow {
+        while (currentCoroutineContext().isActive) {
+            val result = hasDevicesToVerifyAgainst().getOrDefault(false)
             emit(result)
             delay(5_000)
         }
@@ -169,6 +184,14 @@ internal class RustEncryptionService(
             service.isLastDevice()
         }.mapFailure {
             it.mapRecoveryException()
+        }
+    }
+
+    private suspend fun hasDevicesToVerifyAgainst(): Result<Boolean> = withContext(dispatchers.io) {
+        runCatchingExceptions {
+            service.hasDevicesToVerifyAgainst()
+        }.mapFailure {
+            it.mapClientException()
         }
     }
 

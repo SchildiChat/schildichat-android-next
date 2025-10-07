@@ -11,10 +11,10 @@ import coil3.ImageLoader
 import coil3.fetch.Fetcher
 import coil3.request.Options
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
-import io.element.android.libraries.matrix.api.MatrixClient
+import io.element.android.libraries.matrix.api.media.MatrixMediaLoader
 
 internal class AvatarDataFetcherFactory(
-    private val client: MatrixClient
+    private val matrixMediaLoader: MatrixMediaLoader
 ) : Fetcher.Factory<AvatarData> {
     override fun create(
         data: AvatarData,
@@ -22,7 +22,7 @@ internal class AvatarDataFetcherFactory(
         imageLoader: ImageLoader
     ): Fetcher {
         return CoilMediaFetcher(
-            mediaLoader = client.mediaLoader,
+            mediaLoader = matrixMediaLoader,
             mediaData = data.toMediaRequestData(),
         )
     }

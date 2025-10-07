@@ -8,12 +8,12 @@
 package io.element.android.libraries.matrix.ui.media
 
 import coil3.ImageLoader
-import io.element.android.libraries.matrix.api.MatrixClient
+import io.element.android.libraries.matrix.api.media.MatrixMediaLoader
 
 class FakeLoggedInImageLoaderFactory(
-    private val newImageLoaderLambda: (MatrixClient) -> ImageLoader
+    private val newImageLoaderLambda: (MatrixMediaLoader) -> ImageLoader
 ) : LoggedInImageLoaderFactory {
-    override fun newImageLoader(matrixClient: MatrixClient): ImageLoader {
-        return newImageLoaderLambda(matrixClient)
+    override fun newImageLoader(matrixMediaLoader: MatrixMediaLoader): ImageLoader {
+        return newImageLoaderLambda(matrixMediaLoader)
     }
 }

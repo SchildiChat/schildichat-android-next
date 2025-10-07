@@ -7,23 +7,7 @@
 
 package io.element.android.libraries.matrix.api.core
 
-import io.element.android.libraries.androidutils.metadata.isInDebug
-import java.io.Serializable
-
-@JvmInline
-value class SpaceId(val value: String) : Serializable {
-    init {
-        if (isInDebug && !MatrixPatterns.isSpaceId(value)) {
-            error(
-                "`$value` is not a valid space id.\n" +
-                    "Space ids are the same as room ids.\n" +
-                    "Example space id: `!space_id:domain`."
-            )
-        }
-    }
-
-    override fun toString(): String = value
-}
+typealias SpaceId = RoomId
 
 /**
  * Value to use when no space is selected by the user.

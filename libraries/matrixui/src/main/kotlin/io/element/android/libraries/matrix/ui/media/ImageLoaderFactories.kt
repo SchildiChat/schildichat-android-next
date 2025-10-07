@@ -18,11 +18,11 @@ import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.Provider
 import io.element.android.libraries.di.annotations.ApplicationContext
-import io.element.android.libraries.matrix.api.MatrixClient
+import io.element.android.libraries.matrix.api.media.MatrixMediaLoader
 import okhttp3.OkHttpClient
 
 interface LoggedInImageLoaderFactory {
-    fun newImageLoader(matrixClient: MatrixClient): ImageLoader
+    fun newImageLoader(matrixMediaLoader: MatrixMediaLoader): ImageLoader
 }
 
 @ContributesBinding(AppScope::class)
@@ -31,7 +31,7 @@ class DefaultLoggedInImageLoaderFactory(
     @ApplicationContext private val context: Context,
     private val okHttpClient: Provider<OkHttpClient>,
 ) : LoggedInImageLoaderFactory {
-    override fun newImageLoader(matrixClient: MatrixClient): ImageLoader {
+    override fun newImageLoader(matrixMediaLoader: MatrixMediaLoader): ImageLoader {
         return ImageLoader.Builder(context)
             .components {
                 add(
@@ -50,8 +50,8 @@ class DefaultLoggedInImageLoaderFactory(
                 }
                 add(AvatarDataKeyer())
                 add(MediaRequestDataKeyer())
-                add(AvatarDataFetcherFactory(matrixClient))
-                add(MediaRequestDataFetcherFactory(matrixClient))
+                add(AvatarDataFetcherFactory(matrixMediaLoader))
+                add(MediaRequestDataFetcherFactory(matrixMediaLoader))
             }
             .build()
     }

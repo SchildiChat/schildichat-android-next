@@ -30,7 +30,7 @@ class LeaveSpaceStateProvider : PreviewParameterProvider<LeaveSpaceState> {
                     persistentListOf(
                         aSelectableSpaceRoom(
                             spaceRoom = aSpaceRoom(
-                                name = "A long space name that should be truncated",
+                                rawName = "A long space name that should be truncated",
                                 worldReadable = true,
                             ),
                             isLastAdmin = true,
@@ -105,15 +105,20 @@ class LeaveSpaceStateProvider : PreviewParameterProvider<LeaveSpaceState> {
             aLeaveSpaceState(
                 selectableSpaceRooms = AsyncData.Failure(Exception("An error")),
             ),
+            aLeaveSpaceState(
+                isLastAdmin = true,
+            ),
         )
 }
 
 fun aLeaveSpaceState(
     spaceName: String? = "Space name",
+    isLastAdmin: Boolean = false,
     selectableSpaceRooms: AsyncData<ImmutableList<SelectableSpaceRoom>> = AsyncData.Uninitialized,
     leaveSpaceAction: AsyncAction<Unit> = AsyncAction.Uninitialized,
 ) = LeaveSpaceState(
     spaceName = spaceName,
+    isLastAdmin = isLastAdmin,
     selectableSpaceRooms = selectableSpaceRooms,
     leaveSpaceAction = leaveSpaceAction,
     eventSink = { }

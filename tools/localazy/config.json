@@ -23,6 +23,12 @@
       ]
     },
     {
+      "name" : ":features:announcement:impl",
+      "includeRegex" : [
+        "screen\\.space_announcement\\..*"
+      ]
+    },
+    {
       "name" : ":features:logout:impl",
       "includeRegex" : [
         "screen_signout_.*"
@@ -179,6 +185,7 @@
         "confirm_recovery_key_banner_.*",
         "banner\\.set_up_recovery\\..*",
         "banner\\.battery_optimization\\..*",
+        "banner\\.new_sound\\..*",
         "full_screen_intent_banner_.*",
         "screen_migration_.*",
         "screen_invites_.*"
@@ -293,7 +300,8 @@
         "screen_notification_settings_.*",
         "screen_blocked_users_.*",
         "full_screen_intent_banner_.*",
-        "troubleshoot_notifications_entry_point_.*"
+        "troubleshoot_notifications_entry_point_.*",
+        "screen\\.labs\\..*"
       ]
     },
     {

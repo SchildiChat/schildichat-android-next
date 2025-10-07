@@ -332,5 +332,9 @@ fun createNotificationCreator(
 
 fun createNotificationChannels(): NotificationChannels {
     val context = RuntimeEnvironment.getApplication()
-    return DefaultNotificationChannels(NotificationManagerCompat.from(context), FakeStringProvider(""))
+    return DefaultNotificationChannels(
+        notificationManager = NotificationManagerCompat.from(context),
+        stringProvider = FakeStringProvider(""),
+        context = context,
+    )
 }

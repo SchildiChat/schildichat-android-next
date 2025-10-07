@@ -22,6 +22,7 @@ class InMemoryAppPreferencesStore(
     theme: String? = null,
     logLevel: LogLevel = LogLevel.INFO,
     traceLockPacks: Set<TraceLogPack> = emptySet(),
+    showNewNotificationSoundBanner: Boolean = false,
 ) : AppPreferencesStore {
     private val isDeveloperModeEnabled = MutableStateFlow(isDeveloperModeEnabled)
     private val customElementCallBaseUrl = MutableStateFlow(customElementCallBaseUrl)
@@ -30,6 +31,7 @@ class InMemoryAppPreferencesStore(
     private val tracingLogPacks = MutableStateFlow(traceLockPacks)
     private val hideInviteAvatars = MutableStateFlow(hideInviteAvatars)
     private val timelineMediaPreviewValue = MutableStateFlow(timelineMediaPreviewValue)
+    private val showNewNotificationSoundBanner = MutableStateFlow(showNewNotificationSoundBanner)
 
     override suspend fun setDeveloperModeEnabled(enabled: Boolean) {
         isDeveloperModeEnabled.value = enabled
@@ -89,6 +91,14 @@ class InMemoryAppPreferencesStore(
 
     override fun getTracingLogPacksFlow(): Flow<Set<TraceLogPack>> {
         return tracingLogPacks
+    }
+
+    override suspend fun setShowNewNotificationSoundBanner(show: Boolean) {
+        showNewNotificationSoundBanner.value = show
+    }
+
+    override fun showNewNotificationSoundBanner(): Flow<Boolean> {
+        return showNewNotificationSoundBanner
     }
 
     override suspend fun reset() {

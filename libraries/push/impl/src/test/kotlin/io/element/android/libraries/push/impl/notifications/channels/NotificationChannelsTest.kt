@@ -18,6 +18,7 @@ import io.mockk.verify
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
@@ -66,5 +67,6 @@ class NotificationChannelsTest {
     ) = DefaultNotificationChannels(
         notificationManager = notificationManager,
         stringProvider = FakeStringProvider(),
+        context = RuntimeEnvironment.getApplication(),
     )
 }

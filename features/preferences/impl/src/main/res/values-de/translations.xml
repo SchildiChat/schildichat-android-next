@@ -10,6 +10,7 @@
   <string name="screen_advanced_settings_element_call_base_url_validation_error">"Ungültige URL, bitte gib das Protokoll (http/https) und die richtige Adresse an."</string>
   <string name="screen_advanced_settings_hide_invite_avatars_toggle_title">"Avatare in Chateinladungen ausblenden"</string>
   <string name="screen_advanced_settings_hide_timeline_media_toggle_title">"Medienvorschau im Nachrichtenverlauf ausblenden"</string>
+  <string name="screen_advanced_settings_labs">"Labs"</string>
   <string name="screen_advanced_settings_media_compression_description">"Lade Fotos und Videos schneller hoch und reduziere den Datenverbrauch"</string>
   <string name="screen_advanced_settings_media_compression_title">"Optimiere die Medienqualität"</string>
   <string name="screen_advanced_settings_moderation_and_safety_section_title">"Moderation und Sicherheit"</string>
@@ -43,6 +44,11 @@
   <string name="screen_edit_profile_error_title">"Profil kann nicht aktualisiert werden"</string>
   <string name="screen_edit_profile_title">"Profil bearbeiten"</string>
   <string name="screen_edit_profile_updating_details">"Profil wird aktualisiert…"</string>
+  <string name="screen_labs_enable_threads">"Thread-Antworten aktivieren"</string>
+  <string name="screen_labs_enable_threads_description">"Die App wird neu gestartet, um diese Änderung zu übernehmen."</string>
+  <string name="screen_labs_header_description">"Probier unsere neuesten Ideen in der Entwicklung aus. Diese Funktionen sind noch nicht fertiggestellt; sie können instabil sein und sich noch ändern."</string>
+  <string name="screen_labs_header_title">"Entdeckungsfreudig?"</string>
+  <string name="screen_labs_title">"Labs"</string>
   <string name="screen_notification_settings_additional_settings_section_title">"Zusätzliche Einstellungen"</string>
   <string name="screen_notification_settings_calls_label">"Audio- und Videoanrufe"</string>
   <string name="screen_notification_settings_configuration_mismatch">"Konfiguration stimmt nicht überein"</string>

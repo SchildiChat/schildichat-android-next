@@ -12,7 +12,6 @@ import com.google.common.truth.Truth.assertThat
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.matrix.api.encryption.IdentityResetHandle
 import io.element.android.libraries.matrix.api.verification.SessionVerifiedStatus
-import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.matrix.test.encryption.FakeEncryptionService
 import io.element.android.libraries.matrix.test.encryption.FakeIdentityPasswordResetHandle
 import io.element.android.libraries.matrix.test.verification.FakeSessionVerificationService
@@ -130,10 +129,9 @@ class ResetIdentityFlowManagerTest {
 
     private fun TestScope.createFlowManager(
         encryptionService: FakeEncryptionService = FakeEncryptionService(),
-        client: FakeMatrixClient = FakeMatrixClient(encryptionService = encryptionService),
         sessionVerificationService: FakeSessionVerificationService = FakeSessionVerificationService(),
     ) = ResetIdentityFlowManager(
-        matrixClient = client,
+        encryptionService = encryptionService,
         sessionCoroutineScope = this,
         sessionVerificationService = sessionVerificationService,
     )

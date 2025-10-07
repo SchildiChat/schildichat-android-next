@@ -21,7 +21,7 @@ class AppMigration03(
 ) : AppMigration {
     override val order: Int = 3
 
-    override suspend fun migrate() {
-        migration01.migrate()
+    override suspend fun migrate(isFreshInstall: Boolean) {
+        migration01.migrate(isFreshInstall)
     }
 }

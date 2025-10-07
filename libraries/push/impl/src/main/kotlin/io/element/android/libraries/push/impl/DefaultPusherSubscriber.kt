@@ -50,7 +50,7 @@ class DefaultPusherSubscriber(
             Timber.tag(loggerTag.value)
                 .d("Unnecessary to register again the same pusher, but do it in case the pusher has been removed from the server")
         }
-        return matrixClient.pushersService()
+        return matrixClient.pushersService
             .setHttpPusher(
                 createHttpPusher(pushKey, gateway, matrixClient.sessionId)
             )
@@ -100,7 +100,7 @@ class DefaultPusherSubscriber(
         gateway: String,
     ): Result<Unit> {
         val userDataStore = userPushStoreFactory.getOrCreate(matrixClient.sessionId)
-        return matrixClient.pushersService()
+        return matrixClient.pushersService
             .unsetHttpPusher(
                 unsetHttpPusherData = UnsetHttpPusherData(
                     pushKey = pushKey,

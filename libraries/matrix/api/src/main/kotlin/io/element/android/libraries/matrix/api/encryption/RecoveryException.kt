@@ -10,7 +10,6 @@ package io.element.android.libraries.matrix.api.encryption
 import io.element.android.libraries.matrix.api.exception.ClientException
 
 sealed class RecoveryException(message: String) : Exception(message) {
-    class Import(message: String) : RecoveryException(message)
     class SecretStorage(message: String) : RecoveryException(message)
     class Import(message: String) : RecoveryException(message)
     data object BackupExistsOnServer : RecoveryException("BackupExistsOnServer")

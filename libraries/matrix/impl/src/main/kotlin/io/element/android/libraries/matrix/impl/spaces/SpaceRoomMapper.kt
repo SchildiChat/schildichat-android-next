@@ -24,7 +24,7 @@ class SpaceRoomMapper {
             guestCanJoin = spaceRoom.guestCanJoin,
             heroes = spaceRoom.heroes.orEmpty().map { it.map() },
             joinRule = spaceRoom.joinRule?.map(),
-            rawName = spaceRoom.name,
+            rawName = spaceRoom.rawName,
             numJoinedMembers = spaceRoom.numJoinedMembers.toInt(),
             roomId = RoomId(spaceRoom.roomId),
             roomType = spaceRoom.roomType.map(),

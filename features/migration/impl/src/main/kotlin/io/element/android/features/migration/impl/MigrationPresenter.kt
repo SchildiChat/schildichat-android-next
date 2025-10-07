@@ -31,6 +31,7 @@ class MigrationPresenter(
 ) : Presenter<MigrationState> {
     private val orderedMigrations = migrations.sortedBy { it.order }
     private val lastMigration: Int = orderedMigrations.lastOrNull()?.order ?: 0
+    private var isFreshInstall = false
 
     @Composable
     override fun present(): MigrationState {
@@ -49,6 +50,7 @@ class MigrationPresenter(
             val migrationValue = migrationStoreVersion ?: return@LaunchedEffect
             if (migrationValue == -1) {
                 Timber.d("Fresh install, or previous installed application did not have the migration mechanism.")
+                isFreshInstall = true
             }
             if (migrationValue == lastMigration) {
                 Timber.d("Current app migration version: $migrationValue. No migration needed.")
@@ -59,7 +61,7 @@ class MigrationPresenter(
             val nextMigration = orderedMigrations.firstOrNull { it.order > migrationValue }
             if (nextMigration != null) {
                 Timber.d("Current app migration version: $migrationValue. Applying migration: ${nextMigration.order}")
-                nextMigration.migrate()
+                nextMigration.migrate(isFreshInstall)
                 migrationStore.setApplicationMigrationVersion(nextMigration.order)
             }
         }

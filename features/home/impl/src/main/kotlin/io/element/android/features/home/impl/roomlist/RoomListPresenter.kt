@@ -98,6 +98,7 @@ class RoomListPresenter(
         }
 
         var securityBannerDismissed by rememberSaveable { mutableStateOf(false) }
+        val showNewNotificationSoundBanner by appPreferencesStore.showNewNotificationSoundBanner().collectAsState(false)
 
         // Avatar indicator
         val hideInvitesAvatar by client.rememberHideInvitesAvatar()
@@ -112,6 +113,9 @@ class RoomListPresenter(
                 }
                 RoomListEvents.DismissRequestVerificationPrompt -> securityBannerDismissed = true
                 RoomListEvents.DismissBanner -> securityBannerDismissed = true
+                RoomListEvents.DismissNewNotificationSoundBanner -> coroutineScope.launch {
+                    appPreferencesStore.setShowNewNotificationSoundBanner(false)
+                }
                 RoomListEvents.ToggleSearchResults -> searchState.eventSink(RoomListSearchEvents.ToggleSearchVisibility)
                 is RoomListEvents.ShowContextMenu -> {
                     coroutineScope.showContextMenu(event, contextMenu)
@@ -141,7 +145,10 @@ class RoomListPresenter(
             }
         }
 
-        val contentState = roomListContentState(securityBannerDismissed)
+        val contentState = roomListContentState(
+            securityBannerDismissed,
+            showNewNotificationSoundBanner,
+        )
 
         val canReportRoom by produceState(false) { value = client.canReportRoom() }
 
@@ -197,6 +204,7 @@ class RoomListPresenter(
     @Composable
     private fun roomListContentState(
         securityBannerDismissed: Boolean,
+        showNewNotificationSoundBanner: Boolean,
     ): RoomListContentState {
         val roomSummaries by produceState(initialValue = AsyncData.Loading()) {
             roomListDataSource.allRooms.collect { value = AsyncData.Success(it) }
@@ -215,11 +223,14 @@ class RoomListPresenter(
         val seenRoomInvites by remember { seenInvitesStore.seenRoomIds() }.collectAsState(emptySet())
         val securityBannerState by rememberSecurityBannerState(securityBannerDismissed)
         return when {
-            showEmpty -> RoomListContentState.Empty(securityBannerState = securityBannerState)
+            showEmpty -> RoomListContentState.Empty(
+                securityBannerState = securityBannerState,
+            )
             showSkeleton -> RoomListContentState.Skeleton(count = 16)
             else -> {
                 RoomListContentState.Rooms(
                     securityBannerState = securityBannerState,
+                    showNewNotificationSoundBanner = showNewNotificationSoundBanner,
                     fullScreenIntentPermissionsState = fullScreenIntentPermissionsPresenter.present(),
                     batteryOptimizationState = batteryOptimizationPresenter.present(),
                     summaries = roomSummaries.dataOrNull().orEmpty().toPersistentList(),

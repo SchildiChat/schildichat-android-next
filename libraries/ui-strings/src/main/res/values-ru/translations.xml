@@ -166,8 +166,6 @@
   <string name="action_yes_try_again">"Да, попробуйте еще раз"</string>
   <string name="banner_migrate_to_native_sliding_sync_description">"Теперь ваш сервер поддерживает новый, более быстрый протокол. Чтобы обновить его прямо сейчас, выйдите и войдите в свою учётную запись снова. Сделав это сейчас, вы сможете избежать принудительного выхода из системы при последующем удалении старого протокола."</string>
   <string name="banner_migrate_to_native_sliding_sync_title">"Доступно обновление"</string>
-  <string name="banner_new_sound_message">"Ваши уведомления были обновлены — теперь они понятнее, быстрее и менее отвлекающие."</string>
-  <string name="banner_new_sound_title">"Мы обновили ваши звуки"</string>
   <string name="common_about">"О приложении"</string>
   <string name="common_acceptable_use_policy">"Политика допустимого использования"</string>
   <string name="common_add_account">"Добавить аккаунт"</string>
@@ -433,10 +431,6 @@
   <string name="screen_create_poll_options_section_title">"Параметры"</string>
   <string name="screen_create_poll_remove_accessibility_label">"Удалить %1$s"</string>
   <string name="screen_create_poll_settings_section_title">"Настройки"</string>
-  <string name="screen_labs_enable_threads">"Включить ответы в топике"</string>
-  <string name="screen_labs_header_description">"Попробуйте наши последние идеи в разработке. Эти функции ещё не завершены, они могут быть нестабильны и могут измениться."</string>
-  <string name="screen_labs_header_title">"Хотите попробовать?"</string>
-  <string name="screen_labs_title">"Лаборатория"</string>
   <string name="screen_media_picker_error_failed_selection">"Не удалось выбрать носитель, попробуйте еще раз."</string>
   <string name="screen_pinned_timeline_empty_state_description">"Нажмите на сообщение и выберите “%1$s”, чтобы добавить его сюда."</string>
   <string name="screen_pinned_timeline_empty_state_headline">"Закрепите важные сообщения, чтобы их можно было легко найти"</string>

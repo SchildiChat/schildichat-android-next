@@ -25,7 +25,7 @@ class AppMigration06(
 ) : AppMigration {
     override val order: Int = 6
 
-    override suspend fun migrate() {
+    override suspend fun migrate(isFreshInstall: Boolean) {
         val allSessions = sessionStore.getAllSessions()
         for (session in allSessions) {
             if (session.cachePath.isEmpty()) {

@@ -96,6 +96,7 @@
   <string name="action_forgot_password">"Ați uitat parola?"</string>
   <string name="action_forward">"Redirecționați"</string>
   <string name="action_go_back">"Înapoi"</string>
+  <string name="action_go_to_settings">"Mergeți la setări"</string>
   <string name="action_ignore">"Ignorați"</string>
   <string name="action_invite">"Invitați"</string>
   <string name="action_invite_friends">"Invitați prieteni"</string>
@@ -179,6 +180,7 @@
   <string name="common_android_shortcuts_remove_reason_session_logged_out">"Ați fost deconectat din sesiune."</string>
   <string name="common_appearance">"Aspect"</string>
   <string name="common_audio">"Audio"</string>
+  <string name="common_beta">"Beta"</string>
   <string name="common_blocked_users">"Utilizatori blocați"</string>
   <string name="common_bubbles">"Baloane"</string>
   <string name="common_call_started">"A început un apel"</string>
@@ -323,6 +325,7 @@ Motiv:%1$s."</string>
   <string name="common_settings">"Setări"</string>
   <string name="common_share_space">"Partajați spațiul"</string>
   <string name="common_shared_location">"Locație partajată"</string>
+  <string name="common_shared_space">"Spațiu comun"</string>
   <string name="common_signing_out">"Deconectare în curs"</string>
   <string name="common_something_went_wrong">"Ceva nu a mers bine"</string>
   <string name="common_something_went_wrong_message">"Am întâmpinat o problemă. Vă rugăm să încercați din nou."</string>

@@ -75,6 +75,7 @@ import io.element.android.tests.testutils.lambda.value
 import io.element.android.tests.testutils.test
 import io.element.android.tests.testutils.testCoroutineDispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
@@ -590,6 +591,38 @@ class RoomListPresenterTest {
             state.eventSink(RoomListEvents.UpdateVisibleRange(IntRange(0, 11)))
             advanceTimeBy(1.seconds)
             subscribeToVisibleRoomsLambda.assertions().isCalledExactly(2)
+        }
+    }
+
+    @Test
+    fun `present - notification sound banner`() = runTest {
+        val subscribeToVisibleRoomsLambda = lambdaRecorder { _: List<RoomId> -> }
+        val roomListService = FakeRoomListService(subscribeToVisibleRoomsLambda = subscribeToVisibleRoomsLambda)
+        val matrixClient = FakeMatrixClient(
+            roomListService = roomListService,
+        )
+        val roomSummary = aRoomSummary(
+            currentUserMembership = CurrentUserMembership.INVITED
+        )
+        roomListService.postAllRoomsLoadingState(RoomList.LoadingState.Loaded(1))
+        roomListService.postAllRooms(listOf(roomSummary))
+        val store = InMemoryAppPreferencesStore()
+        val presenter = createRoomListPresenter(
+            client = matrixClient,
+            appPreferencesStore = store,
+        )
+        presenter.test {
+            assertThat(store.showNewNotificationSoundBanner().first()).isFalse()
+            skipItems(1)
+            val state = awaitItem()
+            assertThat(state.contentAsRooms().showNewNotificationSoundBanner).isFalse()
+            store.setShowNewNotificationSoundBanner(true)
+            assertThat(store.showNewNotificationSoundBanner().first()).isTrue()
+            assertThat(awaitItem().contentAsRooms().showNewNotificationSoundBanner).isTrue()
+            state.eventSink(RoomListEvents.DismissNewNotificationSoundBanner)
+            assertThat(awaitItem().contentAsRooms().showNewNotificationSoundBanner).isFalse()
+            // Ensure store has been updated
+            assertThat(store.showNewNotificationSoundBanner().first()).isFalse()
         }
     }
 

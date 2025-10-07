@@ -30,6 +30,7 @@ private val hideInviteAvatarsKey = booleanPreferencesKey("hideInviteAvatars")
 private val timelineMediaPreviewValueKey = stringPreferencesKey("timelineMediaPreviewValue")
 private val logLevelKey = stringPreferencesKey("logLevel")
 private val traceLogPacksKey = stringPreferencesKey("traceLogPacks")
+private val showNewNotificationSoundBannerKey = booleanPreferencesKey("showNewNotificationSoundBanner")
 
 @ContributesBinding(AppScope::class)
 @Inject
@@ -142,6 +143,19 @@ class DefaultAppPreferencesStore(
                 ?.mapNotNull { value -> TraceLogPack.entries.find { it.key == value } }
                 ?.toSet()
                 ?: emptySet()
+        }
+    }
+
+    override suspend fun setShowNewNotificationSoundBanner(show: Boolean) {
+        store.edit { prefs ->
+            prefs[showNewNotificationSoundBannerKey] = show
+        }
+    }
+
+    override fun showNewNotificationSoundBanner(): Flow<Boolean> {
+        return store.data.map { prefs ->
+            // Default is false, but a migration will set it to true on application upgrade (see AppMigration08)
+            prefs[showNewNotificationSoundBannerKey] ?: false
         }
     }
 

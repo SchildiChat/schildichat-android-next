@@ -129,7 +129,7 @@ class LeaveSpacePresenter(
         }
 
         return LeaveSpaceState(
-            spaceName = leaveSpaceRooms.dataOrNull()?.current?.spaceRoom?.name,
+            spaceName = leaveSpaceRooms.dataOrNull()?.current?.spaceRoom?.displayName,
             isLastAdmin = leaveSpaceRooms.dataOrNull()?.current?.isLastAdmin == true,
             selectableSpaceRooms = selectableSpaceRooms,
             leaveSpaceAction = leaveSpaceAction.value,

@@ -277,7 +277,7 @@ private fun RoomPreviewInfo.toContentState(membershipDetails: RoomMembershipDeta
 private fun SpaceRoom.toContentState(): ContentState {
     return ContentState.Loaded(
         roomId = roomId,
-        name = name,
+        name = displayName,
         topic = topic,
         alias = canonicalAlias,
         numberOfMembers = numJoinedMembers.toLong(),

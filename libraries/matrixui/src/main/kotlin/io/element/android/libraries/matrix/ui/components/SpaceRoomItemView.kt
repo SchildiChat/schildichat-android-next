@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -76,8 +75,7 @@ fun SpaceRoomItemView(
         trailingAction = trailingAction,
     ) {
         NameAndIndicatorRow(
-            isSpace = spaceRoom.isSpace,
-            name = spaceRoom.name,
+            name = spaceRoom.displayName,
             showIndicator = showUnreadIndicator
         )
         Spacer(modifier = Modifier.height(1.dp))
@@ -92,7 +90,6 @@ fun SpaceRoomItemView(
                 modifier = Modifier.weight(1f),
                 style = ElementTheme.typography.fontBodyMdRegular,
                 text = info,
-                fontStyle = FontStyle.Italic.takeIf { spaceRoom.name == null },
                 color = ElementTheme.colors.textSecondary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -138,8 +135,7 @@ private fun SubtitleRow(
 
 @Composable
 private fun NameAndIndicatorRow(
-    isSpace: Boolean,
-    name: String?,
+    name: String,
     showIndicator: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -151,8 +147,7 @@ private fun NameAndIndicatorRow(
         Text(
             modifier = Modifier.weight(1f),
             style = ElementTheme.typography.fontBodyLgMedium,
-            text = name ?: stringResource(id = if (isSpace) CommonStrings.common_no_space_name else CommonStrings.common_no_room_name),
-            fontStyle = FontStyle.Italic.takeIf { name == null },
+            text = name,
             color = ElementTheme.colors.textPrimary,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis

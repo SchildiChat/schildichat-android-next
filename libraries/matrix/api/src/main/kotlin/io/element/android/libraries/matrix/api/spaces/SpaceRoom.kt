@@ -37,16 +37,5 @@ data class SpaceRoom(
 ) {
     val isSpace = roomType == RoomType.Space
 
-    /**
-     * Temporary logic to compute a name for direct rooms with no name.
-     * This will be replaced by sdk logic in the future.
-     */
-    val name = if (rawName == null && isDirect == true && heroes.size == 1) {
-        val dmRecipient = heroes.first()
-        dmRecipient.displayName
-    } else {
-        rawName
-    }
-
     val visibility = SpaceRoomVisibility.fromJoinRule(joinRule)
 }

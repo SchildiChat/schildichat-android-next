@@ -132,7 +132,7 @@ private fun SpaceViewContent(
             item {
                 SpaceHeaderView(
                     avatarData = currentSpace.getAvatarData(AvatarSize.SpaceHeader),
-                    name = currentSpace.name,
+                    name = currentSpace.displayName,
                     topic = currentSpace.topic,
                     visibility = currentSpace.visibility,
                     heroes = currentSpace.heroes.toImmutableList(),
@@ -213,7 +213,7 @@ private fun SpaceViewTopBar(
         title = {
             if (currentSpace != null) {
                 SpaceAvatarAndNameRow(
-                    name = currentSpace.name,
+                    name = currentSpace.displayName,
                     avatarData = currentSpace.getAvatarData(AvatarSize.TimelineRoom),
                 )
             }

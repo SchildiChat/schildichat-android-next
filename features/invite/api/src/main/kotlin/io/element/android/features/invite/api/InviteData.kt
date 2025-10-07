@@ -41,7 +41,7 @@ fun RoomInfo.toInviteData(): InviteData {
 fun SpaceRoom.toInviteData(): InviteData {
     return InviteData(
         roomId = roomId,
-        roomName = name ?: roomId.value,
+        roomName = displayName,
         isDm = false,
     )
 }

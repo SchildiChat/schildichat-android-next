@@ -16,6 +16,7 @@ import io.element.android.libraries.matrix.api.user.MatrixUser
 
 data class SpaceRoom(
     val rawName: String?,
+    val displayName: String,
     val avatarUrl: String?,
     val canonicalAlias: RoomAlias?,
     val childrenCount: Int,

@@ -26,17 +26,22 @@ open class RoomListContentStateProvider : PreviewParameterProvider<RoomListConte
             aSkeletonContentState(),
             anEmptyContentState(),
             anEmptyContentState(securityBannerState = SecurityBannerState.SetUpRecovery),
+            aRoomsContentState(
+                showNewNotificationSoundBanner = true,
+            ),
         )
 }
 
 internal fun aRoomsContentState(
     securityBannerState: SecurityBannerState = SecurityBannerState.None,
+    showNewNotificationSoundBanner: Boolean = false,
     summaries: ImmutableList<RoomListRoomSummary> = aRoomListRoomSummaryList(),
     fullScreenIntentPermissionsState: FullScreenIntentPermissionsState = aFullScreenIntentPermissionsState(),
     batteryOptimizationState: BatteryOptimizationState = aBatteryOptimizationState(),
     seenRoomInvites: Set<RoomId> = emptySet(),
 ) = RoomListContentState.Rooms(
     securityBannerState = securityBannerState,
+    showNewNotificationSoundBanner = showNewNotificationSoundBanner,
     fullScreenIntentPermissionsState = fullScreenIntentPermissionsState,
     batteryOptimizationState = batteryOptimizationState,
     summaries = summaries,

@@ -134,10 +134,9 @@ private fun SpaceViewContent(
                     avatarData = currentSpace.getAvatarData(AvatarSize.SpaceHeader),
                     name = currentSpace.name,
                     topic = currentSpace.topic,
-                    joinRule = currentSpace.joinRule,
+                    visibility = currentSpace.visibility,
                     heroes = currentSpace.heroes.toImmutableList(),
                     numberOfMembers = currentSpace.numJoinedMembers,
-                    numberOfRooms = currentSpace.childrenCount,
                 )
             }
         }

@@ -31,7 +31,6 @@ import io.element.android.libraries.ui.strings.CommonStrings
 @Composable
 fun SpaceHeaderRootView(
     numberOfSpaces: Int,
-    numberOfRooms: Int,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -52,7 +51,7 @@ fun SpaceHeaderRootView(
         )
         SpaceInfoRow(
             leftText = numberOfSpaces(numberOfSpaces),
-            rightText = numberOfRooms(numberOfRooms),
+            rightText = null,
         )
         Text(
             text = stringResource(CommonStrings.screen_space_list_description),
@@ -68,6 +67,5 @@ fun SpaceHeaderRootView(
 internal fun SpaceHeaderRootViewPreview() = ElementPreview {
     SpaceHeaderRootView(
         numberOfSpaces = 3,
-        numberOfRooms = 10,
     )
 }

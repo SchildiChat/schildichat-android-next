@@ -18,23 +18,31 @@ class SpaceRoomProvider : PreviewParameterProvider<SpaceRoom> {
     override val values: Sequence<SpaceRoom> = sequenceOf(
         aSpaceRoom(
             roomType = RoomType.Room,
-            name = "Room name with topic",
+            rawName = "Room name with topic",
             topic = "Room topic that is quite long and might be truncated"
         ),
         aSpaceRoom(
             roomType = RoomType.Room,
-            name = "Room name no topic",
+            rawName = "Room name no topic",
             state = CurrentUserMembership.LEFT,
         ),
         aSpaceRoom(
             roomType = RoomType.Room,
-            name = "Room name with topic",
+            rawName = null,
+            isDirect = true,
+            heroes = listOf(aMatrixUser(displayName = "Alice")),
+            state = CurrentUserMembership.JOINED,
+            numJoinedMembers = 2,
+        ),
+        aSpaceRoom(
+            roomType = RoomType.Room,
+            rawName = "Room name with topic",
             topic = "Room topic that is quite long and might be truncated",
             state = CurrentUserMembership.INVITED,
         ),
         aSpaceRoom(
             roomType = RoomType.Room,
-            name = "Room name no topic",
+            rawName = "Room name no topic",
             state = CurrentUserMembership.INVITED,
         ),
         aSpaceRoom(
@@ -52,7 +60,7 @@ class SpaceRoomProvider : PreviewParameterProvider<SpaceRoom> {
             state = CurrentUserMembership.LEFT,
         ),
         aSpaceRoom(
-            name = null,
+            rawName = null,
             numJoinedMembers = 5,
             childrenCount = 10,
             worldReadable = true,
@@ -61,7 +69,7 @@ class SpaceRoomProvider : PreviewParameterProvider<SpaceRoom> {
             state = CurrentUserMembership.INVITED,
         ),
         aSpaceRoom(
-            name = null,
+            rawName = null,
             numJoinedMembers = 5,
             childrenCount = 10,
             worldReadable = true,

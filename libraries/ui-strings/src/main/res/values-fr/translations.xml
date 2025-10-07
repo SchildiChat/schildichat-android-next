@@ -94,6 +94,7 @@
   <string name="action_forgot_password">"Mot de passe oublié ?"</string>
   <string name="action_forward">"Transférer"</string>
   <string name="action_go_back">"Retour"</string>
+  <string name="action_go_to_settings">"Ouvrir les paramètres"</string>
   <string name="action_ignore">"Ignorer"</string>
   <string name="action_invite">"Inviter"</string>
   <string name="action_invite_friends">"Inviter des amis"</string>
@@ -177,6 +178,7 @@
   <string name="common_android_shortcuts_remove_reason_session_logged_out">"Vous avez été déconnecté de la session"</string>
   <string name="common_appearance">"Apparence"</string>
   <string name="common_audio">"Audio"</string>
+  <string name="common_beta">"Bêta"</string>
   <string name="common_blocked_users">"Utilisateurs bloqués"</string>
   <string name="common_bubbles">"Bulles"</string>
   <string name="common_call_started">"Appel démarré"</string>

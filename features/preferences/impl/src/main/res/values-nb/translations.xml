@@ -10,6 +10,7 @@
   <string name="screen_advanced_settings_element_call_base_url_validation_error">"Ugyldig URL. Pass på at du inkluderer protokollen (http/https) og riktig adresse."</string>
   <string name="screen_advanced_settings_hide_invite_avatars_toggle_title">"Skjul avatarer i invitasjonsforespørsler til rom"</string>
   <string name="screen_advanced_settings_hide_timeline_media_toggle_title">"Skjul forhåndsvisninger av medier på tidslinjen"</string>
+  <string name="screen_advanced_settings_labs">"Prøvefunksjoner"</string>
   <string name="screen_advanced_settings_media_compression_description">"Last opp bilder og videoer raskere og reduser databruken"</string>
   <string name="screen_advanced_settings_media_compression_title">"Optimaliser mediekvaliteten"</string>
   <string name="screen_advanced_settings_moderation_and_safety_section_title">"Moderasjon og sikkerhet"</string>
@@ -43,6 +44,11 @@
   <string name="screen_edit_profile_error_title">"Kan ikke oppdatere profilen"</string>
   <string name="screen_edit_profile_title">"Rediger profil"</string>
   <string name="screen_edit_profile_updating_details">"Oppdaterer profilen…"</string>
+  <string name="screen_labs_enable_threads">"Aktiver trådsvar"</string>
+  <string name="screen_labs_enable_threads_description">"Appen vil starte på nytt for å implementere denne endringen."</string>
+  <string name="screen_labs_header_description">"Prøv ut våre nyeste ideer under utvikling. Disse funksjonene er ikke ferdig utviklet; de kan være ustabile og kan endres."</string>
+  <string name="screen_labs_header_title">"Lyst til å prøve noe nytt?"</string>
+  <string name="screen_labs_title">"Prøvefunksjoner"</string>
   <string name="screen_notification_settings_additional_settings_section_title">"Ytterligere innstillinger"</string>
   <string name="screen_notification_settings_calls_label">"Lyd- og videosamtaler"</string>
   <string name="screen_notification_settings_configuration_mismatch">"Uoverensstemmelse i konfigurasjonen"</string>

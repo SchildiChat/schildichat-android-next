@@ -93,6 +93,7 @@
   <string name="action_forgot_password">"Glemt passordet?"</string>
   <string name="action_forward">"Videresend"</string>
   <string name="action_go_back">"Gå tilbake"</string>
+  <string name="action_go_to_settings">"Gå til innstillinger"</string>
   <string name="action_ignore">"Ignorer"</string>
   <string name="action_invite">"Inviter"</string>
   <string name="action_invite_friends">"Inviter folk"</string>
@@ -109,6 +110,7 @@
   <string name="action_manage_account">"Administrer konto"</string>
   <string name="action_manage_devices">"Administrer enheter"</string>
   <string name="action_message">"Melding"</string>
+  <string name="action_minimize">"Minimer"</string>
   <string name="action_next">"Neste"</string>
   <string name="action_no">"Nei"</string>
   <string name="action_not_now">"Ikke nå"</string>
@@ -175,6 +177,7 @@
   <string name="common_android_shortcuts_remove_reason_session_logged_out">"Du ble logget ut av økten"</string>
   <string name="common_appearance">"Utseende"</string>
   <string name="common_audio">"Lyd"</string>
+  <string name="common_beta">"Beta"</string>
   <string name="common_blocked_users">"Blokkerte brukere"</string>
   <string name="common_bubbles">"Bobler"</string>
   <string name="common_call_started">"Samtale startet"</string>
@@ -189,6 +192,7 @@
   <string name="common_dark">"Mørk"</string>
   <string name="common_decryption_error">"Dekrypteringsfeil"</string>
   <string name="common_description">"Beskrivelse"</string>
+  <string name="common_deselect_all">"Velg bort alle"</string>
   <string name="common_developer_options">"Alternativer for utviklere"</string>
   <string name="common_device_id">"Enhets-ID"</string>
   <string name="common_direct_chat">"Direkte chat"</string>
@@ -223,6 +227,7 @@
   <string name="common_install_apk_android">"Installer APK"</string>
   <string name="common_invite_unknown_profile">"Finner ikke denne Matrix-IDen, så invitasjonen blir kanskje ikke mottatt."</string>
   <string name="common_leaving_room">"Forlater rommet"</string>
+  <string name="common_leaving_space">"Forlater området"</string>
   <string name="common_light">"Lys"</string>
   <string name="common_line_copied_to_clipboard">"Linje kopiert til utklippstavlen"</string>
   <string name="common_link_copied_to_clipboard">"Lenke kopiert til utklippstavlen"</string>
@@ -298,6 +303,7 @@
   <string name="common_security">"Sikkerhet"</string>
   <string name="common_seen_by">"Sett av"</string>
   <string name="common_select_account">"Velg en konto"</string>
+  <string name="common_select_all">"Velg alle"</string>
   <string name="common_send_to">"Sendt til"</string>
   <string name="common_sending">"Sender…"</string>
   <string name="common_sending_failed">"Kunne ikke sende"</string>
@@ -308,6 +314,7 @@
   <string name="common_settings">"Innstillinger"</string>
   <string name="common_share_space">"Del område"</string>
   <string name="common_shared_location">"Delt posisjon"</string>
+  <string name="common_shared_space">"Delt område"</string>
   <string name="common_signing_out">"Logger av"</string>
   <string name="common_something_went_wrong">"Noe gikk galt"</string>
   <string name="common_something_went_wrong_message">"Vi har støtt på et problem. Vennligst prøv igjen."</string>
@@ -453,6 +460,7 @@ Er du sikker på at du vil fortsette?"</string>
   <string name="screen_share_this_location_action">"Del denne lokasjonen"</string>
   <string name="screen_space_list_description">"Områder du har opprettet eller blitt med i."</string>
   <string name="screen_space_list_details">"%1$s • %2$s"</string>
+  <string name="screen_space_list_parent_space">"%1$s område"</string>
   <string name="screen_space_list_title">"Områder"</string>
   <string name="screen_timeline_item_menu_send_failure_changed_identity">"Meldingen ble ikke sendt fordi %1$ss verifiserte identitet er tilbakestilt."</string>
   <string name="screen_timeline_item_menu_send_failure_unsigned_device">"Meldingen ble ikke sendt fordi %1$s ikke har verifisert alle enheter."</string>

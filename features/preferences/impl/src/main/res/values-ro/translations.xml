@@ -10,6 +10,7 @@
   <string name="screen_advanced_settings_element_call_base_url_validation_error">"URL invalid, vă rugăm să vă asigurați că includeți protocolul (http/https) și adresa corectă."</string>
   <string name="screen_advanced_settings_hide_invite_avatars_toggle_title">"Ascundeți avatarele din invitațiile pentru camere"</string>
   <string name="screen_advanced_settings_hide_timeline_media_toggle_title">"Ascundeți previzualizările media în lista de mesaje"</string>
+  <string name="screen_advanced_settings_labs">"Laboratoare"</string>
   <string name="screen_advanced_settings_media_compression_description">"Încărcați fotografii și videoclipuri mai rapid și reduceți consumul de date"</string>
   <string name="screen_advanced_settings_media_compression_title">"Optimizați calitatea media"</string>
   <string name="screen_advanced_settings_moderation_and_safety_section_title">"Moderare și siguranță"</string>
@@ -43,6 +44,11 @@
   <string name="screen_edit_profile_error_title">"Nu s-a putut actualiza profilul"</string>
   <string name="screen_edit_profile_title">"Editați profilul"</string>
   <string name="screen_edit_profile_updating_details">"Se actualizează profilul…"</string>
+  <string name="screen_labs_enable_threads">"Activați răspunsurile în fir"</string>
+  <string name="screen_labs_enable_threads_description">"Aplicația va reporni pentru a aplica această modificare."</string>
+  <string name="screen_labs_header_description">"Încercați cele mai noi idei în curs de dezvoltare. Aceste funcții nu sunt finalizate; pot fi instabile și pot suferi modificări."</string>
+  <string name="screen_labs_header_title">"Doriți experiențe noi?"</string>
+  <string name="screen_labs_title">"Laboratoare"</string>
   <string name="screen_notification_settings_additional_settings_section_title">"Setări adiționale"</string>
   <string name="screen_notification_settings_calls_label">"Apeluri audio și video"</string>
   <string name="screen_notification_settings_configuration_mismatch">"Nepotrivire de configurație"</string>

@@ -166,8 +166,6 @@
   <string name="action_yes_try_again">"Yes, try again"</string>
   <string name="banner_migrate_to_native_sliding_sync_description">"Your server now supports a new, faster protocol. Log out and log back in to upgrade now. Doing this now will help you avoid a forced logout when the old protocol is removed later."</string>
   <string name="banner_migrate_to_native_sliding_sync_title">"Upgrade available"</string>
-  <string name="banner_new_sound_message">"Your notification ping has been updated—clearer, quicker, and less disruptive."</string>
-  <string name="banner_new_sound_title">"We’ve refreshed your sounds"</string>
   <string name="common_about">"About"</string>
   <string name="common_acceptable_use_policy">"Acceptable use policy"</string>
   <string name="common_add_account">"Add an account"</string>
@@ -428,11 +426,6 @@ Are you sure you want to continue?"</string>
   <string name="screen_create_poll_options_section_title">"Options"</string>
   <string name="screen_create_poll_remove_accessibility_label">"Remove %1$s"</string>
   <string name="screen_create_poll_settings_section_title">"Settings"</string>
-  <string name="screen_labs_enable_threads">"Enable thread replies"</string>
-  <string name="screen_labs_enable_threads_description">"Restarting the app is required to apply changes"</string>
-  <string name="screen_labs_header_description">"Try out our latest ideas in development. These features are not finalised; they may be unstable, may change."</string>
-  <string name="screen_labs_header_title">"Feeling experimental?"</string>
-  <string name="screen_labs_title">"Labs"</string>
   <string name="screen_media_picker_error_failed_selection">"Failed selecting media, please try again."</string>
   <string name="screen_pinned_timeline_empty_state_description">"Press on a message and choose “%1$s” to include here."</string>
   <string name="screen_pinned_timeline_empty_state_headline">"Pin important messages so that they can be easily discovered"</string>

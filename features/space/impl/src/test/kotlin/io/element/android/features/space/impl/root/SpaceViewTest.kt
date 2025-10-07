@@ -52,7 +52,7 @@ class SpaceViewTest {
 
     @Test
     fun `clicking on a room name invokes the expected callback`() {
-        val aSpaceRoom = aSpaceRoom(roomId = A_ROOM_ID, rawName = A_ROOM_NAME)
+        val aSpaceRoom = aSpaceRoom(roomId = A_ROOM_ID, displayName = A_ROOM_NAME)
         val eventsRecorder = EventsRecorder<SpaceEvents>(expectEvents = false)
         ensureCalledOnceWithParam(aSpaceRoom) {
             rule.setSpaceView(

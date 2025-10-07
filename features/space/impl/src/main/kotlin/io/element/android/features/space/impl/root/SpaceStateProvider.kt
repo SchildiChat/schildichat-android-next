@@ -37,7 +37,6 @@ open class SpaceStateProvider : PreviewParameterProvider<SpaceState> {
             ),
             aSpaceState(
                 parentSpace = aSpaceRoom(
-                    rawName = null,
                     numJoinedMembers = 5,
                     childrenCount = 10,
                     worldReadable = true,

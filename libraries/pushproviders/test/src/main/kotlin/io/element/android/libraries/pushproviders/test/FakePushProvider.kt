@@ -17,7 +17,9 @@ import io.element.android.tests.testutils.lambda.lambdaError
 class FakePushProvider(
     override val index: Int = 0,
     override val name: String = "aFakePushProvider",
+    override val supportMultipleDistributors: Boolean = false,
     private val distributors: List<Distributor> = listOf(Distributor("aDistributorValue", "aDistributorName")),
+    private val currentDistributorValue: () -> String? = { lambdaError() },
     private val currentDistributor: () -> Distributor? = { distributors.firstOrNull() },
     private val currentUserPushConfig: CurrentUserPushConfig? = null,
     private val registerWithResult: (MatrixClient, Distributor) -> Result<Unit> = { _, _ -> lambdaError() },
@@ -30,6 +32,10 @@ class FakePushProvider(
 
     override suspend fun registerWith(matrixClient: MatrixClient, distributor: Distributor): Result<Unit> {
         return registerWithResult(matrixClient, distributor)
+    }
+
+    override suspend fun getCurrentDistributorValue(sessionId: SessionId): String? {
+        return currentDistributorValue()
     }
 
     override suspend fun getCurrentDistributor(sessionId: SessionId): Distributor? {

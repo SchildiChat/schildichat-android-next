@@ -9,5 +9,5 @@ package io.element.android.features.migration.impl.migrations
 
 interface AppMigration {
     val order: Int
-    suspend fun migrate()
+    suspend fun migrate(isFreshInstall: Boolean)
 }

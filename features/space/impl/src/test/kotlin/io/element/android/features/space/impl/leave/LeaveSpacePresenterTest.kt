@@ -29,7 +29,7 @@ import org.junit.Test
 class LeaveSpacePresenterTest {
     private val aSpace = aSpaceRoom(
         roomId = A_SPACE_ID,
-        name = A_SPACE_NAME,
+        rawName = A_SPACE_NAME,
     )
 
     @Test
@@ -198,7 +198,7 @@ class LeaveSpacePresenterTest {
 private fun aLeaveSpaceRoom(
     spaceRoom: SpaceRoom = aSpaceRoom(
         roomId = A_SPACE_ID,
-        name = A_SPACE_NAME,
+        rawName = A_SPACE_NAME,
     ),
     isLastAdmin: Boolean = false,
 ) = LeaveSpaceRoom(

@@ -20,20 +20,20 @@ class InMemoryAnnouncementStore(
     private val newNotificationSoundAnnouncement = MutableStateFlow(initialNewNotificationSoundAnnouncementStatus)
 
     override suspend fun setAnnouncementStatus(announcement: Announcement, status: AnnouncementStore.AnnouncementStatus) {
-        when (announcement) {
-            Announcement.Space -> spaceAnnouncement.value = status
-            Announcement.NewNotificationSound -> newNotificationSoundAnnouncement.value = status
-        }
+        announcement.toMutableStateFlow().value = status
     }
 
     override fun announcementStatusFlow(announcement: Announcement): Flow<AnnouncementStore.AnnouncementStatus> {
-        return when (announcement) {
-            Announcement.Space -> spaceAnnouncement.asStateFlow()
-            Announcement.NewNotificationSound -> newNotificationSoundAnnouncement.asStateFlow()
-        }
+        return announcement.toMutableStateFlow().asStateFlow()
     }
 
     override suspend fun reset() {
         spaceAnnouncement.value = AnnouncementStore.AnnouncementStatus.NeverShown
+        newNotificationSoundAnnouncement.value = AnnouncementStore.AnnouncementStatus.NeverShown
+    }
+
+    private fun Announcement.toMutableStateFlow() = when (this) {
+        Announcement.Space -> spaceAnnouncement
+        Announcement.NewNotificationSound -> newNotificationSoundAnnouncement
     }
 }

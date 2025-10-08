@@ -7,6 +7,7 @@
 
 package io.element.android.libraries.matrix.api.spaces
 
+import androidx.compose.runtime.Immutable
 import io.element.android.libraries.matrix.api.core.RoomAlias
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
@@ -14,6 +15,7 @@ import io.element.android.libraries.matrix.api.room.RoomType
 import io.element.android.libraries.matrix.api.room.join.JoinRule
 import io.element.android.libraries.matrix.api.user.MatrixUser
 
+@Immutable
 data class SpaceRoom(
     val rawName: String?,
     val displayName: String,

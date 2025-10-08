@@ -7,6 +7,7 @@
 
 package io.element.android.features.announcement.impl
 
+import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.announcement.api.Announcement
 import io.element.android.features.announcement.impl.spaces.SpaceAnnouncementState
@@ -34,6 +35,41 @@ class DefaultAnnouncementServiceTest {
         // Entering again the space tab should not change the value
         sut.showAnnouncement(Announcement.Space)
         assertThat(announcementStore.announcementStatusFlow(Announcement.Space).first()).isEqualTo(AnnouncementStatus.Shown)
+    }
+
+    @Test
+    fun `when showing NewNotificationSound announcement, announcement is set to show even if it was already shown`() = runTest {
+        val announcementStore = InMemoryAnnouncementStore()
+        val sut = createDefaultAnnouncementService(
+            announcementStore = announcementStore,
+        )
+        assertThat(announcementStore.announcementStatusFlow(Announcement.NewNotificationSound).first()).isEqualTo(AnnouncementStatus.NeverShown)
+        sut.showAnnouncement(Announcement.NewNotificationSound)
+        assertThat(announcementStore.announcementStatusFlow(Announcement.NewNotificationSound).first()).isEqualTo(AnnouncementStatus.Show)
+        // Simulate user close the announcement
+        sut.onAnnouncementDismissed(Announcement.NewNotificationSound)
+        // Calling again showAnnouncement should set it back to Show
+        sut.showAnnouncement(Announcement.NewNotificationSound)
+        assertThat(announcementStore.announcementStatusFlow(Announcement.NewNotificationSound).first()).isEqualTo(AnnouncementStatus.Show)
+    }
+
+    @Test
+    fun `test announcementsToShowFlow`() = runTest {
+        val announcementStore = InMemoryAnnouncementStore()
+        val sut = createDefaultAnnouncementService(
+            announcementStore = announcementStore,
+        )
+        sut.announcementsToShowFlow().test {
+            assertThat(awaitItem()).isEmpty()
+            announcementStore.setAnnouncementStatus(Announcement.Space, AnnouncementStatus.Show)
+            assertThat(awaitItem()).containsExactly(Announcement.Space)
+            announcementStore.setAnnouncementStatus(Announcement.NewNotificationSound, AnnouncementStatus.Show)
+            assertThat(awaitItem()).containsExactly(Announcement.Space, Announcement.NewNotificationSound)
+            announcementStore.setAnnouncementStatus(Announcement.Space, AnnouncementStatus.Shown)
+            assertThat(awaitItem()).containsExactly(Announcement.NewNotificationSound)
+            announcementStore.setAnnouncementStatus(Announcement.NewNotificationSound, AnnouncementStatus.Shown)
+            assertThat(awaitItem()).isEmpty()
+        }
     }
 
     private fun createDefaultAnnouncementService(

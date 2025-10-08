@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 private val spaceAnnouncementKey = intPreferencesKey("spaceAnnouncement")
-private val showNewNotificationSoundBannerKey = intPreferencesKey("showNewNotificationSoundBanner")
+private val newNotificationSoundKey = intPreferencesKey("newNotificationSound")
 
 @ContributesBinding(AppScope::class)
 @Inject
@@ -54,5 +54,5 @@ class DefaultAnnouncementStore(
 
 private fun Announcement.toKey() = when (this) {
     Announcement.Space -> spaceAnnouncementKey
-    Announcement.NewNotificationSound -> showNewNotificationSoundBannerKey
+    Announcement.NewNotificationSound -> newNotificationSoundKey
 }

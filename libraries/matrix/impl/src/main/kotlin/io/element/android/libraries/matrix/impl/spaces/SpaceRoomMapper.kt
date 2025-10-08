@@ -13,6 +13,7 @@ import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.matrix.impl.room.join.map
 import io.element.android.libraries.matrix.impl.room.map
+import kotlinx.collections.immutable.toImmutableList
 import org.matrix.rustcomponents.sdk.SpaceRoom as RustSpaceRoom
 
 class SpaceRoomMapper {
@@ -22,7 +23,7 @@ class SpaceRoomMapper {
             canonicalAlias = spaceRoom.canonicalAlias?.let(::RoomAlias),
             childrenCount = spaceRoom.childrenCount.toInt(),
             guestCanJoin = spaceRoom.guestCanJoin,
-            heroes = spaceRoom.heroes.orEmpty().map { it.map() },
+            heroes = spaceRoom.heroes.orEmpty().map { it.map() }.toImmutableList(),
             joinRule = spaceRoom.joinRule?.map(),
             rawName = spaceRoom.rawName,
             displayName = spaceRoom.displayName,
@@ -32,7 +33,7 @@ class SpaceRoomMapper {
             state = spaceRoom.state?.map(),
             topic = spaceRoom.topic,
             worldReadable = spaceRoom.worldReadable.orFalse(),
-            via = spaceRoom.via,
+            via = spaceRoom.via.toImmutableList(),
             isDirect = spaceRoom.isDirect,
         )
     }

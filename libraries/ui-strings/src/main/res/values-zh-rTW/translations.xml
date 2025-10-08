@@ -362,7 +362,7 @@
   <string name="dialog_confirm_link_title">"仔細檢查此連結"</string>
   <string name="dialog_default_video_quality_selector_subtitle">"選取您上傳的視訊預設品質。"</string>
   <string name="dialog_default_video_quality_selector_title">"視訊上傳品質"</string>
-  <string name="dialog_file_too_large_to_upload_subtitle">"允許的最大檔案大小為：%1$s"</string>
+  <string name="dialog_file_too_large_to_upload_subtitle">"最大允許的檔案大小為：%1$s"</string>
   <string name="dialog_file_too_large_to_upload_title">"檔案太大，無法上傳"</string>
   <string name="dialog_room_reported">"聊天室已回報"</string>
   <string name="dialog_room_reported_and_left">"回報並離開聊天室"</string>
@@ -455,7 +455,7 @@
   <string name="test_language_identifier">"zh-tw"</string>
   <string name="timeline_decryption_failure_historical_event_no_key_backup">"歷史訊息在此裝置上無法讀取"</string>
   <string name="timeline_decryption_failure_historical_event_unverified_device">"您必須驗證此裝置才能存取歷史訊息"</string>
-  <string name="timeline_decryption_failure_historical_event_user_not_joined">"您無權檢視此訊息"</string>
+  <string name="timeline_decryption_failure_historical_event_user_not_joined">"您無法存取此則訊息"</string>
   <string name="timeline_decryption_failure_unable_to_decrypt">"無法解密訊息"</string>
   <string name="timeline_decryption_failure_withheld_unverified">"此訊息被封鎖是因為您沒有驗證您的裝置，或是因為傳送者需要驗證您的身份而被封鎖。"</string>
 </resources>

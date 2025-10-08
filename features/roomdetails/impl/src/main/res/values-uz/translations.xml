@@ -51,6 +51,7 @@
   <string name="screen_room_details_notification_mode_default">"Standart"</string>
   <string name="screen_room_details_notification_title">"Bildirishnomalar"</string>
   <string name="screen_room_details_pinned_events_row_title">"Qadalgan xabarlar"</string>
+  <string name="screen_room_details_profile_row_title">"Profil"</string>
   <string name="screen_room_details_roles_and_permissions">"Rollar va ruxsatlar"</string>
   <string name="screen_room_details_room_name_label">"Xona nomi"</string>
   <string name="screen_room_details_security_title">"Xavfsizlik"</string>

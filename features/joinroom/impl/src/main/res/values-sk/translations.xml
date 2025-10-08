@@ -15,7 +15,7 @@
   <string name="screen_join_room_fail_reason">"Táto miestnosť je buď len pre pozvaných, alebo môžu existovať obmedzenia na prístup na úrovni priestoru."</string>
   <string name="screen_join_room_forget_action">"Zabudnúť túto miestnosť"</string>
   <string name="screen_join_room_invite_required_message">"Potrebujete pozvanie, aby ste sa mohli pripojiť k tejto miestnosti"</string>
-  <string name="screen_join_room_join_action">"Pripojiť sa do miestnosti"</string>
+  <string name="screen_join_room_join_action">"Pripojiť sa"</string>
   <string name="screen_join_room_join_restricted_message">"Možno budete musieť byť pozvaní alebo byť členom priestoru, aby ste sa mohli pripojiť."</string>
   <string name="screen_join_room_knock_action">"Zaklopaním sa pripojíte"</string>
   <string name="screen_join_room_knock_message_characters_count">"Povolené znaky %1$d z %2$d"</string>

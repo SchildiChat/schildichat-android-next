@@ -473,7 +473,7 @@ Er du sikker på, at du vil fortsætte?"</string>
   <string name="test_language_identifier">"da"</string>
   <string name="timeline_decryption_failure_historical_event_no_key_backup">"Historiske beskeder er ikke tilgængelige på denne enhed"</string>
   <string name="timeline_decryption_failure_historical_event_unverified_device">"Du skal verificere denne enhed for at få adgang til historiske beskeder"</string>
-  <string name="timeline_decryption_failure_historical_event_user_not_joined">"Du har ikke adgang til denne besked"</string>
+  <string name="timeline_decryption_failure_historical_event_user_not_joined">"Du har ikke adgang til denne meddelelse"</string>
   <string name="timeline_decryption_failure_unable_to_decrypt">"Kan ikke dekryptere beskeden"</string>
   <string name="timeline_decryption_failure_withheld_unverified">"Denne besked blev blokeret, enten fordi du ikke verificerede din enhed, eller fordi afsenderen skal have verificeret din identitet."</string>
 </resources>

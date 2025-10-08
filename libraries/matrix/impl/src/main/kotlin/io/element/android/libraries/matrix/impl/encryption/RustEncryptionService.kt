@@ -44,8 +44,8 @@ import org.matrix.rustcomponents.sdk.Encryption
 import org.matrix.rustcomponents.sdk.UserIdentity
 import org.matrix.rustcomponents.sdk.BackupUploadState as RustBackupUploadState
 import org.matrix.rustcomponents.sdk.EnableRecoveryProgress as RustEnableRecoveryProgress
-import org.matrix.rustcomponents.sdk.SteadyStateException as RustSteadyStateException
 import org.matrix.rustcomponents.sdk.RecoveryException as RustRecoveryException
+import org.matrix.rustcomponents.sdk.SteadyStateException as RustSteadyStateException
 
 class RustEncryptionService(
     client: Client,

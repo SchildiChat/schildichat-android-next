@@ -53,6 +53,8 @@ import io.element.android.libraries.matrix.ui.model.icon
 import io.element.android.libraries.matrix.ui.model.label
 import io.element.android.libraries.ui.strings.CommonPlurals
 import io.element.android.libraries.ui.strings.CommonStrings
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun SpaceRoomItemView(
@@ -70,6 +72,9 @@ fun SpaceRoomItemView(
         avatarData = spaceRoom.getAvatarData(AvatarSize.SpaceListItem),
         isSpace = spaceRoom.isSpace,
         hideAvatars = hideAvatars,
+        heroes = spaceRoom.heroes
+            .map { hero -> hero.getAvatarData(AvatarSize.SpaceListItem) }
+            .toImmutableList(),
         onClick = onClick,
         onLongClick = onLongClick,
         trailingAction = trailingAction,
@@ -164,6 +169,7 @@ private fun NameAndIndicatorRow(
 private fun SpaceRoomItemScaffold(
     avatarData: AvatarData,
     isSpace: Boolean,
+    heroes: ImmutableList<AvatarData>,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     hideAvatars: Boolean,
@@ -189,7 +195,7 @@ private fun SpaceRoomItemScaffold(
     ) {
         Avatar(
             avatarData = avatarData,
-            avatarType = if (isSpace) AvatarType.Space() else AvatarType.Room(),
+            avatarType = if (isSpace) AvatarType.Space() else AvatarType.Room(heroes = heroes),
             hideImage = hideAvatars,
         )
         Spacer(modifier = Modifier.width(16.dp))

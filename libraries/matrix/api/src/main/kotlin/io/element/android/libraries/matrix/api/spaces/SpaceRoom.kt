@@ -13,6 +13,7 @@ import io.element.android.libraries.matrix.api.room.CurrentUserMembership
 import io.element.android.libraries.matrix.api.room.RoomType
 import io.element.android.libraries.matrix.api.room.join.JoinRule
 import io.element.android.libraries.matrix.api.user.MatrixUser
+import kotlinx.collections.immutable.ImmutableList
 
 data class SpaceRoom(
     val rawName: String?,
@@ -21,7 +22,7 @@ data class SpaceRoom(
     val canonicalAlias: RoomAlias?,
     val childrenCount: Int,
     val guestCanJoin: Boolean,
-    val heroes: List<MatrixUser>,
+    val heroes: ImmutableList<MatrixUser>,
     val joinRule: JoinRule?,
     val numJoinedMembers: Int,
     val roomId: RoomId,
@@ -32,7 +33,7 @@ data class SpaceRoom(
     /**
      * The via parameters of the room.
      */
-    val via: List<String>,
+    val via: ImmutableList<String>,
     val isDirect: Boolean?,
 ) {
     val isSpace = roomType == RoomType.Space

@@ -27,6 +27,7 @@ class SpaceRoomProvider : PreviewParameterProvider<SpaceRoom> {
             state = CurrentUserMembership.LEFT,
         ),
         aSpaceRoom(
+            displayName = "Alice",
             roomType = RoomType.Room,
             isDirect = true,
             heroes = listOf(aMatrixUser(displayName = "Alice")),
@@ -65,6 +66,13 @@ class SpaceRoomProvider : PreviewParameterProvider<SpaceRoom> {
             avatarUrl = "anUrl",
             roomId = RoomId("!spaceId2:example.com"),
             state = CurrentUserMembership.INVITED,
+        ),
+        aSpaceRoom(
+            displayName = "Alice",
+            roomType = RoomType.Space,
+            heroes = listOf(aMatrixUser(displayName = "Alice")),
+            state = CurrentUserMembership.JOINED,
+            numJoinedMembers = 2,
         ),
     )
 }

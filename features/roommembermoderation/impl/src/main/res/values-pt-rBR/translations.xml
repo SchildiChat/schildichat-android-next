@@ -6,7 +6,7 @@
   <string name="screen_bottom_sheet_manage_room_member_ban_member_confirmation_title">"Tem certeza de que quer banir este membro?"</string>
   <string name="screen_bottom_sheet_manage_room_member_banning_user">"Banindo %1$s"</string>
   <string name="screen_bottom_sheet_manage_room_member_kick_member_confirmation_action">"Remover"</string>
-  <string name="screen_bottom_sheet_manage_room_member_kick_member_confirmation_description">"Essa pessoa poderá entrar na sala novamente se for convidada."</string>
+  <string name="screen_bottom_sheet_manage_room_member_kick_member_confirmation_description">"Esta pessoa poderá entrar nesta sala novamente se for convidada."</string>
   <string name="screen_bottom_sheet_manage_room_member_kick_member_confirmation_title">"Tem certeza de que deseja remover este membro?"</string>
   <string name="screen_bottom_sheet_manage_room_member_member_user_info">"Ver perfil"</string>
   <string name="screen_bottom_sheet_manage_room_member_remove">"Remover da sala"</string>

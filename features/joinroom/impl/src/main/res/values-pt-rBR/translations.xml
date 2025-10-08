@@ -15,7 +15,7 @@
   <string name="screen_join_room_fail_reason">"Esta sala é apenas para convidados ou pode haver restrições de acesso a nível do espaço."</string>
   <string name="screen_join_room_forget_action">"Esquecer esta sala"</string>
   <string name="screen_join_room_invite_required_message">"Você precisa de um convite para entrar nesta sala"</string>
-  <string name="screen_join_room_join_action">"Entrar na sala"</string>
+  <string name="screen_join_room_join_action">"Entrar"</string>
   <string name="screen_join_room_join_restricted_message">"Talvez você precise ser convidado ou ser membro de um espaço para participar."</string>
   <string name="screen_join_room_knock_action">"Enviar solicitação para entrar"</string>
   <string name="screen_join_room_knock_message_characters_count">"%1$d de %2$d caráteres permitidos"</string>

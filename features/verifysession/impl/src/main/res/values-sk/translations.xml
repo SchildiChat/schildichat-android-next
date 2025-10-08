@@ -18,6 +18,7 @@
   <string name="screen_session_verification_compare_numbers_title">"Porovnať čísla"</string>
   <string name="screen_session_verification_complete_subtitle">"Vaša nová relácia je teraz overená. Má prístup k vašim zašifrovaným správam a ostatní používatelia ju budú vidieť ako dôveryhodnú."</string>
   <string name="screen_session_verification_complete_user_subtitle">"Teraz môžete dôverovať identite tohto používateľa pri odosielaní alebo prijímaní správ."</string>
+  <string name="screen_session_verification_device_verified">"Zariadenie overené"</string>
   <string name="screen_session_verification_enter_recovery_key">"Zadajte kľúč na obnovenie"</string>
   <string name="screen_session_verification_failed_subtitle">"Buď žiadosť vypršala, žiadosť bola zamietnutá, alebo došlo k nesúladu overovania."</string>
   <string name="screen_session_verification_open_existing_session_subtitle">"Dokážte, že ste to vy, aby ste získali prístup k histórii vašich zašifrovaných správ."</string>
@@ -32,7 +33,7 @@
   <string name="screen_session_verification_request_failure_title">"Overenie zlyhalo"</string>
   <string name="screen_session_verification_request_footer">"Pokračujte iba vtedy, ak ste toto overenie začali."</string>
   <string name="screen_session_verification_request_subtitle">"Overte druhé zariadenie, aby bola vaša história správ zabezpečená."</string>
-  <string name="screen_session_verification_request_success_subtitle">"Teraz môžete bezpečne čítať alebo odosielať správy na svojom druhom zariadení."</string>
+  <string name="screen_session_verification_request_success_subtitle">"Vaša nová relácia je teraz overená. Má prístup k vašim zašifrovaným správam a ostatní používatelia ju budú vidieť ako dôveryhodnú."</string>
   <string name="screen_session_verification_request_success_title">"Zariadenie overené"</string>
   <string name="screen_session_verification_request_title">"Vyžadované overenie"</string>
   <string name="screen_session_verification_they_dont_match">"Nezhodujú sa"</string>
@@ -44,7 +45,7 @@
   <string name="screen_session_verification_user_responder_subtitle">"Kvôli vyššej bezpečnosti chce druhý používateľ overiť vašu identitu. Zobrazí sa vám sada emotikonov na porovnanie."</string>
   <string name="screen_session_verification_waiting_another_device_subtitle">"Na druhom zariadení by sa malo zobraziť vyskakovacie okno. Začnite teraz overovanie odtiaľ."</string>
   <string name="screen_session_verification_waiting_another_device_title">"Spustiť overovanie na druhom zariadení"</string>
-  <string name="screen_session_verification_waiting_other_device_title">"Čaká sa na druhé zariadenie"</string>
+  <string name="screen_session_verification_waiting_other_device_title">"Spustiť overovanie na druhom zariadení"</string>
   <string name="screen_session_verification_waiting_other_user_title">"Čaká sa na druhého používateľa"</string>
   <string name="screen_session_verification_waiting_subtitle">"Po prijatí budete môcť pokračovať v overovaní."</string>
   <string name="screen_session_verification_waiting_to_accept_subtitle">"Ak chcete pokračovať, prijmite žiadosť o spustenie procesu overenia vo vašej druhej relácii."</string>

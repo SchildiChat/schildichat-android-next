@@ -228,6 +228,7 @@ Grund: %1$s."</string>
   <string name="common_install_apk_android">"APK installieren"</string>
   <string name="common_invite_unknown_profile">"Diese Matrix Kennung wurde nicht gefunden, daher wird die Einladung möglicherweise nicht empfangen."</string>
   <string name="common_leaving_room">"Chat verlassen"</string>
+  <string name="common_leaving_space">"Space wird verlassen"</string>
   <string name="common_light">"Hell"</string>
   <string name="common_line_copied_to_clipboard">"Zeile in die Zwischenablage kopiert"</string>
   <string name="common_link_copied_to_clipboard">"Link in die Zwischenablage kopiert"</string>

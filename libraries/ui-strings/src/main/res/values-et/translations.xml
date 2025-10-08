@@ -374,7 +374,7 @@ Põhjus: %1$s."</string>
 Kas sa oled kindel, et soovid jätkata?"</string>
   <string name="dialog_confirm_link_title">"Palun kontrolli seda linki mõttega"</string>
   <string name="dialog_default_video_quality_selector_subtitle">"Vali üleslaaditavate videote kvaliteeditase"</string>
-  <string name="dialog_default_video_quality_selector_title">"Videote kvaliteeditase"</string>
+  <string name="dialog_default_video_quality_selector_title">"Üleslaaditavate videote kvaliteet"</string>
   <string name="dialog_file_too_large_to_upload_subtitle">"Suurim lubatud failisuurus on: %1$s"</string>
   <string name="dialog_file_too_large_to_upload_title">"See fail on üleslaadimiseks liiga suur"</string>
   <string name="dialog_room_reported">"Teatasid jututoast"</string>
@@ -470,7 +470,7 @@ Kas sa oled kindel, et soovid jätkata?"</string>
   <string name="test_language_identifier">"et"</string>
   <string name="timeline_decryption_failure_historical_event_no_key_backup">"Vanu sõnumeid ei saa selles seadmes näha"</string>
   <string name="timeline_decryption_failure_historical_event_unverified_device">"Ligipääsuks vanadele sõnumitele pead selle seadme verifitseerima"</string>
-  <string name="timeline_decryption_failure_historical_event_user_not_joined">"Sul puudub ligipääs sellele sõnumile"</string>
+  <string name="timeline_decryption_failure_historical_event_user_not_joined">"Sul pole ligipääsu antud sõnumile"</string>
   <string name="timeline_decryption_failure_unable_to_decrypt">"Sõnumi dekrüptimine ei õnnestu"</string>
   <string name="timeline_decryption_failure_withheld_unverified">"Kuna seade on verifitseerimata või saatja pole sind verifitseerinud, siis sõnumi näitamine on blokeeritud."</string>
 </resources>

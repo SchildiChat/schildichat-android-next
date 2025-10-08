@@ -7,4 +7,5 @@
   <string name="screen_invites_decline_direct_chat_title">"Chatni rad etish"</string>
   <string name="screen_invites_empty_list">"Takliflar yo\'q"</string>
   <string name="screen_invites_invited_you">"%1$s(%2$s ) sizni taklif qildi"</string>
+  <string name="screen_join_room_decline_and_block_button_title">"Rad etish va bloklash"</string>
 </resources>

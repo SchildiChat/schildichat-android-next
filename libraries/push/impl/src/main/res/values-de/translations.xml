@@ -64,6 +64,8 @@
   <string name="troubleshoot_notifications_test_blocked_users_title">"Gesperrte Nutzer"</string>
   <string name="troubleshoot_notifications_test_current_push_provider_description">"Ermittele den Namen des aktuellen Anbieters."</string>
   <string name="troubleshoot_notifications_test_current_push_provider_failure">"Kein Dienst für Push-Benachrichtigungen ausgewählt."</string>
+  <string name="troubleshoot_notifications_test_current_push_provider_failure_distributor_not_found">"Aktueller Push-Dienst: %1$s und aktueller UnifiedPush-Distributor: %2$s. Aber der Distributor %3$s kann nicht gefunden werden. Vielleicht wurde die App deinstalliert?"</string>
+  <string name="troubleshoot_notifications_test_current_push_provider_failure_no_distributor">"Aktueller Push-Dienst: %1$s, aber kein UnifiedPush-Distributor konfiguriert."</string>
   <string name="troubleshoot_notifications_test_current_push_provider_success">"Aktueller Push-Dienst: %1$s."</string>
   <string name="troubleshoot_notifications_test_current_push_provider_success_with_distributor">"Aktueller Push-Dienst: %1$s (%2$s)"</string>
   <string name="troubleshoot_notifications_test_current_push_provider_title">"Aktueller Push-Dienst"</string>

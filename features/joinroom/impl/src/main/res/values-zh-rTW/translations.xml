@@ -15,7 +15,7 @@
   <string name="screen_join_room_fail_reason">"此聊天室僅有受邀者才能進入，或是在空間層級有存取限制。"</string>
   <string name="screen_join_room_forget_action">"忘記此聊天室"</string>
   <string name="screen_join_room_invite_required_message">"您需要獲得邀請才能加入此聊天室"</string>
-  <string name="screen_join_room_join_action">"加入聊天室"</string>
+  <string name="screen_join_room_join_action">"加入"</string>
   <string name="screen_join_room_join_restricted_message">"您可能需要被邀請成為空間的成員才能加入。"</string>
   <string name="screen_join_room_knock_action">"傳送加入請求"</string>
   <string name="screen_join_room_knock_message_characters_count">"允許的字元 %1$d 中的 %2$d"</string>

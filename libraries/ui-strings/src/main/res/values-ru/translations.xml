@@ -47,6 +47,7 @@
   <string name="a11y_session_verification_time_limited_action_required">"Требуется действие, на которое есть ограничение по времени, у вас есть одна минута для проверки"</string>
   <string name="a11y_show_password">"Показать пароль"</string>
   <string name="a11y_start_call">"Начать звонок"</string>
+  <string name="a11y_tombstoned_room">"Брошенная комната"</string>
   <string name="a11y_user_avatar">"Аватар пользователя"</string>
   <string name="a11y_user_menu">"Меню пользователя"</string>
   <string name="a11y_view_avatar">"Просмотреть аватар"</string>
@@ -480,7 +481,7 @@
   <string name="test_language_identifier">"ru"</string>
   <string name="timeline_decryption_failure_historical_event_no_key_backup">"На этом устройстве недоступна история сообщений"</string>
   <string name="timeline_decryption_failure_historical_event_unverified_device">"Вам необходимо проверить это устройство для доступа к истории сообщений"</string>
-  <string name="timeline_decryption_failure_historical_event_user_not_joined">"У вас нет доступа к этому сообщению"</string>
+  <string name="timeline_decryption_failure_historical_event_user_not_joined">"Вы не имеете доступа к этому сообщению"</string>
   <string name="timeline_decryption_failure_unable_to_decrypt">"Не удалось расшифровать сообщение"</string>
   <string name="timeline_decryption_failure_withheld_unverified">"Это сообщение было заблокировано по причине того, что вы не подтвердили свое устройство, либо отправителю необходимо подтвердить вашу личность."</string>
 </resources>

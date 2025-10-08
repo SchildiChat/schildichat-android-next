@@ -318,6 +318,7 @@ Raison : %1$s."</string>
   <string name="common_settings">"Paramètres"</string>
   <string name="common_share_space">"Partager l’espace"</string>
   <string name="common_shared_location">"Position partagée"</string>
+  <string name="common_shared_space">"Espace partagé"</string>
   <string name="common_signing_out">"Déconnexion"</string>
   <string name="common_something_went_wrong">"Une erreur s’est produite"</string>
   <string name="common_something_went_wrong_message">"Nous avons rencontré un problème. Veuillez réessayer."</string>
@@ -473,7 +474,7 @@ Raison : %1$s."</string>
   <string name="test_language_identifier">"fr"</string>
   <string name="timeline_decryption_failure_historical_event_no_key_backup">"Les anciens messages ne sont pas disponibles sur cet appareil"</string>
   <string name="timeline_decryption_failure_historical_event_unverified_device">"Vous devez vérifier cet appareil pour accéder à l’historique des messages"</string>
-  <string name="timeline_decryption_failure_historical_event_user_not_joined">"Vous n’avez pas accès à ce message"</string>
+  <string name="timeline_decryption_failure_historical_event_user_not_joined">"Vous ne pouvez pas voir ce message"</string>
   <string name="timeline_decryption_failure_unable_to_decrypt">"Impossible de déchiffrer le message"</string>
   <string name="timeline_decryption_failure_withheld_unverified">"Ce message a été bloqué soit parce que vous n’avez pas vérifié votre session, soit parce que l’expéditeur doit vérifier votre identité."</string>
 </resources>

@@ -10,7 +10,7 @@ package io.element.android.features.messages.api.timeline.voicemessages.composer
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.element.android.libraries.designsystem.components.media.createFakeWaveform
 import io.element.android.libraries.textcomposer.model.VoiceMessageState
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import kotlin.time.Duration.Companion.seconds
 
 open class VoiceMessageComposerStateProvider : PreviewParameterProvider<VoiceMessageComposerState> {
@@ -42,4 +42,4 @@ fun aVoiceMessagePreviewState() = VoiceMessageState.Preview(
     waveform = createFakeWaveform(),
 )
 
-internal var aWaveformLevels = List(100) { it.toFloat() / 100 }.toPersistentList()
+internal var aWaveformLevels = List(100) { it.toFloat() / 100 }.toImmutableList()

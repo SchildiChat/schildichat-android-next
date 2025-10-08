@@ -33,7 +33,6 @@ import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.services.analytics.api.AnalyticsService
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -79,7 +78,7 @@ class CreatePollPresenter(
                 repository.getPoll(mode.eventId).onSuccess {
                     val loadedPoll = PollFormState(
                         question = it.question,
-                        answers = it.answers.map(PollAnswer::text).toPersistentList(),
+                        answers = it.answers.map(PollAnswer::text).toImmutableList(),
                         isDisclosed = it.kind.isDisclosed,
                     )
                     initialPoll = loadedPoll

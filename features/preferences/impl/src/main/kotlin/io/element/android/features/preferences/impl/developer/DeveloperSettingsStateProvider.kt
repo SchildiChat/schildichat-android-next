@@ -14,7 +14,7 @@ import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.featureflag.ui.model.aFeatureUiModelList
 import io.element.android.libraries.matrix.api.tracing.TraceLogPack
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 open class DeveloperSettingsStateProvider : PreviewParameterProvider<DeveloperSettingsState> {
     override val values: Sequence<DeveloperSettingsState>
@@ -43,7 +43,7 @@ fun aDeveloperSettingsState(
     clearCacheAction = clearCacheAction,
     customElementCallBaseUrlState = customElementCallBaseUrlState,
     tracingLogLevel = AsyncData.Success(LogLevelItem.INFO),
-    tracingLogPacks = traceLogPacks.toPersistentList(),
+    tracingLogPacks = traceLogPacks.toImmutableList(),
     eventSink = eventSink,
 )
 

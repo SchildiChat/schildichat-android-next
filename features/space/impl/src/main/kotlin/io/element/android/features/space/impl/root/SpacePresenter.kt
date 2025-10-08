@@ -33,11 +33,12 @@ import io.element.android.libraries.matrix.api.room.join.JoinRoom
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
 import io.element.android.libraries.matrix.ui.safety.rememberHideInvitesAvatar
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
-import kotlinx.collections.immutable.toPersistentList
-import kotlinx.collections.immutable.toPersistentMap
-import kotlinx.collections.immutable.toPersistentSet
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableMap
+import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -52,18 +53,18 @@ class SpacePresenter(
     private val acceptDeclineInvitePresenter: Presenter<AcceptDeclineInviteState>,
     @SessionCoroutineScope private val sessionCoroutineScope: CoroutineScope,
 ) : Presenter<SpaceState> {
-    private var children by mutableStateOf(persistentListOf<SpaceRoom>())
+    private var children by mutableStateOf<ImmutableList<SpaceRoom>>(persistentListOf())
 
     @Composable
     override fun present(): SpaceState {
         LaunchedEffect(Unit) {
             paginate()
-            spaceRoomList.spaceRoomsFlow.collect { children = it.toPersistentList() }
+            spaceRoomList.spaceRoomsFlow.collect { children = it.toImmutableList() }
         }
 
         val hideInvitesAvatar by client.rememberHideInvitesAvatar()
         val seenSpaceInvites by remember {
-            seenInvitesStore.seenRoomIds().map { it.toPersistentSet() }
+            seenInvitesStore.seenRoomIds().map { it.toImmutableSet() }
         }.collectAsState(persistentSetOf())
 
         val localCoroutineScope = rememberCoroutineScope()
@@ -120,7 +121,7 @@ class SpacePresenter(
             seenSpaceInvites = seenSpaceInvites,
             hideInvitesAvatar = hideInvitesAvatar,
             hasMoreToLoad = hasMoreToLoad,
-            joinActions = joinActions.toPersistentMap(),
+            joinActions = joinActions.toImmutableMap(),
             acceptDeclineInviteState = acceptDeclineInviteState,
             eventSink = ::handleEvents,
         )

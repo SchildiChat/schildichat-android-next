@@ -10,7 +10,7 @@ package io.element.android.features.space.impl.leave
 import com.google.common.truth.Truth.assertThat
 import io.element.android.libraries.architecture.AsyncData
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import org.junit.Test
 
 class LeaveSpaceStateTest {
@@ -64,7 +64,7 @@ class LeaveSpaceStateTest {
                 listOf(
                     aSelectableSpaceRoom(isLastAdmin = false, isSelected = true),
                     aSelectableSpaceRoom(isLastAdmin = false, isSelected = false),
-                ).toPersistentList()
+                ).toImmutableList()
             )
         )
         assertThat(sut.showQuickAction).isTrue()
@@ -81,7 +81,7 @@ class LeaveSpaceStateTest {
                 listOf(
                     aSelectableSpaceRoom(isLastAdmin = false, isSelected = true),
                     aSelectableSpaceRoom(isLastAdmin = false, isSelected = true),
-                ).toPersistentList()
+                ).toImmutableList()
             )
         )
         assertThat(sut.showQuickAction).isTrue()
@@ -95,11 +95,11 @@ class LeaveSpaceStateTest {
     fun `test 1 last admin, 2 selected`() {
         val sut = aLeaveSpaceState(
             selectableSpaceRooms = AsyncData.Success(
-                listOf(
+                persistentListOf(
                     aSelectableSpaceRoom(isLastAdmin = true, isSelected = false),
                     aSelectableSpaceRoom(isLastAdmin = false, isSelected = true),
                     aSelectableSpaceRoom(isLastAdmin = false, isSelected = true),
-                ).toPersistentList()
+                )
             )
         )
         assertThat(sut.showQuickAction).isTrue()
@@ -116,7 +116,7 @@ class LeaveSpaceStateTest {
                 listOf(
                     aSelectableSpaceRoom(isLastAdmin = true, isSelected = false),
                     aSelectableSpaceRoom(isLastAdmin = true, isSelected = false),
-                ).toPersistentList()
+                ).toImmutableList()
             )
         )
         assertThat(sut.showQuickAction).isFalse()

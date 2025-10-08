@@ -11,7 +11,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.ui.components.aMatrixUserList
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 class BlockedUsersStateProvider : PreviewParameterProvider<BlockedUsersState> {
     override val values: Sequence<BlockedUsersState>
@@ -32,7 +32,7 @@ internal fun aBlockedUsersState(
     eventSink: (BlockedUsersEvents) -> Unit = {},
 ): BlockedUsersState {
     return BlockedUsersState(
-        blockedUsers = blockedUsers.toPersistentList(),
+        blockedUsers = blockedUsers.toImmutableList(),
         unblockUserAction = unblockUserAction,
         eventSink = eventSink,
     )

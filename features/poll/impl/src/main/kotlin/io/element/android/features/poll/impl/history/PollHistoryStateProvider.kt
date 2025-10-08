@@ -13,7 +13,7 @@ import io.element.android.features.poll.api.pollcontent.aPollContentState
 import io.element.android.features.poll.impl.history.model.PollHistoryFilter
 import io.element.android.features.poll.impl.history.model.PollHistoryItem
 import io.element.android.features.poll.impl.history.model.PollHistoryItems
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 class PollHistoryStateProvider : PreviewParameterProvider<PollHistoryState> {
     override val values: Sequence<PollHistoryState>
@@ -53,8 +53,8 @@ internal fun aPollHistoryState(
     hasMoreToLoad = hasMoreToLoad,
     activeFilter = activeFilter,
     pollHistoryItems = PollHistoryItems(
-        ongoing = currentItems.toPersistentList(),
-        past = currentItems.toPersistentList(),
+        ongoing = currentItems.toImmutableList(),
+        past = currentItems.toImmutableList(),
     ),
     eventSink = eventSink,
 )

@@ -72,7 +72,7 @@ import io.element.android.libraries.testtags.testTag
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -374,7 +374,7 @@ internal fun DefaultRoomListTopBarWithIndicatorPreview() = ElementPreview {
 internal fun DefaultRoomListTopBarMultiAccountPreview() = ElementPreview {
     DefaultRoomListTopBar(
         title = stringResource(R.string.screen_roomlist_main_space_title),
-        currentUserAndNeighbors = aMatrixUserList().take(3).toPersistentList(),
+        currentUserAndNeighbors = aMatrixUserList().take(3).toImmutableList(),
         showAvatarIndicator = false,
         areSearchResultsDisplayed = false,
         scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState()),

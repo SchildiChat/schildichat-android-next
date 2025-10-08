@@ -26,7 +26,7 @@ import io.element.android.libraries.mediaviewer.api.local.LocalMedia
 import io.element.android.libraries.mediaviewer.impl.details.MediaBottomSheetState
 import io.element.android.libraries.mediaviewer.impl.details.aMediaDeleteConfirmationState
 import io.element.android.libraries.mediaviewer.impl.details.aMediaDetailsBottomSheetState
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 open class MediaViewerStateProvider : PreviewParameterProvider<MediaViewerState> {
     override val values: Sequence<MediaViewerState>
@@ -204,7 +204,7 @@ fun aMediaViewerState(
     eventSink: (MediaViewerEvents) -> Unit = {},
 ) = MediaViewerState(
     initiallySelectedEventId = EventId("\$a:b"),
-    listData = listData.toPersistentList(),
+    listData = listData.toImmutableList(),
     currentIndex = currentIndex,
     snackbarMessage = null,
     canShowInfo = canShowInfo,

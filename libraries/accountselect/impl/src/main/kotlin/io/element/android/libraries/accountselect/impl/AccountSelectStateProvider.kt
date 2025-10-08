@@ -10,7 +10,7 @@ package io.element.android.libraries.accountselect.impl
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.ui.components.aMatrixUserList
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 open class AccountSelectStateProvider : PreviewParameterProvider<AccountSelectState> {
     override val values: Sequence<AccountSelectState>
@@ -23,5 +23,5 @@ open class AccountSelectStateProvider : PreviewParameterProvider<AccountSelectSt
 private fun anAccountSelectState(
     accounts: List<MatrixUser> = listOf(),
 ) = AccountSelectState(
-    accounts = accounts.toPersistentList(),
+    accounts = accounts.toImmutableList(),
 )

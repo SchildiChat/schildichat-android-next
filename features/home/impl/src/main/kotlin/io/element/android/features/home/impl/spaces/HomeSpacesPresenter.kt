@@ -17,7 +17,7 @@ import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.ui.safety.rememberHideInvitesAvatar
 import kotlinx.collections.immutable.persistentSetOf
-import kotlinx.collections.immutable.toPersistentSet
+import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.flow.map
 
 @Inject
@@ -30,7 +30,7 @@ class HomeSpacesPresenter(
         val hideInvitesAvatar by client.rememberHideInvitesAvatar()
         val spaceRooms by client.spaceService.spaceRoomsFlow.collectAsState(emptyList())
         val seenSpaceInvites by remember {
-            seenInvitesStore.seenRoomIds().map { it.toPersistentSet() }
+            seenInvitesStore.seenRoomIds().map { it.toImmutableSet() }
         }.collectAsState(persistentSetOf())
 
         fun handleEvents(event: HomeSpacesEvents) {

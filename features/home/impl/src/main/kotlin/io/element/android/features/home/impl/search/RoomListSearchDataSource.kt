@@ -15,8 +15,8 @@ import io.element.android.libraries.matrix.api.roomlist.RoomList
 import io.element.android.libraries.matrix.api.roomlist.RoomListFilter
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
 import io.element.android.libraries.matrix.api.roomlist.loadAllIncrementally
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -36,11 +36,11 @@ class RoomListSearchDataSource(
         source = RoomList.Source.All,
     )
 
-    val roomSummaries: Flow<PersistentList<RoomListRoomSummary>> = roomList.filteredSummaries
+    val roomSummaries: Flow<ImmutableList<RoomListRoomSummary>> = roomList.filteredSummaries
         .map { roomSummaries ->
             roomSummaries
                 .map(roomSummaryFactory::create)
-                .toPersistentList()
+                .toImmutableList()
         }
         .flowOn(coroutineDispatchers.computation)
 

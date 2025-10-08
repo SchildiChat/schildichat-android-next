@@ -40,7 +40,7 @@ import io.element.android.libraries.mediaviewer.impl.R
 import io.element.android.libraries.mediaviewer.impl.details.MediaBottomSheetState
 import io.element.android.libraries.mediaviewer.impl.local.LocalMediaActions
 import io.element.android.libraries.ui.strings.CommonStrings
-import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
@@ -162,7 +162,7 @@ class MediaViewerPresenter(
     @Composable
     private fun NoMoreItemsBackwardSnackBarDisplayer(
         currentIndex: IntState,
-        data: State<PersistentList<MediaViewerPageData>>,
+        data: State<ImmutableList<MediaViewerPageData>>,
     ) {
         val isRenderingLoadingBackward by remember {
             derivedStateOf {
@@ -186,7 +186,7 @@ class MediaViewerPresenter(
     @Composable
     private fun NoMoreItemsForwardSnackBarDisplayer(
         currentIndex: IntState,
-        data: State<PersistentList<MediaViewerPageData>>,
+        data: State<ImmutableList<MediaViewerPageData>>,
     ) {
         val isRenderingLoadingForward by remember {
             derivedStateOf {

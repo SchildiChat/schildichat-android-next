@@ -120,8 +120,8 @@ private fun SubtitleRow(
         if (visibilityIcon != null) {
             Icon(
                 modifier = Modifier
-                        .size(16.dp)
-                        .padding(end = 4.dp),
+                    .size(16.dp)
+                    .padding(end = 4.dp),
                 imageVector = visibilityIcon,
                 contentDescription = null,
                 tint = ElementTheme.colors.iconTertiary,
@@ -178,20 +178,20 @@ private fun SpaceRoomItemScaffold(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val clickModifier = Modifier
-            .combinedClickable(
-                    onClick = onClick,
-                    onLongClick = onLongClick,
-                    onLongClickLabel = stringResource(CommonStrings.action_open_context_menu),
-                    indication = ripple(),
-                    interactionSource = remember { MutableInteractionSource() }
-            )
-            .onKeyboardContextMenuAction { onLongClick }
+        .combinedClickable(
+            onClick = onClick,
+            onLongClick = onLongClick,
+            onLongClickLabel = stringResource(CommonStrings.action_open_context_menu),
+            indication = ripple(),
+            interactionSource = remember { MutableInteractionSource() }
+        )
+        .onKeyboardContextMenuAction { onLongClick }
     Row(
         modifier = modifier
-                .fillMaxWidth()
-                .then(clickModifier)
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .height(IntrinsicSize.Min),
+            .fillMaxWidth()
+            .then(clickModifier)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .height(IntrinsicSize.Min),
     ) {
         Avatar(
             avatarData = avatarData,

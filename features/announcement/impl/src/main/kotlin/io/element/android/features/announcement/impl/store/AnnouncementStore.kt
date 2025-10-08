@@ -7,15 +7,22 @@
 
 package io.element.android.features.announcement.impl.store
 
+import io.element.android.features.announcement.api.Announcement
 import kotlinx.coroutines.flow.Flow
 
 interface AnnouncementStore {
-    suspend fun setSpaceAnnouncementValue(value: SpaceAnnouncement)
-    fun spaceAnnouncementFlow(): Flow<SpaceAnnouncement>
+    suspend fun setAnnouncementStatus(
+        announcement: Announcement,
+        status: AnnouncementStatus,
+    )
+
+    fun announcementStateFlow(
+        announcement: Announcement,
+    ): Flow<AnnouncementStatus>
 
     suspend fun reset()
 
-    enum class SpaceAnnouncement {
+    enum class AnnouncementStatus {
         NeverShown,
         Show,
         Shown,

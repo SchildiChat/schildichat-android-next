@@ -7,23 +7,33 @@
 
 package io.element.android.features.announcement.impl.store
 
+import io.element.android.features.announcement.api.Announcement
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class InMemoryAnnouncementStore(
-    initialSpaceAnnouncement: AnnouncementStore.SpaceAnnouncement = AnnouncementStore.SpaceAnnouncement.NeverShown,
+    initialSpaceAnnouncementStatus: AnnouncementStore.AnnouncementStatus = AnnouncementStore.AnnouncementStatus.NeverShown,
+    initialNewNotificationSoundAnnouncementStatus: AnnouncementStore.AnnouncementStatus = AnnouncementStore.AnnouncementStatus.NeverShown,
 ) : AnnouncementStore {
-    private val spaceAnnouncement = MutableStateFlow(initialSpaceAnnouncement)
-    override suspend fun setSpaceAnnouncementValue(value: AnnouncementStore.SpaceAnnouncement) {
-        spaceAnnouncement.value = value
+    private val spaceAnnouncement = MutableStateFlow(initialSpaceAnnouncementStatus)
+    private val newNotificationSoundAnnouncement = MutableStateFlow(initialNewNotificationSoundAnnouncementStatus)
+
+    override suspend fun setAnnouncementStatus(announcement: Announcement, status: AnnouncementStore.AnnouncementStatus) {
+        when (announcement) {
+            Announcement.Space -> spaceAnnouncement.value = status
+            Announcement.NewNotificationSound -> newNotificationSoundAnnouncement.value = status
+        }
     }
 
-    override fun spaceAnnouncementFlow(): Flow<AnnouncementStore.SpaceAnnouncement> {
-        return spaceAnnouncement.asStateFlow()
+    override fun announcementStateFlow(announcement: Announcement): Flow<AnnouncementStore.AnnouncementStatus> {
+        return when (announcement) {
+            Announcement.Space -> spaceAnnouncement.asStateFlow()
+            Announcement.NewNotificationSound -> newNotificationSoundAnnouncement.asStateFlow()
+        }
     }
 
     override suspend fun reset() {
-        spaceAnnouncement.value = AnnouncementStore.SpaceAnnouncement.NeverShown
+        spaceAnnouncement.value = AnnouncementStore.AnnouncementStatus.NeverShown
     }
 }

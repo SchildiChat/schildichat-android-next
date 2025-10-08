@@ -12,6 +12,8 @@ import app.cash.molecule.moleculeFlow
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import im.vector.app.features.analytics.plan.Interaction
+import io.element.android.features.announcement.api.Announcement
+import io.element.android.features.announcement.api.AnnouncementService
 import io.element.android.features.home.impl.FakeDateTimeObserver
 import io.element.android.features.home.impl.datasource.RoomListDataSource
 import io.element.android.features.home.impl.datasource.aRoomListRoomSummaryFactory
@@ -28,6 +30,7 @@ import io.element.android.features.invite.api.acceptdecline.anAcceptDeclineInvit
 import io.element.android.features.invite.test.InMemorySeenInvitesStore
 import io.element.android.features.leaveroom.api.LeaveRoomEvent
 import io.element.android.features.leaveroom.api.LeaveRoomState
+import io.element.android.features.rageshake.test.logs.FakeAnnouncementService
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.dateformatter.api.DateFormatter
 import io.element.android.libraries.dateformatter.test.FakeDateFormatter
@@ -606,23 +609,27 @@ class RoomListPresenterTest {
         )
         roomListService.postAllRoomsLoadingState(RoomList.LoadingState.Loaded(1))
         roomListService.postAllRooms(listOf(roomSummary))
-        val store = InMemoryAppPreferencesStore()
+        val onAnnouncementDismissedResult = lambdaRecorder<Announcement, Unit> { }
+        val announcementService = FakeAnnouncementService(
+            onAnnouncementDismissedResult = onAnnouncementDismissedResult,
+        )
         val presenter = createRoomListPresenter(
             client = matrixClient,
-            appPreferencesStore = store,
+            announcementService = announcementService,
         )
         presenter.test {
-            assertThat(store.showNewNotificationSoundBanner().first()).isFalse()
+            assertThat(announcementService.announcementsToShowFlow().first()).isEmpty()
             skipItems(1)
             val state = awaitItem()
             assertThat(state.contentAsRooms().showNewNotificationSoundBanner).isFalse()
-            store.setShowNewNotificationSoundBanner(true)
-            assertThat(store.showNewNotificationSoundBanner().first()).isTrue()
+            announcementService.emitAnnouncementsToShow(listOf(Announcement.NewNotificationSound))
             assertThat(awaitItem().contentAsRooms().showNewNotificationSoundBanner).isTrue()
             state.eventSink(RoomListEvents.DismissNewNotificationSoundBanner)
+            onAnnouncementDismissedResult.assertions().isCalledOnce()
+                .with(value(Announcement.NewNotificationSound))
+            // Simulate service updating the value
+            announcementService.emitAnnouncementsToShow(emptyList())
             assertThat(awaitItem().contentAsRooms().showNewNotificationSoundBanner).isFalse()
-            // Ensure store has been updated
-            assertThat(store.showNewNotificationSoundBanner().first()).isFalse()
         }
     }
 
@@ -639,6 +646,7 @@ class RoomListPresenterTest {
         notificationCleaner: NotificationCleaner = FakeNotificationCleaner(),
         appPreferencesStore: AppPreferencesStore = InMemoryAppPreferencesStore(),
         seenInvitesStore: SeenInvitesStore = InMemorySeenInvitesStore(),
+        announcementService: AnnouncementService = FakeAnnouncementService(),
     ) = RoomListPresenter(
         client = client,
         leaveRoomPresenter = { leaveRoomState },
@@ -663,5 +671,6 @@ class RoomListPresenterTest {
         notificationCleaner = notificationCleaner,
         appPreferencesStore = appPreferencesStore,
         seenInvitesStore = seenInvitesStore,
+        announcementService = announcementService,
     )
 }

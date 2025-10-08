@@ -12,13 +12,32 @@ import androidx.compose.ui.Modifier
 import io.element.android.features.announcement.api.Announcement
 import io.element.android.features.announcement.api.AnnouncementService
 import io.element.android.tests.testutils.lambda.lambdaError
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class FakeAnnouncementService(
+    initialAnnouncementsToShowFlowValue: List<Announcement> = emptyList(),
     val showAnnouncementResult: (Announcement) -> Unit = { lambdaError() },
+    val onAnnouncementDismissedResult: (Announcement) -> Unit = { lambdaError() },
     val renderResult: (Modifier) -> Unit = { lambdaError() },
 ) : AnnouncementService {
+    private val announcementsToShowFlowValue = MutableStateFlow(initialAnnouncementsToShowFlowValue)
+
     override suspend fun showAnnouncement(announcement: Announcement) {
         showAnnouncementResult(announcement)
+    }
+
+    override suspend fun onAnnouncementDismissed(announcement: Announcement) {
+        onAnnouncementDismissedResult(announcement)
+    }
+
+    override fun announcementsToShowFlow(): Flow<List<Announcement>> {
+        return announcementsToShowFlowValue.asStateFlow()
+    }
+
+    fun emitAnnouncementsToShow(value: List<Announcement>) {
+        announcementsToShowFlowValue.value = value
     }
 
     @Composable

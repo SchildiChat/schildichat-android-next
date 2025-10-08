@@ -8,6 +8,7 @@
 package io.element.android.features.announcement.impl
 
 import com.google.common.truth.Truth.assertThat
+import io.element.android.features.announcement.api.Announcement
 import io.element.android.features.announcement.impl.store.AnnouncementStore
 import io.element.android.features.announcement.impl.store.InMemoryAnnouncementStore
 import io.element.android.tests.testutils.test
@@ -33,10 +34,10 @@ class AnnouncementPresenterTest {
         presenter.test {
             val state = awaitItem()
             assertThat(state.showSpaceAnnouncement).isFalse()
-            store.setSpaceAnnouncementValue(AnnouncementStore.SpaceAnnouncement.Show)
+            store.setAnnouncementStatus(Announcement.Space, AnnouncementStore.AnnouncementStatus.Show)
             val updatedState = awaitItem()
             assertThat(updatedState.showSpaceAnnouncement).isTrue()
-            store.setSpaceAnnouncementValue(AnnouncementStore.SpaceAnnouncement.Shown)
+            store.setAnnouncementStatus(Announcement.Space, AnnouncementStore.AnnouncementStatus.Shown)
             val finalState = awaitItem()
             assertThat(finalState.showSpaceAnnouncement).isFalse()
         }

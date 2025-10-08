@@ -24,6 +24,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import dev.zacsweers.metro.Inject
 import im.vector.app.features.analytics.plan.Interaction
+import io.element.android.features.announcement.api.Announcement
+import io.element.android.features.announcement.api.AnnouncementService
 import io.element.android.features.home.impl.datasource.RoomListDataSource
 import io.element.android.features.home.impl.filters.RoomListFiltersState
 import io.element.android.features.home.impl.search.RoomListSearchEvents
@@ -82,6 +84,7 @@ class RoomListPresenter(
     private val notificationCleaner: NotificationCleaner,
     private val appPreferencesStore: AppPreferencesStore,
     private val seenInvitesStore: SeenInvitesStore,
+    private val announcementService: AnnouncementService,
 ) : Presenter<RoomListState> {
     private val encryptionService = client.encryptionService
 
@@ -98,7 +101,11 @@ class RoomListPresenter(
         }
 
         var securityBannerDismissed by rememberSaveable { mutableStateOf(false) }
-        val showNewNotificationSoundBanner by appPreferencesStore.showNewNotificationSoundBanner().collectAsState(false)
+        val showNewNotificationSoundBanner by remember {
+            announcementService.announcementsToShowFlow().map { announcements ->
+                announcements.contains(Announcement.NewNotificationSound)
+            }
+        }.collectAsState(false)
 
         // Avatar indicator
         val hideInvitesAvatar by client.rememberHideInvitesAvatar()
@@ -114,7 +121,7 @@ class RoomListPresenter(
                 RoomListEvents.DismissRequestVerificationPrompt -> securityBannerDismissed = true
                 RoomListEvents.DismissBanner -> securityBannerDismissed = true
                 RoomListEvents.DismissNewNotificationSoundBanner -> coroutineScope.launch {
-                    appPreferencesStore.setShowNewNotificationSoundBanner(false)
+                    announcementService.onAnnouncementDismissed(Announcement.NewNotificationSound)
                 }
                 RoomListEvents.ToggleSearchResults -> searchState.eventSink(RoomListSearchEvents.ToggleSearchVisibility)
                 is RoomListEvents.ShowContextMenu -> {

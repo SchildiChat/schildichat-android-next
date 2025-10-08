@@ -23,6 +23,8 @@ import io.element.android.features.announcement.impl.spaces.SpaceAnnouncementSta
 import io.element.android.features.announcement.impl.spaces.SpaceAnnouncementView
 import io.element.android.features.announcement.impl.store.AnnouncementStore
 import io.element.android.libraries.architecture.Presenter
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 
 @ContributesBinding(AppScope::class)
@@ -35,13 +37,36 @@ class DefaultAnnouncementService(
     override suspend fun showAnnouncement(announcement: Announcement) {
         when (announcement) {
             Announcement.Space -> showSpaceAnnouncement()
+            Announcement.NewNotificationSound -> {
+                announcementStore.setAnnouncementStatus(Announcement.NewNotificationSound, AnnouncementStore.AnnouncementStatus.Show)
+            }
+        }
+    }
+
+    override suspend fun onAnnouncementDismissed(announcement: Announcement) {
+        announcementStore.setAnnouncementStatus(announcement, AnnouncementStore.AnnouncementStatus.Shown)
+    }
+
+    override fun announcementsToShowFlow(): Flow<List<Announcement>> {
+        return combine(
+            announcementStore.announcementStateFlow(Announcement.Space),
+            announcementStore.announcementStateFlow(Announcement.NewNotificationSound),
+        ) { spaceAnnouncementStatus, newNotificationSoundStatus ->
+            buildList {
+                if (spaceAnnouncementStatus == AnnouncementStore.AnnouncementStatus.Show) {
+                    add(Announcement.Space)
+                }
+                if (newNotificationSoundStatus == AnnouncementStore.AnnouncementStatus.Show) {
+                    add(Announcement.NewNotificationSound)
+                }
+            }
         }
     }
 
     private suspend fun showSpaceAnnouncement() {
-        val currentValue = announcementStore.spaceAnnouncementFlow().first()
-        if (currentValue == AnnouncementStore.SpaceAnnouncement.NeverShown) {
-            announcementStore.setSpaceAnnouncementValue(AnnouncementStore.SpaceAnnouncement.Show)
+        val currentValue = announcementStore.announcementStateFlow(Announcement.Space).first()
+        if (currentValue == AnnouncementStore.AnnouncementStatus.NeverShown) {
+            announcementStore.setAnnouncementStatus(Announcement.Space, AnnouncementStore.AnnouncementStatus.Show)
         }
     }
 

@@ -12,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import dev.zacsweers.metro.Inject
+import io.element.android.features.announcement.api.Announcement
 import io.element.android.features.announcement.impl.store.AnnouncementStore
 import io.element.android.libraries.architecture.Presenter
 import kotlinx.coroutines.flow.map
@@ -23,8 +24,8 @@ class AnnouncementPresenter(
     @Composable
     override fun present(): AnnouncementState {
         val showSpaceAnnouncement by remember {
-            announcementStore.spaceAnnouncementFlow().map {
-                it == AnnouncementStore.SpaceAnnouncement.Show
+            announcementStore.announcementStateFlow(Announcement.Space).map {
+                it == AnnouncementStore.AnnouncementStatus.Show
             }
         }.collectAsState(false)
         return AnnouncementState(

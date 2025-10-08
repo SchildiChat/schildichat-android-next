@@ -19,6 +19,7 @@ android {
 setupDependencyInjection()
 
 dependencies {
+    implementation(projects.features.announcement.api)
     implementation(projects.features.migration.api)
     implementation(projects.libraries.architecture)
     implementation(projects.libraries.androidutils)
@@ -34,5 +35,6 @@ dependencies {
     testImplementation(projects.libraries.matrix.test)
     testImplementation(projects.libraries.sessionStorage.test)
     testImplementation(projects.libraries.preferences.test)
+    testImplementation(projects.features.announcement.test)
     testImplementation(projects.features.rageshake.test)
 }

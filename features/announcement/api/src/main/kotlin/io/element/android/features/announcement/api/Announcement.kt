@@ -9,4 +9,5 @@ package io.element.android.features.announcement.api
 
 enum class Announcement {
     Space,
+    NewNotificationSound,
 }

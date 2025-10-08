@@ -7,6 +7,7 @@
 
 package io.element.android.features.space.impl.root
 
+import androidx.compose.runtime.Immutable
 import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteState
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.core.RoomId
@@ -23,10 +24,17 @@ data class SpaceState(
     val hasMoreToLoad: Boolean,
     val joinActions: ImmutableMap<RoomId, AsyncAction<Unit>>,
     val acceptDeclineInviteState: AcceptDeclineInviteState,
+    val topicViewerState: TopicViewerState,
     val eventSink: (SpaceEvents) -> Unit
 ) {
     fun isJoining(spaceId: RoomId): Boolean = joinActions[spaceId] == AsyncAction.Loading
     val hasAnyFailure: Boolean = joinActions.values.any {
         it is AsyncAction.Failure
     }
+}
+
+@Immutable
+sealed interface TopicViewerState {
+    data object Hidden : TopicViewerState
+    data class Shown(val topic: String) : TopicViewerState
 }

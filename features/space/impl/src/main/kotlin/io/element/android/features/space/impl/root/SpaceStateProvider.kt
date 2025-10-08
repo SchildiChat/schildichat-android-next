@@ -51,7 +51,17 @@ open class SpaceStateProvider : PreviewParameterProvider<SpaceState> {
                 hasMoreToLoad = false,
                 children = aListOfSpaceRooms(),
                 joiningRooms = setOf(RoomId("!spaceId0:example.com")),
-            )
+            ),
+            aSpaceState(
+                hasMoreToLoad = false,
+                topicViewerState = TopicViewerState.Shown(
+                    topic = "Description of the space goes right here. Lorem ipsum dolor sit amet consectetur. " +
+                        "Leo viverra morbi habitant in. Sem amet enim habitant nibh augue mauris. " +
+                        "Interdum mauris ultrices tincidunt proin morbi erat aenean risus nibh. " +
+                        "Diam amet sit fermentum vulputate faucibus."
+                ),
+                children = aListOfSpaceRooms(),
+            ),
             // Add other states here
         )
 }
@@ -70,6 +80,7 @@ fun aSpaceState(
     hideInvitesAvatar: Boolean = false,
     hasMoreToLoad: Boolean = false,
     acceptDeclineInviteState: AcceptDeclineInviteState = anAcceptDeclineInviteState(),
+    topicViewerState: TopicViewerState = TopicViewerState.Hidden,
     eventSink: (SpaceEvents) -> Unit = { },
 ) = SpaceState(
     currentSpace = parentSpace,
@@ -79,6 +90,7 @@ fun aSpaceState(
     hasMoreToLoad = hasMoreToLoad,
     joinActions = joinActions.toImmutableMap(),
     acceptDeclineInviteState = acceptDeclineInviteState,
+    topicViewerState = topicViewerState,
     eventSink = eventSink,
 )
 

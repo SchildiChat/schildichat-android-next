@@ -15,4 +15,7 @@ sealed interface SpaceEvents {
     data object ClearFailures : SpaceEvents
     data class AcceptInvite(val spaceRoom: SpaceRoom) : SpaceEvents
     data class DeclineInvite(val spaceRoom: SpaceRoom) : SpaceEvents
+
+    data class ShowTopicViewer(val topic: String) : SpaceEvents
+    data object HideTopicViewer : SpaceEvents
 }

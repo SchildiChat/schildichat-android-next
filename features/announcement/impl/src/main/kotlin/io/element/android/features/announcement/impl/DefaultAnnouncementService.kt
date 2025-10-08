@@ -21,8 +21,11 @@ import io.element.android.features.announcement.api.Announcement
 import io.element.android.features.announcement.api.AnnouncementService
 import io.element.android.features.announcement.impl.spaces.SpaceAnnouncementState
 import io.element.android.features.announcement.impl.spaces.SpaceAnnouncementView
+import io.element.android.features.announcement.impl.store.AnnouncementStatus
 import io.element.android.features.announcement.impl.store.AnnouncementStore
 import io.element.android.libraries.architecture.Presenter
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 
 @ContributesBinding(AppScope::class)
@@ -35,13 +38,36 @@ class DefaultAnnouncementService(
     override suspend fun showAnnouncement(announcement: Announcement) {
         when (announcement) {
             Announcement.Space -> showSpaceAnnouncement()
+            Announcement.NewNotificationSound -> {
+                announcementStore.setAnnouncementStatus(Announcement.NewNotificationSound, AnnouncementStatus.Show)
+            }
+        }
+    }
+
+    override suspend fun onAnnouncementDismissed(announcement: Announcement) {
+        announcementStore.setAnnouncementStatus(announcement, AnnouncementStatus.Shown)
+    }
+
+    override fun announcementsToShowFlow(): Flow<List<Announcement>> {
+        return combine(
+            announcementStore.announcementStatusFlow(Announcement.Space),
+            announcementStore.announcementStatusFlow(Announcement.NewNotificationSound),
+        ) { spaceAnnouncementStatus, newNotificationSoundStatus ->
+            buildList {
+                if (spaceAnnouncementStatus == AnnouncementStatus.Show) {
+                    add(Announcement.Space)
+                }
+                if (newNotificationSoundStatus == AnnouncementStatus.Show) {
+                    add(Announcement.NewNotificationSound)
+                }
+            }
         }
     }
 
     private suspend fun showSpaceAnnouncement() {
-        val currentValue = announcementStore.spaceAnnouncementFlow().first()
-        if (currentValue == AnnouncementStore.SpaceAnnouncement.NeverShown) {
-            announcementStore.setSpaceAnnouncementValue(AnnouncementStore.SpaceAnnouncement.Show)
+        val currentValue = announcementStore.announcementStatusFlow(Announcement.Space).first()
+        if (currentValue == AnnouncementStatus.NeverShown) {
+            announcementStore.setAnnouncementStatus(Announcement.Space, AnnouncementStatus.Show)
         }
     }
 

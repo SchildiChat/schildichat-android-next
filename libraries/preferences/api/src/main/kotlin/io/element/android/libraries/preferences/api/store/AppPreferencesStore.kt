@@ -37,8 +37,5 @@ interface AppPreferencesStore {
     suspend fun setTracingLogPacks(targets: Set<TraceLogPack>)
     fun getTracingLogPacksFlow(): Flow<Set<TraceLogPack>>
 
-    suspend fun setShowNewNotificationSoundBanner(show: Boolean)
-    fun showNewNotificationSoundBanner(): Flow<Boolean>
-
     suspend fun reset()
 }

@@ -9,10 +9,18 @@ package io.element.android.features.announcement.api
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import kotlinx.coroutines.flow.Flow
 
 interface AnnouncementService {
     suspend fun showAnnouncement(announcement: Announcement)
 
+    suspend fun onAnnouncementDismissed(announcement: Announcement)
+
+    fun announcementsToShowFlow(): Flow<List<Announcement>>
+
+    /**
+     * Use this composable to render the announcement UI in Fullscreen.
+     */
     @Composable
     fun Render(
         modifier: Modifier,

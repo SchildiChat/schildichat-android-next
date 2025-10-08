@@ -11,8 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import dev.zacsweers.metro.Inject
 import io.element.android.features.announcement.api.Announcement
+import io.element.android.features.announcement.impl.store.AnnouncementStatus
 import io.element.android.features.announcement.impl.store.AnnouncementStore
-import io.element.android.features.announcement.impl.store.AnnouncementStore.AnnouncementStatus
 import io.element.android.libraries.architecture.Presenter
 import kotlinx.coroutines.launch
 

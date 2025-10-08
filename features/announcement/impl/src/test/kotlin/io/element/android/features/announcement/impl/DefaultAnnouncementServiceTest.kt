@@ -11,6 +11,7 @@ import com.google.common.truth.Truth.assertThat
 import io.element.android.features.announcement.api.Announcement
 import io.element.android.features.announcement.impl.spaces.SpaceAnnouncementState
 import io.element.android.features.announcement.impl.spaces.aSpaceAnnouncementState
+import io.element.android.features.announcement.impl.store.AnnouncementStatus
 import io.element.android.features.announcement.impl.store.AnnouncementStore
 import io.element.android.features.announcement.impl.store.InMemoryAnnouncementStore
 import io.element.android.libraries.architecture.Presenter
@@ -25,14 +26,14 @@ class DefaultAnnouncementServiceTest {
         val sut = createDefaultAnnouncementService(
             announcementStore = announcementStore,
         )
-        assertThat(announcementStore.announcementStatusFlow(Announcement.Space).first()).isEqualTo(AnnouncementStore.AnnouncementStatus.NeverShown)
+        assertThat(announcementStore.announcementStatusFlow(Announcement.Space).first()).isEqualTo(AnnouncementStatus.NeverShown)
         sut.showAnnouncement(Announcement.Space)
-        assertThat(announcementStore.announcementStatusFlow(Announcement.Space).first()).isEqualTo(AnnouncementStore.AnnouncementStatus.Show)
+        assertThat(announcementStore.announcementStatusFlow(Announcement.Space).first()).isEqualTo(AnnouncementStatus.Show)
         // Simulate user close the announcement
         sut.onAnnouncementDismissed(Announcement.Space)
         // Entering again the space tab should not change the value
         sut.showAnnouncement(Announcement.Space)
-        assertThat(announcementStore.announcementStatusFlow(Announcement.Space).first()).isEqualTo(AnnouncementStore.AnnouncementStatus.Shown)
+        assertThat(announcementStore.announcementStatusFlow(Announcement.Space).first()).isEqualTo(AnnouncementStatus.Shown)
     }
 
     private fun createDefaultAnnouncementService(

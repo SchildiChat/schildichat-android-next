@@ -27,23 +27,23 @@ class DefaultAnnouncementStore(
 ) : AnnouncementStore {
     private val store = preferenceDataStoreFactory.create("elementx_announcement")
 
-    override suspend fun setAnnouncementStatus(announcement: Announcement, status: AnnouncementStore.AnnouncementStatus) {
+    override suspend fun setAnnouncementStatus(announcement: Announcement, status: AnnouncementStatus) {
         val key = announcement.toKey()
         store.edit { prefs ->
             prefs[key] = status.ordinal
         }
     }
 
-    override fun announcementStatusFlow(announcement: Announcement): Flow<AnnouncementStore.AnnouncementStatus> {
+    override fun announcementStatusFlow(announcement: Announcement): Flow<AnnouncementStatus> {
         val key = announcement.toKey()
         // For NewNotificationSound, a migration will set it to Show on application upgrade (see AppMigration08)
         val defaultStatus = when (announcement) {
-            Announcement.Space -> AnnouncementStore.AnnouncementStatus.NeverShown
-            Announcement.NewNotificationSound -> AnnouncementStore.AnnouncementStatus.Shown
+            Announcement.Space -> AnnouncementStatus.NeverShown
+            Announcement.NewNotificationSound -> AnnouncementStatus.Shown
         }
         return store.data.map { prefs ->
             val ordinal = prefs[key] ?: defaultStatus.ordinal
-            AnnouncementStore.AnnouncementStatus.entries.getOrElse(ordinal) { defaultStatus }
+            AnnouncementStatus.entries.getOrElse(ordinal) { defaultStatus }
         }
     }
 

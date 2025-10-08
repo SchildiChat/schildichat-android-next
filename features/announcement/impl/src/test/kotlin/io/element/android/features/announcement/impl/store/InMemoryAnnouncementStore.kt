@@ -13,23 +13,23 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class InMemoryAnnouncementStore(
-    initialSpaceAnnouncementStatus: AnnouncementStore.AnnouncementStatus = AnnouncementStore.AnnouncementStatus.NeverShown,
-    initialNewNotificationSoundAnnouncementStatus: AnnouncementStore.AnnouncementStatus = AnnouncementStore.AnnouncementStatus.NeverShown,
+    initialSpaceAnnouncementStatus: AnnouncementStatus = AnnouncementStatus.NeverShown,
+    initialNewNotificationSoundAnnouncementStatus: AnnouncementStatus = AnnouncementStatus.NeverShown,
 ) : AnnouncementStore {
     private val spaceAnnouncement = MutableStateFlow(initialSpaceAnnouncementStatus)
     private val newNotificationSoundAnnouncement = MutableStateFlow(initialNewNotificationSoundAnnouncementStatus)
 
-    override suspend fun setAnnouncementStatus(announcement: Announcement, status: AnnouncementStore.AnnouncementStatus) {
+    override suspend fun setAnnouncementStatus(announcement: Announcement, status: AnnouncementStatus) {
         announcement.toMutableStateFlow().value = status
     }
 
-    override fun announcementStatusFlow(announcement: Announcement): Flow<AnnouncementStore.AnnouncementStatus> {
+    override fun announcementStatusFlow(announcement: Announcement): Flow<AnnouncementStatus> {
         return announcement.toMutableStateFlow().asStateFlow()
     }
 
     override suspend fun reset() {
-        spaceAnnouncement.value = AnnouncementStore.AnnouncementStatus.NeverShown
-        newNotificationSoundAnnouncement.value = AnnouncementStore.AnnouncementStatus.NeverShown
+        spaceAnnouncement.value = AnnouncementStatus.NeverShown
+        newNotificationSoundAnnouncement.value = AnnouncementStatus.NeverShown
     }
 
     private fun Announcement.toMutableStateFlow() = when (this) {

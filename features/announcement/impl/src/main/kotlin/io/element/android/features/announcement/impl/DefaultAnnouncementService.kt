@@ -21,6 +21,7 @@ import io.element.android.features.announcement.api.Announcement
 import io.element.android.features.announcement.api.AnnouncementService
 import io.element.android.features.announcement.impl.spaces.SpaceAnnouncementState
 import io.element.android.features.announcement.impl.spaces.SpaceAnnouncementView
+import io.element.android.features.announcement.impl.store.AnnouncementStatus
 import io.element.android.features.announcement.impl.store.AnnouncementStore
 import io.element.android.libraries.architecture.Presenter
 import kotlinx.coroutines.flow.Flow
@@ -38,13 +39,13 @@ class DefaultAnnouncementService(
         when (announcement) {
             Announcement.Space -> showSpaceAnnouncement()
             Announcement.NewNotificationSound -> {
-                announcementStore.setAnnouncementStatus(Announcement.NewNotificationSound, AnnouncementStore.AnnouncementStatus.Show)
+                announcementStore.setAnnouncementStatus(Announcement.NewNotificationSound, AnnouncementStatus.Show)
             }
         }
     }
 
     override suspend fun onAnnouncementDismissed(announcement: Announcement) {
-        announcementStore.setAnnouncementStatus(announcement, AnnouncementStore.AnnouncementStatus.Shown)
+        announcementStore.setAnnouncementStatus(announcement, AnnouncementStatus.Shown)
     }
 
     override fun announcementsToShowFlow(): Flow<List<Announcement>> {
@@ -53,10 +54,10 @@ class DefaultAnnouncementService(
             announcementStore.announcementStatusFlow(Announcement.NewNotificationSound),
         ) { spaceAnnouncementStatus, newNotificationSoundStatus ->
             buildList {
-                if (spaceAnnouncementStatus == AnnouncementStore.AnnouncementStatus.Show) {
+                if (spaceAnnouncementStatus == AnnouncementStatus.Show) {
                     add(Announcement.Space)
                 }
-                if (newNotificationSoundStatus == AnnouncementStore.AnnouncementStatus.Show) {
+                if (newNotificationSoundStatus == AnnouncementStatus.Show) {
                     add(Announcement.NewNotificationSound)
                 }
             }
@@ -65,8 +66,8 @@ class DefaultAnnouncementService(
 
     private suspend fun showSpaceAnnouncement() {
         val currentValue = announcementStore.announcementStatusFlow(Announcement.Space).first()
-        if (currentValue == AnnouncementStore.AnnouncementStatus.NeverShown) {
-            announcementStore.setAnnouncementStatus(Announcement.Space, AnnouncementStore.AnnouncementStatus.Show)
+        if (currentValue == AnnouncementStatus.NeverShown) {
+            announcementStore.setAnnouncementStatus(Announcement.Space, AnnouncementStatus.Show)
         }
     }
 

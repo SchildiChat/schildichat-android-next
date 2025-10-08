@@ -21,10 +21,4 @@ interface AnnouncementStore {
     ): Flow<AnnouncementStatus>
 
     suspend fun reset()
-
-    enum class AnnouncementStatus {
-        NeverShown,
-        Show,
-        Shown,
-    }
 }

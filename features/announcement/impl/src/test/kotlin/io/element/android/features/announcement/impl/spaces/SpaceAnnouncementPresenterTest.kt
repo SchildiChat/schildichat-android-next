@@ -9,6 +9,7 @@ package io.element.android.features.announcement.impl.spaces
 
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.announcement.api.Announcement
+import io.element.android.features.announcement.impl.store.AnnouncementStatus
 import io.element.android.features.announcement.impl.store.AnnouncementStore
 import io.element.android.features.announcement.impl.store.InMemoryAnnouncementStore
 import io.element.android.tests.testutils.test
@@ -24,10 +25,10 @@ class SpaceAnnouncementPresenterTest {
             announcementStore = store,
         )
         presenter.test {
-            assertThat(store.announcementStatusFlow(Announcement.Space).first()).isEqualTo(AnnouncementStore.AnnouncementStatus.NeverShown)
+            assertThat(store.announcementStatusFlow(Announcement.Space).first()).isEqualTo(AnnouncementStatus.NeverShown)
             val state = awaitItem()
             state.eventSink(SpaceAnnouncementEvents.Continue)
-            assertThat(store.announcementStatusFlow(Announcement.Space).first()).isEqualTo(AnnouncementStore.AnnouncementStatus.Shown)
+            assertThat(store.announcementStatusFlow(Announcement.Space).first()).isEqualTo(AnnouncementStatus.Shown)
         }
     }
 }

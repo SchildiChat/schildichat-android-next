@@ -24,7 +24,7 @@ class AnnouncementPresenter(
     @Composable
     override fun present(): AnnouncementState {
         val showSpaceAnnouncement by remember {
-            announcementStore.announcementStateFlow(Announcement.Space).map {
+            announcementStore.announcementStatusFlow(Announcement.Space).map {
                 it == AnnouncementStore.AnnouncementStatus.Show
             }
         }.collectAsState(false)

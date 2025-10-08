@@ -34,7 +34,7 @@ class DefaultAnnouncementStore(
         }
     }
 
-    override fun announcementStateFlow(announcement: Announcement): Flow<AnnouncementStore.AnnouncementStatus> {
+    override fun announcementStatusFlow(announcement: Announcement): Flow<AnnouncementStore.AnnouncementStatus> {
         val key = announcement.toKey()
         // For NewNotificationSound, a migration will set it to Show on application upgrade (see AppMigration08)
         val defaultStatus = when (announcement) {

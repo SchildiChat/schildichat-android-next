@@ -26,7 +26,7 @@ class InMemoryAnnouncementStore(
         }
     }
 
-    override fun announcementStateFlow(announcement: Announcement): Flow<AnnouncementStore.AnnouncementStatus> {
+    override fun announcementStatusFlow(announcement: Announcement): Flow<AnnouncementStore.AnnouncementStatus> {
         return when (announcement) {
             Announcement.Space -> spaceAnnouncement.asStateFlow()
             Announcement.NewNotificationSound -> newNotificationSoundAnnouncement.asStateFlow()

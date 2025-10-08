@@ -16,7 +16,7 @@ interface AnnouncementStore {
         status: AnnouncementStatus,
     )
 
-    fun announcementStateFlow(
+    fun announcementStatusFlow(
         announcement: Announcement,
     ): Flow<AnnouncementStatus>
 

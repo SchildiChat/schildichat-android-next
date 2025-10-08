@@ -25,14 +25,14 @@ class DefaultAnnouncementServiceTest {
         val sut = createDefaultAnnouncementService(
             announcementStore = announcementStore,
         )
-        assertThat(announcementStore.announcementStateFlow(Announcement.Space).first()).isEqualTo(AnnouncementStore.AnnouncementStatus.NeverShown)
+        assertThat(announcementStore.announcementStatusFlow(Announcement.Space).first()).isEqualTo(AnnouncementStore.AnnouncementStatus.NeverShown)
         sut.showAnnouncement(Announcement.Space)
-        assertThat(announcementStore.announcementStateFlow(Announcement.Space).first()).isEqualTo(AnnouncementStore.AnnouncementStatus.Show)
+        assertThat(announcementStore.announcementStatusFlow(Announcement.Space).first()).isEqualTo(AnnouncementStore.AnnouncementStatus.Show)
         // Simulate user close the announcement
         sut.onAnnouncementDismissed(Announcement.Space)
         // Entering again the space tab should not change the value
         sut.showAnnouncement(Announcement.Space)
-        assertThat(announcementStore.announcementStateFlow(Announcement.Space).first()).isEqualTo(AnnouncementStore.AnnouncementStatus.Shown)
+        assertThat(announcementStore.announcementStatusFlow(Announcement.Space).first()).isEqualTo(AnnouncementStore.AnnouncementStatus.Shown)
     }
 
     private fun createDefaultAnnouncementService(

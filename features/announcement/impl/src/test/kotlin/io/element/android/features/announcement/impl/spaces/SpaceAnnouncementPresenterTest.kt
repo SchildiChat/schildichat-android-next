@@ -24,10 +24,10 @@ class SpaceAnnouncementPresenterTest {
             announcementStore = store,
         )
         presenter.test {
-            assertThat(store.announcementStateFlow(Announcement.Space).first()).isEqualTo(AnnouncementStore.AnnouncementStatus.NeverShown)
+            assertThat(store.announcementStatusFlow(Announcement.Space).first()).isEqualTo(AnnouncementStore.AnnouncementStatus.NeverShown)
             val state = awaitItem()
             state.eventSink(SpaceAnnouncementEvents.Continue)
-            assertThat(store.announcementStateFlow(Announcement.Space).first()).isEqualTo(AnnouncementStore.AnnouncementStatus.Shown)
+            assertThat(store.announcementStatusFlow(Announcement.Space).first()).isEqualTo(AnnouncementStore.AnnouncementStatus.Shown)
         }
     }
 }

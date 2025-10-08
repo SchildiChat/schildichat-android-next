@@ -49,8 +49,8 @@ class DefaultAnnouncementService(
 
     override fun announcementsToShowFlow(): Flow<List<Announcement>> {
         return combine(
-            announcementStore.announcementStateFlow(Announcement.Space),
-            announcementStore.announcementStateFlow(Announcement.NewNotificationSound),
+            announcementStore.announcementStatusFlow(Announcement.Space),
+            announcementStore.announcementStatusFlow(Announcement.NewNotificationSound),
         ) { spaceAnnouncementStatus, newNotificationSoundStatus ->
             buildList {
                 if (spaceAnnouncementStatus == AnnouncementStore.AnnouncementStatus.Show) {
@@ -64,7 +64,7 @@ class DefaultAnnouncementService(
     }
 
     private suspend fun showSpaceAnnouncement() {
-        val currentValue = announcementStore.announcementStateFlow(Announcement.Space).first()
+        val currentValue = announcementStore.announcementStatusFlow(Announcement.Space).first()
         if (currentValue == AnnouncementStore.AnnouncementStatus.NeverShown) {
             announcementStore.setAnnouncementStatus(Announcement.Space, AnnouncementStore.AnnouncementStatus.Show)
         }

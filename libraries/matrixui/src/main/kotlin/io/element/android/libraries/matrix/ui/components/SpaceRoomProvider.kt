@@ -18,17 +18,16 @@ class SpaceRoomProvider : PreviewParameterProvider<SpaceRoom> {
     override val values: Sequence<SpaceRoom> = sequenceOf(
         aSpaceRoom(
             roomType = RoomType.Room,
-            rawName = "Room name with topic",
+            displayName = "Room name with topic",
             topic = "Room topic that is quite long and might be truncated"
         ),
         aSpaceRoom(
             roomType = RoomType.Room,
-            rawName = "Room name no topic",
+            displayName = "Room name no topic",
             state = CurrentUserMembership.LEFT,
         ),
         aSpaceRoom(
             roomType = RoomType.Room,
-            rawName = null,
             isDirect = true,
             heroes = listOf(aMatrixUser(displayName = "Alice")),
             state = CurrentUserMembership.JOINED,
@@ -36,13 +35,13 @@ class SpaceRoomProvider : PreviewParameterProvider<SpaceRoom> {
         ),
         aSpaceRoom(
             roomType = RoomType.Room,
-            rawName = "Room name with topic",
+            displayName = "Room name with topic",
             topic = "Room topic that is quite long and might be truncated",
             state = CurrentUserMembership.INVITED,
         ),
         aSpaceRoom(
             roomType = RoomType.Room,
-            rawName = "Room name no topic",
+            displayName = "Room name no topic",
             state = CurrentUserMembership.INVITED,
         ),
         aSpaceRoom(
@@ -60,21 +59,11 @@ class SpaceRoomProvider : PreviewParameterProvider<SpaceRoom> {
             state = CurrentUserMembership.LEFT,
         ),
         aSpaceRoom(
-            rawName = null,
             numJoinedMembers = 5,
             childrenCount = 10,
             worldReadable = true,
             avatarUrl = "anUrl",
             roomId = RoomId("!spaceId2:example.com"),
-            state = CurrentUserMembership.INVITED,
-        ),
-        aSpaceRoom(
-            rawName = null,
-            numJoinedMembers = 5,
-            childrenCount = 10,
-            worldReadable = true,
-            avatarUrl = "anUrl",
-            roomId = RoomId("!spaceId3:example.com"),
             state = CurrentUserMembership.INVITED,
         ),
     )

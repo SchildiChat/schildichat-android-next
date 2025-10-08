@@ -30,21 +30,11 @@ class SpaceRoomProvider : PreviewParameterProvider<SpaceRoom> {
             roomId = RoomId("!spaceId1:example.com"),
         ),
         aSpaceRoom(
-            rawName = null,
             numJoinedMembers = 5,
             childrenCount = 10,
             worldReadable = true,
             avatarUrl = "anUrl",
             roomId = RoomId("!spaceId2:example.com"),
-            state = CurrentUserMembership.INVITED,
-        ),
-        aSpaceRoom(
-            rawName = null,
-            numJoinedMembers = 5,
-            childrenCount = 10,
-            worldReadable = true,
-            avatarUrl = "anUrl",
-            roomId = RoomId("!spaceId3:example.com"),
             state = CurrentUserMembership.INVITED,
         ),
     )

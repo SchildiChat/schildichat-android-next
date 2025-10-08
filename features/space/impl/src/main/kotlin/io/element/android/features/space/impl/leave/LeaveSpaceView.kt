@@ -276,13 +276,7 @@ private fun SpaceItem(
             Text(
                 modifier = Modifier
                     .padding(end = 16.dp),
-                text = room.name ?: stringResource(
-                    if (room.isSpace) {
-                        CommonStrings.common_no_space_name
-                    } else {
-                        CommonStrings.common_no_room_name
-                    },
-                ),
+                text = room.displayName,
                 color = ElementTheme.colors.textPrimary,
                 style = ElementTheme.typography.fontBodyLgMedium,
                 maxLines = 1,

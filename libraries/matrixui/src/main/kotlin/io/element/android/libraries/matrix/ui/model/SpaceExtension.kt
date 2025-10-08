@@ -20,7 +20,7 @@ import io.element.android.libraries.ui.strings.CommonStrings
 
 fun SpaceRoom.getAvatarData(size: AvatarSize) = AvatarData(
     id = roomId.value,
-    name = name,
+    name = displayName,
     url = avatarUrl,
     size = size,
 )

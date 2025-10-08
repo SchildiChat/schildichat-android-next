@@ -39,7 +39,7 @@ fun HomeSpacesView(
             is CurrentSpace.Space -> item {
                 SpaceHeaderView(
                     avatarData = space.spaceRoom.getAvatarData(AvatarSize.SpaceHeader),
-                    name = space.spaceRoom.name,
+                    name = space.spaceRoom.displayName,
                     topic = space.spaceRoom.topic,
                     visibility = space.spaceRoom.visibility,
                     heroes = space.spaceRoom.heroes.toImmutableList(),

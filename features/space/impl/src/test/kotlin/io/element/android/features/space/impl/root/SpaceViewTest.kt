@@ -31,6 +31,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
 class SpaceViewTest {
@@ -83,6 +84,7 @@ class SpaceViewTest {
         eventsRecorder.assertSingle(SpaceEvents.Join(aSpaceRoom))
     }
 
+    @Config(qualifiers = "h1024dp")
     @Test
     fun `clicking on accept invite emits the expected Event`() {
         val aSpaceRoom = aSpaceRoom(roomId = A_ROOM_ID, state = CurrentUserMembership.INVITED)
@@ -97,6 +99,7 @@ class SpaceViewTest {
         eventsRecorder.assertSingle(SpaceEvents.AcceptInvite(aSpaceRoom))
     }
 
+    @Config(qualifiers = "h1024dp")
     @Test
     fun `clicking on decline invite emits the expected Event`() {
         val aSpaceRoom = aSpaceRoom(roomId = A_ROOM_ID, state = CurrentUserMembership.INVITED)

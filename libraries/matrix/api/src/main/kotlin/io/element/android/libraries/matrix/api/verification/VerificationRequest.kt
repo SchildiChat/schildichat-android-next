@@ -12,6 +12,7 @@ import androidx.compose.runtime.Immutable
 import io.element.android.libraries.matrix.api.core.UserId
 import kotlinx.parcelize.Parcelize
 
+@Immutable
 sealed interface VerificationRequest : Parcelable {
     @Immutable
     sealed interface Outgoing : VerificationRequest {

@@ -176,11 +176,11 @@ private fun LeaveSpaceHeader(
         )
         if (state.showQuickAction) {
             if (state.areAllSelected) {
-                QuickActionButton(CommonStrings.common_deselect_all) {
+                QuickActionButton(CommonStrings.action_deselect_all) {
                     state.eventSink(LeaveSpaceEvents.DeselectAllRooms)
                 }
             } else {
-                QuickActionButton(resId = CommonStrings.common_select_all) {
+                QuickActionButton(resId = CommonStrings.action_select_all) {
                     state.eventSink(LeaveSpaceEvents.SelectAllRooms)
                 }
             }

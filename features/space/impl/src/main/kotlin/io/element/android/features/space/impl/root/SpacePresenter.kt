@@ -81,6 +81,8 @@ class SpacePresenter(
         val currentSpace by spaceRoomList.currentSpaceFlow.collectAsState()
         val (joinActions, setJoinActions) = remember { mutableStateOf(emptyMap<RoomId, AsyncAction<Unit>>()) }
 
+        var topicViewerState: TopicViewerState by remember { mutableStateOf(TopicViewerState.Hidden) }
+
         LaunchedEffect(children) {
             // Remove joined children from the join actions
             val joinedChildren = children
@@ -113,6 +115,8 @@ class SpacePresenter(
                         AcceptDeclineInviteEvents.DeclineInvite(invite = event.spaceRoom.toInviteData(), shouldConfirm = true, blockUser = false)
                     )
                 }
+                SpaceEvents.HideTopicViewer -> topicViewerState = TopicViewerState.Hidden
+                is SpaceEvents.ShowTopicViewer -> topicViewerState = TopicViewerState.Shown(event.topic)
             }
         }
         return SpaceState(
@@ -123,6 +127,7 @@ class SpacePresenter(
             hasMoreToLoad = hasMoreToLoad,
             joinActions = joinActions.toImmutableMap(),
             acceptDeclineInviteState = acceptDeclineInviteState,
+            topicViewerState = topicViewerState,
             eventSink = ::handleEvents,
         )
     }

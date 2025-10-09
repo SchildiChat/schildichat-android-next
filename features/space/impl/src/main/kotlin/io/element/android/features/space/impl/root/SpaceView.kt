@@ -7,6 +7,7 @@
 
 package io.element.android.features.space.impl.root
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,6 +34,8 @@ import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.libraries.designsystem.atomic.molecules.InviteButtonsRowMolecule
+import io.element.android.libraries.designsystem.components.ClickableLinkText
+import io.element.android.libraries.designsystem.components.SimpleModalBottomSheet
 import io.element.android.libraries.designsystem.components.async.AsyncIndicator
 import io.element.android.libraries.designsystem.components.async.AsyncIndicatorHost
 import io.element.android.libraries.designsystem.components.async.rememberAsyncIndicatorState
@@ -61,6 +64,7 @@ import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SpaceView(
     state: SpaceState,
@@ -87,7 +91,10 @@ fun SpaceView(
             ) {
                 SpaceViewContent(
                     state = state,
-                    onRoomClick = onRoomClick
+                    onRoomClick = onRoomClick,
+                    onTopicClick = { topic ->
+                        state.eventSink(SpaceEvents.ShowTopicViewer(topic))
+                    }
                 )
                 JoinRoomFailureEffect(
                     hasAnyFailure = state.hasAnyFailure,
@@ -97,6 +104,14 @@ fun SpaceView(
             }
         },
     )
+    if (state.topicViewerState is TopicViewerState.Shown) {
+        TopicViewerBottomSheet(
+            topicViewerState = state.topicViewerState,
+            onDismiss = {
+                state.eventSink(SpaceEvents.HideTopicViewer)
+            }
+        )
+    }
 }
 
 @Composable
@@ -121,9 +136,30 @@ private fun JoinRoomFailureEffect(
 }
 
 @Composable
+private fun TopicViewerBottomSheet(
+    topicViewerState: TopicViewerState.Shown,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    SimpleModalBottomSheet(
+        title = stringResource(CommonStrings.common_description),
+        onDismiss = onDismiss,
+        modifier = modifier
+    ) {
+        ClickableLinkText(
+            text = topicViewerState.topic,
+            interactionSource = remember { MutableInteractionSource() },
+            style = ElementTheme.typography.fontBodyMdRegular,
+            color = ElementTheme.colors.textSecondary,
+        )
+    }
+}
+
+@Composable
 private fun SpaceViewContent(
     state: SpaceState,
     onRoomClick: (spaceRoom: SpaceRoom) -> Unit,
+    onTopicClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier.fillMaxSize()) {
@@ -134,9 +170,11 @@ private fun SpaceViewContent(
                     avatarData = currentSpace.getAvatarData(AvatarSize.SpaceHeader),
                     name = currentSpace.displayName,
                     topic = currentSpace.topic,
+                    topicMaxLines = 2,
                     visibility = currentSpace.visibility,
                     heroes = currentSpace.heroes.toImmutableList(),
                     numberOfMembers = currentSpace.numJoinedMembers,
+                    onTopicClick = onTopicClick
                 )
             }
         }

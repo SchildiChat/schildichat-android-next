@@ -60,6 +60,7 @@ class SpacePresenterTest {
             assertThat(state.hasMoreToLoad).isTrue()
             assertThat(state.joinActions).isEmpty()
             assertThat(state.acceptDeclineInviteState).isEqualTo(anAcceptDeclineInviteState())
+            assertThat(state.topicViewerState).isEqualTo(TopicViewerState.Hidden)
             advanceUntilIdle()
             paginateResult.assertions().isCalledOnce()
         }
@@ -233,6 +234,24 @@ class SpacePresenterTest {
             errorState.eventSink(SpaceEvents.ClearFailures)
             val clearedState = awaitItem()
             assertThat(clearedState.joinActions[A_ROOM_ID_2]).isEqualTo(AsyncAction.Uninitialized)
+        }
+    }
+
+    @Test
+    fun `present - topic viewer state`() = runTest {
+        val paginateResult = lambdaRecorder<Result<Unit>> {
+            Result.success(Unit)
+        }
+        val spaceRoomList = FakeSpaceRoomList(paginateResult = paginateResult)
+        val presenter = createSpacePresenter(spaceRoomList = spaceRoomList)
+        presenter.test {
+            val state = awaitItem()
+            assertThat(state.topicViewerState).isEqualTo(TopicViewerState.Hidden)
+            advanceUntilIdle()
+            state.eventSink(SpaceEvents.ShowTopicViewer("topic"))
+            assertThat(awaitItem().topicViewerState).isEqualTo(TopicViewerState.Shown("topic"))
+            state.eventSink(SpaceEvents.HideTopicViewer)
+            assertThat(awaitItem().topicViewerState).isEqualTo(TopicViewerState.Hidden)
         }
     }
 

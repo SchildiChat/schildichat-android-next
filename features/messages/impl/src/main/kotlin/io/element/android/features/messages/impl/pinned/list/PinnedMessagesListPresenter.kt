@@ -105,7 +105,7 @@ class PinnedMessagesListPresenter(
                 // We do not care about the call state here.
                 roomCallState = aStandByCallState(),
                 // don't compute this value or the pin icon will be shown
-                pinnedEventIds = emptyList(),
+                pinnedEventIds = persistentListOf(),
                 typingNotificationState = TypingNotificationState(
                     renderTypingNotifications = false,
                     typingMembers = persistentListOf(),

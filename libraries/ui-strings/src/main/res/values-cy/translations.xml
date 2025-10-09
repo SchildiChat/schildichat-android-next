@@ -88,6 +88,7 @@
   <string name="action_decline">"Gwrthod"</string>
   <string name="action_decline_and_block">"Gwrthod a rhwystro"</string>
   <string name="action_delete_poll">"Dileu Pleidlais"</string>
+  <string name="action_deselect_all">"Dad ddewis y cyfan"</string>
   <string name="action_disable">"Analluogi"</string>
   <string name="action_discard">"Dileu"</string>
   <string name="action_dismiss">"Cau"</string>
@@ -146,6 +147,7 @@
   <string name="action_retry_decryption">"Cynnig arall ar ddadgryptio"</string>
   <string name="action_save">"Cadw"</string>
   <string name="action_search">"Chwilio"</string>
+  <string name="action_select_all">"Dewis y cyfan"</string>
   <string name="action_send">"Anfon"</string>
   <string name="action_send_edited_message">"Anfon neges wedi\'i golygu"</string>
   <string name="action_send_message">"Anfonwch neges"</string>
@@ -198,7 +200,6 @@
   <string name="common_dark">"Tywyll"</string>
   <string name="common_decryption_error">"Gwall dadgryptio"</string>
   <string name="common_description">"Disgrifiad"</string>
-  <string name="common_deselect_all">"Dad ddewis y cyfan"</string>
   <string name="common_developer_options">"Dewisiadau datblygwr"</string>
   <string name="common_device_id">"ID dyfais"</string>
   <string name="common_direct_chat">"Sgwrs uniongyrchol"</string>
@@ -330,7 +331,6 @@ Rheswm: %1$s."</string>
   <string name="common_security">"Diogelwch"</string>
   <string name="common_seen_by">"Wedi\'i weld gan"</string>
   <string name="common_select_account">"Dewis cyfrif"</string>
-  <string name="common_select_all">"Dewis y cyfan"</string>
   <string name="common_send_to">"Anfon at"</string>
   <string name="common_sending">"Yn anfon…"</string>
   <string name="common_sending_failed">"Methodd anfon"</string>

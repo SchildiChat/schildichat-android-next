@@ -80,6 +80,7 @@
   <string name="action_decline">"Decline"</string>
   <string name="action_decline_and_block">"Decline and block"</string>
   <string name="action_delete_poll">"Delete Poll"</string>
+  <string name="action_deselect_all">"Deselect all"</string>
   <string name="action_disable">"Disable"</string>
   <string name="action_discard">"Discard"</string>
   <string name="action_dismiss">"Dismiss"</string>
@@ -140,6 +141,7 @@
   <string name="action_retry_decryption">"Retry decryption"</string>
   <string name="action_save">"Save"</string>
   <string name="action_search">"Search"</string>
+  <string name="action_select_all">"Select all"</string>
   <string name="action_send">"Send"</string>
   <string name="action_send_edited_message">"Send edited message"</string>
   <string name="action_send_message">"Send message"</string>
@@ -193,7 +195,6 @@
   <string name="common_dark">"Dark"</string>
   <string name="common_decryption_error">"Decryption error"</string>
   <string name="common_description">"Description"</string>
-  <string name="common_deselect_all">"Deselect all"</string>
   <string name="common_developer_options">"Developer options"</string>
   <string name="common_device_id">"Device ID"</string>
   <string name="common_direct_chat">"Direct chat"</string>
@@ -306,7 +307,6 @@ Reason: %1$s."</string>
   <string name="common_security">"Security"</string>
   <string name="common_seen_by">"Seen by"</string>
   <string name="common_select_account">"Select an account"</string>
-  <string name="common_select_all">"Select all"</string>
   <string name="common_send_to">"Send to"</string>
   <string name="common_sending">"Sending…"</string>
   <string name="common_sending_failed">"Sending failed"</string>

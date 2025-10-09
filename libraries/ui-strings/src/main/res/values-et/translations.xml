@@ -80,6 +80,7 @@
   <string name="action_decline">"Keeldu"</string>
   <string name="action_decline_and_block">"Keeldu ja blokeeri"</string>
   <string name="action_delete_poll">"Kustuta küsitlus"</string>
+  <string name="action_deselect_all">"Eemalda kõik valikud"</string>
   <string name="action_disable">"Lülita välja"</string>
   <string name="action_discard">"Loobu"</string>
   <string name="action_dismiss">"Lõpeta"</string>
@@ -139,6 +140,7 @@
   <string name="action_retry_decryption">"Proovi dekrüptimist uuesti"</string>
   <string name="action_save">"Salvesta"</string>
   <string name="action_search">"Otsi"</string>
+  <string name="action_select_all">"Vali kõik"</string>
   <string name="action_send">"Saada"</string>
   <string name="action_send_edited_message">"Saada muudetud sõnum"</string>
   <string name="action_send_message">"Saada sõnum"</string>
@@ -191,7 +193,6 @@
   <string name="common_dark">"Tume"</string>
   <string name="common_decryption_error">"Dekrüptimisviga"</string>
   <string name="common_description">"Kirjeldus"</string>
-  <string name="common_deselect_all">"Eemalda kõik valikud"</string>
   <string name="common_developer_options">"Arendaja valikud"</string>
   <string name="common_device_id">"Seadme tunnus"</string>
   <string name="common_direct_chat">"Otsevestlus"</string>
@@ -303,7 +304,6 @@ Põhjus: %1$s."</string>
   <string name="common_security">"Turvalisus"</string>
   <string name="common_seen_by">"Seda nägi(d)"</string>
   <string name="common_select_account">"Vali kasutajakonto"</string>
-  <string name="common_select_all">"Vali kõik"</string>
   <string name="common_send_to">"Saada kasutajale"</string>
   <string name="common_sending">"Saadame…"</string>
   <string name="common_sending_failed">"Saatmine ei õnnestunud"</string>

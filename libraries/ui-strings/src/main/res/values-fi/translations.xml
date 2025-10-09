@@ -80,6 +80,7 @@
   <string name="action_decline">"Hylkää"</string>
   <string name="action_decline_and_block">"Hylkää ja estä"</string>
   <string name="action_delete_poll">"Poista kysely"</string>
+  <string name="action_deselect_all">"Poista kaikki valinnat"</string>
   <string name="action_disable">"Poista käytöstä"</string>
   <string name="action_discard">"Hylkää"</string>
   <string name="action_dismiss">"Sulje"</string>
@@ -140,6 +141,7 @@
   <string name="action_retry_decryption">"Yritä salauksen purkamista uudelleen"</string>
   <string name="action_save">"Tallenna"</string>
   <string name="action_search">"Hae"</string>
+  <string name="action_select_all">"Valitse kaikki"</string>
   <string name="action_send">"Lähetä"</string>
   <string name="action_send_edited_message">"Lähetä muokattu viesti"</string>
   <string name="action_send_message">"Lähetä viesti"</string>
@@ -193,7 +195,6 @@
   <string name="common_dark">"Tumma"</string>
   <string name="common_decryption_error">"Salauksen purkuvirhe"</string>
   <string name="common_description">"Kuvaus"</string>
-  <string name="common_deselect_all">"Poista kaikki valinnat"</string>
   <string name="common_developer_options">"Kehittäjän asetukset"</string>
   <string name="common_device_id">"Laitteen tunnus"</string>
   <string name="common_direct_chat">"Yksityinen keskustelu"</string>
@@ -306,7 +307,6 @@ Syy: %1$s."</string>
   <string name="common_security">"Turvallisuus"</string>
   <string name="common_seen_by">"Nähneet henkilöt"</string>
   <string name="common_select_account">"Valitse tili"</string>
-  <string name="common_select_all">"Valitse kaikki"</string>
   <string name="common_send_to">"Jaa"</string>
   <string name="common_sending">"Lähetetään…"</string>
   <string name="common_sending_failed">"Lähetys epäonnistui"</string>

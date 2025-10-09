@@ -78,6 +78,7 @@
   <string name="action_decline">"拒绝"</string>
   <string name="action_decline_and_block">"拒绝并屏蔽"</string>
   <string name="action_delete_poll">"删除投票"</string>
+  <string name="action_deselect_all">"取消全选"</string>
   <string name="action_disable">"禁用"</string>
   <string name="action_discard">"丢弃"</string>
   <string name="action_dismiss">"关闭"</string>
@@ -137,6 +138,7 @@
   <string name="action_retry_decryption">"重试解密"</string>
   <string name="action_save">"保存"</string>
   <string name="action_search">"搜索"</string>
+  <string name="action_select_all">"全选"</string>
   <string name="action_send">"发送"</string>
   <string name="action_send_edited_message">"发送编辑后的消息"</string>
   <string name="action_send_message">"发送消息"</string>
@@ -189,7 +191,6 @@
   <string name="common_dark">"深色"</string>
   <string name="common_decryption_error">"解密错误"</string>
   <string name="common_description">"描述"</string>
-  <string name="common_deselect_all">"取消全选"</string>
   <string name="common_developer_options">"开发者选项"</string>
   <string name="common_device_id">"设备 ID"</string>
   <string name="common_direct_chat">"私聊"</string>
@@ -297,7 +298,6 @@
   <string name="common_security">"安全"</string>
   <string name="common_seen_by">"已读"</string>
   <string name="common_select_account">"选择账户"</string>
-  <string name="common_select_all">"全选"</string>
   <string name="common_send_to">"发送至"</string>
   <string name="common_sending">"正在发送…"</string>
   <string name="common_sending_failed">"发送失败"</string>

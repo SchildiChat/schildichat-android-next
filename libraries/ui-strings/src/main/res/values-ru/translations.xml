@@ -82,6 +82,7 @@
   <string name="action_decline">"Отклонить"</string>
   <string name="action_decline_and_block">"Отклонить и заблокировать"</string>
   <string name="action_delete_poll">"Удалить опрос"</string>
+  <string name="action_deselect_all">"Отменить выбор"</string>
   <string name="action_disable">"Отключить"</string>
   <string name="action_discard">"Отменить"</string>
   <string name="action_dismiss">"Отклонить"</string>
@@ -141,6 +142,7 @@
   <string name="action_retry_decryption">"Повторите расшифровку"</string>
   <string name="action_save">"Сохранить"</string>
   <string name="action_search">"Поиск"</string>
+  <string name="action_select_all">"Выбрать все"</string>
   <string name="action_send">"Отправить"</string>
   <string name="action_send_edited_message">"Отправить изменённое сообщение"</string>
   <string name="action_send_message">"Отправить сообщение"</string>
@@ -194,7 +196,6 @@
   <string name="common_dark">"Тёмное"</string>
   <string name="common_decryption_error">"Ошибка расшифровки"</string>
   <string name="common_description">"Описание"</string>
-  <string name="common_deselect_all">"Отменить выбор"</string>
   <string name="common_developer_options">"Для разработчика"</string>
   <string name="common_device_id">"Идентификатор устройства"</string>
   <string name="common_direct_chat">"Личный чат"</string>
@@ -312,7 +313,6 @@
   <string name="common_security">"Безопасность"</string>
   <string name="common_seen_by">"Просмотрено"</string>
   <string name="common_select_account">"Выберите учетную запись"</string>
-  <string name="common_select_all">"Выбрать все"</string>
   <string name="common_send_to">"Отправить"</string>
   <string name="common_sending">"Отправка…"</string>
   <string name="common_sending_failed">"Сбой отправки"</string>

@@ -82,6 +82,7 @@
   <string name="action_decline">"Odmítnout"</string>
   <string name="action_decline_and_block">"Odmítnout a zablokovat"</string>
   <string name="action_delete_poll">"Odstranit hlasování"</string>
+  <string name="action_deselect_all">"Odznačit vše"</string>
   <string name="action_disable">"Zakázat"</string>
   <string name="action_discard">"Vyřadit"</string>
   <string name="action_dismiss">"Zavřít"</string>
@@ -140,6 +141,7 @@
   <string name="action_retry_decryption">"Opakovat dešifrování"</string>
   <string name="action_save">"Uložit"</string>
   <string name="action_search">"Hledat"</string>
+  <string name="action_select_all">"Vybrat vše"</string>
   <string name="action_send">"Odeslat"</string>
   <string name="action_send_edited_message">"Odeslat upravenou zprávu"</string>
   <string name="action_send_message">"Odeslat zprávu"</string>
@@ -192,7 +194,6 @@
   <string name="common_dark">"Tmavé"</string>
   <string name="common_decryption_error">"Chyba dešifrování"</string>
   <string name="common_description">"Popis"</string>
-  <string name="common_deselect_all">"Odznačit vše"</string>
   <string name="common_developer_options">"Možnosti pro vývojáře"</string>
   <string name="common_device_id">"ID zařízení"</string>
   <string name="common_direct_chat">"Přímý chat"</string>
@@ -307,7 +308,6 @@ Důvod: %1$s."</string>
   <string name="common_security">"Zabezpečení"</string>
   <string name="common_seen_by">"Viděno"</string>
   <string name="common_select_account">"Vybrat účet"</string>
-  <string name="common_select_all">"Vybrat vše"</string>
   <string name="common_send_to">"Odeslat do"</string>
   <string name="common_sending">"Odesílání…"</string>
   <string name="common_sending_failed">"Odeslání se nezdařilo"</string>

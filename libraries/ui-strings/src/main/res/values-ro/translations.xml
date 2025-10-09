@@ -82,6 +82,7 @@
   <string name="action_decline">"Refuzați"</string>
   <string name="action_decline_and_block">"Refuzați și blocați"</string>
   <string name="action_delete_poll">"Ștergeți sondajul"</string>
+  <string name="action_deselect_all">"Deselectați tot"</string>
   <string name="action_disable">"Dezactivați"</string>
   <string name="action_discard">"Renunţare"</string>
   <string name="action_dismiss">"Renunțați"</string>
@@ -142,6 +143,7 @@
   <string name="action_retry_decryption">"Reîncercați decriptarea"</string>
   <string name="action_save">"Salvați"</string>
   <string name="action_search">"Căutați"</string>
+  <string name="action_select_all">"Selectați tot"</string>
   <string name="action_send">"Trimiteți"</string>
   <string name="action_send_edited_message">"Trimiteți mesajul editat"</string>
   <string name="action_send_message">"Trimiteți mesajul"</string>
@@ -195,7 +197,6 @@
   <string name="common_dark">"Întunecat"</string>
   <string name="common_decryption_error">"Eroare de decriptare"</string>
   <string name="common_description">"Descriere"</string>
-  <string name="common_deselect_all">"Deselectați tot"</string>
   <string name="common_developer_options">"Opțiuni programator"</string>
   <string name="common_device_id">"ID-ul dispozitivului"</string>
   <string name="common_direct_chat">"Chat direct"</string>
@@ -313,7 +314,6 @@ Motiv:%1$s."</string>
   <string name="common_security">"Securitate"</string>
   <string name="common_seen_by">"Văzut de"</string>
   <string name="common_select_account">"Selectați un cont"</string>
-  <string name="common_select_all">"Selectați tot"</string>
   <string name="common_send_to">"Trimiteți către"</string>
   <string name="common_sending">"Se trimite…"</string>
   <string name="common_sending_failed">"Trimiterea a eșuat"</string>

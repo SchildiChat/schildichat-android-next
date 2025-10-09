@@ -80,6 +80,7 @@
   <string name="action_decline">"Afvis"</string>
   <string name="action_decline_and_block">"Afvis og blokér"</string>
   <string name="action_delete_poll">"Slet afstemning"</string>
+  <string name="action_deselect_all">"Fravælg alle"</string>
   <string name="action_disable">"Deaktiver"</string>
   <string name="action_discard">"Kassér"</string>
   <string name="action_dismiss">"Afvis"</string>
@@ -140,6 +141,7 @@
   <string name="action_retry_decryption">"Prøv at dekryptere igen"</string>
   <string name="action_save">"Gem"</string>
   <string name="action_search">"Søg"</string>
+  <string name="action_select_all">"Vælg alle"</string>
   <string name="action_send">"Send"</string>
   <string name="action_send_edited_message">"Send redigeret besked"</string>
   <string name="action_send_message">"Send besked"</string>
@@ -193,7 +195,6 @@
   <string name="common_dark">"Mørkt tema"</string>
   <string name="common_decryption_error">"Fejl under dekryptering"</string>
   <string name="common_description">"Beskrivelse"</string>
-  <string name="common_deselect_all">"Fravælg alle"</string>
   <string name="common_developer_options">"Indstillinger for udviklere"</string>
   <string name="common_device_id">"Enheds-ID"</string>
   <string name="common_direct_chat">"Direkte samtale"</string>
@@ -305,7 +306,6 @@
   <string name="common_security">"Sikkerhed"</string>
   <string name="common_seen_by">"Set af"</string>
   <string name="common_select_account">"Vælg en konto"</string>
-  <string name="common_select_all">"Vælg alle"</string>
   <string name="common_send_to">"Send til"</string>
   <string name="common_sending">"Sender…"</string>
   <string name="common_sending_failed">"Afsendelse mislykkedes"</string>

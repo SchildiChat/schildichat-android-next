@@ -80,6 +80,7 @@
   <string name="action_decline">"Elutasítás"</string>
   <string name="action_decline_and_block">"Elutasítás és letiltás"</string>
   <string name="action_delete_poll">"Szavazás törlése"</string>
+  <string name="action_deselect_all">"Kijelölés megszüntetése"</string>
   <string name="action_disable">"Letiltás"</string>
   <string name="action_discard">"Elvetés"</string>
   <string name="action_dismiss">"Eltüntetés"</string>
@@ -138,6 +139,7 @@
   <string name="action_retry_decryption">"Visszafejtés újbóli megpróbálása"</string>
   <string name="action_save">"Mentés"</string>
   <string name="action_search">"Keresés"</string>
+  <string name="action_select_all">"Összes kijelölése"</string>
   <string name="action_send">"Küldés"</string>
   <string name="action_send_edited_message">"Szerkesztett üzenet küldése"</string>
   <string name="action_send_message">"Üzenet küldése"</string>
@@ -190,7 +192,6 @@
   <string name="common_dark">"Sötét"</string>
   <string name="common_decryption_error">"Visszafejtési hiba"</string>
   <string name="common_description">"Leírás"</string>
-  <string name="common_deselect_all">"Kijelölés megszüntetése"</string>
   <string name="common_developer_options">"Fejlesztői beállítások"</string>
   <string name="common_device_id">"Eszközazonosító"</string>
   <string name="common_direct_chat">"Közvetlen csevegés"</string>
@@ -301,7 +302,6 @@ Ok: %1$s."</string>
   <string name="common_security">"Biztonság"</string>
   <string name="common_seen_by">"Látta"</string>
   <string name="common_select_account">"Fiók kiválasztása"</string>
-  <string name="common_select_all">"Összes kijelölése"</string>
   <string name="common_send_to">"Címzett"</string>
   <string name="common_sending">"Küldés…"</string>
   <string name="common_sending_failed">"A küldés sikertelen"</string>

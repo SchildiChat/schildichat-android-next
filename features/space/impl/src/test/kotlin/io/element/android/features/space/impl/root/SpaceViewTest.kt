@@ -42,6 +42,7 @@ class SpaceViewTest {
         ensureCalledOnce {
             rule.setSpaceView(
                 aSpaceState(
+                    hasMoreToLoad = false,
                     eventSink = eventsRecorder,
                 ),
                 onBackClick = it,
@@ -58,6 +59,7 @@ class SpaceViewTest {
             rule.setSpaceView(
                 aSpaceState(
                     children = listOf(aSpaceRoom),
+                    hasMoreToLoad = false,
                     eventSink = eventsRecorder,
                 ),
                 onRoomClick = it,
@@ -73,6 +75,7 @@ class SpaceViewTest {
         rule.setSpaceView(
             aSpaceState(
                 children = listOf(aSpaceRoom),
+                hasMoreToLoad = false,
                 eventSink = eventsRecorder,
             ),
         )

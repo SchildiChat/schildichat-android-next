@@ -16,5 +16,5 @@
   <string name="screen_bottom_sheet_manage_room_member_unban_member_confirmation_action">"Zrušiť zákaz"</string>
   <string name="screen_bottom_sheet_manage_room_member_unban_member_confirmation_description">"V prípade pozvania by sa mohli opäť pripojiť k miestnosti"</string>
   <string name="screen_bottom_sheet_manage_room_member_unban_member_confirmation_title">"Naozaj chcete zrušiť zablokovanie tohto člena?"</string>
-  <string name="screen_bottom_sheet_manage_room_member_unbanning_user">"Zrušenie zákazu pre %1$s"</string>
+  <string name="screen_bottom_sheet_manage_room_member_unbanning_user">"Zrušenie zákazu %1$s"</string>
 </resources>

@@ -7,22 +7,6 @@
 
 package io.element.android.libraries.designsystem.components.avatar
 
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-
-open class AvatarDataProvider : PreviewParameterProvider<AvatarData> {
-    override val values: Sequence<AvatarData>
-        get() = AvatarSize.entries
-            .asSequence()
-            .map {
-                sequenceOf(
-                    anAvatarData(size = it),
-                    anAvatarData(size = it, name = null),
-                    anAvatarData(size = it, url = "aUrl"),
-                )
-            }
-            .flatten()
-}
-
 fun anAvatarData(
     // Let's the id not start with a 'a'.
     id: String = "@id_of_alice:server.org",

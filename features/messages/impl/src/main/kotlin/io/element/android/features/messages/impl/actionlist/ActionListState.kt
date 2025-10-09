@@ -26,7 +26,7 @@ data class ActionListState(
             val event: TimelineItem.Event,
             val sentTimeFull: String,
             val displayEmojiReactions: Boolean,
-            val recentEmojis: List<String> = emptyList(),
+            val recentEmojis: ImmutableList<String>,
             val verifiedUserSendFailure: VerifiedUserSendFailure,
             val actions: ImmutableList<TimelineItemAction>,
         ) : Target

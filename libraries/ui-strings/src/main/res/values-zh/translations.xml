@@ -78,6 +78,7 @@
   <string name="action_decline">"拒绝"</string>
   <string name="action_decline_and_block">"拒绝并屏蔽"</string>
   <string name="action_delete_poll">"删除投票"</string>
+  <string name="action_deselect_all">"取消全选"</string>
   <string name="action_disable">"禁用"</string>
   <string name="action_discard">"丢弃"</string>
   <string name="action_dismiss">"关闭"</string>
@@ -103,10 +104,12 @@
   <string name="action_leave">"离开"</string>
   <string name="action_leave_conversation">"离开聊天"</string>
   <string name="action_leave_room">"离开聊天室"</string>
+  <string name="action_leave_space">"离开空间"</string>
   <string name="action_load_more">"载入更多"</string>
   <string name="action_manage_account">"管理账户"</string>
   <string name="action_manage_devices">"管理设备"</string>
   <string name="action_message">"发送消息给"</string>
+  <string name="action_minimize">"最小化"</string>
   <string name="action_next">"下一步"</string>
   <string name="action_no">"否"</string>
   <string name="action_not_now">"以后再说"</string>
@@ -135,6 +138,7 @@
   <string name="action_retry_decryption">"重试解密"</string>
   <string name="action_save">"保存"</string>
   <string name="action_search">"搜索"</string>
+  <string name="action_select_all">"全选"</string>
   <string name="action_send">"发送"</string>
   <string name="action_send_edited_message">"发送编辑后的消息"</string>
   <string name="action_send_message">"发送消息"</string>
@@ -182,6 +186,7 @@
   <string name="common_creating_room">"正在创建聊天室…"</string>
   <string name="common_current_user_canceled_knock">"请求已取消"</string>
   <string name="common_current_user_left_room">"离开聊天室"</string>
+  <string name="common_current_user_left_space">"离开空间"</string>
   <string name="common_current_user_rejected_invite">"邀请已拒绝"</string>
   <string name="common_dark">"深色"</string>
   <string name="common_decryption_error">"解密错误"</string>
@@ -220,6 +225,7 @@
   <string name="common_install_apk_android">"安装 APK"</string>
   <string name="common_invite_unknown_profile">"找不到此 Matrix ID，因此可能无法收到邀请。"</string>
   <string name="common_leaving_room">"正在离开聊天室"</string>
+  <string name="common_leaving_space">"正在离开空间"</string>
   <string name="common_light">"浅色"</string>
   <string name="common_line_copied_to_clipboard">"链接已复制到剪贴板"</string>
   <string name="common_link_copied_to_clipboard">"链接已复制到剪贴板"</string>
@@ -240,6 +246,7 @@
   <string name="common_name_and_id">"%1$s (%2$s)"</string>
   <string name="common_no_results">"没有结果"</string>
   <string name="common_no_room_name">"无聊天室名"</string>
+  <string name="common_no_space_name">"未命名空间"</string>
   <string name="common_not_encrypted">"未加密"</string>
   <string name="common_offline">"离线"</string>
   <string name="common_open_source_licenses">"开源许可证"</string>
@@ -297,6 +304,7 @@
   <string name="common_sent">"已发送"</string>
   <string name="common_sentence_delimiter">"。 "</string>
   <string name="common_server_not_supported">"服务器不支持"</string>
+  <string name="common_server_unreachable">"无法访问服务器"</string>
   <string name="common_server_url">"服务器 URL"</string>
   <string name="common_settings">"设置"</string>
   <string name="common_shared_location">"共享位置"</string>
@@ -452,7 +460,7 @@
   <string name="test_language_identifier">"zh-Hans"</string>
   <string name="timeline_decryption_failure_historical_event_no_key_backup">"历史消息在此设备上不可用"</string>
   <string name="timeline_decryption_failure_historical_event_unverified_device">"您需要验证此设备才能访问历史消息"</string>
-  <string name="timeline_decryption_failure_historical_event_user_not_joined">"您无权访问此消息"</string>
+  <string name="timeline_decryption_failure_historical_event_user_not_joined">"无权访问此消息"</string>
   <string name="timeline_decryption_failure_unable_to_decrypt">"无法解密消息"</string>
   <string name="timeline_decryption_failure_withheld_unverified">"此消息已被阻止，因为您未验证您的设备，或者发件人需要验证您的身份。"</string>
 </resources>

@@ -75,6 +75,7 @@ sealed interface RoomListContentState {
         val securityBannerState: SecurityBannerState,
         val fullScreenIntentPermissionsState: FullScreenIntentPermissionsState,
         val batteryOptimizationState: BatteryOptimizationState,
+        val showNewNotificationSoundBanner: Boolean,
         val summaries: ImmutableList<RoomListRoomSummary>,
         // SC additions
         val spacesList: ImmutableList<SpaceListDataSource.AbstractSpaceHierarchyItem> = persistentListOf(),

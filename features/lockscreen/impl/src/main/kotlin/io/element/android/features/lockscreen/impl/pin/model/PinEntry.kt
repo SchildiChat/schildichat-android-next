@@ -8,7 +8,7 @@
 package io.element.android.features.lockscreen.impl.pin.model
 
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 data class PinEntry(
     val digits: ImmutableList<PinDigit>,
@@ -17,7 +17,7 @@ data class PinEntry(
         fun createEmpty(size: Int): PinEntry {
             val digits = List(size) { PinDigit.Empty }
             return PinEntry(
-                digits = digits.toPersistentList()
+                digits = digits.toImmutableList()
             )
         }
     }
@@ -37,7 +37,7 @@ data class PinEntry(
                 newDigits[index] = PinDigit.Filled(char)
             }
         }
-        return copy(digits = newDigits.toPersistentList())
+        return copy(digits = newDigits.toImmutableList())
     }
 
     fun deleteLast(): PinEntry {
@@ -46,7 +46,7 @@ data class PinEntry(
         newDigits.indexOfLast { it is PinDigit.Filled }.also { lastFilled ->
             newDigits[lastFilled] = PinDigit.Empty
         }
-        return copy(digits = newDigits.toPersistentList())
+        return copy(digits = newDigits.toImmutableList())
     }
 
     fun addDigit(digit: Char): PinEntry {
@@ -55,7 +55,7 @@ data class PinEntry(
         newDigits.indexOfFirst { it is PinDigit.Empty }.also { firstEmpty ->
             newDigits[firstEmpty] = PinDigit.Filled(digit)
         }
-        return copy(digits = newDigits.toPersistentList())
+        return copy(digits = newDigits.toImmutableList())
     }
 
     fun clear(): PinEntry {

@@ -9,8 +9,8 @@ package io.element.android.features.joinroom.impl
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.element.android.features.invite.api.InviteData
-import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteEvents
 import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteState
+import io.element.android.features.invite.api.acceptdecline.anAcceptDeclineInviteState
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
@@ -24,7 +24,7 @@ import io.element.android.libraries.matrix.api.room.join.JoinRoom
 import io.element.android.libraries.matrix.api.room.join.JoinRule
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.ui.model.InviteSender
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 open class JoinRoomStateProvider : PreviewParameterProvider<JoinRoomState> {
     override val values: Sequence<JoinRoomState>
@@ -189,7 +189,7 @@ fun aLoadedDetailsSpace(
     heroes: List<MatrixUser> = emptyList(),
 ) = LoadedDetails.Space(
     childrenCount = childrenCount,
-    heroes = heroes.toPersistentList()
+    heroes = heroes.toImmutableList()
 )
 
 fun aJoinRoomState(
@@ -217,16 +217,6 @@ fun aJoinRoomState(
     hideInviteAvatars = hideInviteAvatars,
     canReportRoom = canReportRoom,
     eventSink = eventSink
-)
-
-internal fun anAcceptDeclineInviteState(
-    acceptAction: AsyncAction<RoomId> = AsyncAction.Uninitialized,
-    declineAction: AsyncAction<RoomId> = AsyncAction.Uninitialized,
-    eventSink: (AcceptDeclineInviteEvents) -> Unit = {}
-) = AcceptDeclineInviteState(
-    acceptAction = acceptAction,
-    declineAction = declineAction,
-    eventSink = eventSink,
 )
 
 internal fun anInviteSender(

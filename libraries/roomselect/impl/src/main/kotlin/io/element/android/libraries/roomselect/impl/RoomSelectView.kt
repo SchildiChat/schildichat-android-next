@@ -53,7 +53,7 @@ import io.element.android.libraries.matrix.ui.model.getAvatarData
 import io.element.android.libraries.roomselect.api.RoomSelectMode
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 @Suppress("MultipleEmitters") // False positive
 @OptIn(ExperimentalMaterial3Api::class)
@@ -214,7 +214,7 @@ private fun RoomSummaryView(
             avatarType = AvatarType.Room(
                 heroes = roomInfo.heroes.map { user ->
                     user.getAvatarData(size = AvatarSize.RoomSelectRoomListItem)
-                }.toPersistentList(),
+                }.toImmutableList(),
                 isTombstoned = roomInfo.isTombstoned,
             ),
         )

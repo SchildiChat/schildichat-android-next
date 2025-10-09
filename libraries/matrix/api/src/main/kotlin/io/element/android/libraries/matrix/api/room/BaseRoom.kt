@@ -251,7 +251,9 @@ interface BaseRoom : Closeable {
 
     suspend fun subscribeToCallDecline(notificationEventId: EventId): Flow<UserId>
 
-        /**
+    suspend fun threadRootIdForEvent(eventId: EventId): Result<ThreadId?>
+
+    /**
      * Destroy the room and release all resources associated to it.
      */
     fun destroy()

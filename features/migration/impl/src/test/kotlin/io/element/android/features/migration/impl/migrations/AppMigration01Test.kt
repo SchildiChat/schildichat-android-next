@@ -17,7 +17,7 @@ class AppMigration01Test {
         val logsFileRemover = FakeLogFilesRemover()
         val migration = AppMigration01(logsFileRemover)
 
-        migration.migrate()
+        migration.migrate(true)
 
         logsFileRemover.performLambda.assertions().isCalledOnce()
     }

@@ -12,7 +12,7 @@ import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.di.annotations.SessionCoroutineScope
-import io.element.android.libraries.matrix.api.user.CurrentSessionIdHolder
+import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.preferences.api.store.SessionPreferencesStore
 import kotlinx.coroutines.CoroutineScope
 
@@ -22,10 +22,10 @@ object SessionPreferencesModule {
     @Provides
     fun providesSessionPreferencesStore(
         defaultSessionPreferencesStoreFactory: DefaultSessionPreferencesStoreFactory,
-        currentSessionIdHolder: CurrentSessionIdHolder,
+        sessionId: SessionId,
         @SessionCoroutineScope sessionCoroutineScope: CoroutineScope,
     ): SessionPreferencesStore {
         return defaultSessionPreferencesStoreFactory
-            .get(currentSessionIdHolder.current, sessionCoroutineScope)
+            .get(sessionId, sessionCoroutineScope)
     }
 }

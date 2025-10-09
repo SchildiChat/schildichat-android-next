@@ -30,7 +30,7 @@ class AppMigration02Test {
         )
         val migration = AppMigration02(sessionStore = sessionStore, sessionPreferenceStoreFactory = sessionPreferencesStoreFactory)
 
-        migration.migrate()
+        migration.migrate(true)
 
         // We got the session preferences store
         sessionPreferencesStoreFactory.getLambda.assertions().isCalledOnce()

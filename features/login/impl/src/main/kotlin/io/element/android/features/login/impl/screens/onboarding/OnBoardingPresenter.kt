@@ -18,7 +18,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import io.element.android.appconfig.OnBoardingConfig
 import io.element.android.features.enterprise.api.EnterpriseService
 import io.element.android.features.enterprise.api.canConnectToAnyHomeserver
@@ -28,9 +28,10 @@ import io.element.android.features.rageshake.api.RageshakeFeatureAvailability
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.core.meta.isGplayBuild
+import io.element.android.libraries.sessionstorage.api.SessionStore
 import io.element.android.libraries.ui.utils.MultipleTapToUnlock
 
-@Inject
+@AssistedInject
 class OnBoardingPresenter(
     @Assisted private val params: OnBoardingNode.Params,
     private val buildMeta: BuildMeta,
@@ -39,6 +40,7 @@ class OnBoardingPresenter(
     private val rageshakeFeatureAvailability: RageshakeFeatureAvailability,
     private val loginHelper: LoginHelper,
     private val onBoardingLogoResIdProvider: OnBoardingLogoResIdProvider,
+    private val sessionStore: SessionStore,
 ) : Presenter<OnBoardingState> {
     @AssistedFactory
     interface Factory {
@@ -87,6 +89,10 @@ class OnBoardingPresenter(
         val onBoardingLogoResId = remember {
             onBoardingLogoResIdProvider.get()
         }
+        val isAddingAccount by produceState(initialValue = false) {
+            // We are adding an account if there is at least one session already stored
+            value = sessionStore.getAllSessions().isNotEmpty()
+        }
 
         val loginMode by loginHelper.collectLoginMode()
 
@@ -110,6 +116,7 @@ class OnBoardingPresenter(
         }
 
         return OnBoardingState(
+            isAddingAccount = isAddingAccount,
             productionApplicationName = buildMeta.productionApplicationName,
             defaultAccountProvider = defaultAccountProvider,
             mustChooseAccountProvider = mustChooseAccountProvider,

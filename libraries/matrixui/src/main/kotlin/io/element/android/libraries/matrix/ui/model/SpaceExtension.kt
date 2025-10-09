@@ -7,13 +7,41 @@
 
 package io.element.android.libraries.matrix.ui.model
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
+import io.element.android.libraries.matrix.api.spaces.SpaceRoomVisibility
+import io.element.android.libraries.ui.strings.CommonStrings
 
 fun SpaceRoom.getAvatarData(size: AvatarSize) = AvatarData(
     id = roomId.value,
-    name = name,
+    name = displayName,
     url = avatarUrl,
     size = size,
 )
+
+val SpaceRoomVisibility.icon: ImageVector
+    @Composable
+    get() {
+        return when (this) {
+            SpaceRoomVisibility.Private -> CompoundIcons.LockSolid()
+            SpaceRoomVisibility.Public -> CompoundIcons.Public()
+            SpaceRoomVisibility.Restricted -> CompoundIcons.Workspace()
+        }
+    }
+
+val SpaceRoomVisibility.label: String
+    @Composable
+    @ReadOnlyComposable
+    get() {
+        return when (this) {
+            SpaceRoomVisibility.Private -> stringResource(CommonStrings.common_private_space)
+            SpaceRoomVisibility.Public -> stringResource(CommonStrings.common_public_space)
+            SpaceRoomVisibility.Restricted -> stringResource(CommonStrings.common_shared_space)
+        }
+    }

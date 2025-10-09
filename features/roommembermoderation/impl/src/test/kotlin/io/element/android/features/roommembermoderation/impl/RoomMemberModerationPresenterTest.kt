@@ -30,7 +30,7 @@ import io.element.android.tests.testutils.WarmUpRule
 import io.element.android.tests.testutils.test
 import io.element.android.tests.testutils.testCoroutineDispatchers
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
@@ -360,7 +360,7 @@ class RoomMemberModerationPresenterTest {
                 updateMembersResult = { Result.success(Unit) }
             ),
         ).apply {
-            val roomMembers = listOfNotNull(targetRoomMember).toPersistentList()
+            val roomMembers = listOfNotNull(targetRoomMember).toImmutableList()
             givenRoomMembersState(state = RoomMembersState.Ready(roomMembers))
         }
     }

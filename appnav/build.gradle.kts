@@ -26,9 +26,11 @@ dependencies {
     allFeaturesApi(project)
 
     implementation(projects.libraries.core)
+    implementation(projects.libraries.accountselect.api)
     implementation(projects.libraries.androidutils)
     implementation(projects.libraries.architecture)
     implementation(projects.libraries.deeplink.api)
+    implementation(projects.libraries.featureflag.api)
     implementation(projects.libraries.matrix.api)
     implementation(projects.libraries.oidc.api)
     implementation(projects.libraries.preferences.api)
@@ -36,11 +38,13 @@ dependencies {
     implementation(projects.libraries.pushproviders.api)
     implementation(projects.libraries.designsystem)
     implementation(projects.libraries.matrixui)
+    implementation(projects.libraries.uiCommon)
     implementation(projects.libraries.uiStrings)
     implementation(projects.features.login.api)
 
     implementation(libs.coil)
 
+    implementation(projects.features.announcement.api)
     implementation(projects.features.ftue.api)
     implementation(projects.features.share.api)
 

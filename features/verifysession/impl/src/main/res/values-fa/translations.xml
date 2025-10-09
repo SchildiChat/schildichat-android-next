@@ -15,6 +15,7 @@
   <string name="screen_session_verification_compare_emojis_title">"مقایسهٔ شکلک‌ها"</string>
   <string name="screen_session_verification_compare_numbers_title">"مقایسهٔ اعداد"</string>
   <string name="screen_session_verification_complete_subtitle">"اکنون نشست جدیدتان تأیید شده‌. این نشست به پیام‌های رمزنگارش شده‌تان دسترسی داشته و دیگر کاربران مطمئن می‌بینندش."</string>
+  <string name="screen_session_verification_device_verified">"افزاره تأیید شده"</string>
   <string name="screen_session_verification_enter_recovery_key">"ورود کلید بازیابی"</string>
   <string name="screen_session_verification_open_existing_session_subtitle">"برای دسترسی به تاریخچه پیام‌های رمزگذاری‌شده‌تان، ثابت کنید که خودتان هستید."</string>
   <string name="screen_session_verification_open_existing_session_title">"گشودن نشستی موجود"</string>
@@ -24,6 +25,7 @@
   <string name="screen_session_verification_ready_subtitle">"مقایسهٔ مجموعه‌ای یکتا از شکلک‌ها."</string>
   <string name="screen_session_verification_request_accepted_subtitle">"شکلک‌ها را مقایسه کنید، از ترتیب نمایش آنان نیز مطمئن شوید."</string>
   <string name="screen_session_verification_request_failure_title">"صحت‌سنجی شکست خورد"</string>
+  <string name="screen_session_verification_request_success_subtitle">"اکنون نشست جدیدتان تأیید شده‌. این نشست به پیام‌های رمزنگارش شده‌تان دسترسی داشته و دیگر کاربران مطمئن می‌بینندش."</string>
   <string name="screen_session_verification_request_success_title">"افزاره تأیید شده"</string>
   <string name="screen_session_verification_they_dont_match">"مطابق نیستند"</string>
   <string name="screen_session_verification_they_match">"مطابقند"</string>

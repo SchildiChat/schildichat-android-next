@@ -29,11 +29,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
-import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.libraries.designsystem.atomic.atoms.UnreadIndicatorAtom
 import io.element.android.libraries.designsystem.atomic.molecules.InviteButtonsRowMolecule
 import io.element.android.libraries.designsystem.components.avatar.Avatar
@@ -41,15 +40,21 @@ import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.modifiers.onKeyboardContextMenuAction
+import io.element.android.libraries.designsystem.preview.ElementPreview
+import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.unreadIndicator
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
-import io.element.android.libraries.matrix.api.room.join.JoinRule
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
+import io.element.android.libraries.matrix.api.spaces.SpaceRoomVisibility
 import io.element.android.libraries.matrix.ui.model.getAvatarData
+import io.element.android.libraries.matrix.ui.model.icon
+import io.element.android.libraries.matrix.ui.model.label
 import io.element.android.libraries.ui.strings.CommonPlurals
 import io.element.android.libraries.ui.strings.CommonStrings
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun SpaceRoomItemView(
@@ -59,18 +64,23 @@ fun SpaceRoomItemView(
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
+    trailingAction: @Composable (() -> Unit)? = null,
+    bottomAction: @Composable (() -> Unit)? = null,
 ) {
     SpaceRoomItemScaffold(
         modifier = modifier,
         avatarData = spaceRoom.getAvatarData(AvatarSize.SpaceListItem),
         isSpace = spaceRoom.isSpace,
         hideAvatars = hideAvatars,
+        heroes = spaceRoom.heroes
+            .map { hero -> hero.getAvatarData(AvatarSize.SpaceListItem) }
+            .toImmutableList(),
         onClick = onClick,
         onLongClick = onLongClick,
+        trailingAction = trailingAction,
     ) {
         NameAndIndicatorRow(
-            isSpace = spaceRoom.isSpace,
-            name = spaceRoom.name,
+            name = spaceRoom.displayName,
             showIndicator = showUnreadIndicator
         )
         Spacer(modifier = Modifier.height(1.dp))
@@ -79,21 +89,20 @@ fun SpaceRoomItemView(
             subtitle = spaceRoom.subtitle()
         )
         Spacer(modifier = Modifier.height(1.dp))
-        Text(
-            modifier = Modifier.weight(1f),
-            style = ElementTheme.typography.fontBodyMdRegular,
-            text = spaceRoom.info(),
-            fontStyle = FontStyle.Italic.takeIf { spaceRoom.name == null },
-            color = ElementTheme.colors.textSecondary,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-        if (spaceRoom.state == CurrentUserMembership.INVITED) {
-            Spacer(modifier = Modifier.height(12.dp))
-            InviteButtonsRowMolecule(
-                onAcceptClick = {},
-                onDeclineClick = {},
+        val info = spaceRoom.info()
+        if (info.isNotBlank()) {
+            Text(
+                modifier = Modifier.weight(1f),
+                style = ElementTheme.typography.fontBodyMdRegular,
+                text = info,
+                color = ElementTheme.colors.textSecondary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
+        }
+        if (bottomAction != null) {
+            Spacer(modifier = Modifier.height(12.dp))
+            bottomAction()
         }
     }
 }
@@ -131,8 +140,7 @@ private fun SubtitleRow(
 
 @Composable
 private fun NameAndIndicatorRow(
-    isSpace: Boolean,
-    name: String?,
+    name: String,
     showIndicator: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -144,8 +152,7 @@ private fun NameAndIndicatorRow(
         Text(
             modifier = Modifier.weight(1f),
             style = ElementTheme.typography.fontBodyLgMedium,
-            text = name ?: stringResource(id = if (isSpace) CommonStrings.common_no_space_name else CommonStrings.common_no_room_name),
-            fontStyle = FontStyle.Italic.takeIf { name == null },
+            text = name,
             color = ElementTheme.colors.textPrimary,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -162,11 +169,13 @@ private fun NameAndIndicatorRow(
 private fun SpaceRoomItemScaffold(
     avatarData: AvatarData,
     isSpace: Boolean,
+    heroes: ImmutableList<AvatarData>,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     hideAvatars: Boolean,
     modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit
+    trailingAction: @Composable (() -> Unit)? = null,
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     val clickModifier = Modifier
         .combinedClickable(
@@ -186,7 +195,7 @@ private fun SpaceRoomItemScaffold(
     ) {
         Avatar(
             avatarData = avatarData,
-            avatarType = if (isSpace) AvatarType.Space() else AvatarType.Room(),
+            avatarType = if (isSpace) AvatarType.Space() else AvatarType.Room(heroes = heroes),
             hideImage = hideAvatars,
         )
         Spacer(modifier = Modifier.width(16.dp))
@@ -194,6 +203,10 @@ private fun SpaceRoomItemScaffold(
             modifier = Modifier.weight(1f),
             content = content,
         )
+        if (trailingAction != null) {
+            Spacer(modifier = Modifier.width(16.dp))
+            trailingAction()
+        }
     }
 }
 
@@ -201,11 +214,7 @@ private fun SpaceRoomItemScaffold(
 @ReadOnlyComposable
 private fun SpaceRoom.subtitle(): String {
     return if (isSpace) {
-        if (joinRule == JoinRule.Public) {
-            stringResource(CommonStrings.common_public_space)
-        } else {
-            stringResource(CommonStrings.common_private_space)
-        }
+        visibility.label
     } else {
         pluralStringResource(CommonPlurals.common_member_count, numJoinedMembers, numJoinedMembers)
     }
@@ -215,11 +224,7 @@ private fun SpaceRoom.subtitle(): String {
 @ReadOnlyComposable
 private fun SpaceRoom.info(): String {
     return if (isSpace) {
-        stringResource(
-            CommonStrings.screen_space_list_details,
-            pluralStringResource(CommonPlurals.common_rooms, childrenCount, childrenCount),
-            pluralStringResource(CommonPlurals.common_member_count, numJoinedMembers, numJoinedMembers),
-        )
+        pluralStringResource(CommonPlurals.common_member_count, numJoinedMembers, numJoinedMembers)
     } else {
         topic.orEmpty()
     }
@@ -227,9 +232,39 @@ private fun SpaceRoom.info(): String {
 
 @Composable
 private fun SpaceRoom.visibilityIcon(): ImageVector? {
-    return if (joinRule == JoinRule.Public) {
-        CompoundIcons.Public()
+    // Don't show any icon for restricted rooms as it's the default and would add noise
+    return if (visibility == SpaceRoomVisibility.Restricted) {
+        null
     } else {
-        CompoundIcons.LockSolid()
+        visibility.icon
     }
+}
+
+@Composable
+@PreviewsDayNight
+internal fun SpaceRoomItemViewPreview(@PreviewParameter(SpaceRoomProvider::class) spaceRoom: SpaceRoom) = ElementPreview {
+    SpaceRoomItemView(
+        spaceRoom = spaceRoom,
+        showUnreadIndicator = spaceRoom.state == CurrentUserMembership.INVITED,
+        hideAvatars = false,
+        onClick = {},
+        onLongClick = {},
+        modifier = Modifier.fillMaxWidth(),
+        bottomAction = if (spaceRoom.state == CurrentUserMembership.INVITED) {
+            { InviteButtonsRowMolecule({}, {}) }
+        } else {
+            null
+        },
+        trailingAction = when (spaceRoom.state) {
+            null, CurrentUserMembership.LEFT -> {
+                {
+                    JoinButton(
+                        showProgress = spaceRoom.state == CurrentUserMembership.LEFT,
+                        onClick = { },
+                    )
+                }
+            }
+            else -> null
+        }
+    )
 }

@@ -29,6 +29,7 @@
   <string name="screen_login_title">"Qaytib kelganingizdan xursandmiz!"</string>
   <string name="screen_login_title_with_homeserver">"Kirish%1$s"</string>
   <string name="screen_onboarding_sign_in_manually">"Qo\'lda tizimga kiring"</string>
+  <string name="screen_onboarding_sign_in_to">"Kirish%1$s"</string>
   <string name="screen_onboarding_sign_in_with_qr_code">"QR kod bilan tizimga kiring"</string>
   <string name="screen_onboarding_sign_up">"Hisob yaratish"</string>
   <string name="screen_onboarding_welcome_message">"Eng tezkor %1$sga xush kelibsiz. Tezlik va oddylik uchun super zaryadlangan."</string>

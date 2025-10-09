@@ -14,7 +14,7 @@ import io.element.android.libraries.dateformatter.api.DateFormatter
 import io.element.android.libraries.dateformatter.api.DateFormatterMode
 import io.element.android.libraries.matrix.api.timeline.MatrixTimelineItem
 import io.element.android.libraries.matrix.api.timeline.item.event.PollContent
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.withContext
 
 @Inject
@@ -36,8 +36,8 @@ class PollHistoryItemsFactory(
             }
         }
         PollHistoryItems(
-            ongoing = ongoing.toPersistentList(),
-            past = past.toPersistentList()
+            ongoing = ongoing.toImmutableList(),
+            past = past.toImmutableList()
         )
     }
 

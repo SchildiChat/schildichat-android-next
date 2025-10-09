@@ -328,8 +328,7 @@ Arrazoia: %1$s."</string>
 
 Ziur jarraitu nahi duzula?"</string>
   <string name="dialog_confirm_link_title">"Egiaztatu honako esteka"</string>
-  <string name="dialog_default_video_quality_selector_title">"Bideoaren igoera-kalitatea"</string>
-  <string name="dialog_file_too_large_to_upload_subtitle">"Onartutako fitxategiaren gehienezko tamaina %1$s da"</string>
+  <string name="dialog_default_video_quality_selector_title">"Bideoen igoera-kalitatea"</string>
   <string name="dialog_file_too_large_to_upload_title">"Fitxategiaren tamaina handiegia da igotzeko"</string>
   <string name="dialog_room_reported">"Gela salatu da"</string>
   <string name="dialog_room_reported_and_left">"Gela salatu eta utzi da"</string>

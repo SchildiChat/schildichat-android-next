@@ -22,7 +22,7 @@ class AppMigration07(
 ) : AppMigration {
     override val order: Int = 7
 
-    override suspend fun migrate() {
+    override suspend fun migrate(isFreshInstall: Boolean) {
         logFilesRemover.perform { file ->
             file.name.startsWith("logs-")
         }

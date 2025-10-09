@@ -48,6 +48,9 @@
   <string name="push_distributor_background_sync_android">"后台同步"</string>
   <string name="push_distributor_firebase_android">"谷歌服务"</string>
   <string name="push_no_valid_google_play_services_apk_android">"找不到有效的 Google Play 服务。通知可能无法正常工作。"</string>
+  <plurals name="troubleshoot_notifications_test_blocked_users_result_some">
+    <item quantity="other">"您已屏蔽 %1$d 位用户。您将不再收到这些用户的推送通知。"</item>
+  </plurals>
   <string name="troubleshoot_notifications_test_current_push_provider_description">"获取当前推送提供者的名称。"</string>
   <string name="troubleshoot_notifications_test_current_push_provider_failure">"未选择任何推送提供者。"</string>
   <string name="troubleshoot_notifications_test_current_push_provider_success">"当前推送提供者：%1$s。"</string>

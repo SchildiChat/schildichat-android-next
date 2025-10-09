@@ -32,7 +32,6 @@ import io.element.android.libraries.matrix.test.A_USER_ID
 import io.element.android.libraries.matrix.test.timeline.anEventTimelineItem
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toPersistentList
 
 fun aRoomSummary(
     info: RoomInfo = aRoomInfo(),
@@ -109,7 +108,7 @@ fun aRoomSummary(
         userDefinedNotificationMode = userDefinedNotificationMode,
         hasRoomCall = hasRoomCall,
         activeRoomCallParticipants = activeRoomCallParticipants.toImmutableList(),
-        heroes = heroes.toPersistentList(),
+        heroes = heroes.toImmutableList(),
         pinnedEventIds = pinnedEventIds.toImmutableList(),
         creators = roomCreators.toImmutableList(),
         isMarkedUnread = isMarkedUnread,

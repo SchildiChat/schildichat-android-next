@@ -36,7 +36,7 @@ import io.element.android.libraries.featureflag.ui.FeatureListView
 import io.element.android.libraries.featureflag.ui.model.FeatureUiModel
 import io.element.android.libraries.matrix.api.tracing.TraceLogPack
 import io.element.android.libraries.ui.strings.CommonStrings
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun DeveloperSettingsView(
@@ -66,7 +66,7 @@ fun DeveloperSettingsView(
                 title = "Tracing log level",
                 supportingText = "Requires app reboot",
                 selectedOption = state.tracingLogLevel.dataOrNull(),
-                options = LogLevelItem.entries.toPersistentList(),
+                options = LogLevelItem.entries.toImmutableList(),
                 onSelectOption = { logLevel ->
                     state.eventSink(DeveloperSettingsEvents.SetTracingLogLevel(logLevel))
                 }

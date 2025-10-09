@@ -17,7 +17,7 @@ import io.element.android.libraries.matrix.api.MatrixClient
 @Composable
 fun MatrixClient.rememberHideInvitesAvatar(): State<Boolean> {
     return remember {
-        mediaPreviewService()
+        mediaPreviewService
             .mediaPreviewConfigFlow
             .mapState { config -> config.hideInviteAvatar }
     }.collectAsState()

@@ -1,0 +1,10 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:autoMirrored="true"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M9 18h6q0.42 0 0.71-0.29A0.97 0.97 0 0 0 16 17a0.97 0.97 0 0 0-0.29-0.71A0.97 0.97 0 0 0 15 16H9a0.97 0.97 0 0 0-0.71 0.29A0.97 0.97 0 0 0 8 17q0 0.42 0.29 0.71T9 18m0-4h6q0.42 0 0.71-0.29A0.97 0.97 0 0 0 16 13a0.97 0.97 0 0 0-0.29-0.71A0.97 0.97 0 0 0 15 12H9a0.97 0.97 0 0 0-0.71 0.29A0.97 0.97 0 0 0 8 13q0 0.42 0.29 0.71T9 14m-3 8q-0.82 0-1.41-0.59A1.93 1.93 0 0 1 4 20V4q0-0.82 0.59-1.41A1.93 1.93 0 0 1 6 2h7.17a1.98 1.98 0 0 1 1.4 0.57l4.86 4.86q0.27 0.27 0.42 0.63Q20 8.42 20 8.83V20q0 0.82-0.59 1.41A1.93 1.93 0 0 1 18 22z m7-14V4H6v16h12V9h-4a0.97 0.97 0 0 1-0.71-0.29A0.97 0.97 0 0 1 13 8"/>
+</vector>

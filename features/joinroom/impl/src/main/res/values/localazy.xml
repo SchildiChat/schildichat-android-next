@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-  <string name="screen_join_room_ban_by_message">"You were banned from this room by %1$s."</string>
-  <string name="screen_join_room_ban_message">"You were banned from this room"</string>
+  <string name="screen_join_room_ban_by_message">"You were banned by %1$s."</string>
+  <string name="screen_join_room_ban_message">"You were banned"</string>
   <string name="screen_join_room_ban_reason">"Reason: %1$s."</string>
   <string name="screen_join_room_cancel_knock_action">"Cancel request"</string>
   <string name="screen_join_room_cancel_knock_alert_confirmation">"Yes, cancel"</string>
@@ -11,12 +11,12 @@
   <string name="screen_join_room_decline_and_block_alert_message">"Are you sure you want to decline the invite to join this room? This will also prevent %1$s from contacting you or inviting you to rooms."</string>
   <string name="screen_join_room_decline_and_block_alert_title">"Decline invite &amp; block"</string>
   <string name="screen_join_room_decline_and_block_button_title">"Decline and block"</string>
-  <string name="screen_join_room_fail_message">"Joining the room failed."</string>
-  <string name="screen_join_room_fail_reason">"This room is either invite-only or there might be restrictions to access at space level."</string>
-  <string name="screen_join_room_forget_action">"Forget this room"</string>
-  <string name="screen_join_room_invite_required_message">"You need an invite in order to join this room"</string>
+  <string name="screen_join_room_fail_message">"Joining failed"</string>
+  <string name="screen_join_room_fail_reason">"You either need to be invited to join or there might be restrictions to access."</string>
+  <string name="screen_join_room_forget_action">"Forget"</string>
+  <string name="screen_join_room_invite_required_message">"You need an invite in order to join"</string>
   <string name="screen_join_room_invited_by">"Invited by"</string>
-  <string name="screen_join_room_join_action">"Join room"</string>
+  <string name="screen_join_room_join_action">"Join"</string>
   <string name="screen_join_room_join_restricted_message">"You may need to be invited or be a member of a space in order to join."</string>
   <string name="screen_join_room_knock_action">"Send request to join"</string>
   <string name="screen_join_room_knock_message_characters_count">"Allowed characters %1$d of %2$d"</string>

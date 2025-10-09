@@ -29,6 +29,7 @@ class UnifiedPushProvider(
 ) : PushProvider {
     override val index = UnifiedPushConfig.INDEX
     override val name = UnifiedPushConfig.NAME
+    override val supportMultipleDistributors = true
 
     override fun getDistributors(): List<Distributor> {
         return unifiedPushDistributorProvider.getDistributors()
@@ -40,6 +41,10 @@ class UnifiedPushProvider(
             .onSuccess {
                 unifiedPushStore.setDistributorValue(matrixClient.sessionId, distributor.value)
             }
+    }
+
+    override suspend fun getCurrentDistributorValue(sessionId: SessionId): String? {
+        return unifiedPushStore.getDistributorValue(sessionId)
     }
 
     override suspend fun getCurrentDistributor(sessionId: SessionId): Distributor? {

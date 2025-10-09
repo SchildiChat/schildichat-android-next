@@ -34,6 +34,8 @@ import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import dev.zacsweers.metro.Inject
 import im.vector.app.features.analytics.plan.Interaction
+import io.element.android.features.announcement.api.Announcement
+import io.element.android.features.announcement.api.AnnouncementService
 import io.element.android.features.home.impl.datasource.RoomListDataSource
 import io.element.android.features.home.impl.filters.RoomListFiltersState
 import io.element.android.features.home.impl.handleLowPriorityFlow
@@ -51,7 +53,6 @@ import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.fullscreenintent.api.FullScreenIntentPermissionsState
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
-import io.element.android.libraries.matrix.api.encryption.EncryptionService
 import io.element.android.libraries.matrix.api.encryption.RecoveryState
 import io.element.android.libraries.matrix.api.roomlist.RoomList
 import io.element.android.libraries.matrix.api.timeline.ReceiptType
@@ -65,6 +66,7 @@ import io.element.android.services.analyticsproviders.api.trackers.captureIntera
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.collections.immutable.toPersistentSet
 import kotlinx.coroutines.CoroutineScope
@@ -103,8 +105,9 @@ class RoomListPresenter(
     private val notificationCleaner: NotificationCleaner,
     private val appPreferencesStore: AppPreferencesStore,
     private val seenInvitesStore: SeenInvitesStore,
+    private val announcementService: AnnouncementService,
 ) : Presenter<RoomListState> {
-    private val encryptionService: EncryptionService = client.encryptionService()
+    private val encryptionService = client.encryptionService
 
     @Composable
     override fun present(): RoomListState {
@@ -123,6 +126,11 @@ class RoomListPresenter(
         PersistSpaceOnPause(scAppStateStore, spaceAwareRoomListDataSource)
 
         var securityBannerDismissed by rememberSaveable { mutableStateOf(false) }
+        val showNewNotificationSoundBanner by remember {
+            announcementService.announcementsToShowFlow().map { announcements ->
+                announcements.contains(Announcement.NewNotificationSound)
+            }
+        }.collectAsState(false)
 
         // Avatar indicator
         val hideInvitesAvatar by client.rememberHideInvitesAvatar()
@@ -140,6 +148,9 @@ class RoomListPresenter(
                 }
                 RoomListEvents.DismissRequestVerificationPrompt -> securityBannerDismissed = true
                 RoomListEvents.DismissBanner -> securityBannerDismissed = true
+                RoomListEvents.DismissNewNotificationSoundBanner -> coroutineScope.launch {
+                    announcementService.onAnnouncementDismissed(Announcement.NewNotificationSound)
+                }
                 RoomListEvents.ToggleSearchResults -> searchState.eventSink(RoomListSearchEvents.ToggleSearchVisibility)
                 is RoomListEvents.ShowContextMenu -> {
                     coroutineScope.showContextMenu(event, contextMenu)
@@ -170,7 +181,10 @@ class RoomListPresenter(
             }
         }
 
-        val contentState = roomListContentState(securityBannerDismissed)
+        val contentState = roomListContentState(
+            securityBannerDismissed,
+            showNewNotificationSoundBanner,
+        )
 
         val canReportRoom by produceState(false) { value = client.canReportRoom() }
 
@@ -226,6 +240,7 @@ class RoomListPresenter(
     @Composable
     private fun roomListContentState(
         securityBannerDismissed: Boolean,
+        showNewNotificationSoundBanner: Boolean,
     ): RoomListContentState {
         // SC spaces
         val spaceNavEnabled = ScPrefs.SPACE_NAV.value()
@@ -252,7 +267,9 @@ class RoomListPresenter(
         val seenRoomInvites by remember { seenInvitesStore.seenRoomIds() }.collectAsState(emptySet())
         val securityBannerState by rememberSecurityBannerState(securityBannerDismissed)
         return when {
-            showEmpty -> RoomListContentState.Empty(securityBannerState = securityBannerState)
+            showEmpty -> RoomListContentState.Empty(
+                securityBannerState = securityBannerState,
+            )
             showSkeleton -> RoomListContentState.Skeleton(count = 16)
             else -> {
                 RoomListContentState.Rooms(
@@ -262,10 +279,11 @@ class RoomListPresenter(
                     totalUnreadCounts = totalUnreadCounts,
                     // SC end
                     securityBannerState = securityBannerState,
+                    showNewNotificationSoundBanner = showNewNotificationSoundBanner,
                     fullScreenIntentPermissionsState = fullScreenIntentPermissionsPresenter.present(),
                     batteryOptimizationState = batteryOptimizationPresenter.present(),
-                    summaries = roomSummaries.dataOrNull().orEmpty().toPersistentList(),
-                    seenRoomInvites = seenRoomInvites.toPersistentSet(),
+                    summaries = roomSummaries.dataOrNull().orEmpty().toImmutableList(),
+                    seenRoomInvites = seenRoomInvites.toImmutableSet(),
                 )
             }
         }

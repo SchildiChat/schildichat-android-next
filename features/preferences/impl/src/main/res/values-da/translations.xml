@@ -10,6 +10,7 @@
   <string name="screen_advanced_settings_element_call_base_url_validation_error">"Ugyldig URL, sørg for at inkludere protokollen (http/https) og den korrekte adresse."</string>
   <string name="screen_advanced_settings_hide_invite_avatars_toggle_title">"Skjul avatarer i anmodninger om invitation til rum"</string>
   <string name="screen_advanced_settings_hide_timeline_media_toggle_title">"Skjul forhåndsvisning af medier i tidslinjen"</string>
+  <string name="screen_advanced_settings_labs">"Laboratorier"</string>
   <string name="screen_advanced_settings_media_compression_description">"Upload fotos og videoer hurtigere, og reducér dataforbrug"</string>
   <string name="screen_advanced_settings_media_compression_title">"Optimér mediekvaliteten"</string>
   <string name="screen_advanced_settings_moderation_and_safety_section_title">"Moderation og sikkerhed"</string>
@@ -43,6 +44,11 @@
   <string name="screen_edit_profile_error_title">"Kan ikke opdatere profilen"</string>
   <string name="screen_edit_profile_title">"Redigér profil"</string>
   <string name="screen_edit_profile_updating_details">"Opdaterer profil…"</string>
+  <string name="screen_labs_enable_threads">"Aktivér svar-tråde"</string>
+  <string name="screen_labs_enable_threads_description">"Appen genstarter for at anvende denne ændring."</string>
+  <string name="screen_labs_header_description">"Prøv vores nyeste idéer under udvikling. Disse funktioner er ikke færdige; de ​​kan være ustabile og kan ændre sig."</string>
+  <string name="screen_labs_header_title">"Er du i humør til at eksperimentere?"</string>
+  <string name="screen_labs_title">"Laboratorier"</string>
   <string name="screen_notification_settings_additional_settings_section_title">"Yderligere indstillinger"</string>
   <string name="screen_notification_settings_calls_label">"Lyd- og videoopkald"</string>
   <string name="screen_notification_settings_configuration_mismatch">"Uoverensstemmelse i konfigurationen"</string>

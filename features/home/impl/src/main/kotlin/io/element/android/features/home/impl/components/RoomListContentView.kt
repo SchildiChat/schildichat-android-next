@@ -279,6 +279,12 @@ private fun RoomsViewList(
                 item {
                     BatteryOptimizationBanner(state = state.batteryOptimizationState)
                 }
+            } else if (state.showNewNotificationSoundBanner) {
+                item {
+                    NewNotificationSoundBanner(
+                        onDismissClick = { updatedEventSink(RoomListEvents.DismissNewNotificationSoundBanner) },
+                    )
+                }
             }
         }
 

@@ -7,8 +7,10 @@
 
 package io.element.android.libraries.matrix.test.spaces
 
+import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
+import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.tests.testutils.lambda.lambdaError
 import io.element.android.tests.testutils.simulateLongTask
 import kotlinx.coroutines.flow.Flow
@@ -18,13 +20,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.util.Optional
 
 class FakeSpaceRoomList(
+    override val roomId: RoomId = A_ROOM_ID,
     initialSpaceFlowValue: SpaceRoom? = null,
     initialSpaceRoomsValue: List<SpaceRoom> = emptyList(),
     initialSpaceRoomList: SpaceRoomList.PaginationStatus = SpaceRoomList.PaginationStatus.Loading,
     private val paginateResult: () -> Result<Unit> = { lambdaError() },
 ) : SpaceRoomList {
     private val currentSpaceMutableStateFlow: MutableStateFlow<Optional<SpaceRoom>> = MutableStateFlow(Optional.ofNullable(initialSpaceFlowValue))
-    override fun currentSpaceFlow(): StateFlow<Optional<SpaceRoom>> = currentSpaceMutableStateFlow.asStateFlow()
+    override val currentSpaceFlow: StateFlow<Optional<SpaceRoom>> = currentSpaceMutableStateFlow.asStateFlow()
 
     fun emitCurrentSpace(value: SpaceRoom?) {
         currentSpaceMutableStateFlow.value = Optional.ofNullable(value)
@@ -46,5 +49,9 @@ class FakeSpaceRoomList(
 
     override suspend fun paginate(): Result<Unit> = simulateLongTask {
         paginateResult()
+    }
+
+    override fun destroy() {
+        // No op
     }
 }

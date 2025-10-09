@@ -187,7 +187,7 @@ private fun HomeScaffold(
         topBar = {
             RoomListTopBar(
                 title = stringResource(state.currentHomeNavigationBarItem.labelRes),
-                matrixUser = state.matrixUser,
+                currentUserAndNeighbors = state.currentUserAndNeighbors,
                 showAvatarIndicator = state.showAvatarIndicator,
                 areSearchResultsDisplayed = roomListState.searchState.isSearchActive,
                 // SC start
@@ -197,6 +197,9 @@ private fun HomeScaffold(
                 onToggleSearch = { roomListState.eventSink(RoomListEvents.ToggleSearchResults) },
                 onMenuActionClick = onMenuActionClick,
                 onOpenSettings = onOpenSettings,
+                onAccountSwitch = {
+                    state.eventSink(HomeEvents.SwitchToAccount(it))
+                },
                 scrollBehavior = scrollBehavior,
                 displayMenuItems = state.displayActions,
                 displayFilters = roomListState.displayFilters && state.currentHomeNavigationBarItem == HomeNavigationBarItem.Chats && ScPrefs.ELEMENT_ROOM_LIST_FILTERS.value(),

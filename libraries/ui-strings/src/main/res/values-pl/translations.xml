@@ -429,7 +429,7 @@ Czy na pewno chcesz kontynuować?"</string>
   <string name="test_language_identifier">"pl"</string>
   <string name="timeline_decryption_failure_historical_event_no_key_backup">"Historia wiadomości nie jest dostępna na tym urządzeniu"</string>
   <string name="timeline_decryption_failure_historical_event_unverified_device">"Musisz zweryfikować to urządzenie, aby uzyskać dostęp do historii wiadomości"</string>
-  <string name="timeline_decryption_failure_historical_event_user_not_joined">"Nie masz dostępu do tej wiadomości"</string>
+  <string name="timeline_decryption_failure_historical_event_user_not_joined">"Nie masz uprawnień do tej wiadomości"</string>
   <string name="timeline_decryption_failure_unable_to_decrypt">"Nie można odszyfrować wiadomości"</string>
   <string name="timeline_decryption_failure_withheld_unverified">"Wiadomość została zablokowana, ponieważ urządzenie nie zostało zweryfikowane lub nadawca musi zweryfikować Twoją tożsamość."</string>
 </resources>

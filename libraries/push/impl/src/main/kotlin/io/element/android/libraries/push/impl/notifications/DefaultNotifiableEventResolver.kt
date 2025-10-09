@@ -99,7 +99,7 @@ class DefaultNotifiableEventResolver(
         val ids = notificationEventRequests.groupBy { it.roomId }.mapValues { (_, value) -> value.map { it.eventId } }
 
         // TODO this notificationData is not always valid at the moment, sometimes the Rust SDK can't fetch the matching event
-        val notificationsResult = client.notificationService().getNotifications(ids)
+        val notificationsResult = client.notificationService.getNotifications(ids)
 
         if (notificationsResult.isFailure) {
             val exception = notificationsResult.exceptionOrNull()
@@ -132,7 +132,7 @@ class DefaultNotifiableEventResolver(
     ): Result<ResolvedPushEvent> = runCatchingExceptions {
         when (val content = this.content) {
             is NotificationContent.MessageLike.RoomMessage -> {
-                val showMediaPreview = client.mediaPreviewService().getMediaPreviewValue() == MediaPreviewValue.On
+                val showMediaPreview = client.mediaPreviewService.getMediaPreviewValue() == MediaPreviewValue.On
                 val senderDisambiguatedDisplayName = getDisambiguatedDisplayName(content.senderId)
                 val messageBody = descriptionFromMessageContent(content, senderDisambiguatedDisplayName)
                 val notifiableMessageEvent = buildNotifiableMessageEvent(

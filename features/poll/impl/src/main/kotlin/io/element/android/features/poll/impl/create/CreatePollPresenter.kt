@@ -18,7 +18,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import im.vector.app.features.analytics.plan.Composer
 import im.vector.app.features.analytics.plan.PollCreation
 import io.element.android.features.messages.api.MessageComposerContext
@@ -33,11 +33,10 @@ import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.services.analytics.api.AnalyticsService
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@Inject
+@AssistedInject
 class CreatePollPresenter(
     repositoryFactory: PollRepository.Factory,
     private val analyticsService: AnalyticsService,
@@ -79,7 +78,7 @@ class CreatePollPresenter(
                 repository.getPoll(mode.eventId).onSuccess {
                     val loadedPoll = PollFormState(
                         question = it.question,
-                        answers = it.answers.map(PollAnswer::text).toPersistentList(),
+                        answers = it.answers.map(PollAnswer::text).toImmutableList(),
                         isDisclosed = it.kind.isDisclosed,
                     )
                     initialPoll = loadedPoll

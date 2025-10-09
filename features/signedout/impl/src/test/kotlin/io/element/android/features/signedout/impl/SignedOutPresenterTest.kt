@@ -70,7 +70,7 @@ internal fun createSignedOutPresenter(
     sessionStore: SessionStore = InMemorySessionStore(),
 ): SignedOutPresenter {
     return SignedOutPresenter(
-        sessionId = sessionId.value,
+        sessionId = sessionId,
         sessionStore = sessionStore,
         buildMeta = aBuildMeta(applicationName = AN_APPLICATION_NAME),
     )

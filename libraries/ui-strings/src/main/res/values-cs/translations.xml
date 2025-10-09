@@ -82,6 +82,7 @@
   <string name="action_decline">"Odmítnout"</string>
   <string name="action_decline_and_block">"Odmítnout a zablokovat"</string>
   <string name="action_delete_poll">"Odstranit hlasování"</string>
+  <string name="action_deselect_all">"Odznačit vše"</string>
   <string name="action_disable">"Zakázat"</string>
   <string name="action_discard">"Vyřadit"</string>
   <string name="action_dismiss">"Zavřít"</string>
@@ -140,6 +141,7 @@
   <string name="action_retry_decryption">"Opakovat dešifrování"</string>
   <string name="action_save">"Uložit"</string>
   <string name="action_search">"Hledat"</string>
+  <string name="action_select_all">"Vybrat vše"</string>
   <string name="action_send">"Odeslat"</string>
   <string name="action_send_edited_message">"Odeslat upravenou zprávu"</string>
   <string name="action_send_message">"Odeslat zprávu"</string>
@@ -250,6 +252,7 @@ Důvod: %1$s."</string>
   <string name="common_name_and_id">"%1$s (%2$s)"</string>
   <string name="common_no_results">"Žádné výsledky"</string>
   <string name="common_no_room_name">"Žádný název místnosti"</string>
+  <string name="common_no_space_name">"Žádný název prostoru"</string>
   <string name="common_not_encrypted">"Nešifrováno"</string>
   <string name="common_offline">"Offline"</string>
   <string name="common_open_source_licenses">"Licence s otevřeným zdrojovým kódem"</string>
@@ -419,9 +422,6 @@ Opravdu chcete pokračovat?"</string>
   <string name="invite_friends_text">"Ahoj, ozvi se mi na %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>
   <string name="preference_rageshake">"Zatřeste zařízením pro nahlášení chyby"</string>
-  <string name="screen_bottom_sheet_leave_space_subtitle">"Tím budete také odstraněni ze všech místností v tomto prostoru."</string>
-  <string name="screen_bottom_sheet_leave_space_subtitle_admin">"Tímto budete také odstraněni ze všech místností v tomto prostoru, včetně těch, jejichž jediným správcem jste:"</string>
-  <string name="screen_bottom_sheet_leave_space_title">"Opustit %1$s?"</string>
   <string name="screen_bug_report_a11y_screenshot">"Snímek obrazovky"</string>
   <string name="screen_create_poll_option_accessibility_label">"%1$s: %2$s"</string>
   <string name="screen_create_poll_options_section_title">"Možnosti"</string>
@@ -466,6 +466,7 @@ Opravdu chcete pokračovat?"</string>
   <string name="screen_share_this_location_action">"Sdílet tuto polohu"</string>
   <string name="screen_space_list_description">"Prostory, které jste vytvořili nebo se k nim připojili."</string>
   <string name="screen_space_list_details">"%1$s • %2$s"</string>
+  <string name="screen_space_list_parent_space">"%1$s prostor"</string>
   <string name="screen_space_list_title">"Prostory"</string>
   <string name="screen_timeline_item_menu_send_failure_changed_identity">"Zpráva nebyla odeslána, protože ověřená identita uživatele %1$s se změnila."</string>
   <string name="screen_timeline_item_menu_send_failure_unsigned_device">"Zpráva nebyla odeslána, protože%1$s neověřil(a) všechna zařízení."</string>

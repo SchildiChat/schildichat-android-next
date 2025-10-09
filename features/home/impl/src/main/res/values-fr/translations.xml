@@ -3,6 +3,8 @@
   <string name="banner_battery_optimization_content_android">"Désactivez l’optimisation de la batterie pour cette application afin de vous assurer que toutes les notifications sont reçues."</string>
   <string name="banner_battery_optimization_submit_android">"Désactiver l’optimisation"</string>
   <string name="banner_battery_optimization_title_android">"Ils vous manque des notifications?"</string>
+  <string name="banner_new_sound_message">"Le son des notifications a été modifié: plus clair, plus court et moins perturbateur."</string>
+  <string name="banner_new_sound_title">"Nous avons rafraîchi les sons"</string>
   <string name="banner_set_up_recovery_content">"Générez une nouvelle clé de récupération qui peut être utilisée pour restaurer l’historique de vos messages chiffrés au cas où vous perdriez l’accès à vos appareils."</string>
   <string name="banner_set_up_recovery_submit">"Configurer la sauvegarde"</string>
   <string name="banner_set_up_recovery_title">"Configurer la récupération"</string>

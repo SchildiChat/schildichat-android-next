@@ -9,8 +9,7 @@ package io.element.android.features.poll.impl.create
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.element.android.libraries.matrix.api.poll.PollKind
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 
 class CreatePollStateProvider : PreviewParameterProvider<CreatePollState> {
     override val values: Sequence<CreatePollState>
@@ -20,7 +19,7 @@ class CreatePollStateProvider : PreviewParameterProvider<CreatePollState> {
                 canCreate = false,
                 canAddAnswer = true,
                 question = "",
-                answers = persistentListOf(
+                answers = listOf(
                     Answer("", false),
                     Answer("", false)
                 ),
@@ -33,7 +32,7 @@ class CreatePollStateProvider : PreviewParameterProvider<CreatePollState> {
                 canCreate = true,
                 canAddAnswer = true,
                 question = "What type of food should we have?",
-                answers = persistentListOf(
+                answers = listOf(
                     Answer("Italian \uD83C\uDDEE\uD83C\uDDF9", false),
                     Answer("Chinese \uD83C\uDDE8\uD83C\uDDF3", false),
                 ),
@@ -46,7 +45,7 @@ class CreatePollStateProvider : PreviewParameterProvider<CreatePollState> {
                 canCreate = true,
                 canAddAnswer = true,
                 question = "What type of food should we have?",
-                answers = persistentListOf(
+                answers = listOf(
                     Answer("Italian \uD83C\uDDEE\uD83C\uDDF9", false),
                     Answer("Chinese \uD83C\uDDE8\uD83C\uDDF3", false),
                 ),
@@ -59,7 +58,7 @@ class CreatePollStateProvider : PreviewParameterProvider<CreatePollState> {
                 canCreate = true,
                 canAddAnswer = true,
                 question = "What type of food should we have?",
-                answers = persistentListOf(
+                answers = listOf(
                     Answer("Italian \uD83C\uDDEE\uD83C\uDDF9", true),
                     Answer("Chinese \uD83C\uDDE8\uD83C\uDDF3", true),
                     Answer("Brazilian \uD83C\uDDE7\uD83C\uDDF7", true),
@@ -74,7 +73,7 @@ class CreatePollStateProvider : PreviewParameterProvider<CreatePollState> {
                 canCreate = true,
                 canAddAnswer = false,
                 question = "Should there be more than 20 answers?",
-                answers = persistentListOf(
+                answers = listOf(
                     Answer("1", true),
                     Answer("2", true),
                     Answer("3", true),
@@ -108,7 +107,7 @@ class CreatePollStateProvider : PreviewParameterProvider<CreatePollState> {
                     " Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor" +
                     " in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt" +
                     " in culpa qui officia deserunt mollit anim id est laborum.",
-                answers = persistentListOf(
+                answers = listOf(
                     Answer(
                         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." +
                             " Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis a.",
@@ -129,7 +128,7 @@ class CreatePollStateProvider : PreviewParameterProvider<CreatePollState> {
                 canCreate = false,
                 canAddAnswer = true,
                 question = "",
-                answers = persistentListOf(
+                answers = listOf(
                     Answer("", false),
                     Answer("", false)
                 ),
@@ -142,7 +141,7 @@ class CreatePollStateProvider : PreviewParameterProvider<CreatePollState> {
                 canCreate = false,
                 canAddAnswer = true,
                 question = "",
-                answers = persistentListOf(
+                answers = listOf(
                     Answer("", false),
                     Answer("", false)
                 ),
@@ -158,7 +157,7 @@ private fun aCreatePollState(
     canCreate: Boolean,
     canAddAnswer: Boolean,
     question: String,
-    answers: PersistentList<Answer>,
+    answers: List<Answer>,
     showBackConfirmation: Boolean,
     showDeleteConfirmation: Boolean,
     pollKind: PollKind
@@ -168,7 +167,7 @@ private fun aCreatePollState(
         canSave = canCreate,
         canAddAnswer = canAddAnswer,
         question = question,
-        answers = answers,
+        answers = answers.toImmutableList(),
         showBackConfirmation = showBackConfirmation,
         showDeleteConfirmation = showDeleteConfirmation,
         pollKind = pollKind,

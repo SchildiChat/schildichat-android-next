@@ -185,8 +185,8 @@ class DefaultBugReporter(
                     .addFormDataPart("branch_name", buildMeta.gitBranchName)
                 userId?.let {
                     matrixClientProvider.getOrNull(it)?.let { client ->
-                        val curveKey = client.encryptionService().deviceCurve25519()
-                        val edKey = client.encryptionService().deviceEd25519()
+                        val curveKey = client.encryptionService.deviceCurve25519()
+                        val edKey = client.encryptionService.deviceEd25519()
                         if (curveKey != null && edKey != null) {
                             builder.addFormDataPart("device_keys", "curve25519:$curveKey, ed25519:$edKey")
                         }

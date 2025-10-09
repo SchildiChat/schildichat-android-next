@@ -38,11 +38,9 @@ import io.element.android.libraries.featureflag.api.Feature
 import io.element.android.libraries.featureflag.api.FeatureFlagService
 import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.featureflag.ui.model.FeatureUiModel
-import io.element.android.libraries.matrix.api.tracing.TraceLogPack
 import io.element.android.libraries.preferences.api.store.AppPreferencesStore
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
@@ -83,16 +81,16 @@ class DeveloperSettingsPresenter(
             appPreferencesStore.getTracingLogLevelFlow().map { AsyncData.Success(it.toLogLevelItem()) }
         }
         val tracingLogLevel by tracingLogLevelFlow.collectAsState(initial = AsyncData.Uninitialized)
-        val tracingLogPacks by produceState(persistentListOf<TraceLogPack>()) {
+        val tracingLogPacks by produceState(persistentListOf()) {
             appPreferencesStore.getTracingLogPacksFlow()
                 // Sort the entries alphabetically by its title
-                .map { it.sortedBy { it.title }.toPersistentList() }
-                .collectLatest { value = it }
+                .map { it.sortedBy { it.title } }
+                .collectLatest { value = it.toImmutableList() }
         }
 
         LaunchedEffect(Unit) {
-            FeatureFlags.entries
-                .filter { it.isFinished.not() }
+            featureFlagService.getAvailableFeatures()
+                .filter { it.isInLabs.not() && it.isFinished.not() }
                 .run {
                     // Never display room directory search in release builds for Play Store
                     if (buildMeta.flavorDescription == "GooglePlay" && buildMeta.buildType == BuildType.RELEASE || buildMeta.isGplayBuild) {
@@ -170,6 +168,7 @@ class DeveloperSettingsPresenter(
                         key = feature.key,
                         title = feature.title,
                         description = feature.description,
+                        icon = null,
                         isEnabled = isEnabled
                     )
                 }

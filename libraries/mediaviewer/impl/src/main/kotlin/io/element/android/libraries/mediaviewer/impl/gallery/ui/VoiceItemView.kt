@@ -53,7 +53,7 @@ import io.element.android.libraries.voiceplayer.api.VoiceMessageEvents
 import io.element.android.libraries.voiceplayer.api.VoiceMessageState
 import io.element.android.libraries.voiceplayer.api.VoiceMessageStateProvider
 import io.element.android.libraries.voiceplayer.api.aVoiceMessageState
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
 
 @Composable
@@ -133,7 +133,7 @@ private fun VoiceInfoRow(
                 .height(34.dp),
             showCursor = state.showCursor,
             playbackProgress = state.progress,
-            waveform = voice.mediaInfo.waveform.orEmpty().toPersistentList(),
+            waveform = voice.mediaInfo.waveform.orEmpty().toImmutableList(),
             onSeek = {
                 state.eventSink(VoiceMessageEvents.Seek(it))
             },

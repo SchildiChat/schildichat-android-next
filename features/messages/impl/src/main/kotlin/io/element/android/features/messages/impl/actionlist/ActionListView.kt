@@ -233,7 +233,6 @@ private fun ActionListViewContent(
                             highlightedEmojis = target.event.reactionsState.highlightedKeys,
                             onEmojiReactionClick = onEmojiReactionClick,
                             onCustomReactionClick = onCustomReactionClick,
-                            recentEmojis = target.recentEmojis, // SC
                             modifier = Modifier.fillMaxWidth(),
                         )
                         HorizontalDivider()
@@ -356,7 +355,6 @@ private fun EmojiReactionsRow(
     highlightedEmojis: ImmutableList<String>,
     onEmojiReactionClick: (String) -> Unit,
     onCustomReactionClick: () -> Unit,
-    recentEmojis: List<String>, // SC
     modifier: Modifier = Modifier,
 ) {
     Row(

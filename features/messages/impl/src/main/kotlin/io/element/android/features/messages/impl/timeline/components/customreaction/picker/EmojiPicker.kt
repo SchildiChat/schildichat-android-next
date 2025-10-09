@@ -33,13 +33,11 @@ import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import io.element.android.emojibasebindings.Emoji
 import io.element.android.features.messages.impl.timeline.components.customreaction.EmojiItem
-import io.element.android.features.messages.impl.timeline.components.customreaction.icon
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.text.toSp
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconSource
-import io.element.android.libraries.designsystem.theme.components.SearchBar
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
@@ -51,7 +49,6 @@ import kotlinx.coroutines.launch
 fun EmojiPicker(
     onSelectEmoji: (Emoji) -> Unit,
     onSelectCustomEmoji: (String) -> Unit, // SC
-    recentEmojiDataSource: RecentEmojiDataSource? = null, // SC
     state: EmojiPickerState,
     selectedEmojis: ImmutableSet<String>,
     modifier: Modifier = Modifier,
@@ -84,7 +81,6 @@ fun EmojiPicker(
             SecondaryTabRow(
                 selectedTabIndex = pagerState.currentPage,
             ) {
-                ScEmojiPickerTabsStart(pagerState)
                 state.categories.forEachIndexed { index, category ->
                     Tab(
                         icon = {
@@ -116,11 +112,10 @@ fun EmojiPicker(
                 if (scEmojiPickerPage(
                         scIndex,
                         pagerState.currentPage,
-                        selectedEmojis, recentEmojiDataSource,
                         onSelectCustomEmoji
                 ) {
                     state.eventSink(EmojiPickerEvents.ToggleSearchActive(true))
-                    pagerState.requestScrollToPage(PAGE_RECENT_EMOJI)
+                    pagerState.requestScrollToPage(0)
                 }) {
                     return@HorizontalPager
                 }

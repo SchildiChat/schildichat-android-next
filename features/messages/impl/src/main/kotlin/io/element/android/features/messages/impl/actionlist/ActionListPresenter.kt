@@ -24,7 +24,6 @@ import io.element.android.features.messages.impl.actionlist.model.TimelineItemAc
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemActionPostProcessor
 import io.element.android.features.messages.impl.crypto.sendfailure.VerifiedUserSendFailure
 import io.element.android.features.messages.impl.crypto.sendfailure.VerifiedUserSendFailureFactory
-import io.element.android.features.messages.impl.emojis.RecentEmojiDataSource
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.features.messages.impl.timeline.model.TimelineItemThreadInfo
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemEventContent
@@ -71,7 +70,6 @@ class DefaultActionListPresenter(
     @Assisted
     private val timelineMode: Timeline.Mode,
     private val appPreferencesStore: AppPreferencesStore,
-    private val recentEmojiDataSource: RecentEmojiDataSource,
     private val room: BaseRoom,
     private val userSendFailureFactory: VerifiedUserSendFailureFactory,
     private val dateFormatter: DateFormatter,
@@ -156,7 +154,6 @@ class DefaultActionListPresenter(
                     useRelative = true,
                 ),
                 displayEmojiReactions = displayEmojiReactions,
-                recentEmojis = recentEmojiDataSource.getRecentEmojisSorted(),
                 verifiedUserSendFailure = verifiedUserSendFailure,
                 actions = actions.toImmutableList(),
                 recentEmojis = getRecentEmojis().getOrNull()?.toImmutableList() ?: persistentListOf()

@@ -19,8 +19,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
-import chat.schildi.lib.preferences.ScPreferencesStore
-import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.matrixsdk.urlpreview.UrlPreviewProvider
 import chat.schildi.matrixsdk.urlpreview.UrlPreviewStateProvider
 import com.bumble.appyx.core.lifecycle.subscribe
@@ -36,7 +34,6 @@ import io.element.android.features.knockrequests.api.banner.KnockRequestsBannerR
 import io.element.android.features.messages.impl.actionlist.ActionListPresenter
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemActionPostProcessor
 import io.element.android.features.messages.impl.attachments.Attachment
-import io.element.android.features.messages.impl.emojis.RecentEmojiDataSource
 import io.element.android.features.messages.impl.messagecomposer.MessageComposerEvents
 import io.element.android.features.messages.impl.messagecomposer.MessageComposerPresenter
 import io.element.android.features.messages.impl.timeline.TimelineController
@@ -94,8 +91,6 @@ class MessagesNode(
     actionListPresenterFactory: ActionListPresenter.Factory,
     private val timelineItemPresenterFactories: TimelineItemPresenterFactories,
     private val mediaPlayer: MediaPlayer,
-    private val recentEmojiDataSource: RecentEmojiDataSource, // SC
-    private val scPreferencesStore: ScPreferencesStore, // SC
     urlPreviewProvider: UrlPreviewProvider, // SC
     private val permalinkParser: PermalinkParser,
     private val knockRequestsBannerRenderer: KnockRequestsBannerRenderer,
@@ -295,7 +290,6 @@ class MessagesNode(
             }
             MessagesView(
                 state = state,
-                recentEmojiDataSource = recentEmojiDataSource, // SC
                 onBackClick = this::navigateUp,
                 onRoomDetailsClick = this::onRoomDetailsClick,
                 onEventContentClick = { isLive, event ->

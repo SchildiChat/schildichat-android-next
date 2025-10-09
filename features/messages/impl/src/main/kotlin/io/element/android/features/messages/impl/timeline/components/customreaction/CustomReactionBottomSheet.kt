@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import io.element.android.emojibasebindings.Emoji
-import io.element.android.features.messages.impl.emojis.RecentEmojiDataSource
 import io.element.android.features.messages.impl.timeline.components.customreaction.picker.EmojiPicker
 import io.element.android.features.messages.impl.timeline.components.customreaction.picker.EmojiPickerPresenter
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
@@ -31,7 +30,6 @@ fun CustomReactionBottomSheet(
     state: CustomReactionState,
     onSelectEmoji: (EventOrTransactionId, Emoji) -> Unit,
     onSelectCustomEmoji: (EventOrTransactionId, String) -> Unit, // SC
-    recentEmojiDataSource: RecentEmojiDataSource?, // SC
     modifier: Modifier = Modifier,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = ScPrefs.PREFER_FULLSCREEN_REACTION_SHEET.value())
@@ -45,13 +43,9 @@ fun CustomReactionBottomSheet(
     fun onEmojiSelectedDismiss(emoji: Emoji) {
         if (target?.event == null) return
 
-        val wasSelected = state.selectedEmoji.contains(emoji.unicode)
-
         sheetState.hide(coroutineScope) {
             state.eventSink(CustomReactionEvents.DismissCustomReactionSheet)
             onSelectEmoji(target.event.eventOrTransactionId, emoji)
-
-            if (!wasSelected) recentEmojiDataSource?.recordEmoji(emoji.unicode)
         }
     }
 
@@ -63,8 +57,6 @@ fun CustomReactionBottomSheet(
         sheetState.hide(coroutineScope) {
             state.eventSink(CustomReactionEvents.DismissCustomReactionSheet)
             onSelectCustomEmoji(target.event.eventOrTransactionId, emoji)
-
-            if (!wasSelected) recentEmojiDataSource?.recordEmoji(emoji)
         }
     }
 
@@ -86,7 +78,6 @@ fun CustomReactionBottomSheet(
                 onSelectCustomEmoji = ::onCustomEmojiSelectedDismiss,
                 state = presenter.present(),
                 selectedEmojis = state.selectedEmoji,
-                recentEmojiDataSource = recentEmojiDataSource,
                 modifier = Modifier.fillMaxSize(),
             )
         }

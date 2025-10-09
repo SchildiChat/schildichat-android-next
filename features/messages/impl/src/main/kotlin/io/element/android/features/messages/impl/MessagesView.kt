@@ -50,7 +50,6 @@ import io.element.android.features.messages.impl.actionlist.ActionListEvents
 import io.element.android.features.messages.impl.actionlist.ActionListView
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemAction
 import io.element.android.features.messages.impl.crypto.identity.IdentityChangeStateView
-import io.element.android.features.messages.impl.emojis.RecentEmojiDataSource
 import io.element.android.features.messages.impl.link.LinkEvents
 import io.element.android.features.messages.impl.link.LinkView
 import io.element.android.features.messages.impl.messagecomposer.AttachmentsBottomSheet
@@ -119,7 +118,6 @@ fun MessagesView(
     onJoinCallClick: () -> Unit,
     onViewAllPinnedMessagesClick: () -> Unit,
     modifier: Modifier = Modifier,
-    recentEmojiDataSource: RecentEmojiDataSource? = null,
     forceJumpToBottomVisibility: Boolean = false,
     knockRequestsBannerView: @Composable () -> Unit,
 ) {
@@ -341,7 +339,6 @@ fun MessagesView(
 
     CustomReactionBottomSheet(
         state = state.customReactionState,
-        recentEmojiDataSource = recentEmojiDataSource,
         onSelectEmoji = { uniqueId, emoji ->
             state.eventSink(MessagesEvents.ToggleReaction(emoji.unicode, uniqueId))
         },

@@ -207,11 +207,10 @@ class RustEncryptionService(
         runCatchingExceptions {
             service.recover(recoveryKey)
         }.recoverCatching {
-            if (it is RustRecoveryException.Import) {
+            when (it) {
                 // We ignore import errors because the user will be notified about them via the "Key storage out of sync" detection.
-                Unit
-            } else {
-                throw it.mapRecoveryException()
+                is RustRecoveryException.Import -> Unit
+                else -> throw it.mapRecoveryException()
             }
         }
     }

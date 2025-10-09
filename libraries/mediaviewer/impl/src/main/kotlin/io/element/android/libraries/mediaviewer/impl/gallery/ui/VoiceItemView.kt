@@ -9,7 +9,9 @@ package io.element.android.libraries.mediaviewer.impl.gallery.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -119,13 +121,22 @@ private fun VoiceInfoRow(
             VoiceMessageState.Button.Disabled -> PlayButton(onClick = {}, enabled = false)
         }
         Spacer(Modifier.width(8.dp))
-        Text(
-            text = if (state.progress > 0f) state.time else voice.mediaInfo.duration ?: state.time,
-            color = ElementTheme.colors.textSecondary,
-            style = ElementTheme.typography.fontBodyMdMedium,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            PlaybackSpeedButton(
+                speed = state.playbackSpeed,
+                onClick = { state.eventSink(VoiceMessageEvents.ChangePlaybackSpeed) },
+            )
+            Text(
+                text = if (state.progress > 0f) state.time else voice.mediaInfo.duration ?: state.time,
+                color = ElementTheme.colors.textSecondary,
+                style = ElementTheme.typography.fontBodyMdMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
         Spacer(modifier = Modifier.width(8.dp))
         WaveformPlaybackView(
             modifier = Modifier
@@ -224,6 +235,36 @@ private fun RetryButton(
 }
 
 @Composable
+private fun PlaybackSpeedButton(
+    speed: Float,
+    onClick: () -> Unit,
+) {
+    val speedText = when (speed) {
+        0.5f -> "0.5×"
+        1.0f -> "1×"
+        1.5f -> "1.5×"
+        2.0f -> "2×"
+        else -> "${speed}×"
+    }
+    androidx.compose.foundation.layout.Box(
+        modifier = Modifier
+            .background(
+                color = ElementTheme.colors.bgCanvasDefault,
+                shape = RoundedCornerShape(12.dp)
+            )
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = speedText,
+            color = ElementTheme.colors.iconSecondary,
+            style = ElementTheme.typography.fontBodyXsMedium,
+        )
+    }
+}
+
+@Composable
 private fun ControlIcon(
     imageVector: ImageVector,
     contentDescription: String?,
@@ -282,4 +323,15 @@ internal fun VoiceItemViewPlayPreview(
         voice = aMediaItemVoice(),
         onLongClick = {},
     )
+}
+
+@PreviewsDayNight
+@Composable
+internal fun PlaybackSpeedButtonPreview() = ElementPreview {
+    Row {
+        PlaybackSpeedButton(speed = 0.5f, onClick = {})
+        PlaybackSpeedButton(speed = 1.0f, onClick = {})
+        PlaybackSpeedButton(speed = 1.5f, onClick = {})
+        PlaybackSpeedButton(speed = 2.0f, onClick = {})
+    }
 }

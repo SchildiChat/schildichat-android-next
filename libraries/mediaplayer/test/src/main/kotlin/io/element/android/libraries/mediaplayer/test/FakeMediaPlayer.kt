@@ -95,6 +95,10 @@ class FakeMediaPlayer(
         }
     }
 
+    override fun setPlaybackSpeed(speed: Float) {
+        // no-op
+    }
+
     override fun close() {
         // no-op
     }

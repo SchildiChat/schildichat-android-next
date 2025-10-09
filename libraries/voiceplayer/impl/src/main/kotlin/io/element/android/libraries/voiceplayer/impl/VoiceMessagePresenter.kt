@@ -37,6 +37,9 @@ class VoiceMessagePresenter(
     private val duration: Duration,
 ) : Presenter<VoiceMessageState> {
     private val play = mutableStateOf<AsyncData<Unit>>(AsyncData.Uninitialized)
+    private val playbackSpeed = mutableStateOf(1.0f)
+
+    private val availablePlaybackSpeeds = listOf(0.5f, 1.0f, 1.5f, 2.0f)
 
     @Composable
     override fun present(): VoiceMessageState {
@@ -111,6 +114,13 @@ class VoiceMessagePresenter(
                 is VoiceMessageEvents.Seek -> {
                     player.seekTo((event.percentage * duration).toLong())
                 }
+                is VoiceMessageEvents.ChangePlaybackSpeed -> {
+                    val currentIndex = availablePlaybackSpeeds.indexOf(playbackSpeed.value)
+                    val nextIndex = (currentIndex + 1) % availablePlaybackSpeeds.size
+                    val newSpeed = availablePlaybackSpeeds[nextIndex]
+                    playbackSpeed.value = newSpeed
+                    player.setPlaybackSpeed(newSpeed)
+                }
             }
         }
 
@@ -119,6 +129,7 @@ class VoiceMessagePresenter(
             progress = progress,
             time = time,
             showCursor = showCursor,
+            playbackSpeed = playbackSpeed.value,
             eventSink = { eventSink(it) },
         )
     }

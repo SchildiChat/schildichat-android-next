@@ -47,10 +47,12 @@ fun aVoiceMessageState(
     progress: Float = 0f,
     time: String = "1:00",
     showCursor: Boolean = false,
+    playbackSpeed: Float = 1.0f,
 ) = VoiceMessageState(
     button = button,
     progress = progress,
     time = time,
     showCursor = showCursor,
+    playbackSpeed = playbackSpeed,
     eventSink = {},
 )

@@ -222,6 +222,40 @@ class VoiceMessagePresenterTest {
             }
         }
     }
+
+    @Test
+    fun `changing playback speed cycles through available speeds`() = runTest {
+        val presenter = createVoiceMessagePresenter(
+            duration = 10_000.milliseconds,
+        )
+        moleculeFlow(RecompositionMode.Immediate) {
+            presenter.present()
+        }.test {
+            val initialState = awaitItem().also {
+                assertThat(it.playbackSpeed).isEqualTo(1.0f)
+            }
+
+            initialState.eventSink(VoiceMessageEvents.ChangePlaybackSpeed)
+            awaitItem().also {
+                assertThat(it.playbackSpeed).isEqualTo(1.5f)
+            }
+
+            initialState.eventSink(VoiceMessageEvents.ChangePlaybackSpeed)
+            awaitItem().also {
+                assertThat(it.playbackSpeed).isEqualTo(2.0f)
+            }
+
+            initialState.eventSink(VoiceMessageEvents.ChangePlaybackSpeed)
+            awaitItem().also {
+                assertThat(it.playbackSpeed).isEqualTo(0.5f)
+            }
+
+            initialState.eventSink(VoiceMessageEvents.ChangePlaybackSpeed)
+            awaitItem().also {
+                assertThat(it.playbackSpeed).isEqualTo(1.0f)
+            }
+        }
+    }
 }
 
 fun TestScope.createVoiceMessagePresenter(

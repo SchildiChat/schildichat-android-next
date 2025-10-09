@@ -7,12 +7,10 @@
 
 package io.element.android.appnav.root
 
-import androidx.compose.runtime.Immutable
 import io.element.android.features.rageshake.api.crash.CrashDetectionState
 import io.element.android.features.rageshake.api.detection.RageshakeDetectionState
 import io.element.android.services.apperror.api.AppErrorState
 
-@Immutable
 data class RootState(
     val rageshakeDetectionState: RageshakeDetectionState,
     val crashDetectionState: CrashDetectionState,

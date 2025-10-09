@@ -7,7 +7,6 @@
 
 package io.element.android.libraries.matrix.impl.room
 
-import androidx.compose.runtime.Immutable
 import io.element.android.libraries.core.extensions.runCatchingExceptions
 import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.room.NotJoinedRoom
@@ -15,7 +14,6 @@ import io.element.android.libraries.matrix.api.room.RoomMembershipDetails
 import io.element.android.libraries.matrix.api.room.preview.RoomPreviewInfo
 import io.element.android.libraries.matrix.impl.room.member.RoomMemberMapper
 
-@Immutable
 class NotJoinedRustRoom(
     private val sessionId: SessionId,
     override val localRoom: RustBaseRoom?,

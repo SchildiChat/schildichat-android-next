@@ -13,7 +13,6 @@ import io.element.android.features.messages.impl.crypto.sendfailure.VerifiedUser
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import kotlinx.collections.immutable.ImmutableList
 
-@Immutable
 data class ActionListState(
     val target: Target,
     val eventSink: (ActionListEvents) -> Unit,

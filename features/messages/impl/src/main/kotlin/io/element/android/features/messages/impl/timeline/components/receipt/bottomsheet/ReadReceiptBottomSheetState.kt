@@ -7,10 +7,8 @@
 
 package io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet
 
-import androidx.compose.runtime.Immutable
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 
-@Immutable
 data class ReadReceiptBottomSheetState(
     val selectedEvent: TimelineItem.Event?,
     val eventSink: (ReadReceiptBottomSheetEvents) -> Unit,

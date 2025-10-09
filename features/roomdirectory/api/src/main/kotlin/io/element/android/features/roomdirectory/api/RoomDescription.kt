@@ -8,7 +8,6 @@
 package io.element.android.features.roomdirectory.api
 
 import android.os.Parcelable
-import androidx.compose.runtime.Immutable
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.matrix.api.core.RoomAlias
@@ -17,7 +16,6 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Immutable
 data class RoomDescription(
     val roomId: RoomId,
     val name: String?,

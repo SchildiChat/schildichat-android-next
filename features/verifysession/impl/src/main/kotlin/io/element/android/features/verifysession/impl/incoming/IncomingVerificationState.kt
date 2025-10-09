@@ -7,13 +7,11 @@
 
 package io.element.android.features.verifysession.impl.incoming
 
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import io.element.android.libraries.matrix.api.core.DeviceId
 import io.element.android.libraries.matrix.api.verification.SessionVerificationData
 import io.element.android.libraries.matrix.api.verification.VerificationRequest
 
-@Immutable
 data class IncomingVerificationState(
     val step: Step,
     val request: VerificationRequest.Incoming,

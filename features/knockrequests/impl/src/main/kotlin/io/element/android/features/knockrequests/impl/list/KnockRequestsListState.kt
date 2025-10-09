@@ -7,7 +7,6 @@
 
 package io.element.android.features.knockrequests.impl.list
 
-import androidx.compose.runtime.Immutable
 import io.element.android.features.knockrequests.impl.data.KnockRequestPermissions
 import io.element.android.features.knockrequests.impl.data.KnockRequestPresentable
 import io.element.android.libraries.architecture.AsyncAction
@@ -24,7 +23,6 @@ data class KnockRequestsListState(
     val canAcceptAll = permissions.canAccept && knockRequests is AsyncData.Success && knockRequests.data.size > 1
 }
 
-@Immutable
 sealed interface KnockRequestsAction {
     data object None : KnockRequestsAction
     data class Accept(val knockRequest: KnockRequestPresentable) : KnockRequestsAction

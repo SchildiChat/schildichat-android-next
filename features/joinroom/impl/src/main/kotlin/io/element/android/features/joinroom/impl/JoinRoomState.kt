@@ -24,7 +24,6 @@ import kotlinx.collections.immutable.ImmutableList
 
 internal const val MAX_KNOCK_MESSAGE_LENGTH = 500
 
-@Immutable
 data class JoinRoomState(
     val roomIdOrAlias: RoomIdOrAlias,
     val contentState: ContentState,

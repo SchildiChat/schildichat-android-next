@@ -63,7 +63,7 @@ class NotLoggedInFlowNode(
     override fun onBuilt() {
         super.onBuilt()
         lifecycle.subscribe(
-            onCreate = {
+            onResume = {
                 SingletonImageLoader.setUnsafe(notLoggedInImageLoaderFactory.newImageLoader())
             },
         )

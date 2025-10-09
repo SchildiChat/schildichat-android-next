@@ -20,6 +20,9 @@ fun Throwable.mapRecoveryException(): RecoveryException {
                     message = errorMessage
                 )
                 is RustRecoveryException.BackupExistsOnServer -> RecoveryException.BackupExistsOnServer
+                is RustRecoveryException.Import -> RecoveryException.Import(
+                    message = errorMessage
+                )
                 is RustRecoveryException.Client -> RecoveryException.Client(
                     source.mapClientException()
                 )

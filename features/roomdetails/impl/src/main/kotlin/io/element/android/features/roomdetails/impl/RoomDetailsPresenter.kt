@@ -51,7 +51,7 @@ import io.element.android.libraries.preferences.api.store.AppPreferencesStore
 import io.element.android.libraries.ui.strings.CommonStrings
 import io.element.android.services.analytics.api.AnalyticsService
 import io.element.android.services.analyticsproviders.api.trackers.captureInteraction
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -143,12 +143,12 @@ class RoomDetailsPresenter(
                 }
                 RoomDetailsEvent.MuteNotification -> {
                     scope.launch(dispatchers.io) {
-                        client.notificationSettingsService().muteRoom(room.roomId)
+                        notificationSettingsService.muteRoom(room.roomId)
                     }
                 }
                 RoomDetailsEvent.UnmuteNotification -> {
                     scope.launch(dispatchers.io) {
-                        client.notificationSettingsService().unmuteRoom(room.roomId, isEncrypted, room.isOneToOne)
+                        notificationSettingsService.unmuteRoom(room.roomId, isEncrypted, room.isOneToOne)
                     }
                 }
                 is RoomDetailsEvent.SetFavorite -> scope.setFavorite(event.isFavorite)
@@ -194,7 +194,7 @@ class RoomDetailsPresenter(
             isFavorite = isFavorite,
             displayRolesAndPermissionsSettings = !isDm && isUserAdmin,
             isPublic = joinRule == JoinRule.Public,
-            heroes = roomInfo.heroes.toPersistentList(),
+            heroes = roomInfo.heroes.toImmutableList(),
             pinnedMessagesCount = pinnedMessagesCount,
             snackbarMessage = snackbarMessage,
             canShowKnockRequests = canShowKnockRequests,

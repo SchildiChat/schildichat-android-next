@@ -157,7 +157,11 @@ class RustBaseRoom(
         runCatchingExceptions {
             innerRoom.leave()
         }.onSuccess {
-            roomMembershipObserver.notifyUserLeftRoom(roomId, membershipBeforeLeft)
+            roomMembershipObserver.notifyUserLeftRoom(
+                roomId = roomId,
+                isSpace = roomInfoFlow.value.isSpace,
+                membershipBeforeLeft = membershipBeforeLeft,
+            )
         }
     }
 
@@ -316,6 +320,14 @@ class RustBaseRoom(
                     trySend(UserId(declinerUserId))
                 }
             })
+        }
+    }
+
+    override suspend fun threadRootIdForEvent(eventId: EventId): Result<ThreadId?> = withContext(roomDispatcher) {
+        runCatchingExceptions {
+            innerRoom.loadOrFetchEvent(eventId.value).use {
+                it.threadRootEventId()?.let(::ThreadId)
+            }
         }
     }
 }

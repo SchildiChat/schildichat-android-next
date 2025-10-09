@@ -22,7 +22,7 @@ import io.element.android.libraries.matrix.impl.room.member.RoomMemberMapper
 import io.element.android.libraries.matrix.impl.room.powerlevels.RoomPowerLevelsValuesMapper
 import io.element.android.libraries.matrix.impl.room.tombstone.map
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toPersistentMap
+import kotlinx.collections.immutable.toImmutableMap
 import org.matrix.rustcomponents.sdk.Membership
 import org.matrix.rustcomponents.sdk.RoomHero
 import uniffi.matrix_sdk_base.EncryptionState
@@ -103,6 +103,6 @@ fun RoomHero.map(): MatrixUser = MatrixUser(
 fun mapPowerLevels(roomPowerLevels: RustRoomPowerLevels): RoomPowerLevels {
     return RoomPowerLevels(
         values = RoomPowerLevelsValuesMapper.map(roomPowerLevels.values()),
-        users = roomPowerLevels.userPowerLevels().mapKeys { (key, _) -> UserId(key) }.toPersistentMap()
+        users = roomPowerLevels.userPowerLevels().mapKeys { (key, _) -> UserId(key) }.toImmutableMap()
     )
 }

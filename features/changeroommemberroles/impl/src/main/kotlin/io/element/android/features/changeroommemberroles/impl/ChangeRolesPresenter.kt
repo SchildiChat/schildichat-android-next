@@ -20,7 +20,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import im.vector.app.features.analytics.plan.RoomModeration
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
@@ -37,17 +37,15 @@ import io.element.android.libraries.matrix.ui.model.roleOf
 import io.element.android.libraries.matrix.ui.room.PowerLevelRoomMemberComparator
 import io.element.android.services.analytics.api.AnalyticsService
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-@Inject
+@AssistedInject
 class ChangeRolesPresenter(
     @Assisted private val role: RoomMember.Role,
     private val room: JoinedRoom,
@@ -73,11 +71,11 @@ class ChangeRolesPresenter(
         }
         val exitState: MutableState<AsyncAction<Unit>> = remember { mutableStateOf(AsyncAction.Uninitialized) }
         val saveState: MutableState<AsyncAction<Unit>> = remember { mutableStateOf(AsyncAction.Uninitialized) }
-        val usersWithRole = produceState(initialValue = persistentListOf()) {
+        val usersWithRole = produceState<ImmutableList<MatrixUser>>(initialValue = persistentListOf()) {
             room.usersWithRole(role).map { members -> members.map { it.toMatrixUser() } }
                     .onEach { users ->
-                        val previous: PersistentList<MatrixUser> = value
-                        value = users.toPersistentList()
+                        val previous = value
+                        value = users.toImmutableList()
                         // Users who were selected but didn't have the role, so their role change was pending
                         val toAdd = selectedUsers.value.filter { user -> users.none { it.userId == user.userId } && previous.none { it.userId == user.userId } }
                         // Users who no longer have the role

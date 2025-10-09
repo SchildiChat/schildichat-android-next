@@ -4,7 +4,8 @@
   <string name="screen_join_room_cancel_knock_alert_confirmation">"Ha, bekor qiling"</string>
   <string name="screen_join_room_cancel_knock_alert_description">"Bu xonaga qo‘shilish so‘rovingizni bekor qilishni xohlayotganingizga ishonchingiz komilmi?"</string>
   <string name="screen_join_room_cancel_knock_alert_title">"Qo‘shilish so‘rovini bekor qilish"</string>
-  <string name="screen_join_room_join_action">"Xonaga qoʻshilish"</string>
+  <string name="screen_join_room_decline_and_block_button_title">"Rad etish va bloklash"</string>
+  <string name="screen_join_room_join_action">"Qo\'shilish"</string>
   <string name="screen_join_room_knock_action">"Qoʻshilish soʻrovini yuborish"</string>
   <string name="screen_join_room_knock_message_description">"Xabar (ixtiyoriy)"</string>
   <string name="screen_join_room_knock_sent_description">"Agar so‘rovingiz qabul qilinsa, xonaga qo‘shilish taklifini olasiz."</string>

@@ -20,7 +20,7 @@ import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.extensions.runCatchingExceptions
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 @Inject
 class DependencyLicensesListPresenter(
@@ -37,7 +37,7 @@ class DependencyLicensesListPresenter(
         var filter by remember { mutableStateOf("") }
         LaunchedEffect(Unit) {
             runCatchingExceptions {
-                licenses = AsyncData.Success(licensesProvider.provides().toPersistentList())
+                licenses = AsyncData.Success(licensesProvider.provides().toImmutableList())
             }.onFailure {
                 licenses = AsyncData.Failure(it)
             }
@@ -50,7 +50,7 @@ class DependencyLicensesListPresenter(
                     it.safeName.contains(safeFilter, ignoreCase = true) ||
                         it.groupId.contains(safeFilter, ignoreCase = true) ||
                         it.artifactId.contains(safeFilter, ignoreCase = true)
-                }.toPersistentList())
+                }.toImmutableList())
             } else {
                 filteredLicenses = licenses
             }

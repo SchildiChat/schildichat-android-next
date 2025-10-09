@@ -15,4 +15,6 @@ interface SpaceService {
     suspend fun joinedSpaces(): Result<List<SpaceRoom>>
 
     fun spaceRoomList(id: RoomId): SpaceRoomList
+
+    fun getLeaveSpaceHandle(spaceId: RoomId): LeaveSpaceHandle
 }

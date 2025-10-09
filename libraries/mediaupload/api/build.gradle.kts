@@ -25,7 +25,6 @@ dependencies {
     implementation(projects.libraries.di)
     api(projects.libraries.matrix.api)
     api(projects.libraries.preferences.api)
-    implementation(libs.inject)
     implementation(libs.coroutines.core)
 
     testCommonDependencies(libs)

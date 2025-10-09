@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
@@ -51,6 +52,7 @@ fun ClickableLinkText(
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = {},
     style: TextStyle = LocalTextStyle.current,
+    color: Color = Color.Unspecified,
     inlineContent: ImmutableMap<String, InlineTextContent> = persistentMapOf(),
 ) {
     ClickableLinkText(
@@ -62,6 +64,7 @@ fun ClickableLinkText(
         onClick = onClick,
         onLongClick = onLongClick,
         style = style,
+        color = color,
         inlineContent = inlineContent,
     )
 }
@@ -76,6 +79,7 @@ fun ClickableLinkText(
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = {},
     style: TextStyle = LocalTextStyle.current,
+    color: Color = Color.Unspecified,
     inlineContent: ImmutableMap<String, InlineTextContent> = persistentMapOf(),
 ) {
     @Suppress("NAME_SHADOWING")
@@ -126,6 +130,7 @@ fun ClickableLinkText(
         text = annotatedString,
         modifier = modifier.then(pressIndicator),
         style = style,
+        color = color,
         onTextLayout = {
             layoutResult.value = it
         },

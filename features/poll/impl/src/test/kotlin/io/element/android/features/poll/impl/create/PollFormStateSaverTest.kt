@@ -9,7 +9,7 @@ package io.element.android.features.poll.impl.create
 
 import androidx.compose.runtime.saveable.SaverScope
 import com.google.common.truth.Truth.assertThat
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.persistentListOf
 import org.junit.Test
 
 class PollFormStateSaverTest {
@@ -21,7 +21,7 @@ class PollFormStateSaverTest {
     fun `test save and restore`() {
         val state = PollFormState(
             question = "question",
-            answers = listOf("answer1", "answer2").toPersistentList(),
+            answers = persistentListOf("answer1", "answer2"),
             isDisclosed = true,
         )
 

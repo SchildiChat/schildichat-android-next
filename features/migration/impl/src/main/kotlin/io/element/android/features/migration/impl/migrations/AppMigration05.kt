@@ -22,7 +22,7 @@ class AppMigration05(
 ) : AppMigration {
     override val order: Int = 5
 
-    override suspend fun migrate() {
+    override suspend fun migrate(isFreshInstall: Boolean) {
         val allSessions = sessionStore.getAllSessions()
         for (session in allSessions) {
             if (session.sessionPath.isEmpty()) {

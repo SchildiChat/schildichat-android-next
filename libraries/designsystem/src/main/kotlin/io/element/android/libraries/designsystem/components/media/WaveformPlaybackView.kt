@@ -39,7 +39,7 @@ import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import kotlin.math.roundToInt
 
 private const val DEFAULT_GRAPHICS_LAYER_ALPHA: Float = 0.99F
@@ -187,14 +187,14 @@ internal fun WaveformPlaybackViewPreview() = ElementPreview {
             showCursor = false,
             playbackProgress = 0.5f,
             onSeek = {},
-            waveform = aWaveForm().toPersistentList(),
+            waveform = aWaveForm().toImmutableList(),
         )
         WaveformPlaybackView(
             modifier = Modifier.height(34.dp),
             showCursor = true,
             playbackProgress = 0.5f,
             onSeek = {},
-            waveform = List(1024) { it / 1024f }.toPersistentList(),
+            waveform = List(1024) { it / 1024f }.toImmutableList(),
         )
     }
 }
@@ -215,7 +215,7 @@ private fun ImmutableList<Float>.normalisedData(maxSamplesCount: Int): Immutable
         this
     }
 
-    return result.toPersistentList()
+    return result.toImmutableList()
 }
 
 fun aWaveForm(): List<Float> {

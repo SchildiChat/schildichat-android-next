@@ -189,10 +189,14 @@ private fun RoomSummaryScaffoldRow(
     ) {
         Avatar(
             avatarData = room.avatarData,
-            avatarType = AvatarType.Room(
-                heroes = room.heroes,
-                isTombstoned = room.isTombstoned,
-            ),
+            avatarType = if (room.isSpace) {
+                AvatarType.Space(isTombstoned = room.isTombstoned)
+            } else {
+                AvatarType.Room(
+                    heroes = room.heroes,
+                    isTombstoned = room.isTombstoned,
+                )
+            },
             hideImage = hideAvatarImage,
         )
         Spacer(modifier = Modifier.width(16.dp))

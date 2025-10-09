@@ -21,7 +21,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import dev.zacsweers.metro.Assisted
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import im.vector.app.features.analytics.plan.JoinedRoom
 import io.element.android.features.invite.api.InviteData
 import io.element.android.features.invite.api.SeenInvitesStore
@@ -53,13 +53,13 @@ import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.matrix.ui.model.toInviteSender
 import io.element.android.libraries.matrix.ui.safety.rememberHideInvitesAvatar
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-@Inject
+@AssistedInject
 class JoinRoomPresenter(
     @Assisted private val roomId: RoomId,
     @Assisted private val roomIdOrAlias: RoomIdOrAlias,
@@ -94,9 +94,7 @@ class JoinRoomPresenter(
         val roomInfo by remember {
             matrixClient.getRoomInfoFlow(roomId)
         }.collectAsState(initial = Optional.empty())
-        val spaceRoom by remember {
-            spaceList.currentSpaceFlow()
-        }.collectAsState()
+        val spaceRoom by spaceList.currentSpaceFlow.collectAsState()
         val joinAction: MutableState<AsyncAction<Unit>> = remember { mutableStateOf(AsyncAction.Uninitialized) }
         val knockAction: MutableState<AsyncAction<Unit>> = remember { mutableStateOf(AsyncAction.Uninitialized) }
         val cancelKnockAction: MutableState<AsyncAction<Unit>> = remember { mutableStateOf(AsyncAction.Uninitialized) }
@@ -279,7 +277,7 @@ private fun RoomPreviewInfo.toContentState(membershipDetails: RoomMembershipDeta
 private fun SpaceRoom.toContentState(): ContentState {
     return ContentState.Loaded(
         roomId = roomId,
-        name = name,
+        name = displayName,
         topic = topic,
         alias = canonicalAlias,
         numberOfMembers = numJoinedMembers.toLong(),
@@ -293,7 +291,7 @@ private fun SpaceRoom.toContentState(): ContentState {
         joinRule = joinRule,
         details = LoadedDetails.Space(
             childrenCount = childrenCount,
-            heroes = heroes.toPersistentList(),
+            heroes = heroes.toImmutableList(),
         )
     )
 }

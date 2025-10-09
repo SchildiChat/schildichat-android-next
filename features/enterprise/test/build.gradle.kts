@@ -14,7 +14,7 @@ android {
 
 dependencies {
     api(projects.features.enterprise.api)
-    implementation(libs.compound)
+    implementation(projects.libraries.compound)
     implementation(projects.libraries.matrix.api)
     implementation(projects.tests.testutils)
 }

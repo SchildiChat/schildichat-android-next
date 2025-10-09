@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.Dp
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.components.avatar.avatarShape
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 internal fun RoomAvatar(
@@ -44,8 +45,9 @@ internal fun RoomAvatar(
         }
         else -> {
             AvatarCluster(
-                avatars = avatarType.heroes,
-                // Note: even for a room avatar, we use UserAvatarType here to display the avatar of heroes
+                // Keep only the first hero for now
+                avatars = avatarType.heroes.take(1).toImmutableList(),
+                // Note: even for a room avatar, we use AvatarType.User here to display the avatar of heroes
                 avatarType = AvatarType.User,
                 modifier = modifier,
                 hideAvatarImages = hideAvatarImage,

@@ -13,6 +13,7 @@ import io.element.android.features.messages.impl.timeline.model.event.TimelineIt
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemRtcNotificationContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemUnknownContent
 import io.element.android.libraries.matrix.api.core.EventId
+import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.timeline.item.event.CallNotifyContent
 import io.element.android.libraries.matrix.api.timeline.item.event.EventContent
@@ -31,7 +32,6 @@ import io.element.android.libraries.matrix.api.timeline.item.event.StickerConten
 import io.element.android.libraries.matrix.api.timeline.item.event.UnableToDecryptContent
 import io.element.android.libraries.matrix.api.timeline.item.event.UnknownContent
 import io.element.android.libraries.matrix.api.timeline.item.event.getDisambiguatedDisplayName
-import io.element.android.libraries.matrix.api.user.CurrentSessionIdHolder
 
 @Inject
 class TimelineItemContentFactory(
@@ -45,7 +45,7 @@ class TimelineItemContentFactory(
     private val stateFactory: TimelineItemContentStateFactory,
     private val failedToParseMessageFactory: TimelineItemContentFailedToParseMessageFactory,
     private val failedToParseStateFactory: TimelineItemContentFailedToParseStateFactory,
-    private val currentSessionIdHolder: CurrentSessionIdHolder,
+    private val sessionId: SessionId,
 ) {
     suspend fun create(eventTimelineItem: EventTimelineItem): TimelineItemEventContent {
         return create(
@@ -64,7 +64,7 @@ class TimelineItemContentFactory(
         sender: UserId,
         senderProfile: ProfileTimelineDetails,
     ): TimelineItemEventContent {
-        val isOutgoing = currentSessionIdHolder.current == sender
+        val isOutgoing = sessionId == sender
         return when (itemContent) {
             is FailedToParseMessageLikeContent -> failedToParseMessageFactory.create(itemContent)
             is FailedToParseStateContent -> failedToParseStateFactory.create(itemContent)

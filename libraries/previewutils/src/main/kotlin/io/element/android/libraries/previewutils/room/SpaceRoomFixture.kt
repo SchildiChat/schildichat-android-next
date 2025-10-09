@@ -14,9 +14,11 @@ import io.element.android.libraries.matrix.api.room.RoomType
 import io.element.android.libraries.matrix.api.room.join.JoinRule
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.matrix.api.user.MatrixUser
+import kotlinx.collections.immutable.toImmutableList
 
 fun aSpaceRoom(
-    name: String? = "Space name",
+    rawName: String? = null,
+    displayName: String = "Space name",
     avatarUrl: String? = null,
     canonicalAlias: RoomAlias? = null,
     childrenCount: Int = 0,
@@ -29,18 +31,23 @@ fun aSpaceRoom(
     state: CurrentUserMembership? = null,
     topic: String? = null,
     worldReadable: Boolean = false,
+    isDirect: Boolean? = null,
+    via: List<String> = emptyList(),
 ) = SpaceRoom(
-    name = name,
+    rawName = rawName,
+    displayName = displayName,
     avatarUrl = avatarUrl,
     canonicalAlias = canonicalAlias,
     childrenCount = childrenCount,
     guestCanJoin = guestCanJoin,
-    heroes = heroes,
+    heroes = heroes.toImmutableList(),
     joinRule = joinRule,
     numJoinedMembers = numJoinedMembers,
     roomId = roomId,
     roomType = roomType,
     state = state,
     topic = topic,
-    worldReadable = worldReadable
+    worldReadable = worldReadable,
+    via = via.toImmutableList(),
+    isDirect = isDirect
 )

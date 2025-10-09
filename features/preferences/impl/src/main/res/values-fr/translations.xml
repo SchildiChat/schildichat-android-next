@@ -10,6 +10,7 @@
   <string name="screen_advanced_settings_element_call_base_url_validation_error">"URL invalide, assurez-vous d’inclure le protocol (http/https) et l’adresse correcte."</string>
   <string name="screen_advanced_settings_hide_invite_avatars_toggle_title">"Masquer les avatars des salons dans les invitations"</string>
   <string name="screen_advanced_settings_hide_timeline_media_toggle_title">"Masquer les aperçus des médias dans les discussions"</string>
+  <string name="screen_advanced_settings_labs">"Expérimental"</string>
   <string name="screen_advanced_settings_media_compression_description">"Téléchargez des photos et des vidéos plus rapidement et réduisez la consommation de données"</string>
   <string name="screen_advanced_settings_media_compression_title">"Optimisez la qualité des médias"</string>
   <string name="screen_advanced_settings_moderation_and_safety_section_title">"Modération et sécurité"</string>
@@ -43,6 +44,11 @@
   <string name="screen_edit_profile_error_title">"Impossible de mettre à jour le profil"</string>
   <string name="screen_edit_profile_title">"Modifier le profil"</string>
   <string name="screen_edit_profile_updating_details">"Mise à jour du profil…"</string>
+  <string name="screen_labs_enable_threads">"Activez les fils de discussion."</string>
+  <string name="screen_labs_enable_threads_description">"Un changement entraînera le redémarrage de l’application."</string>
+  <string name="screen_labs_header_description">"Découvrez nos dernières idées en cours de développement. Ces fonctionnalités ne sont pas encore finalisées; elles peuvent être instables et évoluer."</string>
+  <string name="screen_labs_header_title">"Envie d’expérimenter?"</string>
+  <string name="screen_labs_title">"Expérimental"</string>
   <string name="screen_notification_settings_additional_settings_section_title">"Réglages supplémentaires"</string>
   <string name="screen_notification_settings_calls_label">"Appels audio et vidéo"</string>
   <string name="screen_notification_settings_configuration_mismatch">"Incompatibilité de configuration"</string>

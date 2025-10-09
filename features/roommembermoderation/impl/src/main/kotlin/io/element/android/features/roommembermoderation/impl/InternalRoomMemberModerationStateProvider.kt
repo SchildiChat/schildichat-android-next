@@ -14,7 +14,7 @@ import io.element.android.features.roommembermoderation.api.RoomMemberModeration
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.user.MatrixUser
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 class InternalRoomMemberModerationStateProvider : PreviewParameterProvider<InternalRoomMemberModerationState> {
     override val values: Sequence<InternalRoomMemberModerationState>
@@ -86,7 +86,7 @@ fun aRoomMembersModerationState(
     canKick = canKick,
     canBan = canBan,
     selectedUser = selectedUser,
-    actions = actions.toPersistentList(),
+    actions = actions.toImmutableList(),
     kickUserAsyncAction = kickUserAsyncAction,
     banUserAsyncAction = banUserAsyncAction,
     unbanUserAsyncAction = unbanUserAsyncAction,

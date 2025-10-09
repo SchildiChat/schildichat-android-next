@@ -33,22 +33,17 @@ fun HomeSpacesView(
         when (space) {
             CurrentSpace.Root -> {
                 item {
-                    SpaceHeaderRootView(
-                        numberOfSpaces = state.spaceRooms.size,
-                        // TODO
-                        numberOfRooms = 0,
-                    )
+                    SpaceHeaderRootView(numberOfSpaces = state.spaceRooms.size)
                 }
             }
             is CurrentSpace.Space -> item {
                 SpaceHeaderView(
                     avatarData = space.spaceRoom.getAvatarData(AvatarSize.SpaceHeader),
-                    name = space.spaceRoom.name,
+                    name = space.spaceRoom.displayName,
                     topic = space.spaceRoom.topic,
-                    joinRule = space.spaceRoom.joinRule,
+                    visibility = space.spaceRoom.visibility,
                     heroes = space.spaceRoom.heroes.toImmutableList(),
                     numberOfMembers = space.spaceRoom.numJoinedMembers,
-                    numberOfRooms = space.spaceRoom.childrenCount,
                 )
             }
         }
@@ -64,7 +59,7 @@ fun HomeSpacesView(
                     },
                     onLongClick = {
                         // TODO
-                    }
+                    },
                 )
             }
         }

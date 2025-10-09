@@ -9,7 +9,6 @@ package io.element.android.libraries.matrix.impl
 
 import dev.zacsweers.metro.Inject
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
-import io.element.android.libraries.di.BaseDirectory
 import io.element.android.libraries.di.CacheDirectory
 import io.element.android.libraries.di.annotations.AppCoroutineScope
 import io.element.android.libraries.featureflag.api.FeatureFlagService
@@ -43,7 +42,6 @@ import java.io.File
 
 @Inject
 class RustMatrixClientFactory(
-    @BaseDirectory private val baseDirectory: File,
     @CacheDirectory private val cacheDirectory: File,
     @AppCoroutineScope
     private val appCoroutineScope: CoroutineScope,
@@ -87,7 +85,6 @@ class RustMatrixClientFactory(
 
         return RustMatrixClient(
             innerClient = client,
-            baseDirectory = baseDirectory,
             sessionStore = sessionStore,
             appCoroutineScope = appCoroutineScope,
             sessionDelegate = sessionDelegate,
@@ -136,13 +133,15 @@ class RustMatrixClientFactory(
             )
             .enableShareHistoryOnInvite(featureFlagService.isFeatureEnabled(FeatureFlags.EnableKeyShareOnInvite))
             .threadsEnabled(featureFlagService.isFeatureEnabled(FeatureFlags.Threads), threadSubscriptions = false)
-            .requestConfig(RequestConfig(
-                timeout = 30_000uL,
-                retryLimit = 0u,
-                // Use default values for the rest
-                maxConcurrentRequests = null,
-                maxRetryTime = null,
-            ))
+            .requestConfig(
+                RequestConfig(
+                    timeout = 30_000uL,
+                    retryLimit = 0u,
+                    // Use default values for the rest
+                    maxConcurrentRequests = null,
+                    maxRetryTime = null,
+                )
+            )
             .run {
                 // Apply sliding sync version settings
                 when (slidingSyncType) {

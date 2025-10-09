@@ -80,6 +80,7 @@
   <string name="action_decline">"Afvis"</string>
   <string name="action_decline_and_block">"Afvis og blokér"</string>
   <string name="action_delete_poll">"Slet afstemning"</string>
+  <string name="action_deselect_all">"Fravælg alle"</string>
   <string name="action_disable">"Deaktiver"</string>
   <string name="action_discard">"Kassér"</string>
   <string name="action_dismiss">"Afvis"</string>
@@ -94,6 +95,7 @@
   <string name="action_forgot_password">"Har du glemt din adgangskode?"</string>
   <string name="action_forward">"Videresend"</string>
   <string name="action_go_back">"Gå tilbage"</string>
+  <string name="action_go_to_settings">"Gå til indstillinger"</string>
   <string name="action_ignore">"Ignorér"</string>
   <string name="action_invite">"Invitér"</string>
   <string name="action_invite_friends">"Invitér andre"</string>
@@ -105,10 +107,12 @@
   <string name="action_leave">"Forlad"</string>
   <string name="action_leave_conversation">"Forlad samtalen"</string>
   <string name="action_leave_room">"Forlad rum"</string>
+  <string name="action_leave_space">"Forlad klynge"</string>
   <string name="action_load_more">"Indlæs mere"</string>
   <string name="action_manage_account">"Administrer konto"</string>
   <string name="action_manage_devices">"Administrer enheder"</string>
   <string name="action_message">"Besked"</string>
+  <string name="action_minimize">"Minimér"</string>
   <string name="action_next">"Næste"</string>
   <string name="action_no">"Nej"</string>
   <string name="action_not_now">"Ikke nu"</string>
@@ -137,6 +141,7 @@
   <string name="action_retry_decryption">"Prøv at dekryptere igen"</string>
   <string name="action_save">"Gem"</string>
   <string name="action_search">"Søg"</string>
+  <string name="action_select_all">"Vælg alle"</string>
   <string name="action_send">"Send"</string>
   <string name="action_send_edited_message">"Send redigeret besked"</string>
   <string name="action_send_message">"Send besked"</string>
@@ -175,6 +180,7 @@
   <string name="common_android_shortcuts_remove_reason_session_logged_out">"Du blev logget ud af sessionen"</string>
   <string name="common_appearance">"Udseende"</string>
   <string name="common_audio">"Lyd"</string>
+  <string name="common_beta">"Beta"</string>
   <string name="common_blocked_users">"Blokerede brugere"</string>
   <string name="common_bubbles">"Bobler"</string>
   <string name="common_call_started">"Opkald startet"</string>
@@ -184,6 +190,7 @@
   <string name="common_creating_room">"Opretter rum…"</string>
   <string name="common_current_user_canceled_knock">"Anmodning annulleret"</string>
   <string name="common_current_user_left_room">"Forlod rummet"</string>
+  <string name="common_current_user_left_space">"Forlod klynge"</string>
   <string name="common_current_user_rejected_invite">"Invitationen blev afvist"</string>
   <string name="common_dark">"Mørkt tema"</string>
   <string name="common_decryption_error">"Fejl under dekryptering"</string>
@@ -222,6 +229,7 @@
   <string name="common_install_apk_android">"Installer APK"</string>
   <string name="common_invite_unknown_profile">"Dette Matrix-ID kan ikke findes, så invitationen modtages muligvis ikke."</string>
   <string name="common_leaving_room">"Forlader rummet"</string>
+  <string name="common_leaving_space">"Forlader klynge"</string>
   <string name="common_light">"Lyst tema"</string>
   <string name="common_line_copied_to_clipboard">"Linje kopieret til udklipsholder"</string>
   <string name="common_link_copied_to_clipboard">"Linket er kopieret til udklipsholderen"</string>
@@ -244,6 +252,7 @@
   <string name="common_name_and_id">"%1$s (%2$s)"</string>
   <string name="common_no_results">"Ingen resultater"</string>
   <string name="common_no_room_name">"Intet rumnavn"</string>
+  <string name="common_no_space_name">"Intet klyngenavn"</string>
   <string name="common_not_encrypted">"Ikke krypteret"</string>
   <string name="common_offline">"Offline"</string>
   <string name="common_open_source_licenses">"Open Source-licenser"</string>
@@ -306,7 +315,9 @@
   <string name="common_server_unreachable">"Serveren er ikke tilgængelig"</string>
   <string name="common_server_url">"Server URL"</string>
   <string name="common_settings">"Indstillinger"</string>
+  <string name="common_share_space">"Del klynge"</string>
   <string name="common_shared_location">"Delt placering"</string>
+  <string name="common_shared_space">"Delt klynge"</string>
   <string name="common_signing_out">"Logger ud"</string>
   <string name="common_something_went_wrong">"Noget gik galt"</string>
   <string name="common_something_went_wrong_message">"Vi stødte på et problem. Prøv venligst igen."</string>
@@ -452,6 +463,7 @@ Er du sikker på, at du vil fortsætte?"</string>
   <string name="screen_share_this_location_action">"Del denne lokation"</string>
   <string name="screen_space_list_description">"Klynger, du har oprettet eller deltager i"</string>
   <string name="screen_space_list_details">"%1$s•%2$s"</string>
+  <string name="screen_space_list_parent_space">"%1$s klynge"</string>
   <string name="screen_space_list_title">"Klynger"</string>
   <string name="screen_timeline_item_menu_send_failure_changed_identity">"Beskeden blev ikke sendt fordi %1$s s bekræftede identitet blev nulstillet."</string>
   <string name="screen_timeline_item_menu_send_failure_unsigned_device">"Meddelelsen er ikke sendt, fordi %1$s ikke har bekræftet alle enheder."</string>
@@ -461,7 +473,7 @@ Er du sikker på, at du vil fortsætte?"</string>
   <string name="test_language_identifier">"da"</string>
   <string name="timeline_decryption_failure_historical_event_no_key_backup">"Historiske beskeder er ikke tilgængelige på denne enhed"</string>
   <string name="timeline_decryption_failure_historical_event_unverified_device">"Du skal verificere denne enhed for at få adgang til historiske beskeder"</string>
-  <string name="timeline_decryption_failure_historical_event_user_not_joined">"Du har ikke adgang til denne besked"</string>
+  <string name="timeline_decryption_failure_historical_event_user_not_joined">"Du har ikke adgang til denne meddelelse"</string>
   <string name="timeline_decryption_failure_unable_to_decrypt">"Kan ikke dekryptere beskeden"</string>
   <string name="timeline_decryption_failure_withheld_unverified">"Denne besked blev blokeret, enten fordi du ikke verificerede din enhed, eller fordi afsenderen skal have verificeret din identitet."</string>
 </resources>

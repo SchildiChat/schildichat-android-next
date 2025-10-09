@@ -104,7 +104,7 @@ class RoomDetailsPresenterTest {
             client = matrixClient,
             room = room,
             featureFlagService = featureFlagService,
-            notificationSettingsService = matrixClient.notificationSettingsService(),
+            notificationSettingsService = matrixClient.notificationSettingsService,
             roomMembersDetailsPresenterFactory = roomMemberDetailsPresenterFactory,
             leaveRoomPresenter = { leaveRoomState },
             roomCallStatePresenter = { aStandByCallState() },

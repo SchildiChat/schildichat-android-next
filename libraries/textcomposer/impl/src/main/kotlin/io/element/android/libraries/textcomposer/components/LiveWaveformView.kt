@@ -35,7 +35,7 @@ import io.element.android.libraries.designsystem.components.media.drawWaveform
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import java.lang.Float.min
 
 private const val DEFAULT_GRAPHICS_LAYER_ALPHA: Float = 0.99F
@@ -62,21 +62,21 @@ fun LiveWaveformView(
     Box(
         contentAlignment = Alignment.CenterEnd,
         modifier = modifier
-            .fillMaxWidth()
-            .height(waveFormHeight)
-            .onSizeChanged { parentWidth = it.width }
+                .fillMaxWidth()
+                .height(waveFormHeight)
+                .onSizeChanged { parentWidth = it.width }
     ) {
         Canvas(
             modifier = Modifier
-                .width(Dp(waveformWidth))
-                .graphicsLayer(alpha = DEFAULT_GRAPHICS_LAYER_ALPHA)
-                .then(modifier)
+                    .width(Dp(waveformWidth))
+                    .graphicsLayer(alpha = DEFAULT_GRAPHICS_LAYER_ALPHA)
+                    .then(modifier)
         ) {
             val width = min(waveformWidth, parentWidth.toFloat())
             canvasSize = DpSize(width.dp, size.height.toDp())
             val countThatFitsWidth = (parentWidth.toFloat() / (lineWidth.toPx() + linePadding.toPx())).toInt()
             drawWaveform(
-                waveformData = levels.takeLast(countThatFitsWidth).toPersistentList(),
+                waveformData = levels.takeLast(countThatFitsWidth).toImmutableList(),
                 canvasSizePx = Size(canvasSize.width.toPx(), size.height),
                 brush = brush,
                 lineWidth = lineWidth,
@@ -91,11 +91,11 @@ fun LiveWaveformView(
 internal fun LiveWaveformViewPreview() = ElementPreview {
     Column {
         LiveWaveformView(
-            levels = List(100) { it.toFloat() / 100 }.toPersistentList(),
+            levels = List(100) { it.toFloat() / 100 }.toImmutableList(),
             modifier = Modifier.height(34.dp),
         )
         LiveWaveformView(
-            levels = List(40) { it.toFloat() / 40 }.toPersistentList(),
+            levels = List(40) { it.toFloat() / 40 }.toImmutableList(),
             modifier = Modifier.height(34.dp),
         )
     }

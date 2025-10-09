@@ -18,7 +18,7 @@ android {
 setupDependencyInjection()
 
 dependencies {
-    implementation(libs.compound)
+    implementation(projects.libraries.compound)
     api(projects.features.enterprise.api)
     implementation(projects.libraries.architecture)
     implementation(projects.libraries.matrix.api)

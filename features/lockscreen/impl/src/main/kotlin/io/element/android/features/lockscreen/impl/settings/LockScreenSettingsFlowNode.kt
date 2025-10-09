@@ -14,13 +14,12 @@ import androidx.lifecycle.lifecycleScope
 import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
-import com.bumble.appyx.core.node.node
 import com.bumble.appyx.core.plugin.Plugin
 import com.bumble.appyx.navmodel.backstack.BackStack
 import com.bumble.appyx.navmodel.backstack.operation.newRoot
 import com.bumble.appyx.navmodel.backstack.operation.push
 import dev.zacsweers.metro.Assisted
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.features.lockscreen.impl.pin.DefaultPinCodeManagerCallback
 import io.element.android.features.lockscreen.impl.pin.PinCodeManager
@@ -30,19 +29,20 @@ import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.di.SessionScope
+import io.element.android.libraries.ui.common.nodes.emptyNode
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
 @ContributesNode(SessionScope::class)
-@Inject
+@AssistedInject
 class LockScreenSettingsFlowNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
     private val pinCodeManager: PinCodeManager,
 ) : BaseFlowNode<LockScreenSettingsFlowNode.NavTarget>(
     backstack = BackStack(
-        initialElement = NavTarget.Unknown,
+        initialElement = NavTarget.Loading,
         savedStateMap = buildContext.savedStateMap,
     ),
     buildContext = buildContext,
@@ -50,7 +50,7 @@ class LockScreenSettingsFlowNode(
 ) {
     sealed interface NavTarget : Parcelable {
         @Parcelize
-        data object Unknown : NavTarget
+        data object Loading : NavTarget
 
         @Parcelize
         data object Unlock : NavTarget
@@ -94,6 +94,9 @@ class LockScreenSettingsFlowNode(
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         return when (navTarget) {
+            NavTarget.Loading -> {
+                emptyNode(buildContext)
+            }
             NavTarget.Unlock -> {
                 val callback = object : PinUnlockNode.Callback {
                     override fun onUnlock() {
@@ -113,7 +116,6 @@ class LockScreenSettingsFlowNode(
                 }
                 createNode<LockScreenSettingsNode>(buildContext, plugins = listOf(callback))
             }
-            NavTarget.Unknown -> node(buildContext) { }
         }
     }
 

@@ -25,6 +25,11 @@ interface PushProvider {
     val name: String
 
     /**
+     * true if the Push provider supports multiple distributors.
+     */
+    val supportMultipleDistributors: Boolean
+
+    /**
      * Return the list of available distributors.
      */
     fun getDistributors(): List<Distributor>
@@ -33,6 +38,11 @@ interface PushProvider {
      * Register the pusher to the homeserver.
      */
     suspend fun registerWith(matrixClient: MatrixClient, distributor: Distributor): Result<Unit>
+
+    /**
+     * Return the current distributor, or null if none.
+     */
+    suspend fun getCurrentDistributorValue(sessionId: SessionId): String?
 
     /**
      * Return the current distributor, or null if none.

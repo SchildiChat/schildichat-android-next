@@ -7,6 +7,7 @@
 
 package io.element.android.libraries.matrix.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -24,7 +25,7 @@ import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.components.avatar.anAvatarData
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
-import io.element.android.libraries.matrix.api.room.join.JoinRule
+import io.element.android.libraries.matrix.api.spaces.SpaceRoomVisibility
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.ImmutableList
@@ -38,12 +39,12 @@ fun SpaceHeaderView(
     avatarData: AvatarData,
     name: String?,
     topic: String?,
-    joinRule: JoinRule?,
+    visibility: SpaceRoomVisibility,
     heroes: ImmutableList<MatrixUser>,
     numberOfMembers: Int,
-    numberOfRooms: Int,
     modifier: Modifier = Modifier,
     topicMaxLines: Int = Int.MAX_VALUE,
+    onTopicClick: ((String) -> Unit)? = null,
 ) {
     RoomPreviewOrganism(
         modifier = modifier.padding(24.dp),
@@ -64,17 +65,21 @@ fun SpaceHeaderView(
             }
         },
         subtitle = {
-            if (joinRule != null) {
-                SpaceInfoRow(
-                    joinRule = joinRule,
-                    numberOfRooms = numberOfRooms,
-                )
-            }
+            SpaceInfoRow(visibility = visibility)
         },
         description = if (topic.isNullOrBlank()) {
             null
         } else {
-            { RoomPreviewDescriptionAtom(description = topic, maxLines = topicMaxLines) }
+            {
+                RoomPreviewDescriptionAtom(
+                    description = topic,
+                    maxLines = topicMaxLines,
+                    modifier = Modifier.clickable(
+                        enabled = onTopicClick != null,
+                        onClick = { onTopicClick?.invoke(topic) }
+                    )
+                )
+            }
         },
         memberCount = {
             SpaceMembersView(
@@ -97,7 +102,7 @@ internal fun SpaceHeaderViewPreview() = ElementPreview {
         name = "Space name",
         topic = "Space topic: " + LoremIpsum(40).values.first(),
         topicMaxLines = 2,
-        joinRule = JoinRule.Public,
+        visibility = SpaceRoomVisibility.Public,
         heroes = persistentListOf(
             aMatrixUser(id = "@1:d", displayName = "Alice", avatarUrl = "aUrl"),
             aMatrixUser(id = "@2:d", displayName = "Bob"),
@@ -105,6 +110,5 @@ internal fun SpaceHeaderViewPreview() = ElementPreview {
             aMatrixUser(id = "@4:d", displayName = "Dave"),
         ),
         numberOfMembers = 999,
-        numberOfRooms = 10,
     )
 }

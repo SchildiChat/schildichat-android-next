@@ -11,7 +11,6 @@ import io.element.android.appnav.di.SyncOrchestrator
 import io.element.android.features.networkmonitor.api.NetworkStatus
 import io.element.android.features.networkmonitor.test.FakeNetworkMonitor
 import io.element.android.libraries.matrix.api.sync.SyncState
-import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.matrix.test.sync.FakeSyncService
 import io.element.android.services.appnavstate.test.FakeAppForegroundStateService
 import io.element.android.tests.testutils.WarmUpRule
@@ -385,7 +384,8 @@ class SyncOrchestratorTest {
         networkMonitor: FakeNetworkMonitor = FakeNetworkMonitor(),
         appForegroundStateService: FakeAppForegroundStateService = FakeAppForegroundStateService(),
     ) = SyncOrchestrator(
-        matrixClient = FakeMatrixClient(syncService = syncService, sessionCoroutineScope = backgroundScope),
+        syncService = syncService,
+        sessionCoroutineScope = backgroundScope,
         networkMonitor = networkMonitor,
         appForegroundStateService = appForegroundStateService,
         dispatchers = testCoroutineDispatchers(),

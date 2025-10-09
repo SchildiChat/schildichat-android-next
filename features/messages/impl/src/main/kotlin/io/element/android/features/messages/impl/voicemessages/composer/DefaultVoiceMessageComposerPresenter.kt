@@ -21,8 +21,8 @@ import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
 import im.vector.app.features.analytics.plan.Composer
 import io.element.android.features.messages.api.MessageComposerContext
 import io.element.android.features.messages.api.timeline.voicemessages.composer.VoiceMessageComposerEvents
@@ -43,7 +43,6 @@ import io.element.android.libraries.voicerecorder.api.VoiceRecorderState
 import io.element.android.services.analytics.api.AnalyticsService
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -51,7 +50,7 @@ import java.io.File
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-@Inject
+@AssistedInject
 class DefaultVoiceMessageComposerPresenter(
     @SessionCoroutineScope private val sessionCoroutineScope: CoroutineScope,
     @Assisted private val timelineMode: Timeline.Mode,
@@ -199,7 +198,7 @@ class DefaultVoiceMessageComposerPresenter(
             voiceMessageState = when (val state = recorderState) {
                 is VoiceRecorderState.Recording -> VoiceMessageState.Recording(
                     duration = state.elapsedTime,
-                    levels = state.levels.toPersistentList(),
+                    levels = state.levels.toImmutableList(),
                 )
                 is VoiceRecorderState.Finished ->
                     previewState(

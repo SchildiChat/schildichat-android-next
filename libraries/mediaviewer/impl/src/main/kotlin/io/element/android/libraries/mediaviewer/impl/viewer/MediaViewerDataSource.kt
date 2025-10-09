@@ -30,9 +30,9 @@ import io.element.android.libraries.mediaviewer.impl.model.mediaInfo
 import io.element.android.libraries.mediaviewer.impl.model.mediaSource
 import io.element.android.libraries.mediaviewer.impl.model.thumbnailSource
 import io.element.android.services.toolbox.api.systemclock.SystemClock
-import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -72,12 +72,12 @@ class MediaViewerDataSource(
     }
 
     @Composable
-    fun collectAsState(): State<PersistentList<MediaViewerPageData>> {
+    fun collectAsState(): State<ImmutableList<MediaViewerPageData>> {
         return remember { dataFlow() }.collectAsState(initialData())
     }
 
     @VisibleForTesting
-    internal fun dataFlow(): Flow<PersistentList<MediaViewerPageData>> {
+    internal fun dataFlow(): Flow<ImmutableList<MediaViewerPageData>> {
         return galleryDataSource.groupedMediaItemsFlow()
             .map { groupedItems ->
                 when (groupedItems) {
@@ -106,7 +106,7 @@ class MediaViewerDataSource(
             }
     }
 
-    private fun initialData(): PersistentList<MediaViewerPageData> {
+    private fun initialData(): ImmutableList<MediaViewerPageData> {
         val initialMediaItems =
             galleryDataSource.getLastData().dataOrNull()?.getItems(galleryMode).orEmpty()
         return buildMediaViewerPageList(initialMediaItems)
@@ -149,7 +149,7 @@ class MediaViewerDataSource(
                 )
             }
         }
-    }.toPersistentList()
+    }.toImmutableList()
 
     fun clearLoadingError(data: MediaViewerPageData.MediaViewerData) {
         localMediaStates[data.mediaSource.url]?.value = AsyncData.Uninitialized

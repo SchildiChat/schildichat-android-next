@@ -10,6 +10,7 @@
   <string name="screen_advanced_settings_element_call_base_url_validation_error">"Invalid URL, please make sure you include the protocol (http/https) and the correct address."</string>
   <string name="screen_advanced_settings_hide_invite_avatars_toggle_title">"Hide avatars in room invite requests"</string>
   <string name="screen_advanced_settings_hide_timeline_media_toggle_title">"Hide media previews in timeline"</string>
+  <string name="screen_advanced_settings_labs">"Labs"</string>
   <string name="screen_advanced_settings_media_compression_description">"Upload photos and videos faster and reduce data usage"</string>
   <string name="screen_advanced_settings_media_compression_title">"Optimise media quality"</string>
   <string name="screen_advanced_settings_moderation_and_safety_section_title">"Moderation and Safety"</string>
@@ -43,6 +44,11 @@
   <string name="screen_edit_profile_error_title">"Unable to update profile"</string>
   <string name="screen_edit_profile_title">"Edit profile"</string>
   <string name="screen_edit_profile_updating_details">"Updating profile…"</string>
+  <string name="screen_labs_enable_threads">"Enable thread replies"</string>
+  <string name="screen_labs_enable_threads_description">"The app will restart to apply this change."</string>
+  <string name="screen_labs_header_description">"Try out our latest ideas in development. These features are not finalised; they may be unstable, may change."</string>
+  <string name="screen_labs_header_title">"Feeling experimental?"</string>
+  <string name="screen_labs_title">"Labs"</string>
   <string name="screen_notification_settings_additional_settings_section_title">"Additional settings"</string>
   <string name="screen_notification_settings_calls_label">"Audio and video calls"</string>
   <string name="screen_notification_settings_configuration_mismatch">"Configuration mismatch"</string>

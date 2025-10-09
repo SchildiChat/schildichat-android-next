@@ -16,6 +16,7 @@
   <string name="screen_session_verification_compare_numbers_subtitle">"Quyidagi raqamlarning boshqa sessiyangizda koʻrsatilgan raqamlarga mos kelishini tasdiqlang."</string>
   <string name="screen_session_verification_compare_numbers_title">"Sonlarni taqqoslash"</string>
   <string name="screen_session_verification_complete_subtitle">"Yangi seansingiz tasdiqlandi. U sizning shifrlangan xabarlaringizga kirish huquqiga ega va boshqa foydalanuvchilar uni ishonchli deb bilishadi."</string>
+  <string name="screen_session_verification_device_verified">"Qurilma tasdiqlandi"</string>
   <string name="screen_session_verification_enter_recovery_key">"Tiklash kalitini kiriting"</string>
   <string name="screen_session_verification_failed_subtitle">"So‘rov vaqti tugab qoldi, so‘rov rad etildi yoki tekshiruv mos kelmadi."</string>
   <string name="screen_session_verification_open_existing_session_subtitle">"Shifrlangan xabarlar tarixiga kirish uchun shaxsingizni tasdiqlang."</string>
@@ -30,7 +31,7 @@
   <string name="screen_session_verification_request_failure_title">"Tasdiqlanmadi"</string>
   <string name="screen_session_verification_request_footer">"Bu tekshiruvni boshlagan bo‘lsangizgina davom eting."</string>
   <string name="screen_session_verification_request_subtitle">"Xabarlaringiz tarixini xavfsiz saqlash uchun narigi qurilmani tasdiqlang."</string>
-  <string name="screen_session_verification_request_success_subtitle">"Endi xabarlarni boshqa qurilmangizda xavfsiz o‘qish yoki yuborishingiz mumkin."</string>
+  <string name="screen_session_verification_request_success_subtitle">"Yangi seansingiz tasdiqlandi. U sizning shifrlangan xabarlaringizga kirish huquqiga ega va boshqa foydalanuvchilar uni ishonchli deb bilishadi."</string>
   <string name="screen_session_verification_request_success_title">"Qurilma tasdiqlandi"</string>
   <string name="screen_session_verification_request_title">"Tasdiqlash talab qilindi"</string>
   <string name="screen_session_verification_they_dont_match">"Ular mos kelmaydi"</string>

@@ -21,6 +21,7 @@ import io.element.android.libraries.matrix.api.encryption.IdentityResetHandle
 import io.element.android.libraries.matrix.api.encryption.RecoveryState
 import io.element.android.libraries.matrix.api.encryption.identity.IdentityState
 import io.element.android.libraries.matrix.api.sync.SyncState
+import io.element.android.libraries.matrix.impl.exception.mapClientException
 import io.element.android.libraries.matrix.impl.sync.RustSyncService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
@@ -43,9 +44,10 @@ import org.matrix.rustcomponents.sdk.Encryption
 import org.matrix.rustcomponents.sdk.UserIdentity
 import org.matrix.rustcomponents.sdk.BackupUploadState as RustBackupUploadState
 import org.matrix.rustcomponents.sdk.EnableRecoveryProgress as RustEnableRecoveryProgress
+import org.matrix.rustcomponents.sdk.RecoveryException as RustRecoveryException
 import org.matrix.rustcomponents.sdk.SteadyStateException as RustSteadyStateException
 
-internal class RustEncryptionService(
+class RustEncryptionService(
     client: Client,
     syncService: RustSyncService,
     sessionCoroutineScope: CoroutineScope,
@@ -90,6 +92,20 @@ internal class RustEncryptionService(
     override val isLastDevice: StateFlow<Boolean> = flow {
         while (currentCoroutineContext().isActive) {
             val result = isLastDevice().getOrDefault(false)
+            emit(result)
+            delay(5_000)
+        }
+    }
+        .stateIn(sessionCoroutineScope, SharingStarted.Eagerly, false)
+
+    /**
+     * Check if the user has any devices available to verify against every 5 seconds.
+     * TODO This is a temporary workaround, when we will have a way to observe
+     * the sessions, this code will have to be updated.
+     */
+    override val hasDevicesToVerifyAgainst: StateFlow<Boolean> = flow {
+        while (currentCoroutineContext().isActive) {
+            val result = hasDevicesToVerifyAgainst().getOrDefault(false)
             emit(result)
             delay(5_000)
         }
@@ -171,6 +187,14 @@ internal class RustEncryptionService(
         }
     }
 
+    private suspend fun hasDevicesToVerifyAgainst(): Result<Boolean> = withContext(dispatchers.io) {
+        runCatchingExceptions {
+            service.hasDevicesToVerifyAgainst()
+        }.mapFailure {
+            it.mapClientException()
+        }
+    }
+
     override suspend fun resetRecoveryKey(): Result<String> = withContext(dispatchers.io) {
         runCatchingExceptions {
             service.resetRecoveryKey()
@@ -182,8 +206,12 @@ internal class RustEncryptionService(
     override suspend fun recover(recoveryKey: String): Result<Unit> = withContext(dispatchers.io) {
         runCatchingExceptions {
             service.recover(recoveryKey)
-        }.mapFailure {
-            it.mapRecoveryException()
+        }.recoverCatching {
+            when (it) {
+                // We ignore import errors because the user will be notified about them via the "Key storage out of sync" detection.
+                is RustRecoveryException.Import -> Unit
+                else -> throw it.mapRecoveryException()
+            }
         }
     }
 

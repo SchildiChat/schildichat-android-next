@@ -27,14 +27,16 @@ import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.Icon
-import io.element.android.libraries.matrix.api.room.join.JoinRule
+import io.element.android.libraries.matrix.api.spaces.SpaceRoomVisibility
+import io.element.android.libraries.matrix.ui.model.icon
+import io.element.android.libraries.matrix.ui.model.label
 import io.element.android.libraries.ui.strings.CommonPlurals
 import io.element.android.libraries.ui.strings.CommonStrings
 
 @Composable
 fun SpaceInfoRow(
     leftText: String,
-    rightText: String,
+    rightText: String?,
     modifier: Modifier = Modifier,
     iconVector: ImageVector? = null,
 ) {
@@ -51,7 +53,11 @@ fun SpaceInfoRow(
                 tint = ElementTheme.colors.iconTertiary,
             )
         }
-        val text = stringResource(id = CommonStrings.screen_space_list_details, leftText, rightText)
+        val text = if (rightText != null) {
+            stringResource(id = CommonStrings.screen_space_list_details, leftText, rightText)
+        } else {
+            leftText
+        }
         Text(
             text = text,
             style = ElementTheme.typography.fontBodyLgRegular,
@@ -63,34 +69,14 @@ fun SpaceInfoRow(
 
 @Composable
 fun SpaceInfoRow(
-    joinRule: JoinRule,
-    numberOfRooms: Int,
+    visibility: SpaceRoomVisibility,
     modifier: Modifier = Modifier,
 ) {
-    val (leftText, rightText, icon) = when (joinRule) {
-        JoinRule.Public -> Triple(
-            stringResource(id = CommonStrings.common_public_space),
-            numberOfRooms(numberOfRooms),
-            CompoundIcons.Public(),
-        )
-        // TODO External space
-        // JoinRule.Private -> Triple(
-        //     stringResource(id = CommonStrings.common_external_space),
-        //     numberOfRooms(numberOfRooms),
-        //     CompoundIcons.Guest(),
-        // )
-        // JoinRule.Private,
-        else -> Triple(
-            stringResource(id = CommonStrings.common_private_space),
-            numberOfRooms(numberOfRooms),
-            CompoundIcons.Lock(),
-        )
-    }
     SpaceInfoRow(
-        leftText = leftText,
-        rightText = rightText,
+        leftText = visibility.label,
+        rightText = null,
         modifier = modifier,
-        iconVector = icon,
+        iconVector = visibility.icon,
     )
 }
 
@@ -124,12 +110,13 @@ internal fun SpaceInfoRowPreview() = ElementPreview {
             iconVector = CompoundIcons.Workspace(),
         )
         SpaceInfoRow(
-            joinRule = JoinRule.Private,
-            numberOfRooms = 4,
+            visibility = SpaceRoomVisibility.Private,
         )
         SpaceInfoRow(
-            joinRule = JoinRule.Public,
-            numberOfRooms = 10,
+            visibility = SpaceRoomVisibility.Public
+        )
+        SpaceInfoRow(
+            visibility = SpaceRoomVisibility.Restricted
         )
     }
 }

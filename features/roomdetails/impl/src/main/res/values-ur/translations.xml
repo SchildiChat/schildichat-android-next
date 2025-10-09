@@ -51,6 +51,7 @@
   <string name="screen_room_details_notification_mode_default">"طے شدہ"</string>
   <string name="screen_room_details_notification_title">"اطلاعات"</string>
   <string name="screen_room_details_pinned_events_row_title">"مثبوتہ پیغامات"</string>
+  <string name="screen_room_details_profile_row_title">"نمایہ"</string>
   <string name="screen_room_details_roles_and_permissions">"کردارہا اور اجازتیں"</string>
   <string name="screen_room_details_room_name_label">"کمرے کا نام"</string>
   <string name="screen_room_details_security_title">"حفاظت"</string>

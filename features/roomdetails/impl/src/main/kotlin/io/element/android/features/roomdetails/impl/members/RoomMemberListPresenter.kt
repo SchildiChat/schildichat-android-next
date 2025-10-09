@@ -38,7 +38,7 @@ import io.element.android.libraries.matrix.ui.room.roomMemberIdentityStateChange
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toPersistentMap
+import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
@@ -69,10 +69,10 @@ class RoomMemberListPresenter(
         val canInvite by room.canInviteAsState(syncUpdateFlow.value)
         val roomModerationState = roomMembersModerationPresenter.present()
 
-        val roomMemberIdentityStates by produceState(persistentMapOf<UserId, IdentityState>()) {
+        val roomMemberIdentityStates by produceState(persistentMapOf()) {
             room.roomMemberIdentityStateChange(waitForEncryption = true)
                 .onEach { identities ->
-                    value = identities.associateBy({ it.identityRoomMember.userId }, { it.identityState }).toPersistentMap()
+                    value = identities.associateBy({ it.identityRoomMember.userId }, { it.identityState }).toImmutableMap()
                 }
                 .launchIn(this)
         }

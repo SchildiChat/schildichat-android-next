@@ -26,7 +26,7 @@ class DefaultChangeRoomMemberRolesEntyPointTest {
             ChangeRoomMemberRolesRootNode(
                 buildContext = buildContext,
                 plugins = plugins,
-                roomComponentFactory = { },
+                roomGraphFactory = { },
             )
         }
         val room = FakeJoinedRoom()

@@ -27,7 +27,7 @@ class AppMigration04(
     }
     override val order: Int = 4
 
-    override suspend fun migrate() {
+    override suspend fun migrate(isFreshInstall: Boolean) {
         runCatchingExceptions { context.getDatabasePath(NOTIFICATION_FILE_NAME).delete() }
     }
 }

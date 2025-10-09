@@ -12,7 +12,7 @@ import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.matrix.api.room.RoomMembersState
 import io.element.android.libraries.matrix.api.room.activeRoomMembers
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -38,7 +38,7 @@ fun BaseRoom.usersWithRole(role: RoomMember.Role): Flow<ImmutableList<RoomMember
         .combine(readyMembersFlow) { powerLevels, membersState ->
             membersState.activeRoomMembers()
                 .filter { powerLevels.contains(it.userId) }
-                .toPersistentList()
+                .toImmutableList()
         }
         .distinctUntilChanged()
 }

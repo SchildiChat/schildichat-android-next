@@ -7,6 +7,9 @@
 
 package io.element.android.features.leaveroom.api
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 interface LeaveRoomState {
     val eventSink: (LeaveRoomEvent) -> Unit
 }

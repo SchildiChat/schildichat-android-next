@@ -7,6 +7,9 @@
 
 package io.element.android.features.roommembermoderation.api
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 interface RoomMemberModerationState {
     val canKick: Boolean
     val canBan: Boolean

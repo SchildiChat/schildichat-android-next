@@ -73,7 +73,7 @@ class LoggedInAppScopeFlowNode(
     override fun onBuilt() {
         super.onBuilt()
         lifecycle.subscribe(
-            onCreate = {
+            onResume = {
                 SingletonImageLoader.setUnsafe(imageLoaderHolder.get(inputs.matrixClient))
             },
         )

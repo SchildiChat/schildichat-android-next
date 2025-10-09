@@ -66,7 +66,8 @@ class LeaveSpacePresenter(
                 .orEmpty()
                 .partition { it.spaceRoom.roomId == leaveSpaceHandle.id }
             // By default select all rooms that can be left
-            selectedRoomIds = otherRooms
+            val otherRoomsExcludingDm = otherRooms.filter { it.spaceRoom.isDirect != true }
+            selectedRoomIds = otherRoomsExcludingDm
                 .filter { it.isLastAdmin.not() }
                 .map { it.spaceRoom.roomId }
             leaveSpaceRooms = rooms.fold(
@@ -74,7 +75,7 @@ class LeaveSpacePresenter(
                     AsyncData.Success(
                         LeaveSpaceRooms(
                             current = currentRoom.firstOrNull(),
-                            others = otherRooms.toImmutableList(),
+                            others = otherRoomsExcludingDm.toImmutableList(),
                         )
                     )
                 },

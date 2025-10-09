@@ -18,6 +18,7 @@ import io.element.android.libraries.matrix.api.room.CurrentUserMembership
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_ROOM_NAME
+import io.element.android.libraries.matrix.test.A_ROOM_TOPIC
 import io.element.android.libraries.previewutils.room.aSpaceRoom
 import io.element.android.libraries.ui.strings.CommonStrings
 import io.element.android.tests.testutils.EnsureNeverCalled
@@ -91,6 +92,7 @@ class SpaceViewTest {
         val eventsRecorder = EventsRecorder<SpaceEvents>()
         rule.setSpaceView(
             aSpaceState(
+                hasMoreToLoad = false,
                 children = listOf(aSpaceRoom),
                 eventSink = eventsRecorder,
             ),
@@ -106,12 +108,28 @@ class SpaceViewTest {
         val eventsRecorder = EventsRecorder<SpaceEvents>()
         rule.setSpaceView(
             aSpaceState(
+                hasMoreToLoad = false,
                 children = listOf(aSpaceRoom),
                 eventSink = eventsRecorder,
             ),
         )
         rule.clickOn(CommonStrings.action_decline)
         eventsRecorder.assertSingle(SpaceEvents.DeclineInvite(aSpaceRoom))
+    }
+
+    @Config(qualifiers = "h1024dp")
+    @Test
+    fun `clicking on topic emits the expected Event`() {
+        val eventsRecorder = EventsRecorder<SpaceEvents>()
+        rule.setSpaceView(
+            aSpaceState(
+                parentSpace = aSpaceRoom(topic = A_ROOM_TOPIC),
+                hasMoreToLoad = false,
+                eventSink = eventsRecorder,
+            )
+        )
+        rule.onNodeWithText(A_ROOM_TOPIC).performClick()
+        eventsRecorder.assertSingle(SpaceEvents.ShowTopicViewer(A_ROOM_TOPIC))
     }
 }
 

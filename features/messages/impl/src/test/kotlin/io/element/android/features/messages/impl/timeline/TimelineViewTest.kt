@@ -36,7 +36,7 @@ import io.element.android.tests.testutils.clickOn
 import io.element.android.tests.testutils.setSafeContent
 import io.element.android.wysiwyg.link.Link
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
@@ -148,7 +148,7 @@ class TimelineViewTest {
                 eventId = EventId("\$event_$it"),
                 content = aTimelineItemUnknownContent(),
             )
-        }.toPersistentList()
+        }.toImmutableList()
 
         rule.setTimelineView(
             state = aTimelineState(

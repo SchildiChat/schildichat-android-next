@@ -28,14 +28,14 @@ import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.Text
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 internal class CompoundIconChunkProvider : PreviewParameterProvider<IconChunk> {
     override val values: Sequence<IconChunk>
         get() {
             val chunks = CompoundIcons.allResIds.chunked(36)
             return chunks.mapIndexed { index, chunk ->
-                IconChunk(index = index + 1, total = chunks.size, icons = chunk.toPersistentList())
+                IconChunk(index = index + 1, total = chunks.size, icons = chunk.toImmutableList())
             }
                 .asSequence()
         }
@@ -46,7 +46,7 @@ internal class OtherIconChunkProvider : PreviewParameterProvider<IconChunk> {
         get() {
             val chunks = iconsOther.chunked(36)
             return chunks.mapIndexed { index, chunk ->
-                IconChunk(index = index + 1, total = chunks.size, icons = chunk.toPersistentList())
+                IconChunk(index = index + 1, total = chunks.size, icons = chunk.toImmutableList())
             }
                 .asSequence()
         }

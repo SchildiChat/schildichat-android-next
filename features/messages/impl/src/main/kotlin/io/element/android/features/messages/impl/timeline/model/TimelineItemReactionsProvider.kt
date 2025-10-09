@@ -7,9 +7,9 @@
 
 package io.element.android.features.messages.impl.timeline.model
 
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 fun aTimelineItemReactions() = TimelineItemReactions(
     // Use values from AggregatedReactionProvider
-    reactions = AggregatedReactionProvider().values.toPersistentList()
+    reactions = AggregatedReactionProvider().values.toImmutableList()
 )

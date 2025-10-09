@@ -71,7 +71,7 @@ import io.element.android.libraries.mediaviewer.impl.local.player.rememberExoPla
 import io.element.android.libraries.mediaviewer.impl.local.player.seekToEnsurePlaying
 import io.element.android.libraries.mediaviewer.impl.local.player.togglePlay
 import io.element.android.libraries.mediaviewer.impl.local.rememberLocalMediaViewState
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
 
 @SuppressLint("UnsafeOptInUsageError")
@@ -252,7 +252,7 @@ private fun ExoPlayerMediaAudioView(
                             .height(48.dp),
                         playbackProgress = mediaPlayerControllerState.progressAsFloat,
                         showCursor = true,
-                        waveform = waveform.toPersistentList(),
+                        waveform = waveform.toImmutableList(),
                         onSeek = {
                             exoPlayer.seekToEnsurePlaying((it * exoPlayer.duration).toLong())
                         },

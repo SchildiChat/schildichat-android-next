@@ -11,7 +11,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.matrix.api.room.powerlevels.RoomPowerLevelsValues
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 class ChangeRoomPermissionsStateProvider : PreviewParameterProvider<ChangeRoomPermissionsState> {
     override val values: Sequence<ChangeRoomPermissionsState>
@@ -45,7 +45,7 @@ internal fun aChangeRoomPermissionsState(
 ) = ChangeRoomPermissionsState(
     section = section,
     currentPermissions = currentPermissions,
-    items = items.toPersistentList(),
+    items = items.toImmutableList(),
     hasChanges = hasChanges,
     saveAction = saveAction,
     confirmExitAction = confirmExitAction,

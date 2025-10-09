@@ -11,7 +11,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.element.android.libraries.core.mimetype.MimeTypes
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.media.MediaSource
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
@@ -53,7 +53,7 @@ fun aTimelineItemVoiceContent(
     duration = duration,
     mediaSource = mediaSource,
     mimeType = mimeType,
-    waveform = waveform.toPersistentList(),
+    waveform = waveform.toImmutableList(),
     formattedFileSize = "1.0 MB",
     fileExtension = "ogg",
 )

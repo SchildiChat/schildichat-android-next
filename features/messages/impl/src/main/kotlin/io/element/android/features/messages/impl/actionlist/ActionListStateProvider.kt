@@ -24,7 +24,7 @@ import io.element.android.features.messages.impl.timeline.model.event.aTimelineI
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageShield
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 open class ActionListStateProvider : PreviewParameterProvider<ActionListState> {
     override val values: Sequence<ActionListState>
@@ -209,7 +209,7 @@ fun aTimelineItemActionList(
         TimelineItemAction.ViewSource,
     )
         .sortedWith(TimelineItemActionComparator())
-        .toPersistentList()
+        .toImmutableList()
 }
 
 fun aTimelineItemPollActionList(): ImmutableList<TimelineItemAction> {
@@ -222,5 +222,5 @@ fun aTimelineItemPollActionList(): ImmutableList<TimelineItemAction> {
         TimelineItemAction.Redact,
     )
         .sortedWith(TimelineItemActionComparator())
-        .toPersistentList()
+        .toImmutableList()
 }

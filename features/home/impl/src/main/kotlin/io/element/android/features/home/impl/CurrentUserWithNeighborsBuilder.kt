@@ -11,7 +11,7 @@ import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.sessionstorage.api.SessionData
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 class CurrentUserWithNeighborsBuilder {
     /**
@@ -64,6 +64,6 @@ class CurrentUserWithNeighborsBuilder {
                     }
                 }
             }
-            .toPersistentList()
+            .toImmutableList()
     }
 }

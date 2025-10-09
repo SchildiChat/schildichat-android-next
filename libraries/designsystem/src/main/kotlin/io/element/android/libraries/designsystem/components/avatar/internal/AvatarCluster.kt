@@ -27,7 +27,7 @@ import io.element.android.libraries.designsystem.components.avatar.avatarShape
 import io.element.android.libraries.designsystem.preview.ElementThemedPreview
 import io.element.android.libraries.designsystem.preview.PreviewGroup
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import java.util.Collections
 import kotlin.math.PI
 import kotlin.math.cos
@@ -134,7 +134,7 @@ internal fun AvatarClusterPreview() = ElementThemedPreview {
             ) {
                 for (ngOfAvatars in 1..5) {
                     AvatarCluster(
-                        avatars = List(ngOfAvatars) { anAvatarData(it) }.toPersistentList(),
+                        avatars = List(ngOfAvatars) { anAvatarData(it) }.toImmutableList(),
                         avatarType = avatarType,
                     )
                 }

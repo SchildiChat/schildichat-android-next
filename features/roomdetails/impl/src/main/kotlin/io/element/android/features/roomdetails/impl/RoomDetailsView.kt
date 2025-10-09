@@ -89,7 +89,6 @@ import io.element.android.services.analytics.compose.LocalAnalyticsService
 import io.element.android.services.analyticsproviders.api.trackers.captureInteraction
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toPersistentList
 
 @Composable
 fun RoomDetailsView(
@@ -400,7 +399,7 @@ private fun RoomHeaderSection(
             avatarType = AvatarType.Room(
                 heroes = heroes.map { user ->
                     user.getAvatarData(size = AvatarSize.RoomDetailsHeader)
-                }.toPersistentList(),
+                }.toImmutableList(),
                 isTombstoned = isTombstoned,
             ),
             contentDescription = avatarUrl?.let { stringResource(CommonStrings.a11y_room_avatar) },

@@ -13,7 +13,7 @@ import io.element.android.libraries.matrix.api.core.DeviceId
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.ui.components.aMatrixUser
 import io.element.android.libraries.ui.strings.CommonStrings
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 fun aPreferencesRootState(
     myUser: MatrixUser = aMatrixUser(),
@@ -24,7 +24,7 @@ fun aPreferencesRootState(
     version = "Version 1.1 (1)",
     deviceId = DeviceId("ILAKNDNASDLK"),
     isMultiAccountEnabled = true,
-    otherSessions = otherSessions.toPersistentList(),
+    otherSessions = otherSessions.toImmutableList(),
     showSecureBackup = true,
     showSecureBackupBadge = true,
     accountManagementUrl = "aUrl",

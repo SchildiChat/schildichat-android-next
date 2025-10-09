@@ -16,7 +16,7 @@ import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.matrix.api.room.roomMembers
 import io.element.android.libraries.matrix.ui.model.getAvatarData
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -46,7 +46,7 @@ fun JoinedRoom.roomMemberIdentityStateChange(waitForEncryption: Boolean): Flow<I
                         identityRoomMember = member,
                         identityState = identityStateChange.identityState,
                     )
-                }.toPersistentList()
+                }.toImmutableList()
             }.distinctUntilChanged()
         }
 }

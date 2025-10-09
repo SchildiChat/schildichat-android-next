@@ -53,7 +53,7 @@ import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.matrix.ui.model.toInviteSender
 import io.element.android.libraries.matrix.ui.safety.rememberHideInvitesAvatar
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.Optional
@@ -291,7 +291,7 @@ private fun SpaceRoom.toContentState(): ContentState {
         joinRule = joinRule,
         details = LoadedDetails.Space(
             childrenCount = childrenCount,
-            heroes = heroes.toPersistentList(),
+            heroes = heroes.toImmutableList(),
         )
     )
 }

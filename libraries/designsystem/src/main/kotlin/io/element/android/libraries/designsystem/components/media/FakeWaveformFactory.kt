@@ -8,7 +8,7 @@
 package io.element.android.libraries.designsystem.components.media
 
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import kotlin.random.Random
 
 /**
@@ -21,5 +21,5 @@ import kotlin.random.Random
 fun createFakeWaveform(length: Int = 1000): ImmutableList<Float> {
     val random = Random(seed = 2)
     return List(length) { random.nextFloat() }
-        .toPersistentList()
+        .toImmutableList()
 }

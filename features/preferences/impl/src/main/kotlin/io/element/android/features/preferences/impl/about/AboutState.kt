@@ -7,6 +7,8 @@
 
 package io.element.android.features.preferences.impl.about
 
+import kotlinx.collections.immutable.ImmutableList
+
 data class AboutState(
-    val elementLegals: List<ElementLegal>,
+    val elementLegals: ImmutableList<ElementLegal>,
 )

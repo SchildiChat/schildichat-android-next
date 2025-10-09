@@ -1,3 +1,83 @@
+Changes in Element X v25.10.0
+=============================
+
+<!-- Release notes generated using configuration in .github/release.yml at v25.10.0 -->
+
+## What's Changed
+### ✨ Features
+* Use shared recent emoji reactions from account data by @jmartinesp in https://github.com/element-hq/element-x-android/pull/5402
+* Follow permalinks to and from threads by @jmartinesp in https://github.com/element-hq/element-x-android/pull/5414
+* Add support for Spaces by @bmarty in https://github.com/element-hq/element-x-android/pull/5462
+* Add Labs screen for beta testing of public features by @jmartinesp in https://github.com/element-hq/element-x-android/pull/5465
+### 🙌 Improvements
+* Update the strings for the device verification flow by @andybalaam in https://github.com/element-hq/element-x-android/pull/5419
+* Set a notification sound by @bmarty in https://github.com/element-hq/element-x-android/pull/5469
+* Improve current push provider test: give info about the distributor. by @bmarty in https://github.com/element-hq/element-x-android/pull/5471
+* Improve AnnouncementService. by @bmarty in https://github.com/element-hq/element-x-android/pull/5482
+### 🐛 Bugfixes
+* Improvement and bugfix on incoming verification request screen by @bmarty in https://github.com/element-hq/element-x-android/pull/5426
+* Space : makes sure to use room heroes for avatar by @ganfra in https://github.com/element-hq/element-x-android/pull/5488
+* Filter out direct room in the leave space screen. by @bmarty in https://github.com/element-hq/element-x-android/pull/5498
+### 🗣 Translations
+* Sync Strings by @ElementBot in https://github.com/element-hq/element-x-android/pull/5427
+* Sync Strings by @ElementBot in https://github.com/element-hq/element-x-android/pull/5460
+* Sync Strings by @ElementBot in https://github.com/element-hq/element-x-android/pull/5486
+### 🧱 Build
+* Remove unused dependency on `javax.inject:javax.inject` by @bmarty in https://github.com/element-hq/element-x-android/pull/5445
+* Internalize compound-android by @bmarty in https://github.com/element-hq/element-x-android/pull/5457
+### 🚧 In development 🚧
+* Sdk : use latest apis for space by @ganfra in https://github.com/element-hq/element-x-android/pull/5404
+* Multi accounts - experimental first implementation by @bmarty in https://github.com/element-hq/element-x-android/pull/5285
+* Leave space - UI by @bmarty in https://github.com/element-hq/element-x-android/pull/5354
+* Leave spave: iteration on string value. by @bmarty in https://github.com/element-hq/element-x-android/pull/5425
+* Feature : space list join action by @ganfra in https://github.com/element-hq/element-x-android/pull/5431
+* Room list space invite by @ganfra in https://github.com/element-hq/element-x-android/pull/5449
+* Leave space: use SDK API. by @bmarty in https://github.com/element-hq/element-x-android/pull/5432
+* Space annoucement by @bmarty in https://github.com/element-hq/element-x-android/pull/5451
+* feature(space) : keep space children in the presenter by @ganfra in https://github.com/element-hq/element-x-android/pull/5456
+* Spaces : some tweaks around ui by @ganfra in https://github.com/element-hq/element-x-android/pull/5468
+* Use "BETA" word from Localazy and ensure layout is correct by @bmarty in https://github.com/element-hq/element-x-android/pull/5470
+* Disable avatar cluster for now by @bmarty in https://github.com/element-hq/element-x-android/pull/5492
+### Dependency upgrades
+* Update dependency com.posthog:posthog-android to v3.21.3 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5360
+* Update dependency io.element.android:element-call-embedded to v0.16.0 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5408
+* Update dependency net.java.dev.jna:jna to v5.18.0 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5398
+* Update plugin dependencycheck to v12.1.6 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5405
+* Update dependency org.matrix.rustcomponents:sdk-android to v25.9.25 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5412
+* Update dependency androidx.sqlite:sqlite-ktx to v2.6.1 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5409
+* Update kotlin by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5317
+* Update metro to v0.6.7 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5416
+* Update dependency app.cash.molecule:molecule-runtime to v2.2.0 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5413
+* Update dependency com.posthog:posthog-android to v3.22.0 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5415
+* Update metro to v0.6.8 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5422
+* fix(deps): update dependency org.matrix.rustcomponents:sdk-android to v25.10.1 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5438
+* fix(deps): update dependency net.java.dev.jna:jna to v5.18.1 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5437
+* fix(deps): update dependency io.mockk:mockk to v1.14.6 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5441
+* Update gradle/actions action to v5 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5444
+* fix(deps): update dependency io.sentry:sentry-android to v8.23.0 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5442
+* fix(deps): update dependency org.maplibre.gl:android-sdk to v12 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5455
+* fix(deps): update dependency com.posthog:posthog-android to v3.23.0 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5463
+* fix(deps): update roborazzi to v1.50.0 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5464
+* fix(deps): update telephoto to v0.18.0 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5459
+### Others
+* Ensure Metro `@AssistedInject` is used. by @bmarty in https://github.com/element-hq/element-x-android/pull/5420
+* Misc : destroy SpaceRoomList by @ganfra in https://github.com/element-hq/element-x-android/pull/5436
+* Remove CurrentSessionIdHolder and inject SessionId instead. by @bmarty in https://github.com/element-hq/element-x-android/pull/5440
+* Only offer to verify if a cross-signed device is available by @uhoreg in https://github.com/element-hq/element-x-android/pull/5433
+* Replace fun by val in MatrixClient by @bmarty in https://github.com/element-hq/element-x-android/pull/5466
+* Space : makes sure to use SpaceRoom.displayName from sdk by @ganfra in https://github.com/element-hq/element-x-android/pull/5476
+* Add preview with all icons in the Showkase browser by @bmarty in https://github.com/element-hq/element-x-android/pull/5485
+* Ensure that we are using Immutable instead of Persistent by @bmarty in https://github.com/element-hq/element-x-android/pull/5490
+* Reduce number of Previews for Avatar. by @bmarty in https://github.com/element-hq/element-x-android/pull/5495
+* Fix error when attempting to verify with recovery key with missing backup key by @uhoreg in https://github.com/element-hq/element-x-android/pull/5314
+* Sync strings by @bmarty in https://github.com/element-hq/element-x-android/pull/5499
+* feature(space): make sure to handle topic properly by @ganfra in https://github.com/element-hq/element-x-android/pull/5493
+
+## New Contributors
+* @uhoreg made their first contribution in https://github.com/element-hq/element-x-android/pull/5433
+
+**Full Changelog**: https://github.com/element-hq/element-x-android/compare/v25.09.2...v25.10.0
+
 Changes in Element X v25.09.2
 =============================
 

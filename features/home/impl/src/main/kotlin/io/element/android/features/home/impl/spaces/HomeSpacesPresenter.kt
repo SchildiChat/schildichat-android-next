@@ -17,6 +17,7 @@ import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.ui.safety.rememberHideInvitesAvatar
 import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.flow.map
 
@@ -39,7 +40,7 @@ class HomeSpacesPresenter(
 
         return HomeSpacesState(
             space = CurrentSpace.Root,
-            spaceRooms = spaceRooms,
+            spaceRooms = spaceRooms.toImmutableList(),
             seenSpaceInvites = seenSpaceInvites,
             hideInvitesAvatar = hideInvitesAvatar,
             eventSink = ::handleEvents,

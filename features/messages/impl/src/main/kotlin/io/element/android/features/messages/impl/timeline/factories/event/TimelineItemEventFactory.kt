@@ -21,7 +21,6 @@ import io.element.android.features.messages.impl.timeline.model.TimelineItemReac
 import io.element.android.features.messages.impl.timeline.model.TimelineItemReadReceipts
 import io.element.android.features.messages.impl.timeline.model.TimelineItemThreadInfo
 import io.element.android.features.messages.impl.utils.messagesummary.MessageSummaryFormatter
-import io.element.android.libraries.architecture.map
 import io.element.android.libraries.core.bool.orTrue
 import io.element.android.libraries.dateformatter.api.DateFormatter
 import io.element.android.libraries.dateformatter.api.DateFormatterMode
@@ -37,7 +36,6 @@ import io.element.android.libraries.matrix.api.timeline.item.event.getDisambigua
 import io.element.android.libraries.matrix.ui.messages.reply.map
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import java.util.Date
 
 @AssistedInject
 class TimelineItemEventFactory(

@@ -8,12 +8,15 @@
 package io.element.android.features.preferences.impl.user.editprofile
 
 import android.net.Uri
+import androidx.compose.runtime.Immutable
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.ui.media.AvatarAction
 import io.element.android.libraries.permissions.api.PermissionsState
 import kotlinx.collections.immutable.ImmutableList
 
+// Annotate with @Immutable since `Uri` is unstable
+@Immutable
 data class EditUserProfileState(
     val userId: UserId,
     val displayName: String,

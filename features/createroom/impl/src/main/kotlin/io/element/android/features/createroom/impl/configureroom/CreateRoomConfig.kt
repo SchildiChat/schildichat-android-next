@@ -8,10 +8,13 @@
 package io.element.android.features.createroom.impl.configureroom
 
 import android.net.Uri
+import androidx.compose.runtime.Immutable
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
+// Annotate with @Immutable since `Uri` is unstable
+@Immutable
 data class CreateRoomConfig(
     val roomName: String? = null,
     val topic: String? = null,

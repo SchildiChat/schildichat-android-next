@@ -12,6 +12,7 @@ import io.element.android.features.login.impl.accountprovider.AccountProvider
 import io.element.android.features.login.impl.accountprovider.anAccountProvider
 import io.element.android.features.login.impl.login.LoginMode
 import io.element.android.libraries.architecture.AsyncData
+import kotlinx.collections.immutable.toImmutableList
 
 open class ChooseAccountProviderStateProvider : PreviewParameterProvider<ChooseAccountProviderState> {
     private val server1 = anAccountProvider(
@@ -70,7 +71,7 @@ fun aChooseAccountProviderState(
     loginMode: AsyncData<LoginMode> = AsyncData.Uninitialized,
     eventSink: (ChooseAccountProviderEvents) -> Unit = {},
 ) = ChooseAccountProviderState(
-    accountProviders = accountProviders,
+    accountProviders = accountProviders.toImmutableList(),
     selectedAccountProvider = selectedAccountProvider,
     loginMode = loginMode,
     eventSink = eventSink,

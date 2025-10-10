@@ -21,7 +21,6 @@ import io.element.android.libraries.matrix.api.timeline.item.event.MessageShield
 import kotlinx.collections.immutable.ImmutableList
 import kotlin.time.Duration
 
-@Immutable
 data class TimelineState(
     val timelineItems: ImmutableList<TimelineItem>,
     val timelineRoomInfo: TimelineRoomInfo,
@@ -72,14 +71,13 @@ sealed interface FocusRequestState {
     }
 }
 
-@Immutable
 data class TimelineRoomInfo(
     val isDm: Boolean,
     val name: String?,
     val userHasPermissionToSendMessage: Boolean,
     val userHasPermissionToSendReaction: Boolean,
     val roomCallState: RoomCallState,
-    val pinnedEventIds: List<EventId>,
+    val pinnedEventIds: ImmutableList<EventId>,
     val typingNotificationState: TypingNotificationState,
     val predecessorRoom: PredecessorRoom?,
 )

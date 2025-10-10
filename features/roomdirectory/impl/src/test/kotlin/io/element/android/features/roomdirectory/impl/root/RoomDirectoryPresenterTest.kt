@@ -42,14 +42,14 @@ class RoomDirectoryPresenterTest {
 
     @Test
     fun `present - room directory list emits empty state`() = runTest {
-        val directoryListStateFlow = MutableSharedFlow<RoomDirectoryList.State>(replay = 1)
+        val directoryListStateFlow = MutableSharedFlow<RoomDirectoryList.SearchResult>(replay = 1)
         val roomDirectoryList = FakeRoomDirectoryList(directoryListStateFlow)
         val roomDirectoryService = FakeRoomDirectoryService { roomDirectoryList }
         val presenter = createRoomDirectoryPresenter(roomDirectoryService = roomDirectoryService)
         presenter.test {
             skipItems(1)
             directoryListStateFlow.emit(
-                RoomDirectoryList.State(false, emptyList())
+                RoomDirectoryList.SearchResult(false, emptyList())
             )
             awaitItem().also { state ->
                 assertThat(state.displayEmptyState).isTrue()
@@ -60,14 +60,14 @@ class RoomDirectoryPresenterTest {
 
     @Test
     fun `present - room directory list emits non-empty state`() = runTest {
-        val directoryListStateFlow = MutableSharedFlow<RoomDirectoryList.State>(replay = 1)
+        val directoryListStateFlow = MutableSharedFlow<RoomDirectoryList.SearchResult>(replay = 1)
         val roomDirectoryList = FakeRoomDirectoryList(directoryListStateFlow)
         val roomDirectoryService = FakeRoomDirectoryService { roomDirectoryList }
         val presenter = createRoomDirectoryPresenter(roomDirectoryService = roomDirectoryService)
         presenter.test {
             skipItems(1)
             directoryListStateFlow.emit(
-                RoomDirectoryList.State(
+                RoomDirectoryList.SearchResult(
                     hasMoreToLoad = true,
                     items = listOf(aRoomDescription())
                 )

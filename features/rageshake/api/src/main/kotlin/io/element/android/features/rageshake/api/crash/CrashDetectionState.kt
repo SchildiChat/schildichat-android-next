@@ -7,9 +7,6 @@
 
 package io.element.android.features.rageshake.api.crash
 
-import androidx.compose.runtime.Immutable
-
-@Immutable
 data class CrashDetectionState(
     val appName: String,
     val crashDetected: Boolean,

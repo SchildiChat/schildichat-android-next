@@ -7,10 +7,8 @@
 
 package io.element.android.features.rageshake.api.detection
 
-import androidx.compose.runtime.Immutable
 import io.element.android.features.rageshake.api.preferences.RageshakePreferencesState
 
-@Immutable
 data class RageshakeDetectionState(
     val takeScreenshot: Boolean,
     val showDialog: Boolean,

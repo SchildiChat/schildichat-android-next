@@ -26,7 +26,6 @@ import androidx.compose.ui.graphics.Color
 /**
   * This class holds all the semantic tokens of the Compound theme.
   */
-@Immutable
 data class SemanticColors(
     /** Background colour for accent or brand actions. State: Hover */
     val bgAccentHovered: Color,

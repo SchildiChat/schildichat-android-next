@@ -16,7 +16,9 @@ import io.element.android.features.invite.api.SeenInvitesStore
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.ui.safety.rememberHideInvitesAvatar
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.flow.map
 
@@ -28,7 +30,10 @@ class HomeSpacesPresenter(
     @Composable
     override fun present(): HomeSpacesState {
         val hideInvitesAvatar by client.rememberHideInvitesAvatar()
-        val spaceRooms by client.spaceService.spaceRoomsFlow.collectAsState(emptyList())
+        val spaceRooms by remember {
+            client.spaceService.spaceRoomsFlow.map { it.toImmutableList() }
+        }.collectAsState(persistentListOf())
+
         val seenSpaceInvites by remember {
             seenInvitesStore.seenRoomIds().map { it.toImmutableSet() }
         }.collectAsState(persistentSetOf())

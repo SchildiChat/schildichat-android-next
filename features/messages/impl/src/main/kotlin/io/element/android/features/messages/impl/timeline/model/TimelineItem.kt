@@ -57,13 +57,11 @@ sealed interface TimelineItem {
         is GroupedEvents -> "groupedEvent"
     }
 
-    @Immutable
     data class Virtual(
         val id: UniqueId,
         val model: TimelineItemVirtualModel
     ) : TimelineItem
 
-    @Immutable
     data class Event(
         val id: UniqueId,
         // Note: eventId can be null when the event is a local echo
@@ -124,7 +122,6 @@ sealed interface TimelineItem {
         val sendhandle: SendHandle? get() = sendHandleProvider()
     }
 
-    @Immutable
     data class GroupedEvents(
         val id: UniqueId,
         val events: ImmutableList<Event>,

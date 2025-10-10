@@ -8,12 +8,10 @@
 package io.element.android.features.messages.impl.messagecomposer
 
 import android.net.Uri
-import androidx.compose.runtime.Immutable
 import io.element.android.libraries.textcomposer.mentions.ResolvedSuggestion
 import io.element.android.libraries.textcomposer.model.MessageComposerMode
 import io.element.android.libraries.textcomposer.model.Suggestion
 
-@Immutable
 sealed interface MessageComposerEvents {
     data object ToggleFullScreenState : MessageComposerEvents
     data object SendMessage : MessageComposerEvents
@@ -30,6 +28,7 @@ sealed interface MessageComposerEvents {
         data object Location : PickAttachmentSource
         data object Poll : PickAttachmentSource
     }
+
     data class ToggleTextFormatting(val enabled: Boolean) : MessageComposerEvents
     data class Error(val error: Throwable) : MessageComposerEvents
     data class TypingNotice(val isTyping: Boolean) : MessageComposerEvents

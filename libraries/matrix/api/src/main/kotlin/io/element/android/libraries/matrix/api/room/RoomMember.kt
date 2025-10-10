@@ -7,6 +7,7 @@
 
 package io.element.android.libraries.matrix.api.room
 
+import androidx.compose.runtime.Immutable
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.user.MatrixUser
 
@@ -24,6 +25,7 @@ data class RoomMember(
     /**
      * Role of the RoomMember, based on its [powerLevel].
      */
+    @Immutable
     sealed interface Role {
         data class Owner(val isCreator: Boolean) : Role
         data object Admin : Role

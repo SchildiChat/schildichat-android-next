@@ -7,12 +7,10 @@
 
 package io.element.android.features.roomaliasresolver.impl
 
-import androidx.compose.runtime.Immutable
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.matrix.api.core.RoomAlias
 import io.element.android.libraries.matrix.api.room.alias.ResolvedRoomAlias
 
-@Immutable
 data class RoomAliasResolverState(
     val roomAlias: RoomAlias,
     val resolveState: AsyncData<ResolvedRoomAlias>,

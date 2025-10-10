@@ -156,8 +156,8 @@ public class CameraPositionState(
         /**
          * The default saver implementation for [CameraPositionState].
          */
-        public val Saver: Saver<CameraPositionState, SaveableCameraPositionState> = Saver(
-            save = { SaveableCameraPositionState(it.position, it.cameraMode.toInternal()) },
+        public val Saver: Saver<CameraPositionState, SaveableCameraPositionData> = Saver(
+            save = { SaveableCameraPositionData(it.position, it.cameraMode.toInternal()) },
             restore = { CameraPositionState(it.position, CameraMode.fromInternal(it.cameraMode)) }
         )
     }
@@ -172,7 +172,7 @@ public val currentCameraPositionState: CameraPositionState
     get() = LocalCameraPositionState.current
 
 @Parcelize
-public data class SaveableCameraPositionState(
+public data class SaveableCameraPositionData(
     val position: CameraPosition,
     val cameraMode: Int
 ) : Parcelable

@@ -7,7 +7,6 @@
 
 package io.element.android.libraries.matrix.api.room
 
-import androidx.compose.runtime.Immutable
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomAlias
 import io.element.android.libraries.matrix.api.core.RoomId
@@ -19,7 +18,6 @@ import io.element.android.libraries.matrix.api.room.tombstone.SuccessorRoom
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import kotlinx.collections.immutable.ImmutableList
 
-@Immutable
 data class RoomInfo(
     val id: RoomId,
     /** The room's name from the room state event if received from sync, or one that's been computed otherwise. */

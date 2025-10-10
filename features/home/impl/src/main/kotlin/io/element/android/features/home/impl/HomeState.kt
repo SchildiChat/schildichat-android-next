@@ -7,7 +7,6 @@
 
 package io.element.android.features.home.impl
 
-import androidx.compose.runtime.Immutable
 import io.element.android.features.home.impl.roomlist.RoomListState
 import io.element.android.features.home.impl.spaces.HomeSpacesState
 import io.element.android.features.logout.api.direct.DirectLogoutState
@@ -15,7 +14,6 @@ import io.element.android.libraries.designsystem.utils.snackbar.SnackbarMessage
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import kotlinx.collections.immutable.ImmutableList
 
-@Immutable
 data class HomeState(
     /**
      * The current user of this session, in case of multiple accounts, will contains 3 items, with the

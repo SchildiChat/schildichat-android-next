@@ -17,7 +17,7 @@ find . -type f -name "*-classes.txt" | while read -r file; do
     # echo "Processing $file"
     # Check that there is no line containing "unstable class .*State {"
     if grep -E 'unstable class .*State \{' "$file"; then
-        echo "Found unstable State class in $file"
+        echo "❌ ERROR: Found unstable State class in $file"
         exit 1
     fi
 done

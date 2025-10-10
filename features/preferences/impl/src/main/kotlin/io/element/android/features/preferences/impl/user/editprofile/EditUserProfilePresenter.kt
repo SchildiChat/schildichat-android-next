@@ -62,21 +62,21 @@ class EditUserProfilePresenter(
     @Composable
     override fun present(): EditUserProfileState {
         val cameraPermissionState = cameraPermissionPresenter.present()
-        var userAvatarUri by rememberSaveable { mutableStateOf(matrixUser.avatarUrl?.toUri()) }
+        var userAvatarUri by rememberSaveable { mutableStateOf(matrixUser.avatarUrl) }
         var userDisplayName by rememberSaveable { mutableStateOf(matrixUser.displayName) }
         val cameraPhotoPicker = mediaPickerProvider.registerCameraPhotoPicker(
             onResult = { uri ->
                 if (uri != null) {
-                    temporaryUriDeleter.delete(userAvatarUri)
-                    userAvatarUri = uri
+                    temporaryUriDeleter.delete(userAvatarUri?.toUri())
+                    userAvatarUri = uri.toString()
                 }
             }
         )
         val galleryImagePicker = mediaPickerProvider.registerGalleryImagePicker(
             onResult = { uri ->
                 if (uri != null) {
-                    temporaryUriDeleter.delete(userAvatarUri)
-                    userAvatarUri = uri
+                    temporaryUriDeleter.delete(userAvatarUri?.toUri())
+                    userAvatarUri = uri.toString()
                 }
             }
         )
@@ -102,7 +102,12 @@ class EditUserProfilePresenter(
         val localCoroutineScope = rememberCoroutineScope()
         fun handleEvents(event: EditUserProfileEvents) {
             when (event) {
-                is EditUserProfileEvents.Save -> localCoroutineScope.saveChanges(userDisplayName, userAvatarUri, matrixUser, saveAction)
+                is EditUserProfileEvents.Save -> localCoroutineScope.saveChanges(
+                    name = userDisplayName,
+                    avatarUri = userAvatarUri?.toUri(),
+                    currentUser = matrixUser,
+                    action = saveAction,
+                )
                 is EditUserProfileEvents.HandleAvatarAction -> {
                     when (event.action) {
                         AvatarAction.ChoosePhoto -> galleryImagePicker.launch()
@@ -113,7 +118,7 @@ class EditUserProfilePresenter(
                             cameraPermissionState.eventSink(PermissionsEvents.RequestPermissions)
                         }
                         AvatarAction.Remove -> {
-                            temporaryUriDeleter.delete(userAvatarUri)
+                            temporaryUriDeleter.delete(userAvatarUri?.toUri())
                             userAvatarUri = null
                         }
                     }
@@ -145,9 +150,8 @@ class EditUserProfilePresenter(
     private fun hasDisplayNameChanged(name: String?, currentUser: MatrixUser) =
         name?.trim() != currentUser.displayName?.trim()
 
-    private fun hasAvatarUrlChanged(avatarUri: Uri?, currentUser: MatrixUser) =
-        // Need to call `toUri()?.toString()` to make the test pass (we mockk Uri)
-        avatarUri?.toString()?.trim() != currentUser.avatarUrl?.toUri()?.toString()?.trim()
+    private fun hasAvatarUrlChanged(avatarUri: String?, currentUser: MatrixUser) =
+        avatarUri?.trim() != currentUser.avatarUrl?.trim()
 
     private fun CoroutineScope.saveChanges(
         name: String?,

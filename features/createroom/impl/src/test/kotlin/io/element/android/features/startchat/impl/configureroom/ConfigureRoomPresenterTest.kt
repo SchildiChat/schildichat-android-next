@@ -8,6 +8,7 @@
 package io.element.android.features.startchat.impl.configureroom
 
 import android.net.Uri
+import androidx.core.net.toUri
 import app.cash.turbine.TurbineTestContext
 import com.google.common.truth.Truth.assertThat
 import im.vector.app.features.analytics.plan.CreatedRoom
@@ -155,15 +156,15 @@ class ConfigureRoomPresenterTest {
             // Pick avatar
             pickerProvider.givenResult(null)
             // From gallery
-            val uriFromGallery = Uri.parse(AN_URI_FROM_GALLERY)
-            pickerProvider.givenResult(uriFromGallery)
+            val uriFromGallery = AN_URI_FROM_GALLERY
+            pickerProvider.givenResult(uriFromGallery.toUri())
             newState.eventSink(ConfigureRoomEvents.HandleAvatarAction(AvatarAction.ChoosePhoto))
             newState = awaitItem()
             expectedConfig = expectedConfig.copy(avatarUri = uriFromGallery)
             assertThat(newState.config).isEqualTo(expectedConfig)
             // From camera
-            val uriFromCamera = Uri.parse(AN_URI_FROM_CAMERA)
-            pickerProvider.givenResult(uriFromCamera)
+            val uriFromCamera = AN_URI_FROM_CAMERA
+            pickerProvider.givenResult(uriFromCamera.toUri())
             assertThat(newState.cameraPermissionState.permissionGranted).isFalse()
             newState.eventSink(ConfigureRoomEvents.HandleAvatarAction(AvatarAction.TakePhoto))
             newState = awaitItem()
@@ -175,8 +176,8 @@ class ConfigureRoomPresenterTest {
             expectedConfig = expectedConfig.copy(avatarUri = uriFromCamera)
             assertThat(newState.config).isEqualTo(expectedConfig)
             // Do it again, no permission is requested
-            val uriFromCamera2 = Uri.parse(AN_URI_FROM_CAMERA_2)
-            pickerProvider.givenResult(uriFromCamera2)
+            val uriFromCamera2 = AN_URI_FROM_CAMERA_2
+            pickerProvider.givenResult(uriFromCamera2.toUri())
             newState.eventSink(ConfigureRoomEvents.HandleAvatarAction(AvatarAction.TakePhoto))
             newState = awaitItem()
             expectedConfig = expectedConfig.copy(avatarUri = uriFromCamera2)

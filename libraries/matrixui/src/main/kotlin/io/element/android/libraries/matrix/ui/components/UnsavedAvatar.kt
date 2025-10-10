@@ -7,7 +7,6 @@
 
 package io.element.android.libraries.matrix.ui.components
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,7 +42,7 @@ import io.element.android.libraries.designsystem.theme.temporaryColorBgSpecial
  */
 @Composable
 fun UnsavedAvatar(
-    avatarUri: Uri?,
+    avatarUri: String?,
     avatarSize: AvatarSize,
     avatarType: AvatarType,
     modifier: Modifier = Modifier,
@@ -86,8 +85,8 @@ internal fun UnsavedAvatarPreview() = ElementPreview {
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         UnsavedAvatar(null, AvatarSize.EditRoomDetails, AvatarType.User)
-        UnsavedAvatar(Uri.EMPTY, AvatarSize.EditRoomDetails, AvatarType.User)
+        UnsavedAvatar("", AvatarSize.EditRoomDetails, AvatarType.User)
         UnsavedAvatar(null, AvatarSize.EditRoomDetails, AvatarType.Space())
-        UnsavedAvatar(Uri.EMPTY, AvatarSize.EditRoomDetails, AvatarType.Space())
+        UnsavedAvatar("", AvatarSize.EditRoomDetails, AvatarType.Space())
     }
 }

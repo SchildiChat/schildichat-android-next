@@ -146,10 +146,9 @@ class TimelineItemEventFactory(
                 senders = reaction.senders
                     .sortedByDescending { it.timestamp }
                     .map {
-                        val date = Date(it.timestamp)
                         AggregatedReactionSender(
                             senderId = it.senderId,
-                            timestamp = date,
+                            timestamp = it.timestamp,
                             sentTime = dateFormatter.format(
                                 it.timestamp,
                                 DateFormatterMode.TimeOrDate,

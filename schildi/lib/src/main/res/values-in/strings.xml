@@ -53,4 +53,19 @@
     <string name="sc_space_unread_counts_mode_title">Jumlah belum terbaca teragregasi</string>
     <string name="sc_pseudo_space_favorites">Favorit</string>
     <string name="sc_pref_dev_quick_options">Pengaturan cepat</string>
+    <string name="sc_action_apply">Terapkan</string>
+    <string name="sc_action_low_priority">Prioritas rendah</string>
+    <string name="sc_pref_sc_themes_summary">Nonaktifkan untuk mengikuti tema Element.</string>
+    <string name="sc_pref_sc_layout_summary">Nonaktifkan untuk mengikuti tata letak Element</string>
+    <string name="sc_sync_read_receipt_and_marker_title_short">Sinkronisasi tanda baca</string>
+    <string name="sc_sync_read_receipt_and_marker_summary">Selalu atur tanda baca Anda (apa yang orang lain lihat dan apa yang dihitung untuk hitungan pesan belum dibaca) ke pesan yang sama seperti tanda baca penuh Anda (garis pesan baru saat melihat percakapan)</string>
+    <string name="sc_pref_mark_read_requires_seen_unread_line_title">Hanya tandai sebagai dibaca ketika sudah dibaca secara penuh</string>
+    <string name="sc_pref_mark_read_requires_seen_unread_line_title_short">Perlu baca penuh</string>
+    <string name="sc_pref_mark_read_requires_seen_unread_line_summary">Jangan tandai percakapan sebagai terbaca ketika garis belum dibaca tidak terlihat sejak membuka percakapan.</string>
+    <string name="sc_set_read_marker_toast_start">Mengatur tanda baca ke %s</string>
+    <string name="sc_set_read_marker_implicit_toast_start">Mengatur tanda baca…</string>
+    <string name="sc_client_generated_unread_counts_title">Hitungan belum dibaca dari klien</string>
+    <string name="sc_client_generated_unread_counts_summary">Hitung nilai belum dibaca di perangkat ini daripada menggunakan nilai dari server</string>
+    <string name="sc_push_info_summary">Tampilkan info awakutu berkaitan dengan notifikasi dorong</string>
+    <string name="sc_pref_notification_only_alert_once_title">Hanya ingatkan sekali</string>
 </resources>

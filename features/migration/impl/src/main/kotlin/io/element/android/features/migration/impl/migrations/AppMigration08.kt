@@ -24,7 +24,7 @@ class AppMigration08(
     override val order: Int = 8
 
     override suspend fun migrate(isFreshInstall: Boolean) {
-        if (!isFreshInstall) {
+        if (!isFreshInstall && false) {
             announcementService.showAnnouncement(Announcement.NewNotificationSound)
         }
     }

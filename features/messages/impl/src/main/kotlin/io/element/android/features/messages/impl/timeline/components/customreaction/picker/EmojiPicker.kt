@@ -56,8 +56,8 @@ fun EmojiPicker(
     val coroutineScope = rememberCoroutineScope()
 
     val pagerState = rememberPagerState(
-        pageCount = scEmojiPickerSize().let {{ it }},
-        initialPage = if (ScPrefs.PREFER_FREEFORM_REACTIONS.value()) PAGE_FREEFORM_REACTION else 0,
+        pageCount = state.scEmojiPickerSize().let {{ it }},
+        initialPage = if (ScPrefs.PREFER_FREEFORM_REACTIONS.value()) state.pageFreeformReactionIndex() else 0,
     )
     Column(modifier) {
         ScEmojiPickerSearchBar(
@@ -101,7 +101,7 @@ fun EmojiPicker(
                         }
                     )
                 }
-                ScEmojiPickerTabsEnd(pagerState) { state.eventSink(EmojiPickerEvents.ToggleSearchActive(true)) }
+                ScEmojiPickerTabsEnd(state, pagerState) { state.eventSink(EmojiPickerEvents.ToggleSearchActive(true)) }
             }
 
             HorizontalPager(
@@ -110,6 +110,7 @@ fun EmojiPicker(
             ) { scIndex ->
                 val index = scIndex.removeScPickerOffset()
                 if (scEmojiPickerPage(
+                        state,
                         scIndex,
                         pagerState.currentPage,
                         onSelectCustomEmoji

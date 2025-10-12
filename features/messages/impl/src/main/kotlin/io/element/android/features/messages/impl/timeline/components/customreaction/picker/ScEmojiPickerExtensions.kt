@@ -37,21 +37,24 @@ import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
-import io.element.android.emojibasebindings.EmojibaseCategory
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconButton
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.coroutines.launch
 
 @Composable
-fun scEmojiPickerSize() = EmojibaseCategory.entries.size + 1 + (if (ScPrefs.ALWAYS_SHOW_REACTION_SEARCH_BAR.value()) 0 else 1)
-val PAGE_FREEFORM_REACTION = EmojibaseCategory.entries.size
-val PAGE_SEARCH = EmojibaseCategory.entries.size + 1
-fun Int.removeScPickerOffset() = this - 1
-fun Int.addScPickerOffset() = this + 1
+fun EmojiPickerState.scEmojiPickerSize() = categories.size + 1 + (if (ScPrefs.ALWAYS_SHOW_REACTION_SEARCH_BAR.value()) 0 else 1)
+fun EmojiPickerState.pageFreeformReactionIndex() = categories.size
+fun EmojiPickerState.pageSearchIndex() = categories.size + 1
+fun Int.removeScPickerOffset() = this //- 1
+fun Int.addScPickerOffset() = this //+ 1
 
 @Composable
-fun ScEmojiPickerTabsEnd(pagerState: PagerState, launchSearch: () -> Unit) {
+fun ScEmojiPickerTabsEnd(
+    state: EmojiPickerState,
+    pagerState: PagerState,
+    launchSearch: () -> Unit
+) {
     val coroutineScope = rememberCoroutineScope()
     Tab(
         icon = {
@@ -60,9 +63,9 @@ fun ScEmojiPickerTabsEnd(pagerState: PagerState, launchSearch: () -> Unit) {
                 contentDescription = stringResource(id = R.string.sc_freeform_reaction),
             )
         },
-        selected = pagerState.currentPage == PAGE_FREEFORM_REACTION,
+        selected = pagerState.currentPage == state.pageFreeformReactionIndex(),
         onClick = {
-            coroutineScope.launch { pagerState.animateScrollToPage(PAGE_FREEFORM_REACTION) }
+            coroutineScope.launch { pagerState.animateScrollToPage(state.pageFreeformReactionIndex()) }
         }
     )
     if (!ScPrefs.ALWAYS_SHOW_REACTION_SEARCH_BAR.value()) {
@@ -73,7 +76,7 @@ fun ScEmojiPickerTabsEnd(pagerState: PagerState, launchSearch: () -> Unit) {
                     contentDescription = stringResource(id = io.element.android.libraries.ui.strings.R.string.action_search),
                 )
             },
-            selected = pagerState.currentPage == PAGE_SEARCH,
+            selected = pagerState.currentPage == state.pageSearchIndex(),
             onClick = launchSearch,
         )
     }
@@ -81,13 +84,14 @@ fun ScEmojiPickerTabsEnd(pagerState: PagerState, launchSearch: () -> Unit) {
 
 @Composable
 fun scEmojiPickerPage(
+    state: EmojiPickerState,
     index: Int,
     selectedIndex: Int,
     onSelectCustomEmoji: (String) -> Unit,
     launchSearch: () -> Unit,
 ): Boolean {
     return when (index) {
-        PAGE_FREEFORM_REACTION -> {
+        state.pageFreeformReactionIndex() -> {
             val text = remember { mutableStateOf("") }
             val focusRequester = remember { FocusRequester() }
             val focusManager = LocalFocusManager.current
@@ -116,8 +120,8 @@ fun scEmojiPickerPage(
                     onSelectCustomEmoji(text.value)
                 }
             }
-            LaunchedEffect(selectedIndex == PAGE_FREEFORM_REACTION) {
-                if (selectedIndex == PAGE_FREEFORM_REACTION) {
+            LaunchedEffect(selectedIndex == state.pageFreeformReactionIndex()) {
+                if (selectedIndex == state.pageFreeformReactionIndex()) {
                     focusRequester.requestFocus()
                 } else {
                     focusManager.clearFocus()
@@ -125,7 +129,7 @@ fun scEmojiPickerPage(
             }
             true
         }
-        PAGE_SEARCH -> {
+        state.pageSearchIndex() -> {
             // Shouldn't be reachable by clicking the search icon, but still by swiping
             if (selectedIndex == index) {
                 LaunchedEffect(Unit) { launchSearch() }

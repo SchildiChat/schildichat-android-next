@@ -363,7 +363,8 @@ private fun EmojiReactionsRow(
         val backgroundColor = ElementTheme.colors.bgCanvasDefault
 
         val emojis = remember(recentEmojis) {
-            (suggestedEmojis + recentEmojis.filter { it !in suggestedEmojis })
+            //(suggestedEmojis + recentEmojis.filter { it !in suggestedEmojis })
+            (recentEmojis + suggestedEmojis.filter { it !in suggestedEmojis })
                 .take(100)
                 .toImmutableList()
         }

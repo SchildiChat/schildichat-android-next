@@ -42,24 +42,11 @@ dependencyResolutionManagement {
         }
         // SC forks of upstream Rust projects
         maven {
-            url = URI("https://maven.pkg.github.com/SchildiChat/matrix-rust-components-kotlin")
+            url = URI("https://maven.spiritcroc.de")
             content {
                 includeModule("chat.schildi.rustcomponents", "sdk-android")
-            }
-            credentials {
-                username = getLocalProperty("gpr.user") as String? ?: System.getenv("GPR_USER")
-                password = getLocalProperty("gpr.token") as String? ?: System.getenv("GPR_TOKEN")
-            }
-        }
-        maven {
-            url = URI("https://maven.pkg.github.com/SchildiChat/matrix-rich-text-editor")
-            content {
                 includeModule("chat.schildi", "wysiwyg")
                 includeModule("chat.schildi", "wysiwyg-compose")
-            }
-            credentials {
-                username = getLocalProperty("gpr.user") as String? ?: System.getenv("GPR_USER")
-                password = getLocalProperty("gpr.token") as String? ?: System.getenv("GPR_TOKEN")
             }
         }
         // SC forks end

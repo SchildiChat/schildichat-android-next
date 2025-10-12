@@ -41,21 +41,6 @@ Translations that concern upstream Element code are best contributed directly to
 In general, building works the same as for Element X or any common Android project.
 Just import into Android Studio and make sure you have all the required SDKs ready.
 
-Currently, SchildiChat uses a [forked matrix-rust-sdk](https://github.com/SchildiChat/matrix-rust-sdk) and
-[wysiwyg](https://github.com/SchildiChat/matrix-rich-text-editor)
-published on [GitHub packages](https://github.com/SchildiChat/matrix-rust-components-kotlin/packages/),
-which unfortunately [still does not provide unauthenticated access](https://github.com/orgs/community/discussions/26634).
-Accordingly, before building, create a GitHub token with the `read:packages` permission, and configure it in your `local.properties`:
-```
-gpr.user=...
-gpr.token=...
-```
-
-Alternatively, you may export the `GPR_USER` and `GPR_TOKEN` environment variables before building.
-
-If you do not have a GitHub account, you can also download the appropriate `.aar` file from
-[the SDK's releases](https://github.com/SchildiChat/matrix-rust-components-kotlin/releases) and put it into `./libraries/rustsdk/matrix-rust-sdk.aar`.
-
 
 ## WYSIWYG development
 

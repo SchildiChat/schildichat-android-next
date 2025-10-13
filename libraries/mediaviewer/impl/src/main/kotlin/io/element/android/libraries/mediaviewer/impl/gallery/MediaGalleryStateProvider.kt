@@ -9,7 +9,7 @@ package io.element.android.libraries.mediaviewer.impl.gallery
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.element.android.libraries.architecture.AsyncData
-import io.element.android.libraries.designsystem.components.media.aWaveForm
+import io.element.android.libraries.designsystem.components.media.WaveFormSamples
 import io.element.android.libraries.matrix.api.core.UniqueId
 import io.element.android.libraries.mediaviewer.impl.details.MediaBottomSheetState
 import io.element.android.libraries.mediaviewer.impl.details.aMediaDetailsBottomSheetState
@@ -71,7 +71,7 @@ open class MediaGalleryStateProvider : PreviewParameterProvider<MediaGalleryStat
                             aMediaItemAudio(id = UniqueId("4")),
                             aMediaItemVoice(
                                 id = UniqueId("5"),
-                                waveform = aWaveForm(),
+                                waveform = WaveFormSamples.realisticWaveForm,
                             ),
                             aMediaItemLoadingIndicator(),
                         ).toImmutableList()

@@ -187,14 +187,14 @@ internal fun WaveformPlaybackViewPreview() = ElementPreview {
             showCursor = false,
             playbackProgress = 0.5f,
             onSeek = {},
-            waveform = aWaveForm().toImmutableList(),
+            waveform = WaveFormSamples.realisticWaveForm,
         )
         WaveformPlaybackView(
             modifier = Modifier.height(34.dp),
             showCursor = true,
             playbackProgress = 0.5f,
             onSeek = {},
-            waveform = List(1024) { it / 1024f }.toImmutableList(),
+            waveform = WaveFormSamples.allRangeWaveForm,
         )
     }
 }
@@ -216,46 +216,4 @@ private fun ImmutableList<Float>.normalisedData(maxSamplesCount: Int): Immutable
     }
 
     return result.toImmutableList()
-}
-
-fun aWaveForm(): List<Float> {
-    return listOf(
-        0.000f,
-        0.000f,
-        0.000f,
-        0.003f,
-        0.354f,
-        0.353f,
-        0.365f,
-        0.790f,
-        0.787f,
-        0.167f,
-        0.333f,
-        0.975f,
-        0.000f,
-        0.102f,
-        0.003f,
-        0.531f,
-        0.584f,
-        0.317f,
-        0.140f,
-        0.475f,
-        0.496f,
-        0.561f,
-        0.042f,
-        0.263f,
-        0.169f,
-        0.829f,
-        0.349f,
-        0.010f,
-        0.000f,
-        0.000f,
-        1.000f,
-        0.334f,
-        0.321f,
-        0.011f,
-        0.000f,
-        0.000f,
-        0.003f,
-    )
 }

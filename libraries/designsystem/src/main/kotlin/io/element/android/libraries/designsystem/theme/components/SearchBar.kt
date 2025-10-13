@@ -172,10 +172,10 @@ object ElementSearchBarDefaults {
         focusedPlaceholderColor = ElementTheme.colors.textDisabled,
         unfocusedTrailingIconColor = ElementTheme.colors.iconDisabled,
         focusedTrailingIconColor = ElementTheme.colors.iconDisabled,
-        focusedContainerColor = Color.Transparent,
-        unfocusedContainerColor = Color.Transparent,
-        disabledContainerColor = Color.Transparent,
-        errorContainerColor = Color.Transparent,
+        focusedContainerColor = ElementTheme.colors.bgSubtleSecondary,
+        unfocusedContainerColor = ElementTheme.colors.bgSubtleSecondary,
+        disabledContainerColor = ElementTheme.colors.bgSubtleSecondary,
+        errorContainerColor = ElementTheme.colors.bgSubtleSecondary,
     )
 
     @OptIn(ExperimentalMaterial3Api::class)

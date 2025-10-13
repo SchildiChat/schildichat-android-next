@@ -9,7 +9,6 @@ package io.element.android.features.messages.api.timeline.voicemessages.composer
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.element.android.libraries.designsystem.components.media.WaveFormSamples
-import io.element.android.libraries.designsystem.components.media.createFakeWaveform
 import io.element.android.libraries.textcomposer.model.VoiceMessageState
 import kotlin.time.Duration.Companion.seconds
 
@@ -39,5 +38,5 @@ fun aVoiceMessagePreviewState() = VoiceMessageState.Preview(
     showCursor = false,
     playbackProgress = 0f,
     time = 10.seconds,
-    waveform = createFakeWaveform(),
+    waveform = WaveFormSamples.realisticWaveForm,
 )

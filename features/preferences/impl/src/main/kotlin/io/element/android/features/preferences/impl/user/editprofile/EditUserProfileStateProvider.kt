@@ -7,9 +7,7 @@
 
 package io.element.android.features.preferences.impl.user.editprofile
 
-import android.net.Uri
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import androidx.core.net.toUri
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.permissions.api.aPermissionsState
@@ -19,13 +17,13 @@ open class EditUserProfileStateProvider : PreviewParameterProvider<EditUserProfi
     override val values: Sequence<EditUserProfileState>
         get() = sequenceOf(
             aEditUserProfileState(),
-            aEditUserProfileState(userAvatarUrl = "example://uri".toUri()),
+            aEditUserProfileState(userAvatarUrl = "example://uri"),
             // Add other states here
         )
 }
 
 fun aEditUserProfileState(
-    userAvatarUrl: Uri? = null,
+    userAvatarUrl: String? = null,
 ) = EditUserProfileState(
     userId = UserId("@john.doe:matrix.org"),
     displayName = "John Doe",

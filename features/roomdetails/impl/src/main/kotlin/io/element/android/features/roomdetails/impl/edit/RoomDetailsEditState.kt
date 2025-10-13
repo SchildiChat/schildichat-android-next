@@ -7,16 +7,12 @@
 
 package io.element.android.features.roomdetails.impl.edit
 
-import android.net.Uri
-import androidx.compose.runtime.Immutable
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.ui.media.AvatarAction
 import io.element.android.libraries.permissions.api.PermissionsState
 import kotlinx.collections.immutable.ImmutableList
 
-// Annotate with @Immutable since `Uri` is unstable
-@Immutable
 data class RoomDetailsEditState(
     val roomId: RoomId,
     /** The raw room name (i.e. the room name from the state event `m.room.name`), not the display name. */
@@ -24,7 +20,7 @@ data class RoomDetailsEditState(
     val canChangeName: Boolean,
     val roomTopic: String,
     val canChangeTopic: Boolean,
-    val roomAvatarUrl: Uri?,
+    val roomAvatarUrl: String?,
     val canChangeAvatar: Boolean,
     val avatarActions: ImmutableList<AvatarAction>,
     val saveButtonEnabled: Boolean,

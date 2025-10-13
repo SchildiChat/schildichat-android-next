@@ -62,6 +62,7 @@ class KonsistClassNameTest {
             .withAllParentsOf(PreviewParameterProvider::class)
             .withoutName(
                 "AspectRatioProvider",
+                "EditableAvatarViewUriProvider",
                 "LoginModeViewErrorProvider",
                 "OverlapRatioProvider",
                 "TextFileContentProvider",

@@ -21,11 +21,13 @@ sealed interface VoiceMessageState {
         val showCursor: Boolean,
         val playbackProgress: Float,
         val time: Duration,
+        // Values are between 0 and 1
         val waveform: ImmutableList<Float>,
     ) : VoiceMessageState
 
     data class Recording(
         val duration: Duration,
+        // Values are between 0 and 1
         val levels: ImmutableList<Float>,
     ) : VoiceMessageState
 }

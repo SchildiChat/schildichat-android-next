@@ -15,6 +15,7 @@ fun QrLoginProgress.toStep(): QrCodeLoginStep {
         is QrLoginProgress.EstablishingSecureChannel -> QrCodeLoginStep.EstablishingSecureChannel(checkCodeString)
         is QrLoginProgress.Starting -> QrCodeLoginStep.Starting
         is QrLoginProgress.WaitingForToken -> QrCodeLoginStep.WaitingForToken(userCode)
+        is QrLoginProgress.SyncingSecrets -> QrCodeLoginStep.SyncingSecrets
         is QrLoginProgress.Done -> QrCodeLoginStep.Finished
     }
 }

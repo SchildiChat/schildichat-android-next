@@ -7,7 +7,7 @@
 
 package io.element.android.libraries.mediaviewer.impl.model
 
-import io.element.android.libraries.designsystem.components.media.aWaveForm
+import io.element.android.libraries.designsystem.components.media.WaveFormSamples
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.UniqueId
 import io.element.android.libraries.matrix.api.core.UserId
@@ -91,7 +91,7 @@ fun aMediaItemVoice(
     filename: String = "filename.ogg",
     caption: String? = null,
     duration: String? = "1:23",
-    waveform: List<Float> = aWaveForm(),
+    waveform: List<Float> = WaveFormSamples.realisticWaveForm,
 ): MediaItem.Voice {
     return MediaItem.Voice(
         id = id,

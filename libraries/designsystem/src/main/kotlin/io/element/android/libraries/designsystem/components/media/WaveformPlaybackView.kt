@@ -49,7 +49,7 @@ private const val DEFAULT_GRAPHICS_LAYER_ALPHA: Float = 0.99F
  *
  * @param playbackProgress The current playback progress, between 0 and 1.
  * @param showCursor Whether to show the cursor or not.
- * @param waveform The waveform to display. Use [createFakeWaveform] to generate a fake waveform.
+ * @param waveform The waveform to display.
  * @param onSeek Callback when the user seeks the waveform. Called with a value between 0 and 1.
  * @param modifier The modifier to be applied to the view.
  * @param seekEnabled Whether the user can seek the waveform or not.

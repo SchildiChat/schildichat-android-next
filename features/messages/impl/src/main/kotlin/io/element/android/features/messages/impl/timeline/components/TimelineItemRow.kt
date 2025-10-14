@@ -37,8 +37,8 @@ import io.element.android.features.messages.impl.timeline.model.event.TimelineIt
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemVoiceContent
 import io.element.android.features.messages.impl.timeline.protection.TimelineProtectionEvent
 import io.element.android.features.messages.impl.timeline.protection.TimelineProtectionState
+import io.element.android.libraries.designsystem.colors.gradientSubtleColors
 import io.element.android.libraries.designsystem.modifiers.onKeyboardContextMenuAction
-import io.element.android.libraries.designsystem.modifiers.subtleColorStops
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.text.toPx
@@ -227,12 +227,12 @@ private fun Modifier.focusedEvent(
     } else {
         ElementTheme.colors.borderAccentSubtle
     }
-    val gradientColors = subtleColorStops(isEnterpriseBuild)
+    val gradientColors = gradientSubtleColors()
     val verticalOffset = focusedEventOffset.toPx()
     val verticalRatio = 0.7f
     return drawWithCache {
         val brush = Brush.verticalGradient(
-            colorStops = gradientColors,
+            colors = gradientColors,
             endY = size.height * verticalRatio,
         )
         onDrawBehind {

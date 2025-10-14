@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.progressSemantics
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -36,8 +37,11 @@ import io.element.android.libraries.featureflag.ui.FeatureListView
 import io.element.android.libraries.featureflag.ui.model.FeatureUiModel
 import io.element.android.libraries.matrix.api.tracing.TraceLogPack
 import io.element.android.libraries.ui.strings.CommonStrings
+import io.mhssn.colorpicker.ColorPickerDialog
+import io.mhssn.colorpicker.ColorPickerType
 import kotlinx.collections.immutable.toImmutableList
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun DeveloperSettingsView(
     state: DeveloperSettingsState,
@@ -99,6 +103,18 @@ fun DeveloperSettingsView(
         RageshakePreferencesView(
             state = state.rageshakeState,
         )
+        if (state.isEnterpriseBuild) {
+            PreferenceCategory(title = "Theme", showTopDivider = false) {
+                ListItem(
+                    headlineContent = {
+                        Text("Change brand color")
+                    },
+                    onClick = {
+                        state.eventSink(DeveloperSettingsEvents.SetShowColorPicker(true))
+                    }
+                )
+            }
+        }
         PreferenceCategory(title = "Crash", showTopDivider = false) {
             ListItem(
                 headlineContent = {
@@ -133,6 +149,18 @@ fun DeveloperSettingsView(
             )
         }
     }
+    ColorPickerDialog(
+        show = state.showColorPicker,
+        type = ColorPickerType.Classic(
+            showAlphaBar = false,
+        ),
+        onDismissRequest = {
+            state.eventSink(DeveloperSettingsEvents.SetShowColorPicker(false))
+        },
+        onPickedColor = {
+            state.eventSink(DeveloperSettingsEvents.ChangeBrandColor(it))
+        },
+    )
 }
 
 @Composable
@@ -189,7 +217,9 @@ private fun FeatureListContent(
 
 @PreviewsDayNight
 @Composable
-internal fun DeveloperSettingsViewPreview(@PreviewParameter(DeveloperSettingsStateProvider::class) state: DeveloperSettingsState) = ElementPreview {
+internal fun DeveloperSettingsViewPreview(
+    @PreviewParameter(DeveloperSettingsStateProvider::class) state: DeveloperSettingsState
+) = ElementPreview {
     DeveloperSettingsView(
         state = state,
         onOpenShowkase = {},

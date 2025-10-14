@@ -11,7 +11,6 @@ import io.element.android.features.login.impl.accountprovider.AccountProvider
 import io.element.android.features.login.impl.login.LoginMode
 import io.element.android.libraries.architecture.AsyncData
 
-// Do not use default value, so no member get forgotten in the presenters.
 data class ConfirmAccountProviderState(
     val accountProvider: AccountProvider,
     val isAccountCreation: Boolean,

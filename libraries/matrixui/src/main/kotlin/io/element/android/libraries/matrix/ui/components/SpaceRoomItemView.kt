@@ -10,6 +10,7 @@ package io.element.android.libraries.matrix.ui.components
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -42,6 +43,7 @@ import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.modifiers.onKeyboardContextMenuAction
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
+import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.unreadIndicator
@@ -56,6 +58,9 @@ import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
+/**
+ * Figma reference: https://www.figma.com/design/G1xy0HDZKJf5TCRFmKb5d5/Compound-Android-Components?node-id=3643-2079&m=dev
+ */
 @Composable
 fun SpaceRoomItemView(
     spaceRoom: SpaceRoom,
@@ -67,43 +72,65 @@ fun SpaceRoomItemView(
     trailingAction: @Composable (() -> Unit)? = null,
     bottomAction: @Composable (() -> Unit)? = null,
 ) {
-    SpaceRoomItemScaffold(
-        modifier = modifier,
-        avatarData = spaceRoom.getAvatarData(AvatarSize.SpaceListItem),
-        isSpace = spaceRoom.isSpace,
-        hideAvatars = hideAvatars,
-        heroes = spaceRoom.heroes
-            .map { hero -> hero.getAvatarData(AvatarSize.SpaceListItem) }
-            .toImmutableList(),
-        onClick = onClick,
-        onLongClick = onLongClick,
-        trailingAction = trailingAction,
-    ) {
-        NameAndIndicatorRow(
-            name = spaceRoom.displayName,
-            showIndicator = showUnreadIndicator
+    val clickModifier = Modifier
+        .combinedClickable(
+            onClick = onClick,
+            onLongClick = onLongClick,
+            onLongClickLabel = stringResource(CommonStrings.action_open_context_menu),
+            indication = ripple(),
+            interactionSource = remember { MutableInteractionSource() }
         )
-        Spacer(modifier = Modifier.height(1.dp))
-        SubtitleRow(
-            visibilityIcon = spaceRoom.visibilityIcon(),
-            subtitle = spaceRoom.subtitle()
+        .onKeyboardContextMenuAction { onLongClick }
+    Box(modifier = modifier.then(clickModifier)) {
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+        ) {
+            SpaceRoomItemScaffold(
+                avatarData = spaceRoom.getAvatarData(AvatarSize.SpaceListItem),
+                isSpace = spaceRoom.isSpace,
+                hideAvatars = hideAvatars,
+                heroes = spaceRoom.heroes
+                    .map { hero -> hero.getAvatarData(AvatarSize.SpaceListItem) }
+                    .toImmutableList(),
+                trailingAction = trailingAction,
+            ) {
+                NameAndIndicatorRow(
+                    name = spaceRoom.displayName,
+                    showIndicator = showUnreadIndicator
+                )
+                Spacer(modifier = Modifier.height(1.dp))
+                SubtitleRow(
+                    visibilityIcon = spaceRoom.visibilityIcon(),
+                    subtitle = spaceRoom.subtitle()
+                )
+                Spacer(modifier = Modifier.height(1.dp))
+                val info = spaceRoom.info()
+                if (info.isNotBlank()) {
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        style = ElementTheme.typography.fontBodyMdRegular,
+                        text = info,
+                        color = ElementTheme.colors.textSecondary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+            if (bottomAction != null) {
+                Spacer(modifier = Modifier.height(12.dp))
+                // Match the padding of the text content (avatar + spacer)
+                Box(modifier = Modifier.padding(start = AvatarSize.SpaceListItem.dp + 16.dp)) {
+                    bottomAction()
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+            }
+        }
+        HorizontalDivider(
+            modifier = Modifier
+            // Match the padding of the text content (padding + avatar + spacer)
+            .padding(start = AvatarSize.SpaceListItem.dp + 16.dp + 16.dp)
+            .align(Alignment.BottomCenter)
         )
-        Spacer(modifier = Modifier.height(1.dp))
-        val info = spaceRoom.info()
-        if (info.isNotBlank()) {
-            Text(
-                modifier = Modifier.weight(1f),
-                style = ElementTheme.typography.fontBodyMdRegular,
-                text = info,
-                color = ElementTheme.colors.textSecondary,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-        if (bottomAction != null) {
-            Spacer(modifier = Modifier.height(12.dp))
-            bottomAction()
-        }
     }
 }
 
@@ -170,28 +197,16 @@ private fun SpaceRoomItemScaffold(
     avatarData: AvatarData,
     isSpace: Boolean,
     heroes: ImmutableList<AvatarData>,
-    onClick: () -> Unit,
-    onLongClick: () -> Unit,
     hideAvatars: Boolean,
     modifier: Modifier = Modifier,
     trailingAction: @Composable (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    val clickModifier = Modifier
-        .combinedClickable(
-            onClick = onClick,
-            onLongClick = onLongClick,
-            onLongClickLabel = stringResource(CommonStrings.action_open_context_menu),
-            indication = ripple(),
-            interactionSource = remember { MutableInteractionSource() }
-        )
-        .onKeyboardContextMenuAction { onLongClick }
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .then(clickModifier)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
             .height(IntrinsicSize.Min),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Avatar(
             avatarData = avatarData,
@@ -249,7 +264,7 @@ internal fun SpaceRoomItemViewPreview(@PreviewParameter(SpaceRoomProvider::class
         hideAvatars = false,
         onClick = {},
         onLongClick = {},
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
         bottomAction = if (spaceRoom.state == CurrentUserMembership.INVITED) {
             { InviteButtonsRowMolecule({}, {}) }
         } else {

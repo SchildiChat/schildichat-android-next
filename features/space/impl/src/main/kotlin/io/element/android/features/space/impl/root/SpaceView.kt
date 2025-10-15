@@ -49,6 +49,7 @@ import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.CircularProgressIndicator
 import io.element.android.libraries.designsystem.theme.components.DropdownMenu
 import io.element.android.libraries.designsystem.theme.components.DropdownMenuItem
+import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconButton
 import io.element.android.libraries.designsystem.theme.components.Scaffold
@@ -176,6 +177,9 @@ private fun SpaceViewContent(
                     numberOfMembers = currentSpace.numJoinedMembers,
                     onTopicClick = onTopicClick
                 )
+            }
+            item {
+                HorizontalDivider()
             }
         }
         state.children.forEach { spaceRoom ->

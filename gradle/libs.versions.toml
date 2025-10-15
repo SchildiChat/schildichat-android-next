@@ -93,6 +93,7 @@ androidx_constraintlayout_compose = { module = "androidx.constraintlayout:constr
 androidx_camera_lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "camera" }
 androidx_camera_view = { module = "androidx.camera:camera-view", version.ref = "camera" }
 androidx_camera_camera2 = { module = "androidx.camera:camera-camera2", version.ref = "camera" }
+androidx_javascriptengine = "androidx.javascriptengine:javascriptengine:1.0.0"
 
 androidx_recyclerview = "androidx.recyclerview:recyclerview:1.4.0"
 androidx_browser = "androidx.browser:browser:1.9.0"
@@ -126,6 +127,7 @@ androidx_compose_material_icons = { module = "androidx.compose.material:material
 
 # Coroutines
 coroutines_core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutines_guava = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-guava", version.ref = "coroutines" }
 coroutines_test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 
 # Accompanist

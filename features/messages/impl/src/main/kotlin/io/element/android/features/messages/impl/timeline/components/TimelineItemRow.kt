@@ -42,7 +42,6 @@ import io.element.android.libraries.designsystem.modifiers.onKeyboardContextMenu
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.text.toPx
-import io.element.android.libraries.designsystem.theme.LocalBuildMeta
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.matrix.api.user.MatrixUser
@@ -220,13 +219,8 @@ internal fun TimelineItemRow(
 @Composable
 private fun Modifier.focusedEvent(
     focusedEventOffset: Dp,
-    isEnterpriseBuild: Boolean = LocalBuildMeta.current.isEnterpriseBuild,
 ): Modifier {
-    val highlightedLineColor = if (isEnterpriseBuild) {
-        ElementTheme.colors.textActionAccent
-    } else {
-        ElementTheme.colors.borderAccentSubtle
-    }
+    val highlightedLineColor = ElementTheme.colors.borderAccentSubtle
     val gradientColors = gradientSubtleColors()
     val verticalOffset = focusedEventOffset.toPx()
     val verticalRatio = 0.7f
@@ -259,20 +253,5 @@ internal fun FocusedEventPreview() = ElementPreview {
             .fillMaxWidth()
             .height(160.dp)
             .focusedEvent(0.dp),
-    )
-}
-
-@PreviewsDayNight
-@Composable
-internal fun FocusedEventEnterprisePreview() = ElementPreview {
-    Box(
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth()
-            .height(160.dp)
-            .focusedEvent(
-                focusedEventOffset = 0.dp,
-                isEnterpriseBuild = true,
-            ),
     )
 }

@@ -144,7 +144,7 @@ class DeveloperSettingsPresenter(
                 }
                 is DeveloperSettingsEvents.ChangeBrandColor -> {
                     showColorPicker = false
-                    val color = event.color.value.toHexString(HexFormat.UpperCase).substring(2, 8)
+                    val color = event.color?.value?.toHexString(HexFormat.UpperCase)?.substring(2, 8)
                     enterpriseService.overrideBrandColor(color)
                 }
                 is DeveloperSettingsEvents.SetShowColorPicker -> {

@@ -112,6 +112,14 @@ fun DeveloperSettingsView(
                         state.eventSink(DeveloperSettingsEvents.SetShowColorPicker(true))
                     }
                 )
+                ListItem(
+                    headlineContent = {
+                        Text("Reset brand color")
+                    },
+                    onClick = {
+                        state.eventSink(DeveloperSettingsEvents.ChangeBrandColor(null))
+                    }
+                )
             }
         }
         PreferenceCategory(title = "Crash") {

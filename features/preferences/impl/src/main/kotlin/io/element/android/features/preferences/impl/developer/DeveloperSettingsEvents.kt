@@ -18,6 +18,6 @@ sealed interface DeveloperSettingsEvents {
     data class SetTracingLogLevel(val logLevel: LogLevelItem) : DeveloperSettingsEvents
     data class ToggleTracingLogPack(val logPack: TraceLogPack, val enabled: Boolean) : DeveloperSettingsEvents
     data class SetShowColorPicker(val show: Boolean) : DeveloperSettingsEvents
-    data class ChangeBrandColor(val color: Color) : DeveloperSettingsEvents
+    data class ChangeBrandColor(val color: Color?) : DeveloperSettingsEvents
     data object ClearCache : DeveloperSettingsEvents
 }

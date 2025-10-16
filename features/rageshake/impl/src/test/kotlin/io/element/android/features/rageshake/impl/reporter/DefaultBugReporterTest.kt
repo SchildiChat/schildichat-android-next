@@ -160,9 +160,11 @@ class DefaultBugReporterTest {
         assertThat(foundValues["number_of_accounts"]).isEqualTo("1")
         assertThat(foundValues["text"]).isEqualTo("a bug occurred")
         assertThat(foundValues["device_keys"]).isEqualTo("curve25519:CURVECURVECURVE, ed25519:EDKEYEDKEYEDKY")
+        assertThat(foundValues["file"]).contains(fakePushRules)
 
         // device_key now added given they are not null
-        assertThat(progressValues.size).isEqualTo(EXPECTED_NUMBER_OF_PROGRESS_VALUE + 1)
+        // so is the push_rules value
+        assertThat(progressValues.size).isEqualTo(EXPECTED_NUMBER_OF_PROGRESS_VALUE + 2)
 
         server.shutdown()
     }
@@ -225,11 +227,9 @@ class DefaultBugReporterTest {
         assertThat(foundValues["number_of_accounts"]).isEqualTo("2")
         assertThat(foundValues["text"]).isEqualTo("a bug occurred")
         assertThat(foundValues["device_keys"]).isEqualTo("curve25519:CURVECURVECURVE, ed25519:EDKEYEDKEYEDKY")
-        assertThat(foundValues["file"]).contains(fakePushRules)
 
         // device_key now added given they are not null
-        // so is the push_rules value
-        assertThat(progressValues.size).isEqualTo(EXPECTED_NUMBER_OF_PROGRESS_VALUE + 2)
+        assertThat(progressValues.size).isEqualTo(EXPECTED_NUMBER_OF_PROGRESS_VALUE + 1)
 
         server.shutdown()
     }

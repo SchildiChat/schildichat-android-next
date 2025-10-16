@@ -58,7 +58,6 @@ fun DeveloperSettingsView(
         // Note: this is OK to hardcode strings in this debug screen.
         PreferenceCategory(
             title = "Feature flags",
-            showTopDivider = true,
         ) {
             FeatureListContent(state)
         }
@@ -104,7 +103,7 @@ fun DeveloperSettingsView(
             state = state.rageshakeState,
         )
         if (state.isEnterpriseBuild) {
-            PreferenceCategory(title = "Theme", showTopDivider = false) {
+            PreferenceCategory(title = "Theme") {
                 ListItem(
                     headlineContent = {
                         Text("Change brand color")
@@ -115,7 +114,7 @@ fun DeveloperSettingsView(
                 )
             }
         }
-        PreferenceCategory(title = "Crash", showTopDivider = false) {
+        PreferenceCategory(title = "Crash") {
             ListItem(
                 headlineContent = {
                     Text("Crash the app 💥")
@@ -124,7 +123,7 @@ fun DeveloperSettingsView(
             )
         }
         val cache = state.cacheSize
-        PreferenceCategory(title = "Cache", showTopDivider = false) {
+        PreferenceCategory(title = "Cache") {
             ListItem(
                 headlineContent = {
                     Text("Clear cache")
@@ -167,7 +166,7 @@ fun DeveloperSettingsView(
 private fun ElementCallCategory(
     state: DeveloperSettingsState,
 ) {
-    PreferenceCategory(title = "Element Call", showTopDivider = true) {
+    PreferenceCategory(title = "Element Call") {
         val callUrlState = state.customElementCallBaseUrlState
 
         val supportingText = if (callUrlState.baseUrl.isNullOrEmpty()) {

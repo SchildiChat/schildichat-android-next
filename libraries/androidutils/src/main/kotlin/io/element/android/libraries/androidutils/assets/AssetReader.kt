@@ -31,16 +31,7 @@ class AssetReader(
     fun readAssetFile(assetFilename: String): String? {
         return cache.getOrPut(assetFilename, {
             return try {
-                context.assets.open(assetFilename)
-                    .use { asset ->
-                        buildString {
-                            var ch = asset.read()
-                            while (ch != -1) {
-                                append(ch.toChar())
-                                ch = asset.read()
-                            }
-                        }
-                    }
+                context.assets.open(assetFilename).use { it.bufferedReader().readText() }
             } catch (e: Exception) {
                 Timber.e(e, "## readAssetFile() failed")
                 null

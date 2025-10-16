@@ -9,7 +9,6 @@ package io.element.android.features.securebackup.impl.setup
 
 import io.element.android.features.securebackup.impl.setup.views.RecoveryKeyViewState
 
-// Do not use default value, so no member get forgotten in the presenters.
 data class SecureBackupSetupState(
     val isChangeRecoveryKeyUserStory: Boolean,
     val recoveryKeyViewState: RecoveryKeyViewState,

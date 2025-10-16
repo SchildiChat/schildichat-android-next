@@ -9,7 +9,6 @@ package io.element.android.features.preferences.impl.analytics
 
 import io.element.android.features.analytics.api.preferences.AnalyticsPreferencesState
 
-// Do not use default value, so no member get forgotten in the presenters.
 data class AnalyticsSettingsState(
     val analyticsPreferencesState: AnalyticsPreferencesState,
 )

@@ -18,6 +18,8 @@ import io.element.android.libraries.matrix.api.MatrixClientProvider
 import io.element.android.libraries.matrix.api.auth.MatrixAuthenticationService
 import io.element.android.libraries.matrix.api.tracing.TracingService
 import io.element.android.libraries.matrix.api.tracing.WriteToFilesConfiguration
+import io.element.android.libraries.matrix.test.A_DEVICE_ID
+import io.element.android.libraries.matrix.test.A_USER_ID
 import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.matrix.test.FakeMatrixClientProvider
 import io.element.android.libraries.matrix.test.FakeSdkMetadata
@@ -155,6 +157,72 @@ class DefaultBugReporterTest {
         assertThat(foundValues["device_id"]).isEqualTo("ABCDEFGH")
         assertThat(foundValues["sdk_sha"]).isEqualTo("123456789")
         assertThat(foundValues["user_id"]).isEqualTo("@foo:example.com")
+        assertThat(foundValues["number_of_accounts"]).isEqualTo("1")
+        assertThat(foundValues["text"]).isEqualTo("a bug occurred")
+        assertThat(foundValues["device_keys"]).isEqualTo("curve25519:CURVECURVECURVE, ed25519:EDKEYEDKEYEDKY")
+
+        // device_key now added given they are not null
+        assertThat(progressValues.size).isEqualTo(EXPECTED_NUMBER_OF_PROGRESS_VALUE + 1)
+
+        server.shutdown()
+    }
+
+    @Test
+    fun `test sendBugReport multi accounts`() = runTest {
+        val server = MockWebServer()
+        server.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+        )
+        server.start()
+
+        val mockSessionStore = InMemorySessionStore(
+            initialList = listOf(
+                aSessionData(sessionId = "@foo:example.com", deviceId = "ABCDEFGH"),
+                aSessionData(sessionId = A_USER_ID.value, deviceId = A_DEVICE_ID.value),
+            )
+        )
+
+        val fakeEncryptionService = FakeEncryptionService()
+        val matrixClient = FakeMatrixClient(encryptionService = fakeEncryptionService)
+
+        fakeEncryptionService.givenDeviceKeys("CURVECURVECURVE", "EDKEYEDKEYEDKY")
+        val sut = createDefaultBugReporter(
+            server = server,
+            crashDataStore = FakeCrashDataStore(),
+            sessionStore = mockSessionStore,
+            matrixClientProvider = FakeMatrixClientProvider(getClient = { Result.success(matrixClient) })
+        )
+
+        val progressValues = mutableListOf<Int>()
+        sut.sendBugReport(
+            withDevicesLogs = true,
+            withCrashLogs = true,
+            withScreenshot = true,
+            problemDescription = "a bug occurred",
+            canContact = true,
+            listener = object : BugReporterListener {
+                override fun onUploadCancelled() {}
+
+                override fun onUploadFailed(reason: String?) {}
+
+                override fun onProgress(progress: Int) {
+                    progressValues.add(progress)
+                }
+
+                override fun onUploadSucceed() {}
+            },
+        )
+        val request = server.takeRequest()
+
+        val foundValues = collectValuesFromFormData(request)
+
+        assertThat(foundValues["app"]).isEqualTo(RageshakeConfig.BUG_REPORT_APP_NAME)
+        assertThat(foundValues["can_contact"]).isEqualTo("true")
+        assertThat(foundValues["device_id"]).isEqualTo("ABCDEFGH")
+        assertThat(foundValues["sdk_sha"]).isEqualTo("123456789")
+        assertThat(foundValues["user_id"]).isEqualTo("@foo:example.com")
+        assertThat(foundValues["number_of_accounts"]).isEqualTo("2")
         assertThat(foundValues["text"]).isEqualTo("a bug occurred")
         assertThat(foundValues["device_keys"]).isEqualTo("curve25519:CURVECURVECURVE, ed25519:EDKEYEDKEYEDKY")
         assertThat(foundValues["file"]).contains(fakePushRules)
@@ -238,6 +306,7 @@ class DefaultBugReporterTest {
         assertThat(foundValues["device_keys"]).isNull()
         assertThat(foundValues["device_id"]).isEqualTo("undefined")
         assertThat(foundValues["user_id"]).isEqualTo("undefined")
+        assertThat(foundValues["number_of_accounts"]).isEqualTo("0")
         assertThat(foundValues["label"]).isEqualTo("crash")
     }
 
@@ -485,6 +554,6 @@ class DefaultBugReporterTest {
     }
 
     companion object {
-        private const val EXPECTED_NUMBER_OF_PROGRESS_VALUE = 17
+        private const val EXPECTED_NUMBER_OF_PROGRESS_VALUE = 18
     }
 }

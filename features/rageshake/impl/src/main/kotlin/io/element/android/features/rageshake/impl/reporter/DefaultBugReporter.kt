@@ -155,6 +155,7 @@ class DefaultBugReporter(
                     }
                 }
                 val sessionData = sessionStore.getLatestSession()
+                val numberOfAccounts = sessionStore.getAllSessions().size
                 val deviceId = sessionData?.deviceId ?: "undefined"
                 val userId = sessionData?.userId?.let { UserId(it) }
                 // build the multi part request
@@ -163,6 +164,7 @@ class DefaultBugReporter(
                     .addFormDataPart("app", RageshakeConfig.BUG_REPORT_APP_NAME)
                     .addFormDataPart("user_agent", userAgentProvider.provide())
                     .addFormDataPart("user_id", userId?.toString() ?: "undefined")
+                    .addFormDataPart("number_of_accounts", numberOfAccounts.toString())
                     .addFormDataPart("can_contact", canContact.toString())
                     .addFormDataPart("device_id", deviceId)
                     .addFormDataPart("device", Build.MODEL.trim())

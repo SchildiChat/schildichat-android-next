@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
+import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
 import io.element.android.libraries.matrix.ui.components.SpaceHeaderRootView
@@ -46,6 +47,9 @@ fun HomeSpacesView(
                     numberOfMembers = space.spaceRoom.numJoinedMembers,
                 )
             }
+        }
+        item {
+            HorizontalDivider()
         }
         state.spaceRooms.forEach { spaceRoom ->
             item(spaceRoom.roomId) {

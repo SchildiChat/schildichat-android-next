@@ -24,6 +24,7 @@ import dev.zacsweers.metro.Inject
 import io.element.android.features.enterprise.api.EnterpriseService
 import io.element.android.features.preferences.impl.developer.tracing.toLogLevel
 import io.element.android.features.preferences.impl.developer.tracing.toLogLevelItem
+import io.element.android.features.preferences.impl.model.EnabledFeature
 import io.element.android.features.preferences.impl.tasks.ClearCacheUseCase
 import io.element.android.features.preferences.impl.tasks.ComputeCacheSizeUseCase
 import io.element.android.features.rageshake.api.preferences.RageshakePreferencesState
@@ -34,7 +35,6 @@ import io.element.android.libraries.architecture.runCatchingUpdatingState
 import io.element.android.libraries.core.extensions.runCatchingExceptions
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.core.meta.BuildType
-import io.element.android.libraries.featureflag.api.Feature
 import io.element.android.libraries.featureflag.api.FeatureFlagService
 import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.featureflag.ui.model.FeatureUiModel
@@ -215,8 +215,3 @@ private fun customElementCallUrlValidator(url: String?): Boolean {
         if (parsedUrl.host.isNullOrBlank()) error("Missing host")
     }.isSuccess
 }
-
-private data class EnabledFeature(
-    val feature: Feature,
-    val isEnabled: Boolean,
-)

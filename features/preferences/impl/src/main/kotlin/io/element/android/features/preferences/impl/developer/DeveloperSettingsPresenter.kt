@@ -113,9 +113,9 @@ class DeveloperSettingsPresenter(
         fun handleEvents(event: DeveloperSettingsEvents) {
             when (event) {
                 is DeveloperSettingsEvents.UpdateEnabledFeature -> coroutineScope.updateEnabledFeature(
-                    enabledFeatures,
-                    event.feature,
-                    event.isEnabled,
+                    enabledFeatures = enabledFeatures,
+                    featureKey = event.feature.key,
+                    enabled = event.isEnabled,
                     triggerClearCache = { handleEvents(DeveloperSettingsEvents.ClearCache) }
                 )
                 is DeveloperSettingsEvents.SetCustomElementCallBaseUrl -> coroutineScope.launch {
@@ -184,11 +184,11 @@ class DeveloperSettingsPresenter(
 
     private fun CoroutineScope.updateEnabledFeature(
         enabledFeatures: SnapshotStateList<EnabledFeature>,
-        featureUiModel: FeatureUiModel,
+        featureKey: String,
         enabled: Boolean,
         @Suppress("UNUSED_PARAMETER") triggerClearCache: () -> Unit,
     ) = launch {
-        val featureIndex = enabledFeatures.indexOfFirst { it.feature.key == featureUiModel.key }.takeIf { it != -1 } ?: return@launch
+        val featureIndex = enabledFeatures.indexOfFirst { it.feature.key == featureKey }.takeIf { it != -1 } ?: return@launch
         val feature = enabledFeatures[featureIndex].feature
         if (featureFlagService.setFeatureEnabled(feature, enabled)) {
             enabledFeatures[featureIndex] = enabledFeatures[featureIndex].copy(isEnabled = enabled)

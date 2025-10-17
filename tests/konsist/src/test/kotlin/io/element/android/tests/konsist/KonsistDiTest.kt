@@ -10,8 +10,10 @@ package io.element.android.tests.konsist
 import com.lemonappdev.konsist.api.Konsist
 import com.lemonappdev.konsist.api.ext.list.withAnnotationOf
 import com.lemonappdev.konsist.api.ext.list.withParameter
+import com.lemonappdev.konsist.api.verify.assertFalse
 import com.lemonappdev.konsist.api.verify.assertTrue
 import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import org.junit.Test
 
@@ -30,6 +32,17 @@ class KonsistDiTest {
                         parameterDeclaration.hasAnnotationOf(Assisted::class)
                     }
                     .isEmpty()
+            }
+    }
+
+    @Test
+    fun `class annotated with @ContributesBinding does not need to be annotated with @Inject anymore`() {
+        Konsist
+            .scopeFromProject()
+            .classes()
+            .withAnnotationOf(ContributesBinding::class)
+            .assertFalse { classDeclaration ->
+                classDeclaration.hasAnnotationOf(Inject::class)
             }
     }
 }

@@ -43,8 +43,7 @@ class LabsPresenter(
     override fun present(): LabsState {
         val coroutineScope = rememberCoroutineScope()
         val features = remember {
-            val entries = featureFlagService.getAvailableFeatures()
-                .filter { it.isInLabs && !it.isFinished }
+            val entries = featureFlagService.getAvailableFeatures(isInLabs = true)
                 .map { it.key to it }
             mutableStateMapOf(*entries.toTypedArray())
         }

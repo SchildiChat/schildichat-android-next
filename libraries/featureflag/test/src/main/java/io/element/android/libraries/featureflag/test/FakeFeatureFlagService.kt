@@ -33,7 +33,10 @@ class FakeFeatureFlagService(
         return enabledFeatures.getOrPut(feature.key) { MutableStateFlow(feature.defaultValue(buildMeta)) }
     }
 
-    override fun getAvailableFeatures(): List<Feature> {
+    override fun getAvailableFeatures(
+        includeFinishFeatures: Boolean,
+        isInLabs: Boolean,
+    ): List<Feature> {
         return providedAvailableFeatures
     }
 }

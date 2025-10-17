@@ -90,7 +90,6 @@ class DeveloperSettingsPresenter(
 
         LaunchedEffect(Unit) {
             featureFlagService.getAvailableFeatures()
-                .filter { it.isInLabs.not() && it.isFinished.not() }
                 .run {
                     // Never display room directory search in release builds for Play Store
                     if (buildMeta.flavorDescription == "GooglePlay" && buildMeta.buildType == BuildType.RELEASE) {

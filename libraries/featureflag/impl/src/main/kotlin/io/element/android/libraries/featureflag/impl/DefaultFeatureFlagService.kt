@@ -27,16 +27,14 @@ class DefaultFeatureFlagService(
 ) : FeatureFlagService {
     override fun isFeatureEnabledFlow(feature: Feature): Flow<Boolean> {
         return providers.filter { it.hasFeature(feature) }
-            .sortedByDescending(FeatureFlagProvider::priority)
-            .firstOrNull()
+            .maxByOrNull(FeatureFlagProvider::priority)
             ?.isFeatureEnabledFlow(feature)
             ?: flowOf(feature.defaultValue(buildMeta))
     }
 
     override suspend fun setFeatureEnabled(feature: Feature, enabled: Boolean): Boolean {
         return providers.filterIsInstance<MutableFeatureFlagProvider>()
-            .sortedBy(FeatureFlagProvider::priority)
-            .firstOrNull()
+            .maxByOrNull(FeatureFlagProvider::priority)
             ?.setFeatureEnabled(feature, enabled)
             ?.let { true }
             ?: false

@@ -34,9 +34,9 @@ class FakeFeatureFlagService(
     }
 
     override fun getAvailableFeatures(
-        includeFinishFeatures: Boolean,
+        includeFinishedFeatures: Boolean,
         isInLabs: Boolean,
     ): List<Feature> {
-        return getAvailableFeaturesResult(includeFinishFeatures, isInLabs)
+        return getAvailableFeaturesResult(includeFinishedFeatures, isInLabs)
     }
 }

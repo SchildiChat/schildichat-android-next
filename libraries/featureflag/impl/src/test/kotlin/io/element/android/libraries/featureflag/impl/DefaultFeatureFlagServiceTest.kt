@@ -133,25 +133,25 @@ class DefaultFeatureFlagServiceTest {
         )
         assertThat(
             featureFlagService.getAvailableFeatures(
-                includeFinishFeatures = false,
+                includeFinishedFeatures = false,
                 isInLabs = true,
             )
         ).containsExactly(anUnfinishedLabFeature)
         assertThat(
             featureFlagService.getAvailableFeatures(
-                includeFinishFeatures = true,
+                includeFinishedFeatures = true,
                 isInLabs = true,
             )
         ).containsExactly(aFinishedLabFeature, anUnfinishedLabFeature)
         assertThat(
             featureFlagService.getAvailableFeatures(
-                includeFinishFeatures = false,
+                includeFinishedFeatures = false,
                 isInLabs = false,
             )
         ).containsExactly(anUnfinishedDevFeature)
         assertThat(
             featureFlagService.getAvailableFeatures(
-                includeFinishFeatures = true,
+                includeFinishedFeatures = true,
                 isInLabs = false,
             )
         ).containsExactly(aFinishedDevFeature, anUnfinishedDevFeature)

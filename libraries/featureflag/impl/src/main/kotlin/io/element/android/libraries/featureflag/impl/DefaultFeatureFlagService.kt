@@ -41,11 +41,11 @@ class DefaultFeatureFlagService(
     }
 
     override fun getAvailableFeatures(
-        includeFinishFeatures: Boolean,
+        includeFinishedFeatures: Boolean,
         isInLabs: Boolean,
     ): List<Feature> {
         return featuresProvider.provide().filter { flag ->
-            (includeFinishFeatures || !flag.isFinished) &&
+            (includeFinishedFeatures || !flag.isFinished) &&
                 flag.isInLabs == isInLabs
         }
     }

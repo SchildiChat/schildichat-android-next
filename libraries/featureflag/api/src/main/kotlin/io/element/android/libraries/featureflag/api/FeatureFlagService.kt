@@ -36,11 +36,11 @@ interface FeatureFlagService {
 
     /**
      * @return the list of available features that can be toggled.
-     * @param includeFinishFeatures whether to include finished features, default is false
+     * @param includeFinishedFeatures whether to include finished features, default is false
      * @param isInLabs whether the user is in labs (to include lab features), default is false
      */
     fun getAvailableFeatures(
-        includeFinishFeatures: Boolean = false,
+        includeFinishedFeatures: Boolean = false,
         isInLabs: Boolean = false,
     ): List<Feature>
 }

@@ -39,6 +39,7 @@ import io.element.android.libraries.featureflag.api.FeatureFlagService
 import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.featureflag.ui.model.FeatureUiModel
 import io.element.android.libraries.preferences.api.store.AppPreferencesStore
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
@@ -146,7 +147,7 @@ class DeveloperSettingsPresenter(
         }
 
         return DeveloperSettingsState(
-            features = featureUiModels.toImmutableList(),
+            features = featureUiModels,
             cacheSize = cacheSize.value,
             clearCacheAction = clearCacheAction.value,
             rageshakeState = rageshakeState,
@@ -165,7 +166,7 @@ class DeveloperSettingsPresenter(
     @Composable
     private fun createUiModels(
         enabledFeatures: SnapshotStateList<EnabledFeature>,
-    ): List<FeatureUiModel> {
+    ): ImmutableList<FeatureUiModel> {
         return enabledFeatures.map { enabledFeature ->
             key(enabledFeature.feature.key) {
                 remember(enabledFeature) {
@@ -178,7 +179,7 @@ class DeveloperSettingsPresenter(
                     )
                 }
             }
-        }
+        }.toImmutableList()
     }
 
     private fun CoroutineScope.updateEnabledFeature(

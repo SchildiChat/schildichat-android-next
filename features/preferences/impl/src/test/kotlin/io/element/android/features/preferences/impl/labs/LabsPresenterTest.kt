@@ -21,7 +21,7 @@ import org.junit.Test
 
 class LabsPresenterTest {
     @Test
-    fun `present - ensures only unfinished features in labs are displayed`() = runTest {
+    fun `present - ensures features are displayed in the correct order`() = runTest {
         val availableFeatures = listOf(
             FakeFeature(
                 key = "feature_1",
@@ -30,24 +30,18 @@ class LabsPresenterTest {
             ),
             FakeFeature(
                 key = "feature_2",
-                title = "Feature 2",
-                isInLabs = false,
-            ),
-            FakeFeature(
-                key = "feature_3",
                 title = "Feature 3",
                 isInLabs = true,
-                isFinished = true,
             )
         )
         createLabsPresenter(
             availableFeatures = availableFeatures,
         ).test {
+            skipItems(1)
             val receivedFeatures = awaitItem().features
-            assertThat(receivedFeatures).hasSize(1)
-            assertThat(receivedFeatures.first().key).isEqualTo(availableFeatures.first().key)
-
-            cancelAndIgnoreRemainingEvents()
+            assertThat(receivedFeatures).hasSize(2)
+            assertThat(receivedFeatures[0].key).isEqualTo(availableFeatures[0].key)
+            assertThat(receivedFeatures[1].key).isEqualTo(availableFeatures[1].key)
         }
     }
 
@@ -63,17 +57,13 @@ class LabsPresenterTest {
         createLabsPresenter(
             availableFeatures = availableFeatures,
         ).test {
+            skipItems(1)
             val initialItem = awaitItem()
             val feature = initialItem.features.first()
             assertThat(feature.isEnabled).isFalse()
-
-            // Wait until the data finished loading
-            skipItems(1)
-
             // Toggle the feature, should be true now
             initialItem.eventSink(LabsEvents.ToggleFeature(feature))
             assertThat(awaitItem().features.first().isEnabled).isTrue()
-
             // Toggle the feature, should be false now
             initialItem.eventSink(LabsEvents.ToggleFeature(feature))
             assertThat(awaitItem().features.first().isEnabled).isFalse()
@@ -95,18 +85,14 @@ class LabsPresenterTest {
             availableFeatures = availableFeatures,
             clearCacheUseCase = clearCacheUseCase,
         ).test {
+            skipItems(1)
             val initialItem = awaitItem()
             val feature = initialItem.features.first()
             assertThat(feature.isEnabled).isFalse()
             assertThat(initialItem.isApplyingChanges).isFalse()
-
-            // Wait until the data finished loading
-            skipItems(1)
-
             // Toggle the feature
             initialItem.eventSink(LabsEvents.ToggleFeature(feature))
             assertThat(awaitItem().features.first().isEnabled).isTrue()
-
             // The clear cache use case should have been called
             assertThat(awaitItem().isApplyingChanges).isTrue()
             assertThat(clearCacheUseCase.executeHasBeenCalled).isTrue()

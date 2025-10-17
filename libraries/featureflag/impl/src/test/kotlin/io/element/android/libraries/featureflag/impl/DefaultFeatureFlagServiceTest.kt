@@ -11,19 +11,37 @@ import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.featureflag.api.Feature
-import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.featureflag.test.FakeFeature
 import io.element.android.libraries.matrix.test.core.aBuildMeta
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class DefaultFeatureFlagServiceTest {
+    private val aFeature = FakeFeature(
+        key = "test_feature",
+        title = "Test Feature",
+    )
+
     @Test
     fun `given service without provider when feature is checked then it returns the default value`() = runTest {
+        val featureWithDefaultToFalse = FakeFeature(
+            key = "test_feature",
+            title = "Test Feature",
+            defaultValue = { false }
+        )
+        val featureWithDefaultToTrue = FakeFeature(
+            key = "test_feature_2",
+            title = "Test Feature 2",
+            defaultValue = { true }
+        )
         val buildMeta = aBuildMeta()
         val featureFlagService = createDefaultFeatureFlagService(buildMeta = buildMeta)
-        featureFlagService.isFeatureEnabledFlow(FeatureFlags.Space).test {
-            assertThat(awaitItem()).isEqualTo(FeatureFlags.Space.defaultValue(buildMeta))
+        featureFlagService.isFeatureEnabledFlow(featureWithDefaultToFalse).test {
+            assertThat(awaitItem()).isFalse()
+            cancelAndIgnoreRemainingEvents()
+        }
+        featureFlagService.isFeatureEnabledFlow(featureWithDefaultToTrue).test {
+            assertThat(awaitItem()).isTrue()
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -31,7 +49,7 @@ class DefaultFeatureFlagServiceTest {
     @Test
     fun `given service without provider when set enabled feature is called then it returns false`() = runTest {
         val featureFlagService = createDefaultFeatureFlagService()
-        val result = featureFlagService.setFeatureEnabled(FeatureFlags.Space, true)
+        val result = featureFlagService.setFeatureEnabled(aFeature, true)
         assertThat(result).isFalse()
     }
 
@@ -43,7 +61,7 @@ class DefaultFeatureFlagServiceTest {
             providers = setOf(featureFlagProvider),
             buildMeta = buildMeta,
         )
-        val result = featureFlagService.setFeatureEnabled(FeatureFlags.Space, true)
+        val result = featureFlagService.setFeatureEnabled(aFeature, true)
         assertThat(result).isTrue()
     }
 
@@ -55,10 +73,10 @@ class DefaultFeatureFlagServiceTest {
             providers = setOf(featureFlagProvider),
             buildMeta = buildMeta
         )
-        featureFlagService.setFeatureEnabled(FeatureFlags.Space, true)
-        featureFlagService.isFeatureEnabledFlow(FeatureFlags.Space).test {
+        featureFlagService.setFeatureEnabled(aFeature, true)
+        featureFlagService.isFeatureEnabledFlow(aFeature).test {
             assertThat(awaitItem()).isTrue()
-            featureFlagService.setFeatureEnabled(FeatureFlags.Space, false)
+            featureFlagService.setFeatureEnabled(aFeature, false)
             assertThat(awaitItem()).isFalse()
         }
     }
@@ -72,9 +90,9 @@ class DefaultFeatureFlagServiceTest {
             providers = setOf(lowPriorityFeatureFlagProvider, highPriorityFeatureFlagProvider),
             buildMeta = buildMeta
         )
-        lowPriorityFeatureFlagProvider.setFeatureEnabled(FeatureFlags.Space, false)
-        highPriorityFeatureFlagProvider.setFeatureEnabled(FeatureFlags.Space, true)
-        featureFlagService.isFeatureEnabledFlow(FeatureFlags.Space).test {
+        lowPriorityFeatureFlagProvider.setFeatureEnabled(aFeature, false)
+        highPriorityFeatureFlagProvider.setFeatureEnabled(aFeature, true)
+        featureFlagService.isFeatureEnabledFlow(aFeature).test {
             assertThat(awaitItem()).isTrue()
         }
     }
@@ -143,7 +161,7 @@ class DefaultFeatureFlagServiceTest {
 private fun createDefaultFeatureFlagService(
     providers: Set<FeatureFlagProvider> = emptySet(),
     buildMeta: BuildMeta = aBuildMeta(),
-    features: List<Feature> = FeatureFlags.entries,
+    features: List<Feature> = emptyList(),
 ) = DefaultFeatureFlagService(
     providers = providers,
     buildMeta = buildMeta,

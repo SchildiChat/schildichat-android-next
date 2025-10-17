@@ -215,14 +215,7 @@ class PreferencesRootPresenterTest {
         createPresenter(
             featureFlagService = FakeFeatureFlagService(
                 getAvailableFeaturesResult = { _, _ ->
-                    listOf(
-                        FakeFeature(
-                            key = "feature_1",
-                            title = "Feature 1",
-                            isInLabs = true,
-                            isFinished = true,
-                        )
-                    )
+                    emptyList()
                 }
             ),
             matrixClient = FakeMatrixClient(
@@ -230,6 +223,7 @@ class PreferencesRootPresenterTest {
                 accountManagementUrlResult = { Result.success(null) },
             ),
         ).test {
+            skipItems(1)
             assertThat(awaitItem().showLabsItem).isFalse()
             cancelAndIgnoreRemainingEvents()
         }

@@ -84,7 +84,7 @@ class DeveloperSettingsPresenter(
         val tracingLogPacks by produceState(persistentListOf()) {
             appPreferencesStore.getTracingLogPacksFlow()
                 // Sort the entries alphabetically by its title
-                .map { it.sortedBy { it.title } }
+                .map { it.sortedBy { pack -> pack.title } }
                 .collectLatest { value = it.toImmutableList() }
         }
 

@@ -21,6 +21,7 @@ import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.core.meta.BuildType
+import io.element.android.libraries.featureflag.api.Feature
 import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.featureflag.test.FakeFeature
 import io.element.android.libraries.featureflag.test.FakeFeatureFlagService
@@ -41,15 +42,17 @@ class DeveloperSettingsPresenterTest {
 
     @Test
     fun `present - ensures initial states are correct`() = runTest {
-        val availableFeatures = listOf(
-            FakeFeature(
-                key = "feature_1",
-                title = "Feature 1",
-                isInLabs = false,
+        val getAvailableFeaturesResult = lambdaRecorder<Boolean, Boolean, List<Feature>> { _, _ ->
+            listOf(
+                FakeFeature(
+                    key = "feature_1",
+                    title = "Feature 1",
+                    isInLabs = false,
+                )
             )
-        )
+        }
         val presenter = createDeveloperSettingsPresenter(
-            featureFlagService = FakeFeatureFlagService(providedAvailableFeatures = availableFeatures)
+            featureFlagService = FakeFeatureFlagService(getAvailableFeaturesResult = getAvailableFeaturesResult)
         )
         presenter.test {
             awaitItem().also { state ->
@@ -73,6 +76,8 @@ class DeveloperSettingsPresenterTest {
             awaitItem().also { state ->
                 assertThat(state.cacheSize).isInstanceOf(AsyncData.Success::class.java)
             }
+            getAvailableFeaturesResult.assertions().isCalledOnce()
+                .with(value(false), value(false))
         }
     }
 
@@ -203,50 +208,17 @@ class DeveloperSettingsPresenterTest {
         }
     }
 
-    @Test
-    fun `present - won't display features in labs or finished`() = runTest {
-        val availableFeatures = listOf(
-            // Only this feature should be displayed
-            FakeFeature(
-                key = "feature_1",
-                title = "Feature 1",
-                isInLabs = false,
-            ),
-            FakeFeature(
-                key = "feature_2",
-                title = "Feature 2",
-                isInLabs = true,
-            ),
-            FakeFeature(
-                key = "feature_3",
-                title = "Feature 3",
-                isInLabs = false,
-                isFinished = true,
-            )
-        )
-
-        val presenter = createDeveloperSettingsPresenter(
-            featureFlagService = FakeFeatureFlagService(
-                providedAvailableFeatures = availableFeatures,
-            )
-        )
-        presenter.test {
-            skipItems(2)
-            awaitItem().also { state ->
-                assertThat(state.features).hasSize(1)
-            }
-        }
-    }
-
     private fun createDeveloperSettingsPresenter(
         featureFlagService: FakeFeatureFlagService = FakeFeatureFlagService(
-            providedAvailableFeatures = listOf(
-                FakeFeature(
-                    key = "feature_1",
-                    title = "Feature 1",
-                    isInLabs = false,
+            getAvailableFeaturesResult = { _, _ ->
+                listOf(
+                    FakeFeature(
+                        key = "feature_1",
+                        title = "Feature 1",
+                        isInLabs = false,
+                    )
                 )
-            )
+            }
         ),
         cacheSizeUseCase: FakeComputeCacheSizeUseCase = FakeComputeCacheSizeUseCase(),
         clearCacheUseCase: FakeClearCacheUseCase = FakeClearCacheUseCase(),

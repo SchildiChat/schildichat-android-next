@@ -15,6 +15,8 @@ import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.featureflag.test.FakeFeature
 import io.element.android.libraries.featureflag.test.FakeFeatureFlagService
 import io.element.android.services.toolbox.test.strings.FakeStringProvider
+import io.element.android.tests.testutils.lambda.lambdaRecorder
+import io.element.android.tests.testutils.lambda.value
 import io.element.android.tests.testutils.test
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -34,14 +36,19 @@ class LabsPresenterTest {
                 isInLabs = true,
             )
         )
+        val getAvailableFeaturesResult = lambdaRecorder<Boolean, Boolean, List<Feature>> { _, _ ->
+            availableFeatures
+        }
         createLabsPresenter(
-            availableFeatures = availableFeatures,
+            getAvailableFeaturesResult = getAvailableFeaturesResult,
         ).test {
             skipItems(1)
             val receivedFeatures = awaitItem().features
             assertThat(receivedFeatures).hasSize(2)
             assertThat(receivedFeatures[0].key).isEqualTo(availableFeatures[0].key)
             assertThat(receivedFeatures[1].key).isEqualTo(availableFeatures[1].key)
+            getAvailableFeaturesResult.assertions().isCalledOnce()
+                .with(value(false), value(true))
         }
     }
 
@@ -55,7 +62,7 @@ class LabsPresenterTest {
             ),
         )
         createLabsPresenter(
-            availableFeatures = availableFeatures,
+            getAvailableFeaturesResult = { _, _ -> availableFeatures },
         ).test {
             skipItems(1)
             val initialItem = awaitItem()
@@ -82,7 +89,7 @@ class LabsPresenterTest {
 
         val clearCacheUseCase = FakeClearCacheUseCase()
         createLabsPresenter(
-            availableFeatures = availableFeatures,
+            getAvailableFeaturesResult = { _, _ -> availableFeatures },
             clearCacheUseCase = clearCacheUseCase,
         ).test {
             skipItems(1)
@@ -100,12 +107,12 @@ class LabsPresenterTest {
     }
 
     private fun createLabsPresenter(
-        availableFeatures: List<Feature> = emptyList(),
+        getAvailableFeaturesResult: (Boolean, Boolean) -> List<Feature> = { _, _ -> emptyList() },
         clearCacheUseCase: ClearCacheUseCase = FakeClearCacheUseCase(),
     ): LabsPresenter {
         return LabsPresenter(
             stringProvider = FakeStringProvider(),
-            featureFlagService = FakeFeatureFlagService(providedAvailableFeatures = availableFeatures),
+            featureFlagService = FakeFeatureFlagService(getAvailableFeaturesResult = getAvailableFeaturesResult),
             clearCacheUseCase = clearCacheUseCase,
         )
     }

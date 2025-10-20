@@ -203,6 +203,7 @@ class DeveloperSettingsPresenterTest {
             assertThat(awaitItem().showColorPicker).isTrue()
             initialState.eventSink(DeveloperSettingsEvents.ChangeBrandColor(Color.Green))
             assertThat(awaitItem().showColorPicker).isFalse()
+            skipItems(1)
             overrideBrandColorResult.assertions().isCalledOnce()
                 .with(value("00FF00"))
         }

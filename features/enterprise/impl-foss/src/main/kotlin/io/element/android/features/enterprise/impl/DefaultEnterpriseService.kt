@@ -32,7 +32,7 @@ class DefaultEnterpriseService : EnterpriseService {
     override fun defaultHomeserverList(): List<String> = emptyList()
     override suspend fun isAllowedToConnectToHomeserver(homeserverUrl: String) = true
 
-    override fun overrideBrandColor(brandColor: String?) = Unit
+    override suspend fun overrideBrandColor(brandColor: String?) = Unit
 
     @Composable
     override fun semanticColorsLight(): State<SemanticColors> {

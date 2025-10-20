@@ -23,7 +23,7 @@ interface EnterpriseService {
      * Override the brand color.
      * @param brandColor the color in hex format (#RRGGBBAA or #RRGGBB), or null to reset to default.
      */
-    fun overrideBrandColor(brandColor: String?)
+    suspend fun overrideBrandColor(brandColor: String?)
 
     @Composable
     fun semanticColorsLight(): State<SemanticColors>

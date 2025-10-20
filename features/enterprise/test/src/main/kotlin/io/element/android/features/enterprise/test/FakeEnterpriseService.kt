@@ -42,7 +42,7 @@ class FakeEnterpriseService(
         isAllowedToConnectToHomeserverResult(homeserverUrl)
     }
 
-    override fun overrideBrandColor(brandColor: String?) {
+    override suspend fun overrideBrandColor(brandColor: String?) = simulateLongTask {
         overrideBrandColorResult(brandColor)
     }
 

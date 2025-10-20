@@ -135,7 +135,7 @@ class DeveloperSettingsPresenter(
                     }
                     appPreferencesStore.setTracingLogPacks(currentPacks)
                 }
-                is DeveloperSettingsEvents.ChangeBrandColor -> {
+                is DeveloperSettingsEvents.ChangeBrandColor -> coroutineScope.launch {
                     showColorPicker = false
                     val color = event.color?.value?.toHexString(HexFormat.UpperCase)?.substring(2, 8)
                     enterpriseService.overrideBrandColor(color)

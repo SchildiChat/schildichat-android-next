@@ -41,7 +41,7 @@ class SecurityAndPrivacyPresenterTest {
                 assertThat(showRoomVisibilitySections).isFalse()
                 assertThat(showHistoryVisibilitySection).isFalse()
                 assertThat(showEncryptionSection).isFalse()
-                assertThat(canUserSelectAskToJoinOption).isFalse()
+                assertThat(showAskToJoinOption).isFalse()
             }
             with(awaitItem()) {
                 assertThat(editedSettings).isEqualTo(savedSettings)
@@ -52,7 +52,7 @@ class SecurityAndPrivacyPresenterTest {
                 assertThat(showRoomVisibilitySections).isFalse()
                 assertThat(showHistoryVisibilitySection).isTrue()
                 assertThat(showEncryptionSection).isTrue()
-                assertThat(canUserSelectAskToJoinOption).isFalse()
+                assertThat(showAskToJoinOption).isFalse()
             }
         }
     }
@@ -341,7 +341,7 @@ class SecurityAndPrivacyPresenterTest {
     }
 
     @Test
-    fun `present - canUserSelectAskToJoinOption is true if the Knock feature flag is enabled`() = runTest {
+    fun `present - showAskToJoinOption is true if the Knock feature flag is enabled`() = runTest {
         val presenter = createSecurityAndPrivacyPresenter(
             featureFlagService = FakeFeatureFlagService(
                 initialState = mapOf(
@@ -350,8 +350,30 @@ class SecurityAndPrivacyPresenterTest {
             )
         )
         presenter.test {
-            assertThat(awaitItem().canUserSelectAskToJoinOption).isFalse()
-            assertThat(awaitItem().canUserSelectAskToJoinOption).isTrue()
+            assertThat(awaitItem().showAskToJoinOption).isFalse()
+            assertThat(awaitItem().showAskToJoinOption).isTrue()
+        }
+    }
+
+    @Test
+    fun `present - showAskToJoinOption is true if ask to join is the current value Knock feature flag is enabled`() = runTest {
+        val presenter = createSecurityAndPrivacyPresenter(
+            featureFlagService = FakeFeatureFlagService(
+                initialState = mapOf(
+                    FeatureFlags.Knock.key to false,
+                )
+            ),
+            room = FakeJoinedRoom(
+                baseRoom = FakeBaseRoom(
+                    canSendStateResult = { _, _ -> Result.success(true) },
+                    getRoomVisibilityResult = { Result.success(RoomVisibility.Private) },
+                    initialRoomInfo = aRoomInfo(historyVisibility = RoomHistoryVisibility.Shared, joinRule = JoinRule.Knock)
+                ),
+            )
+        )
+        presenter.test {
+            assertThat(awaitItem().showAskToJoinOption).isTrue()
+            cancelAndIgnoreRemainingEvents()
         }
     }
 

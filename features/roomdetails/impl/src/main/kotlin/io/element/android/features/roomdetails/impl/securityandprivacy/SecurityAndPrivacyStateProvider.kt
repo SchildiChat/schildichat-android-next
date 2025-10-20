@@ -31,7 +31,7 @@ open class SecurityAndPrivacyStateProvider : PreviewParameterProvider<SecurityAn
                 savedSettings = aSecurityAndPrivacySettings(
                     roomAccess = SecurityAndPrivacyRoomAccess.SpaceMember
                 ),
-                canUserSelectAskToJoinOption = false,
+                showAskToJoinOption = false,
             ),
             aSecurityAndPrivacyState(
                 editedSettings = aSecurityAndPrivacySettings(
@@ -84,7 +84,7 @@ fun aSecurityAndPrivacyState(
         canChangeEncryption = true,
         canChangeRoomVisibility = true
     ),
-    canUserSelectAskToJoinOption: Boolean = true,
+    showAskToJoinOption: Boolean = true,
     eventSink: (SecurityAndPrivacyEvents) -> Unit = {}
 ) = SecurityAndPrivacyState(
     editedSettings = editedSettings,
@@ -92,7 +92,7 @@ fun aSecurityAndPrivacyState(
     homeserverName = homeserverName,
     showEnableEncryptionConfirmation = showEncryptionConfirmation,
     saveAction = saveAction,
-    canUserSelectAskToJoinOption = canUserSelectAskToJoinOption,
+    showAskToJoinOption = showAskToJoinOption,
     permissions = permissions,
     eventSink = eventSink
 )

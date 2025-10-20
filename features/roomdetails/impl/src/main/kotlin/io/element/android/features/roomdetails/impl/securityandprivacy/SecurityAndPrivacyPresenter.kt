@@ -155,7 +155,7 @@ class SecurityAndPrivacyPresenter(
             editedSettings = editedSettings,
             homeserverName = homeserverName,
             showEnableEncryptionConfirmation = showEnableEncryptionConfirmation,
-            canUserSelectAskToJoinOption = isKnockEnabled,
+            showAskToJoinOption = isKnockEnabled || savedSettings.roomAccess == SecurityAndPrivacyRoomAccess.AskToJoin,
             saveAction = saveAction.value,
             permissions = permissions,
             eventSink = ::handleEvents

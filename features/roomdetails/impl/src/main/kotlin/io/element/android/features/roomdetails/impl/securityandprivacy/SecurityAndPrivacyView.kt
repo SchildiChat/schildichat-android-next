@@ -81,7 +81,7 @@ fun SecurityAndPrivacyView(
                     modifier = Modifier.padding(top = 24.dp),
                     edited = state.editedSettings.roomAccess,
                     saved = state.savedSettings.roomAccess,
-                    canUserSelectAskToJoinOption = state.canUserSelectAskToJoinOption,
+                    showAskToJoinOption = state.showAskToJoinOption,
                     onSelectOption = { state.eventSink(SecurityAndPrivacyEvents.ChangeRoomAccess(it)) },
                 )
             }
@@ -177,7 +177,7 @@ private fun SecurityAndPrivacySection(
 private fun RoomAccessSection(
     edited: SecurityAndPrivacyRoomAccess,
     saved: SecurityAndPrivacyRoomAccess,
-    canUserSelectAskToJoinOption: Boolean,
+    showAskToJoinOption: Boolean,
     onSelectOption: (SecurityAndPrivacyRoomAccess) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -191,7 +191,7 @@ private fun RoomAccessSection(
             trailingContent = ListItemContent.RadioButton(selected = edited == SecurityAndPrivacyRoomAccess.InviteOnly),
             onClick = { onSelectOption(SecurityAndPrivacyRoomAccess.InviteOnly) },
         )
-        if (canUserSelectAskToJoinOption) {
+        if (showAskToJoinOption) {
             ListItem(
                 headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_ask_to_join_option_title)) },
                 supportingContent = { Text(text = stringResource(R.string.screen_security_and_privacy_ask_to_join_option_description)) },

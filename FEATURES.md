@@ -33,7 +33,6 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Bigger stickers
 - Differentiate notices from normal text messages by adding some transparency
 - Render collapsible `<details>` tags in messages
-- Suggest and record frequently used emoji reactions (synced with desktop clients via `io.element.recent_emoji` account data)
 - URL previews (optionally also in encrypted chats) †
 
 - Allow sending freeform reactions
@@ -72,6 +71,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Show avatar placeholders instead of blank space for avatars that failed to load
 - Copy URLs to clipboard in text messages on longclick
 - Copy user MXIDs to clipboard by long-pressing on the member-detail screen
+- Suggest and record frequently used emoji reactions (synced with desktop clients via `io.element.recent_emoji` account data), implemented by upstream in v25.10.0
 
 
 †: Can be partly enabled or disabled by user setting  

@@ -174,7 +174,6 @@ class HomeFlowNode(
             HomeView(
                 homeState = state,
                 matrixClient = matrixClient, // SC
-                spaceListDataSource = presenter.spaceListDataSource, // SC
                 onRoomClick = this::onRoomClick,
                 onSettingsClick = this::onOpenSettings,
                 onStartChatClick = this::onStartChatClick,

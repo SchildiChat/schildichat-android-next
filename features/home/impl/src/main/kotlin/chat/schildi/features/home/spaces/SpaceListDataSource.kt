@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.safeLookup
@@ -27,8 +28,11 @@ import io.element.android.features.home.impl.model.RoomSummaryDisplayType
 import io.element.android.libraries.androidutils.diff.DiffCacheUpdater
 import io.element.android.libraries.androidutils.diff.MutableListDiffCache
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
+import io.element.android.libraries.designsystem.icons.CompoundDrawables
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.di.annotations.ApplicationContext
+import io.element.android.libraries.featureflag.api.FeatureFlagService
+import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.room.MatrixSpaceChildInfo
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
@@ -60,6 +64,7 @@ class SpaceListDataSource(
     private val roomListRoomSummaryFactory: RoomListRoomSummaryFactory,
     private val coroutineDispatchers: CoroutineDispatchers,
     private val scPreferencesStore: ScPreferencesStore,
+    private val featureFlagService: FeatureFlagService,
     @ApplicationContext
     private val context: Context,
 ) {
@@ -75,7 +80,7 @@ class SpaceListDataSource(
     fun launchIn(coroutineScope: CoroutineScope) {
         combine(
             roomListService.allSpaces.summaries,
-            scPreferencesStore.pseudoSpaceSettingsFlow(),
+            scPreferencesStore.pseudoSpaceSettingsFlow(featureFlagService),
             _forceRebuildFlow,
         ) { roomSummaries, pseudoSpaces, _ ->
             Timber.v("Rebuild space list with ${roomSummaries.size}/${roomListService.allSpaces.loadingState.value} spaces")
@@ -169,7 +174,18 @@ class SpaceListDataSource(
                 )
             )
         }
-        _allSpaces.emit(buildSpaceHierarchy(spaceListRoomSummaries, pseudoSpaces))
+        val upstreamSpaceList = if (pseudoSpaceSettings.upstreamSpaceList && spaceListRoomSummaries.isNotEmpty()) {
+            listOf(
+                UpstreamSpaceListItem(
+                    context.getString(chat.schildi.lib.R.string.sc_pseudo_space_list),
+                    ImageVector.vectorResource(res = context.resources, resId = CompoundDrawables.ic_compound_workspace_solid)
+                )
+            )
+        } else {
+            emptyList()
+        }
+        val result = pseudoSpaces + buildSpaceHierarchy(spaceListRoomSummaries) + upstreamSpaceList
+        _allSpaces.emit(result.toImmutableList())
     }
 
     // Force rebuilding a space filter. Only a workaround until we can do proper listener to m.space.child state events...
@@ -181,7 +197,7 @@ class SpaceListDataSource(
      * Build the space hierarchy and avoid loops
      */
     // TODO what can we cache something here?
-    private suspend fun buildSpaceHierarchy(spaceSummaries: List<RoomListRoomSummary>, pseudoSpaces: List<PseudoSpaceItem>): ImmutableList<AbstractSpaceHierarchyItem> {
+    private suspend fun buildSpaceHierarchy(spaceSummaries: List<RoomListRoomSummary>): List<AbstractSpaceHierarchyItem> {
         // Map spaceId -> list of child spaces
         val spaceHierarchyMap = HashMap<String, MutableList<Pair<MatrixSpaceChildInfo, RoomListRoomSummary>>>()
         // Map spaceId -> list of regular child rooms
@@ -204,11 +220,11 @@ class SpaceListDataSource(
         }
 
         // Build the actual immutable recursive data structures that replicate the hierarchy
-        return (pseudoSpaces + rootSpaces.map {
+        return rootSpaces.map {
             val order = client.getRoomAccountData(it.roomId, ROOM_ACCOUNT_DATA_SPACE_ORDER)
                 ?.let { SpaceOrderSerializer.deserializeContent(it) }?.getOrNull()?.order
             createSpaceHierarchyItem(it, order, spaceHierarchyMap, regularChildren)
-        }.sortedWith(SpaceComparator)).toImmutableList()
+        }.sortedWith(SpaceComparator)
     }
 
     private fun createSpaceHierarchyItem(
@@ -283,7 +299,7 @@ class SpaceListDataSource(
     @Immutable
     abstract class PseudoSpaceItem(
         val id: String,
-        val icon: ImageVector,
+        open val icon: ImageVector,
     ) : AbstractSpaceHierarchyItem {
         override val selectionId = "$PSEUDO_SPACE_ID_PREFIX$id"
         override val spaces = persistentListOf<SpaceHierarchyItem>()
@@ -419,6 +435,19 @@ class SpaceListDataSource(
             spaceUnreadCounts.markedUnreadChats == 0L && spaceUnreadCounts.notifiedChats == 0L && spaceUnreadCounts.unreadChats == 0L
     }
 
+    @Immutable
+    data class UpstreamSpaceListItem(
+        override val name: String,
+        override val icon: ImageVector,
+    ) : PseudoSpaceItem(
+        "upstream",
+        icon,
+    ) {
+        override val unreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts? = null
+        override fun applyFilter(rooms: List<RoomListRoomSummary>) = persistentListOf<RoomListRoomSummary>()
+        override fun enrich(getUnreadCounts: (AbstractSpaceHierarchyItem) -> SpaceUnreadCountsDataSource.SpaceUnreadCounts?) = this
+    }
+
     data class PseudoSpaceSettings(
         val favorites: Boolean,
         val dms: Boolean,
@@ -428,12 +457,13 @@ class SpaceListDataSource(
         val notifications: Boolean,
         val unread: Boolean,
         val clientUnreadCounts: Boolean,
+        val upstreamSpaceList: Boolean, // Element's space navigation
     ) {
         fun hasSpaceIndependentPseudoSpace() = favorites || dms || groups || notifications || unread
     }
 }
 
-fun ScPreferencesStore.pseudoSpaceSettingsFlow(): Flow<SpaceListDataSource.PseudoSpaceSettings> {
+fun ScPreferencesStore.pseudoSpaceSettingsFlow(featureFlagService: FeatureFlagService): Flow<SpaceListDataSource.PseudoSpaceSettings> {
     return combinedSettingFlow { lookup ->
         SpaceListDataSource.PseudoSpaceSettings(
             favorites = ScPrefs.PSEUDO_SPACE_FAVORITES.safeLookup(lookup),
@@ -444,7 +474,10 @@ fun ScPreferencesStore.pseudoSpaceSettingsFlow(): Flow<SpaceListDataSource.Pseud
             notifications = ScPrefs.PSEUDO_SPACE_NOTIFICATIONS.safeLookup(lookup),
             unread = ScPrefs.PSEUDO_SPACE_UNREAD.safeLookup(lookup),
             clientUnreadCounts = ScPrefs.CLIENT_GENERATED_UNREAD_COUNTS.safeLookup(lookup),
+            upstreamSpaceList = true,
         )
+    }.combine(featureFlagService.isFeatureEnabledFlow(FeatureFlags.Space)) { settings, upstreamSpacesEnabled ->
+        settings.copy(upstreamSpaceList = upstreamSpacesEnabled)
     }
 }
 

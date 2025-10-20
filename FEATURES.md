@@ -14,7 +14,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 
 ## Chat overview ("room list")
 
-- Filter for spaces, including support for hierarchical spaces †‡
+- Bottom space bar with swipe navigation, including support for hierarchical spaces †‡
 - Filter for favorites, unreads, DMs, and group chats via our spaces navigation
 - Configure room list sort order to optionally: †‡
     - Show unread chats on top (while optionally ignoring muted unreads)

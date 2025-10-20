@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -67,13 +69,18 @@ import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import chat.schildi.lib.util.formatUnreadCount
 import chat.schildi.theme.ScTheme
+import dev.chrisbanes.haze.hazeSource
 import io.element.android.compound.theme.ElementTheme
+import io.element.android.features.home.impl.HomeState
+import io.element.android.features.home.impl.spaces.HomeSpacesView
+import io.element.android.libraries.androidutils.throttler.FirstThrottler
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.text.toPx
 import io.element.android.libraries.designsystem.theme.unreadIndicator
 import io.element.android.libraries.designsystem.utils.OnLifecycleEvent
+import io.element.android.libraries.matrix.api.core.RoomId
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -86,10 +93,12 @@ import kotlin.math.roundToInt
 
 @Composable
 fun SpacesPager(
+    homeState: HomeState?,
     spacesList: ImmutableList<SpaceListDataSource.AbstractSpaceHierarchyItem>,
     totalUnreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts?,
     spaceSelectionHierarchy: ImmutableList<String>,
     onSpaceSelected: (List<String>) -> Unit,
+    onUpstreamSpaceClick: (RoomId) -> Unit,
     onMeasureSpaceBarHeight: (Int) -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable (Modifier) -> Unit,
@@ -101,6 +110,7 @@ fun SpacesPager(
     }
     Column(modifier) {
         SpacesPager(
+            homeState = homeState,
             spacesList = spacesList,
             totalUnreadCounts = totalUnreadCounts,
             spaceSelection = spaceSelectionHierarchy,
@@ -114,6 +124,7 @@ fun SpacesPager(
                 }
             },
             compactTabs = ScPrefs.COMPACT_ROOT_SPACES.value(),
+            onUpstreamSpaceClick = onUpstreamSpaceClick,
             onMeasureSpaceBarHeight = onMeasureSpaceBarHeight,
             content = content,
         )
@@ -123,6 +134,7 @@ fun SpacesPager(
 
 @Composable
 private fun ColumnScope.SpacesPager(
+    homeState: HomeState?,
     spacesList: ImmutableList<SpaceListDataSource.AbstractSpaceHierarchyItem>,
     totalUnreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts?,
     spaceSelection: ImmutableList<String>,
@@ -130,6 +142,7 @@ private fun ColumnScope.SpacesPager(
     parentSelection: ImmutableList<String>,
     selectSpace: (SpaceListDataSource.AbstractSpaceHierarchyItem?, ImmutableList<String>) -> Unit,
     compactTabs: Boolean,
+    onUpstreamSpaceClick: (RoomId) -> Unit,
     onMeasureSpaceBarHeight: (Int) -> Unit,
     content: @Composable (Modifier) -> Unit,
 ) {
@@ -168,6 +181,7 @@ private fun ColumnScope.SpacesPager(
         val safeSpace = spacesList[selectedSpaceIndex] as? SpaceListDataSource.SpaceHierarchyItem
         if (safeSpace != null) {
             SpacesPager(
+                homeState = homeState,
                 spacesList = safeSpace.spaces,
                 totalUnreadCounts = totalUnreadCounts,
                 selectSpace = selectSpace,
@@ -175,6 +189,7 @@ private fun ColumnScope.SpacesPager(
                 defaultSpace = spacesList[selectedSpaceIndex],
                 parentSelection = (parentSelection + listOf(spacesList[selectedSpaceIndex].selectionId)).toImmutableList(),
                 compactTabs = false,
+                onUpstreamSpaceClick = onUpstreamSpaceClick,
                 onMeasureSpaceBarHeight = {
                     childrenSpaceBarHeight.intValue = it
                     onSpaceBarHeightUpdate()
@@ -220,7 +235,16 @@ private fun ColumnScope.SpacesPager(
                         state = draggableState,
                     )
             ) {
-                content(Modifier.fillMaxWidth())
+                if (homeState != null && spaceSelection.isNotEmpty() && spacesList[selectedSpaceIndex] is SpaceListDataSource.UpstreamSpaceListItem) {
+                    HomeSpacesView(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        state = homeState.homeSpacesState,
+                        onSpaceClick = onUpstreamSpaceClick,
+                    )
+                } else {
+                    content(Modifier.fillMaxWidth())
+                }
                 // Swipe down indicator
                 val swipeProgress = min(1f, offsetX.absoluteValue / indicatorThreshold)
                 if (canSwipeDown) {

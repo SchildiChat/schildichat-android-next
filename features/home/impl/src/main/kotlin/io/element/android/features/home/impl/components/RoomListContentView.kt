@@ -40,7 +40,9 @@ import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
+import io.element.android.features.home.impl.HomeState
 import io.element.android.features.home.impl.R
+import io.element.android.features.home.impl.aHomeState
 import io.element.android.features.home.impl.contentType
 import io.element.android.features.home.impl.filters.RoomListFilter
 import io.element.android.features.home.impl.filters.RoomListFiltersEmptyStateResources
@@ -59,6 +61,7 @@ import io.element.android.libraries.designsystem.theme.components.Button
 import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
 import io.element.android.libraries.designsystem.theme.components.IconSource
 import io.element.android.libraries.designsystem.theme.components.Text
+import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
@@ -67,6 +70,8 @@ import kotlinx.coroutines.launch
 fun RoomListContentView(
     contentState: RoomListContentState,
     filtersState: RoomListFiltersState,
+    homeState: HomeState, // SC
+    onUpstreamSpaceClick: (RoomId) -> Unit, // SC
     onMeasureSpaceBarHeight: (Int) -> Unit = {}, // SC
     hideInvitesAvatars: Boolean,
     eventSink: (RoomListEvents) -> Unit,
@@ -101,6 +106,8 @@ fun RoomListContentView(
                 state = contentState,
                 hideInvitesAvatars = hideInvitesAvatars,
                 filtersState = filtersState,
+                homeState = homeState, // SC
+                onUpstreamSpaceClick = onUpstreamSpaceClick, // SC
                 onMeasureSpaceBarHeight = onMeasureSpaceBarHeight, // SC
                 eventSink = eventSink,
                 onSetUpRecoveryClick = onSetUpRecoveryClick,
@@ -180,6 +187,8 @@ private fun RoomsView(
     state: RoomListContentState.Rooms,
     hideInvitesAvatars: Boolean,
     filtersState: RoomListFiltersState,
+    homeState: HomeState, // SC
+    onUpstreamSpaceClick: (RoomId) -> Unit, // SC
     onMeasureSpaceBarHeight: (Int) -> Unit, // SC
     eventSink: (RoomListEvents) -> Unit,
     onSetUpRecoveryClick: () -> Unit,
@@ -197,6 +206,8 @@ private fun RoomsView(
         RoomsViewList(
             state = state,
             filtersState = filtersState, // SC
+            homeState = homeState, // SC
+            onUpstreamSpaceClick = onUpstreamSpaceClick, // SC
             onMeasureSpaceBarHeight = onMeasureSpaceBarHeight, // SC
             hideInvitesAvatars = hideInvitesAvatars,
             eventSink = eventSink,
@@ -213,6 +224,8 @@ private fun RoomsView(
 private fun RoomsViewList(
     state: RoomListContentState.Rooms,
     filtersState: RoomListFiltersState, // SC
+    homeState: HomeState, // SC
+    onUpstreamSpaceClick: (RoomId) -> Unit, // SC
     onMeasureSpaceBarHeight: (Int) -> Unit, // SC
     hideInvitesAvatars: Boolean,
     eventSink: (RoomListEvents) -> Unit,
@@ -239,6 +252,7 @@ private fun RoomsViewList(
     }
     val coroutineScope = rememberCoroutineScope()
     SpacesPager(
+        homeState = homeState,
         spacesList = state.spacesList,
         totalUnreadCounts = state.totalUnreadCounts,
         spaceSelectionHierarchy = state.spaceSelectionHierarchy,
@@ -246,6 +260,7 @@ private fun RoomsViewList(
             eventSink(RoomListEvents.UpdateSpaceFilter(selection))
             coroutineScope.launch { lazyListState.scrollToItem(0) }
         },
+        onUpstreamSpaceClick = onUpstreamSpaceClick,
         onMeasureSpaceBarHeight = onMeasureSpaceBarHeight,
         modifier = modifier,
     ) { modifier ->
@@ -385,6 +400,8 @@ internal fun RoomListContentViewPreview(@PreviewParameter(RoomListContentStatePr
                 )
             }
         ),
+        homeState = aHomeState(), // SC
+        onUpstreamSpaceClick = {}, // SC
         hideInvitesAvatars = false,
         eventSink = {},
         onSetUpRecoveryClick = {},

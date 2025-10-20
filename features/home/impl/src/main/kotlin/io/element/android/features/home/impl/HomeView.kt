@@ -37,8 +37,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import chat.schildi.features.home.spaces.SpaceListDataSource
-import chat.schildi.lib.compose.thenIf
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import dev.chrisbanes.haze.hazeEffect
@@ -78,7 +76,6 @@ import io.element.android.libraries.matrix.api.core.RoomId
 fun HomeView(
     homeState: HomeState,
     matrixClient: MatrixClient?, // SC
-    spaceListDataSource: SpaceListDataSource?, // SC
     onRoomClick: (RoomId) -> Unit,
     onSettingsClick: () -> Unit,
     onSetUpRecoveryClick: () -> Unit,
@@ -217,7 +214,7 @@ private fun HomeScaffold(
             )
         },
         bottomBar = {
-            if (state.showNavigationBar) {
+            if (state.showNavigationBar && !ScPrefs.SPACE_NAV.value()) {
                 NavigationBar(
                     containerColor = Color.Transparent,
                     modifier = Modifier
@@ -254,6 +251,8 @@ private fun HomeScaffold(
                     RoomListContentView(
                         contentState = roomListState.contentState,
                         filtersState = roomListState.filtersState,
+                        homeState = state, // SC
+                        onUpstreamSpaceClick = onRoomClick, // SC
                         onMeasureSpaceBarHeight = { spaceBarHeight.intValue = it }, // SC
                         hideInvitesAvatars = roomListState.hideInvitesAvatars,
                         eventSink = roomListState.eventSink,
@@ -326,7 +325,6 @@ internal fun HomeViewPreview(@PreviewParameter(HomeStateProvider::class) state: 
     HomeView(
         homeState = state,
         matrixClient = null, // SC
-        spaceListDataSource = null, // SC
         onRoomClick = {},
         onSettingsClick = {},
         onSetUpRecoveryClick = {},
@@ -347,7 +345,6 @@ internal fun HomeViewA11yPreview() = ElementPreview {
     HomeView(
         homeState = aHomeState(),
         matrixClient = null, // SC
-        spaceListDataSource = null, // SC
         onRoomClick = {},
         onSettingsClick = {},
         onSetUpRecoveryClick = {},

@@ -83,6 +83,7 @@
     <string name="sc_pseudo_space_notifications_short">Notifications</string>
     <string name="sc_pseudo_space_unread">Unread</string>
     <string name="sc_pseudo_space_hide_empty_unread">Hide empty unread spaces</string>
+    <string name="sc_pseudo_space_list">Space list</string>
     <string name="sc_space_empty_title">Empty space</string>
     <string name="sc_space_empty_summary">Navigate to another space to find your chats</string>
     <string name="sc_pref_dual_mention_unread_counts_title">Combined mention/unread count</string>

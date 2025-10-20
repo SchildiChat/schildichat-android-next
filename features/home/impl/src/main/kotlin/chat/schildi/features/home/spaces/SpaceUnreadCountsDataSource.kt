@@ -111,6 +111,7 @@ class SpaceUnreadCountsDataSource(
             unreadMessages = this.unreadMessages + 1,
             notifiedChats = this.notifiedChats + 1,
             unreadChats = this.unreadChats + 1,
+            inviteCount = this.inviteCount + 1,
         )
     } else {
         SpaceUnreadCounts(
@@ -120,7 +121,8 @@ class SpaceUnreadCountsDataSource(
             this.mentionedChats + if (mentions > 0) 1 else 0,
             this.notifiedChats + if (notifications > 0) 1 else 0,
             this.unreadChats + if (unread > 0) 1 else 0,
-            this.markedUnreadChats + if (markedUnread) 1 else 0
+            this.markedUnreadChats + if (markedUnread) 1 else 0,
+            this.inviteCount,
         )
     }
 
@@ -133,6 +135,7 @@ class SpaceUnreadCountsDataSource(
         val notifiedChats: Long = 0,
         val unreadChats: Long = 0,
         val markedUnreadChats: Long = 0,
+        val inviteCount: Long = 0,
     )
 }
 

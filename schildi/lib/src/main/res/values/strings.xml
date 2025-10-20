@@ -82,6 +82,7 @@
     <string name="sc_pseudo_space_notifications">Unread notifications and mentions</string>
     <string name="sc_pseudo_space_notifications_short">Notifications</string>
     <string name="sc_pseudo_space_unread">Unread</string>
+    <string name="sc_pseudo_space_invites">Invites</string>
     <string name="sc_pseudo_space_hide_empty_unread">Hide empty unread spaces</string>
     <string name="sc_pseudo_space_list">Space list</string>
     <string name="sc_space_empty_title">Empty space</string>

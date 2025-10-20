@@ -25,5 +25,13 @@ data class ScPrefFulfilledForAnyDependency(
     override fun fulfilledFor(preferences: Preferences): Boolean = dependencies.any { it.fulfilledFor(preferences) }
 }
 
+@Parcelize
+data class ScPrefNotDependency(
+    val dependency: ScPrefDependency,
+) : ScPrefDependency {
+    override fun fulfilledFor(preferences: Preferences): Boolean = !dependency.fulfilledFor(preferences)
+}
+
 fun ScPref<Boolean>.toDependency(expect: Boolean = true): ScPrefDependency = ScPrefEnabledDependency(this, expect)
 fun ScPref<Boolean>.asDependencies(expect: Boolean = true): List<ScPrefDependency> = listOf(toDependency(expect))
+fun ScPrefDependency.not() = ScPrefNotDependency(this)

@@ -3,6 +3,7 @@ package chat.schildi.features.home.spaces
 import android.content.Context
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.MeetingRoom
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.RemoveRedEye
@@ -172,6 +173,11 @@ class SpaceListDataSource(
                     context.getString(chat.schildi.lib.R.string.sc_pseudo_space_unread),
                     pseudoSpaceSettings.clientUnreadCounts
                 )
+            )
+        }
+        if (pseudoSpaceSettings.invites) {
+            pseudoSpaces.add(
+                InvitePseudoSpaceItem(context.getString(chat.schildi.lib.R.string.sc_pseudo_space_invites))
             )
         }
         val upstreamSpaceList = if (pseudoSpaceSettings.upstreamSpaceList && spaceListRoomSummaries.isNotEmpty()) {
@@ -436,6 +442,23 @@ class SpaceListDataSource(
     }
 
     @Immutable
+    data class InvitePseudoSpaceItem(
+        override val name: String,
+        override val unreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts? = null,
+    ) : PseudoSpaceItem(
+        "invites",
+        Icons.Default.MeetingRoom,
+    ) {
+        override fun enrich(getUnreadCounts: (AbstractSpaceHierarchyItem) -> SpaceUnreadCountsDataSource.SpaceUnreadCounts?) = copy(
+            unreadCounts = getUnreadCounts(this)
+        )
+        override fun applyFilter(rooms: List<RoomListRoomSummary>): ImmutableList<RoomListRoomSummary> =
+            rooms.filter { it.displayType == RoomSummaryDisplayType.INVITE }.toImmutableList()
+        override fun canHide(spaceUnreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts): Boolean =
+            spaceUnreadCounts.inviteCount == 0L
+    }
+
+    @Immutable
     data class UpstreamSpaceListItem(
         override val name: String,
         override val icon: ImageVector,
@@ -456,10 +479,11 @@ class SpaceListDataSource(
         val spaceless: Boolean,
         val notifications: Boolean,
         val unread: Boolean,
+        val invites: Boolean,
         val clientUnreadCounts: Boolean,
         val upstreamSpaceList: Boolean, // Element's space navigation
     ) {
-        fun hasSpaceIndependentPseudoSpace() = favorites || dms || groups || notifications || unread
+        fun hasSpaceIndependentPseudoSpace() = favorites || dms || groups || notifications || unread || invites
     }
 }
 
@@ -473,6 +497,7 @@ fun ScPreferencesStore.pseudoSpaceSettingsFlow(featureFlagService: FeatureFlagSe
             spaceless = ScPrefs.PSEUDO_SPACE_SPACELESS.safeLookup(lookup),
             notifications = ScPrefs.PSEUDO_SPACE_NOTIFICATIONS.safeLookup(lookup),
             unread = ScPrefs.PSEUDO_SPACE_UNREAD.safeLookup(lookup),
+            invites = ScPrefs.PSEUDO_SPACE_INVITES.safeLookup(lookup),
             clientUnreadCounts = ScPrefs.CLIENT_GENERATED_UNREAD_COUNTS.safeLookup(lookup),
             upstreamSpaceList = true,
         )

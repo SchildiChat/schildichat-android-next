@@ -61,7 +61,7 @@ object ScPrefs {
         )
     )
     val DUAL_MENTION_UNREAD_COUNTS = ScBoolPref("DUAL_MENTION_UNREAD_COUNTS", false, R.string.sc_pref_dual_mention_unread_counts_title, R.string.sc_pref_dual_mention_unread_counts_summary, authorsChoice = true, dependencies = SC_OVERVIEW_LAYOUT.asDependencies())
-    val HIDE_INVITES = ScBoolPref("HIDE_INVITES", false, R.string.sc_pref_hide_invites_title, R.string.sc_pref_hide_invites_summary, authorsChoice = true)
+    val HIDE_INVITES = ScBoolPref("HIDE_INVITES", false, R.string.sc_pref_hide_invites_title, R.string.sc_pref_hide_invites_summary)
 
     // Spaces
     val SPACE_NAV = ScBoolPref("SPACE_NAV", true, R.string.sc_space_nav_title, R.string.sc_space_nav_summary, upstreamChoice = false, authorsChoice = true)
@@ -84,8 +84,9 @@ object ScPrefs {
     val PSEUDO_SPACE_SPACELESS = ScBoolPref("PSEUDO_SPACE_SPACELESS", false, R.string.sc_pseudo_space_spaceless, null, dependencies = SPACE_NAV.asDependencies())
     val PSEUDO_SPACE_NOTIFICATIONS = ScBoolPref("PSEUDO_SPACE_NOTIFICATIONS", false, R.string.sc_pseudo_space_notifications, null, dependencies = SPACE_NAV.asDependencies())
     val PSEUDO_SPACE_UNREAD = ScBoolPref("PSEUDO_SPACE_UNREAD", false, R.string.sc_pseudo_space_unread, null, dependencies = SPACE_NAV.asDependencies())
+    val PSEUDO_SPACE_INVITES = ScBoolPref("PSEUDO_SPACE_INVITES", false, R.string.sc_pseudo_space_invites, null, dependencies = listOf(SPACE_NAV.toDependency(), HIDE_INVITES.toDependency().not()), authorsChoice = true)
     val PSEUDO_SPACE_HIDE_EMPTY_UNREAD = ScBoolPref("PSEUDO_SPACE_HIDE_EMPTY_UNREAD", false, R.string.sc_pseudo_space_hide_empty_unread, null, dependencies = listOf(
-        ScPrefFulfilledForAnyDependency(listOf(PSEUDO_SPACE_NOTIFICATIONS.toDependency(), PSEUDO_SPACE_UNREAD.toDependency()))
+        ScPrefFulfilledForAnyDependency(listOf(PSEUDO_SPACE_NOTIFICATIONS.toDependency(), PSEUDO_SPACE_UNREAD.toDependency(), PSEUDO_SPACE_INVITES.toDependency()))
     ), authorsChoice = true)
     val ELEMENT_ROOM_LIST_FILTERS = ScBoolPref("ELEMENT_ROOM_LIST_FILTERS", false, R.string.sc_upstream_feature_flag_room_list_filters, R.string.sc_upstream_feature_flag_room_list_filters_summary, authorsChoice = false, upstreamChoice = true)
     // Chat overview settings depending on spaces
@@ -185,6 +186,7 @@ object ScPrefs {
                     PSEUDO_SPACE_SPACELESS,
                     PSEUDO_SPACE_NOTIFICATIONS,
                     PSEUDO_SPACE_UNREAD,
+                    PSEUDO_SPACE_INVITES,
                 )),
                 ScPrefCategory(R.string.sc_pref_category_general_behaviour, null, listOf(
                     PSEUDO_SPACE_HIDE_EMPTY_UNREAD,
@@ -283,6 +285,7 @@ object ScPrefs {
                 PSEUDO_SPACE_SPACELESS.copy(titleRes = R.string.sc_pseudo_space_spaceless_short),
                 PSEUDO_SPACE_NOTIFICATIONS.copy(titleRes = R.string.sc_pseudo_space_notifications_short),
                 PSEUDO_SPACE_UNREAD,
+                PSEUDO_SPACE_INVITES,
                 PSEUDO_SPACE_HIDE_EMPTY_UNREAD,
             ), dependencies = SPACE_NAV.asDependencies()),
         )),

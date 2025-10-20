@@ -8,6 +8,10 @@ plugins {
 
 android {
     namespace = "chat.schildi.lib"
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 setupDependencyInjection()

@@ -2,6 +2,8 @@ package io.element.android.x
 
 import android.content.Context
 import androidx.startup.Initializer
+import chat.schildi.lib.preferences.LocalScPreferencesStore
+import chat.schildi.lib.preferences.NotExactlyACompositionLocal
 import io.element.android.libraries.architecture.bindings
 import io.element.android.x.di.AppBindings
 import kotlinx.coroutines.runBlocking
@@ -13,7 +15,9 @@ class ScInitializer : Initializer<Unit> {
         val appBindings = context.bindings<AppBindings>()
         // runBlocking is not nice, but we want to make sure that preferences are ready before creating room list service
         runBlocking {
-            appBindings.scPreferencesStore().prefetch()
+            val scPreferenceStore = appBindings.scPreferencesStore()
+            scPreferenceStore.prefetch()
+            LocalScPreferencesStore = NotExactlyACompositionLocal(scPreferenceStore)
         }
         Timber.d("Initialized SC dependencies in ${System.currentTimeMillis() - ts} ms")
     }

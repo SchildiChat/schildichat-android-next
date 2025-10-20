@@ -63,7 +63,6 @@ class MainActivity : NodeActivity() {
         val migrationState = appBindings.migrationEntryPoint().present()
         ElementThemeApp(
             appPreferencesStore = appBindings.preferencesStore(),
-            scPreferencesStore = appBindings.scPreferencesStore(),
             enterpriseService = appBindings.enterpriseService(),
             buildMeta = appBindings.buildMeta()
         ) {

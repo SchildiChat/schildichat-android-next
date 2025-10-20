@@ -7,7 +7,6 @@
 
 package io.element.android.libraries.designsystem.theme
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -16,10 +15,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.platform.LocalContext
-import chat.schildi.lib.preferences.DefaultScPreferencesStore
-import chat.schildi.lib.preferences.LocalScPreferencesStore
-import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.theme.Theme
@@ -61,7 +56,6 @@ val LocalBuildMeta = staticCompositionLocalOf {
 @Composable
 fun ElementThemeApp(
     appPreferencesStore: AppPreferencesStore,
-    scPreferencesStore: ScPreferencesStore = rememberDefaultScPreferencesStore(), // SC
     enterpriseService: EnterpriseService,
     buildMeta: BuildMeta,
     content: @Composable () -> Unit,
@@ -83,7 +77,6 @@ fun ElementThemeApp(
     val compoundDark = remember { enterpriseService.semanticColorsDark() }
     CompositionLocalProvider(
         LocalBuildMeta provides buildMeta,
-        LocalScPreferencesStore provides scPreferencesStore,
     ) {
         ScTheme(
             darkTheme = theme.isDark(),

@@ -6,10 +6,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.core.os.BuildCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
+import chat.schildi.lib.BuildConfig
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
@@ -144,7 +146,7 @@ class DefaultScPreferencesStore(
 object FakeScPreferencesStore : ScPreferencesStore {
     private fun shouldNotUsedInProduction() {
         val e = Exception("Should use CompositionLocalProvider with proper LocalScPreferencesStore")
-        if (false /* BuildConfig.DEBUG */) {
+        if (BuildConfig.DEBUG) {
             throw e
         } else {
             Timber.e(e, "No proper SC preferences store provided")
@@ -187,7 +189,10 @@ fun <R>List<ScPref<*>>.prefValMap(v: @Composable (ScPref<*>) -> R) = associate {
 @Composable
 fun List<ScPref<out Any>>.prefMap() = prefValMap { p -> p }
 
-val LocalScPreferencesStore = staticCompositionLocalOf<ScPreferencesStore> { FakeScPreferencesStore }
+// This did not work well enough to keep in sync with presenters...??? so init and de-init in ScApplication for now... TODO?
+//val LocalScPreferencesStore = staticCompositionLocalOf<ScPreferencesStore> { FakeScPreferencesStore }
+data class NotExactlyACompositionLocal<T>(val current: T)
+var LocalScPreferencesStore = NotExactlyACompositionLocal<ScPreferencesStore>(FakeScPreferencesStore)
 
 @Composable
 fun <T>ScPref<T>.value(): T = LocalScPreferencesStore.current.settingState(this).value

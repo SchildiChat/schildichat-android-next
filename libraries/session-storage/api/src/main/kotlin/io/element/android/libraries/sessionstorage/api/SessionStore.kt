@@ -75,9 +75,9 @@ fun Flow<List<SessionData>>.toUserListFlow(): Flow<List<String>> {
 }
 
 /**
- * @return a flow emitting the userId of the latest session if logged in, null otherwise.
+ * @return a flow emitting the sessionId of the latest session if logged in, null otherwise.
  */
-fun SessionStore.userIdFlow(): Flow<String?> {
+fun SessionStore.sessionIdFlow(): Flow<String?> {
     return loggedInStateFlow().map {
         when (it) {
             is LoggedInState.LoggedIn -> it.sessionId

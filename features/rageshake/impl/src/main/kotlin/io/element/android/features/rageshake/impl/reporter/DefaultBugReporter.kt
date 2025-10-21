@@ -36,7 +36,7 @@ import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.tracing.TracingService
 import io.element.android.libraries.network.useragent.UserAgentProvider
 import io.element.android.libraries.sessionstorage.api.SessionStore
-import io.element.android.libraries.sessionstorage.api.userIdFlow
+import io.element.android.libraries.sessionstorage.api.sessionIdFlow
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -107,7 +107,7 @@ class DefaultBugReporter(
                 sessionStore.getLatestSession()
             }?.userId?.let(::UserId)?.domainName
             setCurrentLogDirectory(logSubfolder)
-            sessionStore.userIdFlow()
+            sessionStore.sessionIdFlow()
                 .map {
                     it?.let(::UserId)?.domainName
                 }

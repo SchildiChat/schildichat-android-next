@@ -25,6 +25,8 @@ import io.element.android.libraries.featureflag.api.Feature
 import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.featureflag.test.FakeFeature
 import io.element.android.libraries.featureflag.test.FakeFeatureFlagService
+import io.element.android.libraries.matrix.api.core.SessionId
+import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.matrix.test.core.aBuildMeta
 import io.element.android.libraries.preferences.test.InMemoryAppPreferencesStore
 import io.element.android.tests.testutils.WarmUpRule
@@ -184,7 +186,7 @@ class DeveloperSettingsPresenterTest {
 
     @Test
     fun `present - enterprise build can change the brand color`() = runTest {
-        val overrideBrandColorResult = lambdaRecorder<String?, Unit> { }
+        val overrideBrandColorResult = lambdaRecorder<SessionId?, String?, Unit> { _, _ -> }
         val presenter = createDeveloperSettingsPresenter(
             enterpriseService = FakeEnterpriseService(
                 isEnterpriseBuild = true,
@@ -205,11 +207,12 @@ class DeveloperSettingsPresenterTest {
             assertThat(awaitItem().showColorPicker).isFalse()
             skipItems(1)
             overrideBrandColorResult.assertions().isCalledOnce()
-                .with(value("00FF00"))
+                .with(value(A_SESSION_ID), value("00FF00"))
         }
     }
 
     private fun createDeveloperSettingsPresenter(
+        sessionId: SessionId = A_SESSION_ID,
         featureFlagService: FakeFeatureFlagService = FakeFeatureFlagService(
             getAvailableFeaturesResult = { _, _ ->
                 listOf(
@@ -228,6 +231,7 @@ class DeveloperSettingsPresenterTest {
         enterpriseService: EnterpriseService = FakeEnterpriseService(),
     ): DeveloperSettingsPresenter {
         return DeveloperSettingsPresenter(
+            sessionId = sessionId,
             featureFlagService = featureFlagService,
             computeCacheSizeUseCase = cacheSizeUseCase,
             clearCacheUseCase = clearCacheUseCase,

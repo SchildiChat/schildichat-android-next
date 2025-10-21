@@ -26,7 +26,7 @@ class FakeEnterpriseService(
     private val isAllowedToConnectToHomeserverResult: (String) -> Boolean = { lambdaError() },
     private val semanticColorsLightResult: () -> State<SemanticColors> = { lambdaError() },
     private val semanticColorsDarkResult: () -> State<SemanticColors> = { lambdaError() },
-    private val overrideBrandColorResult: (String?) -> Unit = { lambdaError() },
+    private val overrideBrandColorResult: (SessionId?, String?) -> Unit = { _, _ -> lambdaError() },
     private val firebasePushGatewayResult: () -> String? = { lambdaError() },
     private val unifiedPushDefaultPushGatewayResult: () -> String? = { lambdaError() },
 ) : EnterpriseService {
@@ -42,8 +42,8 @@ class FakeEnterpriseService(
         isAllowedToConnectToHomeserverResult(homeserverUrl)
     }
 
-    override suspend fun overrideBrandColor(brandColor: String?) = simulateLongTask {
-        overrideBrandColorResult(brandColor)
+    override suspend fun overrideBrandColor(sessionId: SessionId?, brandColor: String?) = simulateLongTask {
+        overrideBrandColorResult(sessionId, brandColor)
     }
 
     @Composable

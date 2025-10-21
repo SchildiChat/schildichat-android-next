@@ -328,7 +328,8 @@ class SecurityAndPrivacyPresenterTest {
             )
             // Saved settings are updated 2 times to match the edited settings
             skipItems(3)
-            with(awaitItem()) {
+            val state = awaitItem()
+            with(state) {
                 assertThat(saveAction).isInstanceOf(AsyncAction.Failure::class.java)
                 assertThat(savedSettings.isVisibleInRoomDirectory).isNotEqualTo(editedSettings.isVisibleInRoomDirectory)
                 assertThat(canBeSaved).isTrue()
@@ -337,6 +338,11 @@ class SecurityAndPrivacyPresenterTest {
             assert(updateJoinRuleLambda).isCalledOnce()
             assert(updateRoomVisibilityLambda).isCalledOnce()
             assert(updateRoomHistoryVisibilityLambda).isCalledOnce()
+            // Clear error
+            state.eventSink(SecurityAndPrivacyEvents.DismissSaveError)
+            with(awaitItem()) {
+                assertThat(saveAction).isEqualTo(AsyncAction.Uninitialized)
+            }
         }
     }
 

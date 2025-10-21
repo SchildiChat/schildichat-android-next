@@ -67,7 +67,7 @@
     <string name="sc_recent_reaction">Häufig verwendet</string>
     <string name="sc_space_empty_summary">Navigiere zu einem anderen Bereich, um deine Chats zu finden</string>
     <string name="sc_space_empty_title">Leerer Space</string>
-    <string name="sc_pseudo_space_hide_empty_unread">Ungelesene Spaces ausblenden</string>
+    <string name="sc_pseudo_space_hide_empty_unread">Leere Ungelesen-Spaces ausblenden</string>
     <string name="sc_pref_dual_mention_unread_counts_title_short">Zählung doppelte Erwähnung</string>
     <string name="sc_upstream_feature_flag_room_list_filters_summary">Weg von Element zum Filtern von Chats</string>
     <string name="sc_pref_dual_mention_unread_counts_title">Kombinierte Erwähnung/Ungelesen</string>
@@ -79,9 +79,9 @@
     <string name="sc_pref_pinned_message_toolbar_title_short">Angeheftet in Symbolleiste</string>
     <string name="sc_pref_pinned_message_overlay_title">Angepinntes Nachrichten-Overlay</string>
     <string name="sc_pref_pinned_message_overlay_title_short">Angepinntes Overlay</string>
-    <string name="sc_pref_sort_with_silent_unread_title">Sortieren mit stummgeschaltet ungelesen</string>
+    <string name="sc_pref_sort_with_silent_unread_title">Sortieren mit stummgeschaltenen Ungelesen-Zähler</string>
     <string name="sc_pref_pinned_message_toolbar_summary">Schnellzugriff auf angeheftete Nachrichten über die obere App-Leiste</string>
-    <string name="sc_compact_root_spaces_summary">Zeige Symbol ohne Namen für Root Spaces</string>
+    <string name="sc_compact_root_spaces_summary">Zeige Symbol ohne Namen für Root-Spaces</string>
     <string name="sc_pref_category_misc">Sonstiges</string>
     <string name="sc_pref_el_typography_title">Element Typografie</string>
     <string name="sc_sync_read_receipt_and_marker_summary">Setze den Gelesen-Status (was andere sehen und woraus sich die Anzahl der ungelesenen Nachrichten berechnet) immer auf die gleiche Nachricht, wie die Vollständig-Gelesen-Markierung (die Neue Nachrichten Linie in Chats)</string>
@@ -141,8 +141,8 @@
     <string name="sc_reply_preview_line_count_summary">Maximale Anzahl der gezeigten Zeilen aus der beantworteten Nachricht</string>
     <string name="sc_pref_fully_expand_message_menu_summary">Bei lange drücken auf Nachrichten, das Kontextmenü vollständig öffnen</string>
     <string name="sc_pref_message_context_menu_text_selectable_title_short">Markierbarer Text</string>
-    <string name="sc_pref_render_silent_unread_summary">Anzahl ungelesener Nachrichten auch für stumme Chats zeigen</string>
-    <string name="sc_pref_render_silent_unread_title">Ungelesene stumme Chats zeigen</string>
+    <string name="sc_pref_render_silent_unread_summary">Anzahl ungelesener Nachrichten auch für stummgeschaltene Chats zeigen</string>
+    <string name="sc_pref_render_silent_unread_title">Zeige stummgeschaltene Ungelesen-Zähler</string>
     <string name="sc_pref_chamber_of_secrets_title">Kammer des Schreckens</string>
     <string name="sc_pref_chamber_of_secrets_summary">Die folgenden Einstellungen sind sehr experimentell und dafür bekannt Fehler zu verursachen. Bitte melde keine Fehler nach Aktivierung!</string>
     <string name="sc_url_previews_summary">Suche und zeige eine Vorschau für Links in Nachrichten</string>
@@ -171,4 +171,19 @@
     <string name="sc_pref_hide_invites_summary">Verbirgt alle Einladungen in der App. Beachte, dass es in den Benachrichtigungseinstellungen eine weitere Option gibt, um keine Benachrichtigungen für Einladungen zu erhalten.</string>
     <string name="sc_pref_syncing_indicator_title">Synchronisierungsanzeige</string>
     <string name="sc_pref_syncing_indicator_summary">Synchronisierungsstatus oben auf dem Bildschirm einblenden</string>
+    <string name="sc_pseudo_space_invites">Einladungen</string>
+    <string name="sc_pseudo_space_list">Space-Liste</string>
+    <string name="sc_pref_debounce_offline_state_title">Offline-Status verzögern</string>
+    <string name="sc_pref_debounce_offline_state_summary">Verstecke schnelle Änderungen am Offline-Status</string>
+    <string name="sc_pref_always_show_reaction_search_bar_title">Reaktionssuchleiste immer anzeigen</string>
+    <string name="sc_pref_always_show_reaction_search_bar_summary">Verstecke nie die Suchleiste im Reaktionspicker</string>
+    <string name="sc_pref_category_unread_counts">Ungelesen-Zähler</string>
+    <string name="sc_pref_notification_worker_title">Push Worker</string>
+    <string name="sc_pref_notification_worker_summary">Zuverlässigere Benachrichtigungen mit wiederholten Versuchen bei schlechtem Netz</string>
+    <string name="sc_push_handler_notification_title">Push wird verarbeitet</string>
+    <string name="sc_push_handler_notification_summary">Nachrichten werden geladen</string>
+    <string name="sc_notification_lookup_failure_title">Es gibt womöglich ungelesene Benachrichtigungen</string>
+    <string name="sc_notification_lookup_failure_summary">Fehler beim Nachschlagen von Benachrichtigungen</string>
+    <string name="sc_bg_notification_channel">Hintergrundservice</string>
+    <string name="sc_push_failure_notification_channel">Benachrichtigungsfehler</string>
 </resources>

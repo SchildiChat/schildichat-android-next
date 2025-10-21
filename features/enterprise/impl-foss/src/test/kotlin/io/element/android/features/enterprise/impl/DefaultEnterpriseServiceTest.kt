@@ -51,7 +51,7 @@ class DefaultEnterpriseServiceTest {
         }.test {
             val initialState = awaitItem()
             assertThat(initialState).isEqualTo(compoundColorsLight)
-            defaultEnterpriseService.overrideBrandColor("#87654321")
+            defaultEnterpriseService.overrideBrandColor(A_SESSION_ID, "#87654321")
             expectNoEvents()
         }
     }
@@ -64,7 +64,7 @@ class DefaultEnterpriseServiceTest {
         }.test {
             val initialState = awaitItem()
             assertThat(initialState).isEqualTo(compoundColorsDark)
-            defaultEnterpriseService.overrideBrandColor("#87654321")
+            defaultEnterpriseService.overrideBrandColor(A_SESSION_ID, "#87654321")
             expectNoEvents()
         }
     }

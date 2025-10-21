@@ -21,9 +21,10 @@ interface EnterpriseService {
 
     /**
      * Override the brand color.
+     * @param sessionId the session to override the brand color for, or null to set the brand color to use when there is no session.
      * @param brandColor the color in hex format (#RRGGBBAA or #RRGGBB), or null to reset to default.
      */
-    fun overrideBrandColor(brandColor: String?)
+    suspend fun overrideBrandColor(sessionId: SessionId?, brandColor: String?)
 
     @Composable
     fun semanticColorsLight(): State<SemanticColors>

@@ -38,6 +38,7 @@ import io.element.android.libraries.core.meta.BuildType
 import io.element.android.libraries.featureflag.api.FeatureFlagService
 import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.featureflag.ui.model.FeatureUiModel
+import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.preferences.api.store.AppPreferencesStore
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -50,6 +51,7 @@ import java.net.URL
 
 @Inject
 class DeveloperSettingsPresenter(
+    private val sessionId: SessionId,
     private val featureFlagService: FeatureFlagService,
     private val computeCacheSizeUseCase: ComputeCacheSizeUseCase,
     private val clearCacheUseCase: ClearCacheUseCase,
@@ -135,10 +137,10 @@ class DeveloperSettingsPresenter(
                     }
                     appPreferencesStore.setTracingLogPacks(currentPacks)
                 }
-                is DeveloperSettingsEvents.ChangeBrandColor -> {
+                is DeveloperSettingsEvents.ChangeBrandColor -> coroutineScope.launch {
                     showColorPicker = false
                     val color = event.color?.value?.toHexString(HexFormat.UpperCase)?.substring(2, 8)
-                    enterpriseService.overrideBrandColor(color)
+                    enterpriseService.overrideBrandColor(sessionId, color)
                 }
                 is DeveloperSettingsEvents.SetShowColorPicker -> {
                     showColorPicker = event.show

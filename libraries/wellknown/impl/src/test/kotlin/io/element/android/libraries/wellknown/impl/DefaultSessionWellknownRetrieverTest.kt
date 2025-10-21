@@ -161,6 +161,7 @@ class DefaultSessionWellknownRetrieverTest {
                 registrationHelperUrl = null,
                 enforceElementPro = null,
                 rageshakeUrl = null,
+                brandColor = null,
             )
         )
         getUrlLambda.assertions().isCalledOnce()
@@ -175,7 +176,8 @@ class DefaultSessionWellknownRetrieverTest {
                     """{
                     "registration_helper_url": "a_registration_url",
                     "enforce_element_pro": true,
-                    "rageshake_url": "a_rageshake_url"
+                    "rageshake_url": "a_rageshake_url",
+                    "brand_color": "#FF0000"
                 }""".trimIndent().toByteArray()
                 )
             }
@@ -185,6 +187,7 @@ class DefaultSessionWellknownRetrieverTest {
                 registrationHelperUrl = "a_registration_url",
                 enforceElementPro = true,
                 rageshakeUrl = "a_rageshake_url",
+                brandColor = "#FF0000",
             )
         )
     }
@@ -208,6 +211,7 @@ class DefaultSessionWellknownRetrieverTest {
                 registrationHelperUrl = "a_registration_url",
                 enforceElementPro = true,
                 rageshakeUrl = "a_rageshake_url",
+                brandColor = null,
             )
         )
     }

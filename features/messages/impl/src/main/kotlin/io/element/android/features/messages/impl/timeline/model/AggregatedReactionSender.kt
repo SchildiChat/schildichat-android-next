@@ -7,15 +7,12 @@
 
 package io.element.android.features.messages.impl.timeline.model
 
-import androidx.compose.runtime.Immutable
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.user.MatrixUser
-import java.util.Date
 
-@Immutable
 data class AggregatedReactionSender(
     val senderId: UserId,
-    val timestamp: Date,
+    val timestamp: Long,
     val sentTime: String,
     val user: MatrixUser? = null
 )

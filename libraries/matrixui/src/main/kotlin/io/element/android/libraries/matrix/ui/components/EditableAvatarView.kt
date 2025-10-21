@@ -7,7 +7,6 @@
 
 package io.element.android.libraries.matrix.ui.components
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -28,7 +27,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.libraries.designsystem.components.avatar.Avatar
@@ -47,7 +45,7 @@ import io.element.android.libraries.ui.strings.CommonStrings
 fun EditableAvatarView(
     matrixId: String,
     displayName: String?,
-    avatarUrl: Uri?,
+    avatarUrl: String?,
     avatarSize: AvatarSize,
     avatarType: AvatarType,
     onAvatarClick: () -> Unit,
@@ -71,13 +69,13 @@ fun EditableAvatarView(
                     contentDescription = a11yAvatar
                 },
         ) {
-            when (avatarUrl?.scheme) {
-                null, "mxc" -> {
+            when {
+                avatarUrl == null || avatarUrl.startsWith("mxc://") -> {
                     Avatar(
                         avatarData = AvatarData(
                             id = matrixId,
                             name = displayName,
-                            url = avatarUrl?.toString(),
+                            url = avatarUrl,
                             size = avatarSize,
                         ),
                         avatarType = avatarType,
@@ -114,7 +112,7 @@ fun EditableAvatarView(
 @PreviewsDayNight
 @Composable
 internal fun EditableAvatarViewPreview(
-    @PreviewParameter(EditableAvatarViewUriProvider::class) uri: Uri?
+    @PreviewParameter(EditableAvatarViewUriProvider::class) uri: String?
 ) = ElementPreview(
     drawableFallbackForImages = CommonDrawables.sample_avatar,
 ) {
@@ -128,11 +126,11 @@ internal fun EditableAvatarViewPreview(
     )
 }
 
-open class EditableAvatarViewUriProvider : PreviewParameterProvider<Uri?> {
-    override val values: Sequence<Uri?>
+open class EditableAvatarViewUriProvider : PreviewParameterProvider<String?> {
+    override val values: Sequence<String?>
         get() = sequenceOf(
             null,
-            "mxc://matrix.org/123456".toUri(),
-            "https://example.com/avatar.jpg".toUri(),
+            "mxc://matrix.org/123456",
+            "https://example.com/avatar.jpg",
         )
 }

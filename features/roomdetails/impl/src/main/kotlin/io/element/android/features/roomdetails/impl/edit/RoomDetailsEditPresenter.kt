@@ -61,11 +61,11 @@ class RoomDetailsEditPresenter(
         val cameraPermissionState = cameraPermissionPresenter.present()
         val roomSyncUpdateFlow = room.syncUpdateFlow.collectAsState()
 
-        val roomAvatarUri = room.avatarUrl()?.toUri()
-        var roomAvatarUriEdited by rememberSaveable { mutableStateOf<Uri?>(null) }
+        val roomAvatarUri = room.avatarUrl()
+        var roomAvatarUriEdited by rememberSaveable { mutableStateOf<String?>(null) }
         LaunchedEffect(roomAvatarUri) {
             // Every time the roomAvatar change (from sync), we can set the new avatar.
-            temporaryUriDeleter.delete(roomAvatarUriEdited)
+            temporaryUriDeleter.delete(roomAvatarUriEdited?.toUri())
             roomAvatarUriEdited = roomAvatarUri
         }
 
@@ -107,16 +107,16 @@ class RoomDetailsEditPresenter(
         val cameraPhotoPicker = mediaPickerProvider.registerCameraPhotoPicker(
             onResult = { uri ->
                 if (uri != null) {
-                    temporaryUriDeleter.delete(roomAvatarUriEdited)
-                    roomAvatarUriEdited = uri
+                    temporaryUriDeleter.delete(roomAvatarUriEdited?.toUri())
+                    roomAvatarUriEdited = uri.toString()
                 }
             }
         )
         val galleryImagePicker = mediaPickerProvider.registerGalleryImagePicker(
             onResult = { uri ->
                 if (uri != null) {
-                    temporaryUriDeleter.delete(roomAvatarUriEdited)
-                    roomAvatarUriEdited = uri
+                    temporaryUriDeleter.delete(roomAvatarUriEdited?.toUri())
+                    roomAvatarUriEdited = uri.toString()
                 }
             }
         )
@@ -147,8 +147,8 @@ class RoomDetailsEditPresenter(
                     newNameTrimmed = roomRawNameEdited.trim(),
                     currentTopicTrimmed = roomTopicTrimmed,
                     newTopicTrimmed = roomTopicEdited.trim(),
-                    currentAvatar = roomAvatarUri,
-                    newAvatarUri = roomAvatarUriEdited,
+                    currentAvatar = roomAvatarUri?.toUri(),
+                    newAvatarUri = roomAvatarUriEdited?.toUri(),
                     action = saveAction,
                 )
                 is RoomDetailsEditEvents.HandleAvatarAction -> {
@@ -161,7 +161,7 @@ class RoomDetailsEditPresenter(
                             cameraPermissionState.eventSink(PermissionsEvents.RequestPermissions)
                         }
                         AvatarAction.Remove -> {
-                            temporaryUriDeleter.delete(roomAvatarUriEdited)
+                            temporaryUriDeleter.delete(roomAvatarUriEdited?.toUri())
                             roomAvatarUriEdited = null
                         }
                     }

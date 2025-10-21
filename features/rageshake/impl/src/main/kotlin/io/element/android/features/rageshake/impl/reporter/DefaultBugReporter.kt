@@ -44,6 +44,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.json.JSONException
 import org.json.JSONObject
@@ -113,6 +114,7 @@ class DefaultBugReporter(
         withScreenshot: Boolean,
         problemDescription: String,
         canContact: Boolean,
+        sendPushRules: Boolean,
         listener: BugReporterListener,
     ) {
         val url = bugReporterUrlProvider.provide().first()
@@ -153,6 +155,7 @@ class DefaultBugReporter(
                     }
                 }
                 val sessionData = sessionStore.getLatestSession()
+                val numberOfAccounts = sessionStore.getAllSessions().size
                 val deviceId = sessionData?.deviceId ?: "undefined"
                 val userId = sessionData?.userId?.let { UserId(it) }
                 // build the multi part request
@@ -161,6 +164,7 @@ class DefaultBugReporter(
                     .addFormDataPart("app", RageshakeConfig.BUG_REPORT_APP_NAME)
                     .addFormDataPart("user_agent", userAgentProvider.provide())
                     .addFormDataPart("user_id", userId?.toString() ?: "undefined")
+                    .addFormDataPart("number_of_accounts", numberOfAccounts.toString())
                     .addFormDataPart("can_contact", canContact.toString())
                     .addFormDataPart("device_id", deviceId)
                     .addFormDataPart("device", Build.MODEL.trim())
@@ -180,6 +184,16 @@ class DefaultBugReporter(
                         val edKey = client.encryptionService.deviceEd25519()
                         if (curveKey != null && edKey != null) {
                             builder.addFormDataPart("device_keys", "curve25519:$curveKey, ed25519:$edKey")
+                        }
+
+                        if (sendPushRules) {
+                            client.notificationSettingsService.getRawPushRules().getOrNull()?.let { pushRules ->
+                                builder.addFormDataPart(
+                                    name = "file",
+                                    filename = "push_rules.json",
+                                    body = pushRules.toByteArray().toRequestBody(MimeTypes.Json.toMediaTypeOrNull())
+                                )
+                            }
                         }
                     }
                 }

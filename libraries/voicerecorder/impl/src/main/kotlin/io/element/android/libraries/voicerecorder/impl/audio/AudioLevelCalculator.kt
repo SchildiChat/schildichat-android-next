@@ -7,6 +7,8 @@
 
 package io.element.android.libraries.voicerecorder.impl.audio
 
+import androidx.annotation.FloatRange
+
 interface AudioLevelCalculator {
     /**
      * Calculate the audio level of the audio buffer.
@@ -14,5 +16,6 @@ interface AudioLevelCalculator {
      * @param buffer The audio buffer containing 16bit PCM audio data.
      * @return A float value between 0 and 1 proportional to the audio level.
      */
+    @FloatRange(from = 0.0, to = 1.0)
     fun calculateAudioLevel(buffer: ShortArray): Float
 }

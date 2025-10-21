@@ -26,9 +26,9 @@ interface RoomDirectoryList {
     /**
      * The current search results as a state flow.
      */
-    val state: Flow<State>
+    val state: Flow<SearchResult>
 
-    data class State(
+    data class SearchResult(
         val hasMoreToLoad: Boolean,
         val items: List<RoomDescription>,
     )

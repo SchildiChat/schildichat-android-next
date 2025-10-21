@@ -8,6 +8,7 @@
 package io.element.android.libraries.pushproviders.unifiedpush
 
 import com.google.common.truth.Truth.assertThat
+import io.element.android.libraries.androidutils.json.DefaultJsonProvider
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.pushproviders.api.PushData
@@ -25,7 +26,7 @@ class UnifiedPushParserTest {
 
     @Test
     fun `test edge cases UnifiedPush`() {
-        val pushParser = UnifiedPushParser()
+        val pushParser = createUnifiedPushParser()
         // Empty string
         assertThat(pushParser.parse("".toByteArray(), aClientSecret)).isNull()
         // Empty Json
@@ -36,13 +37,13 @@ class UnifiedPushParserTest {
 
     @Test
     fun `test UnifiedPush format`() {
-        val pushParser = UnifiedPushParser()
+        val pushParser = createUnifiedPushParser()
         assertThat(pushParser.parse(UNIFIED_PUSH_DATA.toByteArray(), aClientSecret)).isEqualTo(validData)
     }
 
     @Test
     fun `test empty roomId`() {
-        val pushParser = UnifiedPushParser()
+        val pushParser = createUnifiedPushParser()
         assertThrowsInDebug {
             pushParser.parse(UNIFIED_PUSH_DATA.replace(A_ROOM_ID.value, "").toByteArray(), aClientSecret)
         }
@@ -50,7 +51,7 @@ class UnifiedPushParserTest {
 
     @Test
     fun `test invalid roomId`() {
-        val pushParser = UnifiedPushParser()
+        val pushParser = createUnifiedPushParser()
         assertThrowsInDebug {
             pushParser.parse(UNIFIED_PUSH_DATA.mutate(A_ROOM_ID.value, "aRoomId:domain"), aClientSecret)
         }
@@ -58,7 +59,7 @@ class UnifiedPushParserTest {
 
     @Test
     fun `test empty eventId`() {
-        val pushParser = UnifiedPushParser()
+        val pushParser = createUnifiedPushParser()
         assertThrowsInDebug {
             pushParser.parse(UNIFIED_PUSH_DATA.mutate(AN_EVENT_ID.value, ""), aClientSecret)
         }
@@ -66,7 +67,7 @@ class UnifiedPushParserTest {
 
     @Test
     fun `test invalid eventId`() {
-        val pushParser = UnifiedPushParser()
+        val pushParser = createUnifiedPushParser()
         assertThrowsInDebug {
             pushParser.parse(UNIFIED_PUSH_DATA.mutate(AN_EVENT_ID.value, "anEventId"), aClientSecret)
         }
@@ -81,3 +82,7 @@ class UnifiedPushParserTest {
 private fun String.mutate(oldValue: String, newValue: String): ByteArray {
     return replace(oldValue, newValue).toByteArray()
 }
+
+fun createUnifiedPushParser() = UnifiedPushParser(
+    json = DefaultJsonProvider(),
+)

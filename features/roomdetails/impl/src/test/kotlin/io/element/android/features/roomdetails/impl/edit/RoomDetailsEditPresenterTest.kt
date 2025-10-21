@@ -66,7 +66,9 @@ class RoomDetailsEditPresenterTest {
         mockkStatic(Uri::class)
 
         every { Uri.parse(AN_AVATAR_URL) } returns roomAvatarUri
+        every { roomAvatarUri.toString() } returns AN_AVATAR_URL
         every { Uri.parse(ANOTHER_AVATAR_URL) } returns anotherAvatarUri
+        every { anotherAvatarUri.toString() } returns ANOTHER_AVATAR_URL
     }
 
     @After
@@ -107,7 +109,7 @@ class RoomDetailsEditPresenterTest {
             val initialState = awaitFirstItem()
             assertThat(initialState.roomId).isEqualTo(room.roomId)
             assertThat(initialState.roomRawName).isEqualTo(A_ROOM_RAW_NAME)
-            assertThat(initialState.roomAvatarUrl).isEqualTo(roomAvatarUri)
+            assertThat(initialState.roomAvatarUrl).isEqualTo(AN_AVATAR_URL)
             assertThat(initialState.roomTopic).isEqualTo(room.info().topic.orEmpty())
             assertThat(initialState.avatarActions).containsExactly(
                 AvatarAction.ChoosePhoto,
@@ -233,24 +235,24 @@ class RoomDetailsEditPresenterTest {
             val initialState = awaitFirstItem()
             assertThat(initialState.roomTopic).isEqualTo("My topic")
             assertThat(initialState.roomRawName).isEqualTo("Name")
-            assertThat(initialState.roomAvatarUrl).isEqualTo(roomAvatarUri)
+            assertThat(initialState.roomAvatarUrl).isEqualTo(AN_AVATAR_URL)
             initialState.eventSink(RoomDetailsEditEvents.UpdateRoomName("Name II"))
             awaitItem().apply {
                 assertThat(roomTopic).isEqualTo("My topic")
                 assertThat(roomRawName).isEqualTo("Name II")
-                assertThat(roomAvatarUrl).isEqualTo(roomAvatarUri)
+                assertThat(roomAvatarUrl).isEqualTo(AN_AVATAR_URL)
             }
             initialState.eventSink(RoomDetailsEditEvents.UpdateRoomName("Name III"))
             awaitItem().apply {
                 assertThat(roomTopic).isEqualTo("My topic")
                 assertThat(roomRawName).isEqualTo("Name III")
-                assertThat(roomAvatarUrl).isEqualTo(roomAvatarUri)
+                assertThat(roomAvatarUrl).isEqualTo(AN_AVATAR_URL)
             }
             initialState.eventSink(RoomDetailsEditEvents.UpdateRoomTopic("Another topic"))
             awaitItem().apply {
                 assertThat(roomTopic).isEqualTo("Another topic")
                 assertThat(roomRawName).isEqualTo("Name III")
-                assertThat(roomAvatarUrl).isEqualTo(roomAvatarUri)
+                assertThat(roomAvatarUrl).isEqualTo(AN_AVATAR_URL)
             }
             initialState.eventSink(RoomDetailsEditEvents.HandleAvatarAction(AvatarAction.Remove))
             awaitItem().apply {
@@ -277,10 +279,10 @@ class RoomDetailsEditPresenterTest {
         )
         presenter.test {
             val initialState = awaitFirstItem()
-            assertThat(initialState.roomAvatarUrl).isEqualTo(roomAvatarUri)
+            assertThat(initialState.roomAvatarUrl).isEqualTo(AN_AVATAR_URL)
             initialState.eventSink(RoomDetailsEditEvents.HandleAvatarAction(AvatarAction.ChoosePhoto))
             awaitItem().apply {
-                assertThat(roomAvatarUrl).isEqualTo(anotherAvatarUri)
+                assertThat(roomAvatarUrl).isEqualTo(anotherAvatarUri.toString())
             }
         }
     }
@@ -303,7 +305,7 @@ class RoomDetailsEditPresenterTest {
         )
         presenter.test {
             val initialState = awaitFirstItem()
-            assertThat(initialState.roomAvatarUrl).isEqualTo(roomAvatarUri)
+            assertThat(initialState.roomAvatarUrl).isEqualTo(AN_AVATAR_URL)
             assertThat(initialState.cameraPermissionState.permissionGranted).isFalse()
             initialState.eventSink(RoomDetailsEditEvents.HandleAvatarAction(AvatarAction.TakePhoto))
             val stateWithAskingPermission = awaitItem()
@@ -312,12 +314,12 @@ class RoomDetailsEditPresenterTest {
             val stateWithPermission = awaitItem()
             assertThat(stateWithPermission.cameraPermissionState.permissionGranted).isTrue()
             val stateWithNewAvatar = awaitItem()
-            assertThat(stateWithNewAvatar.roomAvatarUrl).isEqualTo(anotherAvatarUri)
+            assertThat(stateWithNewAvatar.roomAvatarUrl).isEqualTo(anotherAvatarUri.toString())
             // Do it again, no permission is requested
             fakePickerProvider.givenResult(roomAvatarUri)
             stateWithNewAvatar.eventSink(RoomDetailsEditEvents.HandleAvatarAction(AvatarAction.TakePhoto))
             val stateWithNewAvatar2 = awaitItem()
-            assertThat(stateWithNewAvatar2.roomAvatarUrl).isEqualTo(roomAvatarUri)
+            assertThat(stateWithNewAvatar2.roomAvatarUrl).isEqualTo(AN_AVATAR_URL)
             deleteCallback.assertions().isCalledExactly(3).withSequence(
                 listOf(value(null)),
                 listOf(value(roomAvatarUri)),

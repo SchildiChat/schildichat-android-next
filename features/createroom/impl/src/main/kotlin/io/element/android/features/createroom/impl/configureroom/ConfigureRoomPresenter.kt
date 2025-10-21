@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.core.net.toUri
 import dev.zacsweers.metro.Inject
 import im.vector.app.features.analytics.plan.CreatedRoom
 import io.element.android.libraries.architecture.AsyncAction
@@ -157,7 +158,7 @@ class ConfigureRoomPresenter(
         createRoomAction: MutableState<AsyncAction<RoomId>>
     ) = launch {
         suspend {
-            val avatarUrl = config.avatarUri?.let { uploadAvatar(it) }
+            val avatarUrl = config.avatarUri?.let { uploadAvatar(it.toUri()) }
             val params = if (config.roomVisibility is RoomVisibilityState.Public) {
                 CreateRoomParameters(
                     name = config.roomName,

@@ -62,6 +62,7 @@ class KonsistClassNameTest {
             .withAllParentsOf(PreviewParameterProvider::class)
             .withoutName(
                 "AspectRatioProvider",
+                "EditableAvatarViewUriProvider",
                 "LoginModeViewErrorProvider",
                 "OverlapRatioProvider",
                 "TextFileContentProvider",
@@ -99,6 +100,7 @@ class KonsistClassNameTest {
             .withoutName(
                 "FakeFileSystem",
                 "FakeImageLoader",
+                "FakeListenableFuture",
             )
             .assertTrue {
                 val interfaceName = it.name
@@ -148,6 +150,7 @@ class KonsistClassNameTest {
                 "Factory",
                 "TimelineController",
                 "TimelineMediaGalleryDataSource",
+                "MetroWorkerFactory",
             )
             .withoutNameStartingWith(
                 "Accompanist",

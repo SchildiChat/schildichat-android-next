@@ -11,7 +11,7 @@ import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.element.android.libraries.architecture.AsyncData
-import io.element.android.libraries.designsystem.components.media.aWaveForm
+import io.element.android.libraries.designsystem.components.media.WaveFormSamples
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.media.MediaSource
 import io.element.android.libraries.matrix.api.timeline.Timeline
@@ -138,7 +138,7 @@ open class MediaViewerStateProvider : PreviewParameterProvider<MediaViewerState>
                 mediaBottomSheetState = aMediaDeleteConfirmationState(),
             ),
             anAudioMediaInfo(
-                waveForm = aWaveForm(),
+                waveForm = WaveFormSamples.realisticWaveForm,
             ).let {
                 aMediaViewerState(
                     listOf(

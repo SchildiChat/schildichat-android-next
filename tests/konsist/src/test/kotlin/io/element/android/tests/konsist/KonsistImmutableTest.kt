@@ -7,8 +7,12 @@
 
 package io.element.android.tests.konsist
 
+import androidx.compose.runtime.Immutable
 import com.lemonappdev.konsist.api.Konsist
+import com.lemonappdev.konsist.api.ext.list.withAnnotationOf
+import com.lemonappdev.konsist.api.ext.list.withNameEndingWith
 import com.lemonappdev.konsist.api.ext.list.withoutName
+import com.lemonappdev.konsist.api.verify.assertEmpty
 import com.lemonappdev.konsist.api.verify.assertFalse
 import org.junit.Test
 
@@ -59,5 +63,15 @@ class KonsistImmutableTest {
             .assertFalse(additionalMessage = "Please use toImmutableMap() instead of toPersistentMap()") {
                 it.text.contains(".toPersistentMap()")
             }
+    }
+
+    @Test
+    fun `Immutable annotation is not used on sealed interface for Presenter Events`() {
+        Konsist
+            .scopeFromProduction()
+            .interfaces()
+            .withNameEndingWith("Events")
+            .withAnnotationOf(Immutable::class)
+            .assertEmpty()
     }
 }

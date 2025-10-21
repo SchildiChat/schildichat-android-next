@@ -33,13 +33,14 @@ fun anAggregatedReaction(
     val timeFormatter = DateFormat.getTimeInstance(DateFormat.SHORT, java.util.Locale.US).apply {
         timeZone = TimeZone.getTimeZone("UTC")
     }
-    val date = Date(1_689_061_264L)
+    val timestamp = 1_689_061_264L
+    val date = Date(timestamp)
     val senders = buildList {
         repeat(count) { index ->
             add(
                 AggregatedReactionSender(
                     senderId = if (isHighlighted && index == 0) userId else UserId("@user$index:server.org"),
-                    timestamp = date,
+                    timestamp = timestamp,
                     sentTime = timeFormatter.format(date),
                 )
             )

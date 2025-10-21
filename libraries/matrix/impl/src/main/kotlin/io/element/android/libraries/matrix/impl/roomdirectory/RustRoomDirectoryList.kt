@@ -73,9 +73,9 @@ class RustRoomDirectoryList(
         return !inner.isAtLastPage()
     }
 
-    override val state: Flow<RoomDirectoryList.State> =
+    override val state: Flow<RoomDirectoryList.SearchResult> =
         combine(hasMoreToLoad, processor.roomDescriptionsFlow) { hasMoreToLoad, items ->
-            RoomDirectoryList.State(
+            RoomDirectoryList.SearchResult(
                 hasMoreToLoad = hasMoreToLoad,
                 items = items
             )

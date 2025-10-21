@@ -19,7 +19,6 @@ import io.element.android.libraries.push.api.battery.BatteryOptimizationState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
 
-@Immutable
 data class RoomListState(
     val contextMenu: ContextMenu,
     val declineInviteMenu: DeclineInviteMenu,

@@ -17,6 +17,7 @@ import io.element.android.features.login.impl.accountprovider.AccountProvider
 import io.element.android.features.login.impl.changeserver.ChangeServerState
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.uri.ensureProtocol
+import kotlinx.collections.immutable.toImmutableList
 
 @Inject
 class ChangeAccountProviderPresenter(
@@ -39,6 +40,7 @@ class ChangeAccountProviderPresenter(
                         isValid = true,
                     )
                 }
+                .toImmutableList()
         }
 
         val canSearchForAccountProviders = remember {

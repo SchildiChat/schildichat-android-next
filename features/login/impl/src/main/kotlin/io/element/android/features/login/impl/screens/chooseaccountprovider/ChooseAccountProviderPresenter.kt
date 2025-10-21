@@ -21,6 +21,7 @@ import io.element.android.features.login.impl.login.LoginHelper
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.uri.ensureProtocol
+import kotlinx.collections.immutable.toImmutableList
 
 @Inject
 class ChooseAccountProviderPresenter(
@@ -69,6 +70,7 @@ class ChooseAccountProviderPresenter(
                         isValid = true,
                     )
                 }
+                .toImmutableList()
         }
 
         return ChooseAccountProviderState(

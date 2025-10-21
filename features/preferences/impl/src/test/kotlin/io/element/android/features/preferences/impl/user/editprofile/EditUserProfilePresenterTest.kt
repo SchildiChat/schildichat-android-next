@@ -66,7 +66,9 @@ class EditUserProfilePresenterTest {
         mockkStatic(Uri::class)
 
         every { Uri.parse(AN_AVATAR_URL) } returns userAvatarUri
+        every { userAvatarUri.toString() } returns AN_AVATAR_URL
         every { Uri.parse(ANOTHER_AVATAR_URL) } returns anotherAvatarUri
+        every { anotherAvatarUri.toString() } returns ANOTHER_AVATAR_URL
     }
 
     @After
@@ -102,7 +104,7 @@ class EditUserProfilePresenterTest {
             val initialState = awaitItem()
             assertThat(initialState.userId).isEqualTo(user.userId)
             assertThat(initialState.displayName).isEqualTo(user.displayName)
-            assertThat(initialState.userAvatarUrl).isEqualTo(userAvatarUri)
+            assertThat(initialState.userAvatarUrl).isEqualTo(AN_AVATAR_URL)
             assertThat(initialState.avatarActions).containsExactly(
                 AvatarAction.ChoosePhoto,
                 AvatarAction.TakePhoto,
@@ -127,16 +129,16 @@ class EditUserProfilePresenterTest {
         }.test {
             val initialState = awaitItem()
             assertThat(initialState.displayName).isEqualTo("Name")
-            assertThat(initialState.userAvatarUrl).isEqualTo(userAvatarUri)
+            assertThat(initialState.userAvatarUrl).isEqualTo(AN_AVATAR_URL)
             initialState.eventSink(EditUserProfileEvents.UpdateDisplayName("Name II"))
             awaitItem().apply {
                 assertThat(displayName).isEqualTo("Name II")
-                assertThat(userAvatarUrl).isEqualTo(userAvatarUri)
+                assertThat(userAvatarUrl).isEqualTo(AN_AVATAR_URL)
             }
             initialState.eventSink(EditUserProfileEvents.UpdateDisplayName("Name III"))
             awaitItem().apply {
                 assertThat(displayName).isEqualTo("Name III")
-                assertThat(userAvatarUrl).isEqualTo(userAvatarUri)
+                assertThat(userAvatarUrl).isEqualTo(AN_AVATAR_URL)
             }
             initialState.eventSink(EditUserProfileEvents.HandleAvatarAction(AvatarAction.Remove))
             awaitItem().apply {
@@ -160,10 +162,10 @@ class EditUserProfilePresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitItem()
-            assertThat(initialState.userAvatarUrl).isEqualTo(userAvatarUri)
+            assertThat(initialState.userAvatarUrl).isEqualTo(AN_AVATAR_URL)
             initialState.eventSink(EditUserProfileEvents.HandleAvatarAction(AvatarAction.ChoosePhoto))
             awaitItem().apply {
-                assertThat(userAvatarUrl).isEqualTo(anotherAvatarUri)
+                assertThat(userAvatarUrl).isEqualTo(ANOTHER_AVATAR_URL)
             }
         }
     }
@@ -185,7 +187,7 @@ class EditUserProfilePresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitItem()
-            assertThat(initialState.userAvatarUrl).isEqualTo(userAvatarUri)
+            assertThat(initialState.userAvatarUrl).isEqualTo(AN_AVATAR_URL)
             assertThat(initialState.cameraPermissionState.permissionGranted).isFalse()
             initialState.eventSink(EditUserProfileEvents.HandleAvatarAction(AvatarAction.TakePhoto))
             val stateWithAskingPermission = awaitItem()
@@ -194,12 +196,12 @@ class EditUserProfilePresenterTest {
             val stateWithPermission = awaitItem()
             assertThat(stateWithPermission.cameraPermissionState.permissionGranted).isTrue()
             val stateWithNewAvatar = awaitItem()
-            assertThat(stateWithNewAvatar.userAvatarUrl).isEqualTo(anotherAvatarUri)
+            assertThat(stateWithNewAvatar.userAvatarUrl).isEqualTo(ANOTHER_AVATAR_URL)
             // Do it again, no permission is requested
             fakePickerProvider.givenResult(userAvatarUri)
             stateWithNewAvatar.eventSink(EditUserProfileEvents.HandleAvatarAction(AvatarAction.TakePhoto))
             val stateWithNewAvatar2 = awaitItem()
-            assertThat(stateWithNewAvatar2.userAvatarUrl).isEqualTo(userAvatarUri)
+            assertThat(stateWithNewAvatar2.userAvatarUrl).isEqualTo(AN_AVATAR_URL)
             deleteCallback.assertions().isCalledExactly(2).withSequence(
                 listOf(value(userAvatarUri)),
                 listOf(value(anotherAvatarUri)),

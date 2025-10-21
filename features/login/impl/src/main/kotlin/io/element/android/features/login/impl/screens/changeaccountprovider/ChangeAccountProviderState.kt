@@ -9,10 +9,10 @@ package io.element.android.features.login.impl.screens.changeaccountprovider
 
 import io.element.android.features.login.impl.accountprovider.AccountProvider
 import io.element.android.features.login.impl.changeserver.ChangeServerState
+import kotlinx.collections.immutable.ImmutableList
 
-// Do not use default value, so no member get forgotten in the presenters.
 data class ChangeAccountProviderState(
-    val accountProviders: List<AccountProvider>,
+    val accountProviders: ImmutableList<AccountProvider>,
     val canSearchForAccountProviders: Boolean,
     val changeServerState: ChangeServerState,
 )

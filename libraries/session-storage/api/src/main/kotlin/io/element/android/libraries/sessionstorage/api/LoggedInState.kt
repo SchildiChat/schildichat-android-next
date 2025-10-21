@@ -7,6 +7,9 @@
 
 package io.element.android.libraries.sessionstorage.api
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 sealed interface LoggedInState {
     data object NotLoggedIn : LoggedInState
     data class LoggedIn(

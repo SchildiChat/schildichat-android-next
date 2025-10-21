@@ -10,7 +10,7 @@ package io.element.android.libraries.mediaviewer.impl.viewer
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.libraries.architecture.AsyncData
-import io.element.android.libraries.designsystem.components.media.createFakeWaveform
+import io.element.android.libraries.designsystem.components.media.WaveFormSamples
 import io.element.android.libraries.matrix.api.core.UniqueId
 import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
@@ -128,7 +128,7 @@ class SingleMediaGalleryDataSourceTest {
     fun `createFrom should create a SingleMediaGalleryDataSource with a voice item`() {
         testFactory(
             mediaInfo = aVoiceMediaInfo(
-                waveForm = createFakeWaveform(),
+                waveForm = WaveFormSamples.longRealisticWaveForm,
                 duration = "12:34",
             ),
             expectedResult = { params ->

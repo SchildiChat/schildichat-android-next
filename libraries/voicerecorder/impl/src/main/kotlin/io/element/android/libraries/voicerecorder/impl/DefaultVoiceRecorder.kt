@@ -63,6 +63,8 @@ class DefaultVoiceRecorder(
     private var outputFile: File? = null
     private var audioReader: AudioReader? = null
     private var recordingJob: Job? = null
+
+    // List of Float between 0 and 1 representing the audio levels
     private val levels: MutableList<Float> = mutableListOf()
     private val lock = Mutex()
 

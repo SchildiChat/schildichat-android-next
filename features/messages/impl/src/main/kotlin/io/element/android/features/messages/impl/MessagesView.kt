@@ -71,7 +71,6 @@ import io.element.android.features.messages.impl.topbars.MessagesViewTopBar
 import io.element.android.features.messages.impl.topbars.ThreadTopBar
 import io.element.android.features.messages.impl.voicemessages.composer.VoiceMessagePermissionRationaleDialog
 import io.element.android.features.messages.impl.voicemessages.composer.VoiceMessageSendingFailedDialog
-import io.element.android.features.networkmonitor.api.ui.ConnectivityIndicatorView
 import io.element.android.libraries.androidutils.ui.hideKeyboard
 import io.element.android.libraries.designsystem.atomic.molecules.ComposerAlertMolecule
 import io.element.android.libraries.designsystem.components.ExpandableBottomSheetLayout
@@ -84,6 +83,7 @@ import io.element.android.libraries.designsystem.text.toAnnotatedString
 import io.element.android.libraries.designsystem.theme.components.BottomSheetDragHandle
 import io.element.android.libraries.designsystem.theme.components.Scaffold
 import io.element.android.libraries.designsystem.theme.components.Text
+import io.element.android.libraries.designsystem.utils.HideKeyboardWhenDisposed
 import io.element.android.libraries.designsystem.utils.KeepScreenOn
 import io.element.android.libraries.designsystem.utils.OnLifecycleEvent
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarHost
@@ -122,6 +122,8 @@ fun MessagesView(
     }
 
     KeepScreenOn(state.voiceMessageComposerState.keepScreenOn)
+
+    HideKeyboardWhenDisposed()
 
     val snackbarHostState = rememberSnackbarHostState(snackbarMessage = state.snackbarMessage)
 
@@ -180,8 +182,6 @@ fun MessagesView(
             Scaffold(
                 contentWindowInsets = WindowInsets.statusBars,
                 topBar = {
-                    Column {
-                        ConnectivityIndicatorView(isOnline = state.hasNetworkConnection)
                         if (state.timelineState.timelineMode is Timeline.Mode.Thread) {
                             ThreadTopBar(
                                 roomName = state.roomName,
@@ -203,7 +203,6 @@ fun MessagesView(
                                 onJoinCallClick = onJoinCallClick,
                             )
                         }
-                    }
                 },
                 content = { padding ->
                     Box(

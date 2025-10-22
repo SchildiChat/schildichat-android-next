@@ -7,12 +7,9 @@
 
 package io.element.android.features.enterprise.impl
 
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.moleculeFlow
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
-import io.element.android.compound.tokens.generated.compoundColorsDark
-import io.element.android.compound.tokens.generated.compoundColorsLight
+import io.element.android.compound.colors.SemanticColorsLightDark
 import io.element.android.libraries.matrix.test.A_HOMESERVER_URL
 import io.element.android.libraries.matrix.test.A_SESSION_ID
 import kotlinx.coroutines.test.runTest
@@ -44,28 +41,22 @@ class DefaultEnterpriseServiceTest {
     }
 
     @Test
-    fun `semanticColorsLight always emits the same value`() = runTest {
+    fun `semanticColorsFlow always emits the same value`() = runTest {
         val defaultEnterpriseService = DefaultEnterpriseService()
-        moleculeFlow(RecompositionMode.Immediate) {
-            defaultEnterpriseService.semanticColorsLight().value
-        }.test {
+        defaultEnterpriseService.semanticColorsFlow(null).test {
             val initialState = awaitItem()
-            assertThat(initialState).isEqualTo(compoundColorsLight)
-            defaultEnterpriseService.overrideBrandColor(A_SESSION_ID, "#87654321")
-            expectNoEvents()
+            assertThat(initialState).isEqualTo(SemanticColorsLightDark.default)
+            awaitComplete()
         }
     }
 
     @Test
-    fun `semanticColorsDark always emits the same value`() = runTest {
+    fun `semanticColorsFlow always emits the same value for a session`() = runTest {
         val defaultEnterpriseService = DefaultEnterpriseService()
-        moleculeFlow(RecompositionMode.Immediate) {
-            defaultEnterpriseService.semanticColorsDark().value
-        }.test {
+        defaultEnterpriseService.semanticColorsFlow(A_SESSION_ID).test {
             val initialState = awaitItem()
-            assertThat(initialState).isEqualTo(compoundColorsDark)
-            defaultEnterpriseService.overrideBrandColor(A_SESSION_ID, "#87654321")
-            expectNoEvents()
+            assertThat(initialState).isEqualTo(SemanticColorsLightDark.default)
+            awaitComplete()
         }
     }
 }

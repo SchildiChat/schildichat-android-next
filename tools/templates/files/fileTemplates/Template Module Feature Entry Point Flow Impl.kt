@@ -7,7 +7,6 @@ import dev.zacsweers.metro.ContributesBinding
 import io.element.android.features.${MODULE_NAME}.api.${FEATURE_NAME}EntryPoint
 import io.element.android.libraries.architecture.createNode
 import dev.zacsweers.metro.AppScope
-import dev.zacsweers.metro.Inject
 
 @ContributesBinding(AppScope::class)
 class Default${FEATURE_NAME}EntryPoint() : ${FEATURE_NAME}EntryPoint {

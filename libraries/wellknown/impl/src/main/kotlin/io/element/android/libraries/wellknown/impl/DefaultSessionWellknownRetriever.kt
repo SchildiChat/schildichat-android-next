@@ -16,6 +16,7 @@ import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.wellknown.api.ElementWellKnown
 import io.element.android.libraries.wellknown.api.SessionWellknownRetriever
 import io.element.android.libraries.wellknown.api.WellKnown
+import io.element.android.libraries.wellknown.api.WellknownRetrieverResult
 import timber.log.Timber
 
 @ContributesBinding(SessionScope::class)
@@ -26,7 +27,7 @@ class DefaultSessionWellknownRetriever(
 ) : SessionWellknownRetriever {
     private val domain by lazy { matrixClient.userIdServerName() }
 
-    override suspend fun getWellKnown(): WellKnown? {
+    override suspend fun getWellKnown(): WellknownRetrieverResult<WellKnown> {
         val url = "https://$domain/.well-known/matrix/client"
         return matrixClient
             .getUrl(url)
@@ -36,10 +37,17 @@ class DefaultSessionWellknownRetriever(
             }
             .onFailure { Timber.e(it, "Failed to retrieve .well-known from $domain") }
             .map { it.map() }
-            .getOrNull()
+            .fold(
+                onSuccess = {
+                    WellknownRetrieverResult.Success(it)
+                },
+                onFailure = {
+                    WellknownRetrieverResult.Error(it as Exception)
+                }
+            )
     }
 
-    override suspend fun getElementWellKnown(): ElementWellKnown? {
+    override suspend fun getElementWellKnown(): WellknownRetrieverResult<ElementWellKnown> {
         val url = "https://$domain/.well-known/element/element.json"
         return matrixClient
             .getUrl(url)
@@ -49,6 +57,13 @@ class DefaultSessionWellknownRetriever(
             }
             .onFailure { Timber.e(it, "Failed to retrieve Element .well-known from $domain") }
             .map { it.map() }
-            .getOrNull()
+            .fold(
+                onSuccess = {
+                    WellknownRetrieverResult.Success(it)
+                },
+                onFailure = {
+                    WellknownRetrieverResult.Error(it as Exception)
+                }
+            )
     }
 }

@@ -7,9 +7,9 @@
 
 package io.element.android.features.enterprise.api
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import io.element.android.compound.tokens.generated.SemanticColors
+import io.element.android.compound.tokens.generated.compoundColorsDark
+import io.element.android.compound.tokens.generated.compoundColorsLight
 import io.element.android.libraries.matrix.api.core.SessionId
 import kotlinx.coroutines.flow.Flow
 
@@ -26,16 +26,12 @@ interface EnterpriseService {
      */
     suspend fun overrideBrandColor(sessionId: SessionId?, brandColor: String?)
 
-    @Composable
-    fun semanticColorsLight(): State<SemanticColors>
-
-    @Composable
-    fun semanticColorsDark(): State<SemanticColors>
+    fun semanticColorsFlow(sessionId: SessionId?): Flow<SemanticColorsLightDark>
 
     fun firebasePushGateway(): String?
     fun unifiedPushDefaultPushGateway(): String?
 
-    val bugReportUrlFlow: Flow<BugReportUrl>
+    fun bugReportUrlFlow(sessionId: SessionId?): Flow<BugReportUrl>
 
     companion object {
         const val ANY_ACCOUNT_PROVIDER = "*"
@@ -45,5 +41,17 @@ interface EnterpriseService {
 fun EnterpriseService.canConnectToAnyHomeserver(): Boolean {
     return defaultHomeserverList().let {
         it.isEmpty() || it.contains(EnterpriseService.ANY_ACCOUNT_PROVIDER)
+    }
+}
+
+data class SemanticColorsLightDark(
+    val light: SemanticColors,
+    val dark: SemanticColors,
+) {
+    companion object {
+        val default = SemanticColorsLightDark(
+            light = compoundColorsLight,
+            dark = compoundColorsDark,
+        )
     }
 }

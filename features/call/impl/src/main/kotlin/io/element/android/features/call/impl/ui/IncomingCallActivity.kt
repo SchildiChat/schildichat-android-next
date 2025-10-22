@@ -11,6 +11,9 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.core.content.IntentCompat
 import androidx.lifecycle.lifecycleScope
 import dev.zacsweers.metro.Inject
@@ -21,6 +24,7 @@ import io.element.android.features.call.impl.notifications.CallNotificationData
 import io.element.android.features.call.impl.utils.ActiveCallManager
 import io.element.android.features.call.impl.utils.CallState
 import io.element.android.features.enterprise.api.EnterpriseService
+import io.element.android.features.enterprise.api.SemanticColorsLightDark
 import io.element.android.libraries.architecture.bindings
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.designsystem.theme.ElementThemeApp
@@ -78,9 +82,13 @@ class IncomingCallActivity : AppCompatActivity() {
         val notificationData = intent?.let { IntentCompat.getParcelableExtra(it, EXTRA_NOTIFICATION_DATA, CallNotificationData::class.java) }
         if (notificationData != null) {
             setContent {
+                val colors by remember {
+                    enterpriseService.semanticColorsFlow(sessionId = notificationData.sessionId)
+                }.collectAsState(SemanticColorsLightDark.default)
                 ElementThemeApp(
                     appPreferencesStore = appPreferencesStore,
-                    enterpriseService = enterpriseService,
+                    compoundLight = colors.light,
+                    compoundDark = colors.dark,
                     buildMeta = buildMeta,
                 ) {
                     IncomingCallScreen(

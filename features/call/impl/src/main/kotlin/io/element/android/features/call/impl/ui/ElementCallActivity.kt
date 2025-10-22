@@ -23,8 +23,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.core.app.PictureInPictureModeChangedInfo
 import androidx.core.content.IntentCompat
@@ -33,6 +35,7 @@ import androidx.lifecycle.Lifecycle
 import dev.zacsweers.metro.Inject
 import io.element.android.features.call.api.CallType
 import io.element.android.features.call.api.CallType.ExternalUrl
+import io.element.android.features.call.api.getSessionId
 import io.element.android.features.call.impl.DefaultElementCallEntryPoint
 import io.element.android.features.call.impl.di.CallBindings
 import io.element.android.features.call.impl.pip.PictureInPictureEvents
@@ -42,6 +45,7 @@ import io.element.android.features.call.impl.pip.PipView
 import io.element.android.features.call.impl.services.CallForegroundService
 import io.element.android.features.call.impl.utils.CallIntentDataParser
 import io.element.android.features.enterprise.api.EnterpriseService
+import io.element.android.features.enterprise.api.SemanticColorsLightDark
 import io.element.android.libraries.androidutils.browser.ConsoleMessageLogger
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.architecture.bindings
@@ -105,9 +109,13 @@ class ElementCallActivity :
         setContent {
             val pipState = pictureInPicturePresenter.present()
             ListenToAndroidEvents(pipState)
+            val colors by remember(webViewTarget.value?.getSessionId()) {
+                enterpriseService.semanticColorsFlow(sessionId = webViewTarget.value?.getSessionId())
+            }.collectAsState(SemanticColorsLightDark.default)
             ElementThemeApp(
                 appPreferencesStore = appPreferencesStore,
-                enterpriseService = enterpriseService,
+                compoundLight = colors.light,
+                compoundDark = colors.dark,
                 buildMeta = buildMeta,
             ) {
                 val state = presenter.present()

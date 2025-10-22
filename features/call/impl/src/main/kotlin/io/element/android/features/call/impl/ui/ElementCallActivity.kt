@@ -36,7 +36,6 @@ import dev.zacsweers.metro.Inject
 import io.element.android.compound.colors.SemanticColorsLightDark
 import io.element.android.features.call.api.CallType
 import io.element.android.features.call.api.CallType.ExternalUrl
-import io.element.android.features.call.api.getSessionId
 import io.element.android.features.call.impl.DefaultElementCallEntryPoint
 import io.element.android.features.call.impl.di.CallBindings
 import io.element.android.features.call.impl.pip.PictureInPictureEvents

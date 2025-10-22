@@ -31,10 +31,3 @@ sealed interface CallType : NodeInputs, Parcelable {
         }
     }
 }
-
-fun CallType.getSessionId(): SessionId? {
-    return when (this) {
-        is CallType.ExternalUrl -> null
-        is CallType.RoomCall -> sessionId
-    }
-}

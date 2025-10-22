@@ -7,9 +7,7 @@
 
 package io.element.android.features.enterprise.api
 
-import io.element.android.compound.tokens.generated.SemanticColors
-import io.element.android.compound.tokens.generated.compoundColorsDark
-import io.element.android.compound.tokens.generated.compoundColorsLight
+import io.element.android.compound.colors.SemanticColorsLightDark
 import io.element.android.libraries.matrix.api.core.SessionId
 import kotlinx.coroutines.flow.Flow
 
@@ -41,17 +39,5 @@ interface EnterpriseService {
 fun EnterpriseService.canConnectToAnyHomeserver(): Boolean {
     return defaultHomeserverList().let {
         it.isEmpty() || it.contains(EnterpriseService.ANY_ACCOUNT_PROVIDER)
-    }
-}
-
-data class SemanticColorsLightDark(
-    val light: SemanticColors,
-    val dark: SemanticColors,
-) {
-    companion object {
-        val default = SemanticColorsLightDark(
-            light = compoundColorsLight,
-            dark = compoundColorsDark,
-        )
     }
 }

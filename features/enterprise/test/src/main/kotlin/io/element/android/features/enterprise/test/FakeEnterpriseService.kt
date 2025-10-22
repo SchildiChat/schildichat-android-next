@@ -7,9 +7,9 @@
 
 package io.element.android.features.enterprise.test
 
+import io.element.android.compound.colors.SemanticColorsLightDark
 import io.element.android.features.enterprise.api.BugReportUrl
 import io.element.android.features.enterprise.api.EnterpriseService
-import io.element.android.features.enterprise.api.SemanticColorsLightDark
 import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.tests.testutils.lambda.lambdaError
 import io.element.android.tests.testutils.simulateLongTask

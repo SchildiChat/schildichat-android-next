@@ -47,8 +47,8 @@ import io.element.android.appnav.loggedin.SendQueues
 import io.element.android.appnav.room.RoomFlowNode
 import io.element.android.appnav.room.RoomNavigationTarget
 import io.element.android.appnav.room.joined.JoinedRoomLoadedFlowNode
+import io.element.android.compound.colors.SemanticColorsLightDark
 import io.element.android.features.enterprise.api.EnterpriseService
-import io.element.android.features.enterprise.api.SemanticColorsLightDark
 import io.element.android.features.enterprise.api.SessionEnterpriseService
 import io.element.android.features.ftue.api.FtueEntryPoint
 import io.element.android.features.ftue.api.state.FtueService

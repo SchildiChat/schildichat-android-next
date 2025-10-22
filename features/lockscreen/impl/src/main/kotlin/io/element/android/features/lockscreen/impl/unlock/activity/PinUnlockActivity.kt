@@ -19,8 +19,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.lifecycle.lifecycleScope
 import dev.zacsweers.metro.Inject
+import io.element.android.compound.colors.SemanticColorsLightDark
 import io.element.android.features.enterprise.api.EnterpriseService
-import io.element.android.features.enterprise.api.SemanticColorsLightDark
 import io.element.android.features.lockscreen.api.LockScreenLockState
 import io.element.android.features.lockscreen.api.LockScreenService
 import io.element.android.features.lockscreen.impl.unlock.PinUnlockPresenter

@@ -10,9 +10,9 @@ package io.element.android.features.enterprise.impl
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import io.element.android.compound.colors.SemanticColorsLightDark
 import io.element.android.features.enterprise.api.BugReportUrl
 import io.element.android.features.enterprise.api.EnterpriseService
-import io.element.android.features.enterprise.api.SemanticColorsLightDark
 import io.element.android.libraries.matrix.api.core.SessionId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf

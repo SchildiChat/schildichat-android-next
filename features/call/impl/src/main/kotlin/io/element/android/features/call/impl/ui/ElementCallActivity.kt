@@ -33,6 +33,7 @@ import androidx.core.content.IntentCompat
 import androidx.core.util.Consumer
 import androidx.lifecycle.Lifecycle
 import dev.zacsweers.metro.Inject
+import io.element.android.compound.colors.SemanticColorsLightDark
 import io.element.android.features.call.api.CallType
 import io.element.android.features.call.api.CallType.ExternalUrl
 import io.element.android.features.call.api.getSessionId
@@ -45,7 +46,6 @@ import io.element.android.features.call.impl.pip.PipView
 import io.element.android.features.call.impl.services.CallForegroundService
 import io.element.android.features.call.impl.utils.CallIntentDataParser
 import io.element.android.features.enterprise.api.EnterpriseService
-import io.element.android.features.enterprise.api.SemanticColorsLightDark
 import io.element.android.libraries.androidutils.browser.ConsoleMessageLogger
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.architecture.bindings

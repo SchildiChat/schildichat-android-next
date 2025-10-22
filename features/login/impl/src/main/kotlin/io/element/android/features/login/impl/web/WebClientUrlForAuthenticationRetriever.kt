@@ -10,7 +10,6 @@ package io.element.android.features.login.impl.web
 import androidx.core.net.toUri
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
 import io.element.android.appconfig.AuthenticationConfig
 import io.element.android.features.login.impl.screens.createaccount.AccountCreationNotSupported
 import io.element.android.libraries.wellknown.api.WellknownRetriever
@@ -21,7 +20,6 @@ interface WebClientUrlForAuthenticationRetriever {
 }
 
 @ContributesBinding(AppScope::class)
-@Inject
 class DefaultWebClientUrlForAuthenticationRetriever(
     private val wellknownRetriever: WellknownRetriever,
 ) : WebClientUrlForAuthenticationRetriever {

@@ -9,7 +9,6 @@ package io.element.android.libraries.wellknown.impl
 
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
 import io.element.android.libraries.core.extensions.runCatchingExceptions
 import io.element.android.libraries.core.uri.ensureProtocol
 import io.element.android.libraries.network.RetrofitFactory
@@ -22,7 +21,6 @@ import timber.log.Timber
 import java.net.HttpURLConnection
 
 @ContributesBinding(AppScope::class)
-@Inject
 class DefaultWellknownRetriever(
     private val retrofitFactory: RetrofitFactory,
 ) : WellknownRetriever {

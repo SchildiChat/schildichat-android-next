@@ -8,7 +8,6 @@
 package io.element.android.libraries.wellknown.impl
 
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
 import io.element.android.libraries.androidutils.json.JsonProvider
 import io.element.android.libraries.core.extensions.mapCatchingExceptions
 import io.element.android.libraries.di.SessionScope
@@ -21,7 +20,6 @@ import io.element.android.libraries.wellknown.api.WellknownRetrieverResult
 import timber.log.Timber
 
 @ContributesBinding(SessionScope::class)
-@Inject
 class DefaultSessionWellknownRetriever(
     private val matrixClient: MatrixClient,
     private val json: JsonProvider,

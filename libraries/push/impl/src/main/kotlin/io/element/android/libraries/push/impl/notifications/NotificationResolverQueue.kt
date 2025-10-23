@@ -11,13 +11,13 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
-import io.element.android.libraries.androidutils.json.JsonProvider
 import io.element.android.libraries.di.annotations.AppCoroutineScope
 import io.element.android.libraries.featureflag.api.FeatureFlagService
 import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.push.api.push.NotificationEventRequest
 import io.element.android.libraries.push.impl.notifications.model.ResolvedPushEvent
 import io.element.android.libraries.push.impl.workmanager.SyncNotificationWorkManagerRequest
+import io.element.android.libraries.push.impl.workmanager.WorkerDataConverter
 import io.element.android.libraries.workmanager.api.WorkManagerScheduler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -50,7 +50,7 @@ class DefaultNotificationResolverQueue(
     private val appCoroutineScope: CoroutineScope,
     private val workManagerScheduler: WorkManagerScheduler,
     private val featureFlagService: FeatureFlagService,
-    private val json: JsonProvider,
+    private val workerDataConverter: WorkerDataConverter,
 ) : NotificationResolverQueue {
     companion object {
         private const val BATCH_WINDOW_MS = 250L
@@ -101,7 +101,7 @@ class DefaultNotificationResolverQueue(
                         SyncNotificationWorkManagerRequest(
                             sessionId = sessionId,
                             notificationEventRequests = requests,
-                            json = json,
+                            workerDataConverter = workerDataConverter,
                         )
                     )
                 }

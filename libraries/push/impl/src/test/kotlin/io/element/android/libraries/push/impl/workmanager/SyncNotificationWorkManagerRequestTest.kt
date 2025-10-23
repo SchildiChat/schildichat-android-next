@@ -58,5 +58,5 @@ private fun createSyncNotificationWorkManagerRequest(
 ) = SyncNotificationWorkManagerRequest(
     sessionId = sessionId,
     notificationEventRequests = notificationEventRequests,
-    json = DefaultJsonProvider(),
+    workerDataConverter = WorkerDataConverter(DefaultJsonProvider()),
 )

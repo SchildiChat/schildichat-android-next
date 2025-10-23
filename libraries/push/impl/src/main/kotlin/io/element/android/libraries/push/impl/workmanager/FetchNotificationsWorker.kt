@@ -18,7 +18,6 @@ import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.binding
 import io.element.android.features.networkmonitor.api.NetworkMonitor
 import io.element.android.features.networkmonitor.api.NetworkStatus
-import io.element.android.libraries.androidutils.json.JsonProvider
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.core.extensions.runCatchingExceptions
 import io.element.android.libraries.di.annotations.ApplicationContext
@@ -47,20 +46,11 @@ class FetchNotificationsWorker(
     private val workManagerScheduler: WorkManagerScheduler,
     private val syncOnNotifiableEvent: SyncOnNotifiableEvent,
     private val coroutineDispatchers: CoroutineDispatchers,
-    private val json: JsonProvider,
+    private val workerDataConverter: WorkerDataConverter,
 ) : CoroutineWorker(context, workerParams) {
     override suspend fun doWork(): Result = withContext(coroutineDispatchers.io) {
         Timber.d("FetchNotificationsWorker started")
-        val rawRequestsJson = inputData.getString("requests") ?: return@withContext Result.failure()
-        val requests = runCatchingExceptions {
-            json().decodeFromString<List<SyncNotificationWorkManagerRequest.Data>>(rawRequestsJson).map { it.toRequest() }
-        }.getOrElse {
-            Timber.e(it, "Failed to deserialize notification requests")
-            return@withContext Result.failure()
-        }
-
-        Timber.d("Deserialized ${requests.size} requests")
-
+        val requests = workerDataConverter.deserialize(inputData) ?: return@withContext Result.failure()
         // Wait for network to be available, but not more than 10 seconds
         val hasNetwork = withTimeoutOrNull(10.seconds) {
             networkMonitor.connectivity.first { it == NetworkStatus.Connected }
@@ -97,7 +87,7 @@ class FetchNotificationsWorker(
                     SyncNotificationWorkManagerRequest(
                         sessionId = failedSessionId,
                         notificationEventRequests = requestsToRetry,
-                        json = json,
+                        workerDataConverter = workerDataConverter,
                     )
                 )
             }

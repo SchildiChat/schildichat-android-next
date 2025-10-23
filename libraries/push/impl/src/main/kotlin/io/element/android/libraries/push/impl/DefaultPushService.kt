@@ -108,10 +108,6 @@ class DefaultPushService(
         sessionObserver.addListener(this)
     }
 
-    override suspend fun onSessionCreated(userId: String) {
-        // Nothing to do
-    }
-
     /**
      * The session has been deleted.
      * In this case, this is not necessary to unregister the pusher from the homeserver,

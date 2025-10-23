@@ -75,10 +75,6 @@ class DefaultAnalyticsService(
         analyticsStore.setAnalyticsId(analyticsId)
     }
 
-    override suspend fun onSessionCreated(userId: String) {
-        // Nothing to do
-    }
-
     override suspend fun onSessionDeleted(userId: String, wasLastSession: Boolean) {
         // Delete the store when the last session is deleted
         if (sessionStore.getAllSessions().isEmpty()) {

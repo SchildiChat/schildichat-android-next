@@ -10,7 +10,7 @@ package io.element.android.libraries.sessionstorage.impl
 import io.element.android.libraries.matrix.session.SessionData
 import io.element.android.libraries.sessionstorage.api.LoginType
 
-internal fun aSessionData() = SessionData(
+internal fun aDbSessionData() = SessionData(
     userId = "userId",
     deviceId = "deviceId",
     accessToken = "accessToken",

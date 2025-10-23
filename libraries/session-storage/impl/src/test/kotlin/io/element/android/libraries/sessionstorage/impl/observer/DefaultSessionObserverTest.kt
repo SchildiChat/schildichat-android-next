@@ -11,7 +11,7 @@ import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.sessionstorage.impl.DatabaseSessionStore
 import io.element.android.libraries.sessionstorage.impl.SessionDatabase
-import io.element.android.libraries.sessionstorage.impl.aSessionData
+import io.element.android.libraries.sessionstorage.impl.aDbSessionData
 import io.element.android.libraries.sessionstorage.impl.toApiModel
 import io.element.android.tests.testutils.testCoroutineDispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -46,7 +46,7 @@ import org.junit.Test
 
     @Test
     fun `adding data invokes onSessionCreated`() = runTest {
-        val sessionData = aSessionData()
+        val sessionData = aDbSessionData()
         val sut = createDefaultSessionObserver()
         runCurrent()
         val listener = TestSessionListener()
@@ -59,7 +59,7 @@ import org.junit.Test
 
     @Test
     fun `adding and deleting data invokes onSessionCreated and onSessionDeleted`() = runTest {
-        val sessionData = aSessionData()
+        val sessionData = aDbSessionData()
         val sut = createDefaultSessionObserver()
         runCurrent()
         val listener = TestSessionListener()

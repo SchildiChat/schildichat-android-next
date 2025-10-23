@@ -39,7 +39,7 @@ class DefaultAccountProviderAccessControl(
             // Ensure that Element Pro is not required for this account provider
             val wellKnown = wellknownRetriever.getElementWellKnown(
                 baseUrl = accountProviderUrl.ensureProtocol(),
-            )
+            ).dataOrNull()
             if (wellKnown?.enforceElementPro == true) {
                 throw AccountProviderAccessException.NeedElementProException(
                     unauthorisedAccountProviderTitle = title,

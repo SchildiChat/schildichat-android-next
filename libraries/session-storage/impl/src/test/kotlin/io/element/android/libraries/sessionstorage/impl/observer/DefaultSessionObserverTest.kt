@@ -23,7 +23,8 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
-@OptIn(ExperimentalCoroutinesApi::class) class DefaultSessionObserverTest {
+@OptIn(ExperimentalCoroutinesApi::class)
+class DefaultSessionObserverTest {
     private lateinit var database: SessionDatabase
     private lateinit var databaseSessionStore: DatabaseSessionStore
 
@@ -69,7 +70,28 @@ import org.junit.Test
         databaseSessionStore.removeSession(sessionData.userId)
         listener.assertEvents(
             TestSessionListener.Event.Created(sessionData.userId),
-            TestSessionListener.Event.Deleted(sessionData.userId),
+            TestSessionListener.Event.Deleted(sessionData.userId, true),
+        )
+        coroutineContext.cancelChildren()
+    }
+
+    @Test
+    fun `adding and deleting data twice invokes onSessionCreated and onSessionDeleted`() = runTest {
+        val sessionData1 = aDbSessionData(userId = "user1")
+        val sessionData2 = aDbSessionData(userId = "user2")
+        val sut = createDefaultSessionObserver()
+        runCurrent()
+        val listener = TestSessionListener()
+        sut.addListener(listener)
+        databaseSessionStore.addSession(sessionData1.toApiModel())
+        databaseSessionStore.addSession(sessionData2.toApiModel())
+        databaseSessionStore.removeSession(sessionData2.userId)
+        databaseSessionStore.removeSession(sessionData1.userId)
+        listener.assertEvents(
+            TestSessionListener.Event.Created(sessionData1.userId),
+            TestSessionListener.Event.Created(sessionData2.userId),
+            TestSessionListener.Event.Deleted(sessionData2.userId, wasLastSession = false),
+            TestSessionListener.Event.Deleted(sessionData1.userId, wasLastSession = true),
         )
         coroutineContext.cancelChildren()
     }

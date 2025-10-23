@@ -13,7 +13,7 @@ import dev.zacsweers.metro.Inject
 import io.element.android.libraries.core.log.logger.LoggerTag
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.SessionId
-import io.element.android.libraries.pushproviders.api.CurrentUserPushConfig
+import io.element.android.libraries.pushproviders.api.Config
 import io.element.android.libraries.pushproviders.api.Distributor
 import io.element.android.libraries.pushproviders.api.PushProvider
 import io.element.android.libraries.pushproviders.api.PusherSubscriber
@@ -74,9 +74,9 @@ class FirebasePushProvider(
      */
     override suspend fun onSessionDeleted(sessionId: SessionId) = Unit
 
-    override suspend fun getCurrentUserPushConfig(): CurrentUserPushConfig? {
+    override suspend fun getPushConfig(sessionId: SessionId): Config? {
         return firebaseStore.getFcmToken()?.let { fcmToken ->
-            CurrentUserPushConfig(
+            Config(
                 url = firebaseGatewayProvider.getFirebaseGateway(),
                 pushKey = fcmToken
             )

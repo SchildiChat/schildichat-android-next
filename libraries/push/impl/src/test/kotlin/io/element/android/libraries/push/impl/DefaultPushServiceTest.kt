@@ -25,11 +25,11 @@ import io.element.android.libraries.push.impl.store.PushDataStore
 import io.element.android.libraries.push.impl.test.FakeTestPush
 import io.element.android.libraries.push.impl.test.TestPush
 import io.element.android.libraries.push.test.FakeGetCurrentPushProvider
-import io.element.android.libraries.pushproviders.api.CurrentUserPushConfig
+import io.element.android.libraries.pushproviders.api.Config
 import io.element.android.libraries.pushproviders.api.Distributor
 import io.element.android.libraries.pushproviders.api.PushProvider
 import io.element.android.libraries.pushproviders.test.FakePushProvider
-import io.element.android.libraries.pushproviders.test.aCurrentUserPushConfig
+import io.element.android.libraries.pushproviders.test.aSessionPushConfig
 import io.element.android.libraries.pushstore.api.UserPushStoreFactory
 import io.element.android.libraries.pushstore.api.clientsecret.PushClientSecretStore
 import io.element.android.libraries.pushstore.test.userpushstore.FakeUserPushStore
@@ -62,10 +62,10 @@ class DefaultPushServiceTest {
 
     @Test
     fun `test push ok`() = runTest {
-        val aConfig = aCurrentUserPushConfig()
-        val testPushResult = lambdaRecorder<CurrentUserPushConfig, Unit> { }
+        val aConfig = aSessionPushConfig()
+        val testPushResult = lambdaRecorder<Config, Unit> { }
         val aPushProvider = FakePushProvider(
-            currentUserPushConfig = aConfig
+            config = aConfig
         )
         val defaultPushService = createDefaultPushService(
             pushProviders = setOf(aPushProvider),

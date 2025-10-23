@@ -99,7 +99,7 @@ class DefaultPushService(
 
     override suspend fun testPush(sessionId: SessionId): Boolean {
         val pushProvider = getCurrentPushProvider(sessionId) ?: return false
-        val config = pushProvider.getCurrentUserPushConfig() ?: return false
+        val config = pushProvider.getPushConfig(sessionId) ?: return false
         testPush.execute(config)
         return true
     }

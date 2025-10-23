@@ -175,7 +175,10 @@ fun HomeTopBar(
                     }
                 }
             },
-            // We need a 16dp left padding : 4dp default padding + 8dp IconButton padding + 4dp extra padding
+            // We want a 16dp left padding for the navigationIcon :
+            // 4dp from default TopAppBarHorizontalPadding
+            // 8dp from AccountIcon default padding (because of IconButton)
+            // 4dp extra padding using left insets
             windowInsets = WindowInsets(left = 4.dp),
         )
         if (displayFilters) {

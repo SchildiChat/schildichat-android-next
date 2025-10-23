@@ -7,6 +7,8 @@
 
 package io.element.android.libraries.push.api
 
+import io.element.android.libraries.matrix.api.core.SessionId
+
 interface GetCurrentPushProvider {
-    suspend fun getCurrentPushProvider(): String?
+    suspend fun getCurrentPushProvider(sessionId: SessionId): String?
 }

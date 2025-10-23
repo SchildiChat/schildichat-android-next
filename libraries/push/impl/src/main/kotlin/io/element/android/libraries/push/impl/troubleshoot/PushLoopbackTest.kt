@@ -7,9 +7,10 @@
 
 package io.element.android.libraries.push.impl.troubleshoot
 
-import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoSet
 import dev.zacsweers.metro.Inject
+import io.element.android.libraries.di.SessionScope
+import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.push.api.PushService
 import io.element.android.libraries.push.api.gateway.PushGatewayFailure
 import io.element.android.libraries.push.impl.R
@@ -28,9 +29,10 @@ import kotlinx.coroutines.withTimeout
 import timber.log.Timber
 import kotlin.time.Duration.Companion.seconds
 
-@ContributesIntoSet(AppScope::class)
+@ContributesIntoSet(SessionScope::class)
 @Inject
 class PushLoopbackTest(
+    private val sessionId: SessionId,
     private val pushService: PushService,
     private val diagnosticPushHandler: DiagnosticPushHandler,
     private val clock: SystemClock,
@@ -52,9 +54,9 @@ class PushLoopbackTest(
             completable.complete(clock.epochMillis() - startTime)
         }
         val testPushResult = try {
-            pushService.testPush()
+            pushService.testPush(sessionId)
         } catch (pusherRejected: PushGatewayFailure.PusherRejected) {
-            val hasQuickFix = pushService.getCurrentPushProvider()?.canRotateToken() == true
+            val hasQuickFix = pushService.getCurrentPushProvider(sessionId)?.canRotateToken() == true
             delegate.updateState(
                 description = stringProvider.getString(R.string.troubleshoot_notifications_test_push_loop_back_failure_1),
                 status = NotificationTroubleshootTestState.Status.Failure(hasQuickFix = hasQuickFix)
@@ -105,7 +107,7 @@ class PushLoopbackTest(
         navigator: NotificationTroubleshootNavigator,
     ) {
         delegate.start()
-        pushService.getCurrentPushProvider()?.rotateToken()
+        pushService.getCurrentPushProvider(sessionId)?.rotateToken()
         run(coroutineScope)
     }
 

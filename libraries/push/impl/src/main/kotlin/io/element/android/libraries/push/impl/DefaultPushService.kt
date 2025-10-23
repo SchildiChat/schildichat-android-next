@@ -44,8 +44,8 @@ class DefaultPushService(
         observeSessions()
     }
 
-    override suspend fun getCurrentPushProvider(): PushProvider? {
-        val currentPushProvider = getCurrentPushProvider.getCurrentPushProvider()
+    override suspend fun getCurrentPushProvider(sessionId: SessionId): PushProvider? {
+        val currentPushProvider = getCurrentPushProvider.getCurrentPushProvider(sessionId)
         return pushProviders.find { it.name == currentPushProvider }
     }
 
@@ -97,8 +97,8 @@ class DefaultPushService(
         userPushStoreFactory.getOrCreate(sessionId).setIgnoreRegistrationError(ignore)
     }
 
-    override suspend fun testPush(): Boolean {
-        val pushProvider = getCurrentPushProvider() ?: return false
+    override suspend fun testPush(sessionId: SessionId): Boolean {
+        val pushProvider = getCurrentPushProvider(sessionId) ?: return false
         val config = pushProvider.getCurrentUserPushConfig() ?: return false
         testPush.execute(config)
         return true

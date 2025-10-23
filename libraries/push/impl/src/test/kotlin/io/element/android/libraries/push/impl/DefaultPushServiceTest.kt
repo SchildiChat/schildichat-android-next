@@ -47,7 +47,7 @@ class DefaultPushServiceTest {
     @Test
     fun `test push no push provider`() = runTest {
         val defaultPushService = createDefaultPushService()
-        assertThat(defaultPushService.testPush()).isFalse()
+        assertThat(defaultPushService.testPush(A_SESSION_ID)).isFalse()
     }
 
     @Test
@@ -57,7 +57,7 @@ class DefaultPushServiceTest {
             pushProviders = setOf(aPushProvider),
             getCurrentPushProvider = FakeGetCurrentPushProvider(currentPushProvider = aPushProvider.name),
         )
-        assertThat(defaultPushService.testPush()).isFalse()
+        assertThat(defaultPushService.testPush(A_SESSION_ID)).isFalse()
     }
 
     @Test
@@ -72,7 +72,7 @@ class DefaultPushServiceTest {
             getCurrentPushProvider = FakeGetCurrentPushProvider(currentPushProvider = aPushProvider.name),
             testPush = FakeTestPush(executeResult = testPushResult),
         )
-        assertThat(defaultPushService.testPush()).isTrue()
+        assertThat(defaultPushService.testPush(A_SESSION_ID)).isTrue()
         testPushResult.assertions()
             .isCalledOnce()
             .with(value(aConfig))
@@ -81,7 +81,7 @@ class DefaultPushServiceTest {
     @Test
     fun `getCurrentPushProvider null`() = runTest {
         val defaultPushService = createDefaultPushService()
-        val result = defaultPushService.getCurrentPushProvider()
+        val result = defaultPushService.getCurrentPushProvider(A_SESSION_ID)
         assertThat(result).isNull()
     }
 
@@ -92,7 +92,7 @@ class DefaultPushServiceTest {
             pushProviders = setOf(aPushProvider),
             getCurrentPushProvider = FakeGetCurrentPushProvider(currentPushProvider = aPushProvider.name),
         )
-        val result = defaultPushService.getCurrentPushProvider()
+        val result = defaultPushService.getCurrentPushProvider(A_SESSION_ID)
         assertThat(result).isEqualTo(aPushProvider)
     }
 

@@ -10,6 +10,7 @@ package io.element.android.libraries.troubleshoot.impl
 import dev.zacsweers.metro.Inject
 import im.vector.app.features.analytics.plan.NotificationTroubleshoot
 import io.element.android.libraries.architecture.AsyncAction
+import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.push.api.GetCurrentPushProvider
 import io.element.android.libraries.troubleshoot.api.test.NotificationTroubleshootNavigator
 import io.element.android.libraries.troubleshoot.api.test.NotificationTroubleshootTest
@@ -25,6 +26,7 @@ import kotlinx.coroutines.flow.onEach
 
 @Inject
 class TroubleshootTestSuite(
+    private val sessionId: SessionId,
     private val notificationTroubleshootTests: Set<@JvmSuppressWildcards NotificationTroubleshootTest>,
     private val getCurrentPushProvider: GetCurrentPushProvider,
     private val analyticsService: AnalyticsService,
@@ -41,7 +43,7 @@ class TroubleshootTestSuite(
 
     suspend fun start(coroutineScope: CoroutineScope) {
         val testFilterData = TestFilterData(
-            currentPushProviderName = getCurrentPushProvider.getCurrentPushProvider()
+            currentPushProviderName = getCurrentPushProvider.getCurrentPushProvider(sessionId)
         )
         tests = notificationTroubleshootTests
             .filter { it.isRelevant(testFilterData) }

@@ -30,7 +30,7 @@ class DefaultWebClientUrlForAuthenticationRetriever(
             Timber.w("Temporary account creation flow is only supported on matrix.org")
             throw AccountCreationNotSupported()
         }
-        val wellknown = wellknownRetriever.getElementWellKnown(homeServerUrl)
+        val wellknown = wellknownRetriever.getElementWellKnown(homeServerUrl).dataOrNull()
             ?: throw AccountCreationNotSupported()
         val registrationHelperUrl = wellknown.registrationHelperUrl
         return if (registrationHelperUrl != null) {

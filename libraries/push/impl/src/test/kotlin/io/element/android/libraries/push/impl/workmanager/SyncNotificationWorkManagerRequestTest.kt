@@ -49,14 +49,24 @@ class SyncNotificationWorkManagerRequestTest {
         assertThat(result.isFailure).isTrue()
     }
 
-    // TODO add test for invalid serialization (how?)
+    @Test
+    fun `build - invalid serialization`() = runTest {
+        val request = createSyncNotificationWorkManagerRequest(
+            sessionId = A_SESSION_ID,
+            notificationEventRequests = listOf(aNotificationEventRequest()),
+            workerDataConverter = WorkerDataConverter({ error("error during serialization") })
+        )
+        val result = request.build()
+        assertThat(result.isFailure).isTrue()
+    }
 }
 
 private fun createSyncNotificationWorkManagerRequest(
     sessionId: SessionId,
     notificationEventRequests: List<NotificationEventRequest>,
+    workerDataConverter: WorkerDataConverter = WorkerDataConverter(DefaultJsonProvider())
 ) = SyncNotificationWorkManagerRequest(
     sessionId = sessionId,
     notificationEventRequests = notificationEventRequests,
-    workerDataConverter = WorkerDataConverter(DefaultJsonProvider()),
+    workerDataConverter = workerDataConverter,
 )

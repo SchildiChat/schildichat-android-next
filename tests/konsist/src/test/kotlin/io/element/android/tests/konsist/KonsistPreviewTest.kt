@@ -86,7 +86,6 @@ class KonsistPreviewTest {
         "FocusedEventPreview",
         "GradientFloatingActionButtonCircleShapePreview",
         "HeaderFooterPageScrollablePreview",
-        "IconsCompoundPreview",
         "IconsOtherPreview",
         "MarkdownTextComposerEditPreview",
         "MatrixBadgeAtomInfoPreview",

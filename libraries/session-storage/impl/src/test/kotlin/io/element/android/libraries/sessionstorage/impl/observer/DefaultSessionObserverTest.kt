@@ -15,7 +15,6 @@ import io.element.android.libraries.sessionstorage.impl.aDbSessionData
 import io.element.android.libraries.sessionstorage.impl.toApiModel
 import io.element.android.tests.testutils.testCoroutineDispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runCurrent
@@ -55,7 +54,6 @@ class DefaultSessionObserverTest {
         databaseSessionStore.addSession(sessionData.toApiModel())
         listener.assertEvents(TestSessionListener.Event.Created(sessionData.userId))
         sut.removeListener(listener)
-        coroutineContext.cancelChildren()
     }
 
     @Test
@@ -72,7 +70,6 @@ class DefaultSessionObserverTest {
             TestSessionListener.Event.Created(sessionData.userId),
             TestSessionListener.Event.Deleted(sessionData.userId, true),
         )
-        coroutineContext.cancelChildren()
     }
 
     @Test
@@ -93,13 +90,12 @@ class DefaultSessionObserverTest {
             TestSessionListener.Event.Deleted(sessionData2.userId, wasLastSession = false),
             TestSessionListener.Event.Deleted(sessionData1.userId, wasLastSession = true),
         )
-        coroutineContext.cancelChildren()
     }
 
     private fun TestScope.createDefaultSessionObserver(): DefaultSessionObserver {
         return DefaultSessionObserver(
             sessionStore = databaseSessionStore,
-            coroutineScope = this,
+            coroutineScope = backgroundScope,
             dispatchers = testCoroutineDispatchers(useUnconfinedTestDispatcher = true),
         )
     }

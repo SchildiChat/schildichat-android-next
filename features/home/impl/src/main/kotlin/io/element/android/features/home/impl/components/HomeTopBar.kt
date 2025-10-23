@@ -76,7 +76,7 @@ import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RoomListTopBar(
+fun HomeTopBar(
     title: String,
     currentUserAndNeighbors: ImmutableList<MatrixUser>,
     showAvatarIndicator: Boolean,
@@ -92,7 +92,7 @@ fun RoomListTopBar(
     canReportBug: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    DefaultRoomListTopBar(
+    DefaultHomeTopBar(
         title = title,
         currentUserAndNeighbors = currentUserAndNeighbors,
         showAvatarIndicator = showAvatarIndicator,
@@ -112,7 +112,7 @@ fun RoomListTopBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DefaultRoomListTopBar(
+private fun DefaultHomeTopBar(
     title: String,
     currentUserAndNeighbors: ImmutableList<MatrixUser>,
     showAvatarIndicator: Boolean,
@@ -329,8 +329,8 @@ private fun AccountIcon(
 @OptIn(ExperimentalMaterial3Api::class)
 @PreviewsDayNight
 @Composable
-internal fun DefaultRoomListTopBarPreview() = ElementPreview {
-    DefaultRoomListTopBar(
+internal fun DefaultHomeTopBarPreview() = ElementPreview {
+    DefaultHomeTopBar(
         title = stringResource(R.string.screen_roomlist_main_space_title),
         currentUserAndNeighbors = persistentListOf(MatrixUser(UserId("@id:domain"), "Alice")),
         showAvatarIndicator = false,
@@ -350,8 +350,8 @@ internal fun DefaultRoomListTopBarPreview() = ElementPreview {
 @OptIn(ExperimentalMaterial3Api::class)
 @PreviewsDayNight
 @Composable
-internal fun DefaultRoomListTopBarWithIndicatorPreview() = ElementPreview {
-    DefaultRoomListTopBar(
+internal fun DefaultHomeTopBarWithIndicatorPreview() = ElementPreview {
+    DefaultHomeTopBar(
         title = stringResource(R.string.screen_roomlist_main_space_title),
         currentUserAndNeighbors = persistentListOf(MatrixUser(UserId("@id:domain"), "Alice")),
         showAvatarIndicator = true,
@@ -371,8 +371,8 @@ internal fun DefaultRoomListTopBarWithIndicatorPreview() = ElementPreview {
 @OptIn(ExperimentalMaterial3Api::class)
 @PreviewsDayNight
 @Composable
-internal fun DefaultRoomListTopBarMultiAccountPreview() = ElementPreview {
-    DefaultRoomListTopBar(
+internal fun DefaultHomeTopBarMultiAccountPreview() = ElementPreview {
+    DefaultHomeTopBar(
         title = stringResource(R.string.screen_roomlist_main_space_title),
         currentUserAndNeighbors = aMatrixUserList().take(3).toImmutableList(),
         showAvatarIndicator = false,

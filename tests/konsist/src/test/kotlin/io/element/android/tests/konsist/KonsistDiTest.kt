@@ -15,6 +15,7 @@ import com.lemonappdev.konsist.api.verify.assertTrue
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
+import org.junit.Ignore
 import org.junit.Test
 
 class KonsistDiTest {
@@ -35,6 +36,7 @@ class KonsistDiTest {
             }
     }
 
+    @Ignore("Disabled to give time to branch and private module to remove the annotation")
     @Test
     fun `class annotated with @ContributesBinding does not need to be annotated with @Inject anymore`() {
         Konsist

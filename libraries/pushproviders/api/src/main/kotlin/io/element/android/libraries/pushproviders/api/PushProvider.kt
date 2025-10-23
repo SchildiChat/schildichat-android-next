@@ -59,7 +59,7 @@ interface PushProvider {
      */
     suspend fun onSessionDeleted(sessionId: SessionId)
 
-    suspend fun getCurrentUserPushConfig(): CurrentUserPushConfig?
+    suspend fun getPushConfig(sessionId: SessionId): Config?
 
     fun canRotateToken(): Boolean
 

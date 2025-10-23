@@ -7,7 +7,7 @@
 
 package io.element.android.libraries.pushproviders.api
 
-data class CurrentUserPushConfig(
+data class Config(
     val url: String,
     val pushKey: String,
 )

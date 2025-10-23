@@ -487,7 +487,7 @@ class LoggedInPresenterTest {
             Result.success(Unit)
         },
         selectPushProviderLambda: (SessionId, PushProvider) -> Unit = { _, _ -> lambdaError() },
-        currentPushProvider: () -> PushProvider? = { null },
+        currentPushProvider: (SessionId) -> PushProvider? = { null },
         setIgnoreRegistrationErrorLambda: (SessionId, Boolean) -> Unit = { _, _ -> lambdaError() },
     ): PushService {
         return FakePushService(

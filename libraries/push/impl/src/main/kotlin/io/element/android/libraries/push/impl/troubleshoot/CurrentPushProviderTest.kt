@@ -37,7 +37,7 @@ class CurrentPushProviderTest(
 
     override suspend fun run(coroutineScope: CoroutineScope) {
         delegate.start()
-        val pushProvider = pushService.getCurrentPushProvider()
+        val pushProvider = pushService.getCurrentPushProvider(sessionId)
         if (pushProvider == null) {
             delegate.updateState(
                 description = stringProvider.getString(R.string.troubleshoot_notifications_test_current_push_provider_failure),

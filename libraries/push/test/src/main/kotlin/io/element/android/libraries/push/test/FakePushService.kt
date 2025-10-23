@@ -19,19 +19,19 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class FakePushService(
-    private val testPushBlock: suspend () -> Boolean = { true },
+    private val testPushBlock: suspend (SessionId) -> Boolean = { true },
     private val availablePushProviders: List<PushProvider> = emptyList(),
     private val registerWithLambda: suspend (MatrixClient, PushProvider, Distributor) -> Result<Unit> = { _, _, _ ->
         Result.success(Unit)
     },
-    private val currentPushProvider: () -> PushProvider? = { availablePushProviders.firstOrNull() },
+    private val currentPushProvider: (SessionId) -> PushProvider? = { availablePushProviders.firstOrNull() },
     private val selectPushProviderLambda: suspend (SessionId, PushProvider) -> Unit = { _, _ -> lambdaError() },
     private val setIgnoreRegistrationErrorLambda: (SessionId, Boolean) -> Unit = { _, _ -> lambdaError() },
     private val resetPushHistoryResult: () -> Unit = { lambdaError() },
     private val resetBatteryOptimizationStateResult: () -> Unit = { lambdaError() },
 ) : PushService {
-    override suspend fun getCurrentPushProvider(): PushProvider? {
-        return registeredPushProvider ?: currentPushProvider()
+    override suspend fun getCurrentPushProvider(sessionId: SessionId): PushProvider? {
+        return registeredPushProvider ?: currentPushProvider(sessionId)
     }
 
     override fun getAvailablePushProviders(): List<PushProvider> {
@@ -68,8 +68,8 @@ class FakePushService(
         setIgnoreRegistrationErrorLambda(sessionId, ignore)
     }
 
-    override suspend fun testPush(): Boolean = simulateLongTask {
-        testPushBlock()
+    override suspend fun testPush(sessionId: SessionId): Boolean = simulateLongTask {
+        testPushBlock(sessionId)
     }
 
     private val pushHistoryItemsFlow = MutableStateFlow<List<PushHistoryItem>>(emptyList())

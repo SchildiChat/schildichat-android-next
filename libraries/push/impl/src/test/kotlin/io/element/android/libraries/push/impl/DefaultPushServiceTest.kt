@@ -25,11 +25,11 @@ import io.element.android.libraries.push.impl.store.PushDataStore
 import io.element.android.libraries.push.impl.test.FakeTestPush
 import io.element.android.libraries.push.impl.test.TestPush
 import io.element.android.libraries.push.test.FakeGetCurrentPushProvider
-import io.element.android.libraries.pushproviders.api.CurrentUserPushConfig
+import io.element.android.libraries.pushproviders.api.Config
 import io.element.android.libraries.pushproviders.api.Distributor
 import io.element.android.libraries.pushproviders.api.PushProvider
 import io.element.android.libraries.pushproviders.test.FakePushProvider
-import io.element.android.libraries.pushproviders.test.aCurrentUserPushConfig
+import io.element.android.libraries.pushproviders.test.aSessionPushConfig
 import io.element.android.libraries.pushstore.api.UserPushStoreFactory
 import io.element.android.libraries.pushstore.api.clientsecret.PushClientSecretStore
 import io.element.android.libraries.pushstore.test.userpushstore.FakeUserPushStore
@@ -47,7 +47,7 @@ class DefaultPushServiceTest {
     @Test
     fun `test push no push provider`() = runTest {
         val defaultPushService = createDefaultPushService()
-        assertThat(defaultPushService.testPush()).isFalse()
+        assertThat(defaultPushService.testPush(A_SESSION_ID)).isFalse()
     }
 
     @Test
@@ -57,22 +57,22 @@ class DefaultPushServiceTest {
             pushProviders = setOf(aPushProvider),
             getCurrentPushProvider = FakeGetCurrentPushProvider(currentPushProvider = aPushProvider.name),
         )
-        assertThat(defaultPushService.testPush()).isFalse()
+        assertThat(defaultPushService.testPush(A_SESSION_ID)).isFalse()
     }
 
     @Test
     fun `test push ok`() = runTest {
-        val aConfig = aCurrentUserPushConfig()
-        val testPushResult = lambdaRecorder<CurrentUserPushConfig, Unit> { }
+        val aConfig = aSessionPushConfig()
+        val testPushResult = lambdaRecorder<Config, Unit> { }
         val aPushProvider = FakePushProvider(
-            currentUserPushConfig = aConfig
+            config = aConfig
         )
         val defaultPushService = createDefaultPushService(
             pushProviders = setOf(aPushProvider),
             getCurrentPushProvider = FakeGetCurrentPushProvider(currentPushProvider = aPushProvider.name),
             testPush = FakeTestPush(executeResult = testPushResult),
         )
-        assertThat(defaultPushService.testPush()).isTrue()
+        assertThat(defaultPushService.testPush(A_SESSION_ID)).isTrue()
         testPushResult.assertions()
             .isCalledOnce()
             .with(value(aConfig))
@@ -81,7 +81,7 @@ class DefaultPushServiceTest {
     @Test
     fun `getCurrentPushProvider null`() = runTest {
         val defaultPushService = createDefaultPushService()
-        val result = defaultPushService.getCurrentPushProvider()
+        val result = defaultPushService.getCurrentPushProvider(A_SESSION_ID)
         assertThat(result).isNull()
     }
 
@@ -92,7 +92,7 @@ class DefaultPushServiceTest {
             pushProviders = setOf(aPushProvider),
             getCurrentPushProvider = FakeGetCurrentPushProvider(currentPushProvider = aPushProvider.name),
         )
-        val result = defaultPushService.getCurrentPushProvider()
+        val result = defaultPushService.getCurrentPushProvider(A_SESSION_ID)
         assertThat(result).isEqualTo(aPushProvider)
     }
 

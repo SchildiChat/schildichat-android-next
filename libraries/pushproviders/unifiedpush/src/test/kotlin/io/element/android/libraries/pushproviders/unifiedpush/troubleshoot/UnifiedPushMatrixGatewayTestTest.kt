@@ -8,8 +8,10 @@
 package io.element.android.libraries.pushproviders.unifiedpush.troubleshoot
 
 import com.google.common.truth.Truth.assertThat
-import io.element.android.libraries.pushproviders.api.CurrentUserPushConfig
-import io.element.android.libraries.pushproviders.test.aCurrentUserPushConfig
+import io.element.android.libraries.matrix.api.core.SessionId
+import io.element.android.libraries.matrix.test.A_SESSION_ID
+import io.element.android.libraries.pushproviders.api.Config
+import io.element.android.libraries.pushproviders.test.aSessionPushConfig
 import io.element.android.libraries.pushproviders.unifiedpush.FakeUnifiedPushApiFactory
 import io.element.android.libraries.pushproviders.unifiedpush.UnifiedPushConfig
 import io.element.android.libraries.pushproviders.unifiedpush.invalidDiscoveryResponse
@@ -27,7 +29,7 @@ class UnifiedPushMatrixGatewayTestTest {
     @Test
     fun `test UnifiedPushMatrixGatewayTest success`() = runTest {
         val sut = createUnifiedPushMatrixGatewayTest(
-            currentUserPushConfig = aCurrentUserPushConfig(),
+            config = aSessionPushConfig(),
             discoveryResponse = matrixDiscoveryResponse,
         )
         sut.runAndTestState {
@@ -41,7 +43,7 @@ class UnifiedPushMatrixGatewayTestTest {
     @Test
     fun `test UnifiedPushMatrixGatewayTest no config found`() = runTest {
         val sut = createUnifiedPushMatrixGatewayTest(
-            currentUserPushConfig = null,
+            config = null,
             discoveryResponse = matrixDiscoveryResponse,
         )
         sut.runAndTestState {
@@ -55,7 +57,7 @@ class UnifiedPushMatrixGatewayTestTest {
     @Test
     fun `test UnifiedPushMatrixGatewayTest not valid gateway`() = runTest {
         val sut = createUnifiedPushMatrixGatewayTest(
-            currentUserPushConfig = aCurrentUserPushConfig(),
+            config = aSessionPushConfig(),
             discoveryResponse = invalidDiscoveryResponse,
         )
         sut.runAndTestState {
@@ -72,7 +74,7 @@ class UnifiedPushMatrixGatewayTestTest {
     @Test
     fun `test UnifiedPushMatrixGatewayTest network error`() = runTest {
         val sut = createUnifiedPushMatrixGatewayTest(
-            currentUserPushConfig = aCurrentUserPushConfig(),
+            config = aSessionPushConfig(),
             discoveryResponse = { error("Network error") },
         )
         sut.runAndTestState {
@@ -91,14 +93,16 @@ class UnifiedPushMatrixGatewayTestTest {
     }
 
     private fun TestScope.createUnifiedPushMatrixGatewayTest(
-        currentUserPushConfig: CurrentUserPushConfig? = null,
+        sessionId: SessionId = A_SESSION_ID,
+        config: Config? = null,
         discoveryResponse: () -> DiscoveryResponse = matrixDiscoveryResponse,
     ): UnifiedPushMatrixGatewayTest {
         return UnifiedPushMatrixGatewayTest(
+            sessionId = sessionId,
             unifiedPushApiFactory = FakeUnifiedPushApiFactory(discoveryResponse),
             coroutineDispatchers = testCoroutineDispatchers(),
-            unifiedPushCurrentUserPushConfigProvider = FakeUnifiedPushCurrentUserPushConfigProvider(
-                currentUserPushConfig = { currentUserPushConfig }
+            unifiedPushSessionPushConfigProvider = FakeUnifiedPushSessionPushConfigProvider(
+                config = { config }
             ),
         )
     }

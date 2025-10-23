@@ -10,14 +10,13 @@ package io.element.android.features.home.impl.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
@@ -32,7 +31,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
@@ -52,12 +50,8 @@ import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.modifiers.backgroundVerticalGradient
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
-import io.element.android.libraries.designsystem.text.applyScaleDown
-import io.element.android.libraries.designsystem.text.toSp
-import io.element.android.libraries.designsystem.theme.aliasScreenTitle
 import io.element.android.libraries.designsystem.theme.components.DropdownMenu
 import io.element.android.libraries.designsystem.theme.components.DropdownMenuItem
-import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconButton
 import io.element.android.libraries.designsystem.theme.components.MediumTopAppBar
@@ -128,128 +122,103 @@ private fun DefaultHomeTopBar(
     canReportBug: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val collapsedFraction = scrollBehavior.state.collapsedFraction
-    Box(modifier = modifier) {
-        val collapsedTitleTextStyle = ElementTheme.typography.aliasScreenTitle
-        val expandedTitleTextStyle = ElementTheme.typography.fontHeadingLgBold.copy(
-            // Due to a limitation of MediumTopAppBar, and to avoid the text to be truncated,
-            // ensure that the font size will never be bigger than 28.dp.
-            fontSize = 28.dp.applyScaleDown().toSp()
-        )
-        MaterialTheme(
-            colorScheme = ElementTheme.materialColors,
-            shapes = MaterialTheme.shapes,
-            typography = ElementTheme.materialTypography.copy(
-                headlineSmall = expandedTitleTextStyle,
-                titleLarge = collapsedTitleTextStyle
+    Column(modifier) {
+        TopAppBar(
+            modifier = Modifier
+                .backgroundVerticalGradient(
+                    isVisible = !areSearchResultsDisplayed,
+                )
+                .statusBarsPadding(),
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = Color.Transparent,
+                scrolledContainerColor = Color.Transparent,
             ),
-        ) {
-            Column {
-                MediumTopAppBar(
-                    modifier = Modifier
-                        .backgroundVerticalGradient(
-                            isVisible = !areSearchResultsDisplayed,
-                        )
-                        .statusBarsPadding(),
-                    colors = TopAppBarDefaults.mediumTopAppBarColors(
-                        containerColor = Color.Transparent,
-                        scrolledContainerColor = Color.Transparent,
-                    ),
-                    title = {
-                        Text(
-                            modifier = Modifier.semantics {
-                                heading()
-                            },
-                            text = title,
-                        )
+            title = {
+                Text(
+                    modifier = Modifier.semantics {
+                        heading()
                     },
-                    navigationIcon = {
-                        NavigationIcon(
-                            currentUserAndNeighbors = currentUserAndNeighbors,
-                            showAvatarIndicator = showAvatarIndicator,
-                            onAccountSwitch = onAccountSwitch,
-                            onClick = onOpenSettings,
+                    text = title,
+                )
+            },
+            navigationIcon = {
+                NavigationIcon(
+                    currentUserAndNeighbors = currentUserAndNeighbors,
+                    showAvatarIndicator = showAvatarIndicator,
+                    onAccountSwitch = onAccountSwitch,
+                    onClick = onOpenSettings,
+                )
+            },
+            actions = {
+                if (displayMenuItems) {
+                    IconButton(
+                        onClick = onSearchClick,
+                    ) {
+                        Icon(
+                            imageVector = CompoundIcons.Search(),
+                            contentDescription = stringResource(CommonStrings.action_search),
                         )
-                    },
-                    actions = {
-                        if (displayMenuItems) {
-                            IconButton(
-                                onClick = onSearchClick,
-                            ) {
-                                Icon(
-                                    imageVector = CompoundIcons.Search(),
-                                    contentDescription = stringResource(CommonStrings.action_search),
+                    }
+                    if (RoomListConfig.HAS_DROP_DOWN_MENU) {
+                        var showMenu by remember { mutableStateOf(false) }
+                        IconButton(
+                            onClick = { showMenu = !showMenu }
+                        ) {
+                            Icon(
+                                imageVector = CompoundIcons.OverflowVertical(),
+                                contentDescription = null,
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = showMenu,
+                            onDismissRequest = { showMenu = false }
+                        ) {
+                            if (RoomListConfig.SHOW_INVITE_MENU_ITEM) {
+                                DropdownMenuItem(
+                                    onClick = {
+                                        showMenu = false
+                                        onMenuActionClick(RoomListMenuAction.InviteFriends)
+                                    },
+                                    text = { Text(stringResource(id = CommonStrings.action_invite)) },
+                                    leadingIcon = {
+                                        Icon(
+                                            imageVector = CompoundIcons.ShareAndroid(),
+                                            tint = ElementTheme.colors.iconSecondary,
+                                            contentDescription = null,
+                                        )
+                                    }
                                 )
                             }
-                            if (RoomListConfig.HAS_DROP_DOWN_MENU) {
-                                var showMenu by remember { mutableStateOf(false) }
-                                IconButton(
-                                    onClick = { showMenu = !showMenu }
-                                ) {
-                                    Icon(
-                                        imageVector = CompoundIcons.OverflowVertical(),
-                                        contentDescription = null,
-                                    )
-                                }
-                                DropdownMenu(
-                                    expanded = showMenu,
-                                    onDismissRequest = { showMenu = false }
-                                ) {
-                                    if (RoomListConfig.SHOW_INVITE_MENU_ITEM) {
-                                        DropdownMenuItem(
-                                            onClick = {
-                                                showMenu = false
-                                                onMenuActionClick(RoomListMenuAction.InviteFriends)
-                                            },
-                                            text = { Text(stringResource(id = CommonStrings.action_invite)) },
-                                            leadingIcon = {
-                                                Icon(
-                                                    imageVector = CompoundIcons.ShareAndroid(),
-                                                    tint = ElementTheme.colors.iconSecondary,
-                                                    contentDescription = null,
-                                                )
-                                            }
+                            if (RoomListConfig.SHOW_REPORT_PROBLEM_MENU_ITEM && canReportBug) {
+                                DropdownMenuItem(
+                                    onClick = {
+                                        showMenu = false
+                                        onMenuActionClick(RoomListMenuAction.ReportBug)
+                                    },
+                                    text = { Text(stringResource(id = CommonStrings.common_report_a_problem)) },
+                                    leadingIcon = {
+                                        Icon(
+                                            imageVector = CompoundIcons.ChatProblem(),
+                                            tint = ElementTheme.colors.iconSecondary,
+                                            contentDescription = null,
                                         )
                                     }
-                                    if (RoomListConfig.SHOW_REPORT_PROBLEM_MENU_ITEM && canReportBug) {
-                                        DropdownMenuItem(
-                                            onClick = {
-                                                showMenu = false
-                                                onMenuActionClick(RoomListMenuAction.ReportBug)
-                                            },
-                                            text = { Text(stringResource(id = CommonStrings.common_report_a_problem)) },
-                                            leadingIcon = {
-                                                Icon(
-                                                    imageVector = CompoundIcons.ChatProblem(),
-                                                    tint = ElementTheme.colors.iconSecondary,
-                                                    contentDescription = null,
-                                                )
-                                            }
-                                        )
-                                    }
-                                }
+                                )
                             }
                         }
-                    },
-                    scrollBehavior = scrollBehavior,
-                    windowInsets = WindowInsets(0.dp),
-                )
-                if (displayFilters) {
-                    RoomListFiltersView(
-                        state = filtersState,
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    )
+                    }
                 }
-            }
-        }
-
-        HorizontalDivider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .alpha(collapsedFraction)
-                .align(Alignment.BottomCenter),
-            color = ElementTheme.materialColors.outlineVariant,
+            },
+            scrollBehavior = scrollBehavior,
+            // We need a 16dp left padding : 4dp default padding + 8dp IconButton padding + 4dp extra padding
+            windowInsets = WindowInsets(4.dp),
         )
+        if (displayFilters) {
+            RoomListFiltersView(
+                state = filtersState,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+        }
     }
 }
 

@@ -79,7 +79,7 @@ class DefaultLockScreenService(
         sessionObserver.addListener(object : SessionListener {
             override suspend fun onSessionCreated(userId: String) = Unit
 
-            override suspend fun onSessionDeleted(userId: String) {
+            override suspend fun onSessionDeleted(userId: String, wasLastSession: Boolean) {
                 // TODO handle multi session at some point
                 pinCodeManager.deletePinCode()
             }

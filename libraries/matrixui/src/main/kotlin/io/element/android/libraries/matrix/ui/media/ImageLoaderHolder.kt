@@ -37,7 +37,7 @@ class DefaultImageLoaderHolder(
         sessionObserver.addListener(object : SessionListener {
             override suspend fun onSessionCreated(userId: String) = Unit
 
-            override suspend fun onSessionDeleted(userId: String) {
+            override suspend fun onSessionDeleted(userId: String, wasLastSession: Boolean) {
                 remove(SessionId(userId))
             }
         })

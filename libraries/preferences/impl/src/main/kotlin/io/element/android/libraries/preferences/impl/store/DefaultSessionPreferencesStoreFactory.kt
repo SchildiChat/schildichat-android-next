@@ -31,7 +31,7 @@ class DefaultSessionPreferencesStoreFactory(
     init {
         sessionObserver.addListener(object : SessionListener {
             override suspend fun onSessionCreated(userId: String) = Unit
-            override suspend fun onSessionDeleted(userId: String) {
+            override suspend fun onSessionDeleted(userId: String, wasLastSession: Boolean) {
                 val sessionPreferences = cache.remove(SessionId(userId))
                 sessionPreferences?.clear()
             }

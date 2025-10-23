@@ -178,7 +178,7 @@ class DefaultAnalyticsServiceTest {
             coroutineScope = backgroundScope,
             analyticsStore = store,
         )
-        sut.onSessionDeleted("userId")
+        sut.onSessionDeleted("userId", false)
         resetLambda.assertions().isCalledOnce()
     }
 

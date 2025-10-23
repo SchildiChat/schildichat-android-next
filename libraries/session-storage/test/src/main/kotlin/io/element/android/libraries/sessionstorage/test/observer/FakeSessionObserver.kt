@@ -29,6 +29,6 @@ class FakeSessionObserver : SessionObserver {
     }
 
     suspend fun onSessionDeleted(userId: String) {
-        listeners.forEach { it.onSessionDeleted(userId) }
+        listeners.forEach { it.onSessionDeleted(userId, false) }
     }
 }

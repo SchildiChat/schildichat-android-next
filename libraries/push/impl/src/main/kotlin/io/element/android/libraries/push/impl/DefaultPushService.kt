@@ -119,7 +119,7 @@ class DefaultPushService(
      * The current push provider may want to take action, and we need to
      * cleanup the stores.
      */
-    override suspend fun onSessionDeleted(userId: String) {
+    override suspend fun onSessionDeleted(userId: String, wasLastSession: Boolean) {
         val sessionId = SessionId(userId)
         val userPushStore = userPushStoreFactory.getOrCreate(sessionId)
         val currentPushProviderName = userPushStore.getPushProviderName()

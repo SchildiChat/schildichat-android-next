@@ -22,7 +22,7 @@ class TestSessionListener : SessionListener {
         trackRecord.add(Event.Created(userId))
     }
 
-    override suspend fun onSessionDeleted(userId: String) {
+    override suspend fun onSessionDeleted(userId: String, wasLastSession: Boolean) {
         trackRecord.add(Event.Deleted(userId))
     }
 

@@ -14,6 +14,7 @@ import androidx.core.app.NotificationCompat
 import dev.zacsweers.metro.Inject
 import io.element.android.appconfig.NotificationConfig
 import io.element.android.libraries.androidutils.uri.createIgnoredUri
+import io.element.android.libraries.designsystem.icons.CompoundDrawables
 import io.element.android.libraries.di.annotations.ApplicationContext
 import io.element.android.libraries.push.impl.R
 import io.element.android.libraries.push.impl.notifications.NotificationActionIds
@@ -46,7 +47,7 @@ class MarkAsReadActionFactory(
         )
 
         return NotificationCompat.Action.Builder(
-            R.drawable.ic_material_done_all_white,
+            CompoundDrawables.ic_compound_mark_as_read,
             stringProvider.getString(R.string.notification_room_action_mark_as_read),
             pendingIntent
         )

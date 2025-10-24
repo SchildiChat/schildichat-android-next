@@ -41,7 +41,7 @@ class DefaultScreenTrackerTest {
             lifecycleOwner.givenState(Lifecycle.State.RESUMED)
             assertThat(awaitItem()).isEqualTo(Unit)
             systemClock.epochMillisResult = 450
-            lifecycleOwner.givenState((Lifecycle.State.DESTROYED))
+            lifecycleOwner.givenState(Lifecycle.State.DESTROYED)
         }
         assertThat(analyticsService.screenEvents).containsExactly(
             MobileScreen(

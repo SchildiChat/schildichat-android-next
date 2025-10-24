@@ -10,13 +10,10 @@ package io.element.android.libraries.push.impl.notifications.factories
 import android.app.Notification
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import androidx.annotation.ColorInt
-import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.MessagingStyle
 import androidx.core.app.Person
-import androidx.core.content.res.ResourcesCompat
 import coil3.ImageLoader
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
@@ -380,7 +377,6 @@ class DefaultNotificationCreator(
             .setContentTitle(buildMeta.applicationName)
             .setContentText(stringProvider.getString(R.string.notification_test_push_notification_content))
             .setSmallIcon(CommonDrawables.ic_notification)
-            .setLargeIcon(getBitmap(R.drawable.element_logo_green))
             .setColor(color)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_STATUS)
@@ -467,16 +463,6 @@ class DefaultNotificationCreator(
             it.conversationTitle = roomName.takeIf { roomIsGroup }
             it.isGroupConversation = roomIsGroup
         }
-    }
-
-    private fun getBitmap(@DrawableRes drawableRes: Int): Bitmap? {
-        val drawable = ResourcesCompat.getDrawable(context.resources, drawableRes, null) ?: return null
-        val canvas = Canvas()
-        val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-        canvas.setBitmap(bitmap)
-        drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-        drawable.draw(canvas)
-        return bitmap
     }
 
     companion object {

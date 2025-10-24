@@ -24,7 +24,7 @@ import io.element.android.services.toolbox.api.systemclock.SystemClock
 @ContributesBinding(AppScope::class)
 class DefaultScreenTracker(
     private val analyticsService: AnalyticsService,
-    private val systemClock: SystemClock
+    private val systemClock: SystemClock,
 ) : ScreenTracker {
     @Composable
     override fun TrackScreen(

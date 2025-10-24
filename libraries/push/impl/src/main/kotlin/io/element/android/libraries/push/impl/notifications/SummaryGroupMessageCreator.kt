@@ -8,6 +8,7 @@
 package io.element.android.libraries.push.impl.notifications
 
 import android.app.Notification
+import androidx.annotation.ColorInt
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import io.element.android.libraries.matrix.api.user.MatrixUser
@@ -22,6 +23,7 @@ interface SummaryGroupMessageCreator {
         invitationNotifications: List<OneShotNotification>,
         simpleNotifications: List<OneShotNotification>,
         fallbackNotifications: List<OneShotNotification>,
+        @ColorInt color: Int,
     ): Notification
 }
 
@@ -45,6 +47,7 @@ class DefaultSummaryGroupMessageCreator(
         invitationNotifications: List<OneShotNotification>,
         simpleNotifications: List<OneShotNotification>,
         fallbackNotifications: List<OneShotNotification>,
+        @ColorInt color: Int,
     ): Notification {
         val summaryIsNoisy = roomNotifications.any { it.shouldBing } ||
             invitationNotifications.any { it.isNoisy } ||
@@ -61,7 +64,8 @@ class DefaultSummaryGroupMessageCreator(
             currentUser,
             sumTitle,
             noisy = summaryIsNoisy,
-            lastMessageTimestamp = lastMessageTimestamp
+            lastMessageTimestamp = lastMessageTimestamp,
+            color = color,
         )
     }
 }

@@ -8,6 +8,7 @@
 package io.element.android.libraries.push.impl.notifications.fake
 
 import android.app.Notification
+import androidx.annotation.ColorInt
 import coil3.ImageLoader
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.user.MatrixUser
@@ -19,14 +20,15 @@ import io.element.android.tests.testutils.lambda.lambdaRecorder
 
 class FakeRoomGroupMessageCreator(
     var createRoomMessageResult: LambdaFiveParamsRecorder<MatrixUser, List<NotifiableMessageEvent>, RoomId, ImageLoader, Notification?, Notification> =
-        lambdaRecorder { _, _, _, _, _, -> A_NOTIFICATION }
+        lambdaRecorder { _, _, _, _, _ -> A_NOTIFICATION }
 ) : RoomGroupMessageCreator {
     override suspend fun createRoomMessage(
         currentUser: MatrixUser,
         events: List<NotifiableMessageEvent>,
         roomId: RoomId,
         imageLoader: ImageLoader,
-        existingNotification: Notification?
+        existingNotification: Notification?,
+        @ColorInt color: Int,
     ): Notification {
         return createRoomMessageResult(currentUser, events, roomId, imageLoader, existingNotification)
     }

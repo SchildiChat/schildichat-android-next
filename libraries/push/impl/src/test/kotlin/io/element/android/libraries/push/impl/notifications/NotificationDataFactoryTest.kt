@@ -11,6 +11,7 @@ import com.google.common.truth.Truth.assertThat
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
+import io.element.android.libraries.matrix.test.A_COLOR_INT
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.push.impl.notifications.fake.FakeActiveNotificationsProvider
@@ -53,7 +54,7 @@ class NotificationDataFactoryTest {
         val expectedNotification = notificationCreator.createRoomInvitationNotificationResult(AN_INVITATION_EVENT)
         val roomInvitation = listOf(AN_INVITATION_EVENT)
 
-        val result = toNotifications(roomInvitation)
+        val result = toNotifications(roomInvitation, A_COLOR_INT)
 
         assertThat(result).isEqualTo(
             listOf(
@@ -73,7 +74,7 @@ class NotificationDataFactoryTest {
         val expectedNotification = notificationCreator.createRoomInvitationNotificationResult(AN_INVITATION_EVENT)
         val roomInvitation = listOf(A_SIMPLE_EVENT)
 
-        val result = toNotifications(roomInvitation)
+        val result = toNotifications(roomInvitation, A_COLOR_INT)
 
         assertThat(result).isEqualTo(
             listOf(
@@ -93,11 +94,12 @@ class NotificationDataFactoryTest {
         val events = listOf(A_MESSAGE_EVENT)
         val expectedNotification = RoomNotification(
             notification = fakeRoomGroupMessageCreator.createRoomMessage(
-                MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
-                events,
-                A_ROOM_ID,
-                FakeImageLoader().getImageLoader(),
-                null,
+                currentUser = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
+                events = events,
+                roomId = A_ROOM_ID,
+                imageLoader = FakeImageLoader().getImageLoader(),
+                existingNotification = null,
+                color = A_COLOR_INT,
             ),
             roomId = A_ROOM_ID,
             summaryLine = "A room name: Bob Hello world!",
@@ -112,6 +114,7 @@ class NotificationDataFactoryTest {
             messages = roomWithMessage,
             currentUser = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
             imageLoader = fakeImageLoader.getImageLoader(),
+            color = A_COLOR_INT,
         )
 
         assertThat(result.size).isEqualTo(1)
@@ -128,6 +131,7 @@ class NotificationDataFactoryTest {
             messages = redactedRoom,
             currentUser = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
             imageLoader = fakeImageLoader.getImageLoader(),
+            color = A_COLOR_INT,
         )
 
         assertThat(result).isEmpty()
@@ -145,11 +149,12 @@ class NotificationDataFactoryTest {
         val withRedactedRemoved = listOf(A_MESSAGE_EVENT.copy(eventId = EventId("\$not-redacted")))
         val expectedNotification = RoomNotification(
             notification = fakeRoomGroupMessageCreator.createRoomMessage(
-                MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
-                withRedactedRemoved,
-                A_ROOM_ID,
-                FakeImageLoader().getImageLoader(),
-                null,
+                currentUser = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
+                events = withRedactedRemoved,
+                roomId = A_ROOM_ID,
+                imageLoader = FakeImageLoader().getImageLoader(),
+                existingNotification = null,
+                color = A_COLOR_INT,
             ),
             roomId = A_ROOM_ID,
             summaryLine = "A room name: Bob Hello world!",
@@ -163,6 +168,7 @@ class NotificationDataFactoryTest {
             messages = roomWithRedactedMessage,
             currentUser = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
             imageLoader = fakeImageLoader.getImageLoader(),
+            color = A_COLOR_INT,
         )
 
         assertThat(result.size).isEqualTo(1)

@@ -7,8 +7,11 @@
 
 package io.element.android.libraries.push.impl.notifications
 
+import androidx.compose.ui.graphics.toArgb
 import coil3.ImageLoader
 import dev.zacsweers.metro.Inject
+import io.element.android.appconfig.NotificationConfig
+import io.element.android.features.enterprise.api.EnterpriseService
 import io.element.android.libraries.core.log.logger.LoggerTag
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.push.api.notifications.NotificationIdProvider
@@ -18,6 +21,7 @@ import io.element.android.libraries.push.impl.notifications.model.NotifiableEven
 import io.element.android.libraries.push.impl.notifications.model.NotifiableMessageEvent
 import io.element.android.libraries.push.impl.notifications.model.NotifiableRingingCallEvent
 import io.element.android.libraries.push.impl.notifications.model.SimpleNotifiableEvent
+import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
 private val loggerTag = LoggerTag("NotificationRenderer", LoggerTag.NotificationLoggerTag)
@@ -26,6 +30,7 @@ private val loggerTag = LoggerTag("NotificationRenderer", LoggerTag.Notification
 class NotificationRenderer(
     private val notificationDisplayer: NotificationDisplayer,
     private val notificationDataFactory: NotificationDataFactory,
+    private val enterpriseService: EnterpriseService,
 ) {
     suspend fun render(
         currentUser: MatrixUser,
@@ -33,17 +38,20 @@ class NotificationRenderer(
         eventsToProcess: List<NotifiableEvent>,
         imageLoader: ImageLoader,
     ) {
+        val color = enterpriseService.brandColorsFlow(currentUser.userId).first()?.toArgb()
+            ?: NotificationConfig.NOTIFICATION_ACCENT_COLOR
         val groupedEvents = eventsToProcess.groupByType()
-        val roomNotifications = notificationDataFactory.toNotifications(groupedEvents.roomEvents, currentUser, imageLoader)
-        val invitationNotifications = notificationDataFactory.toNotifications(groupedEvents.invitationEvents)
-        val simpleNotifications = notificationDataFactory.toNotifications(groupedEvents.simpleEvents)
-        val fallbackNotifications = notificationDataFactory.toNotifications(groupedEvents.fallbackEvents)
+        val roomNotifications = notificationDataFactory.toNotifications(groupedEvents.roomEvents, currentUser, imageLoader, color)
+        val invitationNotifications = notificationDataFactory.toNotifications(groupedEvents.invitationEvents, color)
+        val simpleNotifications = notificationDataFactory.toNotifications(groupedEvents.simpleEvents, color)
+        val fallbackNotifications = notificationDataFactory.toNotifications(groupedEvents.fallbackEvents, color)
         val summaryNotification = notificationDataFactory.createSummaryNotification(
             currentUser = currentUser,
             roomNotifications = roomNotifications,
             invitationNotifications = invitationNotifications,
             simpleNotifications = simpleNotifications,
             fallbackNotifications = fallbackNotifications,
+            color = color,
         )
 
         // Remove summary first to avoid briefly displaying it after dismissing the last notification

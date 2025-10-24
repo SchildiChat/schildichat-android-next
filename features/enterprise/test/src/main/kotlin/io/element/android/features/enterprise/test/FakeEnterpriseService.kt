@@ -7,6 +7,7 @@
 
 package io.element.android.features.enterprise.test
 
+import androidx.compose.ui.graphics.Color
 import io.element.android.compound.colors.SemanticColorsLightDark
 import io.element.android.features.enterprise.api.BugReportUrl
 import io.element.android.features.enterprise.api.EnterpriseService
@@ -27,6 +28,7 @@ class FakeEnterpriseService(
     private val firebasePushGatewayResult: () -> String? = { lambdaError() },
     private val unifiedPushDefaultPushGatewayResult: () -> String? = { lambdaError() },
 ) : EnterpriseService {
+    private val brandColorState = MutableStateFlow<Color?>(null)
     private val semanticColorsState = MutableStateFlow(initialSemanticColors)
 
     override suspend fun isEnterpriseUser(sessionId: SessionId): Boolean = simulateLongTask {
@@ -43,6 +45,10 @@ class FakeEnterpriseService(
 
     override suspend fun overrideBrandColor(sessionId: SessionId?, brandColor: String?) = simulateLongTask {
         overrideBrandColorResult(sessionId, brandColor)
+    }
+
+    override fun brandColorsFlow(sessionId: SessionId?): Flow<Color?> {
+        return brandColorState.asStateFlow()
     }
 
     override fun semanticColorsFlow(sessionId: SessionId?): Flow<SemanticColorsLightDark> {

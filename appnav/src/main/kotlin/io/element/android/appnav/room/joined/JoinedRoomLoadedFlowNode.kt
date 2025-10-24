@@ -22,8 +22,11 @@ import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.appnav.di.RoomGraphFactory
 import io.element.android.appnav.room.RoomNavigationTarget
+import io.element.android.appnav.room.joined.JoinedRoomLoadedFlowNode.Inputs
+import io.element.android.appnav.room.joined.JoinedRoomLoadedFlowNode.NavTarget
 import io.element.android.features.messages.api.MessagesEntryPoint
 import io.element.android.features.roomdetails.api.RoomDetailsEntryPoint
+import io.element.android.features.space.api.SpaceEntryPoint
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.NodeInputs
@@ -51,6 +54,7 @@ class JoinedRoomLoadedFlowNode(
     @Assisted plugins: List<Plugin>,
     private val messagesEntryPoint: MessagesEntryPoint,
     private val roomDetailsEntryPoint: RoomDetailsEntryPoint,
+    private val spaceEntryPoint: SpaceEntryPoint,
     private val appNavigationStateService: AppNavigationStateService,
     @SessionCoroutineScope
     private val sessionCoroutineScope: CoroutineScope,
@@ -59,11 +63,7 @@ class JoinedRoomLoadedFlowNode(
     roomGraphFactory: RoomGraphFactory,
 ) : BaseFlowNode<JoinedRoomLoadedFlowNode.NavTarget>(
     backstack = BackStack(
-        initialElement = when (val input = plugins.filterIsInstance<Inputs>().first().initialElement) {
-            is RoomNavigationTarget.Messages -> NavTarget.Messages(input.focusedEventId)
-            RoomNavigationTarget.Details -> NavTarget.RoomDetails
-            RoomNavigationTarget.NotificationSettings -> NavTarget.RoomNotificationSettings
-        },
+        initialElement = initialElement(plugins),
         savedStateMap = buildContext.savedStateMap,
     ),
     buildContext = buildContext,
@@ -154,7 +154,23 @@ class JoinedRoomLoadedFlowNode(
             NavTarget.RoomNotificationSettings -> {
                 createRoomDetailsNode(buildContext, RoomDetailsEntryPoint.InitialTarget.RoomNotificationSettings)
             }
+            NavTarget.Space -> {
+                createSpaceNode(buildContext)
+            }
         }
+    }
+
+    private fun createSpaceNode(buildContext: BuildContext): Node {
+        val callback = object : SpaceEntryPoint.Callback {
+            override fun onOpenRoom(roomId: RoomId, viaParameters: List<String>) {
+                callbacks.forEach { it.onOpenRoom(roomId, viaParameters) }
+            }
+
+        }
+        return spaceEntryPoint.nodeBuilder(this, buildContext)
+            .inputs(SpaceEntryPoint.Inputs(roomId = inputs.room.roomId))
+            .callback(callback)
+            .build()
     }
 
     private fun createMessagesNode(
@@ -189,6 +205,9 @@ class JoinedRoomLoadedFlowNode(
 
     sealed interface NavTarget : Parcelable {
         @Parcelize
+        data object Space : NavTarget
+
+        @Parcelize
         data class Messages(val focusedEventId: EventId? = null) : NavTarget
 
         @Parcelize
@@ -204,5 +223,20 @@ class JoinedRoomLoadedFlowNode(
     @Composable
     override fun View(modifier: Modifier) {
         BackstackView()
+    }
+}
+
+private fun initialElement(plugins: List<Plugin>): NavTarget {
+    val input = plugins.filterIsInstance<Inputs>().single()
+    return when (input.initialElement) {
+        is RoomNavigationTarget.Root -> {
+            if (input.room.roomInfoFlow.value.isSpace) {
+                NavTarget.Space
+            } else {
+                NavTarget.Messages(input.initialElement.eventId)
+            }
+        }
+        RoomNavigationTarget.Details -> NavTarget.RoomDetails
+        RoomNavigationTarget.NotificationSettings -> NavTarget.RoomNotificationSettings
     }
 }

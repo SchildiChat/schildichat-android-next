@@ -120,7 +120,7 @@ class JoinedRoomLoadedFlowNodeTest {
         // GIVEN
         val room = FakeJoinedRoom(baseRoom = FakeBaseRoom(updateMembersResult = {}))
         val fakeMessagesEntryPoint = FakeMessagesEntryPoint()
-        val inputs = JoinedRoomLoadedFlowNode.Inputs(room, RoomNavigationTarget.Messages())
+        val inputs = JoinedRoomLoadedFlowNode.Inputs(room, RoomNavigationTarget.Root())
         val roomFlowNode = createJoinedRoomLoadedFlowNode(
             plugins = listOf(inputs),
             messagesEntryPoint = fakeMessagesEntryPoint,
@@ -141,7 +141,7 @@ class JoinedRoomLoadedFlowNodeTest {
         val room = FakeJoinedRoom(baseRoom = FakeBaseRoom(updateMembersResult = {}))
         val fakeMessagesEntryPoint = FakeMessagesEntryPoint()
         val fakeRoomDetailsEntryPoint = FakeRoomDetailsEntryPoint()
-        val inputs = JoinedRoomLoadedFlowNode.Inputs(room, RoomNavigationTarget.Messages())
+        val inputs = JoinedRoomLoadedFlowNode.Inputs(room, RoomNavigationTarget.Root())
         val roomFlowNode = createJoinedRoomLoadedFlowNode(
             plugins = listOf(inputs),
             messagesEntryPoint = fakeMessagesEntryPoint,
@@ -162,7 +162,7 @@ class JoinedRoomLoadedFlowNodeTest {
         val room = FakeJoinedRoom(baseRoom = FakeBaseRoom(updateMembersResult = {}))
         val fakeMessagesEntryPoint = FakeMessagesEntryPoint()
         val fakeRoomDetailsEntryPoint = FakeRoomDetailsEntryPoint()
-        val inputs = JoinedRoomLoadedFlowNode.Inputs(room, RoomNavigationTarget.Messages())
+        val inputs = JoinedRoomLoadedFlowNode.Inputs(room, RoomNavigationTarget.Root())
         val activeRoomsHolder = ActiveRoomsHolder()
         val roomFlowNode = createJoinedRoomLoadedFlowNode(
             plugins = listOf(inputs),
@@ -185,7 +185,7 @@ class JoinedRoomLoadedFlowNodeTest {
         val room = FakeJoinedRoom(baseRoom = FakeBaseRoom(updateMembersResult = {}))
         val fakeMessagesEntryPoint = FakeMessagesEntryPoint()
         val fakeRoomDetailsEntryPoint = FakeRoomDetailsEntryPoint()
-        val inputs = JoinedRoomLoadedFlowNode.Inputs(room, RoomNavigationTarget.Messages())
+        val inputs = JoinedRoomLoadedFlowNode.Inputs(room, RoomNavigationTarget.Root())
         val activeRoomsHolder = ActiveRoomsHolder().apply {
             addRoom(room)
         }

@@ -7,6 +7,7 @@
 
 package io.element.android.features.enterprise.impl
 
+import androidx.compose.ui.graphics.Color
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import io.element.android.compound.colors.SemanticColorsLightDark
@@ -26,6 +27,10 @@ class DefaultEnterpriseService : EnterpriseService {
     override suspend fun isAllowedToConnectToHomeserver(homeserverUrl: String) = true
 
     override suspend fun overrideBrandColor(sessionId: SessionId?, brandColor: String?) = Unit
+
+    override fun brandColorsFlow(sessionId: SessionId?): Flow<Color?> {
+        return flowOf(null)
+    }
 
     override fun semanticColorsFlow(sessionId: SessionId?): Flow<SemanticColorsLightDark> {
         return flowOf(SemanticColorsLightDark.default)

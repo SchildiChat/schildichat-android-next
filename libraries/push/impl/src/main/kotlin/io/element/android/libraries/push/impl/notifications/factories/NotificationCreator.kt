@@ -11,6 +11,7 @@ import android.app.Notification
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.MessagingStyle
@@ -19,7 +20,6 @@ import androidx.core.content.res.ResourcesCompat
 import coil3.ImageLoader
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import io.element.android.appconfig.NotificationConfig
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.designsystem.utils.CommonDrawables
 import io.element.android.libraries.di.annotations.ApplicationContext
@@ -57,18 +57,22 @@ interface NotificationCreator {
         existingNotification: Notification?,
         imageLoader: ImageLoader,
         events: List<NotifiableMessageEvent>,
+        @ColorInt color: Int,
     ): Notification
 
     fun createRoomInvitationNotification(
-        inviteNotifiableEvent: InviteNotifiableEvent
+        inviteNotifiableEvent: InviteNotifiableEvent,
+        @ColorInt color: Int,
     ): Notification
 
     fun createSimpleEventNotification(
         simpleNotifiableEvent: SimpleNotifiableEvent,
+        @ColorInt color: Int,
     ): Notification
 
     fun createFallbackNotification(
         fallbackNotifiableEvent: FallbackNotifiableEvent,
+        @ColorInt color: Int,
     ): Notification
 
     /**
@@ -78,10 +82,13 @@ interface NotificationCreator {
         currentUser: MatrixUser,
         compatSummary: String,
         noisy: Boolean,
-        lastMessageTimestamp: Long
+        lastMessageTimestamp: Long,
+        @ColorInt color: Int,
     ): Notification
 
-    fun createDiagnosticNotification(): Notification
+    fun createDiagnosticNotification(
+        @ColorInt color: Int,
+    ): Notification
 }
 
 @ContributesBinding(AppScope::class)
@@ -97,8 +104,6 @@ class DefaultNotificationCreator(
     private val acceptInvitationActionFactory: AcceptInvitationActionFactory,
     private val rejectInvitationActionFactory: RejectInvitationActionFactory
 ) : NotificationCreator {
-    private val accentColor = NotificationConfig.NOTIFICATION_ACCENT_COLOR
-
     /**
      * Create a notification for a Room.
      */
@@ -112,15 +117,14 @@ class DefaultNotificationCreator(
         existingNotification: Notification?,
         imageLoader: ImageLoader,
         events: List<NotifiableMessageEvent>,
+        @ColorInt color: Int,
     ): Notification {
         // Build the pending intent for when the notification is clicked
         val openIntent = when {
             threadId != null -> pendingIntentFactory.createOpenThreadPendingIntent(roomInfo, threadId)
             else -> pendingIntentFactory.createOpenRoomPendingIntent(roomInfo.sessionId, roomInfo.roomId)
         }
-
         val smallIcon = CommonDrawables.ic_notification
-
         val containsMissedCall = events.any { it.type == EventType.RTC_NOTIFICATION }
         val channelId = if (containsMissedCall) {
             notificationChannels.getChannelForIncomingCall(false)
@@ -176,7 +180,7 @@ class DefaultNotificationCreator(
             )
             .setSmallIcon(smallIcon)
             // Set primary color (important for Wear 2.0 Notifications).
-            .setColor(accentColor)
+            .setColor(color)
             // Sets priority for 25 and below. For 26 and above, 'priority' is deprecated for
             // 'importance' which is set in the NotificationChannel. The integers representing
             // 'priority' are different from 'importance', so make sure you don't mix them.
@@ -189,7 +193,7 @@ class DefaultNotificationCreator(
                         setSound(it)
                     }
                      */
-                    setLights(accentColor, 500, 500)
+                    setLights(color, 500, 500)
                 } else {
                     priority = NotificationCompat.PRIORITY_LOW
                 }
@@ -221,7 +225,8 @@ class DefaultNotificationCreator(
     }
 
     override fun createRoomInvitationNotification(
-        inviteNotifiableEvent: InviteNotifiableEvent
+        inviteNotifiableEvent: InviteNotifiableEvent,
+        @ColorInt color: Int,
     ): Notification {
         val smallIcon = CommonDrawables.ic_notification
         val channelId = notificationChannels.getChannelIdForMessage(inviteNotifiableEvent.noisy)
@@ -232,7 +237,7 @@ class DefaultNotificationCreator(
             .setGroup(inviteNotifiableEvent.sessionId.value)
             .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
             .setSmallIcon(smallIcon)
-            .setColor(accentColor)
+            .setColor(color)
             .apply {
                 addAction(rejectInvitationActionFactory.create(inviteNotifiableEvent))
                 addAction(acceptInvitationActionFactory.create(inviteNotifiableEvent))
@@ -247,7 +252,7 @@ class DefaultNotificationCreator(
                         setSound(it)
                     }
                      */
-                    setLights(accentColor, 500, 500)
+                    setLights(color, 500, 500)
                 } else {
                     priority = NotificationCompat.PRIORITY_LOW
                 }
@@ -264,9 +269,9 @@ class DefaultNotificationCreator(
 
     override fun createSimpleEventNotification(
         simpleNotifiableEvent: SimpleNotifiableEvent,
+        @ColorInt color: Int,
     ): Notification {
         val smallIcon = CommonDrawables.ic_notification
-
         val channelId = notificationChannels.getChannelIdForMessage(simpleNotifiableEvent.noisy)
         return NotificationCompat.Builder(context, channelId)
             .setOnlyAlertOnce(true)
@@ -275,7 +280,7 @@ class DefaultNotificationCreator(
             .setGroup(simpleNotifiableEvent.sessionId.value)
             .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
             .setSmallIcon(smallIcon)
-            .setColor(accentColor)
+            .setColor(color)
             .setAutoCancel(true)
             .setContentIntent(pendingIntentFactory.createOpenRoomPendingIntent(simpleNotifiableEvent.sessionId, simpleNotifiableEvent.roomId))
             .apply {
@@ -287,7 +292,7 @@ class DefaultNotificationCreator(
                         setSound(it)
                     }
                      */
-                    setLights(accentColor, 500, 500)
+                    setLights(color, 500, 500)
                 } else {
                     priority = NotificationCompat.PRIORITY_LOW
                 }
@@ -297,9 +302,9 @@ class DefaultNotificationCreator(
 
     override fun createFallbackNotification(
         fallbackNotifiableEvent: FallbackNotifiableEvent,
+        @ColorInt color: Int,
     ): Notification {
         val smallIcon = CommonDrawables.ic_notification
-
         val channelId = notificationChannels.getChannelIdForMessage(false)
         return NotificationCompat.Builder(context, channelId)
             .setOnlyAlertOnce(true)
@@ -308,7 +313,7 @@ class DefaultNotificationCreator(
             .setGroup(fallbackNotifiableEvent.sessionId.value)
             .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
             .setSmallIcon(smallIcon)
-            .setColor(accentColor)
+            .setColor(color)
             .setAutoCancel(true)
             .setWhen(fallbackNotifiableEvent.timestamp)
             // Ideally we'd use `createOpenRoomPendingIntent` here, but the broken notification might apply to an invite
@@ -332,7 +337,8 @@ class DefaultNotificationCreator(
         currentUser: MatrixUser,
         compatSummary: String,
         noisy: Boolean,
-        lastMessageTimestamp: Long
+        lastMessageTimestamp: Long,
+        @ColorInt color: Int,
     ): Notification {
         val smallIcon = CommonDrawables.ic_notification
         val channelId = notificationChannels.getChannelIdForMessage(noisy)
@@ -345,7 +351,7 @@ class DefaultNotificationCreator(
             .setGroup(currentUser.userId.value)
             // set this notification as the summary for the group
             .setGroupSummary(true)
-            .setColor(accentColor)
+            .setColor(color)
             .apply {
                 if (noisy) {
                     // Compat
@@ -355,7 +361,7 @@ class DefaultNotificationCreator(
                         setSound(it)
                     }
                      */
-                    setLights(accentColor, 500, 500)
+                    setLights(color, 500, 500)
                 } else {
                     // compat
                     priority = NotificationCompat.PRIORITY_LOW
@@ -366,14 +372,16 @@ class DefaultNotificationCreator(
             .build()
     }
 
-    override fun createDiagnosticNotification(): Notification {
+    override fun createDiagnosticNotification(
+        @ColorInt color: Int,
+    ): Notification {
         val intent = pendingIntentFactory.createTestPendingIntent()
         return NotificationCompat.Builder(context, notificationChannels.getChannelIdForTest())
             .setContentTitle(buildMeta.applicationName)
             .setContentText(stringProvider.getString(R.string.notification_test_push_notification_content))
             .setSmallIcon(CommonDrawables.ic_notification)
             .setLargeIcon(getBitmap(R.drawable.element_logo_green))
-            .setColor(accentColor)
+            .setColor(color)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_STATUS)
             .setAutoCancel(true)

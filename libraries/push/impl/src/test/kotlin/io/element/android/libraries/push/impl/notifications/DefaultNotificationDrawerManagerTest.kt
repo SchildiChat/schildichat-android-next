@@ -10,6 +10,7 @@ package io.element.android.libraries.push.impl.notifications
 import android.app.Notification
 import androidx.core.app.NotificationManagerCompat
 import com.google.common.truth.Truth.assertThat
+import io.element.android.features.enterprise.test.FakeEnterpriseService
 import io.element.android.libraries.matrix.test.AN_AVATAR_URL
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
 import io.element.android.libraries.matrix.test.A_ROOM_ID
@@ -199,6 +200,7 @@ class DefaultNotificationDrawerManagerTest {
                     activeNotificationsProvider = activeNotificationsProvider,
                     stringProvider = FakeStringProvider(),
                 ),
+                enterpriseService = FakeEnterpriseService(),
             ),
             appNavigationStateService = appNavigationStateService,
             coroutineScope = this,

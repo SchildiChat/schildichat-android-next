@@ -7,6 +7,7 @@
 
 package io.element.android.libraries.push.impl.notifications
 
+import io.element.android.features.enterprise.test.FakeEnterpriseService
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_SESSION_ID
@@ -55,6 +56,7 @@ class DefaultOnMissedCallNotificationHandlerTest {
                 notificationRenderer = NotificationRenderer(
                     notificationDisplayer = FakeNotificationDisplayer(),
                     notificationDataFactory = dataFactory,
+                    enterpriseService = FakeEnterpriseService(),
                 ),
                 appNavigationStateService = FakeAppNavigationStateService(),
                 coroutineScope = backgroundScope,

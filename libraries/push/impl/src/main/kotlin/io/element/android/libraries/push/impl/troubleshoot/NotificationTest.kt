@@ -7,9 +7,13 @@
 
 package io.element.android.libraries.push.impl.troubleshoot
 
-import dev.zacsweers.metro.AppScope
+import androidx.compose.ui.graphics.toArgb
 import dev.zacsweers.metro.ContributesIntoSet
 import dev.zacsweers.metro.Inject
+import io.element.android.appconfig.NotificationConfig
+import io.element.android.features.enterprise.api.EnterpriseService
+import io.element.android.libraries.di.SessionScope
+import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.push.impl.R
 import io.element.android.libraries.push.impl.notifications.NotificationDisplayer
 import io.element.android.libraries.push.impl.notifications.factories.NotificationCreator
@@ -25,13 +29,15 @@ import kotlinx.coroutines.withTimeout
 import timber.log.Timber
 import kotlin.time.Duration.Companion.seconds
 
-@ContributesIntoSet(AppScope::class)
+@ContributesIntoSet(SessionScope::class)
 @Inject
 class NotificationTest(
+    private val sessionId: SessionId,
     private val notificationCreator: NotificationCreator,
     private val notificationDisplayer: NotificationDisplayer,
     private val notificationClickHandler: NotificationClickHandler,
     private val stringProvider: StringProvider,
+    private val enterpriseService: EnterpriseService,
 ) : NotificationTroubleshootTest {
     override val order = 50
     private val delegate = NotificationTroubleshootTestDelegate(
@@ -43,7 +49,9 @@ class NotificationTest(
 
     override suspend fun run(coroutineScope: CoroutineScope) {
         delegate.start()
-        val notification = notificationCreator.createDiagnosticNotification()
+        val color = enterpriseService.brandColorsFlow(sessionId).first()?.toArgb()
+            ?: NotificationConfig.NOTIFICATION_ACCENT_COLOR
+        val notification = notificationCreator.createDiagnosticNotification(color)
         val result = notificationDisplayer.displayDiagnosticNotification(notification)
         if (result) {
             coroutineScope.listenToNotificationClick()

@@ -9,6 +9,7 @@ package io.element.android.libraries.push.impl.notifications.fake
 
 import android.app.Notification
 import android.graphics.Bitmap
+import androidx.annotation.ColorInt
 import coil3.ImageLoader
 import io.element.android.libraries.matrix.api.core.ThreadId
 import io.element.android.libraries.matrix.api.user.MatrixUser
@@ -44,22 +45,32 @@ class FakeNotificationCreator(
         currentUser: MatrixUser,
         existingNotification: Notification?,
         imageLoader: ImageLoader,
-        events: List<NotifiableMessageEvent>
+        events: List<NotifiableMessageEvent>,
+        @ColorInt color: Int,
     ): Notification {
         return createMessagesListNotificationResult(
             listOf(roomInfo, threadId, largeIcon, lastMessageTimestamp, tickerText, currentUser, existingNotification, imageLoader, events)
         )
     }
 
-    override fun createRoomInvitationNotification(inviteNotifiableEvent: InviteNotifiableEvent): Notification {
+    override fun createRoomInvitationNotification(
+        inviteNotifiableEvent: InviteNotifiableEvent,
+        @ColorInt color: Int,
+    ): Notification {
         return createRoomInvitationNotificationResult(inviteNotifiableEvent)
     }
 
-    override fun createSimpleEventNotification(simpleNotifiableEvent: SimpleNotifiableEvent): Notification {
+    override fun createSimpleEventNotification(
+        simpleNotifiableEvent: SimpleNotifiableEvent,
+        @ColorInt color: Int,
+    ): Notification {
         return createSimpleNotificationResult(simpleNotifiableEvent)
     }
 
-    override fun createFallbackNotification(fallbackNotifiableEvent: FallbackNotifiableEvent): Notification {
+    override fun createFallbackNotification(
+        fallbackNotifiableEvent: FallbackNotifiableEvent,
+        @ColorInt color: Int,
+    ): Notification {
         return createFallbackNotificationResult(fallbackNotifiableEvent)
     }
 
@@ -67,12 +78,15 @@ class FakeNotificationCreator(
         currentUser: MatrixUser,
         compatSummary: String,
         noisy: Boolean,
-        lastMessageTimestamp: Long
+        lastMessageTimestamp: Long,
+        @ColorInt color: Int,
     ): Notification {
         return createSummaryListNotificationResult(currentUser, compatSummary, noisy, lastMessageTimestamp)
     }
 
-    override fun createDiagnosticNotification(): Notification {
+    override fun createDiagnosticNotification(
+        @ColorInt color: Int,
+    ): Notification {
         return createDiagnosticNotificationResult()
     }
 }

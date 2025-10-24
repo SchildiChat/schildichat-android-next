@@ -14,8 +14,8 @@ import androidx.core.app.NotificationCompat
 import dev.zacsweers.metro.Inject
 import io.element.android.appconfig.NotificationConfig
 import io.element.android.libraries.androidutils.uri.createIgnoredUri
+import io.element.android.libraries.designsystem.icons.CompoundDrawables
 import io.element.android.libraries.di.annotations.ApplicationContext
-import io.element.android.libraries.push.impl.R
 import io.element.android.libraries.push.impl.notifications.NotificationActionIds
 import io.element.android.libraries.push.impl.notifications.NotificationBroadcastReceiver
 import io.element.android.libraries.push.impl.notifications.model.InviteNotifiableEvent
@@ -46,7 +46,7 @@ class AcceptInvitationActionFactory(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         return NotificationCompat.Action.Builder(
-            R.drawable.vector_notification_accept_invitation,
+            CompoundDrawables.ic_compound_check,
             stringProvider.getString(CommonStrings.action_accept),
             pendingIntent
         ).build()

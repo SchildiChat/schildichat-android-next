@@ -11,11 +11,10 @@ import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.sessionstorage.impl.DatabaseSessionStore
 import io.element.android.libraries.sessionstorage.impl.SessionDatabase
-import io.element.android.libraries.sessionstorage.impl.aSessionData
+import io.element.android.libraries.sessionstorage.impl.aDbSessionData
 import io.element.android.libraries.sessionstorage.impl.toApiModel
 import io.element.android.tests.testutils.testCoroutineDispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runCurrent
@@ -23,7 +22,8 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
-@OptIn(ExperimentalCoroutinesApi::class) class DefaultSessionObserverTest {
+@OptIn(ExperimentalCoroutinesApi::class)
+class DefaultSessionObserverTest {
     private lateinit var database: SessionDatabase
     private lateinit var databaseSessionStore: DatabaseSessionStore
 
@@ -46,7 +46,7 @@ import org.junit.Test
 
     @Test
     fun `adding data invokes onSessionCreated`() = runTest {
-        val sessionData = aSessionData()
+        val sessionData = aDbSessionData()
         val sut = createDefaultSessionObserver()
         runCurrent()
         val listener = TestSessionListener()
@@ -54,12 +54,11 @@ import org.junit.Test
         databaseSessionStore.addSession(sessionData.toApiModel())
         listener.assertEvents(TestSessionListener.Event.Created(sessionData.userId))
         sut.removeListener(listener)
-        coroutineContext.cancelChildren()
     }
 
     @Test
     fun `adding and deleting data invokes onSessionCreated and onSessionDeleted`() = runTest {
-        val sessionData = aSessionData()
+        val sessionData = aDbSessionData()
         val sut = createDefaultSessionObserver()
         runCurrent()
         val listener = TestSessionListener()
@@ -69,15 +68,34 @@ import org.junit.Test
         databaseSessionStore.removeSession(sessionData.userId)
         listener.assertEvents(
             TestSessionListener.Event.Created(sessionData.userId),
-            TestSessionListener.Event.Deleted(sessionData.userId),
+            TestSessionListener.Event.Deleted(sessionData.userId, true),
         )
-        coroutineContext.cancelChildren()
+    }
+
+    @Test
+    fun `adding and deleting data twice invokes onSessionCreated and onSessionDeleted`() = runTest {
+        val sessionData1 = aDbSessionData(userId = "user1")
+        val sessionData2 = aDbSessionData(userId = "user2")
+        val sut = createDefaultSessionObserver()
+        runCurrent()
+        val listener = TestSessionListener()
+        sut.addListener(listener)
+        databaseSessionStore.addSession(sessionData1.toApiModel())
+        databaseSessionStore.addSession(sessionData2.toApiModel())
+        databaseSessionStore.removeSession(sessionData2.userId)
+        databaseSessionStore.removeSession(sessionData1.userId)
+        listener.assertEvents(
+            TestSessionListener.Event.Created(sessionData1.userId),
+            TestSessionListener.Event.Created(sessionData2.userId),
+            TestSessionListener.Event.Deleted(sessionData2.userId, wasLastSession = false),
+            TestSessionListener.Event.Deleted(sessionData1.userId, wasLastSession = true),
+        )
     }
 
     private fun TestScope.createDefaultSessionObserver(): DefaultSessionObserver {
         return DefaultSessionObserver(
             sessionStore = databaseSessionStore,
-            coroutineScope = this,
+            coroutineScope = backgroundScope,
             dispatchers = testCoroutineDispatchers(useUnconfinedTestDispatcher = true),
         )
     }

@@ -73,15 +73,14 @@ class DefaultLockScreenService(
     }
 
     /**
-     * Makes sure to delete the pin code when the session is deleted.
+     * Makes sure to delete the pin code when the last session is deleted.
      */
     private fun observeSessionsState() {
         sessionObserver.addListener(object : SessionListener {
-            override suspend fun onSessionCreated(userId: String) = Unit
-
-            override suspend fun onSessionDeleted(userId: String) {
-                // TODO handle multi session at some point
-                pinCodeManager.deletePinCode()
+            override suspend fun onSessionDeleted(userId: String, wasLastSession: Boolean) {
+                if (wasLastSession) {
+                    pinCodeManager.deletePinCode()
+                }
             }
         })
     }

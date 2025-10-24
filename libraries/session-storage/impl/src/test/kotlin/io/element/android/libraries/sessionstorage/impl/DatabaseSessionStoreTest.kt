@@ -24,7 +24,7 @@ class DatabaseSessionStoreTest {
     private lateinit var database: SessionDatabase
     private lateinit var databaseSessionStore: DatabaseSessionStore
 
-    private val aSessionData = aSessionData()
+    private val aSessionData = aDbSessionData()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Before

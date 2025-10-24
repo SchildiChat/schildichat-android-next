@@ -248,7 +248,7 @@ class DefaultPushServiceTest {
             ),
             pushClientSecretStore = pushClientSecretStore,
         )
-        defaultPushService.onSessionDeleted(A_SESSION_ID.value)
+        defaultPushService.onSessionDeleted(A_SESSION_ID.value, false)
         assertThat(userPushStore.getPushProviderName()).isNull()
         assertThat(pushClientSecretStore.getSecret(A_SESSION_ID)).isNull()
         onSessionDeletedLambda.assertions().isCalledOnce().with(value(A_SESSION_ID))
@@ -268,7 +268,7 @@ class DefaultPushServiceTest {
             ),
             pushClientSecretStore = pushClientSecretStore,
         )
-        defaultPushService.onSessionDeleted(A_SESSION_ID.value)
+        defaultPushService.onSessionDeleted(A_SESSION_ID.value, false)
         assertThat(userPushStore.getPushProviderName()).isNull()
         assertThat(pushClientSecretStore.getSecret(A_SESSION_ID)).isNull()
     }

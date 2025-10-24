@@ -60,9 +60,10 @@ class DefaultSessionObserver(
                             // Compute diff
                             // Removed user
                             val removedUsers = currentUserSet - newUserSet
+                            val wasLastSession = newUserSet.isEmpty()
                             removedUsers.forEach { removedUser ->
                                 listeners.onEach { listener ->
-                                    listener.onSessionDeleted(removedUser)
+                                    listener.onSessionDeleted(removedUser, wasLastSession)
                                 }
                             }
                             // Added user

@@ -108,10 +108,6 @@ class DefaultPushService(
         sessionObserver.addListener(this)
     }
 
-    override suspend fun onSessionCreated(userId: String) {
-        // Nothing to do
-    }
-
     /**
      * The session has been deleted.
      * In this case, this is not necessary to unregister the pusher from the homeserver,
@@ -119,7 +115,7 @@ class DefaultPushService(
      * The current push provider may want to take action, and we need to
      * cleanup the stores.
      */
-    override suspend fun onSessionDeleted(userId: String) {
+    override suspend fun onSessionDeleted(userId: String, wasLastSession: Boolean) {
         val sessionId = SessionId(userId)
         val userPushStore = userPushStoreFactory.getOrCreate(sessionId)
         val currentPushProviderName = userPushStore.getPushProviderName()

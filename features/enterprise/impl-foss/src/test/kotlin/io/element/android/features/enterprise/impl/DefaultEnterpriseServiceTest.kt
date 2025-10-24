@@ -52,6 +52,16 @@ class DefaultEnterpriseServiceTest {
     }
 
     @Test
+    fun `brandColorsFlow always emits null`() = runTest {
+        val defaultEnterpriseService = DefaultEnterpriseService()
+        defaultEnterpriseService.brandColorsFlow(null).test {
+            val initialState = awaitItem()
+            assertThat(initialState).isNull()
+            awaitComplete()
+        }
+    }
+
+    @Test
     fun `semanticColorsFlow always emits the same value for a session`() = runTest {
         val defaultEnterpriseService = DefaultEnterpriseService()
         defaultEnterpriseService.semanticColorsFlow(A_SESSION_ID).test {

@@ -1,4 +1,5 @@
 import extension.setupDependencyInjection
+import extension.testCommonDependencies
 
 /*
  * Copyright 2023, 2024 New Vector Ltd.
@@ -20,4 +21,5 @@ dependencies {
     implementation(projects.libraries.architecture)
     implementation(projects.libraries.di)
     api(projects.services.analytics.api)
+    testCommonDependencies(libs)
 }

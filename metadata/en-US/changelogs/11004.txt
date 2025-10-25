@@ -1,0 +1,4 @@
+- Update codebase to Element X v25.10.0
+- Allow upstream and downstream space navigation to co-exist more gracefully
+- Add "invites" pseudo space
+- Fix some cases of ignored user settings

@@ -7,7 +7,6 @@
 
 package io.element.android.libraries.push.impl.notifications
 
-import io.element.android.features.enterprise.test.FakeEnterpriseService
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_SESSION_ID
@@ -18,7 +17,6 @@ import io.element.android.libraries.matrix.test.notification.FakeNotificationSer
 import io.element.android.libraries.matrix.test.notification.aNotificationData
 import io.element.android.libraries.push.impl.notifications.fake.FakeActiveNotificationsProvider
 import io.element.android.libraries.push.impl.notifications.fake.FakeNotificationDataFactory
-import io.element.android.libraries.push.impl.notifications.fake.FakeNotificationDisplayer
 import io.element.android.libraries.push.impl.notifications.fixtures.aNotifiableMessageEvent
 import io.element.android.libraries.push.test.notifications.FakeCallNotificationEventResolver
 import io.element.android.libraries.push.test.notifications.FakeImageLoaderHolder
@@ -53,10 +51,8 @@ class DefaultOnMissedCallNotificationHandlerTest {
             matrixClientProvider = matrixClientProvider,
             defaultNotificationDrawerManager = DefaultNotificationDrawerManager(
                 notificationManager = mockk(relaxed = true),
-                notificationRenderer = NotificationRenderer(
-                    notificationDisplayer = FakeNotificationDisplayer(),
+                notificationRenderer = createNotificationRenderer(
                     notificationDataFactory = dataFactory,
-                    enterpriseService = FakeEnterpriseService(),
                 ),
                 appNavigationStateService = FakeAppNavigationStateService(),
                 coroutineScope = backgroundScope,

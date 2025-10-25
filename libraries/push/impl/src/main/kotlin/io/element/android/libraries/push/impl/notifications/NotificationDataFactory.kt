@@ -10,7 +10,6 @@ package io.element.android.libraries.push.impl.notifications
 import android.app.Notification
 import android.graphics.Typeface
 import android.text.style.StyleSpan
-import androidx.annotation.ColorInt
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
 import coil3.ImageLoader
@@ -19,8 +18,8 @@ import dev.zacsweers.metro.ContributesBinding
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.core.ThreadId
-import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.push.impl.R
+import io.element.android.libraries.push.impl.notifications.factories.NotificationAccountParams
 import io.element.android.libraries.push.impl.notifications.factories.NotificationCreator
 import io.element.android.libraries.push.impl.notifications.model.FallbackNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.InviteNotifiableEvent
@@ -31,39 +30,37 @@ import io.element.android.services.toolbox.api.strings.StringProvider
 interface NotificationDataFactory {
     suspend fun toNotifications(
         messages: List<NotifiableMessageEvent>,
-        currentUser: MatrixUser,
         imageLoader: ImageLoader,
-        @ColorInt color: Int,
+        notificationAccountParams: NotificationAccountParams,
     ): List<RoomNotification>
 
     @JvmName("toNotificationInvites")
     @Suppress("INAPPLICABLE_JVM_NAME")
     fun toNotifications(
         invites: List<InviteNotifiableEvent>,
-        @ColorInt color: Int,
+        notificationAccountParams: NotificationAccountParams,
     ): List<OneShotNotification>
 
     @JvmName("toNotificationSimpleEvents")
     @Suppress("INAPPLICABLE_JVM_NAME")
     fun toNotifications(
         simpleEvents: List<SimpleNotifiableEvent>,
-        @ColorInt color: Int,
+        notificationAccountParams: NotificationAccountParams,
     ): List<OneShotNotification>
 
     @JvmName("toNotificationFallbackEvents")
     @Suppress("INAPPLICABLE_JVM_NAME")
     fun toNotifications(
         fallback: List<FallbackNotifiableEvent>,
-        @ColorInt color: Int,
+        notificationAccountParams: NotificationAccountParams,
     ): List<OneShotNotification>
 
     fun createSummaryNotification(
-        currentUser: MatrixUser,
         roomNotifications: List<RoomNotification>,
         invitationNotifications: List<OneShotNotification>,
         simpleNotifications: List<OneShotNotification>,
         fallbackNotifications: List<OneShotNotification>,
-        @ColorInt color: Int,
+        notificationAccountParams: NotificationAccountParams,
     ): SummaryNotification
 }
 
@@ -77,9 +74,8 @@ class DefaultNotificationDataFactory(
 ) : NotificationDataFactory {
     override suspend fun toNotifications(
         messages: List<NotifiableMessageEvent>,
-        currentUser: MatrixUser,
         imageLoader: ImageLoader,
-        @ColorInt color: Int,
+        notificationAccountParams: NotificationAccountParams,
     ): List<RoomNotification> {
         val messagesToDisplay = messages.filterNot { it.canNotBeDisplayed() }
             .groupBy { it.roomId }
@@ -90,13 +86,12 @@ class DefaultNotificationDataFactory(
 
             eventsByThreadId.map { (threadId, events) ->
                 val notification = roomGroupMessageCreator.createRoomMessage(
-                    currentUser = currentUser,
                     events = events,
                     roomId = roomId,
                     threadId = threadId,
                     imageLoader = imageLoader,
-                    existingNotification = getExistingNotificationForMessages(currentUser.userId, roomId, threadId),
-                    color = color,
+                    existingNotification = getExistingNotificationForMessages(notificationAccountParams.user.userId, roomId, threadId),
+                    notificationAccountParams = notificationAccountParams,
                 )
                 RoomNotification(
                     notification = notification,
@@ -121,12 +116,12 @@ class DefaultNotificationDataFactory(
     @Suppress("INAPPLICABLE_JVM_NAME")
     override fun toNotifications(
         invites: List<InviteNotifiableEvent>,
-        @ColorInt color: Int,
+        notificationAccountParams: NotificationAccountParams,
     ): List<OneShotNotification> {
         return invites.map { event ->
             OneShotNotification(
                 key = event.roomId.value,
-                notification = notificationCreator.createRoomInvitationNotification(event, color),
+                notification = notificationCreator.createRoomInvitationNotification(notificationAccountParams, event),
                 summaryLine = event.description,
                 isNoisy = event.noisy,
                 timestamp = event.timestamp
@@ -138,12 +133,12 @@ class DefaultNotificationDataFactory(
     @Suppress("INAPPLICABLE_JVM_NAME")
     override fun toNotifications(
         simpleEvents: List<SimpleNotifiableEvent>,
-        @ColorInt color: Int,
+        notificationAccountParams: NotificationAccountParams,
     ): List<OneShotNotification> {
         return simpleEvents.map { event ->
             OneShotNotification(
                 key = event.eventId.value,
-                notification = notificationCreator.createSimpleEventNotification(event, color),
+                notification = notificationCreator.createSimpleEventNotification(notificationAccountParams, event),
                 summaryLine = event.description,
                 isNoisy = event.noisy,
                 timestamp = event.timestamp
@@ -155,12 +150,12 @@ class DefaultNotificationDataFactory(
     @Suppress("INAPPLICABLE_JVM_NAME")
     override fun toNotifications(
         fallback: List<FallbackNotifiableEvent>,
-        @ColorInt color: Int,
+        notificationAccountParams: NotificationAccountParams,
     ): List<OneShotNotification> {
         return fallback.map { event ->
             OneShotNotification(
                 key = event.eventId.value,
-                notification = notificationCreator.createFallbackNotification(event, color),
+                notification = notificationCreator.createFallbackNotification(notificationAccountParams, event),
                 summaryLine = event.description.orEmpty(),
                 isNoisy = false,
                 timestamp = event.timestamp
@@ -169,23 +164,21 @@ class DefaultNotificationDataFactory(
     }
 
     override fun createSummaryNotification(
-        currentUser: MatrixUser,
         roomNotifications: List<RoomNotification>,
         invitationNotifications: List<OneShotNotification>,
         simpleNotifications: List<OneShotNotification>,
         fallbackNotifications: List<OneShotNotification>,
-        @ColorInt color: Int,
+        notificationAccountParams: NotificationAccountParams,
     ): SummaryNotification {
         return when {
             roomNotifications.isEmpty() && invitationNotifications.isEmpty() && simpleNotifications.isEmpty() -> SummaryNotification.Removed
             else -> SummaryNotification.Update(
                 summaryGroupMessageCreator.createSummaryNotification(
-                    currentUser = currentUser,
                     roomNotifications = roomNotifications,
                     invitationNotifications = invitationNotifications,
                     simpleNotifications = simpleNotifications,
                     fallbackNotifications = fallbackNotifications,
-                    color = color,
+                    notificationAccountParams = notificationAccountParams,
                 )
             )
         }

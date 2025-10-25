@@ -7,6 +7,7 @@
 
 package io.element.android.libraries.matrix.test
 
+import androidx.annotation.ColorInt
 import io.element.android.libraries.matrix.api.auth.MatrixHomeServerDetails
 import io.element.android.libraries.matrix.api.core.DeviceId
 import io.element.android.libraries.matrix.api.core.EventId
@@ -99,4 +100,5 @@ const val A_FORMATTED_DATE = "April 6, 1980 at 6:35 PM"
 
 const val A_LOGIN_HINT = "mxid:@alice:example.org"
 
-const val A_COLOR_INT = 0xFF0000
+@ColorInt
+const val A_COLOR_INT: Int = 0xFFFF0000.toInt()

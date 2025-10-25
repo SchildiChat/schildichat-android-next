@@ -13,7 +13,6 @@ import androidx.core.app.NotificationCompat
 import com.google.common.truth.Truth.assertThat
 import io.element.android.appconfig.NotificationConfig
 import io.element.android.libraries.matrix.api.media.MediaSource
-import io.element.android.libraries.matrix.test.A_COLOR_INT
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_TIMESTAMP
 import io.element.android.libraries.matrix.ui.components.aMatrixUser
@@ -21,6 +20,7 @@ import io.element.android.libraries.matrix.ui.media.AVATAR_THUMBNAIL_SIZE_IN_PIX
 import io.element.android.libraries.matrix.ui.media.MediaRequestData
 import io.element.android.libraries.push.impl.notifications.factories.MARK_AS_READ_ACTION_TITLE
 import io.element.android.libraries.push.impl.notifications.factories.QUICK_REPLY_ACTION_TITLE
+import io.element.android.libraries.push.impl.notifications.factories.aNotificationAccountParams
 import io.element.android.libraries.push.impl.notifications.factories.createNotificationCreator
 import io.element.android.libraries.push.impl.notifications.fixtures.aNotifiableMessageEvent
 import io.element.android.libraries.push.test.notifications.FakeImageLoader
@@ -44,7 +44,7 @@ class DefaultBaseRoomGroupMessageCreatorTest {
         val sut = createRoomGroupMessageCreator()
         val fakeImageLoader = FakeImageLoader()
         val result = sut.createRoomMessage(
-            currentUser = aMatrixUser(),
+            notificationAccountParams = aNotificationAccountParams(),
             events = listOf(
                 aNotifiableMessageEvent(timestamp = A_TIMESTAMP).copy(
                     imageUriString = "aUri",
@@ -54,7 +54,6 @@ class DefaultBaseRoomGroupMessageCreatorTest {
             imageLoader = fakeImageLoader.getImageLoader(),
             existingNotification = null,
             threadId = null,
-            color = A_COLOR_INT,
         )
         assertThat(result.number).isEqualTo(1)
         @Suppress("DEPRECATION")
@@ -68,7 +67,7 @@ class DefaultBaseRoomGroupMessageCreatorTest {
         val sut = createRoomGroupMessageCreator()
         val fakeImageLoader = FakeImageLoader()
         val result = sut.createRoomMessage(
-            currentUser = aMatrixUser(),
+            notificationAccountParams = aNotificationAccountParams(),
             events = listOf(
                 aNotifiableMessageEvent(timestamp = A_TIMESTAMP).copy(
                     noisy = true,
@@ -78,7 +77,6 @@ class DefaultBaseRoomGroupMessageCreatorTest {
             imageLoader = fakeImageLoader.getImageLoader(),
             existingNotification = null,
             threadId = null,
-            color = A_COLOR_INT,
         )
         @Suppress("DEPRECATION")
         assertThat(result.priority).isEqualTo(NotificationCompat.PRIORITY_DEFAULT)
@@ -130,9 +128,11 @@ class DefaultBaseRoomGroupMessageCreatorTest {
             sdkIntProvider = FakeBuildVersionSdkIntProvider(api)
         )
         val result = sut.createRoomMessage(
-            currentUser = aMatrixUser(
-                // Some user avatar
-                avatarUrl = A_USER_AVATAR_1,
+            notificationAccountParams = aNotificationAccountParams(
+                user = aMatrixUser(
+                    // Some user avatar
+                    avatarUrl = A_USER_AVATAR_1,
+                )
             ),
             events = listOf(
                 aNotifiableMessageEvent(timestamp = A_TIMESTAMP).copy(
@@ -144,7 +144,6 @@ class DefaultBaseRoomGroupMessageCreatorTest {
             imageLoader = fakeImageLoader.getImageLoader(),
             existingNotification = null,
             threadId = null,
-            color = A_COLOR_INT,
         )
         assertThat(result.number).isEqualTo(1)
         assertThat(fakeImageLoader.getCoilRequests()).containsExactlyElementsIn(expectedCoilRequests)
@@ -155,7 +154,7 @@ class DefaultBaseRoomGroupMessageCreatorTest {
         val sut = createRoomGroupMessageCreator()
         val fakeImageLoader = FakeImageLoader()
         val result = sut.createRoomMessage(
-            currentUser = aMatrixUser(),
+            notificationAccountParams = aNotificationAccountParams(),
             events = listOf(
                 aNotifiableMessageEvent(timestamp = A_TIMESTAMP),
                 aNotifiableMessageEvent(timestamp = A_TIMESTAMP + 10),
@@ -164,7 +163,6 @@ class DefaultBaseRoomGroupMessageCreatorTest {
             imageLoader = fakeImageLoader.getImageLoader(),
             existingNotification = null,
             threadId = null,
-            color = A_COLOR_INT,
         )
         assertThat(result.number).isEqualTo(2)
         assertThat(result.`when`).isEqualTo(A_TIMESTAMP + 10)
@@ -183,7 +181,7 @@ class DefaultBaseRoomGroupMessageCreatorTest {
         val sut = createRoomGroupMessageCreator()
         val fakeImageLoader = FakeImageLoader()
         val result = sut.createRoomMessage(
-            currentUser = aMatrixUser(),
+            notificationAccountParams = aNotificationAccountParams(),
             events = listOf(
                 aNotifiableMessageEvent(timestamp = A_TIMESTAMP).copy(
                     outGoingMessage = true,
@@ -194,7 +192,6 @@ class DefaultBaseRoomGroupMessageCreatorTest {
             imageLoader = fakeImageLoader.getImageLoader(),
             existingNotification = null,
             threadId = null,
-            color = A_COLOR_INT,
         )
         val actionTitles = result.actions?.map { it.title }
         assertThat(actionTitles).isEqualTo(
@@ -210,7 +207,7 @@ class DefaultBaseRoomGroupMessageCreatorTest {
         val sut = createRoomGroupMessageCreator()
         val fakeImageLoader = FakeImageLoader()
         val result = sut.createRoomMessage(
-            currentUser = aMatrixUser(),
+            notificationAccountParams = aNotificationAccountParams(),
             events = listOf(
                 aNotifiableMessageEvent(timestamp = A_TIMESTAMP).copy(
                     roomIsDm = true,
@@ -220,7 +217,6 @@ class DefaultBaseRoomGroupMessageCreatorTest {
             imageLoader = fakeImageLoader.getImageLoader(),
             existingNotification = null,
             threadId = null,
-            color = A_COLOR_INT,
         )
         assertThat(result.number).isEqualTo(1)
         assertThat(result.`when`).isEqualTo(A_TIMESTAMP)

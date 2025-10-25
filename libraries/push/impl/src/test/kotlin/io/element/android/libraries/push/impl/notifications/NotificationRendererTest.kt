@@ -7,6 +7,7 @@
 
 package io.element.android.libraries.push.impl.notifications
 
+import io.element.android.features.enterprise.api.EnterpriseService
 import io.element.android.features.enterprise.test.FakeEnterpriseService
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
@@ -15,6 +16,7 @@ import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.push.api.notifications.NotificationIdProvider
 import io.element.android.libraries.push.impl.notifications.fake.FakeActiveNotificationsProvider
 import io.element.android.libraries.push.impl.notifications.fake.FakeNotificationCreator
+import io.element.android.libraries.push.impl.notifications.fake.FakeNotificationDataFactory
 import io.element.android.libraries.push.impl.notifications.fake.FakeNotificationDisplayer
 import io.element.android.libraries.push.impl.notifications.fake.FakeRoomGroupMessageCreator
 import io.element.android.libraries.push.impl.notifications.fake.FakeSummaryGroupMessageCreator
@@ -24,6 +26,8 @@ import io.element.android.libraries.push.impl.notifications.fixtures.aSimpleNoti
 import io.element.android.libraries.push.impl.notifications.fixtures.anInviteNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.NotifiableEvent
 import io.element.android.libraries.push.test.notifications.FakeImageLoader
+import io.element.android.libraries.sessionstorage.api.SessionStore
+import io.element.android.libraries.sessionstorage.test.InMemorySessionStore
 import io.element.android.services.toolbox.test.strings.FakeStringProvider
 import io.element.android.tests.testutils.lambda.lambdaRecorder
 import io.element.android.tests.testutils.lambda.value
@@ -56,10 +60,9 @@ class NotificationRendererTest {
     )
     private val notificationIdProvider = NotificationIdProvider
 
-    private val notificationRenderer = NotificationRenderer(
+    private val notificationRenderer = createNotificationRenderer(
         notificationDisplayer = notificationDisplayer,
         notificationDataFactory = notificationDataFactory,
-        enterpriseService = FakeEnterpriseService(),
     )
 
     @Test
@@ -83,7 +86,7 @@ class NotificationRendererTest {
 
     @Test
     fun `given a simple notification is added when rendering then show the simple notification and update summary`() = runTest {
-        notificationCreator.createSimpleNotificationResult = lambdaRecorder { _ -> ONE_SHOT_NOTIFICATION.copy(key = AN_EVENT_ID.value).notification }
+        notificationCreator.createSimpleNotificationResult = lambdaRecorder { _, _ -> ONE_SHOT_NOTIFICATION.copy(key = AN_EVENT_ID.value).notification }
 
         renderEventsAsNotifications(listOf(aSimpleNotifiableEvent(eventId = AN_EVENT_ID)))
 
@@ -95,7 +98,7 @@ class NotificationRendererTest {
 
     @Test
     fun `given an invitation notification is added when rendering then show the invitation notification and update summary`() = runTest {
-        notificationCreator.createRoomInvitationNotificationResult = lambdaRecorder { _ -> ONE_SHOT_NOTIFICATION.copy(key = AN_EVENT_ID.value).notification }
+        notificationCreator.createRoomInvitationNotificationResult = lambdaRecorder { _, _ -> ONE_SHOT_NOTIFICATION.copy(key = AN_EVENT_ID.value).notification }
 
         renderEventsAsNotifications(listOf(anInviteNotifiableEvent()))
 
@@ -114,3 +117,15 @@ class NotificationRendererTest {
         )
     }
 }
+
+fun createNotificationRenderer(
+    notificationDisplayer: NotificationDisplayer = FakeNotificationDisplayer(),
+    notificationDataFactory: NotificationDataFactory = FakeNotificationDataFactory(),
+    enterpriseService: EnterpriseService = FakeEnterpriseService(),
+    sessionStore: SessionStore = InMemorySessionStore(),
+) = NotificationRenderer(
+    notificationDisplayer = notificationDisplayer,
+    notificationDataFactory = notificationDataFactory,
+    enterpriseService = enterpriseService,
+    sessionStore = sessionStore,
+)

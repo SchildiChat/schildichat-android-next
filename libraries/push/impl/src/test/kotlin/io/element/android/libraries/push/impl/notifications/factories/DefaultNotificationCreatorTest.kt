@@ -65,6 +65,7 @@ class DefaultNotificationCreatorTest {
     fun `test createFallbackNotification`() {
         val sut = createNotificationCreator()
         val result = sut.createFallbackNotification(
+            notificationAccountParams = aNotificationAccountParams(),
             FallbackNotifiableEvent(
                 sessionId = A_SESSION_ID,
                 roomId = A_ROOM_ID,
@@ -77,7 +78,6 @@ class DefaultNotificationCreatorTest {
                 timestamp = A_FAKE_TIMESTAMP,
                 cause = null,
             ),
-            color = A_COLOR_INT,
         )
         result.commonAssertions(
             expectedCategory = null,
@@ -88,6 +88,7 @@ class DefaultNotificationCreatorTest {
     fun `test createSimpleEventNotification`() {
         val sut = createNotificationCreator()
         val result = sut.createSimpleEventNotification(
+            notificationAccountParams = aNotificationAccountParams(),
             SimpleNotifiableEvent(
                 sessionId = A_SESSION_ID,
                 roomId = A_ROOM_ID,
@@ -103,7 +104,6 @@ class DefaultNotificationCreatorTest {
                 isRedacted = false,
                 isUpdated = false,
             ),
-            color = A_COLOR_INT,
         )
         result.commonAssertions(
             expectedCategory = null,
@@ -114,6 +114,7 @@ class DefaultNotificationCreatorTest {
     fun `test createSimpleEventNotification noisy`() {
         val sut = createNotificationCreator()
         val result = sut.createSimpleEventNotification(
+            notificationAccountParams = aNotificationAccountParams(),
             SimpleNotifiableEvent(
                 sessionId = A_SESSION_ID,
                 roomId = A_ROOM_ID,
@@ -129,7 +130,6 @@ class DefaultNotificationCreatorTest {
                 isRedacted = false,
                 isUpdated = false,
             ),
-            color = A_COLOR_INT,
         )
         result.commonAssertions(
             expectedCategory = null,
@@ -140,6 +140,7 @@ class DefaultNotificationCreatorTest {
     fun `test createRoomInvitationNotification`() {
         val sut = createNotificationCreator()
         val result = sut.createRoomInvitationNotification(
+            notificationAccountParams = aNotificationAccountParams(),
             InviteNotifiableEvent(
                 sessionId = A_SESSION_ID,
                 roomId = A_ROOM_ID,
@@ -156,7 +157,6 @@ class DefaultNotificationCreatorTest {
                 isUpdated = false,
                 roomName = "roomName",
             ),
-            color = A_COLOR_INT,
         )
         result.commonAssertions(
             expectedCategory = null,
@@ -174,6 +174,7 @@ class DefaultNotificationCreatorTest {
     fun `test createRoomInvitationNotification noisy`() {
         val sut = createNotificationCreator()
         val result = sut.createRoomInvitationNotification(
+            notificationAccountParams = aNotificationAccountParams(),
             InviteNotifiableEvent(
                 sessionId = A_SESSION_ID,
                 roomId = A_ROOM_ID,
@@ -190,7 +191,6 @@ class DefaultNotificationCreatorTest {
                 isUpdated = false,
                 roomName = "roomName",
             ),
-            color = A_COLOR_INT,
         )
         result.commonAssertions(
             expectedCategory = null,
@@ -202,11 +202,10 @@ class DefaultNotificationCreatorTest {
         val sut = createNotificationCreator()
         val matrixUser = aMatrixUser()
         val result = sut.createSummaryListNotification(
-            currentUser = matrixUser,
+            notificationAccountParams = aNotificationAccountParams(user = matrixUser),
             compatSummary = "compatSummary",
             noisy = false,
             lastMessageTimestamp = 123_456L,
-            color = A_COLOR_INT,
         )
         result.commonAssertions(
             expectedGroup = matrixUser.userId.value,
@@ -218,11 +217,10 @@ class DefaultNotificationCreatorTest {
         val sut = createNotificationCreator()
         val matrixUser = aMatrixUser()
         val result = sut.createSummaryListNotification(
-            currentUser = matrixUser,
+            notificationAccountParams = aNotificationAccountParams(user = matrixUser),
             compatSummary = "compatSummary",
             noisy = true,
             lastMessageTimestamp = 123_456L,
-            color = A_COLOR_INT,
         )
         result.commonAssertions(
             expectedGroup = matrixUser.userId.value,
@@ -232,8 +230,8 @@ class DefaultNotificationCreatorTest {
     @Test
     fun `test createMessagesListNotification`() = runTest {
         val sut = createNotificationCreator()
-        aMatrixUser()
         val result = sut.createMessagesListNotification(
+            notificationAccountParams = aNotificationAccountParams(),
             roomInfo = RoomEventGroupInfo(
                 sessionId = A_SESSION_ID,
                 roomId = A_ROOM_ID,
@@ -247,11 +245,9 @@ class DefaultNotificationCreatorTest {
             largeIcon = null,
             lastMessageTimestamp = 123_456L,
             tickerText = "tickerText",
-            currentUser = aMatrixUser(),
             existingNotification = null,
             imageLoader = FakeImageLoader().getImageLoader(),
             events = listOf(aNotifiableMessageEvent()),
-            color = A_COLOR_INT,
         )
         result.commonAssertions()
     }
@@ -259,8 +255,8 @@ class DefaultNotificationCreatorTest {
     @Test
     fun `test createMessagesListNotification should bing and thread`() = runTest {
         val sut = createNotificationCreator()
-        aMatrixUser()
         val result = sut.createMessagesListNotification(
+            notificationAccountParams = aNotificationAccountParams(),
             roomInfo = RoomEventGroupInfo(
                 sessionId = A_SESSION_ID,
                 roomId = A_ROOM_ID,
@@ -274,11 +270,9 @@ class DefaultNotificationCreatorTest {
             largeIcon = null,
             lastMessageTimestamp = 123_456L,
             tickerText = "tickerText",
-            currentUser = aMatrixUser(),
             existingNotification = null,
             imageLoader = FakeImageLoader().getImageLoader(),
             events = listOf(aNotifiableMessageEvent()),
-            color = A_COLOR_INT,
         )
         result.commonAssertions()
     }

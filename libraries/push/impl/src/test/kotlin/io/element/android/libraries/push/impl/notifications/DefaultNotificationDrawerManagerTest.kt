@@ -8,8 +8,10 @@
 package io.element.android.libraries.push.impl.notifications
 
 import android.app.Notification
+import androidx.compose.ui.graphics.Color
 import androidx.core.app.NotificationManagerCompat
 import com.google.common.truth.Truth.assertThat
+import io.element.android.features.enterprise.api.EnterpriseService
 import io.element.android.features.enterprise.test.FakeEnterpriseService
 import io.element.android.libraries.matrix.test.AN_AVATAR_URL
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
@@ -21,12 +23,15 @@ import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.matrix.test.FakeMatrixClientProvider
 import io.element.android.libraries.matrix.ui.components.aMatrixUser
 import io.element.android.libraries.push.api.notifications.NotificationIdProvider
+import io.element.android.libraries.push.impl.notifications.factories.aNotificationAccountParams
 import io.element.android.libraries.push.impl.notifications.fake.FakeActiveNotificationsProvider
 import io.element.android.libraries.push.impl.notifications.fake.FakeNotificationCreator
 import io.element.android.libraries.push.impl.notifications.fake.FakeRoomGroupMessageCreator
 import io.element.android.libraries.push.impl.notifications.fake.FakeSummaryGroupMessageCreator
 import io.element.android.libraries.push.impl.notifications.fixtures.aNotifiableMessageEvent
 import io.element.android.libraries.push.test.notifications.FakeImageLoaderHolder
+import io.element.android.libraries.sessionstorage.api.SessionStore
+import io.element.android.libraries.sessionstorage.test.InMemorySessionStore
 import io.element.android.services.appnavstate.api.AppNavigationState
 import io.element.android.services.appnavstate.api.AppNavigationStateService
 import io.element.android.services.appnavstate.api.NavigationState
@@ -64,8 +69,8 @@ class DefaultNotificationDrawerManagerTest {
         // For now just call all the API. Later, add more valuable tests.
         val matrixUser = aMatrixUser(id = A_SESSION_ID.value, displayName = "alice", avatarUrl = "mxc://data")
         val mockRoomGroupMessageCreator = FakeRoomGroupMessageCreator(
-            createRoomMessageResult = lambdaRecorder { user, _, roomId, _, _, existingNotification ->
-                assertThat(user).isEqualTo(matrixUser)
+            createRoomMessageResult = lambdaRecorder { notificationAccountParams, _, roomId, _, _, existingNotification ->
+                assertThat(notificationAccountParams.user).isEqualTo(matrixUser)
                 assertThat(roomId).isEqualTo(A_ROOM_ID)
                 assertThat(existingNotification).isNull()
                 Notification()
@@ -128,6 +133,9 @@ class DefaultNotificationDrawerManagerTest {
         val defaultNotificationDrawerManager = createDefaultNotificationDrawerManager(
             matrixClientProvider = matrixClientProvider,
             roomGroupMessageCreator = messageCreator,
+            enterpriseService = FakeEnterpriseService(
+                initialBrandColor = Color.Red,
+            )
         )
         // Gets a display name from MatrixClient.getUserProfile
         matrixClient.givenGetProfileResult(A_SESSION_ID, Result.success(aMatrixUser(id = A_SESSION_ID.value, displayName = "alice")))
@@ -144,15 +152,29 @@ class DefaultNotificationDrawerManagerTest {
         messageCreator.createRoomMessageResult.assertions()
             .isCalledExactly(3)
             .withSequence(
-                listOf(value(aMatrixUser(id = A_SESSION_ID.value, displayName = "alice")), any(), any(), any(), any(), any()),
-                listOf(value(aMatrixUser(id = A_SESSION_ID.value, displayName = A_SESSION_ID.value)), any(), any(), any(), any(), any()),
                 listOf(
-                    value(aMatrixUser(id = A_SESSION_ID.value, displayName = A_SESSION_ID.value, avatarUrl = AN_AVATAR_URL)),
+                    value(aNotificationAccountParams(user = aMatrixUser(id = A_SESSION_ID.value, displayName = "alice"))),
                     any(),
                     any(),
                     any(),
                     any(),
-                    any()
+                    any(),
+                ),
+                listOf(
+                    value(aNotificationAccountParams(user = aMatrixUser(id = A_SESSION_ID.value, displayName = A_SESSION_ID.value))),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                ),
+                listOf(
+                    value(aNotificationAccountParams(user = aMatrixUser(id = A_SESSION_ID.value, displayName = A_SESSION_ID.value, avatarUrl = AN_AVATAR_URL))),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any(),
                 ),
             )
 
@@ -194,6 +216,8 @@ class DefaultNotificationDrawerManagerTest {
         summaryGroupMessageCreator: SummaryGroupMessageCreator = FakeSummaryGroupMessageCreator(),
         activeNotificationsProvider: FakeActiveNotificationsProvider = FakeActiveNotificationsProvider(),
         matrixClientProvider: FakeMatrixClientProvider = FakeMatrixClientProvider(),
+        sessionStore: SessionStore = InMemorySessionStore(),
+        enterpriseService: EnterpriseService = FakeEnterpriseService(),
     ): DefaultNotificationDrawerManager {
         val context = RuntimeEnvironment.getApplication()
         return DefaultNotificationDrawerManager(
@@ -207,7 +231,8 @@ class DefaultNotificationDrawerManagerTest {
                     activeNotificationsProvider = activeNotificationsProvider,
                     stringProvider = FakeStringProvider(),
                 ),
-                enterpriseService = FakeEnterpriseService(),
+                enterpriseService = enterpriseService,
+                sessionStore = sessionStore,
             ),
             appNavigationStateService = appNavigationStateService,
             coroutineScope = this,

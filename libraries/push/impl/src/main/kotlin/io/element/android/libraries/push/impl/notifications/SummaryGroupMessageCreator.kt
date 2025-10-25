@@ -8,22 +8,20 @@
 package io.element.android.libraries.push.impl.notifications
 
 import android.app.Notification
-import androidx.annotation.ColorInt
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.push.impl.R
+import io.element.android.libraries.push.impl.notifications.factories.NotificationAccountParams
 import io.element.android.libraries.push.impl.notifications.factories.NotificationCreator
 import io.element.android.services.toolbox.api.strings.StringProvider
 
 interface SummaryGroupMessageCreator {
     fun createSummaryNotification(
-        currentUser: MatrixUser,
+        notificationAccountParams: NotificationAccountParams,
         roomNotifications: List<RoomNotification>,
         invitationNotifications: List<OneShotNotification>,
         simpleNotifications: List<OneShotNotification>,
         fallbackNotifications: List<OneShotNotification>,
-        @ColorInt color: Int,
     ): Notification
 }
 
@@ -42,12 +40,11 @@ class DefaultSummaryGroupMessageCreator(
     private val notificationCreator: NotificationCreator,
 ) : SummaryGroupMessageCreator {
     override fun createSummaryNotification(
-        currentUser: MatrixUser,
+        notificationAccountParams: NotificationAccountParams,
         roomNotifications: List<RoomNotification>,
         invitationNotifications: List<OneShotNotification>,
         simpleNotifications: List<OneShotNotification>,
         fallbackNotifications: List<OneShotNotification>,
-        @ColorInt color: Int,
     ): Notification {
         val summaryIsNoisy = roomNotifications.any { it.shouldBing } ||
             invitationNotifications.any { it.isNoisy } ||
@@ -61,11 +58,10 @@ class DefaultSummaryGroupMessageCreator(
         val nbEvents = roomNotifications.size + simpleNotifications.size
         val sumTitle = stringProvider.getQuantityString(R.plurals.notification_compat_summary_title, nbEvents, nbEvents)
         return notificationCreator.createSummaryListNotification(
-            currentUser,
+            notificationAccountParams = notificationAccountParams,
             sumTitle,
             noisy = summaryIsNoisy,
             lastMessageTimestamp = lastMessageTimestamp,
-            color = color,
         )
     }
 }

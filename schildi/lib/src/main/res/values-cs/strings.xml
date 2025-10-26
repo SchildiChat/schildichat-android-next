@@ -184,4 +184,6 @@
     <string name="sc_pref_debounce_offline_state_title">Odskok offline stavu</string>
     <string name="sc_pref_always_show_reaction_search_bar_title">Hledání lepkavých reakcí</string>
     <string name="sc_pref_always_show_reaction_search_bar_summary">Vždy zobrazovat vyhledávací lištu reakcí v horní části výběru reakcí</string>
+    <string name="sc_pseudo_space_invites">Pozvánky</string>
+    <string name="sc_pseudo_space_list">Seznam prostorů</string>
 </resources>

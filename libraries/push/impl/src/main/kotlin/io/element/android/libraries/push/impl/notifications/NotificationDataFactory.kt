@@ -28,30 +28,26 @@ import io.element.android.libraries.push.impl.notifications.model.SimpleNotifiab
 import io.element.android.services.toolbox.api.strings.StringProvider
 
 interface NotificationDataFactory {
-    suspend fun toNotifications(
-        messages: List<NotifiableMessageEvent>,
+    suspend fun List<NotifiableMessageEvent>.toNotifications(
         imageLoader: ImageLoader,
         notificationAccountParams: NotificationAccountParams,
     ): List<RoomNotification>
 
     @JvmName("toNotificationInvites")
     @Suppress("INAPPLICABLE_JVM_NAME")
-    fun toNotifications(
-        invites: List<InviteNotifiableEvent>,
+    fun List<InviteNotifiableEvent>.toNotifications(
         notificationAccountParams: NotificationAccountParams,
     ): List<OneShotNotification>
 
     @JvmName("toNotificationSimpleEvents")
     @Suppress("INAPPLICABLE_JVM_NAME")
-    fun toNotifications(
-        simpleEvents: List<SimpleNotifiableEvent>,
+    fun List<SimpleNotifiableEvent>.toNotifications(
         notificationAccountParams: NotificationAccountParams,
     ): List<OneShotNotification>
 
     @JvmName("toNotificationFallbackEvents")
     @Suppress("INAPPLICABLE_JVM_NAME")
-    fun toNotifications(
-        fallback: List<FallbackNotifiableEvent>,
+    fun List<FallbackNotifiableEvent>.toNotifications(
         notificationAccountParams: NotificationAccountParams,
     ): List<OneShotNotification>
 
@@ -72,12 +68,11 @@ class DefaultNotificationDataFactory(
     private val activeNotificationsProvider: ActiveNotificationsProvider,
     private val stringProvider: StringProvider,
 ) : NotificationDataFactory {
-    override suspend fun toNotifications(
-        messages: List<NotifiableMessageEvent>,
+    override suspend fun List<NotifiableMessageEvent>.toNotifications(
         imageLoader: ImageLoader,
         notificationAccountParams: NotificationAccountParams,
     ): List<RoomNotification> {
-        val messagesToDisplay = messages.filterNot { it.canNotBeDisplayed() }
+        val messagesToDisplay = filterNot { it.canNotBeDisplayed() }
             .groupBy { it.roomId }
         return messagesToDisplay.flatMap { (roomId, events) ->
             val roomName = events.lastOrNull()?.roomName ?: roomId.value
@@ -114,11 +109,10 @@ class DefaultNotificationDataFactory(
 
     @JvmName("toNotificationInvites")
     @Suppress("INAPPLICABLE_JVM_NAME")
-    override fun toNotifications(
-        invites: List<InviteNotifiableEvent>,
+    override fun List<InviteNotifiableEvent>.toNotifications(
         notificationAccountParams: NotificationAccountParams,
     ): List<OneShotNotification> {
-        return invites.map { event ->
+        return map { event ->
             OneShotNotification(
                 key = event.roomId.value,
                 notification = notificationCreator.createRoomInvitationNotification(notificationAccountParams, event),
@@ -131,11 +125,10 @@ class DefaultNotificationDataFactory(
 
     @JvmName("toNotificationSimpleEvents")
     @Suppress("INAPPLICABLE_JVM_NAME")
-    override fun toNotifications(
-        simpleEvents: List<SimpleNotifiableEvent>,
+    override fun List<SimpleNotifiableEvent>.toNotifications(
         notificationAccountParams: NotificationAccountParams,
     ): List<OneShotNotification> {
-        return simpleEvents.map { event ->
+        return map { event ->
             OneShotNotification(
                 key = event.eventId.value,
                 notification = notificationCreator.createSimpleEventNotification(notificationAccountParams, event),
@@ -148,11 +141,10 @@ class DefaultNotificationDataFactory(
 
     @JvmName("toNotificationFallbackEvents")
     @Suppress("INAPPLICABLE_JVM_NAME")
-    override fun toNotifications(
-        fallback: List<FallbackNotifiableEvent>,
+    override fun List<FallbackNotifiableEvent>.toNotifications(
         notificationAccountParams: NotificationAccountParams,
     ): List<OneShotNotification> {
-        return fallback.map { event ->
+        return map { event ->
             OneShotNotification(
                 key = event.eventId.value,
                 notification = notificationCreator.createFallbackNotification(notificationAccountParams, event),

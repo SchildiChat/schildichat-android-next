@@ -55,10 +55,7 @@ class NotificationDataFactoryTest {
             aNotificationAccountParams(),
             AN_INVITATION_EVENT,
         )
-        val roomInvitation = listOf(AN_INVITATION_EVENT)
-
-        val result = toNotifications(roomInvitation, aNotificationAccountParams())
-
+        val result = listOf(AN_INVITATION_EVENT).toNotifications(aNotificationAccountParams())
         assertThat(result).isEqualTo(
             listOf(
                 OneShotNotification(
@@ -78,19 +75,14 @@ class NotificationDataFactoryTest {
             aNotificationAccountParams(),
             AN_INVITATION_EVENT,
         )
-        val roomInvitation = listOf(A_SIMPLE_EVENT)
-
-        val result = toNotifications(roomInvitation, aNotificationAccountParams())
-
-        assertThat(result).isEqualTo(
-            listOf(
-                OneShotNotification(
-                    notification = expectedNotification,
-                    key = AN_EVENT_ID.value,
-                    summaryLine = A_SIMPLE_EVENT.description,
-                    isNoisy = A_SIMPLE_EVENT.noisy,
-                    timestamp = AN_INVITATION_EVENT.timestamp
-                )
+        val result = listOf(A_SIMPLE_EVENT).toNotifications(aNotificationAccountParams())
+        assertThat(result).containsExactly(
+            OneShotNotification(
+                notification = expectedNotification,
+                key = AN_EVENT_ID.value,
+                summaryLine = A_SIMPLE_EVENT.description,
+                isNoisy = A_SIMPLE_EVENT.noisy,
+                timestamp = AN_INVITATION_EVENT.timestamp
             )
         )
     }
@@ -116,14 +108,11 @@ class NotificationDataFactoryTest {
             shouldBing = events.any { it.noisy },
             threadId = null,
         )
-        val roomWithMessage = listOf(A_MESSAGE_EVENT)
-
         val fakeImageLoader = FakeImageLoader()
-        val result = toNotifications(
+        val result = listOf(A_MESSAGE_EVENT).toNotifications(
             notificationAccountParams = aNotificationAccountParams(
                 user = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
             ),
-            messages = roomWithMessage,
             imageLoader = fakeImageLoader.getImageLoader(),
         )
 
@@ -134,17 +123,14 @@ class NotificationDataFactoryTest {
 
     @Test
     fun `given a room with only redacted events when mapping to notification then is Empty`() = testWith(notificationDataFactory) {
-        val redactedRoom = listOf(A_MESSAGE_EVENT.copy(isRedacted = true))
-
+        val redactedRoom = A_MESSAGE_EVENT.copy(isRedacted = true)
         val fakeImageLoader = FakeImageLoader()
-        val result = toNotifications(
+        val result = listOf(redactedRoom).toNotifications(
             notificationAccountParams = aNotificationAccountParams(
                 user = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
             ),
-            messages = redactedRoom,
             imageLoader = fakeImageLoader.getImageLoader(),
         )
-
         assertThat(result).isEmpty()
         assertThat(fakeImageLoader.getCoilRequests().size).isEqualTo(0)
     }
@@ -178,11 +164,10 @@ class NotificationDataFactoryTest {
         )
 
         val fakeImageLoader = FakeImageLoader()
-        val result = toNotifications(
+        val result = roomWithRedactedMessage.toNotifications(
             notificationAccountParams = aNotificationAccountParams(
                 user = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
             ),
-            messages = roomWithRedactedMessage,
             imageLoader = fakeImageLoader.getImageLoader(),
         )
 

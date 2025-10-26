@@ -46,7 +46,7 @@ class DefaultNotificationDisplayer(
 
     override fun displayDiagnosticNotification(notification: Notification): Boolean {
         return showNotification(
-            tag = "DIAGNOSTIC",
+            tag = TAG_DIAGNOSTIC,
             id = NOTIFICATION_ID_DIAGNOSTIC,
             notification = notification
         )
@@ -54,12 +54,13 @@ class DefaultNotificationDisplayer(
 
     override fun dismissDiagnosticNotification() {
         cancelNotification(
-            tag = "DIAGNOSTIC",
+            tag = TAG_DIAGNOSTIC,
             id = NOTIFICATION_ID_DIAGNOSTIC
         )
     }
 
     companion object {
+        private const val TAG_DIAGNOSTIC = "DIAGNOSTIC"
         /* ==========================================================================================
          * IDs for notifications
          * ========================================================================================== */

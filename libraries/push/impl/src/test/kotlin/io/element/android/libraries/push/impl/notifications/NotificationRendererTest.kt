@@ -78,7 +78,7 @@ class NotificationRendererTest {
 
         renderEventsAsNotifications(listOf(aNotifiableMessageEvent()))
 
-        notificationDisplayer.showNotificationMessageResult.assertions().isCalledExactly(2).withSequence(
+        notificationDisplayer.showNotificationResult.assertions().isCalledExactly(2).withSequence(
             listOf(value(A_ROOM_ID.value), value(notificationIdProvider.getRoomMessagesNotificationId(A_SESSION_ID)), value(A_NOTIFICATION)),
             listOf(value(null), value(notificationIdProvider.getSummaryNotificationId(A_SESSION_ID)), value(A_SUMMARY_NOTIFICATION.notification))
         )
@@ -90,7 +90,7 @@ class NotificationRendererTest {
 
         renderEventsAsNotifications(listOf(aSimpleNotifiableEvent(eventId = AN_EVENT_ID)))
 
-        notificationDisplayer.showNotificationMessageResult.assertions().isCalledExactly(2).withSequence(
+        notificationDisplayer.showNotificationResult.assertions().isCalledExactly(2).withSequence(
             listOf(value(AN_EVENT_ID.value), value(notificationIdProvider.getRoomEventNotificationId(A_SESSION_ID)), value(A_NOTIFICATION)),
             listOf(value(null), value(notificationIdProvider.getSummaryNotificationId(A_SESSION_ID)), value(A_SUMMARY_NOTIFICATION.notification))
         )
@@ -102,7 +102,7 @@ class NotificationRendererTest {
 
         renderEventsAsNotifications(listOf(anInviteNotifiableEvent()))
 
-        notificationDisplayer.showNotificationMessageResult.assertions().isCalledExactly(2).withSequence(
+        notificationDisplayer.showNotificationResult.assertions().isCalledExactly(2).withSequence(
             listOf(value(A_ROOM_ID.value), value(notificationIdProvider.getRoomInvitationNotificationId(A_SESSION_ID)), value(A_NOTIFICATION)),
             listOf(value(null), value(notificationIdProvider.getSummaryNotificationId(A_SESSION_ID)), value(A_SUMMARY_NOTIFICATION.notification))
         )

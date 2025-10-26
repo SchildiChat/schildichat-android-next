@@ -74,7 +74,7 @@ class NotificationRenderer(
         // Remove summary first to avoid briefly displaying it after dismissing the last notification
         if (summaryNotification == SummaryNotification.Removed) {
             Timber.tag(loggerTag.value).d("Removing summary notification")
-            notificationDisplayer.cancelNotificationMessage(
+            notificationDisplayer.cancelNotification(
                 tag = null,
                 id = NotificationIdProvider.getSummaryNotificationId(currentUser.userId)
             )
@@ -85,7 +85,7 @@ class NotificationRenderer(
                 roomId = notificationData.roomId,
                 threadId = notificationData.threadId
             )
-            notificationDisplayer.showNotificationMessage(
+            notificationDisplayer.showNotification(
                 tag = tag,
                 id = NotificationIdProvider.getRoomMessagesNotificationId(currentUser.userId),
                 notification = notificationData.notification
@@ -95,7 +95,7 @@ class NotificationRenderer(
         invitationNotifications.forEach { notificationData ->
             if (useCompleteNotificationFormat) {
                 Timber.tag(loggerTag.value).d("Updating invitation notification ${notificationData.tag}")
-                notificationDisplayer.showNotificationMessage(
+                notificationDisplayer.showNotification(
                     tag = notificationData.tag,
                     id = NotificationIdProvider.getRoomInvitationNotificationId(currentUser.userId),
                     notification = notificationData.notification
@@ -106,7 +106,7 @@ class NotificationRenderer(
         simpleNotifications.forEach { notificationData ->
             if (useCompleteNotificationFormat) {
                 Timber.tag(loggerTag.value).d("Updating simple notification ${notificationData.tag}")
-                notificationDisplayer.showNotificationMessage(
+                notificationDisplayer.showNotification(
                     tag = notificationData.tag,
                     id = NotificationIdProvider.getRoomEventNotificationId(currentUser.userId),
                     notification = notificationData.notification
@@ -117,7 +117,7 @@ class NotificationRenderer(
         // Show only the first fallback notification
         if (fallbackNotifications.isNotEmpty()) {
             Timber.tag(loggerTag.value).d("Showing fallback notification")
-            notificationDisplayer.showNotificationMessage(
+            notificationDisplayer.showNotification(
                 tag = "FALLBACK",
                 id = NotificationIdProvider.getFallbackNotificationId(currentUser.userId),
                 notification = fallbackNotifications.first().notification
@@ -127,7 +127,7 @@ class NotificationRenderer(
         // Update summary last to avoid briefly displaying it before other notifications
         if (summaryNotification is SummaryNotification.Update) {
             Timber.tag(loggerTag.value).d("Updating summary notification")
-            notificationDisplayer.showNotificationMessage(
+            notificationDisplayer.showNotification(
                 tag = null,
                 id = NotificationIdProvider.getSummaryNotificationId(currentUser.userId),
                 notification = summaryNotification.notification

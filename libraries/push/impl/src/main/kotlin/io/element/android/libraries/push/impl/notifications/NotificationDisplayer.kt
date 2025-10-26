@@ -19,8 +19,8 @@ import io.element.android.libraries.di.annotations.ApplicationContext
 import timber.log.Timber
 
 interface NotificationDisplayer {
-    fun showNotificationMessage(tag: String?, id: Int, notification: Notification): Boolean
-    fun cancelNotificationMessage(tag: String?, id: Int)
+    fun showNotification(tag: String?, id: Int, notification: Notification): Boolean
+    fun cancelNotification(tag: String?, id: Int)
     fun displayDiagnosticNotification(notification: Notification): Boolean
     fun dismissDiagnosticNotification()
 }
@@ -30,7 +30,7 @@ class DefaultNotificationDisplayer(
     @ApplicationContext private val context: Context,
     private val notificationManager: NotificationManagerCompat
 ) : NotificationDisplayer {
-    override fun showNotificationMessage(tag: String?, id: Int, notification: Notification): Boolean {
+    override fun showNotification(tag: String?, id: Int, notification: Notification): Boolean {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             Timber.w("Not allowed to notify.")
             return false
@@ -40,12 +40,12 @@ class DefaultNotificationDisplayer(
         return true
     }
 
-    override fun cancelNotificationMessage(tag: String?, id: Int) {
+    override fun cancelNotification(tag: String?, id: Int) {
         notificationManager.cancel(tag, id)
     }
 
     override fun displayDiagnosticNotification(notification: Notification): Boolean {
-        return showNotificationMessage(
+        return showNotification(
             tag = "DIAGNOSTIC",
             id = NOTIFICATION_ID_DIAGNOSTIC,
             notification = notification
@@ -53,7 +53,7 @@ class DefaultNotificationDisplayer(
     }
 
     override fun dismissDiagnosticNotification() {
-        cancelNotificationMessage(
+        cancelNotification(
             tag = "DIAGNOSTIC",
             id = NOTIFICATION_ID_DIAGNOSTIC
         )

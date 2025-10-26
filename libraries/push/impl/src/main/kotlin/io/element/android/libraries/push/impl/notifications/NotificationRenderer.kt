@@ -94,9 +94,9 @@ class NotificationRenderer(
 
         invitationNotifications.forEach { notificationData ->
             if (useCompleteNotificationFormat) {
-                Timber.tag(loggerTag.value).d("Updating invitation notification ${notificationData.key}")
+                Timber.tag(loggerTag.value).d("Updating invitation notification ${notificationData.tag}")
                 notificationDisplayer.showNotificationMessage(
-                    tag = notificationData.key,
+                    tag = notificationData.tag,
                     id = NotificationIdProvider.getRoomInvitationNotificationId(currentUser.userId),
                     notification = notificationData.notification
                 )
@@ -105,9 +105,9 @@ class NotificationRenderer(
 
         simpleNotifications.forEach { notificationData ->
             if (useCompleteNotificationFormat) {
-                Timber.tag(loggerTag.value).d("Updating simple notification ${notificationData.key}")
+                Timber.tag(loggerTag.value).d("Updating simple notification ${notificationData.tag}")
                 notificationDisplayer.showNotificationMessage(
-                    tag = notificationData.key,
+                    tag = notificationData.tag,
                     id = NotificationIdProvider.getRoomEventNotificationId(currentUser.userId),
                     notification = notificationData.notification
                 )

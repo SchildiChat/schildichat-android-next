@@ -60,7 +60,7 @@ class NotificationDataFactoryTest {
             listOf(
                 OneShotNotification(
                     notification = expectedNotification,
-                    key = A_ROOM_ID.value,
+                    tag = A_ROOM_ID.value,
                     summaryLine = AN_INVITATION_EVENT.description,
                     isNoisy = AN_INVITATION_EVENT.noisy,
                     timestamp = AN_INVITATION_EVENT.timestamp
@@ -79,7 +79,7 @@ class NotificationDataFactoryTest {
         assertThat(result).containsExactly(
             OneShotNotification(
                 notification = expectedNotification,
-                key = AN_EVENT_ID.value,
+                tag = AN_EVENT_ID.value,
                 summaryLine = A_SIMPLE_EVENT.description,
                 isNoisy = A_SIMPLE_EVENT.noisy,
                 timestamp = AN_INVITATION_EVENT.timestamp

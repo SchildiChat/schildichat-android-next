@@ -114,7 +114,7 @@ class DefaultNotificationDataFactory(
     ): List<OneShotNotification> {
         return map { event ->
             OneShotNotification(
-                key = event.roomId.value,
+                tag = event.roomId.value,
                 notification = notificationCreator.createRoomInvitationNotification(notificationAccountParams, event),
                 summaryLine = event.description,
                 isNoisy = event.noisy,
@@ -130,7 +130,7 @@ class DefaultNotificationDataFactory(
     ): List<OneShotNotification> {
         return map { event ->
             OneShotNotification(
-                key = event.eventId.value,
+                tag = event.eventId.value,
                 notification = notificationCreator.createSimpleEventNotification(notificationAccountParams, event),
                 summaryLine = event.description,
                 isNoisy = event.noisy,
@@ -146,7 +146,7 @@ class DefaultNotificationDataFactory(
     ): List<OneShotNotification> {
         return map { event ->
             OneShotNotification(
-                key = event.eventId.value,
+                tag = event.eventId.value,
                 notification = notificationCreator.createFallbackNotification(notificationAccountParams, event),
                 summaryLine = event.description.orEmpty(),
                 isNoisy = false,
@@ -239,7 +239,7 @@ data class RoomNotification(
 
 data class OneShotNotification(
     val notification: Notification,
-    val key: String,
+    val tag: String,
     val summaryLine: CharSequence,
     val isNoisy: Boolean,
     val timestamp: Long,

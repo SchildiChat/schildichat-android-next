@@ -42,7 +42,7 @@ private const val USE_COMPLETE_NOTIFICATION_FORMAT = true
 
 private val A_SUMMARY_NOTIFICATION = SummaryNotification.Update(A_NOTIFICATION)
 private val ONE_SHOT_NOTIFICATION =
-    OneShotNotification(notification = A_NOTIFICATION, key = "ignored", summaryLine = "ignored", isNoisy = false, timestamp = -1)
+    OneShotNotification(notification = A_NOTIFICATION, tag = "ignored", summaryLine = "ignored", isNoisy = false, timestamp = -1)
 
 @RunWith(RobolectricTestRunner::class)
 class NotificationRendererTest {
@@ -86,7 +86,7 @@ class NotificationRendererTest {
 
     @Test
     fun `given a simple notification is added when rendering then show the simple notification and update summary`() = runTest {
-        notificationCreator.createSimpleNotificationResult = lambdaRecorder { _, _ -> ONE_SHOT_NOTIFICATION.copy(key = AN_EVENT_ID.value).notification }
+        notificationCreator.createSimpleNotificationResult = lambdaRecorder { _, _ -> ONE_SHOT_NOTIFICATION.copy(tag = AN_EVENT_ID.value).notification }
 
         renderEventsAsNotifications(listOf(aSimpleNotifiableEvent(eventId = AN_EVENT_ID)))
 
@@ -98,7 +98,7 @@ class NotificationRendererTest {
 
     @Test
     fun `given an invitation notification is added when rendering then show the invitation notification and update summary`() = runTest {
-        notificationCreator.createRoomInvitationNotificationResult = lambdaRecorder { _, _ -> ONE_SHOT_NOTIFICATION.copy(key = AN_EVENT_ID.value).notification }
+        notificationCreator.createRoomInvitationNotificationResult = lambdaRecorder { _, _ -> ONE_SHOT_NOTIFICATION.copy(tag = AN_EVENT_ID.value).notification }
 
         renderEventsAsNotifications(listOf(anInviteNotifiableEvent()))
 

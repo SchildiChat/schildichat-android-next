@@ -155,9 +155,6 @@ class DefaultNotificationCreator(
                         setShortcutId(createShortcutId(roomInfo.sessionId, roomInfo.roomId))
                     }
                 }
-                // Auto-bundling is enabled for 4 or more notifications on API 24+ (N+)
-                // devices and all Wear devices. But we want a custom grouping, so we specify the groupID
-                .setGroup(roomInfo.sessionId.value)
                 .setGroupSummary(false)
                 // In order to avoid notification making sound twice (due to the summary notification)
                 .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
@@ -236,7 +233,6 @@ class DefaultNotificationCreator(
             .setOnlyAlertOnce(true)
             .setContentTitle((inviteNotifiableEvent.roomName ?: buildMeta.applicationName).annotateForDebug(5))
             .setContentText(inviteNotifiableEvent.description.annotateForDebug(6))
-            .setGroup(inviteNotifiableEvent.sessionId.value)
             .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
             .configureWith(notificationAccountParams)
             .apply {
@@ -277,7 +273,6 @@ class DefaultNotificationCreator(
             .setOnlyAlertOnce(true)
             .setContentTitle(buildMeta.applicationName.annotateForDebug(7))
             .setContentText(simpleNotifiableEvent.description.annotateForDebug(8))
-            .setGroup(simpleNotifiableEvent.sessionId.value)
             .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
             .configureWith(notificationAccountParams)
             .setAutoCancel(true)
@@ -308,7 +303,6 @@ class DefaultNotificationCreator(
             .setOnlyAlertOnce(true)
             .setContentTitle(buildMeta.applicationName.annotateForDebug(7))
             .setContentText(fallbackNotifiableEvent.description.orEmpty().annotateForDebug(8))
-            .setGroup(fallbackNotifiableEvent.sessionId.value)
             .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
             .configureWith(notificationAccountParams)
             .setAutoCancel(true)
@@ -343,7 +337,6 @@ class DefaultNotificationCreator(
             // used in compat < N, after summary is built based on child notifications
             .setWhen(lastMessageTimestamp)
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-            .setGroup(userId.value)
             // set this notification as the summary for the group
             .setGroupSummary(true)
             .configureWith(notificationAccountParams)
@@ -476,6 +469,7 @@ class DefaultNotificationCreator(
 private fun NotificationCompat.Builder.configureWith(notificationAccountParams: NotificationAccountParams) = apply {
     setSmallIcon(CommonDrawables.ic_notification)
     setColor(notificationAccountParams.color)
+    setGroup(notificationAccountParams.user.userId.value)
     if (notificationAccountParams.showSessionId) {
         setSubText(notificationAccountParams.user.userId.value)
     }

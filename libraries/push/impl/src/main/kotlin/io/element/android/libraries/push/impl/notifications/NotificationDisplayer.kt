@@ -61,6 +61,7 @@ class DefaultNotificationDisplayer(
 
     companion object {
         private const val TAG_DIAGNOSTIC = "DIAGNOSTIC"
+
         /* ==========================================================================================
          * IDs for notifications
          * ========================================================================================== */

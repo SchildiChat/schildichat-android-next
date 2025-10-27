@@ -1,21 +1,22 @@
 /*
- * Copyright 2024 New Vector Ltd.
+ * Copyright 2025 New Vector Ltd.
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.libraries.push.test.notifications
+package io.element.android.libraries.matrix.ui.test.media
 
 import coil3.ImageLoader
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.ui.media.ImageLoaderHolder
 
-class FakeImageLoaderHolder : ImageLoaderHolder {
-    private val fakeImageLoader = FakeImageLoader()
+class FakeImageLoaderHolder(
+    val fakeImageLoader: ImageLoader = FakeImageLoader(),
+) : ImageLoaderHolder {
     override fun get(client: MatrixClient): ImageLoader {
-        return fakeImageLoader.getImageLoader()
+        return fakeImageLoader
     }
 
     override fun remove(sessionId: SessionId) {

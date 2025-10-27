@@ -33,9 +33,9 @@ import io.element.android.libraries.matrix.test.FakeMatrixClientProvider
 import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
 import io.element.android.libraries.matrix.test.room.aRoomInfo
+import io.element.android.libraries.matrix.ui.test.media.FakeImageLoaderHolder
 import io.element.android.libraries.push.api.notifications.ForegroundServiceType
 import io.element.android.libraries.push.api.notifications.NotificationIdProvider
-import io.element.android.libraries.push.test.notifications.FakeImageLoaderHolder
 import io.element.android.libraries.push.test.notifications.FakeOnMissedCallNotificationHandler
 import io.element.android.libraries.push.test.notifications.push.FakeNotificationBitmapLoader
 import io.element.android.services.appnavstate.test.FakeAppForegroundStateService
@@ -415,6 +415,7 @@ class DefaultActiveCallManagerTest {
 
         verify { notificationManagerCompat.cancel(any()) }
     }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `IncomingCall - ignore expired ring lifetime`() = runTest {

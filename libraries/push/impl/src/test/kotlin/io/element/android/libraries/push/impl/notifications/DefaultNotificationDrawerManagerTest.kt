@@ -9,7 +9,6 @@ package io.element.android.libraries.push.impl.notifications
 
 import android.app.Notification
 import androidx.compose.ui.graphics.Color
-import androidx.core.app.NotificationManagerCompat
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.enterprise.api.EnterpriseService
 import io.element.android.features.enterprise.test.FakeEnterpriseService
@@ -22,14 +21,15 @@ import io.element.android.libraries.matrix.test.A_THREAD_ID
 import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.matrix.test.FakeMatrixClientProvider
 import io.element.android.libraries.matrix.ui.components.aMatrixUser
+import io.element.android.libraries.matrix.ui.test.media.FakeImageLoaderHolder
 import io.element.android.libraries.push.api.notifications.NotificationIdProvider
 import io.element.android.libraries.push.impl.notifications.factories.aNotificationAccountParams
 import io.element.android.libraries.push.impl.notifications.fake.FakeActiveNotificationsProvider
 import io.element.android.libraries.push.impl.notifications.fake.FakeNotificationCreator
+import io.element.android.libraries.push.impl.notifications.fake.FakeNotificationDisplayer
 import io.element.android.libraries.push.impl.notifications.fake.FakeRoomGroupMessageCreator
 import io.element.android.libraries.push.impl.notifications.fake.FakeSummaryGroupMessageCreator
 import io.element.android.libraries.push.impl.notifications.fixtures.aNotifiableMessageEvent
-import io.element.android.libraries.push.test.notifications.FakeImageLoaderHolder
 import io.element.android.libraries.sessionstorage.api.SessionStore
 import io.element.android.libraries.sessionstorage.test.InMemorySessionStore
 import io.element.android.services.appnavstate.api.AppNavigationState
@@ -43,19 +43,14 @@ import io.element.android.tests.testutils.lambda.lambdaRecorder
 import io.element.android.tests.testutils.lambda.value
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@RunWith(RobolectricTestRunner::class)
 class DefaultNotificationDrawerManagerTest {
     @Test
     fun `clearAllEvents should have no effect when queue is empty`() = runTest {
@@ -183,10 +178,12 @@ class DefaultNotificationDrawerManagerTest {
 
     @Test
     fun `clearSummaryNotificationIfNeeded will run after clearing all other notifications`() = runTest {
-        val notificationManager = mockk<NotificationManagerCompat> {
-            every { cancel(any(), any()) } returns Unit
-        }
+        val cancelNotificationResult = lambdaRecorder<String?, Int, Unit> { _, _ -> }
+        val notificationDisplayer = FakeNotificationDisplayer(
+            cancelNotificationResult = cancelNotificationResult,
+        )
         val summaryId = NotificationIdProvider.getSummaryNotificationId(A_SESSION_ID)
+        val roomMessageId = NotificationIdProvider.getRoomMessagesNotificationId(A_SESSION_ID)
         val activeNotificationsProvider = FakeActiveNotificationsProvider(
             getSummaryNotificationResult = {
                 mockk {
@@ -196,7 +193,7 @@ class DefaultNotificationDrawerManagerTest {
             countResult = { 1 },
         )
         val defaultNotificationDrawerManager = createDefaultNotificationDrawerManager(
-            notificationManager = notificationManager,
+            notificationDisplayer = notificationDisplayer,
             activeNotificationsProvider = activeNotificationsProvider,
         )
 
@@ -204,13 +201,16 @@ class DefaultNotificationDrawerManagerTest {
         defaultNotificationDrawerManager.clearAllMessagesEvents(A_SESSION_ID)
 
         // Verify we asked to cancel the notification with summaryId
-        verify { notificationManager.cancel(null, summaryId) }
+        cancelNotificationResult.assertions().isCalledExactly(2).withSequence(
+            listOf(value(null), value(roomMessageId)),
+            listOf(value(null), value(summaryId)),
+        )
 
         defaultNotificationDrawerManager.destroy()
     }
 
     private fun TestScope.createDefaultNotificationDrawerManager(
-        notificationManager: NotificationManagerCompat = NotificationManagerCompat.from(RuntimeEnvironment.getApplication()),
+        notificationDisplayer: NotificationDisplayer = FakeNotificationDisplayer(),
         appNavigationStateService: AppNavigationStateService = FakeAppNavigationStateService(),
         roomGroupMessageCreator: RoomGroupMessageCreator = FakeRoomGroupMessageCreator(),
         summaryGroupMessageCreator: SummaryGroupMessageCreator = FakeSummaryGroupMessageCreator(),
@@ -219,11 +219,10 @@ class DefaultNotificationDrawerManagerTest {
         sessionStore: SessionStore = InMemorySessionStore(),
         enterpriseService: EnterpriseService = FakeEnterpriseService(),
     ): DefaultNotificationDrawerManager {
-        val context = RuntimeEnvironment.getApplication()
         return DefaultNotificationDrawerManager(
-            notificationManager = notificationManager,
+            notificationDisplayer = notificationDisplayer,
             notificationRenderer = NotificationRenderer(
-                notificationDisplayer = DefaultNotificationDisplayer(context, NotificationManagerCompat.from(context)),
+                notificationDisplayer = FakeNotificationDisplayer(),
                 notificationDataFactory = DefaultNotificationDataFactory(
                     notificationCreator = FakeNotificationCreator(),
                     roomGroupMessageCreator = roomGroupMessageCreator,

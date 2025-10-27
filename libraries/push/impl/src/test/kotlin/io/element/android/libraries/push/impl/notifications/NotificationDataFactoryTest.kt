@@ -13,6 +13,7 @@ import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_SESSION_ID
+import io.element.android.libraries.matrix.ui.test.media.FakeImageLoader
 import io.element.android.libraries.push.impl.notifications.factories.aNotificationAccountParams
 import io.element.android.libraries.push.impl.notifications.fake.FakeActiveNotificationsProvider
 import io.element.android.libraries.push.impl.notifications.fake.FakeNotificationCreator
@@ -21,7 +22,6 @@ import io.element.android.libraries.push.impl.notifications.fake.FakeSummaryGrou
 import io.element.android.libraries.push.impl.notifications.fixtures.aNotifiableMessageEvent
 import io.element.android.libraries.push.impl.notifications.fixtures.aSimpleNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.fixtures.anInviteNotifiableEvent
-import io.element.android.libraries.push.test.notifications.FakeImageLoader
 import io.element.android.services.toolbox.test.strings.FakeStringProvider
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -98,7 +98,7 @@ class NotificationDataFactoryTest {
                 events = events,
                 roomId = A_ROOM_ID,
                 threadId = null,
-                imageLoader = FakeImageLoader().getImageLoader(),
+                imageLoader = FakeImageLoader(),
                 existingNotification = null,
             ),
             roomId = A_ROOM_ID,
@@ -113,12 +113,12 @@ class NotificationDataFactoryTest {
             notificationAccountParams = aNotificationAccountParams(
                 user = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
             ),
-            imageLoader = fakeImageLoader.getImageLoader(),
+            imageLoader = fakeImageLoader,
         )
 
         assertThat(result.size).isEqualTo(1)
         assertThat(result.first().isDataEqualTo(expectedNotification)).isTrue()
-        assertThat(fakeImageLoader.getCoilRequests().size).isEqualTo(0)
+        assertThat(fakeImageLoader.getExecutedRequestsData()).isEmpty()
     }
 
     @Test
@@ -129,10 +129,10 @@ class NotificationDataFactoryTest {
             notificationAccountParams = aNotificationAccountParams(
                 user = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
             ),
-            imageLoader = fakeImageLoader.getImageLoader(),
+            imageLoader = fakeImageLoader,
         )
         assertThat(result).isEmpty()
-        assertThat(fakeImageLoader.getCoilRequests().size).isEqualTo(0)
+        assertThat(fakeImageLoader.getExecutedRequestsData()).isEmpty()
     }
 
     @Test
@@ -152,7 +152,7 @@ class NotificationDataFactoryTest {
                 events = withRedactedRemoved,
                 roomId = A_ROOM_ID,
                 threadId = null,
-                imageLoader = FakeImageLoader().getImageLoader(),
+                imageLoader = FakeImageLoader(),
                 existingNotification = null,
             ),
             roomId = A_ROOM_ID,
@@ -168,12 +168,12 @@ class NotificationDataFactoryTest {
             notificationAccountParams = aNotificationAccountParams(
                 user = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
             ),
-            imageLoader = fakeImageLoader.getImageLoader(),
+            imageLoader = fakeImageLoader,
         )
 
         assertThat(result.size).isEqualTo(1)
         assertThat(result.first().isDataEqualTo(expectedNotification)).isTrue()
-        assertThat(fakeImageLoader.getCoilRequests().size).isEqualTo(0)
+        assertThat(fakeImageLoader.getExecutedRequestsData()).isEmpty()
     }
 }
 

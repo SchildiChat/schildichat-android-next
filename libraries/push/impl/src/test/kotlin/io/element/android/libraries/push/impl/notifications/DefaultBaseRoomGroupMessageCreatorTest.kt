@@ -18,12 +18,12 @@ import io.element.android.libraries.matrix.test.A_TIMESTAMP
 import io.element.android.libraries.matrix.ui.components.aMatrixUser
 import io.element.android.libraries.matrix.ui.media.AVATAR_THUMBNAIL_SIZE_IN_PIXEL
 import io.element.android.libraries.matrix.ui.media.MediaRequestData
+import io.element.android.libraries.matrix.ui.test.media.FakeImageLoader
 import io.element.android.libraries.push.impl.notifications.factories.MARK_AS_READ_ACTION_TITLE
 import io.element.android.libraries.push.impl.notifications.factories.QUICK_REPLY_ACTION_TITLE
 import io.element.android.libraries.push.impl.notifications.factories.aNotificationAccountParams
 import io.element.android.libraries.push.impl.notifications.factories.createNotificationCreator
 import io.element.android.libraries.push.impl.notifications.fixtures.aNotifiableMessageEvent
-import io.element.android.libraries.push.test.notifications.FakeImageLoader
 import io.element.android.services.toolbox.api.sdk.BuildVersionSdkIntProvider
 import io.element.android.services.toolbox.impl.strings.AndroidStringProvider
 import io.element.android.services.toolbox.test.sdk.FakeBuildVersionSdkIntProvider
@@ -51,7 +51,7 @@ class DefaultBaseRoomGroupMessageCreatorTest {
                 )
             ),
             roomId = A_ROOM_ID,
-            imageLoader = fakeImageLoader.getImageLoader(),
+            imageLoader = fakeImageLoader,
             existingNotification = null,
             threadId = null,
         )
@@ -59,7 +59,7 @@ class DefaultBaseRoomGroupMessageCreatorTest {
         @Suppress("DEPRECATION")
         assertThat(result.priority).isEqualTo(NotificationCompat.PRIORITY_LOW)
         assertThat(result.`when`).isEqualTo(A_TIMESTAMP)
-        assertThat(fakeImageLoader.getCoilRequests().size).isEqualTo(0)
+        assertThat(fakeImageLoader.getExecutedRequestsData()).isEmpty()
     }
 
     @Test
@@ -74,13 +74,13 @@ class DefaultBaseRoomGroupMessageCreatorTest {
                 )
             ),
             roomId = A_ROOM_ID,
-            imageLoader = fakeImageLoader.getImageLoader(),
+            imageLoader = fakeImageLoader,
             existingNotification = null,
             threadId = null,
         )
         @Suppress("DEPRECATION")
         assertThat(result.priority).isEqualTo(NotificationCompat.PRIORITY_DEFAULT)
-        assertThat(fakeImageLoader.getCoilRequests().size).isEqualTo(0)
+        assertThat(fakeImageLoader.getExecutedRequestsData()).isEmpty()
     }
 
     @Test
@@ -141,12 +141,12 @@ class DefaultBaseRoomGroupMessageCreatorTest {
                 )
             ),
             roomId = A_ROOM_ID,
-            imageLoader = fakeImageLoader.getImageLoader(),
+            imageLoader = fakeImageLoader,
             existingNotification = null,
             threadId = null,
         )
         assertThat(result.number).isEqualTo(1)
-        assertThat(fakeImageLoader.getCoilRequests()).containsExactlyElementsIn(expectedCoilRequests)
+        assertThat(fakeImageLoader.getExecutedRequestsData()).containsExactlyElementsIn(expectedCoilRequests)
     }
 
     @Test
@@ -160,7 +160,7 @@ class DefaultBaseRoomGroupMessageCreatorTest {
                 aNotifiableMessageEvent(timestamp = A_TIMESTAMP + 10),
             ),
             roomId = A_ROOM_ID,
-            imageLoader = fakeImageLoader.getImageLoader(),
+            imageLoader = fakeImageLoader,
             existingNotification = null,
             threadId = null,
         )
@@ -173,7 +173,7 @@ class DefaultBaseRoomGroupMessageCreatorTest {
                 QUICK_REPLY_ACTION_TITLE.takeIf { NotificationConfig.SHOW_QUICK_REPLY_ACTION },
             )
         )
-        assertThat(fakeImageLoader.getCoilRequests().size).isEqualTo(0)
+        assertThat(fakeImageLoader.getExecutedRequestsData()).isEmpty()
     }
 
     @Test
@@ -189,7 +189,7 @@ class DefaultBaseRoomGroupMessageCreatorTest {
                 ),
             ),
             roomId = A_ROOM_ID,
-            imageLoader = fakeImageLoader.getImageLoader(),
+            imageLoader = fakeImageLoader,
             existingNotification = null,
             threadId = null,
         )
@@ -199,7 +199,7 @@ class DefaultBaseRoomGroupMessageCreatorTest {
                 MARK_AS_READ_ACTION_TITLE.takeIf { NotificationConfig.SHOW_MARK_AS_READ_ACTION }
             )
         )
-        assertThat(fakeImageLoader.getCoilRequests().size).isEqualTo(0)
+        assertThat(fakeImageLoader.getExecutedRequestsData()).isEmpty()
     }
 
     @Test
@@ -214,13 +214,13 @@ class DefaultBaseRoomGroupMessageCreatorTest {
                 ),
             ),
             roomId = A_ROOM_ID,
-            imageLoader = fakeImageLoader.getImageLoader(),
+            imageLoader = fakeImageLoader,
             existingNotification = null,
             threadId = null,
         )
         assertThat(result.number).isEqualTo(1)
         assertThat(result.`when`).isEqualTo(A_TIMESTAMP)
-        assertThat(fakeImageLoader.getCoilRequests().size).isEqualTo(0)
+        assertThat(fakeImageLoader.getExecutedRequestsData()).isEmpty()
     }
 }
 

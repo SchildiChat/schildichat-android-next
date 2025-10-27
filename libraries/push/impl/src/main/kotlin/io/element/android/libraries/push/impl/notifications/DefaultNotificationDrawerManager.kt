@@ -8,7 +8,6 @@
 package io.element.android.libraries.push.impl.notifications
 
 import androidx.annotation.VisibleForTesting
-import androidx.core.app.NotificationManagerCompat
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.SingleIn
@@ -46,7 +45,7 @@ private val loggerTag = LoggerTag("DefaultNotificationDrawerManager", LoggerTag.
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 class DefaultNotificationDrawerManager(
-    private val notificationManager: NotificationManagerCompat,
+    private val notificationDisplayer: NotificationDisplayer,
     private val notificationRenderer: NotificationRenderer,
     private val appNavigationStateService: AppNavigationStateService,
     @AppCoroutineScope
@@ -124,7 +123,7 @@ class DefaultNotificationDrawerManager(
      * Clear all known message events for a [sessionId].
      */
     override fun clearAllMessagesEvents(sessionId: SessionId) {
-        notificationManager.cancel(null, NotificationIdProvider.getRoomMessagesNotificationId(sessionId))
+        notificationDisplayer.cancelNotification(null, NotificationIdProvider.getRoomMessagesNotificationId(sessionId))
         clearSummaryNotificationIfNeeded(sessionId)
     }
 
@@ -133,7 +132,7 @@ class DefaultNotificationDrawerManager(
      */
     fun clearAllEvents(sessionId: SessionId) {
         activeNotificationsProvider.getNotificationsForSession(sessionId)
-            .forEach { notificationManager.cancel(it.tag, it.id) }
+            .forEach { notificationDisplayer.cancelNotification(it.tag, it.id) }
     }
 
     /**
@@ -142,7 +141,7 @@ class DefaultNotificationDrawerManager(
      * Can also be called when a notification for this room is dismissed by the user.
      */
     override fun clearMessagesForRoom(sessionId: SessionId, roomId: RoomId) {
-        notificationManager.cancel(roomId.value, NotificationIdProvider.getRoomMessagesNotificationId(sessionId))
+        notificationDisplayer.cancelNotification(roomId.value, NotificationIdProvider.getRoomMessagesNotificationId(sessionId))
         clearSummaryNotificationIfNeeded(sessionId)
     }
 
@@ -158,7 +157,7 @@ class DefaultNotificationDrawerManager(
 
     override fun clearMembershipNotificationForSession(sessionId: SessionId) {
         activeNotificationsProvider.getMembershipNotificationForSession(sessionId)
-            .forEach { notificationManager.cancel(it.tag, it.id) }
+            .forEach { notificationDisplayer.cancelNotification(it.tag, it.id) }
         clearSummaryNotificationIfNeeded(sessionId)
     }
 
@@ -167,7 +166,7 @@ class DefaultNotificationDrawerManager(
      */
     override fun clearMembershipNotificationForRoom(sessionId: SessionId, roomId: RoomId) {
         activeNotificationsProvider.getMembershipNotificationForRoom(sessionId, roomId)
-            .forEach { notificationManager.cancel(it.tag, it.id) }
+            .forEach { notificationDisplayer.cancelNotification(it.tag, it.id) }
         clearSummaryNotificationIfNeeded(sessionId)
     }
 
@@ -176,14 +175,14 @@ class DefaultNotificationDrawerManager(
      */
     override fun clearEvent(sessionId: SessionId, eventId: EventId) {
         val id = NotificationIdProvider.getRoomEventNotificationId(sessionId)
-        notificationManager.cancel(eventId.value, id)
+        notificationDisplayer.cancelNotification(eventId.value, id)
         clearSummaryNotificationIfNeeded(sessionId)
     }
 
     private fun clearSummaryNotificationIfNeeded(sessionId: SessionId) {
         val summaryNotification = activeNotificationsProvider.getSummaryNotification(sessionId)
         if (summaryNotification != null && activeNotificationsProvider.count(sessionId) == 1) {
-            notificationManager.cancel(null, summaryNotification.id)
+            notificationDisplayer.cancelNotification(null, summaryNotification.id)
         }
     }
 

@@ -13,6 +13,7 @@ import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_SESSION_ID
+import io.element.android.libraries.matrix.ui.test.media.FakeImageLoader
 import io.element.android.libraries.push.api.notifications.NotificationIdProvider
 import io.element.android.libraries.push.impl.notifications.fake.FakeActiveNotificationsProvider
 import io.element.android.libraries.push.impl.notifications.fake.FakeNotificationCreator
@@ -25,7 +26,6 @@ import io.element.android.libraries.push.impl.notifications.fixtures.aNotifiable
 import io.element.android.libraries.push.impl.notifications.fixtures.aSimpleNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.fixtures.anInviteNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.NotifiableEvent
-import io.element.android.libraries.push.test.notifications.FakeImageLoader
 import io.element.android.libraries.sessionstorage.api.SessionStore
 import io.element.android.libraries.sessionstorage.test.InMemorySessionStore
 import io.element.android.services.toolbox.test.strings.FakeStringProvider
@@ -113,7 +113,7 @@ class NotificationRendererTest {
             MatrixUser(A_SESSION_ID, MY_USER_DISPLAY_NAME, MY_USER_AVATAR_URL),
             useCompleteNotificationFormat = USE_COMPLETE_NOTIFICATION_FORMAT,
             eventsToProcess = events,
-            imageLoader = FakeImageLoader().getImageLoader(),
+            imageLoader = FakeImageLoader(),
         )
     }
 }

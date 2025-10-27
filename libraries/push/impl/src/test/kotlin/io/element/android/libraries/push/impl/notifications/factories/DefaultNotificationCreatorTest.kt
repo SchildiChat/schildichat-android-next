@@ -22,6 +22,7 @@ import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.matrix.test.A_THREAD_ID
 import io.element.android.libraries.matrix.test.core.aBuildMeta
 import io.element.android.libraries.matrix.ui.components.aMatrixUser
+import io.element.android.libraries.matrix.ui.test.media.FakeImageLoader
 import io.element.android.libraries.push.api.notifications.NotificationBitmapLoader
 import io.element.android.libraries.push.impl.notifications.DefaultNotificationBitmapLoader
 import io.element.android.libraries.push.impl.notifications.NotificationActionIds
@@ -36,7 +37,6 @@ import io.element.android.libraries.push.impl.notifications.fixtures.aNotifiable
 import io.element.android.libraries.push.impl.notifications.model.FallbackNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.InviteNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.SimpleNotifiableEvent
-import io.element.android.libraries.push.test.notifications.FakeImageLoader
 import io.element.android.services.toolbox.test.sdk.FakeBuildVersionSdkIntProvider
 import io.element.android.services.toolbox.test.strings.FakeStringProvider
 import io.element.android.services.toolbox.test.systemclock.A_FAKE_TIMESTAMP
@@ -246,7 +246,7 @@ class DefaultNotificationCreatorTest {
             lastMessageTimestamp = 123_456L,
             tickerText = "tickerText",
             existingNotification = null,
-            imageLoader = FakeImageLoader().getImageLoader(),
+            imageLoader = FakeImageLoader(),
             events = listOf(aNotifiableMessageEvent()),
         )
         result.commonAssertions()
@@ -271,7 +271,7 @@ class DefaultNotificationCreatorTest {
             lastMessageTimestamp = 123_456L,
             tickerText = "tickerText",
             existingNotification = null,
-            imageLoader = FakeImageLoader().getImageLoader(),
+            imageLoader = FakeImageLoader(),
             events = listOf(aNotifiableMessageEvent()),
         )
         result.commonAssertions()

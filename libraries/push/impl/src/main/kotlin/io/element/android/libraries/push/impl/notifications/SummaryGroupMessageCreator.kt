@@ -49,13 +49,10 @@ class DefaultSummaryGroupMessageCreator(
         val summaryIsNoisy = roomNotifications.any { it.shouldBing } ||
             invitationNotifications.any { it.isNoisy } ||
             simpleNotifications.any { it.isNoisy }
-
         val lastMessageTimestamp = roomNotifications.lastOrNull()?.latestTimestamp
             ?: invitationNotifications.lastOrNull()?.timestamp
             ?: simpleNotifications.last().timestamp
-
-        // FIXME roomIdToEventMap.size is not correct, this is the number of rooms
-        val nbEvents = roomNotifications.size + simpleNotifications.size
+        val nbEvents = roomNotifications.size + invitationNotifications.size + simpleNotifications.size
         val sumTitle = stringProvider.getQuantityString(R.plurals.notification_compat_summary_title, nbEvents, nbEvents)
         return notificationCreator.createSummaryListNotification(
             notificationAccountParams = notificationAccountParams,

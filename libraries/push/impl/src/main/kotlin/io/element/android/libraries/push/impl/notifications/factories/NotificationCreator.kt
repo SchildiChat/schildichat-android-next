@@ -164,7 +164,7 @@ class DefaultNotificationCreator(
 
         val messagingStyle = existingNotification?.let {
             MessagingStyle.extractMessagingStyleFromNotification(it)
-        } ?: messagingStyleFromCurrentUser(
+        } ?: createMessagingStyleFromCurrentUser(
             user = notificationAccountParams.user,
             imageLoader = imageLoader,
             roomName = roomInfo.roomDisplayName,
@@ -437,7 +437,7 @@ class DefaultNotificationCreator(
         }
     }
 
-    private suspend fun messagingStyleFromCurrentUser(
+    private suspend fun createMessagingStyleFromCurrentUser(
         user: MatrixUser,
         imageLoader: ImageLoader,
         roomName: String,

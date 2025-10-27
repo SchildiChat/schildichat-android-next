@@ -22,8 +22,6 @@ import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.appnav.di.RoomGraphFactory
 import io.element.android.appnav.room.RoomNavigationTarget
-import io.element.android.appnav.room.joined.JoinedRoomLoadedFlowNode.Inputs
-import io.element.android.appnav.room.joined.JoinedRoomLoadedFlowNode.NavTarget
 import io.element.android.features.messages.api.MessagesEntryPoint
 import io.element.android.features.roomdetails.api.RoomDetailsEntryPoint
 import io.element.android.features.space.api.SpaceEntryPoint
@@ -154,6 +152,9 @@ class JoinedRoomLoadedFlowNode(
             NavTarget.RoomNotificationSettings -> {
                 createRoomDetailsNode(buildContext, RoomDetailsEntryPoint.InitialTarget.RoomNotificationSettings)
             }
+            NavTarget.RoomMemberList -> {
+                createRoomDetailsNode(buildContext, RoomDetailsEntryPoint.InitialTarget.RoomMemberList)
+            }
             NavTarget.Space -> {
                 createSpaceNode(buildContext)
             }
@@ -168,6 +169,10 @@ class JoinedRoomLoadedFlowNode(
 
             override fun onOpenDetails() {
                 backstack.push(NavTarget.RoomDetails)
+            }
+
+            override fun onOpenMemberList() {
+                backstack.push(NavTarget.RoomMemberList)
             }
         }
         return spaceEntryPoint.nodeBuilder(this, buildContext)
@@ -217,6 +222,9 @@ class JoinedRoomLoadedFlowNode(
         data object RoomDetails : NavTarget
 
         @Parcelize
+        data object RoomMemberList : NavTarget
+
+        @Parcelize
         data class RoomMemberDetails(val userId: UserId) : NavTarget
 
         @Parcelize
@@ -229,17 +237,17 @@ class JoinedRoomLoadedFlowNode(
     }
 }
 
-private fun initialElement(plugins: List<Plugin>): NavTarget {
-    val input = plugins.filterIsInstance<Inputs>().single()
+private fun initialElement(plugins: List<Plugin>): JoinedRoomLoadedFlowNode.NavTarget {
+    val input = plugins.filterIsInstance<JoinedRoomLoadedFlowNode.Inputs>().single()
     return when (input.initialElement) {
         is RoomNavigationTarget.Root -> {
             if (input.room.roomInfoFlow.value.isSpace) {
-                NavTarget.Space
+                JoinedRoomLoadedFlowNode.NavTarget.Space
             } else {
-                NavTarget.Messages(input.initialElement.eventId)
+                JoinedRoomLoadedFlowNode.NavTarget.Messages(input.initialElement.eventId)
             }
         }
-        RoomNavigationTarget.Details -> NavTarget.RoomDetails
-        RoomNavigationTarget.NotificationSettings -> NavTarget.RoomNotificationSettings
+        RoomNavigationTarget.Details -> JoinedRoomLoadedFlowNode.NavTarget.RoomDetails
+        RoomNavigationTarget.NotificationSettings -> JoinedRoomLoadedFlowNode.NavTarget.RoomNotificationSettings
     }
 }

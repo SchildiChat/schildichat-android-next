@@ -7,7 +7,6 @@
 
 package io.element.android.libraries.push.impl.notifications
 
-import androidx.annotation.VisibleForTesting
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.SingleIn
@@ -31,7 +30,6 @@ import io.element.android.services.appnavstate.api.AppNavigationStateService
 import io.element.android.services.appnavstate.api.NavigationState
 import io.element.android.services.appnavstate.api.currentSessionId
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -54,23 +52,15 @@ class DefaultNotificationDrawerManager(
     private val imageLoaderHolder: ImageLoaderHolder,
     private val activeNotificationsProvider: ActiveNotificationsProvider,
 ) : NotificationCleaner {
-    private var appNavigationStateObserver: Job? = null
-
     // TODO EAx add a setting per user for this
     private var useCompleteNotificationFormat = true
 
     init {
         // Observe application state
-        appNavigationStateObserver = coroutineScope.launch {
+        coroutineScope.launch {
             appNavigationStateService.appNavigationState
                 .collect { onAppNavigationStateChange(it.navigationState) }
         }
-    }
-
-    // For test only
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    internal fun destroy() {
-        appNavigationStateObserver?.cancel()
     }
 
     private var currentAppNavigationState: NavigationState? = null

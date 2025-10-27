@@ -56,7 +56,6 @@ class DefaultNotificationDrawerManagerTest {
     fun `clearAllEvents should have no effect when queue is empty`() = runTest {
         val defaultNotificationDrawerManager = createDefaultNotificationDrawerManager()
         defaultNotificationDrawerManager.clearAllEvents(A_SESSION_ID)
-        defaultNotificationDrawerManager.destroy()
     }
 
     @Test
@@ -88,7 +87,6 @@ class DefaultNotificationDrawerManagerTest {
         defaultNotificationDrawerManager.onNotifiableEventReceived(aNotifiableMessageEvent())
         // Add the same Event again (will be ignored)
         defaultNotificationDrawerManager.onNotifiableEventReceived(aNotifiableMessageEvent())
-        defaultNotificationDrawerManager.destroy()
     }
 
     @Test
@@ -101,7 +99,7 @@ class DefaultNotificationDrawerManagerTest {
             )
         )
         val appNavigationStateService = FakeAppNavigationStateService(appNavigationState = appNavigationStateFlow)
-        val defaultNotificationDrawerManager = createDefaultNotificationDrawerManager(
+        createDefaultNotificationDrawerManager(
             appNavigationStateService = appNavigationStateService
         )
         appNavigationStateFlow.emit(AppNavigationState(aNavigationState(), isInForeground = true))
@@ -117,7 +115,6 @@ class DefaultNotificationDrawerManagerTest {
         // Like a user sign out
         appNavigationStateFlow.emit(AppNavigationState(aNavigationState(), isInForeground = true))
         runCurrent()
-        defaultNotificationDrawerManager.destroy()
     }
 
     @Test
@@ -172,8 +169,6 @@ class DefaultNotificationDrawerManagerTest {
                     any(),
                 ),
             )
-
-        defaultNotificationDrawerManager.destroy()
     }
 
     @Test
@@ -205,8 +200,6 @@ class DefaultNotificationDrawerManagerTest {
             listOf(value(null), value(roomMessageId)),
             listOf(value(null), value(summaryId)),
         )
-
-        defaultNotificationDrawerManager.destroy()
     }
 
     private fun TestScope.createDefaultNotificationDrawerManager(
@@ -234,7 +227,7 @@ class DefaultNotificationDrawerManagerTest {
                 sessionStore = sessionStore,
             ),
             appNavigationStateService = appNavigationStateService,
-            coroutineScope = this,
+            coroutineScope = backgroundScope,
             matrixClientProvider = matrixClientProvider,
             imageLoaderHolder = FakeImageLoaderHolder(),
             activeNotificationsProvider = activeNotificationsProvider,

@@ -84,6 +84,10 @@ class SpaceFlowNode(
                         callback.onOpenRoom(roomId, viaParameters)
                     }
 
+                    override fun onOpenDetails() {
+                        callback.onOpenDetails()
+                    }
+
                     override fun onLeaveSpace() {
                         backstack.push(NavTarget.Leave)
                     }

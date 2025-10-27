@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,6 +25,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -73,6 +75,7 @@ fun SpaceView(
     onRoomClick: (spaceRoom: SpaceRoom) -> Unit,
     onShareSpace: () -> Unit,
     onLeaveSpaceClick: () -> Unit,
+    onDetailsClick: () -> Unit,
     modifier: Modifier = Modifier,
     acceptDeclineInviteView: @Composable () -> Unit,
 ) {
@@ -84,6 +87,7 @@ fun SpaceView(
                 onBackClick = onBackClick,
                 onLeaveSpaceClick = onLeaveSpaceClick,
                 onShareSpace = onShareSpace,
+                onDetailsClick = onDetailsClick
             )
         },
         content = { padding ->
@@ -244,6 +248,7 @@ private fun SpaceViewTopBar(
     currentSpace: SpaceRoom?,
     onBackClick: () -> Unit,
     onLeaveSpaceClick: () -> Unit,
+    onDetailsClick: () -> Unit,
     onShareSpace: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -254,9 +259,14 @@ private fun SpaceViewTopBar(
         },
         title = {
             if (currentSpace != null) {
+                val roundedCornerShape = RoundedCornerShape(8.dp)
                 SpaceAvatarAndNameRow(
                     name = currentSpace.displayName,
                     avatarData = currentSpace.getAvatarData(AvatarSize.TimelineRoom),
+                    modifier = Modifier
+                        .clip(roundedCornerShape)
+                        // TODO enable when screen ready for space
+                        // .clickable(onClick = onDetailsClick)
                 )
             }
         },
@@ -386,6 +396,7 @@ internal fun SpaceViewPreview(
         onShareSpace = {},
         onLeaveSpaceClick = {},
         acceptDeclineInviteView = {},
+        onDetailsClick = {},
         onBackClick = {},
     )
 }

@@ -41,6 +41,7 @@ class SpaceNode(
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
         fun onOpenRoom(roomId: RoomId, viaParameters: List<String>)
+        fun onOpenDetails()
         fun onLeaveSpace()
     }
 
@@ -75,6 +76,9 @@ class SpaceNode(
             },
             onRoomClick = { spaceRoom ->
                 callback.onOpenRoom(spaceRoom.roomId, spaceRoom.via)
+            },
+            onDetailsClick = {
+                callback.onOpenDetails()
             },
             onShareSpace = {
                 onShareRoom(context)

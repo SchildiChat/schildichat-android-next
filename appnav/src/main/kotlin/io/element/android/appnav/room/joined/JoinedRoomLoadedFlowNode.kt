@@ -166,6 +166,9 @@ class JoinedRoomLoadedFlowNode(
                 callbacks.forEach { it.onOpenRoom(roomId, viaParameters) }
             }
 
+            override fun onOpenDetails() {
+                backstack.push(NavTarget.RoomDetails)
+            }
         }
         return spaceEntryPoint.nodeBuilder(this, buildContext)
             .inputs(SpaceEntryPoint.Inputs(roomId = inputs.room.roomId))

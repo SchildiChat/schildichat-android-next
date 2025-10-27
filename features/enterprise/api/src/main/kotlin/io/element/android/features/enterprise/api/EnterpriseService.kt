@@ -7,6 +7,7 @@
 
 package io.element.android.features.enterprise.api
 
+import androidx.compose.ui.graphics.Color
 import io.element.android.compound.colors.SemanticColorsLightDark
 import io.element.android.libraries.matrix.api.core.SessionId
 import kotlinx.coroutines.flow.Flow
@@ -23,6 +24,8 @@ interface EnterpriseService {
      * @param brandColor the color in hex format (#RRGGBBAA or #RRGGBB), or null to reset to default.
      */
     suspend fun overrideBrandColor(sessionId: SessionId?, brandColor: String?)
+
+    fun brandColorsFlow(sessionId: SessionId?): Flow<Color?>
 
     fun semanticColorsFlow(sessionId: SessionId?): Flow<SemanticColorsLightDark>
 

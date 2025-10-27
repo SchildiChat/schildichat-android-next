@@ -8,6 +8,8 @@
 package io.element.android.libraries.push.impl.troubleshoot
 
 import com.google.common.truth.Truth.assertThat
+import io.element.android.features.enterprise.test.FakeEnterpriseService
+import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.push.impl.notifications.fake.FakeNotificationCreator
 import io.element.android.libraries.push.impl.notifications.fake.FakeNotificationDisplayer
 import io.element.android.libraries.troubleshoot.api.test.NotificationTroubleshootTestState
@@ -64,10 +66,12 @@ class NotificationTestTest {
 
     private fun createNotificationTest(): NotificationTest {
         return NotificationTest(
+            sessionId = A_SESSION_ID,
             notificationCreator = notificationCreator,
             notificationDisplayer = fakeNotificationDisplayer,
             notificationClickHandler = notificationClickHandler,
             stringProvider = FakeStringProvider(),
+            enterpriseService = FakeEnterpriseService(),
         )
     }
 }

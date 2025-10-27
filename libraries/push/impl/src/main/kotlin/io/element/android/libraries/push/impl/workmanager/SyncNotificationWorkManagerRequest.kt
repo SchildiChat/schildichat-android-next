@@ -10,11 +10,6 @@ package io.element.android.libraries.push.impl.workmanager
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkRequest
-import androidx.work.workDataOf
-import io.element.android.libraries.androidutils.json.JsonProvider
-import io.element.android.libraries.core.extensions.runCatchingExceptions
-import io.element.android.libraries.matrix.api.core.EventId
-import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.push.api.push.NotificationEventRequest
 import io.element.android.libraries.workmanager.api.WorkManagerRequest
@@ -28,24 +23,19 @@ import java.security.InvalidParameterException
 class SyncNotificationWorkManagerRequest(
     private val sessionId: SessionId,
     private val notificationEventRequests: List<NotificationEventRequest>,
-    private val json: JsonProvider,
+    private val workerDataConverter: WorkerDataConverter,
 ) : WorkManagerRequest {
     override fun build(): Result<WorkRequest> {
         if (notificationEventRequests.isEmpty()) {
             return Result.failure(InvalidParameterException("notificationEventRequests cannot be empty"))
         }
-
-        val json = runCatchingExceptions { json().encodeToString(notificationEventRequests.map { it.toData() }) }
-            .getOrElse {
-                Timber.e(it, "Failed to serialize notification requests")
-                return Result.failure(it)
-            }
-
+        val data = workerDataConverter.serialize(notificationEventRequests).getOrElse {
+            return Result.failure(it)
+        }
         Timber.d("Scheduling ${notificationEventRequests.size} notification requests with WorkManager for $sessionId")
-
         return Result.success(
             OneTimeWorkRequestBuilder<FetchNotificationsWorker>()
-                .setInputData(workDataOf("requests" to json))
+                .setInputData(data)
                 .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                 .setTraceTag(workManagerTag(sessionId, WorkManagerRequestType.NOTIFICATION_SYNC))
                 // TODO investigate using this instead of the resolver queue
@@ -64,23 +54,5 @@ class SyncNotificationWorkManagerRequest(
         val eventId: String,
         @SerialName("provider_info")
         val providerInfo: String,
-    ) {
-        fun toRequest(): NotificationEventRequest {
-            return NotificationEventRequest(
-                sessionId = SessionId(sessionId),
-                roomId = RoomId(roomId),
-                eventId = EventId(eventId),
-                providerInfo = providerInfo,
-            )
-        }
-    }
-}
-
-private fun NotificationEventRequest.toData(): SyncNotificationWorkManagerRequest.Data {
-    return SyncNotificationWorkManagerRequest.Data(
-        sessionId = sessionId.value,
-        roomId = roomId.value,
-        eventId = eventId.value,
-        providerInfo = providerInfo,
     )
 }

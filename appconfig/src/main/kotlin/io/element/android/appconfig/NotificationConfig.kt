@@ -7,8 +7,8 @@
 
 package io.element.android.appconfig
 
-import android.graphics.Color
 import androidx.annotation.ColorInt
+import androidx.core.graphics.toColorInt
 
 object NotificationConfig {
     /**
@@ -27,5 +27,5 @@ object NotificationConfig {
     const val SHOW_QUICK_REPLY_ACTION = true
 
     @ColorInt
-    val NOTIFICATION_ACCENT_COLOR: Int = Color.parseColor("#FF0DBD8B")
+    val NOTIFICATION_ACCENT_COLOR: Int = "#FF0DBD8B".toColorInt()
 }

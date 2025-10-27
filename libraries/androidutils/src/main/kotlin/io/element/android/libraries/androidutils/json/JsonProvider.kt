@@ -16,7 +16,7 @@ import kotlinx.serialization.json.Json
 /**
  * Provides a Json instance configured to ignore unknown keys.
  */
-interface JsonProvider : Provider<Json>
+fun interface JsonProvider : Provider<Json>
 
 @ContributesBinding(AppScope::class)
 @SingleIn(AppScope::class)

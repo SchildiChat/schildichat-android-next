@@ -175,7 +175,7 @@ class FetchNotificationWorkerTest {
         workManagerScheduler = workManagerScheduler,
         syncOnNotifiableEvent = syncOnNotifiableEvent,
         coroutineDispatchers = testCoroutineDispatchers(),
-        json = DefaultJsonProvider(),
+        workerDataConverter = WorkerDataConverter(DefaultJsonProvider()),
     )
 
     private fun TestScope.createWorkerParams(

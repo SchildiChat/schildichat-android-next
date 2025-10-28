@@ -32,5 +32,6 @@ interface SpaceEntryPoint : FeatureEntryPoint {
 
     interface Callback : Plugin {
         fun onOpenRoom(roomId: RoomId, viaParameters: List<String>)
+        fun onOpenDetails()
     }
 }

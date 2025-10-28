@@ -21,8 +21,6 @@ import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.timeline.TimelineProvider
 import io.element.android.libraries.matrix.api.timeline.getActiveTimeline
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -43,7 +41,7 @@ class ForwardMessagesPresenter(
     private val forwardingActionState: MutableState<AsyncAction<List<RoomId>>> = mutableStateOf(AsyncAction.Uninitialized)
 
     fun onRoomSelected(roomIds: List<RoomId>) {
-        sessionCoroutineScope.forwardEvent(eventId, roomIds.toImmutableList(), forwardingActionState)
+        sessionCoroutineScope.forwardEvent(eventId, roomIds)
     }
 
     @Composable
@@ -62,12 +60,11 @@ class ForwardMessagesPresenter(
 
     private fun CoroutineScope.forwardEvent(
         eventId: EventId,
-        roomIds: ImmutableList<RoomId>,
-        isForwardMessagesState: MutableState<AsyncAction<List<RoomId>>>,
+        roomIds: List<RoomId>,
     ) = launch {
         suspend {
             timelineProvider.getActiveTimeline().forwardEvent(eventId, roomIds).getOrThrow()
             roomIds
-        }.runCatchingUpdatingState(isForwardMessagesState)
+        }.runCatchingUpdatingState(forwardingActionState)
     }
 }

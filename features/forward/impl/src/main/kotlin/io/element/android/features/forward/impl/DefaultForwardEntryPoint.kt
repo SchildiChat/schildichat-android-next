@@ -13,9 +13,9 @@ import com.bumble.appyx.core.plugin.Plugin
 import dev.zacsweers.metro.ContributesBinding
 import io.element.android.features.forward.api.ForwardEntryPoint
 import io.element.android.libraries.architecture.createNode
-import io.element.android.libraries.di.RoomScope
+import io.element.android.libraries.di.SessionScope
 
-@ContributesBinding(RoomScope::class)
+@ContributesBinding(SessionScope::class)
 class DefaultForwardEntryPoint : ForwardEntryPoint {
     override fun nodeBuilder(parentNode: Node, buildContext: BuildContext): ForwardEntryPoint.NodeBuilder {
         val plugins = ArrayList<Plugin>()

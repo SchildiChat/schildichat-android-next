@@ -20,6 +20,7 @@ import com.google.common.truth.Truth.assertThat
 import io.element.android.appnav.di.RoomGraphFactory
 import io.element.android.appnav.room.RoomNavigationTarget
 import io.element.android.appnav.room.joined.JoinedRoomLoadedFlowNode
+import io.element.android.features.forward.api.ForwardEntryPoint
 import io.element.android.features.messages.api.MessagesEntryPoint
 import io.element.android.features.roomdetails.api.RoomDetailsEntryPoint
 import io.element.android.features.space.api.SpaceEntryPoint
@@ -122,11 +123,22 @@ class JoinedRoomLoadedFlowNodeTest {
         }
     }
 
+    private class FakeForwardEntryPoint : ForwardEntryPoint {
+        override fun nodeBuilder(parentNode: Node, buildContext: BuildContext): ForwardEntryPoint.NodeBuilder {
+            return object : ForwardEntryPoint.NodeBuilder {
+                override fun params(params: ForwardEntryPoint.Params) = this
+                override fun callback(callback: ForwardEntryPoint.Callback) = this
+                override fun build() = node(buildContext) {}
+            }
+        }
+    }
+
     private fun TestScope.createJoinedRoomLoadedFlowNode(
         plugins: List<Plugin>,
         messagesEntryPoint: MessagesEntryPoint = FakeMessagesEntryPoint(),
         roomDetailsEntryPoint: RoomDetailsEntryPoint = FakeRoomDetailsEntryPoint(),
         spaceEntryPoint: SpaceEntryPoint = FakeSpaceEntryPoint(),
+        forwardEntryPoint: ForwardEntryPoint = FakeForwardEntryPoint(),
         activeRoomsHolder: ActiveRoomsHolder = ActiveRoomsHolder(),
     ) = JoinedRoomLoadedFlowNode(
         buildContext = BuildContext.root(savedStateMap = null),
@@ -134,6 +146,7 @@ class JoinedRoomLoadedFlowNodeTest {
         messagesEntryPoint = messagesEntryPoint,
         roomDetailsEntryPoint = roomDetailsEntryPoint,
         spaceEntryPoint = spaceEntryPoint,
+        forwardEntryPoint = forwardEntryPoint,
         appNavigationStateService = FakeAppNavigationStateService(),
         sessionCoroutineScope = this,
         roomGraphFactory = FakeRoomGraphFactory(),

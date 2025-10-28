@@ -18,6 +18,7 @@ import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
 import com.bumble.appyx.core.plugin.plugins
 import com.bumble.appyx.navmodel.backstack.BackStack
+import com.bumble.appyx.navmodel.backstack.operation.pop
 import com.bumble.appyx.navmodel.backstack.operation.push
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
@@ -150,7 +151,10 @@ class MessagesFlowNode(
         data class EventDebugInfo(val eventId: EventId?, val debugInfo: TimelineItemDebugInfo) : NavTarget
 
         @Parcelize
-        data class ForwardEvent(val eventId: EventId, val fromPinnedEvents: Boolean) : NavTarget
+        data class ForwardEvent(
+            val eventId: EventId,
+            val fromPinnedEvents: Boolean,
+        ) : NavTarget
 
         @Parcelize
         data class ReportMessage(val eventId: EventId, val senderId: UserId) : NavTarget
@@ -306,6 +310,11 @@ class MessagesFlowNode(
                     override fun onViewInTimeline(eventId: EventId) {
                         viewInTimeline(eventId)
                     }
+
+                    override fun onForwardEvent(eventId: EventId) {
+                        // Need to go to the parent because of the overlay
+                        forwardEvent(eventId)
+                    }
                 }
                 mediaViewerEntryPoint.nodeBuilder(this, buildContext)
                     .params(params)
@@ -336,8 +345,11 @@ class MessagesFlowNode(
                 }
                 val params = ForwardEntryPoint.Params(navTarget.eventId, timelineProvider)
                 val callback = object : ForwardEntryPoint.Callback {
-                    override fun onForwardedToSingleRoom(roomId: RoomId) {
-                        callbacks.forEach { it.onForwardedToSingleRoom(roomId) }
+                    override fun onForwardDone(roomIds: List<RoomId>) {
+                        backstack.pop()
+                        roomIds.singleOrNull()?.let { roomId ->
+                            callbacks.forEach { it.openRoom(roomId) }
+                        }
                     }
                 }
                 forwardEntryPoint.nodeBuilder(this, buildContext)
@@ -487,6 +499,10 @@ class MessagesFlowNode(
             eventId = eventId,
         )
         callbacks.forEach { it.onPermalinkClick(permalinkData, pushToBackstack = false) }
+    }
+
+    private fun forwardEvent(eventId: EventId) {
+        callbacks.forEach { it.forwardEvent(eventId) }
     }
 
     private fun processEventClick(

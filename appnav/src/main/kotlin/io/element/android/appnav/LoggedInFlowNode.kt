@@ -342,10 +342,6 @@ class LoggedInFlowNode(
                         backstack.push(NavTarget.Room(roomId.toRoomIdOrAlias(), serverNames))
                     }
 
-                    override fun onForwardedToSingleRoom(roomId: RoomId) {
-                        sessionCoroutineScope.launch { attachRoom(roomId.toRoomIdOrAlias(), clearBackstack = false) }
-                    }
-
                     override fun onPermalinkClick(data: PermalinkData, pushToBackstack: Boolean) {
                         when (data) {
                             is PermalinkData.UserLink -> {

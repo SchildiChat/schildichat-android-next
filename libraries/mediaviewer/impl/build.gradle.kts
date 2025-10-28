@@ -33,6 +33,7 @@ dependencies {
     implementation(libs.telephoto.flick)
 
     implementation(projects.features.enterprise.api)
+    implementation(projects.features.forward.api)
     implementation(projects.features.viewfolder.api)
     implementation(projects.libraries.androidutils)
     implementation(projects.libraries.architecture)

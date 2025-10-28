@@ -23,7 +23,7 @@ import io.element.android.annotations.ContributesNode
 import io.element.android.features.forward.api.ForwardEntryPoint
 import io.element.android.libraries.architecture.NodeInputs
 import io.element.android.libraries.architecture.inputs
-import io.element.android.libraries.di.RoomScope
+import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.timeline.TimelineProvider
@@ -31,7 +31,7 @@ import io.element.android.libraries.roomselect.api.RoomSelectEntryPoint
 import io.element.android.libraries.roomselect.api.RoomSelectMode
 import kotlinx.parcelize.Parcelize
 
-@ContributesNode(RoomScope::class)
+@ContributesNode(SessionScope::class)
 @AssistedInject
 class ForwardMessagesNode(
     @Assisted buildContext: BuildContext,
@@ -65,7 +65,7 @@ class ForwardMessagesNode(
             }
 
             override fun onCancel() {
-                navigateUp()
+                onForwardDone(emptyList())
             }
         }
 
@@ -86,16 +86,12 @@ class ForwardMessagesNode(
             val state = presenter.present()
             ForwardMessagesView(
                 state = state,
-                onForwardSuccess = ::onForwardSuccess,
+                onForwardSuccess = ::onForwardDone,
             )
         }
     }
 
-    private fun onForwardSuccess(roomIds: List<RoomId>) {
-        navigateUp()
-        if (roomIds.size == 1) {
-            val targetRoomId = roomIds.first()
-            callbacks.forEach { it.onForwardedToSingleRoom(targetRoomId) }
-        }
+    private fun onForwardDone(roomIds: List<RoomId>) {
+        callbacks.forEach { it.onForwardDone(roomIds) }
     }
 }

@@ -24,7 +24,7 @@ interface ForwardEntryPoint : FeatureEntryPoint {
     }
 
     interface Callback : Plugin {
-        fun onForwardedToSingleRoom(roomId: RoomId)
+        fun onForwardDone(roomIds: List<RoomId>)
     }
 
     data class Params(

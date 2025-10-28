@@ -5,7 +5,7 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.features.messages.impl.forward
+package io.element.android.features.forward.impl
 
 import android.os.Parcelable
 import androidx.compose.foundation.layout.Box
@@ -20,6 +20,7 @@ import com.bumble.appyx.core.plugin.Plugin
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
+import io.element.android.features.forward.api.ForwardEntryPoint
 import io.element.android.libraries.architecture.NodeInputs
 import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.di.RoomScope
@@ -48,10 +49,6 @@ class ForwardMessagesNode(
     @Parcelize
     object NavTarget : Parcelable
 
-    interface Callback : Plugin {
-        fun onForwardedToSingleRoom(roomId: RoomId)
-    }
-
     data class Inputs(
         val eventId: EventId,
         val timelineProvider: TimelineProvider,
@@ -59,7 +56,7 @@ class ForwardMessagesNode(
 
     private val inputs = inputs<Inputs>()
     private val presenter = presenterFactory.create(inputs.eventId.value, inputs.timelineProvider)
-    private val callbacks = plugins.filterIsInstance<Callback>()
+    private val callbacks = plugins.filterIsInstance<ForwardEntryPoint.Callback>()
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         val callback = object : RoomSelectEntryPoint.Callback {

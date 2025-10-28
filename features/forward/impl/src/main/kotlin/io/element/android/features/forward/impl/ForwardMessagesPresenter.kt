@@ -5,7 +5,7 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.features.messages.impl.forward
+package io.element.android.features.forward.impl
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -36,7 +36,7 @@ class ForwardMessagesPresenter(
     private val eventId: EventId = EventId(eventId)
 
     @AssistedFactory
-    interface Factory {
+    fun interface Factory {
         fun create(eventId: String, timelineProvider: TimelineProvider): ForwardMessagesPresenter
     }
 

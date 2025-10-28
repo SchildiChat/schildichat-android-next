@@ -25,6 +25,7 @@ import im.vector.app.features.analytics.plan.Interaction
 import io.element.android.annotations.ContributesNode
 import io.element.android.features.call.api.CallType
 import io.element.android.features.call.api.ElementCallEntryPoint
+import io.element.android.features.forward.api.ForwardEntryPoint
 import io.element.android.features.knockrequests.api.list.KnockRequestsListEntryPoint
 import io.element.android.features.location.api.Location
 import io.element.android.features.location.api.LocationService
@@ -33,7 +34,6 @@ import io.element.android.features.location.api.ShowLocationEntryPoint
 import io.element.android.features.messages.api.MessagesEntryPoint
 import io.element.android.features.messages.impl.attachments.Attachment
 import io.element.android.features.messages.impl.attachments.preview.AttachmentsPreviewNode
-import io.element.android.features.messages.impl.forward.ForwardMessagesNode
 import io.element.android.features.messages.impl.pinned.PinnedEventsTimelineProvider
 import io.element.android.features.messages.impl.pinned.list.PinnedMessagesListNode
 import io.element.android.features.messages.impl.report.ReportMessageNode
@@ -103,6 +103,7 @@ class MessagesFlowNode(
     private val createPollEntryPoint: CreatePollEntryPoint,
     private val elementCallEntryPoint: ElementCallEntryPoint,
     private val mediaViewerEntryPoint: MediaViewerEntryPoint,
+    private val forwardEntryPoint: ForwardEntryPoint,
     private val analyticsService: AnalyticsService,
     private val locationService: LocationService,
     private val room: BaseRoom,
@@ -333,13 +334,16 @@ class MessagesFlowNode(
                 } else {
                     timelineController
                 }
-                val inputs = ForwardMessagesNode.Inputs(navTarget.eventId, timelineProvider)
-                val callback = object : ForwardMessagesNode.Callback {
+                val params = ForwardEntryPoint.Params(navTarget.eventId, timelineProvider)
+                val callback = object : ForwardEntryPoint.Callback {
                     override fun onForwardedToSingleRoom(roomId: RoomId) {
                         callbacks.forEach { it.onForwardedToSingleRoom(roomId) }
                     }
                 }
-                createNode<ForwardMessagesNode>(buildContext, listOf(inputs, callback))
+                forwardEntryPoint.nodeBuilder(this, buildContext)
+                    .params(params)
+                    .callback(callback)
+                    .build()
             }
             is NavTarget.ReportMessage -> {
                 val inputs = ReportMessageNode.Inputs(navTarget.eventId, navTarget.senderId)

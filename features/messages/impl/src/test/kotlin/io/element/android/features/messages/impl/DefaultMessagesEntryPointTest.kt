@@ -15,6 +15,7 @@ import com.bumble.appyx.testing.junit4.util.MainDispatcherRule
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.call.api.CallType
 import io.element.android.features.call.api.ElementCallEntryPoint
+import io.element.android.features.forward.api.ForwardEntryPoint
 import io.element.android.features.knockrequests.api.list.KnockRequestsListEntryPoint
 import io.element.android.features.location.api.SendLocationEntryPoint
 import io.element.android.features.location.api.ShowLocationEntryPoint
@@ -88,6 +89,9 @@ class DefaultMessagesEntryPointTest {
                     ) = lambdaError()
                 },
                 mediaViewerEntryPoint = object : MediaViewerEntryPoint {
+                    override fun nodeBuilder(parentNode: Node, buildContext: BuildContext) = lambdaError()
+                },
+                forwardEntryPoint = object : ForwardEntryPoint {
                     override fun nodeBuilder(parentNode: Node, buildContext: BuildContext) = lambdaError()
                 },
                 analyticsService = FakeAnalyticsService(),

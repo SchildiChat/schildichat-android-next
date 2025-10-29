@@ -88,6 +88,10 @@ class SpaceFlowNode(
                         callback.onOpenDetails()
                     }
 
+                    override fun onOpenMemberList() {
+                        callback.onOpenMemberList()
+                    }
+
                     override fun onLeaveSpace() {
                         backstack.push(NavTarget.Leave)
                     }

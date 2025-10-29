@@ -294,6 +294,10 @@ class RoomDetailsFlowNode(
                     override fun onViewInTimeline(eventId: EventId) {
                         // Cannot happen
                     }
+
+                    override fun onForwardEvent(eventId: EventId) {
+                        // Cannot happen
+                    }
                 }
                 mediaViewerEntryPoint.nodeBuilder(this, buildContext)
                     .avatar(
@@ -321,6 +325,10 @@ class RoomDetailsFlowNode(
                             it.onPermalinkClick(permalinkData, pushToBackstack = false)
                         }
                     }
+
+                    override fun forwardEvent(eventId: EventId) {
+                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.forwardEvent(eventId) }
+                    }
                 }
                 mediaGalleryEntryPoint.nodeBuilder(this, buildContext)
                     .callback(callback)
@@ -343,8 +351,12 @@ class RoomDetailsFlowNode(
                         plugins<RoomDetailsEntryPoint.Callback>().forEach { it.onPermalinkClick(data, pushToBackstack) }
                     }
 
-                    override fun onForwardedToSingleRoom(roomId: RoomId) {
-                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.onForwardedToSingleRoom(roomId) }
+                    override fun forwardEvent(eventId: EventId) {
+                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.forwardEvent(eventId) }
+                    }
+
+                    override fun openRoom(roomId: RoomId) {
+                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.onOpenRoom(roomId, emptyList()) }
                     }
                 }
                 return messagesEntryPoint.nodeBuilder(this, buildContext)

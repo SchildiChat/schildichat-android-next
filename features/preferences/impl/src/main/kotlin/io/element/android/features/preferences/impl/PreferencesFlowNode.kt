@@ -120,59 +120,59 @@ class PreferencesFlowNode(
         return when (navTarget) {
             NavTarget.Root -> {
                 val callback = object : PreferencesRootNode.Callback {
-                    override fun onAddAccount() {
-                        plugins<PreferencesEntryPoint.Callback>().forEach { it.onAddAccount() }
+                    override fun navigateToAddAccount() {
+                        plugins<PreferencesEntryPoint.Callback>().forEach { it.navigateToAddAccount() }
                     }
 
-                    override fun onOpenBugReport() {
-                        plugins<PreferencesEntryPoint.Callback>().forEach { it.onOpenBugReport() }
+                    override fun navigateToBugReport() {
+                        plugins<PreferencesEntryPoint.Callback>().forEach { it.navigateToBugReport() }
                     }
 
-                    override fun onSecureBackupClick() {
-                        plugins<PreferencesEntryPoint.Callback>().forEach { it.onSecureBackupClick() }
+                    override fun navigateToSecureBackup() {
+                        plugins<PreferencesEntryPoint.Callback>().forEach { it.navigateToSecureBackup() }
                     }
 
-                    override fun onOpenAnalytics() {
+                    override fun navigateToAnalyticsSettings() {
                         backstack.push(NavTarget.AnalyticsSettings)
                     }
 
-                    override fun onOpenAbout() {
+                    override fun navigateToAbout() {
                         backstack.push(NavTarget.About)
                     }
 
-                    override fun onOpenDeveloperSettings() {
+                    override fun navigateToDeveloperSettings() {
                         backstack.push(NavTarget.DeveloperSettings)
                     }
 
-                    override fun onOpenNotificationSettings() {
+                    override fun navigateToNotificationSettings() {
                         backstack.push(NavTarget.NotificationSettings)
                     }
 
-                    override fun onOpenLockScreenSettings() {
+                    override fun navigateToLockScreenSettings() {
                         backstack.push(NavTarget.LockScreenSettings)
                     }
 
-                    override fun onOpenAdvancedSettings() {
+                    override fun navigateToAdvancedSettings() {
                         backstack.push(NavTarget.AdvancedSettings)
                     }
 
-                    override fun onOpenLabs() {
+                    override fun navigateToLabs() {
                         backstack.push(NavTarget.Labs)
                     }
 
-                    override fun onOpenUserProfile(matrixUser: MatrixUser) {
+                    override fun navigateToUserProfile(matrixUser: MatrixUser) {
                         backstack.push(NavTarget.UserProfile(matrixUser))
                     }
 
-                    override fun onOpenBlockedUsers() {
+                    override fun navigateToBlockedUsers() {
                         backstack.push(NavTarget.BlockedUsers)
                     }
 
-                    override fun onSignOutClick() {
+                    override fun startSignOutFlow() {
                         backstack.push(NavTarget.SignOut)
                     }
 
-                    override fun onOpenAccountDeactivation() {
+                    override fun startAccountDeactivationFlow() {
                         backstack.push(NavTarget.AccountDeactivation)
                     }
                 }
@@ -180,7 +180,7 @@ class PreferencesFlowNode(
             }
             NavTarget.DeveloperSettings -> {
                 val developerSettingsCallback = object : DeveloperSettingsNode.Callback {
-                    override fun onPushHistoryClick() {
+                    override fun navigateToPushHistory() {
                         backstack.push(NavTarget.PushHistory)
                     }
                 }
@@ -191,7 +191,7 @@ class PreferencesFlowNode(
             }
             NavTarget.About -> {
                 val callback = object : AboutNode.Callback {
-                    override fun openOssLicenses() {
+                    override fun navigateToOssLicenses() {
                         backstack.push(NavTarget.OssLicenses)
                     }
                 }
@@ -202,11 +202,11 @@ class PreferencesFlowNode(
             }
             NavTarget.NotificationSettings -> {
                 val notificationSettingsCallback = object : NotificationSettingsNode.Callback {
-                    override fun editDefaultNotificationMode(isOneToOne: Boolean) {
+                    override fun navigateToEditDefaultNotificationSetting(isOneToOne: Boolean) {
                         backstack.push(NavTarget.EditDefaultNotificationSetting(isOneToOne))
                     }
 
-                    override fun onTroubleshootNotificationsClick() {
+                    override fun navigateToTroubleshootNotifications() {
                         backstack.push(NavTarget.TroubleshootNotifications)
                     }
                 }
@@ -223,7 +223,7 @@ class PreferencesFlowNode(
                             }
                         }
 
-                        override fun openIgnoredUsers() {
+                        override fun navigateToBlockedUsers() {
                             backstack.push(NavTarget.BlockedUsers)
                         }
                     })
@@ -240,16 +240,16 @@ class PreferencesFlowNode(
                             }
                         }
 
-                        override fun navigateTo(roomId: RoomId, eventId: EventId) {
-                            plugins<PreferencesEntryPoint.Callback>().forEach { it.navigateTo(roomId, eventId) }
+                        override fun navigateToEvent(roomId: RoomId, eventId: EventId) {
+                            plugins<PreferencesEntryPoint.Callback>().forEach { it.navigateToEvent(roomId, eventId) }
                         }
                     })
                     .build()
             }
             is NavTarget.EditDefaultNotificationSetting -> {
                 val callback = object : EditDefaultNotificationSettingNode.Callback {
-                    override fun openRoomNotificationSettings(roomId: RoomId) {
-                        plugins<PreferencesEntryPoint.Callback>().forEach { it.onOpenRoomNotificationSettings(roomId) }
+                    override fun navigateToRoomNotificationSettings(roomId: RoomId) {
+                        plugins<PreferencesEntryPoint.Callback>().forEach { it.navigateToRoomNotificationSettings(roomId) }
                     }
                 }
                 val input = EditDefaultNotificationSettingNode.Inputs(navTarget.isOneToOne)
@@ -270,8 +270,8 @@ class PreferencesFlowNode(
             }
             NavTarget.SignOut -> {
                 val callBack: LogoutEntryPoint.Callback = object : LogoutEntryPoint.Callback {
-                    override fun onChangeRecoveryKeyClick() {
-                        plugins<PreferencesEntryPoint.Callback>().forEach { it.onSecureBackupClick() }
+                    override fun navigateToSecureBackup() {
+                        plugins<PreferencesEntryPoint.Callback>().forEach { it.navigateToSecureBackup() }
                     }
                 }
                 logoutEntryPoint.nodeBuilder(this, buildContext)

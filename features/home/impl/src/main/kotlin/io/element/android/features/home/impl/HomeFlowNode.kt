@@ -116,27 +116,27 @@ class HomeFlowNode(
     }
 
     private fun onRoomClick(roomId: RoomId) {
-        plugins<HomeEntryPoint.Callback>().forEach { it.onRoomClick(roomId) }
+        plugins<HomeEntryPoint.Callback>().forEach { it.navigateToRoom(roomId) }
     }
 
     private fun onOpenSettings() {
-        plugins<HomeEntryPoint.Callback>().forEach { it.onSettingsClick() }
+        plugins<HomeEntryPoint.Callback>().forEach { it.navigateToSettings() }
     }
 
     private fun onStartChatClick() {
-        plugins<HomeEntryPoint.Callback>().forEach { it.onStartChatClick() }
+        plugins<HomeEntryPoint.Callback>().forEach { it.navigateToCreateRoom() }
     }
 
     private fun onSetUpRecoveryClick() {
-        plugins<HomeEntryPoint.Callback>().forEach { it.onSetUpRecoveryClick() }
+        plugins<HomeEntryPoint.Callback>().forEach { it.navigateToSetUpRecovery() }
     }
 
     private fun onSessionConfirmRecoveryKeyClick() {
-        plugins<HomeEntryPoint.Callback>().forEach { it.onSessionConfirmRecoveryKeyClick() }
+        plugins<HomeEntryPoint.Callback>().forEach { it.navigateToEnterRecoveryKey() }
     }
 
     private fun onRoomSettingsClick(roomId: RoomId) {
-        plugins<HomeEntryPoint.Callback>().forEach { it.onRoomSettingsClick(roomId) }
+        plugins<HomeEntryPoint.Callback>().forEach { it.navigateToRoomSettings(roomId) }
     }
 
     private fun onReportRoomClick(roomId: RoomId) {
@@ -153,7 +153,7 @@ class HomeFlowNode(
                 inviteFriendsUseCase.execute(activity)
             }
             RoomListMenuAction.ReportBug -> {
-                plugins<HomeEntryPoint.Callback>().forEach { it.onReportBugClick() }
+                plugins<HomeEntryPoint.Callback>().forEach { it.navigateToBugReport() }
             }
         }
     }

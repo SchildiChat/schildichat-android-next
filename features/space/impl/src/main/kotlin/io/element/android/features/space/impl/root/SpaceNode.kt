@@ -40,11 +40,10 @@ class SpaceNode(
     private val acceptDeclineInviteView: AcceptDeclineInviteView,
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
-        fun onOpenRoom(roomId: RoomId, viaParameters: List<String>)
-        fun onOpenDetails()
-
+        fun navigateToRoom(roomId: RoomId, viaParameters: List<String>)
+        fun navigateToRoomDetails()
         fun onOpenMemberList()
-        fun onLeaveSpace()
+        fun startLeaveSpaceFlow()
     }
 
     private val callback = plugins.filterIsInstance<Callback>().single()
@@ -74,13 +73,13 @@ class SpaceNode(
             state = state,
             onBackClick = ::navigateUp,
             onLeaveSpaceClick = {
-                callback.onLeaveSpace()
+                callback.startLeaveSpaceFlow()
             },
             onRoomClick = { spaceRoom ->
-                callback.onOpenRoom(spaceRoom.roomId, spaceRoom.via)
+                callback.navigateToRoom(spaceRoom.roomId, spaceRoom.via)
             },
             onDetailsClick = {
-                callback.onOpenDetails()
+                callback.navigateToRoomDetails()
             },
             onShareSpace = {
                 onShareRoom(context)
@@ -92,7 +91,7 @@ class SpaceNode(
                 acceptDeclineInviteView.Render(
                     state = state.acceptDeclineInviteState,
                     onAcceptInviteSuccess = { roomId ->
-                        callback.onOpenRoom(roomId, emptyList())
+                        callback.navigateToRoom(roomId, emptyList())
                     },
                     onDeclineInviteSuccess = { roomId ->
                         // No action needed

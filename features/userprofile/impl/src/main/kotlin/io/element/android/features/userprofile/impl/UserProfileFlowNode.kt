@@ -73,19 +73,19 @@ class UserProfileFlowNode(
         return when (navTarget) {
             NavTarget.Root -> {
                 val callback = object : UserProfileNodeHelper.Callback {
-                    override fun openAvatarPreview(username: String, avatarUrl: String) {
+                    override fun navigateToAvatarPreview(username: String, avatarUrl: String) {
                         backstack.push(NavTarget.AvatarPreview(username, avatarUrl))
                     }
 
-                    override fun onStartDM(roomId: RoomId) {
-                        plugins<UserProfileEntryPoint.Callback>().forEach { it.onOpenRoom(roomId) }
+                    override fun navigateToRoom(roomId: RoomId) {
+                        plugins<UserProfileEntryPoint.Callback>().forEach { it.navigateToRoom(roomId) }
                     }
 
-                    override fun onStartCall(dmRoomId: RoomId) {
+                    override fun startCall(dmRoomId: RoomId) {
                         elementCallEntryPoint.startCall(CallType.RoomCall(sessionId = sessionId, roomId = dmRoomId))
                     }
 
-                    override fun onVerifyUser(userId: UserId) {
+                    override fun startVerifyUserFlow(userId: UserId) {
                         backstack.push(NavTarget.VerifyUser(userId))
                     }
                 }
@@ -98,11 +98,11 @@ class UserProfileFlowNode(
                         backstack.pop()
                     }
 
-                    override fun onViewInTimeline(eventId: EventId) {
+                    override fun viewInTimeline(eventId: EventId) {
                         // Cannot happen
                     }
 
-                    override fun onForwardEvent(eventId: EventId) {
+                    override fun forwardEvent(eventId: EventId) {
                         // Cannot happen
                     }
                 }

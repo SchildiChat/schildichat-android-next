@@ -67,13 +67,13 @@ class MediaViewerNode(
 
     override fun onViewInTimelineClick(eventId: EventId) {
         plugins<MediaViewerEntryPoint.Callback>().forEach {
-            it.onViewInTimeline(eventId)
+            it.viewInTimeline(eventId)
         }
     }
 
     override fun onForwardClick(eventId: EventId) {
         plugins<MediaViewerEntryPoint.Callback>().forEach {
-            it.onForwardEvent(eventId)
+            it.forwardEvent(eventId)
         }
     }
 

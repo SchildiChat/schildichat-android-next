@@ -35,7 +35,7 @@ class ViewFolderNode(
 
     interface Callback : Plugin {
         fun onBackClick()
-        fun onNavigateTo(item: Item)
+        fun navigateToItem(item: Item)
     }
 
     private val inputs: Inputs = inputs()
@@ -50,7 +50,7 @@ class ViewFolderNode(
     }
 
     private fun onNavigateTo(item: Item) {
-        plugins<Callback>().forEach { it.onNavigateTo(item) }
+        plugins<Callback>().forEach { it.navigateToItem(item) }
     }
 
     @Composable

@@ -185,7 +185,7 @@ class TimelinePresenter(
                     }
                 }
                 is TimelineEvents.EditPoll -> {
-                    navigator.onEditPollClick(event.pollStartId)
+                    navigator.navigateToEditPoll(event.pollStartId)
                 }
                 is TimelineEvents.FocusOnEvent -> sessionCoroutineScope.launch {
                     focusRequestState.value = FocusRequestState.Requested(event.eventId, event.debounce)
@@ -210,10 +210,10 @@ class TimelinePresenter(
                 is TimelineEvents.NavigateToPredecessorOrSuccessorRoom -> {
                     // Navigate to the predecessor or successor room
                     val serverNames = calculateServerNamesForRoom(room)
-                    navigator.onNavigateToRoom(event.roomId, null, serverNames)
+                    navigator.navigateToRoom(event.roomId, null, serverNames)
                 }
                 is TimelineEvents.OpenThread -> {
-                    navigator.onOpenThread(
+                    navigator.navigateToThread(
                         threadRootId = event.threadRootEventId,
                         focusedEventId = event.focusedEvent,
                     )
@@ -314,7 +314,7 @@ class TimelinePresenter(
         if (timelineController.mainTimelineMode() is Timeline.Mode.Thread && threadId == null) {
             // We are in a thread timeline, and the event isn't part of a thread, we need to navigate back to the room
             focusRequestState.value = FocusRequestState.None
-            navigator.onNavigateToRoom(room.roomId, eventId, calculateServerNamesForRoom(room))
+            navigator.navigateToRoom(room.roomId, eventId, calculateServerNamesForRoom(room))
         } else {
             Timber.tag(tag).d("Focusing on event $eventId - thread $threadId")
             timelineController.focusOnEvent(eventId, threadId)
@@ -331,7 +331,7 @@ class TimelinePresenter(
                             } else {
                                 focusRequestState.value = FocusRequestState.Success(eventId = result.threadId.asEventId())
                                 // It's part of a thread we're not in, let's open it in another timeline
-                                navigator.onOpenThread(result.threadId, eventId)
+                                navigator.navigateToThread(result.threadId, eventId)
                             }
                         }
                     }

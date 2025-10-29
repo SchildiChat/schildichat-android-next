@@ -42,8 +42,8 @@ class DefaultMediaGalleryEntryPointTest {
         }
         val callback = object : MediaGalleryEntryPoint.Callback {
             override fun onBackClick() = lambdaError()
-            override fun onViewInTimeline(eventId: EventId) = lambdaError()
-            override fun forwardEvent(eventId: EventId) = lambdaError()
+            override fun viewInTimeline(eventId: EventId) = lambdaError()
+            override fun forward(eventId: EventId) = lambdaError()
         }
         val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
             .callback(callback)

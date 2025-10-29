@@ -62,12 +62,12 @@ class RoomMemberDetailsNode(
             userProfileNodeHelper.onShareUser(context, permalinkBuilder)
         }
 
-        fun onStartDM(roomId: RoomId) {
-            callback.onStartDM(roomId)
+        fun navigateToRoom(roomId: RoomId) {
+            callback.navigateToRoom(roomId)
         }
 
         fun onStartCall(roomId: RoomId) {
-            callback.onStartCall(roomId)
+            callback.startCall(roomId)
         }
 
         val state = presenter.present()
@@ -77,10 +77,10 @@ class RoomMemberDetailsNode(
             modifier = modifier,
             goBack = this::navigateUp,
             onShareUser = ::onShareUser,
-            onOpenDm = ::onStartDM,
+            onOpenDm = ::navigateToRoom,
             onStartCall = ::onStartCall,
-            openAvatarPreview = callback::openAvatarPreview,
-            onVerifyClick = callback::onVerifyUser,
+            openAvatarPreview = callback::navigateToAvatarPreview,
+            onVerifyClick = callback::startVerifyUserFlow,
         )
     }
 }

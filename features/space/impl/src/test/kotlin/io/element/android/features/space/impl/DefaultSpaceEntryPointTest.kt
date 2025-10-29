@@ -44,9 +44,9 @@ class DefaultSpaceEntryPointTest {
             )
         }
         val callback = object : SpaceEntryPoint.Callback {
-            override fun onOpenRoom(roomId: RoomId, viaParameters: List<String>) = lambdaError()
-            override fun onOpenDetails() = lambdaError()
-            override fun onOpenMemberList() = lambdaError()
+            override fun navigateToRoom(roomId: RoomId, viaParameters: List<String>) = lambdaError()
+            override fun navigateToRoomDetails() = lambdaError()
+            override fun navigateToRoomMemberList() = lambdaError()
         }
         val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
             .inputs(nodeInputs)

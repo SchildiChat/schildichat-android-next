@@ -80,19 +80,19 @@ class SpaceFlowNode(
             }
             NavTarget.Root -> {
                 val callback = object : SpaceNode.Callback {
-                    override fun onOpenRoom(roomId: RoomId, viaParameters: List<String>) {
-                        callback.onOpenRoom(roomId, viaParameters)
+                    override fun navigateToRoom(roomId: RoomId, viaParameters: List<String>) {
+                        callback.navigateToRoom(roomId, viaParameters)
                     }
 
-                    override fun onOpenDetails() {
-                        callback.onOpenDetails()
+                    override fun navigateToRoomDetails() {
+                        callback.navigateToRoomDetails()
                     }
 
                     override fun onOpenMemberList() {
-                        callback.onOpenMemberList()
+                        callback.navigateToRoomMemberList()
                     }
 
-                    override fun onLeaveSpace() {
+                    override fun startLeaveSpaceFlow() {
                         backstack.push(NavTarget.Leave)
                     }
                 }

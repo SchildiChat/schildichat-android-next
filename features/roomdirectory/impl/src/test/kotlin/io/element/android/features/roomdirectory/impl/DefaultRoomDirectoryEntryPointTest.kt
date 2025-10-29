@@ -35,7 +35,7 @@ class DefaultRoomDirectoryEntryPointTest {
             )
         }
         val callback = object : RoomDirectoryEntryPoint.Callback {
-            override fun onResultClick(roomDescription: RoomDescription) = lambdaError()
+            override fun navigateToRoom(roomDescription: RoomDescription) = lambdaError()
         }
         val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
             .callback(callback)

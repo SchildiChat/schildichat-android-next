@@ -29,21 +29,21 @@ class ChooseAccountProviderNode(
     private val presenter: ChooseAccountProviderPresenter,
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
-        fun onLoginPasswordNeeded()
-        fun onOidcDetails(oidcDetails: OidcDetails)
-        fun onCreateAccountContinue(url: String)
+        fun navigateToLoginPassword()
+        fun navigateToOidc(oidcDetails: OidcDetails)
+        fun navigateToCreateAccount(url: String)
     }
 
     private fun onOidcDetails(oidcDetails: OidcDetails) {
-        plugins<Callback>().forEach { it.onOidcDetails(oidcDetails) }
+        plugins<Callback>().forEach { it.navigateToOidc(oidcDetails) }
     }
 
     private fun onLoginPasswordNeeded() {
-        plugins<Callback>().forEach { it.onLoginPasswordNeeded() }
+        plugins<Callback>().forEach { it.navigateToLoginPassword() }
     }
 
     private fun onCreateAccountContinue(url: String) {
-        plugins<Callback>().forEach { it.onCreateAccountContinue(url) }
+        plugins<Callback>().forEach { it.navigateToCreateAccount(url) }
     }
 
     @Composable

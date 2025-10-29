@@ -19,7 +19,7 @@ interface LoginEntryPoint : FeatureEntryPoint {
     )
 
     interface Callback : Plugin {
-        fun onReportProblem()
+        fun navigateToBugReport()
     }
 
     fun nodeBuilder(parentNode: Node, buildContext: BuildContext): NodeBuilder

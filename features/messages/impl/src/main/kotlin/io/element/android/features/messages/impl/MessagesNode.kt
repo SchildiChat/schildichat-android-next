@@ -114,21 +114,21 @@ class MessagesNode(
     )
 
     interface Callback : Plugin {
-        fun onEventClick(timelineMode: Timeline.Mode, event: TimelineItem.Event): Boolean
-        fun onPreviewAttachments(attachments: ImmutableList<Attachment>, inReplyToEventId: EventId?)
-        fun onUserDataClick(userId: UserId)
-        fun onPermalinkClick(data: PermalinkData)
-        fun onShowEventDebugInfoClick(eventId: EventId?, debugInfo: TimelineItemDebugInfo)
-        fun onForwardEventClick(eventId: EventId)
-        fun onReportMessage(eventId: EventId, senderId: UserId)
-        fun onSendLocationClick()
-        fun onCreatePollClick()
-        fun onEditPollClick(eventId: EventId)
-        fun onJoinCallClick(roomId: RoomId)
-        fun onOpenThread(threadRootId: ThreadId, focusedEventId: EventId?)
-        fun onRoomDetailsClick()
-        fun onViewAllPinnedEvents()
-        fun onViewKnockRequests()
+        fun handleEventClick(timelineMode: Timeline.Mode, event: TimelineItem.Event): Boolean
+        fun navigateToPreviewAttachments(attachments: ImmutableList<Attachment>, inReplyToEventId: EventId?)
+        fun navigateToRoomMemberDetails(userId: UserId)
+        fun handlePermalinkClick(data: PermalinkData)
+        fun navigateToEventDebugInfo(eventId: EventId?, debugInfo: TimelineItemDebugInfo)
+        fun forwardEvent(eventId: EventId)
+        fun navigateToReportMessage(eventId: EventId, senderId: UserId)
+        fun navigateToSendLocation()
+        fun navigateToCreatePoll()
+        fun navigateToEditPoll(eventId: EventId)
+        fun navigateToRoomCall(roomId: RoomId)
+        fun navigateToThread(threadRootId: ThreadId, focusedEventId: EventId?)
+        fun navigateToRoomDetails()
+        fun navigateToPinnedMessagesList()
+        fun navigateToKnockRequestsList()
     }
 
     override fun onBuilt() {
@@ -143,16 +143,16 @@ class MessagesNode(
         )
     }
 
-    private fun onRoomDetailsClick() {
-        callbacks.forEach { it.onRoomDetailsClick() }
+    private fun navigateToRoomDetails() {
+        callbacks.forEach { it.navigateToRoomDetails() }
     }
 
-    private fun onViewAllPinnedMessagesClick() {
-        callbacks.forEach { it.onViewAllPinnedEvents() }
+    private fun navigateToPinnedMessagesList() {
+        callbacks.forEach { it.navigateToPinnedMessagesList() }
     }
 
-    private fun onViewKnockRequestsClick() {
-        callbacks.forEach { it.onViewKnockRequests() }
+    private fun navigateToKnockRequestsList() {
+        callbacks.forEach { it.navigateToKnockRequestsList() }
     }
 
     private fun onEventClick(timelineMode: Timeline.Mode, event: TimelineItem.Event): Boolean {
@@ -160,13 +160,13 @@ class MessagesNode(
         // - if callbacks is empty, it will return true and we want to return false.
         // - if a callback returns false, the other callback will not be invoked.
         return callbacks.takeIf { it.isNotEmpty() }
-            ?.map { it.onEventClick(timelineMode, event) }
+            ?.map { it.handleEventClick(timelineMode, event) }
             ?.all { it }
             .orFalse()
     }
 
-    private fun onUserDataClick(userId: UserId) {
-        callbacks.forEach { it.onUserDataClick(userId) }
+    private fun navigateToRoomMemberDetails(userId: UserId) {
+        callbacks.forEach { it.navigateToRoomMemberDetails(userId) }
     }
 
     private fun onLinkClick(
@@ -180,7 +180,7 @@ class MessagesNode(
             is PermalinkData.UserLink -> {
                 // Open the room member profile, it will fallback to
                 // the user profile if the user is not in the room
-                callbacks.forEach { it.onUserDataClick(permalink.userId) }
+                callbacks.forEach { it.navigateToRoomMemberDetails(permalink.userId) }
             }
             is PermalinkData.RoomLink -> {
                 handleRoomLinkClick(permalink, eventSink)
@@ -211,53 +211,53 @@ class MessagesNode(
                 displaySameRoomToast()
             }
         } else {
-            callbacks.forEach { it.onPermalinkClick(roomLink) }
+            callbacks.forEach { it.handlePermalinkClick(roomLink) }
         }
     }
 
-    override fun onShowEventDebugInfoClick(eventId: EventId?, debugInfo: TimelineItemDebugInfo) {
-        callbacks.forEach { it.onShowEventDebugInfoClick(eventId, debugInfo) }
+    override fun navigateToEventDebugInfo(eventId: EventId?, debugInfo: TimelineItemDebugInfo) {
+        callbacks.forEach { it.navigateToEventDebugInfo(eventId, debugInfo) }
     }
 
-    override fun onForwardEventClick(eventId: EventId) {
-        callbacks.forEach { it.onForwardEventClick(eventId) }
+    override fun forwardEvent(eventId: EventId) {
+        callbacks.forEach { it.forwardEvent(eventId) }
     }
 
-    override fun onReportContentClick(eventId: EventId, senderId: UserId) {
-        callbacks.forEach { it.onReportMessage(eventId, senderId) }
+    override fun navigateToReportMessage(eventId: EventId, senderId: UserId) {
+        callbacks.forEach { it.navigateToReportMessage(eventId, senderId) }
     }
 
-    override fun onEditPollClick(eventId: EventId) {
-        callbacks.forEach { it.onEditPollClick(eventId) }
+    override fun navigateToEditPoll(eventId: EventId) {
+        callbacks.forEach { it.navigateToEditPoll(eventId) }
     }
 
-    override fun onPreviewAttachment(attachments: ImmutableList<Attachment>, inReplyToEventId: EventId?) {
-        callbacks.forEach { it.onPreviewAttachments(attachments, inReplyToEventId) }
+    override fun navigateToPreviewAttachments(attachments: ImmutableList<Attachment>, inReplyToEventId: EventId?) {
+        callbacks.forEach { it.navigateToPreviewAttachments(attachments, inReplyToEventId) }
     }
 
-    override fun onNavigateToRoom(roomId: RoomId, eventId: EventId?, serverNames: List<String>) {
+    override fun navigateToRoom(roomId: RoomId, eventId: EventId?, serverNames: List<String>) {
         if (roomId == room.roomId) {
             displaySameRoomToast()
         } else {
             val permalinkData = PermalinkData.RoomLink(roomId.toRoomIdOrAlias(), eventId, viaParameters = serverNames.toImmutableList())
-            callbacks.forEach { it.onPermalinkClick(permalinkData) }
+            callbacks.forEach { it.handlePermalinkClick(permalinkData) }
         }
     }
 
-    override fun onOpenThread(threadRootId: ThreadId, focusedEventId: EventId?) {
-        callbacks.forEach { it.onOpenThread(threadRootId, focusedEventId) }
+    override fun navigateToThread(threadRootId: ThreadId, focusedEventId: EventId?) {
+        callbacks.forEach { it.navigateToThread(threadRootId, focusedEventId) }
     }
 
-    private fun onSendLocationClick() {
-        callbacks.forEach { it.onSendLocationClick() }
+    private fun navigateToSendLocation() {
+        callbacks.forEach { it.navigateToSendLocation() }
     }
 
-    private fun onCreatePollClick() {
-        callbacks.forEach { it.onCreatePollClick() }
+    private fun navigateToCreatePoll() {
+        callbacks.forEach { it.navigateToCreatePoll() }
     }
 
-    private fun onJoinCallClick() {
-        callbacks.forEach { it.onJoinCallClick(room.roomId) }
+    private fun navigateToRoomCall() {
+        callbacks.forEach { it.navigateToRoomCall(room.roomId) }
     }
 
     private fun displaySameRoomToast() {
@@ -288,7 +288,7 @@ class MessagesNode(
             MessagesView(
                 state = state,
                 onBackClick = { state.eventSink(MessagesEvents.MarkAsFullyReadAndExit) },
-                onRoomDetailsClick = this::onRoomDetailsClick,
+                onRoomDetailsClick = ::navigateToRoomDetails,
                 onEventContentClick = { isLive, event ->
                     if (isLive) {
                         onEventClick(timelineController.mainTimelineMode(), event)
@@ -301,7 +301,7 @@ class MessagesNode(
                         }
                     }
                 },
-                onUserDataClick = this::onUserDataClick,
+                onUserDataClick = ::navigateToRoomMemberDetails,
                 onLinkClick = { url, customTab ->
                     onLinkClick(
                         activity = activity,
@@ -311,15 +311,15 @@ class MessagesNode(
                         customTab = customTab,
                     )
                 },
-                onSendLocationClick = this::onSendLocationClick,
-                onCreatePollClick = this::onCreatePollClick,
-                onJoinCallClick = this::onJoinCallClick,
-                onViewAllPinnedMessagesClick = this::onViewAllPinnedMessagesClick,
+                onSendLocationClick = ::navigateToSendLocation,
+                onCreatePollClick = ::navigateToCreatePoll,
+                onJoinCallClick = ::navigateToRoomCall,
+                onViewAllPinnedMessagesClick = ::navigateToPinnedMessagesList,
                 modifier = modifier,
                 knockRequestsBannerView = {
                     knockRequestsBannerRenderer.View(
                         modifier = Modifier,
-                        onViewRequestsClick = this::onViewKnockRequestsClick
+                        onViewRequestsClick = ::navigateToKnockRequestsList,
                     )
                 },
             )
@@ -327,7 +327,7 @@ class MessagesNode(
                 state = state.roomMemberModerationState,
                 onSelectAction = { action, target ->
                     when (action) {
-                        is ModerationAction.DisplayProfile -> onUserDataClick(target.userId)
+                        is ModerationAction.DisplayProfile -> navigateToRoomMemberDetails(target.userId)
                         else -> state.roomMemberModerationState.eventSink(RoomMemberModerationEvents.ProcessAction(action, target))
                     }
                 },

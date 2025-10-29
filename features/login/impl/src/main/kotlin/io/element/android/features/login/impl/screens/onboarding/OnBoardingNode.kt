@@ -34,13 +34,13 @@ class OnBoardingNode(
     plugins = plugins
 ) {
     interface Callback : Plugin {
-        fun onSignUp()
-        fun onSignIn(mustChooseAccountProvider: Boolean)
-        fun onSignInWithQrCode()
-        fun onReportProblem()
-        fun onLoginPasswordNeeded()
-        fun onOidcDetails(oidcDetails: OidcDetails)
-        fun onCreateAccountContinue(url: String)
+        fun navigateToSignUpFlow()
+        fun navigateToSignInFlow(mustChooseAccountProvider: Boolean)
+        fun navigateToQrCode()
+        fun navigateToBugReport()
+        fun navigateToLoginPassword()
+        fun navigateToOidc(oidcDetails: OidcDetails)
+        fun navigateToCreateAccount(url: String)
     }
 
     data class Params(
@@ -55,31 +55,31 @@ class OnBoardingNode(
     )
 
     private fun onSignIn(mustChooseAccountProvider: Boolean) {
-        plugins<Callback>().forEach { it.onSignIn(mustChooseAccountProvider) }
+        plugins<Callback>().forEach { it.navigateToSignInFlow(mustChooseAccountProvider) }
     }
 
     private fun onSignUp() {
-        plugins<Callback>().forEach { it.onSignUp() }
+        plugins<Callback>().forEach { it.navigateToSignUpFlow() }
     }
 
     private fun onSignInWithQrCode() {
-        plugins<Callback>().forEach { it.onSignInWithQrCode() }
+        plugins<Callback>().forEach { it.navigateToQrCode() }
     }
 
     private fun onReportProblem() {
-        plugins<Callback>().forEach { it.onReportProblem() }
+        plugins<Callback>().forEach { it.navigateToBugReport() }
     }
 
     private fun onOidcDetails(data: OidcDetails) {
-        plugins<Callback>().forEach { it.onOidcDetails(data) }
+        plugins<Callback>().forEach { it.navigateToOidc(data) }
     }
 
     private fun onLoginPasswordNeeded() {
-        plugins<Callback>().forEach { it.onLoginPasswordNeeded() }
+        plugins<Callback>().forEach { it.navigateToLoginPassword() }
     }
 
     private fun onCreateAccountContinue(url: String) {
-        plugins<Callback>().forEach { it.onCreateAccountContinue(url) }
+        plugins<Callback>().forEach { it.navigateToCreateAccount(url) }
     }
 
     @Composable

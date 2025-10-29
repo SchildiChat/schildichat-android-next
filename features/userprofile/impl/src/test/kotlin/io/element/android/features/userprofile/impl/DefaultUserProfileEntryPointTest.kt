@@ -67,7 +67,7 @@ class DefaultUserProfileEntryPointTest {
             )
         }
         val callback = object : UserProfileEntryPoint.Callback {
-            override fun onOpenRoom(roomId: RoomId) {
+            override fun navigateToRoom(roomId: RoomId) {
                 lambdaError()
             }
         }

@@ -64,10 +64,10 @@ class StartChatFlowNode(
         backstack = backstack,
         overlay = overlay,
         openRoom = { roomIdOrAlias, viaServers ->
-            plugins<StartChatEntryPoint.Callback>().forEach { it.onOpenRoom(roomIdOrAlias, viaServers) }
+            plugins<StartChatEntryPoint.Callback>().forEach { it.onRoomCreated(roomIdOrAlias, viaServers) }
         },
         openRoomDirectory = {
-            plugins<StartChatEntryPoint.Callback>().forEach { it.onOpenRoomDirectory() }
+            plugins<StartChatEntryPoint.Callback>().forEach { it.navigateToRoomDirectory() }
         }
     )
 
@@ -79,7 +79,7 @@ class StartChatFlowNode(
             NavTarget.NewRoom -> {
                 val callback = object : CreateRoomEntryPoint.Callback {
                     override fun onRoomCreated(roomId: RoomId) {
-                        navigator.onOpenRoom(roomId.toRoomIdOrAlias(), emptyList())
+                        navigator.onRoomCreated(roomId.toRoomIdOrAlias(), emptyList())
                     }
                 }
                 createRoomEntryPoint.nodeBuilder(parentNode = this, buildContext = buildContext)

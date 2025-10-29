@@ -111,7 +111,7 @@ class ViewFolderFlowNode(
                 onDone()
             }
 
-            override fun onNavigateTo(item: Item) {
+            override fun navigateToItem(item: Item) {
                 when (item) {
                     Item.Parent -> {
                         // Should not happen when in Root since parent is not accessible from root (canGoUp set to false)

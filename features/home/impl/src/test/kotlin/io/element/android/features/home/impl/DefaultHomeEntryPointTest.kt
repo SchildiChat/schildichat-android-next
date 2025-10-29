@@ -41,13 +41,13 @@ class DefaultHomeEntryPointTest {
             )
         }
         val callback = object : HomeEntryPoint.Callback {
-            override fun onRoomClick(roomId: RoomId) = lambdaError()
-            override fun onStartChatClick() = lambdaError()
-            override fun onSettingsClick() = lambdaError()
-            override fun onSetUpRecoveryClick() = lambdaError()
-            override fun onSessionConfirmRecoveryKeyClick() = lambdaError()
-            override fun onRoomSettingsClick(roomId: RoomId) = lambdaError()
-            override fun onReportBugClick() = lambdaError()
+            override fun navigateToRoom(roomId: RoomId) = lambdaError()
+            override fun navigateToCreateRoom() = lambdaError()
+            override fun navigateToSettings() = lambdaError()
+            override fun navigateToSetUpRecovery() = lambdaError()
+            override fun navigateToEnterRecoveryKey() = lambdaError()
+            override fun navigateToRoomSettings(roomId: RoomId) = lambdaError()
+            override fun navigateToBugReport() = lambdaError()
         }
         val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
             .callback(callback)

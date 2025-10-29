@@ -71,8 +71,8 @@ class DefaultMediaViewerEntryPointTest {
         }
         val callback = object : MediaViewerEntryPoint.Callback {
             override fun onDone() = lambdaError()
-            override fun onViewInTimeline(eventId: EventId) = lambdaError()
-            override fun onForwardEvent(eventId: EventId) = lambdaError()
+            override fun viewInTimeline(eventId: EventId) = lambdaError()
+            override fun forwardEvent(eventId: EventId) = lambdaError()
         }
         val params = createMediaViewerEntryPointParams()
         val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
@@ -115,8 +115,8 @@ class DefaultMediaViewerEntryPointTest {
         }
         val callback = object : MediaViewerEntryPoint.Callback {
             override fun onDone() = lambdaError()
-            override fun onViewInTimeline(eventId: EventId) = lambdaError()
-            override fun onForwardEvent(eventId: EventId) = lambdaError()
+            override fun viewInTimeline(eventId: EventId) = lambdaError()
+            override fun forwardEvent(eventId: EventId) = lambdaError()
         }
         val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
             .avatar(

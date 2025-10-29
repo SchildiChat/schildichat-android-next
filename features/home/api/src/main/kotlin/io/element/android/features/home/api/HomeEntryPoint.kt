@@ -21,12 +21,12 @@ interface HomeEntryPoint : FeatureEntryPoint {
     }
 
     interface Callback : Plugin {
-        fun onRoomClick(roomId: RoomId)
-        fun onStartChatClick()
-        fun onSettingsClick()
-        fun onSetUpRecoveryClick()
-        fun onSessionConfirmRecoveryKeyClick()
-        fun onRoomSettingsClick(roomId: RoomId)
-        fun onReportBugClick()
+        fun navigateToRoom(roomId: RoomId)
+        fun navigateToCreateRoom()
+        fun navigateToSettings()
+        fun navigateToSetUpRecovery()
+        fun navigateToEnterRecoveryKey()
+        fun navigateToRoomSettings(roomId: RoomId)
+        fun navigateToBugReport()
     }
 }

@@ -116,11 +116,11 @@ class DefaultMessagesEntryPointTest {
             )
         }
         val callback = object : MessagesEntryPoint.Callback {
-            override fun onRoomDetailsClick() = lambdaError()
-            override fun onUserDataClick(userId: UserId) = lambdaError()
-            override fun onPermalinkClick(data: PermalinkData, pushToBackstack: Boolean) = lambdaError()
+            override fun navigateToRoomDetails() = lambdaError()
+            override fun navigateToRoomMemberDetails(userId: UserId) = lambdaError()
+            override fun handlePermalinkClick(data: PermalinkData, pushToBackstack: Boolean) = lambdaError()
             override fun forwardEvent(eventId: EventId) = lambdaError()
-            override fun openRoom(roomId: RoomId) = lambdaError()
+            override fun navigateToRoom(roomId: RoomId) = lambdaError()
         }
         val initialTarget = MessagesEntryPoint.InitialTarget.Messages(focusedEventId = AN_EVENT_ID)
         val params = MessagesEntryPoint.Params(initialTarget)

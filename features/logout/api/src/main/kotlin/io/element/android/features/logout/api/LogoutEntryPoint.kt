@@ -21,6 +21,6 @@ interface LogoutEntryPoint : FeatureEntryPoint {
     }
 
     interface Callback : Plugin {
-        fun onChangeRecoveryKeyClick()
+        fun navigateToSecureBackup()
     }
 }

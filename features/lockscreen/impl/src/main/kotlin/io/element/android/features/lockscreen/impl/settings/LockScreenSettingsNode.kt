@@ -26,11 +26,11 @@ class LockScreenSettingsNode(
     private val presenter: LockScreenSettingsPresenter,
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
-        fun onChangePinClick()
+        fun navigateToSetupPin()
     }
 
     private fun onChangePinClick() {
-        plugins<Callback>().forEach { it.onChangePinClick() }
+        plugins<Callback>().forEach { it.navigateToSetupPin() }
     }
 
     @Composable

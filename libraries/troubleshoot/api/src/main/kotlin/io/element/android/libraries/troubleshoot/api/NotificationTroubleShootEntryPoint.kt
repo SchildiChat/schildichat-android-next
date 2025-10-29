@@ -22,6 +22,6 @@ interface NotificationTroubleShootEntryPoint : FeatureEntryPoint {
 
     interface Callback : Plugin {
         fun onDone()
-        fun openIgnoredUsers()
+        fun navigateToBlockedUsers()
     }
 }

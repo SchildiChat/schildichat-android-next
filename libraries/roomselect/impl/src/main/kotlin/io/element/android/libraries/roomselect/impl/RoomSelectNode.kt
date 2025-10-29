@@ -42,7 +42,7 @@ class RoomSelectNode(
         callbacks.forEach { it.onCancel() }
     }
 
-    private fun onSubmit(roomIds: List<RoomId>) {
+    private fun onRoomSelected(roomIds: List<RoomId>) {
         callbacks.forEach { it.onRoomSelected(roomIds) }
     }
 
@@ -52,7 +52,7 @@ class RoomSelectNode(
         RoomSelectView(
             state = state,
             onDismiss = ::onDismiss,
-            onSubmit = ::onSubmit,
+            onSubmit = ::onRoomSelected,
             modifier = modifier
         )
     }

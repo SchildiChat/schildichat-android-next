@@ -55,7 +55,7 @@ class NotLoggedInFlowNode(
     ) : NodeInputs
 
     interface Callback : Plugin {
-        fun onOpenBugReport()
+        fun navigateToBugReport()
     }
 
     private val inputs = inputs<Params>()
@@ -78,8 +78,8 @@ class NotLoggedInFlowNode(
         return when (navTarget) {
             NavTarget.Root -> {
                 val callback = object : LoginEntryPoint.Callback {
-                    override fun onReportProblem() {
-                        plugins<Callback>().forEach { it.onOpenBugReport() }
+                    override fun navigateToBugReport() {
+                        plugins<Callback>().forEach { it.navigateToBugReport() }
                     }
                 }
                 loginEntryPoint

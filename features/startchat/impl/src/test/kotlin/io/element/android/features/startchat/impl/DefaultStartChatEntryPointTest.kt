@@ -40,8 +40,8 @@ class DefaultStartChatEntryPointTest {
             )
         }
         val callback = object : StartChatEntryPoint.Callback {
-            override fun onOpenRoom(roomIdOrAlias: RoomIdOrAlias, serverNames: List<String>) = lambdaError()
-            override fun onOpenRoomDirectory() = lambdaError()
+            override fun onRoomCreated(roomIdOrAlias: RoomIdOrAlias, serverNames: List<String>) = lambdaError()
+            override fun navigateToRoomDirectory() = lambdaError()
         }
         val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
             .callback(callback)

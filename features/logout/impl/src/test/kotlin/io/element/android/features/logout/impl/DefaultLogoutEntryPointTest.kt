@@ -32,7 +32,7 @@ class DefaultLogoutEntryPointTest {
             )
         }
         val callback = object : LogoutEntryPoint.Callback {
-            override fun onChangeRecoveryKeyClick() = lambdaError()
+            override fun navigateToSecureBackup() = lambdaError()
         }
         val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
             .callback(callback)

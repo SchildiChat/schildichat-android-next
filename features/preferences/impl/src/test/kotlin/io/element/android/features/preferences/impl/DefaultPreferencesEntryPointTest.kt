@@ -63,11 +63,11 @@ class DefaultPreferencesEntryPointTest {
             )
         }
         val callback = object : PreferencesEntryPoint.Callback {
-            override fun onAddAccount() = lambdaError()
-            override fun onOpenBugReport() = lambdaError()
-            override fun onSecureBackupClick() = lambdaError()
-            override fun onOpenRoomNotificationSettings(roomId: RoomId) = lambdaError()
-            override fun navigateTo(roomId: RoomId, eventId: EventId) = lambdaError()
+            override fun navigateToAddAccount() = lambdaError()
+            override fun navigateToBugReport() = lambdaError()
+            override fun navigateToSecureBackup() = lambdaError()
+            override fun navigateToRoomNotificationSettings(roomId: RoomId) = lambdaError()
+            override fun navigateToEvent(roomId: RoomId, eventId: EventId) = lambdaError()
         }
         val params = PreferencesEntryPoint.Params(
             initialElement = PreferencesEntryPoint.InitialTarget.NotificationSettings,

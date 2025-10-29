@@ -32,8 +32,8 @@ class AccountSelectNode(
         callbacks.forEach { it.onCancel() }
     }
 
-    private fun onSelectAccount(sessionId: SessionId) {
-        callbacks.forEach { it.onSelectAccount(sessionId) }
+    private fun onAccountSelected(sessionId: SessionId) {
+        callbacks.forEach { it.onAccountSelected(sessionId) }
     }
 
     @Composable
@@ -42,7 +42,7 @@ class AccountSelectNode(
         AccountSelectView(
             state = state,
             onDismiss = ::onDismiss,
-            onSelectAccount = ::onSelectAccount,
+            onSelectAccount = ::onAccountSelected,
             modifier = modifier,
         )
     }

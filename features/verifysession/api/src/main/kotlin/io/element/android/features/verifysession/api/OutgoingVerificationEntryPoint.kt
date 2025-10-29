@@ -29,7 +29,7 @@ interface OutgoingVerificationEntryPoint : FeatureEntryPoint {
     }
 
     interface Callback : Plugin {
-        fun onLearnMoreAboutEncryption()
+        fun navigateToLearnMoreAboutEncryption()
         fun onBack()
         fun onDone()
     }

@@ -42,26 +42,26 @@ class ConfirmAccountProviderNode(
     )
 
     interface Callback : Plugin {
-        fun onLoginPasswordNeeded()
-        fun onOidcDetails(oidcDetails: OidcDetails)
-        fun onCreateAccountContinue(url: String)
-        fun onChangeAccountProvider()
+        fun navigateToLoginPassword()
+        fun navigateToOidc(oidcDetails: OidcDetails)
+        fun navigateToCreateAccount(url: String)
+        fun navigateToChangeAccountProvider()
     }
 
     private fun onOidcDetails(data: OidcDetails) {
-        plugins<Callback>().forEach { it.onOidcDetails(data) }
+        plugins<Callback>().forEach { it.navigateToOidc(data) }
     }
 
     private fun onLoginPasswordNeeded() {
-        plugins<Callback>().forEach { it.onLoginPasswordNeeded() }
+        plugins<Callback>().forEach { it.navigateToLoginPassword() }
     }
 
     private fun onCreateAccountContinue(url: String) {
-        plugins<Callback>().forEach { it.onCreateAccountContinue(url) }
+        plugins<Callback>().forEach { it.navigateToCreateAccount(url) }
     }
 
     private fun onChangeAccountProvider() {
-        plugins<Callback>().forEach { it.onChangeAccountProvider() }
+        plugins<Callback>().forEach { it.navigateToChangeAccountProvider() }
     }
 
     @Composable

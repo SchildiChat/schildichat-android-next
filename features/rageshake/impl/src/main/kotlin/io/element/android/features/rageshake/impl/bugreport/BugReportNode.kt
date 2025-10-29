@@ -32,11 +32,11 @@ class BugReportNode(
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
         fun onDone()
-        fun onViewLogs(basePath: String)
+        fun navigateToViewLogs(basePath: String)
     }
 
     private fun onViewLogs(basePath: String) {
-        plugins<Callback>().forEach { it.onViewLogs(basePath) }
+        plugins<Callback>().forEach { it.navigateToViewLogs(basePath) }
     }
 
     private fun onDone() {

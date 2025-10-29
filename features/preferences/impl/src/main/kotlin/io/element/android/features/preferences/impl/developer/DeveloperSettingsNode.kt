@@ -29,13 +29,13 @@ class DeveloperSettingsNode(
     private val presenter: DeveloperSettingsPresenter,
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
-        fun onPushHistoryClick()
+        fun navigateToPushHistory()
     }
 
     private val callbacks = plugins<Callback>()
 
-    private fun onPushHistoryClick() {
-        callbacks.forEach { it.onPushHistoryClick() }
+    private fun navigateToPushHistory() {
+        callbacks.forEach { it.navigateToPushHistory() }
     }
 
     @Composable
@@ -51,7 +51,7 @@ class DeveloperSettingsNode(
             state = state,
             modifier = modifier,
             onOpenShowkase = ::openShowkase,
-            onPushHistoryClick = ::onPushHistoryClick,
+            onPushHistoryClick = ::navigateToPushHistory,
             onBackClick = ::navigateUp
         )
     }

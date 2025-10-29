@@ -29,7 +29,7 @@ class ChangeAccountProviderNode(
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
         fun onDone()
-        fun onOtherClick()
+        fun navigateToSearchAccountProvider()
     }
 
     private fun onDone() {
@@ -37,7 +37,7 @@ class ChangeAccountProviderNode(
     }
 
     private fun onOtherClick() {
-        plugins<Callback>().forEach { it.onOtherClick() }
+        plugins<Callback>().forEach { it.navigateToSearchAccountProvider() }
     }
 
     @Composable

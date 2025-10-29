@@ -32,26 +32,26 @@ class SecureBackupRootNode(
     plugins = plugins
 ) {
     interface Callback : Plugin {
-        fun onSetupClick()
-        fun onChangeClick()
-        fun onDisableClick()
-        fun onConfirmRecoveryKeyClick()
+        fun navigateToSetup()
+        fun navigateToChange()
+        fun navigateToDisable()
+        fun navigateToEnterRecoveryKey()
     }
 
     private fun onSetupClick() {
-        plugins<Callback>().forEach { it.onSetupClick() }
+        plugins<Callback>().forEach { it.navigateToSetup() }
     }
 
     private fun onChangeClick() {
-        plugins<Callback>().forEach { it.onChangeClick() }
+        plugins<Callback>().forEach { it.navigateToChange() }
     }
 
     private fun onDisableClick() {
-        plugins<Callback>().forEach { it.onDisableClick() }
+        plugins<Callback>().forEach { it.navigateToDisable() }
     }
 
     private fun onConfirmRecoveryKeyClick() {
-        plugins<Callback>().forEach { it.onConfirmRecoveryKeyClick() }
+        plugins<Callback>().forEach { it.navigateToEnterRecoveryKey() }
     }
 
     private fun onLearnMoreClick(uriHandler: UriHandler) {

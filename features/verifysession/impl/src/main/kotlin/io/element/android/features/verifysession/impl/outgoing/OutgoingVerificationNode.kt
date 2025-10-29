@@ -42,7 +42,7 @@ class OutgoingVerificationNode(
         OutgoingVerificationView(
             state = state,
             modifier = modifier,
-            onLearnMoreClick = callback::onLearnMoreAboutEncryption,
+            onLearnMoreClick = callback::navigateToLearnMoreAboutEncryption,
             onFinish = callback::onDone,
             onBack = callback::onBack,
         )

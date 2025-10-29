@@ -78,13 +78,13 @@ class MediaGalleryFlowNode(
 
     private fun onViewInTimeline(eventId: EventId) {
         plugins<MediaGalleryEntryPoint.Callback>().forEach {
-            it.onViewInTimeline(eventId)
+            it.viewInTimeline(eventId)
         }
     }
 
     private fun forwardEvent(eventId: EventId) {
         plugins<MediaGalleryEntryPoint.Callback>().forEach {
-            it.forwardEvent(eventId)
+            it.forward(eventId)
         }
     }
 
@@ -96,15 +96,15 @@ class MediaGalleryFlowNode(
                         this@MediaGalleryFlowNode.onBackClick()
                     }
 
-                    override fun onViewInTimeline(eventId: EventId) {
+                    override fun viewInTimeline(eventId: EventId) {
                         this@MediaGalleryFlowNode.onViewInTimeline(eventId)
                     }
 
-                    override fun onForward(eventId: EventId) {
+                    override fun forward(eventId: EventId) {
                         forwardEvent(eventId)
                     }
 
-                    override fun onItemClick(item: MediaItem.Event) {
+                    override fun showItem(item: MediaItem.Event) {
                         val mode = when (item) {
                             is MediaItem.Audio,
                             is MediaItem.Voice,
@@ -131,13 +131,13 @@ class MediaGalleryFlowNode(
                         overlay.hide()
                     }
 
-                    override fun onViewInTimeline(eventId: EventId) {
+                    override fun viewInTimeline(eventId: EventId) {
                         this@MediaGalleryFlowNode.onViewInTimeline(eventId)
                     }
 
-                    override fun onForwardEvent(eventId: EventId) {
+                    override fun forwardEvent(eventId: EventId) {
                         // Need to go to the parent because of the overlay
-                        forwardEvent(eventId)
+                        this@MediaGalleryFlowNode.forwardEvent(eventId)
                     }
                 }
                 mediaViewerEntryPoint.nodeBuilder(this, buildContext)

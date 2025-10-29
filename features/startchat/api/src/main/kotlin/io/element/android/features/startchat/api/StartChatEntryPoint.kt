@@ -21,7 +21,7 @@ interface StartChatEntryPoint : FeatureEntryPoint {
     }
 
     interface Callback : Plugin {
-        fun onOpenRoom(roomIdOrAlias: RoomIdOrAlias, serverNames: List<String>)
-        fun onOpenRoomDirectory()
+        fun onRoomCreated(roomIdOrAlias: RoomIdOrAlias, serverNames: List<String>)
+        fun navigateToRoomDirectory()
     }
 }

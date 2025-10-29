@@ -53,7 +53,7 @@ class StartChatNode(
             onCloseClick = this::navigateUp,
             onNewRoomClick = navigator::onCreateNewRoom,
             onOpenDM = {
-                navigator.onOpenRoom(roomIdOrAlias = it.toRoomIdOrAlias(), serverNames = emptyList())
+                navigator.onRoomCreated(roomIdOrAlias = it.toRoomIdOrAlias(), serverNames = emptyList())
             },
             onJoinByAddressClick = navigator::onShowJoinRoomByAddress,
             onInviteFriendsClick = { invitePeople(activity) },

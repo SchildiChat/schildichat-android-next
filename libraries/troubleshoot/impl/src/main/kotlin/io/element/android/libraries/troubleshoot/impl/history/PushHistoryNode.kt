@@ -39,7 +39,7 @@ class PushHistoryNode(
 
     override fun navigateTo(roomId: RoomId, eventId: EventId) {
         plugins<PushHistoryEntryPoint.Callback>().forEach {
-            it.navigateTo(roomId, eventId)
+            it.navigateToEvent(roomId, eventId)
         }
     }
 

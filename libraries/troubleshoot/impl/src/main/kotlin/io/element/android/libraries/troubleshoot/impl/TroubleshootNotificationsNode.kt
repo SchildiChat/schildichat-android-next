@@ -43,7 +43,7 @@ class TroubleshootNotificationsNode(
 
     override fun openIgnoredUsers() {
         plugins<NotificationTroubleShootEntryPoint.Callback>().forEach {
-            it.openIgnoredUsers()
+            it.navigateToBlockedUsers()
         }
     }
 

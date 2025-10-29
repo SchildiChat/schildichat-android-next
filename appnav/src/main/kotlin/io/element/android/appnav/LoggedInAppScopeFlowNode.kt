@@ -56,8 +56,8 @@ class LoggedInAppScopeFlowNode(
     plugins = plugins
 ), DependencyInjectionGraphOwner {
     interface Callback : Plugin {
-        fun onOpenBugReport()
-        fun onAddAccount()
+        fun navigateToBugReport()
+        fun navigateToAddAccount()
     }
 
     @Parcelize
@@ -81,12 +81,12 @@ class LoggedInAppScopeFlowNode(
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         val callback = object : LoggedInFlowNode.Callback {
-            override fun onOpenBugReport() {
-                plugins<Callback>().forEach { it.onOpenBugReport() }
+            override fun navigateToBugReport() {
+                plugins<Callback>().forEach { it.navigateToBugReport() }
             }
 
-            override fun onAddAccount() {
-                plugins<Callback>().forEach { it.onAddAccount() }
+            override fun navigateToAddAccount() {
+                plugins<Callback>().forEach { it.navigateToAddAccount() }
             }
         }
         return createNode<LoggedInFlowNode>(buildContext, listOf(callback))

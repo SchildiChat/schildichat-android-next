@@ -34,7 +34,7 @@ class DefaultOutgoingVerificationEntryPointTest {
             )
         }
         val callback = object : OutgoingVerificationEntryPoint.Callback {
-            override fun onLearnMoreAboutEncryption() = lambdaError()
+            override fun navigateToLearnMoreAboutEncryption() = lambdaError()
             override fun onBack() = lambdaError()
             override fun onDone() = lambdaError()
         }

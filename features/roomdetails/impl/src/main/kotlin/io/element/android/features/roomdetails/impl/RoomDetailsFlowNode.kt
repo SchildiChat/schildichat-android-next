@@ -167,55 +167,55 @@ class RoomDetailsFlowNode(
         return when (navTarget) {
             NavTarget.RoomDetails -> {
                 val roomDetailsCallback = object : RoomDetailsNode.Callback {
-                    override fun openRoomMemberList() {
+                    override fun navigateToRoomMemberList() {
                         backstack.push(NavTarget.RoomMemberList)
                     }
 
-                    override fun editRoomDetails() {
+                    override fun navigateToRoomDetailsEdit() {
                         backstack.push(NavTarget.RoomDetailsEdit)
                     }
 
-                    override fun openInviteMembers() {
+                    override fun navigateToInviteMembers() {
                         backstack.push(NavTarget.InviteMembers)
                     }
 
-                    override fun openRoomNotificationSettings() {
+                    override fun navigateToRoomNotificationSettings() {
                         backstack.push(NavTarget.RoomNotificationSettings(showUserDefinedSettingStyle = false))
                     }
 
-                    override fun openAvatarPreview(name: String, url: String) {
+                    override fun navigateToAvatarPreview(name: String, url: String) {
                         overlay.show(NavTarget.AvatarPreview(name, url))
                     }
 
-                    override fun openPollHistory() {
+                    override fun navigateToPollHistory() {
                         backstack.push(NavTarget.PollHistory)
                     }
 
-                    override fun openMediaGallery() {
+                    override fun navigateToMediaGallery() {
                         backstack.push(NavTarget.MediaGallery)
                     }
 
-                    override fun openAdminSettings() {
+                    override fun navigateToAdminSettings() {
                         backstack.push(NavTarget.AdminSettings)
                     }
 
-                    override fun openPinnedMessagesList() {
+                    override fun navigateToPinnedMessagesList() {
                         backstack.push(NavTarget.PinnedMessagesList)
                     }
 
-                    override fun openKnockRequestsList() {
+                    override fun navigateToKnockRequestsList() {
                         backstack.push(NavTarget.KnockRequestsList)
                     }
 
-                    override fun openSecurityAndPrivacy() {
+                    override fun navigateToSecurityAndPrivacy() {
                         backstack.push(NavTarget.SecurityAndPrivacy)
                     }
 
-                    override fun openDmUserProfile(userId: UserId) {
+                    override fun navigateToRoomMemberDetails(userId: UserId) {
                         backstack.push(NavTarget.RoomMemberDetails(userId))
                     }
 
-                    override fun onJoinCall() {
+                    override fun navigateToRoomCall() {
                         val inputs = CallType.RoomCall(
                             sessionId = room.sessionId,
                             roomId = room.roomId,
@@ -224,11 +224,11 @@ class RoomDetailsFlowNode(
                         elementCallEntryPoint.startCall(inputs)
                     }
 
-                    override fun openReportRoom() {
+                    override fun navigateToReportRoom() {
                         backstack.push(NavTarget.ReportRoom)
                     }
 
-                    override fun onSelectNewOwnersWhenLeaving() {
+                    override fun navigateToSelectNewOwnersWhenLeaving() {
                         backstack.push(NavTarget.SelectNewOwnersWhenLeaving)
                     }
                 }
@@ -237,11 +237,11 @@ class RoomDetailsFlowNode(
 
             NavTarget.RoomMemberList -> {
                 val roomMemberListCallback = object : RoomMemberListNode.Callback {
-                    override fun openRoomMemberDetails(roomMemberId: UserId) {
+                    override fun navigateToRoomMemberDetails(roomMemberId: UserId) {
                         backstack.push(NavTarget.RoomMemberDetails(roomMemberId))
                     }
 
-                    override fun openInviteMembers() {
+                    override fun navigateToInviteMembers() {
                         backstack.push(NavTarget.InviteMembers)
                     }
                 }
@@ -259,8 +259,8 @@ class RoomDetailsFlowNode(
             is NavTarget.RoomNotificationSettings -> {
                 val input = RoomNotificationSettingsNode.RoomNotificationSettingInput(navTarget.showUserDefinedSettingStyle)
                 val callback = object : RoomNotificationSettingsNode.Callback {
-                    override fun openGlobalNotificationSettings() {
-                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.onOpenGlobalNotificationSettings() }
+                    override fun navigateToGlobalNotificationSettings() {
+                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.navigateToGlobalNotificationSettings() }
                     }
                 }
                 createNode<RoomNotificationSettingsNode>(buildContext, listOf(input, callback))
@@ -268,19 +268,19 @@ class RoomDetailsFlowNode(
 
             is NavTarget.RoomMemberDetails -> {
                 val callback = object : UserProfileNodeHelper.Callback {
-                    override fun openAvatarPreview(username: String, avatarUrl: String) {
+                    override fun navigateToAvatarPreview(username: String, avatarUrl: String) {
                         overlay.show(NavTarget.AvatarPreview(username, avatarUrl))
                     }
 
-                    override fun onStartDM(roomId: RoomId) {
-                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.onOpenRoom(roomId, emptyList()) }
+                    override fun navigateToRoom(roomId: RoomId) {
+                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.navigateToRoom(roomId, emptyList()) }
                     }
 
-                    override fun onStartCall(dmRoomId: RoomId) {
+                    override fun startCall(dmRoomId: RoomId) {
                         elementCallEntryPoint.startCall(CallType.RoomCall(roomId = dmRoomId, sessionId = room.sessionId))
                     }
 
-                    override fun onVerifyUser(userId: UserId) {
+                    override fun startVerifyUserFlow(userId: UserId) {
                         backstack.push(NavTarget.VerifyUser(userId))
                     }
                 }
@@ -293,11 +293,11 @@ class RoomDetailsFlowNode(
                         overlay.hide()
                     }
 
-                    override fun onViewInTimeline(eventId: EventId) {
+                    override fun viewInTimeline(eventId: EventId) {
                         // Cannot happen
                     }
 
-                    override fun onForwardEvent(eventId: EventId) {
+                    override fun forwardEvent(eventId: EventId) {
                         // Cannot happen
                     }
                 }
@@ -318,18 +318,18 @@ class RoomDetailsFlowNode(
                         backstack.pop()
                     }
 
-                    override fun onViewInTimeline(eventId: EventId) {
+                    override fun viewInTimeline(eventId: EventId) {
                         val permalinkData = PermalinkData.RoomLink(
                             roomIdOrAlias = room.roomId.toRoomIdOrAlias(),
                             eventId = eventId,
                         )
                         plugins<RoomDetailsEntryPoint.Callback>().forEach {
-                            it.onPermalinkClick(permalinkData, pushToBackstack = false)
+                            it.handlePermalinkClick(permalinkData, pushToBackstack = false)
                         }
                     }
 
-                    override fun forwardEvent(eventId: EventId) {
-                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.forwardEvent(eventId) }
+                    override fun forward(eventId: EventId) {
+                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.startForwardEventFlow(eventId) }
                     }
                 }
                 mediaGalleryEntryPoint.nodeBuilder(this, buildContext)
@@ -345,20 +345,20 @@ class RoomDetailsFlowNode(
                     MessagesEntryPoint.InitialTarget.PinnedMessages
                 )
                 val callback = object : MessagesEntryPoint.Callback {
-                    override fun onRoomDetailsClick() = Unit
+                    override fun navigateToRoomDetails() = Unit
 
-                    override fun onUserDataClick(userId: UserId) = Unit
+                    override fun navigateToRoomMemberDetails(userId: UserId) = Unit
 
-                    override fun onPermalinkClick(data: PermalinkData, pushToBackstack: Boolean) {
-                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.onPermalinkClick(data, pushToBackstack) }
+                    override fun handlePermalinkClick(data: PermalinkData, pushToBackstack: Boolean) {
+                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.handlePermalinkClick(data, pushToBackstack) }
                     }
 
                     override fun forwardEvent(eventId: EventId) {
-                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.forwardEvent(eventId) }
+                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.startForwardEventFlow(eventId) }
                     }
 
-                    override fun openRoom(roomId: RoomId) {
-                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.onOpenRoom(roomId, emptyList()) }
+                    override fun navigateToRoom(roomId: RoomId) {
+                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.navigateToRoom(roomId, emptyList()) }
                     }
                 }
                 return messagesEntryPoint.nodeBuilder(this, buildContext)
@@ -388,7 +388,7 @@ class RoomDetailsFlowNode(
                             backstack.pop()
                         }
 
-                        override fun onLearnMoreAboutEncryption() {
+                        override fun navigateToLearnMoreAboutEncryption() {
                             learnMoreUrl.value = LearnMoreConfig.ENCRYPTION_URL
                         }
                     })

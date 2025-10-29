@@ -29,7 +29,7 @@ class RoomDirectoryNode(
 ) : Node(buildContext, plugins = plugins) {
     private fun onResultClick(roomDescription: RoomDescription) {
         plugins<RoomDirectoryEntryPoint.Callback>().forEach {
-            it.onResultClick(roomDescription)
+            it.navigateToRoom(roomDescription)
         }
     }
 

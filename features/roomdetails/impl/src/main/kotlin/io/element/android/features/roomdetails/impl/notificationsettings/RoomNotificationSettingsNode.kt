@@ -35,13 +35,13 @@ class RoomNotificationSettingsNode(
         val showUserDefinedSettingStyle: Boolean
     ) : NodeInputs
     interface Callback : Plugin {
-        fun openGlobalNotificationSettings()
+        fun navigateToGlobalNotificationSettings()
     }
     private val inputs = inputs<RoomNotificationSettingInput>()
     private val callbacks = plugins<Callback>()
 
-    private fun openGlobalNotificationSettings() {
-        callbacks.forEach { it.openGlobalNotificationSettings() }
+    private fun navigateToGlobalNotificationSettings() {
+        callbacks.forEach { it.navigateToGlobalNotificationSettings() }
     }
 
     private val presenter = presenterFactory.create(inputs.showUserDefinedSettingStyle)
@@ -59,7 +59,7 @@ class RoomNotificationSettingsNode(
         RoomNotificationSettingsView(
             state = state,
             modifier = modifier,
-            onShowGlobalNotifications = this::openGlobalNotificationSettings,
+            onShowGlobalNotifications = this::navigateToGlobalNotificationSettings,
             onBackClick = this::navigateUp,
         )
     }

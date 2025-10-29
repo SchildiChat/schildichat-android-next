@@ -77,19 +77,19 @@ class SecureBackupFlowNode(
         return when (navTarget) {
             NavTarget.Root -> {
                 val callback = object : SecureBackupRootNode.Callback {
-                    override fun onSetupClick() {
+                    override fun navigateToSetup() {
                         backstack.push(NavTarget.Setup)
                     }
 
-                    override fun onChangeClick() {
+                    override fun navigateToChange() {
                         backstack.push(NavTarget.Change)
                     }
 
-                    override fun onDisableClick() {
+                    override fun navigateToDisable() {
                         backstack.push(NavTarget.Disable)
                     }
 
-                    override fun onConfirmRecoveryKeyClick() {
+                    override fun navigateToEnterRecoveryKey() {
                         backstack.push(NavTarget.EnterRecoveryKey)
                     }
                 }

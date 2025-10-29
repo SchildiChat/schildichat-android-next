@@ -27,16 +27,16 @@ class QrCodeScanNode(
     private val presenter: QrCodeScanPresenter,
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
-        fun onScannedCode(qrCodeLoginData: MatrixQrCodeLoginData)
-        fun onCancelClicked()
+        fun handleScannedCode(qrCodeLoginData: MatrixQrCodeLoginData)
+        fun cancel()
     }
 
     private fun onQrCodeDataReady(qrCodeLoginData: MatrixQrCodeLoginData) {
-        plugins<Callback>().forEach { it.onScannedCode(qrCodeLoginData) }
+        plugins<Callback>().forEach { it.handleScannedCode(qrCodeLoginData) }
     }
 
     private fun onCancelClicked() {
-        plugins<Callback>().forEach { it.onCancelClicked() }
+        plugins<Callback>().forEach { it.cancel() }
     }
 
     @Composable

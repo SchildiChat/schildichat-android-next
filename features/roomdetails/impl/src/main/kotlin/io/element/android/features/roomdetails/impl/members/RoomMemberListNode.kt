@@ -35,8 +35,8 @@ class RoomMemberListNode(
     private val roomMemberModerationRenderer: RoomMemberModerationRenderer,
 ) : Node(buildContext, plugins = plugins), RoomMemberListNavigator {
     interface Callback : Plugin {
-        fun openRoomMemberDetails(roomMemberId: UserId)
-        fun openInviteMembers()
+        fun navigateToRoomMemberDetails(roomMemberId: UserId)
+        fun navigateToInviteMembers()
     }
 
     private val callbacks = plugins<Callback>()
@@ -51,13 +51,13 @@ class RoomMemberListNode(
 
     override fun openRoomMemberDetails(roomMemberId: UserId) {
         callbacks.forEach {
-            it.openRoomMemberDetails(roomMemberId)
+            it.navigateToRoomMemberDetails(roomMemberId)
         }
     }
 
     override fun openInviteMembers() {
         callbacks.forEach {
-            it.openInviteMembers()
+            it.navigateToInviteMembers()
         }
     }
 

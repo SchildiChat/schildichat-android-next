@@ -64,7 +64,7 @@ class BugReportFlowNode(
                         this@BugReportFlowNode.onDone()
                     }
 
-                    override fun onViewLogs(basePath: String) {
+                    override fun navigateToViewLogs(basePath: String) {
                         backstack.push(NavTarget.ViewLogs(rootPath = basePath))
                     }
                 }

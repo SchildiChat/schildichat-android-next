@@ -82,23 +82,22 @@ class FtueSessionVerificationFlowNode(
         return when (navTarget) {
             is NavTarget.Root -> {
                 val callback = object : ChooseSelfVerificationModeNode.Callback {
-                    override fun onUseAnotherDevice() {
+                    override fun navigateToUseAnotherDevice() {
                         backstack.push(NavTarget.UseAnotherDevice)
                     }
 
-                    override fun onUseRecoveryKey() {
+                    override fun navigateToUseRecoveryKey() {
                         backstack.push(NavTarget.EnterRecoveryKey)
                     }
 
-                    override fun onResetKey() {
+                    override fun navigateToResetKey() {
                         backstack.push(NavTarget.ResetIdentity)
                     }
 
-                    override fun onLearnMoreAboutEncryption() {
+                    override fun navigateToLearnMoreAboutEncryption() {
                         learnMoreUrl.value = LearnMoreConfig.DEVICE_VERIFICATION_URL
                     }
                 }
-
                 createNode<ChooseSelfVerificationModeNode>(buildContext, plugins = listOf(callback))
             }
             is NavTarget.UseAnotherDevice -> {
@@ -116,7 +115,7 @@ class FtueSessionVerificationFlowNode(
                             backstack.pop()
                         }
 
-                        override fun onLearnMoreAboutEncryption() {
+                        override fun navigateToLearnMoreAboutEncryption() {
                             // Note that this callback is never called. The "Learn more" link is not displayed
                             // for the self session interactive verification.
                         }

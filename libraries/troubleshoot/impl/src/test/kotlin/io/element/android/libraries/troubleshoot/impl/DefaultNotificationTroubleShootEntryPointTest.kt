@@ -34,7 +34,7 @@ class DefaultNotificationTroubleShootEntryPointTest {
         }
         val callback = object : NotificationTroubleShootEntryPoint.Callback {
             override fun onDone() = lambdaError()
-            override fun openIgnoredUsers() = lambdaError()
+            override fun navigateToBlockedUsers() = lambdaError()
         }
         val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
             .callback(callback)

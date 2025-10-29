@@ -26,18 +26,18 @@ class NotificationSettingsNode(
     private val presenter: NotificationSettingsPresenter,
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
-        fun editDefaultNotificationMode(isOneToOne: Boolean)
-        fun onTroubleshootNotificationsClick()
+        fun navigateToEditDefaultNotificationSetting(isOneToOne: Boolean)
+        fun navigateToTroubleshootNotifications()
     }
 
     private val callbacks = plugins<Callback>()
 
-    private fun openEditDefault(isOneToOne: Boolean) {
-        callbacks.forEach { it.editDefaultNotificationMode(isOneToOne) }
+    private fun navigateToEditDefaultNotificationSetting(isOneToOne: Boolean) {
+        callbacks.forEach { it.navigateToEditDefaultNotificationSetting(isOneToOne) }
     }
 
-    private fun onTroubleshootNotificationsClick() {
-        callbacks.forEach { it.onTroubleshootNotificationsClick() }
+    private fun navigateToTroubleshootNotifications() {
+        callbacks.forEach { it.navigateToTroubleshootNotifications() }
     }
 
     @Composable
@@ -45,9 +45,9 @@ class NotificationSettingsNode(
         val state = presenter.present()
         NotificationSettingsView(
             state = state,
-            onOpenEditDefault = { openEditDefault(isOneToOne = it) },
+            onOpenEditDefault = ::navigateToEditDefaultNotificationSetting,
             onBackClick = ::navigateUp,
-            onTroubleshootNotificationsClick = ::onTroubleshootNotificationsClick,
+            onTroubleshootNotificationsClick = ::navigateToTroubleshootNotifications,
             modifier = modifier,
         )
     }

@@ -46,21 +46,21 @@ class RoomDetailsNode(
     private val leaveRoomRenderer: LeaveRoomRenderer,
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
-        fun openRoomMemberList()
-        fun openInviteMembers()
-        fun editRoomDetails()
-        fun openRoomNotificationSettings()
-        fun openAvatarPreview(name: String, url: String)
-        fun openPollHistory()
-        fun openMediaGallery()
-        fun openAdminSettings()
-        fun openPinnedMessagesList()
-        fun openKnockRequestsList()
-        fun openSecurityAndPrivacy()
-        fun openDmUserProfile(userId: UserId)
-        fun onJoinCall()
-        fun openReportRoom()
-        fun onSelectNewOwnersWhenLeaving()
+        fun navigateToRoomMemberList()
+        fun navigateToInviteMembers()
+        fun navigateToRoomDetailsEdit()
+        fun navigateToRoomNotificationSettings()
+        fun navigateToAvatarPreview(name: String, url: String)
+        fun navigateToPollHistory()
+        fun navigateToMediaGallery()
+        fun navigateToAdminSettings()
+        fun navigateToPinnedMessagesList()
+        fun navigateToKnockRequestsList()
+        fun navigateToSecurityAndPrivacy()
+        fun navigateToRoomMemberDetails(userId: UserId)
+        fun navigateToRoomCall()
+        fun navigateToReportRoom()
+        fun navigateToSelectNewOwnersWhenLeaving()
     }
 
     private val callback = plugins<Callback>().first()
@@ -74,27 +74,27 @@ class RoomDetailsNode(
     }
 
     private fun openRoomMemberList() {
-        callback.openRoomMemberList()
+        callback.navigateToRoomMemberList()
     }
 
     private fun openRoomNotificationSettings() {
-        callback.openRoomNotificationSettings()
+        callback.navigateToRoomNotificationSettings()
     }
 
     private fun invitePeople() {
-        callback.openInviteMembers()
+        callback.navigateToInviteMembers()
     }
 
     private fun openPollHistory() {
-        callback.openPollHistory()
+        callback.navigateToPollHistory()
     }
 
     private fun openMediaGallery() {
-        callback.openMediaGallery()
+        callback.navigateToMediaGallery()
     }
 
     private fun onJoinCall() {
-        callback.onJoinCall()
+        callback.navigateToRoomCall()
     }
 
     private fun CoroutineScope.onShareRoom(context: Context) = launch {
@@ -113,39 +113,39 @@ class RoomDetailsNode(
     }
 
     private fun onEditRoomDetails() {
-        callback.editRoomDetails()
+        callback.navigateToRoomDetailsEdit()
     }
 
     private fun openAvatarPreview(name: String, url: String) {
-        callback.openAvatarPreview(name, url)
+        callback.navigateToAvatarPreview(name, url)
     }
 
     private fun openAdminSettings() {
-        callback.openAdminSettings()
+        callback.navigateToAdminSettings()
     }
 
     private fun openPinnedMessages() {
-        callback.openPinnedMessagesList()
+        callback.navigateToPinnedMessagesList()
     }
 
     private fun openKnockRequestsLists() {
-        callback.openKnockRequestsList()
+        callback.navigateToKnockRequestsList()
     }
 
     private fun openSecurityAndPrivacy() {
-        callback.openSecurityAndPrivacy()
+        callback.navigateToSecurityAndPrivacy()
     }
 
     private fun onProfileClick(userId: UserId) {
-        callback.openDmUserProfile(userId)
+        callback.navigateToRoomMemberDetails(userId)
     }
 
     private fun onReportRoomClick() {
-        callback.openReportRoom()
+        callback.navigateToReportRoom()
     }
 
     private fun onSelectNewOwnersWhenLeaving() {
-        return callback.onSelectNewOwnersWhenLeaving()
+        return callback.navigateToSelectNewOwnersWhenLeaving()
     }
 
     private val stateFlow = launchMolecule { presenter.present() }

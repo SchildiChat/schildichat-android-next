@@ -212,7 +212,7 @@ class JoinedRoomLoadedFlowNodeTest {
         )
         val roomFlowNodeTestHelper = roomFlowNode.parentNodeTestHelper()
         // WHEN
-        fakeMessagesEntryPoint.callback?.onRoomDetailsClick()
+        fakeMessagesEntryPoint.callback?.navigateToRoomDetails()
         // THEN
         roomFlowNodeTestHelper.assertChildHasLifecycle(JoinedRoomLoadedFlowNode.NavTarget.RoomDetails, Lifecycle.State.CREATED)
         val roomDetailsNode = roomFlowNode.childNode(JoinedRoomLoadedFlowNode.NavTarget.RoomDetails)!!

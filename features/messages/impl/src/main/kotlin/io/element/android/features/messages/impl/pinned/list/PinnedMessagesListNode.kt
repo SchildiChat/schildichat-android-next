@@ -48,12 +48,12 @@ class PinnedMessagesListNode(
     private val permalinkParser: PermalinkParser,
 ) : Node(buildContext, plugins = plugins), PinnedMessagesListNavigator {
     interface Callback : Plugin {
-        fun onEventClick(event: TimelineItem.Event)
-        fun onUserDataClick(userId: UserId)
-        fun onViewInTimelineClick(eventId: EventId)
-        fun onRoomPermalinkClick(data: PermalinkData.RoomLink)
-        fun onShowEventDebugInfoClick(eventId: EventId?, debugInfo: TimelineItemDebugInfo)
-        fun onForwardEventClick(eventId: EventId)
+        fun handleEventClick(event: TimelineItem.Event)
+        fun navigateToRoomMemberDetails(userId: UserId)
+        fun viewInTimeline(eventId: EventId)
+        fun handlePermalinkClick(data: PermalinkData.RoomLink)
+        fun navigateToEventDebugInfo(eventId: EventId?, debugInfo: TimelineItemDebugInfo)
+        fun handleForwardEventClick(eventId: EventId)
     }
 
     private val presenter = presenterFactory.create(
@@ -65,12 +65,12 @@ class PinnedMessagesListNode(
     )
     private val callbacks = plugins<Callback>()
 
-    private fun onEventClick(event: TimelineItem.Event) {
-        return callbacks.forEach { it.onEventClick(event) }
+    private fun handleEventClick(event: TimelineItem.Event) {
+        return callbacks.forEach { it.handleEventClick(event) }
     }
 
-    private fun onUserDataClick(user: MatrixUser) {
-        callbacks.forEach { it.onUserDataClick(user.userId) }
+    private fun navigateToRoomMemberDetails(user: MatrixUser) {
+        callbacks.forEach { it.navigateToRoomMemberDetails(user.userId) }
     }
 
     private fun onLinkClick(context: Context, url: String) {
@@ -78,10 +78,10 @@ class PinnedMessagesListNode(
             is PermalinkData.UserLink -> {
                 // Open the room member profile, it will fallback to
                 // the user profile if the user is not in the room
-                callbacks.forEach { it.onUserDataClick(permalink.userId) }
+                callbacks.forEach { it.navigateToRoomMemberDetails(permalink.userId) }
             }
             is PermalinkData.RoomLink -> {
-                callbacks.forEach { it.onRoomPermalinkClick(permalink) }
+                callbacks.forEach { it.handlePermalinkClick(permalink) }
             }
             is PermalinkData.FallbackLink,
             is PermalinkData.RoomEmailInviteLink -> {
@@ -90,16 +90,16 @@ class PinnedMessagesListNode(
         }
     }
 
-    override fun onViewInTimelineClick(eventId: EventId) {
-        callbacks.forEach { it.onViewInTimelineClick(eventId) }
+    override fun viewInTimeline(eventId: EventId) {
+        callbacks.forEach { it.viewInTimeline(eventId) }
     }
 
-    override fun onShowEventDebugInfoClick(eventId: EventId?, debugInfo: TimelineItemDebugInfo) {
-        callbacks.forEach { it.onShowEventDebugInfoClick(eventId, debugInfo) }
+    override fun navigateToEventDebugInfo(eventId: EventId?, debugInfo: TimelineItemDebugInfo) {
+        callbacks.forEach { it.navigateToEventDebugInfo(eventId, debugInfo) }
     }
 
-    override fun onForwardEventClick(eventId: EventId) {
-        callbacks.forEach { it.onForwardEventClick(eventId) }
+    override fun forwardEvent(eventId: EventId) {
+        callbacks.forEach { it.handleForwardEventClick(eventId) }
     }
 
     @Composable
@@ -113,8 +113,8 @@ class PinnedMessagesListNode(
             PinnedMessagesListView(
                 state = state,
                 onBackClick = ::navigateUp,
-                onEventClick = ::onEventClick,
-                onUserDataClick = ::onUserDataClick,
+                onEventClick = ::handleEventClick,
+                onUserDataClick = ::navigateToRoomMemberDetails,
                 onLinkClick = { link -> onLinkClick(context, link.url) },
                 onLinkLongClick = {
                     view.performHapticFeedback(

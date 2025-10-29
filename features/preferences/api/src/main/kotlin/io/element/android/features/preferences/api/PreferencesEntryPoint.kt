@@ -40,10 +40,10 @@ interface PreferencesEntryPoint : FeatureEntryPoint {
     }
 
     interface Callback : Plugin {
-        fun onAddAccount()
-        fun onOpenBugReport()
-        fun onSecureBackupClick()
-        fun onOpenRoomNotificationSettings(roomId: RoomId)
-        fun navigateTo(roomId: RoomId, eventId: EventId)
+        fun navigateToAddAccount()
+        fun navigateToBugReport()
+        fun navigateToSecureBackup()
+        fun navigateToRoomNotificationSettings(roomId: RoomId)
+        fun navigateToEvent(roomId: RoomId, eventId: EventId)
     }
 }

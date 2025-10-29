@@ -148,8 +148,8 @@ class LoggedInFlowNode(
     plugins = plugins
 ) {
     interface Callback : Plugin {
-        fun onOpenBugReport()
-        fun onAddAccount()
+        fun navigateToBugReport()
+        fun navigateToAddAccount()
     }
 
     private val loggedInFlowProcessor = LoggedInEventProcessor(
@@ -282,7 +282,7 @@ class LoggedInFlowNode(
         data object Ftue : NavTarget
 
         @Parcelize
-        data object RoomDirectorySearch : NavTarget
+        data object RoomDirectory : NavTarget
 
         @Parcelize
         data class IncomingShare(val intent: Intent) : NavTarget
@@ -304,32 +304,32 @@ class LoggedInFlowNode(
             }
             NavTarget.Home -> {
                 val callback = object : HomeEntryPoint.Callback {
-                    override fun onRoomClick(roomId: RoomId) {
+                    override fun navigateToRoom(roomId: RoomId) {
                         backstack.push(NavTarget.Room(roomId.toRoomIdOrAlias()))
                     }
 
-                    override fun onSettingsClick() {
+                    override fun navigateToSettings() {
                         backstack.push(NavTarget.Settings())
                     }
 
-                    override fun onStartChatClick() {
+                    override fun navigateToCreateRoom() {
                         backstack.push(NavTarget.CreateRoom)
                     }
 
-                    override fun onSetUpRecoveryClick() {
+                    override fun navigateToSetUpRecovery() {
                         backstack.push(NavTarget.SecureBackup(initialElement = SecureBackupEntryPoint.InitialTarget.Root))
                     }
 
-                    override fun onSessionConfirmRecoveryKeyClick() {
+                    override fun navigateToEnterRecoveryKey() {
                         backstack.push(NavTarget.SecureBackup(initialElement = SecureBackupEntryPoint.InitialTarget.EnterRecoveryKey))
                     }
 
-                    override fun onRoomSettingsClick(roomId: RoomId) {
+                    override fun navigateToRoomSettings(roomId: RoomId) {
                         backstack.push(NavTarget.Room(roomId.toRoomIdOrAlias(), initialElement = RoomNavigationTarget.Details))
                     }
 
-                    override fun onReportBugClick() {
-                        plugins<Callback>().forEach { it.onOpenBugReport() }
+                    override fun navigateToBugReport() {
+                        plugins<Callback>().forEach { it.navigateToBugReport() }
                     }
                 }
                 homeEntryPoint
@@ -339,11 +339,11 @@ class LoggedInFlowNode(
             }
             is NavTarget.Room -> {
                 val joinedRoomCallback = object : JoinedRoomLoadedFlowNode.Callback {
-                    override fun onOpenRoom(roomId: RoomId, serverNames: List<String>) {
+                    override fun navigateToRoom(roomId: RoomId, serverNames: List<String>) {
                         backstack.push(NavTarget.Room(roomId.toRoomIdOrAlias(), serverNames))
                     }
 
-                    override fun onPermalinkClick(data: PermalinkData, pushToBackstack: Boolean) {
+                    override fun handlePermalinkClick(data: PermalinkData, pushToBackstack: Boolean) {
                         when (data) {
                             is PermalinkData.UserLink -> {
                                 // Should not happen (handled by MessagesNode)
@@ -369,7 +369,7 @@ class LoggedInFlowNode(
                         }
                     }
 
-                    override fun onOpenGlobalNotificationSettings() {
+                    override fun navigateToGlobalNotificationSettings() {
                         backstack.push(NavTarget.Settings(PreferencesEntryPoint.InitialTarget.NotificationSettings))
                     }
                 }
@@ -384,7 +384,7 @@ class LoggedInFlowNode(
             }
             is NavTarget.UserProfile -> {
                 val callback = object : UserProfileEntryPoint.Callback {
-                    override fun onOpenRoom(roomId: RoomId) {
+                    override fun navigateToRoom(roomId: RoomId) {
                         backstack.push(NavTarget.Room(roomId.toRoomIdOrAlias()))
                     }
                 }
@@ -395,23 +395,23 @@ class LoggedInFlowNode(
             }
             is NavTarget.Settings -> {
                 val callback = object : PreferencesEntryPoint.Callback {
-                    override fun onAddAccount() {
-                        plugins<Callback>().forEach { it.onAddAccount() }
+                    override fun navigateToAddAccount() {
+                        plugins<Callback>().forEach { it.navigateToAddAccount() }
                     }
 
-                    override fun onOpenBugReport() {
-                        plugins<Callback>().forEach { it.onOpenBugReport() }
+                    override fun navigateToBugReport() {
+                        plugins<Callback>().forEach { it.navigateToBugReport() }
                     }
 
-                    override fun onSecureBackupClick() {
+                    override fun navigateToSecureBackup() {
                         backstack.push(NavTarget.SecureBackup())
                     }
 
-                    override fun onOpenRoomNotificationSettings(roomId: RoomId) {
+                    override fun navigateToRoomNotificationSettings(roomId: RoomId) {
                         backstack.push(NavTarget.Room(roomId.toRoomIdOrAlias(), initialElement = RoomNavigationTarget.NotificationSettings))
                     }
 
-                    override fun navigateTo(roomId: RoomId, eventId: EventId) {
+                    override fun navigateToEvent(roomId: RoomId, eventId: EventId) {
                         backstack.push(NavTarget.Room(roomId.toRoomIdOrAlias(), initialElement = RoomNavigationTarget.Root(eventId)))
                     }
                 }
@@ -423,12 +423,12 @@ class LoggedInFlowNode(
             }
             NavTarget.CreateRoom -> {
                 val callback = object : StartChatEntryPoint.Callback {
-                    override fun onOpenRoom(roomIdOrAlias: RoomIdOrAlias, serverNames: List<String>) {
+                    override fun onRoomCreated(roomIdOrAlias: RoomIdOrAlias, serverNames: List<String>) {
                         backstack.replace(NavTarget.Room(roomIdOrAlias = roomIdOrAlias, serverNames = serverNames))
                     }
 
-                    override fun onOpenRoomDirectory() {
-                        backstack.push(NavTarget.RoomDirectorySearch)
+                    override fun navigateToRoomDirectory() {
+                        backstack.push(NavTarget.RoomDirectory)
                     }
                 }
 
@@ -450,10 +450,10 @@ class LoggedInFlowNode(
             NavTarget.Ftue -> {
                 ftueEntryPoint.createNode(this, buildContext)
             }
-            NavTarget.RoomDirectorySearch -> {
+            NavTarget.RoomDirectory -> {
                 roomDirectoryEntryPoint.nodeBuilder(this, buildContext)
                     .callback(object : RoomDirectoryEntryPoint.Callback {
-                        override fun onResultClick(roomDescription: RoomDescription) {
+                        override fun navigateToRoom(roomDescription: RoomDescription) {
                             backstack.push(
                                 NavTarget.Room(
                                     roomIdOrAlias = roomDescription.roomId.toRoomIdOrAlias(),

@@ -32,7 +32,7 @@ class DefaultAccountSelectEntryPointTest {
             )
         }
         val callback = object : AccountSelectEntryPoint.Callback {
-            override fun onSelectAccount(sessionId: SessionId) = lambdaError()
+            override fun onAccountSelected(sessionId: SessionId) = lambdaError()
             override fun onCancel() = lambdaError()
         }
         val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))

@@ -27,7 +27,7 @@ class LogoutNode(
     private val presenter: LogoutPresenter,
 ) : Node(buildContext, plugins = plugins) {
     private fun onChangeRecoveryKeyClick() {
-        plugins<LogoutEntryPoint.Callback>().forEach { it.onChangeRecoveryKeyClick() }
+        plugins<LogoutEntryPoint.Callback>().forEach { it.navigateToSecureBackup() }
     }
 
     @Composable

@@ -29,7 +29,7 @@ class AboutNode(
     private val presenter: AboutPresenter,
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
-        fun openOssLicenses()
+        fun navigateToOssLicenses()
     }
 
     private fun onElementLegalClick(
@@ -52,7 +52,7 @@ class AboutNode(
                 onElementLegalClick(activity, isDark, elementLegal)
             },
             onOpenSourceLicensesClick = {
-                plugins.filterIsInstance<Callback>().forEach { it.openOssLicenses() }
+                plugins.filterIsInstance<Callback>().forEach { it.navigateToOssLicenses() }
             },
             modifier = modifier
         )

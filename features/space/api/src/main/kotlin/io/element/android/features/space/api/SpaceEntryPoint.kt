@@ -31,9 +31,8 @@ interface SpaceEntryPoint : FeatureEntryPoint {
     ) : NodeInputs
 
     interface Callback : Plugin {
-        fun onOpenRoom(roomId: RoomId, viaParameters: List<String>)
-        fun onOpenDetails()
-
-        fun onOpenMemberList()
+        fun navigateToRoom(roomId: RoomId, viaParameters: List<String>)
+        fun navigateToRoomDetails()
+        fun navigateToRoomMemberList()
     }
 }

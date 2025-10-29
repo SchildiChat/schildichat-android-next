@@ -26,16 +26,16 @@ class QrCodeIntroNode(
     private val presenter: QrCodeIntroPresenter,
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
-        fun onCancelClicked()
-        fun onContinue()
+        fun cancel()
+        fun navigateToQrCodeScan()
     }
 
     private fun onCancelClicked() {
-        plugins<Callback>().forEach { it.onCancelClicked() }
+        plugins<Callback>().forEach { it.cancel() }
     }
 
     private fun onContinue() {
-        plugins<Callback>().forEach { it.onContinue() }
+        plugins<Callback>().forEach { it.navigateToQrCodeScan() }
     }
 
     @Composable

@@ -29,10 +29,10 @@ class ChooseSelfVerificationModeNode(
     private val directLogoutView: DirectLogoutView,
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
-        fun onUseAnotherDevice()
-        fun onUseRecoveryKey()
-        fun onResetKey()
-        fun onLearnMoreAboutEncryption()
+        fun navigateToUseAnotherDevice()
+        fun navigateToUseRecoveryKey()
+        fun navigateToResetKey()
+        fun navigateToLearnMoreAboutEncryption()
     }
 
     private val callback = plugins<Callback>().first()
@@ -43,10 +43,10 @@ class ChooseSelfVerificationModeNode(
 
         ChooseSelfVerificationModeView(
             state = state,
-            onUseAnotherDevice = callback::onUseAnotherDevice,
-            onUseRecoveryKey = callback::onUseRecoveryKey,
-            onResetKey = callback::onResetKey,
-            onLearnMore = callback::onLearnMoreAboutEncryption,
+            onUseAnotherDevice = callback::navigateToUseAnotherDevice,
+            onUseRecoveryKey = callback::navigateToUseRecoveryKey,
+            onResetKey = callback::navigateToResetKey,
+            onLearnMore = callback::navigateToLearnMoreAboutEncryption,
             modifier = modifier,
         )
 

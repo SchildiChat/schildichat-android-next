@@ -30,11 +30,11 @@ class PollHistoryNode(
     plugins = plugins,
 ) {
     interface Callback : Plugin {
-        fun onEditPoll(pollStartEventId: EventId)
+        fun navigateToEditPoll(pollStartEventId: EventId)
     }
 
     private fun onEditPoll(pollStartEventId: EventId) {
-        plugins<Callback>().forEach { it.onEditPoll(pollStartEventId) }
+        plugins<Callback>().forEach { it.navigateToEditPoll(pollStartEventId) }
     }
 
     @Composable

@@ -34,52 +34,52 @@ class PreferencesRootNode(
     private val directLogoutView: DirectLogoutView,
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
-        fun onAddAccount()
-        fun onOpenBugReport()
-        fun onSecureBackupClick()
-        fun onOpenAnalytics()
-        fun onOpenAbout()
-        fun onOpenDeveloperSettings()
-        fun onOpenNotificationSettings()
-        fun onOpenLockScreenSettings()
-        fun onOpenAdvancedSettings()
-        fun onOpenLabs()
-        fun onOpenUserProfile(matrixUser: MatrixUser)
-        fun onOpenBlockedUsers()
-        fun onSignOutClick()
-        fun onOpenAccountDeactivation()
+        fun navigateToAddAccount()
+        fun navigateToBugReport()
+        fun navigateToSecureBackup()
+        fun navigateToAnalyticsSettings()
+        fun navigateToAbout()
+        fun navigateToDeveloperSettings()
+        fun navigateToNotificationSettings()
+        fun navigateToLockScreenSettings()
+        fun navigateToAdvancedSettings()
+        fun navigateToLabs()
+        fun navigateToUserProfile(matrixUser: MatrixUser)
+        fun navigateToBlockedUsers()
+        fun startSignOutFlow()
+        fun startAccountDeactivationFlow()
     }
 
     private fun onAddAccount() {
-        plugins<Callback>().forEach { it.onAddAccount() }
+        plugins<Callback>().forEach { it.navigateToAddAccount() }
     }
 
     private fun onOpenBugReport() {
-        plugins<Callback>().forEach { it.onOpenBugReport() }
+        plugins<Callback>().forEach { it.navigateToBugReport() }
     }
 
     private fun onSecureBackupClick() {
-        plugins<Callback>().forEach { it.onSecureBackupClick() }
+        plugins<Callback>().forEach { it.navigateToSecureBackup() }
     }
 
     private fun onOpenDeveloperSettings() {
-        plugins<Callback>().forEach { it.onOpenDeveloperSettings() }
+        plugins<Callback>().forEach { it.navigateToDeveloperSettings() }
     }
 
     private fun onOpenAdvancedSettings() {
-        plugins<Callback>().forEach { it.onOpenAdvancedSettings() }
+        plugins<Callback>().forEach { it.navigateToAdvancedSettings() }
     }
 
     private fun onOpenLabs() {
-        plugins<Callback>().forEach { it.onOpenLabs() }
+        plugins<Callback>().forEach { it.navigateToLabs() }
     }
 
     private fun onOpenAnalytics() {
-        plugins<Callback>().forEach { it.onOpenAnalytics() }
+        plugins<Callback>().forEach { it.navigateToAnalyticsSettings() }
     }
 
     private fun onOpenAbout() {
-        plugins<Callback>().forEach { it.onOpenAbout() }
+        plugins<Callback>().forEach { it.navigateToAbout() }
     }
 
     private fun onManageAccountClick(
@@ -97,27 +97,27 @@ class PreferencesRootNode(
     }
 
     private fun onOpenNotificationSettings() {
-        plugins<Callback>().forEach { it.onOpenNotificationSettings() }
+        plugins<Callback>().forEach { it.navigateToNotificationSettings() }
     }
 
     private fun onOpenLockScreenSettings() {
-        plugins<Callback>().forEach { it.onOpenLockScreenSettings() }
+        plugins<Callback>().forEach { it.navigateToLockScreenSettings() }
     }
 
     private fun onOpenUserProfile(matrixUser: MatrixUser) {
-        plugins<Callback>().forEach { it.onOpenUserProfile(matrixUser) }
+        plugins<Callback>().forEach { it.navigateToUserProfile(matrixUser) }
     }
 
     private fun onOpenBlockedUsers() {
-        plugins<Callback>().forEach { it.onOpenBlockedUsers() }
+        plugins<Callback>().forEach { it.navigateToBlockedUsers() }
     }
 
     private fun onSignOutClick() {
-        plugins<Callback>().forEach { it.onSignOutClick() }
+        plugins<Callback>().forEach { it.startSignOutFlow() }
     }
 
     private fun onOpenAccountDeactivation() {
-        plugins<Callback>().forEach { it.onOpenAccountDeactivation() }
+        plugins<Callback>().forEach { it.startAccountDeactivationFlow() }
     }
 
     @Composable

@@ -64,7 +64,7 @@ class PollHistoryFlowNode(
             }
             NavTarget.Root -> {
                 val callback = object : PollHistoryNode.Callback {
-                    override fun onEditPoll(pollStartEventId: EventId) {
+                    override fun navigateToEditPoll(pollStartEventId: EventId) {
                         backstack.push(NavTarget.EditPoll(pollStartEventId))
                     }
                 }

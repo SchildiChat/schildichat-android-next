@@ -21,6 +21,6 @@ interface RoomDirectoryEntryPoint : FeatureEntryPoint {
     }
 
     interface Callback : Plugin {
-        fun onResultClick(roomDescription: RoomDescription)
+        fun navigateToRoom(roomDescription: RoomDescription)
     }
 }

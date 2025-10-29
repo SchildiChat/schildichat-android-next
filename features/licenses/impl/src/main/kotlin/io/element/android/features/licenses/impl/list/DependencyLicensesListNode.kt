@@ -30,12 +30,12 @@ class DependencyLicensesListNode(
     plugins = plugins
 ) {
     interface Callback : Plugin {
-        fun onOpenLicense(license: DependencyLicenseItem)
+        fun navigateToLicense(license: DependencyLicenseItem)
     }
 
     private fun onOpenLicense(license: DependencyLicenseItem) {
         plugins<Callback>()
-            .forEach { it.onOpenLicense(license) }
+            .forEach { it.navigateToLicense(license) }
     }
 
     @Composable

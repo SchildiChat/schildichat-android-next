@@ -24,6 +24,6 @@ interface PushHistoryEntryPoint : FeatureEntryPoint {
 
     interface Callback : Plugin {
         fun onDone()
-        fun navigateTo(roomId: RoomId, eventId: EventId)
+        fun navigateToEvent(roomId: RoomId, eventId: EventId)
     }
 }

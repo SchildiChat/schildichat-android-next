@@ -29,7 +29,7 @@ class EditDefaultNotificationSettingNode(
     presenterFactory: EditDefaultNotificationSettingPresenter.Factory
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
-        fun openRoomNotificationSettings(roomId: RoomId)
+        fun navigateToRoomNotificationSettings(roomId: RoomId)
     }
 
     data class Inputs(
@@ -40,8 +40,8 @@ class EditDefaultNotificationSettingNode(
     private val callbacks = plugins<Callback>()
     private val presenter = presenterFactory.create(inputs.isOneToOne)
 
-    private fun openRoomNotificationSettings(roomId: RoomId) {
-        callbacks.forEach { it.openRoomNotificationSettings(roomId) }
+    private fun navigateToRoomNotificationSettings(roomId: RoomId) {
+        callbacks.forEach { it.navigateToRoomNotificationSettings(roomId) }
     }
 
     @Composable
@@ -49,7 +49,7 @@ class EditDefaultNotificationSettingNode(
         val state = presenter.present()
         EditDefaultNotificationSettingView(
             state = state,
-            openRoomNotificationSettings = { openRoomNotificationSettings(it) },
+            openRoomNotificationSettings = { navigateToRoomNotificationSettings(it) },
             onBackClick = ::navigateUp,
             modifier = modifier,
         )

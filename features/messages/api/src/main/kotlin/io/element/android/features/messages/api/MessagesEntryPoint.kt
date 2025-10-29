@@ -38,11 +38,11 @@ interface MessagesEntryPoint : FeatureEntryPoint {
     }
 
     interface Callback : Plugin {
-        fun onRoomDetailsClick()
-        fun onUserDataClick(userId: UserId)
-        fun onPermalinkClick(data: PermalinkData, pushToBackstack: Boolean)
+        fun navigateToRoomDetails()
+        fun navigateToRoomMemberDetails(userId: UserId)
+        fun handlePermalinkClick(data: PermalinkData, pushToBackstack: Boolean)
         fun forwardEvent(eventId: EventId)
-        fun openRoom(roomId: RoomId)
+        fun navigateToRoom(roomId: RoomId)
     }
 
     data class Params(val initialTarget: InitialTarget) : NodeInputs

@@ -46,7 +46,7 @@ class DefaultPushHistoryEntryPointTest {
         }
         val callback = object : PushHistoryEntryPoint.Callback {
             override fun onDone() = lambdaError()
-            override fun navigateTo(roomId: RoomId, eventId: EventId) = lambdaError()
+            override fun navigateToEvent(roomId: RoomId, eventId: EventId) = lambdaError()
         }
         val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
             .callback(callback)

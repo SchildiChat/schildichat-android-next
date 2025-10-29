@@ -78,6 +78,7 @@ fun SpaceView(
     onShareSpace: () -> Unit,
     onLeaveSpaceClick: () -> Unit,
     onDetailsClick: () -> Unit,
+    onViewMembersClick: () -> Unit,
     modifier: Modifier = Modifier,
     acceptDeclineInviteView: @Composable () -> Unit,
 ) {
@@ -89,7 +90,8 @@ fun SpaceView(
                 onBackClick = onBackClick,
                 onLeaveSpaceClick = onLeaveSpaceClick,
                 onShareSpace = onShareSpace,
-                onDetailsClick = onDetailsClick
+                onDetailsClick = onDetailsClick,
+                onViewMembersClick = onViewMembersClick,
             )
         },
         content = { padding ->
@@ -256,6 +258,7 @@ private fun SpaceViewTopBar(
     onLeaveSpaceClick: () -> Unit,
     onDetailsClick: () -> Unit,
     onShareSpace: () -> Unit,
+    onViewMembersClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     TopAppBar(
@@ -307,6 +310,20 @@ private fun SpaceViewTopBar(
                 DropdownMenuItem(
                     onClick = {
                         showMenu = false
+                        onViewMembersClick()
+                    },
+                    text = { Text(stringResource(id = CommonStrings.screen_space_menu_action_members)) },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = CompoundIcons.User(),
+                            tint = ElementTheme.colors.iconSecondary,
+                            contentDescription = null,
+                        )
+                    }
+                )
+                DropdownMenuItem(
+                    onClick = {
+                        showMenu = false
                         onLeaveSpaceClick()
                     },
                     text = {
@@ -344,10 +361,10 @@ private fun SpaceAvatarAndNameRow(
         )
         Text(
             modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .semantics {
-                        heading()
-                    },
+                .padding(horizontal = 8.dp)
+                .semantics {
+                    heading()
+                },
             text = name ?: stringResource(CommonStrings.common_no_space_name),
             style = ElementTheme.typography.fontBodyLgMedium,
             fontStyle = FontStyle.Italic.takeIf { name == null },
@@ -403,6 +420,7 @@ internal fun SpaceViewPreview(
         onLeaveSpaceClick = {},
         acceptDeclineInviteView = {},
         onDetailsClick = {},
+        onViewMembersClick = {},
         onBackClick = {},
     )
 }

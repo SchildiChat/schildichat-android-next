@@ -42,6 +42,8 @@ class SpaceNode(
     interface Callback : Plugin {
         fun onOpenRoom(roomId: RoomId, viaParameters: List<String>)
         fun onOpenDetails()
+
+        fun onOpenMemberList()
         fun onLeaveSpace()
     }
 
@@ -82,6 +84,9 @@ class SpaceNode(
             },
             onShareSpace = {
                 onShareRoom(context)
+            },
+            onViewMembersClick = {
+                callback.onOpenMemberList()
             },
             acceptDeclineInviteView = {
                 acceptDeclineInviteView.Render(

@@ -25,6 +25,9 @@ interface RoomDetailsEntryPoint : FeatureEntryPoint {
         data object RoomDetails : InitialTarget
 
         @Parcelize
+        data object RoomMemberList : InitialTarget
+
+        @Parcelize
         data class RoomMemberDetails(val roomMemberId: UserId) : InitialTarget
 
         @Parcelize

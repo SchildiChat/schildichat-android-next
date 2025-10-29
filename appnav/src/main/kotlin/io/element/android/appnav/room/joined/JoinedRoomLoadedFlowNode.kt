@@ -165,7 +165,7 @@ class JoinedRoomLoadedFlowNode(
                 val timelineProvider = { MutableStateFlow(inputs.room.liveTimeline).asStateFlow() }
                 val params = ForwardEntryPoint.Params(navTarget.eventId, timelineProvider)
                 val callback = object : ForwardEntryPoint.Callback {
-                    override fun onForwardDone(roomIds: List<RoomId>) {
+                    override fun onDone(roomIds: List<RoomId>) {
                         backstack.pop()
                         roomIds.singleOrNull()?.let { roomId ->
                             callbacks.forEach { it.onOpenRoom(roomId, emptyList()) }

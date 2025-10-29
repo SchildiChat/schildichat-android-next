@@ -46,7 +46,7 @@ class DefaultForwardEntryPointTest {
             )
         }
         val callback = object : ForwardEntryPoint.Callback {
-            override fun onForwardDone(roomIds: List<RoomId>) = lambdaError()
+            override fun onDone(roomIds: List<RoomId>) = lambdaError()
         }
         val params = ForwardEntryPoint.Params(
             eventId = AN_EVENT_ID,

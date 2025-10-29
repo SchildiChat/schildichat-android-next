@@ -92,6 +92,6 @@ class ForwardMessagesNode(
     }
 
     private fun onForwardDone(roomIds: List<RoomId>) {
-        callbacks.forEach { it.onForwardDone(roomIds) }
+        callbacks.forEach { it.onDone(roomIds) }
     }
 }

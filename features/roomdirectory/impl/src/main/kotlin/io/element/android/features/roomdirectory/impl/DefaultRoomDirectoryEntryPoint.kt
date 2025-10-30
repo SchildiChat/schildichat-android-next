@@ -9,7 +9,6 @@ package io.element.android.features.roomdirectory.impl
 
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
-import com.bumble.appyx.core.plugin.Plugin
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import io.element.android.features.roomdirectory.api.RoomDirectoryEntryPoint
@@ -18,18 +17,7 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultRoomDirectoryEntryPoint : RoomDirectoryEntryPoint {
-    override fun nodeBuilder(parentNode: Node, buildContext: BuildContext): RoomDirectoryEntryPoint.NodeBuilder {
-        val plugins = ArrayList<Plugin>()
-
-        return object : RoomDirectoryEntryPoint.NodeBuilder {
-            override fun callback(callback: RoomDirectoryEntryPoint.Callback): RoomDirectoryEntryPoint.NodeBuilder {
-                plugins += callback
-                return this
-            }
-
-            override fun build(): Node {
-                return parentNode.createNode<RoomDirectoryNode>(buildContext, plugins)
-            }
-        }
+    override fun createNode(parentNode: Node, buildContext: BuildContext, callback: RoomDirectoryEntryPoint.Callback): Node {
+        return parentNode.createNode<RoomDirectoryNode>(buildContext, listOf(callback))
     }
 }

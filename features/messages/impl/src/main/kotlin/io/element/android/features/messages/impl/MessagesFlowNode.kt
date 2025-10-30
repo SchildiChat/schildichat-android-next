@@ -320,10 +320,12 @@ class MessagesFlowNode(
                         callback.forwardEvent(eventId)
                     }
                 }
-                mediaViewerEntryPoint.nodeBuilder(this, buildContext)
-                    .params(params)
-                    .callback(callback)
-                    .build()
+                mediaViewerEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = params,
+                    callback = callback
+                )
             }
             is NavTarget.AttachmentPreview -> {
                 val inputs = AttachmentsPreviewNode.Inputs(
@@ -356,39 +358,43 @@ class MessagesFlowNode(
                         }
                     }
                 }
-                forwardEntryPoint.nodeBuilder(this, buildContext)
-                    .params(params)
-                    .callback(callback)
-                    .build()
+                forwardEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = params,
+                    callback = callback,
+                )
             }
             is NavTarget.ReportMessage -> {
                 val inputs = ReportMessageNode.Inputs(navTarget.eventId, navTarget.senderId)
                 createNode<ReportMessageNode>(buildContext, listOf(inputs))
             }
             is NavTarget.SendLocation -> {
-                sendLocationEntryPoint
-                    .builder(navTarget.timelineMode)
-                    .build(this, buildContext)
+                sendLocationEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    timelineMode = navTarget.timelineMode,
+                )
             }
             is NavTarget.CreatePoll -> {
-                createPollEntryPoint.nodeBuilder(this, buildContext)
-                    .params(
-                        CreatePollEntryPoint.Params(
-                            timelineMode = navTarget.timelineMode,
-                            mode = CreatePollMode.NewPoll
-                        )
-                    )
-                    .build()
+                createPollEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = CreatePollEntryPoint.Params(
+                        timelineMode = navTarget.timelineMode,
+                        mode = CreatePollMode.NewPoll
+                    ),
+                )
             }
             is NavTarget.EditPoll -> {
-                createPollEntryPoint.nodeBuilder(this, buildContext)
-                    .params(
-                        CreatePollEntryPoint.Params(
-                            timelineMode = navTarget.timelineMode,
-                            mode = CreatePollMode.EditPoll(eventId = navTarget.eventId)
-                        )
-                    )
-                    .build()
+                createPollEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = CreatePollEntryPoint.Params(
+                        timelineMode = navTarget.timelineMode,
+                        mode = CreatePollMode.EditPoll(eventId = navTarget.eventId)
+                    ),
+                )
             }
             NavTarget.PinnedMessagesList -> {
                 val callback = object : PinnedMessagesListNode.Callback {

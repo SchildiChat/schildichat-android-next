@@ -24,6 +24,7 @@ import io.element.android.features.messages.api.MessagesEntryPoint
 import io.element.android.features.messages.impl.pinned.banner.createPinnedEventsTimelineProvider
 import io.element.android.features.messages.impl.timeline.createTimelineController
 import io.element.android.features.poll.api.create.CreatePollEntryPoint
+import io.element.android.features.poll.api.create.CreatePollEntryPoint.Params
 import io.element.android.libraries.dateformatter.test.FakeDateFormatter
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
@@ -65,13 +66,21 @@ class DefaultMessagesEntryPointTest {
                 roomListService = FakeRoomListService(),
                 sessionId = A_SESSION_ID,
                 sendLocationEntryPoint = object : SendLocationEntryPoint {
-                    override fun builder(timelineMode: Timeline.Mode) = lambdaError()
+                    override fun createNode(
+                        parentNode: Node,
+                        buildContext: BuildContext,
+                        timelineMode: Timeline.Mode,
+                    ) = lambdaError()
                 },
                 showLocationEntryPoint = object : ShowLocationEntryPoint {
                     override fun createNode(parentNode: Node, buildContext: BuildContext, inputs: ShowLocationEntryPoint.Inputs) = lambdaError()
                 },
                 createPollEntryPoint = object : CreatePollEntryPoint {
-                    override fun nodeBuilder(parentNode: Node, buildContext: BuildContext) = lambdaError()
+                    override fun createNode(
+                        parentNode: Node,
+                        buildContext: BuildContext,
+                        params: Params,
+                    ) = lambdaError()
                 },
                 elementCallEntryPoint = object : ElementCallEntryPoint {
                     override fun startCall(callType: CallType) = lambdaError()
@@ -89,10 +98,21 @@ class DefaultMessagesEntryPointTest {
                     ) = lambdaError()
                 },
                 mediaViewerEntryPoint = object : MediaViewerEntryPoint {
-                    override fun nodeBuilder(parentNode: Node, buildContext: BuildContext) = lambdaError()
+                    override fun createParamsForAvatar(filename: String, avatarUrl: String) = lambdaError()
+                    override fun createNode(
+                        parentNode: Node,
+                        buildContext: BuildContext,
+                        params: MediaViewerEntryPoint.Params,
+                        callback: MediaViewerEntryPoint.Callback,
+                    ) = lambdaError()
                 },
                 forwardEntryPoint = object : ForwardEntryPoint {
-                    override fun nodeBuilder(parentNode: Node, buildContext: BuildContext) = lambdaError()
+                    override fun createNode(
+                        parentNode: Node,
+                        buildContext: BuildContext,
+                        params: ForwardEntryPoint.Params,
+                        callback: ForwardEntryPoint.Callback,
+                    ) = lambdaError()
                 },
                 analyticsService = FakeAnalyticsService(),
                 locationService = FakeLocationService(),
@@ -124,10 +144,12 @@ class DefaultMessagesEntryPointTest {
         }
         val initialTarget = MessagesEntryPoint.InitialTarget.Messages(focusedEventId = AN_EVENT_ID)
         val params = MessagesEntryPoint.Params(initialTarget)
-        val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
-            .params(params)
-            .callback(callback)
-            .build()
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            params = params,
+            callback = callback,
+        )
         assertThat(result).isInstanceOf(MessagesFlowNode::class.java)
         assertThat(result.plugins).contains(MessagesEntryPoint.Params(initialTarget))
         assertThat(result.plugins).contains(callback)

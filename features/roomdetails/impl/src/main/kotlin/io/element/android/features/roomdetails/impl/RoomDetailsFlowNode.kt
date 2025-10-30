@@ -303,13 +303,16 @@ class RoomDetailsFlowNode(
                         // Cannot happen
                     }
                 }
-                mediaViewerEntryPoint.nodeBuilder(this, buildContext)
-                    .avatar(
-                        navTarget.name,
-                        navTarget.avatarUrl,
-                    )
-                    .callback(callback)
-                    .build()
+                val params = mediaViewerEntryPoint.createParamsForAvatar(
+                    filename = navTarget.name,
+                    avatarUrl = navTarget.avatarUrl,
+                )
+                mediaViewerEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = params,
+                    callback = callback,
+                )
             }
             is NavTarget.PollHistory -> {
                 pollHistoryEntryPoint.createNode(this, buildContext)
@@ -332,9 +335,11 @@ class RoomDetailsFlowNode(
                         callback.startForwardEventFlow(eventId)
                     }
                 }
-                mediaGalleryEntryPoint.nodeBuilder(this, buildContext)
-                    .callback(callback)
-                    .build()
+                mediaGalleryEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    callback = callback,
+                )
             }
 
             is NavTarget.AdminSettings -> {
@@ -361,10 +366,12 @@ class RoomDetailsFlowNode(
                         callback.navigateToRoom(roomId, emptyList())
                     }
                 }
-                return messagesEntryPoint.nodeBuilder(this, buildContext)
-                    .params(params)
-                    .callback(callback)
-                    .build()
+                return messagesEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = params,
+                    callback = callback,
+                )
             }
             NavTarget.KnockRequestsList -> {
                 knockRequestsListEntryPoint.createNode(this, buildContext)
@@ -377,9 +384,11 @@ class RoomDetailsFlowNode(
                     showDeviceVerifiedScreen = true,
                     verificationRequest = VerificationRequest.Outgoing.User(userId = navTarget.userId)
                 )
-                outgoingVerificationEntryPoint.nodeBuilder(this, buildContext)
-                    .params(params)
-                    .callback(object : OutgoingVerificationEntryPoint.Callback {
+                outgoingVerificationEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = params,
+                    callback = object : OutgoingVerificationEntryPoint.Callback {
                         override fun onDone() {
                             backstack.pop()
                         }
@@ -391,18 +400,20 @@ class RoomDetailsFlowNode(
                         override fun navigateToLearnMoreAboutEncryption() {
                             learnMoreUrl.value = LearnMoreConfig.ENCRYPTION_URL
                         }
-                    })
-                    .build()
+                    },
+                )
             }
             is NavTarget.ReportRoom -> {
                 reportRoomEntryPoint.createNode(this, buildContext, room.roomId)
             }
 
             is NavTarget.SelectNewOwnersWhenLeaving -> {
-                changeRoomMemberRolesEntryPoint.builder(this, buildContext)
-                    .room(room)
-                    .listType(ChangeRoomMemberRolesListType.SelectNewOwnersWhenLeaving)
-                    .build()
+                changeRoomMemberRolesEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    room = room,
+                    listType = ChangeRoomMemberRolesListType.SelectNewOwnersWhenLeaving,
+                )
             }
         }
     }

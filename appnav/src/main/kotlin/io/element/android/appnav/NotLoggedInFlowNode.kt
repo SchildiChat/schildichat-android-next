@@ -83,16 +83,15 @@ class NotLoggedInFlowNode(
                         callback.navigateToBugReport()
                     }
                 }
-                loginEntryPoint
-                    .nodeBuilder(this, buildContext)
-                    .params(
-                        LoginEntryPoint.Params(
-                            accountProvider = inputs.loginParams?.accountProvider,
-                            loginHint = inputs.loginParams?.loginHint,
-                        )
-                    )
-                    .callback(callback)
-                    .build()
+                loginEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = LoginEntryPoint.Params(
+                        accountProvider = inputs.loginParams?.accountProvider,
+                        loginHint = inputs.loginParams?.loginHint,
+                    ),
+                    callback = callback,
+                )
             }
         }
     }

@@ -19,14 +19,9 @@ import io.element.android.libraries.matrix.api.timeline.Timeline
 import kotlinx.parcelize.Parcelize
 
 interface MediaViewerEntryPoint : FeatureEntryPoint {
-    fun nodeBuilder(parentNode: Node, buildContext: BuildContext): NodeBuilder
+    fun createNode(parentNode: Node, buildContext: BuildContext, params: Params, callback: Callback): Node
 
-    interface NodeBuilder {
-        fun callback(callback: Callback): NodeBuilder
-        fun params(params: Params): NodeBuilder
-        fun avatar(filename: String, avatarUrl: String): NodeBuilder
-        fun build(): Node
-    }
+    fun createParamsForAvatar(filename: String, avatarUrl: String): Params
 
     interface Callback : Plugin {
         fun onDone()

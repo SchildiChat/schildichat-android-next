@@ -110,9 +110,12 @@ class FtueFlowNode(
                         defaultFtueService.updateFtueStep()
                     }
                 }
-                lockScreenEntryPoint.nodeBuilder(this, buildContext, LockScreenEntryPoint.Target.Setup)
-                    .callback(callback)
-                    .build()
+                lockScreenEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    navTarget = LockScreenEntryPoint.Target.Setup,
+                    callback = callback,
+                )
             }
         }
     }

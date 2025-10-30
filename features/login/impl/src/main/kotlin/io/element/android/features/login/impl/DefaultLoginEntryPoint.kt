@@ -9,7 +9,6 @@ package io.element.android.features.login.impl
 
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
-import com.bumble.appyx.core.plugin.Plugin
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import io.element.android.features.login.api.LoginEntryPoint
@@ -17,26 +16,16 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultLoginEntryPoint : LoginEntryPoint {
-    override fun nodeBuilder(parentNode: Node, buildContext: BuildContext): LoginEntryPoint.NodeBuilder {
-        val plugins = ArrayList<Plugin>()
-
-        return object : LoginEntryPoint.NodeBuilder {
-            override fun params(params: LoginEntryPoint.Params): LoginEntryPoint.NodeBuilder {
-                plugins += LoginFlowNode.Params(
+    override fun createNode(parentNode: Node, buildContext: BuildContext, params: LoginEntryPoint.Params, callback: LoginEntryPoint.Callback): Node {
+        return parentNode.createNode<LoginFlowNode>(
+            buildContext = buildContext,
+            plugins = listOf(
+                LoginFlowNode.Params(
                     accountProvider = params.accountProvider,
                     loginHint = params.loginHint,
-                )
-                return this
-            }
-
-            override fun callback(callback: LoginEntryPoint.Callback): LoginEntryPoint.NodeBuilder {
-                plugins += callback
-                return this
-            }
-
-            override fun build(): Node {
-                return parentNode.createNode<LoginFlowNode>(buildContext, plugins)
-            }
-        }
+                ),
+                callback,
+            )
+        )
     }
 }

@@ -18,8 +18,9 @@ import io.element.android.libraries.matrix.api.timeline.Timeline
  * Allows a user to share a location message within a room.
  */
 interface SendLocationEntryPoint : FeatureEntryPoint {
-    fun builder(timelineMode: Timeline.Mode): Builder
-    interface Builder {
-        fun build(parentNode: Node, buildContext: BuildContext): Node
-    }
+    fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        timelineMode: Timeline.Mode,
+    ): Node
 }

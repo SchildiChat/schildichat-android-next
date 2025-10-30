@@ -34,9 +34,11 @@ class DefaultLogoutEntryPointTest {
         val callback = object : LogoutEntryPoint.Callback {
             override fun navigateToSecureBackup() = lambdaError()
         }
-        val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
-            .callback(callback)
-            .build()
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            callback = callback,
+        )
         assertThat(result).isInstanceOf(LogoutNode::class.java)
         assertThat(result.plugins).contains(callback)
     }

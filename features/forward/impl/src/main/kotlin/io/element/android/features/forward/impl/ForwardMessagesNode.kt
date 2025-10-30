@@ -70,10 +70,12 @@ class ForwardMessagesNode(
             }
         }
 
-        return roomSelectEntryPoint.nodeBuilder(this, buildContext)
-            .callback(callback)
-            .params(RoomSelectEntryPoint.Params(mode = RoomSelectMode.Forward))
-            .build()
+        return roomSelectEntryPoint.createNode(
+            parentNode = this,
+            buildContext = buildContext,
+            params = RoomSelectEntryPoint.Params(mode = RoomSelectMode.Forward),
+            callback = callback,
+        )
     }
 
     @Composable

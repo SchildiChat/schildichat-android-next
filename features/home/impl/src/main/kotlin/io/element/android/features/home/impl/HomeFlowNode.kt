@@ -190,10 +190,12 @@ class HomeFlowNode(
             is NavTarget.DeclineInviteAndBlockUser -> declineInviteAndBlockUserEntryPoint.createNode(this, buildContext, navTarget.inviteData)
             is NavTarget.SelectNewOwnersWhenLeavingRoom -> {
                 val room = runBlocking { matrixClient.getJoinedRoom(navTarget.roomId) } ?: error("Room ${navTarget.roomId} not found")
-                changeRoomMemberRolesEntryPoint.builder(this, buildContext)
-                    .room(room)
-                    .listType(ChangeRoomMemberRolesListType.SelectNewOwnersWhenLeaving)
-                    .build()
+                changeRoomMemberRolesEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    room = room,
+                    listType = ChangeRoomMemberRolesListType.SelectNewOwnersWhenLeaving,
+                )
             }
             NavTarget.Root -> rootNode(buildContext)
         }

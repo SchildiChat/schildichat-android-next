@@ -42,10 +42,12 @@ class DefaultRoomSelectEntryPointTest {
             override fun onCancel() = lambdaError()
         }
         val params = RoomSelectEntryPoint.Params(testMode)
-        val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
-            .params(params)
-            .callback(callback)
-            .build()
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            params = params,
+            callback = callback,
+        )
         assertThat(result).isInstanceOf(RoomSelectNode::class.java)
         assertThat(result.plugins).contains(RoomSelectNode.Inputs(params.mode))
         assertThat(result.plugins).contains(callback)

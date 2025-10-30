@@ -140,10 +140,12 @@ class JoinedRoomLoadedFlowNode(
                 backstack.push(NavTarget.ForwardEvent(eventId))
             }
         }
-        return roomDetailsEntryPoint.nodeBuilder(this, buildContext)
-            .params(RoomDetailsEntryPoint.Params(initialTarget))
-            .callback(callback)
-            .build()
+        return roomDetailsEntryPoint.createNode(
+            parentNode = this,
+            buildContext = buildContext,
+            params = RoomDetailsEntryPoint.Params(initialTarget),
+            callback = callback,
+        )
     }
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
@@ -177,10 +179,12 @@ class JoinedRoomLoadedFlowNode(
                         }
                     }
                 }
-                forwardEntryPoint.nodeBuilder(this, buildContext)
-                    .params(params)
-                    .callback(callback)
-                    .build()
+                forwardEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = params,
+                    callback = callback,
+                )
             }
         }
     }
@@ -199,10 +203,12 @@ class JoinedRoomLoadedFlowNode(
                 backstack.push(NavTarget.RoomMemberList)
             }
         }
-        return spaceEntryPoint.nodeBuilder(this, buildContext)
-            .inputs(SpaceEntryPoint.Inputs(roomId = inputs.room.roomId))
-            .callback(callback)
-            .build()
+        return spaceEntryPoint.createNode(
+            parentNode = this,
+            buildContext = buildContext,
+            inputs = SpaceEntryPoint.Inputs(roomId = inputs.room.roomId),
+            callback = callback,
+        )
     }
 
     private fun createMessagesNode(
@@ -233,10 +239,12 @@ class JoinedRoomLoadedFlowNode(
         val params = MessagesEntryPoint.Params(
             MessagesEntryPoint.InitialTarget.Messages(navTarget.focusedEventId)
         )
-        return messagesEntryPoint.nodeBuilder(this, buildContext)
-            .params(params)
-            .callback(callback)
-            .build()
+        return messagesEntryPoint.createNode(
+            parentNode = this,
+            buildContext = buildContext,
+            params = params,
+            callback = callback,
+        )
     }
 
     sealed interface NavTarget : Parcelable {

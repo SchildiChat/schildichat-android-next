@@ -11,6 +11,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.bumble.appyx.core.modality.BuildContext
+import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.testing.junit4.util.MainDispatcherRule
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.lockscreen.api.LockScreenEntryPoint
@@ -37,13 +38,12 @@ class DefaultFtueEntryPointTest {
                 analyticsEntryPoint = { _, _ -> lambdaError() },
                 defaultFtueService = createDefaultFtueService(),
                 lockScreenEntryPoint = object : LockScreenEntryPoint {
-                    override fun nodeBuilder(
-                        parentNode: com.bumble.appyx.core.node.Node,
+                    override fun createNode(
+                        parentNode: Node,
                         buildContext: BuildContext,
-                        navTarget: LockScreenEntryPoint.Target
-                    ): LockScreenEntryPoint.NodeBuilder {
-                        lambdaError()
-                    }
+                        navTarget: LockScreenEntryPoint.Target,
+                        callback: LockScreenEntryPoint.Callback,
+                    ) = lambdaError()
 
                     override fun pinUnlockIntent(context: Context): Intent {
                         lambdaError()

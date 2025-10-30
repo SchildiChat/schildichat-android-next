@@ -333,10 +333,11 @@ class LoggedInFlowNode(
                         callback.navigateToBugReport()
                     }
                 }
-                homeEntryPoint
-                    .nodeBuilder(this, buildContext)
-                    .callback(callback)
-                    .build()
+                homeEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    callback = callback,
+                )
             }
             is NavTarget.Room -> {
                 val joinedRoomCallback = object : JoinedRoomLoadedFlowNode.Callback {
@@ -389,10 +390,12 @@ class LoggedInFlowNode(
                         backstack.push(NavTarget.Room(roomId.toRoomIdOrAlias()))
                     }
                 }
-                userProfileEntryPoint.nodeBuilder(this, buildContext)
-                    .params(UserProfileEntryPoint.Params(userId = navTarget.userId))
-                    .callback(callback)
-                    .build()
+                userProfileEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = UserProfileEntryPoint.Params(userId = navTarget.userId),
+                    callback = callback,
+                )
             }
             is NavTarget.Settings -> {
                 val callback = object : PreferencesEntryPoint.Callback {
@@ -417,10 +420,12 @@ class LoggedInFlowNode(
                     }
                 }
                 val inputs = PreferencesEntryPoint.Params(navTarget.initialElement)
-                preferencesEntryPoint.nodeBuilder(this, buildContext)
-                    .params(inputs)
-                    .callback(callback)
-                    .build()
+                preferencesEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = inputs,
+                    callback = callback,
+                )
             }
             NavTarget.CreateRoom -> {
                 val callback = object : StartChatEntryPoint.Callback {
@@ -433,27 +438,32 @@ class LoggedInFlowNode(
                     }
                 }
 
-                startChatEntryPoint
-                    .nodeBuilder(this, buildContext)
-                    .callback(callback)
-                    .build()
+                startChatEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    callback = callback,
+                )
             }
             is NavTarget.SecureBackup -> {
-                secureBackupEntryPoint.nodeBuilder(this, buildContext)
-                    .params(SecureBackupEntryPoint.Params(initialElement = navTarget.initialElement))
-                    .callback(object : SecureBackupEntryPoint.Callback {
+                secureBackupEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = SecureBackupEntryPoint.Params(initialElement = navTarget.initialElement),
+                    callback = object : SecureBackupEntryPoint.Callback {
                         override fun onDone() {
                             backstack.pop()
                         }
-                    })
-                    .build()
+                    },
+                )
             }
             NavTarget.Ftue -> {
                 ftueEntryPoint.createNode(this, buildContext)
             }
             NavTarget.RoomDirectory -> {
-                roomDirectoryEntryPoint.nodeBuilder(this, buildContext)
-                    .callback(object : RoomDirectoryEntryPoint.Callback {
+                roomDirectoryEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    callback = object : RoomDirectoryEntryPoint.Callback {
                         override fun navigateToRoom(roomDescription: RoomDescription) {
                             backstack.push(
                                 NavTarget.Room(
@@ -463,31 +473,35 @@ class LoggedInFlowNode(
                                 )
                             )
                         }
-                    })
-                    .build()
+                    },
+                )
             }
             is NavTarget.IncomingShare -> {
-                shareEntryPoint.nodeBuilder(this, buildContext)
-                    .callback(object : ShareEntryPoint.Callback {
+                shareEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = ShareEntryPoint.Params(intent = navTarget.intent),
+                    callback = object : ShareEntryPoint.Callback {
                         override fun onDone(roomIds: List<RoomId>) {
                             navigateUp()
                             roomIds.singleOrNull()?.let { roomId ->
                                 backstack.push(NavTarget.Room(roomId.toRoomIdOrAlias()))
                             }
                         }
-                    })
-                    .params(ShareEntryPoint.Params(intent = navTarget.intent))
-                    .build()
+                    },
+                )
             }
             is NavTarget.IncomingVerificationRequest -> {
-                incomingVerificationEntryPoint.nodeBuilder(this, buildContext)
-                    .params(IncomingVerificationEntryPoint.Params(navTarget.data))
-                    .callback(object : IncomingVerificationEntryPoint.Callback {
+                incomingVerificationEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = IncomingVerificationEntryPoint.Params(navTarget.data),
+                    callback = object : IncomingVerificationEntryPoint.Callback {
                         override fun onDone() {
                             backstack.pop()
                         }
-                    })
-                    .build()
+                    },
+                )
             }
         }
     }

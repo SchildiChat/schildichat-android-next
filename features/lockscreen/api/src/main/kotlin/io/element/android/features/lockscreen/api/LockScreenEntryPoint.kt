@@ -15,13 +15,8 @@ import com.bumble.appyx.core.plugin.Plugin
 import io.element.android.libraries.architecture.FeatureEntryPoint
 
 interface LockScreenEntryPoint : FeatureEntryPoint {
-    fun nodeBuilder(parentNode: Node, buildContext: BuildContext, navTarget: Target): NodeBuilder
+    fun createNode(parentNode: Node, buildContext: BuildContext, navTarget: Target, callback: Callback): Node
     fun pinUnlockIntent(context: Context): Intent
-
-    interface NodeBuilder {
-        fun callback(callback: Callback): NodeBuilder
-        fun build(): Node
-    }
 
     interface Callback : Plugin {
         fun onSetupDone()

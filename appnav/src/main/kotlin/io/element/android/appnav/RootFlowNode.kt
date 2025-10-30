@@ -249,11 +249,13 @@ class RootFlowNode(
                 createNode<NotLoggedInFlowNode>(buildContext, plugins = listOf(params, callback))
             }
             is NavTarget.SignedOutFlow -> {
-                signedOutEntryPoint.nodeBuilder(this, buildContext).params(
-                    SignedOutEntryPoint.Params(
-                        sessionId = navTarget.sessionId
-                    )
-                ).build()
+                signedOutEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = SignedOutEntryPoint.Params(
+                        sessionId = navTarget.sessionId,
+                    ),
+                )
             }
             NavTarget.SplashScreen -> emptyNode(buildContext)
             NavTarget.BugReport -> {
@@ -262,7 +264,11 @@ class RootFlowNode(
                         backstack.pop()
                     }
                 }
-                bugReportEntryPoint.nodeBuilder(this, buildContext).callback(callback).build()
+                bugReportEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    callback = callback,
+                )
             }
             is NavTarget.AccountSelect -> {
                 val callback: AccountSelectEntryPoint.Callback = object : AccountSelectEntryPoint.Callback {
@@ -287,7 +293,11 @@ class RootFlowNode(
                         backstack.pop()
                     }
                 }
-                accountSelectEntryPoint.nodeBuilder(this, buildContext).callback(callback).build()
+                accountSelectEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    callback = callback,
+                )
             }
         }
     }

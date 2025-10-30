@@ -35,16 +35,23 @@ class DefaultBugReportEntryPointTest {
                 buildContext = buildContext,
                 plugins = plugins,
                 viewFolderEntryPoint = object : ViewFolderEntryPoint {
-                    override fun nodeBuilder(parentNode: Node, buildContext: BuildContext) = lambdaError()
+                    override fun createNode(
+                        parentNode: Node,
+                        buildContext: BuildContext,
+                        params: ViewFolderEntryPoint.Params,
+                        callback: ViewFolderEntryPoint.Callback,
+                    ) = lambdaError()
                 },
             )
         }
         val callback = object : BugReportEntryPoint.Callback {
             override fun onDone() = lambdaError()
         }
-        val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
-            .callback(callback)
-            .build()
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            callback = callback,
+        )
         assertThat(result).isInstanceOf(BugReportFlowNode::class.java)
         assertThat(result.plugins).contains(callback)
     }

@@ -124,19 +124,19 @@ class MediaGalleryFlowNode(
                         callback.forward(eventId)
                     }
                 }
-                mediaViewerEntryPoint.nodeBuilder(this, buildContext)
-                    .params(
-                        MediaViewerEntryPoint.Params(
-                            mode = navTarget.mode,
-                            eventId = navTarget.eventId,
-                            mediaInfo = navTarget.mediaInfo,
-                            mediaSource = navTarget.mediaSource,
-                            thumbnailSource = navTarget.thumbnailSource,
-                            canShowInfo = true,
-                        )
-                    )
-                    .callback(callback)
-                    .build()
+                mediaViewerEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = MediaViewerEntryPoint.Params(
+                        mode = navTarget.mode,
+                        eventId = navTarget.eventId,
+                        mediaInfo = navTarget.mediaInfo,
+                        mediaSource = navTarget.mediaSource,
+                        thumbnailSource = navTarget.thumbnailSource,
+                        canShowInfo = true,
+                    ),
+                    callback = callback,
+                )
             }
         }
     }

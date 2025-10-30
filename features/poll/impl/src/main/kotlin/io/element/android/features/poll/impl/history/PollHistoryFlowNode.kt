@@ -53,14 +53,14 @@ class PollHistoryFlowNode(
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         return when (navTarget) {
             is NavTarget.EditPoll -> {
-                createPollEntryPoint.nodeBuilder(this, buildContext)
-                    .params(
-                        CreatePollEntryPoint.Params(
+                createPollEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = CreatePollEntryPoint.Params(
                         timelineMode = Timeline.Mode.Live,
                         mode = CreatePollMode.EditPoll(eventId = navTarget.pollStartEventId)
-                        )
                     )
-                    .build()
+                )
             }
             NavTarget.Root -> {
                 val callback = object : PollHistoryNode.Callback {

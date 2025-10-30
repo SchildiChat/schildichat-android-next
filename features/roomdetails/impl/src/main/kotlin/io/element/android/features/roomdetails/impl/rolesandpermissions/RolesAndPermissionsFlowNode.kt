@@ -101,16 +101,20 @@ class RolesAndPermissionsFlowNode(
                 )
             }
             is NavTarget.AdminList -> {
-                changeRoomMemberRolesEntryPoint.builder(this, buildContext)
-                    .room(joinedRoom)
-                    .listType(ChangeRoomMemberRolesListType.Admins)
-                    .build()
+                changeRoomMemberRolesEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    room = joinedRoom,
+                    listType = ChangeRoomMemberRolesListType.Admins,
+                )
             }
             is NavTarget.ModeratorList -> {
-                changeRoomMemberRolesEntryPoint.builder(this, buildContext)
-                    .room(joinedRoom)
-                    .listType(ChangeRoomMemberRolesListType.Moderators)
-                    .build()
+                changeRoomMemberRolesEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    room = joinedRoom,
+                    listType = ChangeRoomMemberRolesListType.Moderators,
+                )
             }
             is NavTarget.ChangeRoomPermissions -> {
                 val inputs = ChangeRoomPermissionsNode.Inputs(navTarget.section)

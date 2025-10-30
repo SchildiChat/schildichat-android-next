@@ -31,12 +31,6 @@ interface MessagesEntryPoint : FeatureEntryPoint {
         data object PinnedMessages : InitialTarget
     }
 
-    interface NodeBuilder {
-        fun params(params: Params): NodeBuilder
-        fun callback(callback: Callback): NodeBuilder
-        fun build(): Node
-    }
-
     interface Callback : Plugin {
         fun navigateToRoomDetails()
         fun navigateToRoomMemberDetails(userId: UserId)
@@ -47,7 +41,7 @@ interface MessagesEntryPoint : FeatureEntryPoint {
 
     data class Params(val initialTarget: InitialTarget) : NodeInputs
 
-    fun nodeBuilder(parentNode: Node, buildContext: BuildContext): NodeBuilder
+    fun createNode(parentNode: Node, buildContext: BuildContext, params: Params, callback: Callback): Node
 }
 
 interface MessagesEntryPointNode {

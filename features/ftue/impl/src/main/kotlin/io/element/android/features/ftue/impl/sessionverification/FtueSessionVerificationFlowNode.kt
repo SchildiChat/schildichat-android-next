@@ -103,14 +103,14 @@ class FtueSessionVerificationFlowNode(
                 createNode<ChooseSelfVerificationModeNode>(buildContext, plugins = listOf(callback))
             }
             is NavTarget.UseAnotherDevice -> {
-                outgoingVerificationEntryPoint.nodeBuilder(this, buildContext)
-                    .params(
-                        OutgoingVerificationEntryPoint.Params(
-                            showDeviceVerifiedScreen = true,
-                            verificationRequest = VerificationRequest.Outgoing.CurrentSession,
-                        )
-                    )
-                    .callback(object : OutgoingVerificationEntryPoint.Callback {
+                outgoingVerificationEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = OutgoingVerificationEntryPoint.Params(
+                        showDeviceVerifiedScreen = true,
+                        verificationRequest = VerificationRequest.Outgoing.CurrentSession,
+                    ),
+                    callback = object : OutgoingVerificationEntryPoint.Callback {
                         override fun onDone() {
                             callback.onDone()
                         }
@@ -123,24 +123,28 @@ class FtueSessionVerificationFlowNode(
                             // Note that this callback is never called. The "Learn more" link is not displayed
                             // for the self session interactive verification.
                         }
-                    })
-                    .build()
+                    }
+                )
             }
             is NavTarget.EnterRecoveryKey -> {
-                secureBackupEntryPoint.nodeBuilder(this, buildContext)
-                    .params(SecureBackupEntryPoint.Params(SecureBackupEntryPoint.InitialTarget.EnterRecoveryKey))
-                    .callback(secureBackupEntryPointCallback)
-                    .build()
+                secureBackupEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = SecureBackupEntryPoint.Params(SecureBackupEntryPoint.InitialTarget.EnterRecoveryKey),
+                    callback = secureBackupEntryPointCallback
+                )
             }
             is NavTarget.ResetIdentity -> {
-                secureBackupEntryPoint.nodeBuilder(this, buildContext)
-                    .params(SecureBackupEntryPoint.Params(SecureBackupEntryPoint.InitialTarget.ResetIdentity))
-                    .callback(object : SecureBackupEntryPoint.Callback {
+                secureBackupEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = SecureBackupEntryPoint.Params(SecureBackupEntryPoint.InitialTarget.ResetIdentity),
+                    callback = object : SecureBackupEntryPoint.Callback {
                         override fun onDone() {
                             callback.onDone()
                         }
-                    })
-                    .build()
+                    },
+                )
             }
         }
     }

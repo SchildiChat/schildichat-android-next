@@ -38,9 +38,12 @@ class DefaultShareEntryPointTest {
                 plugins = plugins,
                 presenterFactory = { createSharePresenter() },
                 roomSelectEntryPoint = object : RoomSelectEntryPoint {
-                    override fun nodeBuilder(parentNode: Node, buildContext: BuildContext): RoomSelectEntryPoint.NodeBuilder {
-                        lambdaError()
-                    }
+                    override fun createNode(
+                        parentNode: Node,
+                        buildContext: BuildContext,
+                        params: RoomSelectEntryPoint.Params,
+                        callback: RoomSelectEntryPoint.Callback,
+                    ) = lambdaError()
                 },
             )
         }
@@ -50,10 +53,12 @@ class DefaultShareEntryPointTest {
         val params = ShareEntryPoint.Params(
             intent = Intent(),
         )
-        val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
-            .params(params)
-            .callback(callback)
-            .build()
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            params = params,
+            callback = callback,
+        )
         assertThat(result).isInstanceOf(ShareNode::class.java)
         assertThat(result.plugins).contains(ShareNode.Inputs(params.intent))
         assertThat(result.plugins).contains(callback)

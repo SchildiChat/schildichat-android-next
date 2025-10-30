@@ -15,16 +15,12 @@ import io.element.android.libraries.architecture.NodeInputs
 import io.element.android.libraries.matrix.api.core.RoomId
 
 interface SpaceEntryPoint : FeatureEntryPoint {
-    fun nodeBuilder(
+    fun createNode(
         parentNode: Node,
         buildContext: BuildContext,
-    ): NodeBuilder
-
-    interface NodeBuilder {
-        fun inputs(inputs: Inputs): NodeBuilder
-        fun callback(callback: Callback): NodeBuilder
-        fun build(): Node
-    }
+        inputs: Inputs,
+        callback: Callback
+    ): Node
 
     data class Inputs(
         val roomId: RoomId

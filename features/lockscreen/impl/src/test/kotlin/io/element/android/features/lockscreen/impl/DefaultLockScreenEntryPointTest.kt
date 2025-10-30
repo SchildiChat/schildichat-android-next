@@ -37,9 +37,12 @@ class DefaultLockScreenEntryPointTest {
             override fun onSetupDone() = lambdaError()
         }
         val navTarget = LockScreenEntryPoint.Target.Setup
-        val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null), navTarget)
-            .callback(callback)
-            .build()
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            navTarget = navTarget,
+            callback = callback,
+        )
         assertThat(result).isInstanceOf(LockScreenFlowNode::class.java)
         assertThat(result.plugins).contains(LockScreenFlowNode.Inputs(LockScreenFlowNode.NavTarget.Setup))
         assertThat(result.plugins).contains(callback)
@@ -58,9 +61,12 @@ class DefaultLockScreenEntryPointTest {
             override fun onSetupDone() = lambdaError()
         }
         val navTarget = LockScreenEntryPoint.Target.Settings
-        val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null), navTarget)
-            .callback(callback)
-            .build()
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            navTarget = navTarget,
+            callback = callback,
+        )
         assertThat(result).isInstanceOf(LockScreenFlowNode::class.java)
         assertThat(result.plugins).contains(LockScreenFlowNode.Inputs(LockScreenFlowNode.NavTarget.Settings))
         assertThat(result.plugins).contains(callback)

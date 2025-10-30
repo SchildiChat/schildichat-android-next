@@ -180,10 +180,12 @@ class RoomFlowNode(
                     }
                 }
                 val params = Params(navTarget.roomAlias)
-                roomAliasResolverEntryPoint.nodeBuilder(this, buildContext)
-                    .callback(callback)
-                    .params(params)
-                    .build()
+                roomAliasResolverEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = params,
+                    callback = callback,
+                )
             }
             is NavTarget.JoinRoom -> {
                 val inputs = JoinRoomEntryPoint.Inputs(
@@ -205,10 +207,12 @@ class RoomFlowNode(
             }
             is NavTarget.JoinedSpace -> {
                 val spaceCallback = plugins<SpaceEntryPoint.Callback>().single()
-                spaceEntryPoint.nodeBuilder(this, buildContext)
-                    .inputs(SpaceEntryPoint.Inputs(roomId = navTarget.spaceId))
-                    .callback(spaceCallback)
-                    .build()
+                spaceEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    inputs = SpaceEntryPoint.Inputs(roomId = navTarget.spaceId),
+                    callback = spaceCallback,
+                )
             }
         }
     }

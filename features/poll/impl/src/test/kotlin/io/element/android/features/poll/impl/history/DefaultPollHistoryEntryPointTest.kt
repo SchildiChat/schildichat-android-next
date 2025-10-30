@@ -34,7 +34,11 @@ class DefaultPollHistoryEntryPointTest {
                 buildContext = buildContext,
                 plugins = plugins,
                 createPollEntryPoint = object : CreatePollEntryPoint {
-                    override fun nodeBuilder(parentNode: Node, buildContext: BuildContext) = lambdaError()
+                    override fun createNode(
+                        parentNode: Node,
+                        buildContext: BuildContext,
+                        params: CreatePollEntryPoint.Params,
+                    ) = lambdaError()
                 }
             )
         }

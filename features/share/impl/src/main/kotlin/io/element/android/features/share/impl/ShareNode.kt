@@ -66,10 +66,12 @@ class ShareNode(
             }
         }
 
-        return roomSelectEntryPoint.nodeBuilder(this, buildContext)
-            .callback(callback)
-            .params(RoomSelectEntryPoint.Params(mode = RoomSelectMode.Share))
-            .build()
+        return roomSelectEntryPoint.createNode(
+            parentNode = this,
+            buildContext = buildContext,
+            params = RoomSelectEntryPoint.Params(mode = RoomSelectMode.Share),
+            callback = callback,
+        )
     }
 
     @Composable

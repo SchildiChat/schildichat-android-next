@@ -215,8 +215,10 @@ class PreferencesFlowNode(
                 createNode<NotificationSettingsNode>(buildContext, listOf(notificationSettingsCallback))
             }
             NavTarget.TroubleshootNotifications -> {
-                notificationTroubleShootEntryPoint.nodeBuilder(this, buildContext)
-                    .callback(object : NotificationTroubleShootEntryPoint.Callback {
+                notificationTroubleShootEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    callback = object : NotificationTroubleShootEntryPoint.Callback {
                         override fun onDone() {
                             if (backstack.canPop()) {
                                 backstack.pop()
@@ -228,12 +230,14 @@ class PreferencesFlowNode(
                         override fun navigateToBlockedUsers() {
                             backstack.push(NavTarget.BlockedUsers)
                         }
-                    })
-                    .build()
+                    },
+                )
             }
             NavTarget.PushHistory -> {
-                pushHistoryEntryPoint.nodeBuilder(this, buildContext)
-                    .callback(object : PushHistoryEntryPoint.Callback {
+                pushHistoryEntryPoint.createNode(
+                    this,
+                    buildContext,
+                    object : PushHistoryEntryPoint.Callback {
                         override fun onDone() {
                             if (backstack.canPop()) {
                                 backstack.pop()
@@ -245,8 +249,8 @@ class PreferencesFlowNode(
                         override fun navigateToEvent(roomId: RoomId, eventId: EventId) {
                             callback.navigateToEvent(roomId, eventId)
                         }
-                    })
-                    .build()
+                    },
+                )
             }
             is NavTarget.EditDefaultNotificationSetting -> {
                 val callback = object : EditDefaultNotificationSettingNode.Callback {
@@ -265,7 +269,16 @@ class PreferencesFlowNode(
                 createNode<EditUserProfileNode>(buildContext, listOf(inputs))
             }
             NavTarget.LockScreenSettings -> {
-                lockScreenEntryPoint.nodeBuilder(this, buildContext, LockScreenEntryPoint.Target.Settings).build()
+                lockScreenEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    navTarget = LockScreenEntryPoint.Target.Settings,
+                    callback = object : LockScreenEntryPoint.Callback {
+                        override fun onSetupDone() {
+                            // No op
+                        }
+                    }
+                )
             }
             NavTarget.BlockedUsers -> {
                 createNode<BlockedUsersNode>(buildContext)
@@ -276,9 +289,11 @@ class PreferencesFlowNode(
                         callback.navigateToSecureBackup()
                     }
                 }
-                logoutEntryPoint.nodeBuilder(this, buildContext)
-                    .callback(callBack)
-                    .build()
+                logoutEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    callback = callBack,
+                )
             }
             is NavTarget.OssLicenses -> {
                 openSourceLicensesEntryPoint.createNode(this, buildContext)

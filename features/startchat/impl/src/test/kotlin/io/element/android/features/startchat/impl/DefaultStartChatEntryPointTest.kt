@@ -35,7 +35,11 @@ class DefaultStartChatEntryPointTest {
                 buildContext = buildContext,
                 plugins = plugins,
                 createRoomEntryPoint = object : CreateRoomEntryPoint {
-                    override fun nodeBuilder(parentNode: Node, buildContext: BuildContext) = lambdaError()
+                    override fun createNode(
+                        parentNode: Node,
+                        buildContext: BuildContext,
+                        callback: CreateRoomEntryPoint.Callback,
+                    ) = lambdaError()
                 },
             )
         }
@@ -43,9 +47,11 @@ class DefaultStartChatEntryPointTest {
             override fun onRoomCreated(roomIdOrAlias: RoomIdOrAlias, serverNames: List<String>) = lambdaError()
             override fun navigateToRoomDirectory() = lambdaError()
         }
-        val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
-            .callback(callback)
-            .build()
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            callback = callback,
+        )
         assertThat(result).isInstanceOf(StartChatFlowNode::class.java)
         assertThat(result.plugins).contains(callback)
     }

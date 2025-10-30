@@ -19,13 +19,7 @@ interface IncomingVerificationEntryPoint : FeatureEntryPoint {
         val verificationRequest: VerificationRequest.Incoming,
     ) : NodeInputs
 
-    fun nodeBuilder(parentNode: Node, buildContext: BuildContext): NodeBuilder
-
-    interface NodeBuilder {
-        fun callback(callback: Callback): NodeBuilder
-        fun params(params: Params): NodeBuilder
-        fun build(): Node
-    }
+    fun createNode(parentNode: Node, buildContext: BuildContext, params: Params, callback: Callback): Node
 
     interface Callback : Plugin {
         fun onDone()

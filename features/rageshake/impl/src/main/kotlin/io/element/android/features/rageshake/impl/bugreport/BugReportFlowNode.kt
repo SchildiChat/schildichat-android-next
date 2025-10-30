@@ -77,11 +77,12 @@ class BugReportFlowNode(
                 val params = ViewFolderEntryPoint.Params(
                     rootPath = navTarget.rootPath,
                 )
-                viewFolderEntryPoint
-                    .nodeBuilder(this, buildContext)
-                    .params(params)
-                    .callback(callback)
-                    .build()
+                viewFolderEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = params,
+                    callback = callback,
+                )
             }
         }
     }

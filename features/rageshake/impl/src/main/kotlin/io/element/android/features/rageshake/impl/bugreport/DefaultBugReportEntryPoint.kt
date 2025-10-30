@@ -9,7 +9,6 @@ package io.element.android.features.rageshake.impl.bugreport
 
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
-import com.bumble.appyx.core.plugin.Plugin
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import io.element.android.features.rageshake.api.bugreport.BugReportEntryPoint
@@ -17,18 +16,7 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultBugReportEntryPoint : BugReportEntryPoint {
-    override fun nodeBuilder(parentNode: Node, buildContext: BuildContext): BugReportEntryPoint.NodeBuilder {
-        val plugins = ArrayList<Plugin>()
-
-        return object : BugReportEntryPoint.NodeBuilder {
-            override fun callback(callback: BugReportEntryPoint.Callback): BugReportEntryPoint.NodeBuilder {
-                plugins += callback
-                return this
-            }
-
-            override fun build(): Node {
-                return parentNode.createNode<BugReportFlowNode>(buildContext, plugins)
-            }
-        }
+    override fun createNode(parentNode: Node, buildContext: BuildContext, callback: BugReportEntryPoint.Callback): Node {
+        return parentNode.createNode<BugReportFlowNode>(buildContext, listOf(callback))
     }
 }

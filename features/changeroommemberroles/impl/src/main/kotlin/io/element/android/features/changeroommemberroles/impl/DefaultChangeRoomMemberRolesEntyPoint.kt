@@ -18,29 +18,17 @@ import io.element.android.libraries.matrix.api.room.JoinedRoom
 
 @ContributesBinding(SessionScope::class)
 class DefaultChangeRoomMemberRolesEntyPoint : ChangeRoomMemberRolesEntryPoint {
-    override fun builder(parentNode: Node, buildContext: BuildContext): ChangeRoomMemberRolesEntryPoint.Builder {
-        return object : ChangeRoomMemberRolesEntryPoint.Builder {
-            private lateinit var changeRoomMemberRolesListType: ChangeRoomMemberRolesListType
-            private lateinit var room: JoinedRoom
-
-            override fun room(room: JoinedRoom): ChangeRoomMemberRolesEntryPoint.Builder {
-                this.room = room
-                return this
-            }
-
-            override fun listType(changeRoomMemberRolesListType: ChangeRoomMemberRolesListType): ChangeRoomMemberRolesEntryPoint.Builder {
-                this.changeRoomMemberRolesListType = changeRoomMemberRolesListType
-                return this
-            }
-
-            override fun build(): Node {
-                return parentNode.createNode<ChangeRoomMemberRolesRootNode>(
-                    buildContext = buildContext,
-                    plugins = listOf(
-                        ChangeRoomMemberRolesRootNode.Inputs(joinedRoom = room, listType = changeRoomMemberRolesListType),
-                    )
-                )
-            }
-        }
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        room: JoinedRoom,
+        listType: ChangeRoomMemberRolesListType,
+    ): Node {
+        return parentNode.createNode<ChangeRoomMemberRolesRootNode>(
+            buildContext = buildContext,
+            plugins = listOf(
+                ChangeRoomMemberRolesRootNode.Inputs(joinedRoom = room, listType = listType),
+            )
+        )
     }
 }

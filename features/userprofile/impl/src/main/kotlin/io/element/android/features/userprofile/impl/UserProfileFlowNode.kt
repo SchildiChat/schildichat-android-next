@@ -107,22 +107,40 @@ class UserProfileFlowNode(
                         // Cannot happen
                     }
                 }
-                mediaViewerEntryPoint.nodeBuilder(this, buildContext)
-                    .avatar(
-                        filename = navTarget.name,
-                        avatarUrl = navTarget.avatarUrl
-                    )
-                    .callback(callback)
-                    .build()
+                val params = mediaViewerEntryPoint.createParamsForAvatar(
+                    filename = navTarget.name,
+                    avatarUrl = navTarget.avatarUrl,
+                )
+                mediaViewerEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = params,
+                    callback = callback,
+                )
             }
             is NavTarget.VerifyUser -> {
                 val params = OutgoingVerificationEntryPoint.Params(
                     showDeviceVerifiedScreen = false,
                     verificationRequest = VerificationRequest.Outgoing.User(userId = navTarget.userId)
                 )
-                outgoingVerificationEntryPoint.nodeBuilder(this, buildContext)
-                    .params(params)
-                    .build()
+                outgoingVerificationEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = params,
+                    callback = object : OutgoingVerificationEntryPoint.Callback {
+                        override fun navigateToLearnMoreAboutEncryption() {
+                            // No op
+                        }
+
+                        override fun onBack() {
+                            // No op
+                        }
+
+                        override fun onDone() {
+                            // No op
+                        }
+                    }
+                )
             }
         }
     }

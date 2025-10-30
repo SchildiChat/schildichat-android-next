@@ -334,7 +334,6 @@ class LoggedInFlowNode(
                     }
                 }
                 homeEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     callback = callback,
                 )
@@ -391,7 +390,6 @@ class LoggedInFlowNode(
                     }
                 }
                 userProfileEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     params = UserProfileEntryPoint.Params(userId = navTarget.userId),
                     callback = callback,
@@ -421,7 +419,6 @@ class LoggedInFlowNode(
                 }
                 val inputs = PreferencesEntryPoint.Params(navTarget.initialElement)
                 preferencesEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     params = inputs,
                     callback = callback,
@@ -439,14 +436,12 @@ class LoggedInFlowNode(
                 }
 
                 startChatEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     callback = callback,
                 )
             }
             is NavTarget.SecureBackup -> {
                 secureBackupEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     params = SecureBackupEntryPoint.Params(initialElement = navTarget.initialElement),
                     callback = object : SecureBackupEntryPoint.Callback {
@@ -457,11 +452,10 @@ class LoggedInFlowNode(
                 )
             }
             NavTarget.Ftue -> {
-                ftueEntryPoint.createNode(this, buildContext)
+                ftueEntryPoint.createNode(buildContext)
             }
             NavTarget.RoomDirectory -> {
                 roomDirectoryEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     callback = object : RoomDirectoryEntryPoint.Callback {
                         override fun navigateToRoom(roomDescription: RoomDescription) {
@@ -478,7 +472,6 @@ class LoggedInFlowNode(
             }
             is NavTarget.IncomingShare -> {
                 shareEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     params = ShareEntryPoint.Params(intent = navTarget.intent),
                     callback = object : ShareEntryPoint.Callback {
@@ -493,7 +486,6 @@ class LoggedInFlowNode(
             }
             is NavTarget.IncomingVerificationRequest -> {
                 incomingVerificationEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     params = IncomingVerificationEntryPoint.Params(navTarget.data),
                     callback = object : IncomingVerificationEntryPoint.Callback {

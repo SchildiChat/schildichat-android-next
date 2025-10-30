@@ -14,7 +14,8 @@ import io.element.android.libraries.architecture.FeatureEntryPoint
 import io.element.android.libraries.matrix.api.core.RoomId
 
 interface HomeEntryPoint : FeatureEntryPoint {
-    fun createNode(parentNode: Node, buildContext: BuildContext, callback: Callback): Node
+    context(parentNode: Node)
+    fun createNode(buildContext: BuildContext, callback: Callback): Node
 
     interface Callback : Plugin {
         fun navigateToRoom(roomId: RoomId)

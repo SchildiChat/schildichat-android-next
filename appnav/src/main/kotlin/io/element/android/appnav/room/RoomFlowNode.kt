@@ -181,7 +181,6 @@ class RoomFlowNode(
                 }
                 val params = Params(navTarget.roomAlias)
                 roomAliasResolverEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     params = params,
                     callback = callback,
@@ -195,7 +194,7 @@ class RoomFlowNode(
                     serverNames = navTarget.serverNames,
                     trigger = navTarget.trigger,
                 )
-                joinRoomEntryPoint.createNode(this, buildContext, inputs)
+                joinRoomEntryPoint.createNode(buildContext, inputs)
             }
             is NavTarget.JoinedRoom -> {
                 val roomFlowNodeCallback = plugins<JoinedRoomLoadedFlowNode.Callback>()
@@ -208,7 +207,6 @@ class RoomFlowNode(
             is NavTarget.JoinedSpace -> {
                 val spaceCallback = plugins<SpaceEntryPoint.Callback>().single()
                 spaceEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     inputs = SpaceEntryPoint.Inputs(roomId = navTarget.spaceId),
                     callback = spaceCallback,

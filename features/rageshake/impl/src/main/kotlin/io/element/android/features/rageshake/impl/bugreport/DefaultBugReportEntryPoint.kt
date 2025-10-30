@@ -16,7 +16,8 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultBugReportEntryPoint : BugReportEntryPoint {
-    override fun createNode(parentNode: Node, buildContext: BuildContext, callback: BugReportEntryPoint.Callback): Node {
+    context(parentNode: Node)
+    override fun createNode(buildContext: BuildContext, callback: BugReportEntryPoint.Callback): Node {
         return parentNode.createNode<BugReportFlowNode>(buildContext, listOf(callback))
     }
 }

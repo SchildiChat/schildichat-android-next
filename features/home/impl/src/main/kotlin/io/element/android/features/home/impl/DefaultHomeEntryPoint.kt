@@ -16,7 +16,8 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultHomeEntryPoint : HomeEntryPoint {
-    override fun createNode(parentNode: Node, buildContext: BuildContext, callback: HomeEntryPoint.Callback): Node {
+    context(parentNode: Node)
+    override fun createNode(buildContext: BuildContext, callback: HomeEntryPoint.Callback): Node {
         return parentNode.createNode<HomeFlowNode>(buildContext, listOf(callback))
     }
 }

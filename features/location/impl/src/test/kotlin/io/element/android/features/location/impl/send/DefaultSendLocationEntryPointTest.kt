@@ -47,11 +47,12 @@ class DefaultSendLocationEntryPointTest {
             )
         }
         val timelineMode = Timeline.Mode.Live
-        val result = entryPoint.createNode(
-            parentNode = parentNode,
-            buildContext = BuildContext.root(null),
-            timelineMode = timelineMode,
-        )
+        val result = with(parentNode) {
+            entryPoint.createNode(
+                buildContext = BuildContext.root(null),
+                timelineMode = timelineMode,
+            )
+        }
         assertThat(result).isInstanceOf(SendLocationNode::class.java)
         assertThat(result.plugins).contains(SendLocationNode.Inputs(timelineMode))
     }

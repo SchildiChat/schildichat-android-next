@@ -42,8 +42,8 @@ class DefaultPreferencesEntryPointTest {
                 buildContext = buildContext,
                 plugins = plugins,
                 lockScreenEntryPoint = object : LockScreenEntryPoint {
+                    context(parentNode: Node)
                     override fun createNode(
-                        parentNode: Node,
                         buildContext: BuildContext,
                         navTarget: LockScreenEntryPoint.Target,
                         callback: LockScreenEntryPoint.Callback,
@@ -52,31 +52,33 @@ class DefaultPreferencesEntryPointTest {
                     override fun pinUnlockIntent(context: Context) = lambdaError()
                 },
                 notificationTroubleShootEntryPoint = object : NotificationTroubleShootEntryPoint {
+                    context(parentNode: Node)
                     override fun createNode(
-                        parentNode: Node,
                         buildContext: BuildContext,
                         callback: NotificationTroubleShootEntryPoint.Callback,
                     ) = lambdaError()
                 },
                 pushHistoryEntryPoint = object : PushHistoryEntryPoint {
+                    context(parentNode: Node)
                     override fun createNode(
-                        parentNode: Node,
                         buildContext: BuildContext,
                         callback: PushHistoryEntryPoint.Callback,
                     ) = lambdaError()
                 },
                 logoutEntryPoint = object : LogoutEntryPoint {
+                    context(parentNode: Node)
                     override fun createNode(
-                        parentNode: Node,
                         buildContext: BuildContext,
                         callback: LogoutEntryPoint.Callback,
                     ) = lambdaError()
                 },
                 openSourceLicensesEntryPoint = object : OpenSourceLicensesEntryPoint {
-                    override fun createNode(parentNode: Node, buildContext: BuildContext) = lambdaError()
+                    context(parentNode: Node)
+                    override fun createNode(buildContext: BuildContext) = lambdaError()
                 },
                 accountDeactivationEntryPoint = object : AccountDeactivationEntryPoint {
-                    override fun createNode(parentNode: Node, buildContext: BuildContext) = lambdaError()
+                    context(parentNode: Node)
+                    override fun createNode(buildContext: BuildContext) = lambdaError()
                 },
             )
         }
@@ -90,12 +92,13 @@ class DefaultPreferencesEntryPointTest {
         val params = PreferencesEntryPoint.Params(
             initialElement = PreferencesEntryPoint.InitialTarget.NotificationSettings,
         )
-        val result = entryPoint.createNode(
-            parentNode = parentNode,
-            buildContext = BuildContext.root(null),
-            params = params,
-            callback = callback,
-        )
+        val result = with(parentNode) {
+            entryPoint.createNode(
+                buildContext = BuildContext.root(null),
+                params = params,
+                callback = callback,
+            )
+        }
         assertThat(result).isInstanceOf(PreferencesFlowNode::class.java)
         assertThat(result.plugins).contains(params)
         assertThat(result.plugins).contains(callback)

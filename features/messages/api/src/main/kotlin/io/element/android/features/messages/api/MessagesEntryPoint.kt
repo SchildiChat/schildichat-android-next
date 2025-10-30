@@ -41,7 +41,8 @@ interface MessagesEntryPoint : FeatureEntryPoint {
 
     data class Params(val initialTarget: InitialTarget) : NodeInputs
 
-    fun createNode(parentNode: Node, buildContext: BuildContext, params: Params, callback: Callback): Node
+    context(parentNode: Node)
+    fun createNode(buildContext: BuildContext, params: Params, callback: Callback): Node
 }
 
 interface MessagesEntryPointNode {

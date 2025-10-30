@@ -16,7 +16,8 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultJoinRoomEntryPoint : JoinRoomEntryPoint {
-    override fun createNode(parentNode: Node, buildContext: BuildContext, inputs: JoinRoomEntryPoint.Inputs): Node {
+    context(parentNode: Node)
+    override fun createNode(buildContext: BuildContext, inputs: JoinRoomEntryPoint.Inputs): Node {
         return parentNode.createNode<JoinRoomFlowNode>(
             buildContext = buildContext,
             plugins = listOf(inputs)

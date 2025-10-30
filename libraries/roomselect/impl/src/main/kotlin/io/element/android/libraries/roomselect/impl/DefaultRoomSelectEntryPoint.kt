@@ -16,7 +16,8 @@ import io.element.android.libraries.roomselect.api.RoomSelectEntryPoint
 
 @ContributesBinding(SessionScope::class)
 class DefaultRoomSelectEntryPoint : RoomSelectEntryPoint {
-    override fun createNode(parentNode: Node, buildContext: BuildContext, params: RoomSelectEntryPoint.Params, callback: RoomSelectEntryPoint.Callback): Node {
+    context(parentNode: Node)
+    override fun createNode(buildContext: BuildContext, params: RoomSelectEntryPoint.Params, callback: RoomSelectEntryPoint.Callback): Node {
         return parentNode.createNode<RoomSelectNode>(
             buildContext = buildContext,
             plugins = listOf(

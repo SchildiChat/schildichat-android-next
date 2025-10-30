@@ -18,8 +18,8 @@ import io.element.android.libraries.matrix.api.room.JoinedRoom
 
 @ContributesBinding(SessionScope::class)
 class DefaultChangeRoomMemberRolesEntyPoint : ChangeRoomMemberRolesEntryPoint {
+    context(parentNode: Node)
     override fun createNode(
-        parentNode: Node,
         buildContext: BuildContext,
         room: JoinedRoom,
         listType: ChangeRoomMemberRolesListType,

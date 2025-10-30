@@ -13,5 +13,6 @@ import io.element.android.features.invite.api.InviteData
 import io.element.android.libraries.architecture.FeatureEntryPoint
 
 fun interface DeclineInviteAndBlockEntryPoint : FeatureEntryPoint {
-    fun createNode(parentNode: Node, buildContext: BuildContext, inviteData: InviteData): Node
+    context(parentNode: Node)
+    fun createNode(buildContext: BuildContext, inviteData: InviteData): Node
 }

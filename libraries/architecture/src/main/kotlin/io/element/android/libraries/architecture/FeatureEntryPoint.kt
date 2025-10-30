@@ -19,5 +19,6 @@ interface FeatureEntryPoint
  * Can be used when the feature only exposes a simple node without the need of plugins.
  */
 fun interface SimpleFeatureEntryPoint : FeatureEntryPoint {
-    fun createNode(parentNode: Node, buildContext: BuildContext): Node
+    context(parentNode: Node)
+    fun createNode(buildContext: BuildContext): Node
 }

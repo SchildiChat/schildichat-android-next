@@ -75,12 +75,13 @@ class DefaultMediaViewerEntryPointTest {
             override fun forwardEvent(eventId: EventId) = lambdaError()
         }
         val params = createMediaViewerEntryPointParams()
-        val result = entryPoint.createNode(
-            parentNode = parentNode,
-            buildContext = BuildContext.root(null),
-            params = params,
-            callback = callback,
-        )
+        val result = with(parentNode) {
+            entryPoint.createNode(
+                buildContext = BuildContext.root(null),
+                params = params,
+                callback = callback,
+            )
+        }
         assertThat(result).isInstanceOf(MediaViewerNode::class.java)
         assertThat(result.plugins).contains(params)
         assertThat(result.plugins).contains(callback)
@@ -124,12 +125,13 @@ class DefaultMediaViewerEntryPointTest {
             filename = "fn",
             avatarUrl = "avatarUrl",
         )
-        val result = entryPoint.createNode(
-            parentNode = parentNode,
-            buildContext = BuildContext.root(null),
-            params = params,
-            callback = callback,
-        )
+        val result = with(parentNode) {
+            entryPoint.createNode(
+                buildContext = BuildContext.root(null),
+                params = params,
+                callback = callback,
+            )
+        }
         assertThat(result).isInstanceOf(MediaViewerNode::class.java)
         assertThat(result.plugins).contains(
             MediaViewerEntryPoint.Params(

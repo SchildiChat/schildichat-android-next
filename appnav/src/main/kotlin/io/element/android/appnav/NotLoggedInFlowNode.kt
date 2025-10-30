@@ -84,7 +84,6 @@ class NotLoggedInFlowNode(
                     }
                 }
                 loginEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     params = LoginEntryPoint.Params(
                         accountProvider = inputs.loginParams?.accountProvider,

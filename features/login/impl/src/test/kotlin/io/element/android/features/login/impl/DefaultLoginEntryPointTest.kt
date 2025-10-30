@@ -45,12 +45,13 @@ class DefaultLoginEntryPointTest {
             accountProvider = "ac",
             loginHint = "lh",
         )
-        val result = entryPoint.createNode(
-            parentNode = parentNode,
-            buildContext = BuildContext.root(null),
-            params = params,
-            callback = callback,
-        )
+        val result = with(parentNode) {
+            entryPoint.createNode(
+                buildContext = BuildContext.root(null),
+                params = params,
+                callback = callback,
+            )
+        }
         assertThat(result).isInstanceOf(LoginFlowNode::class.java)
         assertThat(result.plugins).contains(LoginFlowNode.Params(params.accountProvider, params.loginHint))
         assertThat(result.plugins).contains(callback)

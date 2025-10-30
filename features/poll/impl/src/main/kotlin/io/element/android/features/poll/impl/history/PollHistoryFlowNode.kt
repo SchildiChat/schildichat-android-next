@@ -54,7 +54,6 @@ class PollHistoryFlowNode(
         return when (navTarget) {
             is NavTarget.EditPoll -> {
                 createPollEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     params = CreatePollEntryPoint.Params(
                         timelineMode = Timeline.Mode.Live,

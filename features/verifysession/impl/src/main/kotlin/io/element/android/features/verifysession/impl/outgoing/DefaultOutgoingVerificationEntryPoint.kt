@@ -16,8 +16,8 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultOutgoingVerificationEntryPoint : OutgoingVerificationEntryPoint {
+    context(parentNode: Node)
     override fun createNode(
-        parentNode: Node,
         buildContext: BuildContext,
         params: OutgoingVerificationEntryPoint.Params,
         callback: OutgoingVerificationEntryPoint.Callback,

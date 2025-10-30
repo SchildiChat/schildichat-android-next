@@ -30,11 +30,12 @@ class DefaultDeclineAndBlockEntryPointTest {
             )
         }
         val inviteData = anInviteData()
-        val result = entryPoint.createNode(
-            parentNode = parentNode,
-            buildContext = BuildContext.root(null),
-            inviteData = inviteData
-        )
+        val result = with(parentNode) {
+            entryPoint.createNode(
+                buildContext = BuildContext.root(null),
+                inviteData = inviteData
+            )
+        }
         assertThat(result).isInstanceOf(DeclineAndBlockNode::class.java)
         assertThat(result.plugins).contains(DeclineAndBlockNode.Inputs(inviteData))
     }

@@ -321,7 +321,6 @@ class MessagesFlowNode(
                     }
                 }
                 mediaViewerEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     params = params,
                     callback = callback
@@ -337,7 +336,7 @@ class MessagesFlowNode(
             }
             is NavTarget.LocationViewer -> {
                 val inputs = ShowLocationEntryPoint.Inputs(navTarget.location, navTarget.description)
-                showLocationEntryPoint.createNode(this, buildContext, inputs)
+                showLocationEntryPoint.createNode(buildContext, inputs)
             }
             is NavTarget.EventDebugInfo -> {
                 val inputs = EventDebugInfoNode.Inputs(navTarget.eventId, navTarget.debugInfo)
@@ -359,7 +358,6 @@ class MessagesFlowNode(
                     }
                 }
                 forwardEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     params = params,
                     callback = callback,
@@ -371,14 +369,12 @@ class MessagesFlowNode(
             }
             is NavTarget.SendLocation -> {
                 sendLocationEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     timelineMode = navTarget.timelineMode,
                 )
             }
             is NavTarget.CreatePoll -> {
                 createPollEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     params = CreatePollEntryPoint.Params(
                         timelineMode = navTarget.timelineMode,
@@ -388,7 +384,6 @@ class MessagesFlowNode(
             }
             is NavTarget.EditPoll -> {
                 createPollEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     params = CreatePollEntryPoint.Params(
                         timelineMode = navTarget.timelineMode,
@@ -428,7 +423,7 @@ class MessagesFlowNode(
                 createNode<PinnedMessagesListNode>(buildContext, plugins = listOf(callback))
             }
             NavTarget.KnockRequestsList -> {
-                knockRequestsListEntryPoint.createNode(this, buildContext)
+                knockRequestsListEntryPoint.createNode(buildContext)
             }
             is NavTarget.Thread -> {
                 val inputs = ThreadedMessagesNode.Inputs(

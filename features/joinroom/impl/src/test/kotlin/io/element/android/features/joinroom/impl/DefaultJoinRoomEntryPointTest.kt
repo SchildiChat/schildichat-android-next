@@ -41,7 +41,8 @@ class DefaultJoinRoomEntryPointTest {
                 presenterFactory = { _, _, _, _, _ -> createJoinRoomPresenter() },
                 acceptDeclineInviteView = { _, _, _, _ -> lambdaError() },
                 declineAndBlockEntryPoint = object : DeclineInviteAndBlockEntryPoint {
-                    override fun createNode(parentNode: Node, buildContext: BuildContext, inviteData: InviteData) = lambdaError()
+                    context(parentNode: Node)
+                    override fun createNode(buildContext: BuildContext, inviteData: InviteData) = lambdaError()
                 }
             )
         }
@@ -52,7 +53,9 @@ class DefaultJoinRoomEntryPointTest {
             serverNames = emptyList(),
             trigger = JoinedRoom.Trigger.RoomDirectory,
         )
-        val result = entryPoint.createNode(parentNode, BuildContext.root(null), inputs)
+        val result = with(parentNode) {
+            entryPoint.createNode(BuildContext.root(null), inputs)
+        }
         assertThat(result).isInstanceOf(JoinRoomFlowNode::class.java)
         assertThat(result.plugins).contains(inputs)
     }

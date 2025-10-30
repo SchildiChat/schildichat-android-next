@@ -112,7 +112,6 @@ class UserProfileFlowNode(
                     avatarUrl = navTarget.avatarUrl,
                 )
                 mediaViewerEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     params = params,
                     callback = callback,
@@ -124,7 +123,6 @@ class UserProfileFlowNode(
                     verificationRequest = VerificationRequest.Outgoing.User(userId = navTarget.userId)
                 )
                 outgoingVerificationEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     params = params,
                     callback = object : OutgoingVerificationEntryPoint.Callback {

@@ -16,7 +16,8 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultLoginEntryPoint : LoginEntryPoint {
-    override fun createNode(parentNode: Node, buildContext: BuildContext, params: LoginEntryPoint.Params, callback: LoginEntryPoint.Callback): Node {
+    context(parentNode: Node)
+    override fun createNode(buildContext: BuildContext, params: LoginEntryPoint.Params, callback: LoginEntryPoint.Callback): Node {
         return parentNode.createNode<LoginFlowNode>(
             buildContext = buildContext,
             plugins = listOf(

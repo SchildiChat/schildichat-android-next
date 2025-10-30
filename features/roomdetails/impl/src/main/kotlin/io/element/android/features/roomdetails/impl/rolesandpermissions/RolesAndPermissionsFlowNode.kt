@@ -102,7 +102,6 @@ class RolesAndPermissionsFlowNode(
             }
             is NavTarget.AdminList -> {
                 changeRoomMemberRolesEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     room = joinedRoom,
                     listType = ChangeRoomMemberRolesListType.Admins,
@@ -110,7 +109,6 @@ class RolesAndPermissionsFlowNode(
             }
             is NavTarget.ModeratorList -> {
                 changeRoomMemberRolesEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     room = joinedRoom,
                     listType = ChangeRoomMemberRolesListType.Moderators,

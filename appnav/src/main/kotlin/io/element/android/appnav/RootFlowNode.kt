@@ -250,7 +250,6 @@ class RootFlowNode(
             }
             is NavTarget.SignedOutFlow -> {
                 signedOutEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     params = SignedOutEntryPoint.Params(
                         sessionId = navTarget.sessionId,
@@ -265,7 +264,6 @@ class RootFlowNode(
                     }
                 }
                 bugReportEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     callback = callback,
                 )
@@ -294,7 +292,6 @@ class RootFlowNode(
                     }
                 }
                 accountSelectEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     callback = callback,
                 )

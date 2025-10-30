@@ -17,7 +17,8 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultViewFolderEntryPoint : ViewFolderEntryPoint {
-    override fun createNode(parentNode: Node, buildContext: BuildContext, params: ViewFolderEntryPoint.Params, callback: ViewFolderEntryPoint.Callback): Node {
+    context(parentNode: Node)
+    override fun createNode(buildContext: BuildContext, params: ViewFolderEntryPoint.Params, callback: ViewFolderEntryPoint.Callback): Node {
         return parentNode.createNode<ViewFolderFlowNode>(
             buildContext = buildContext,
             plugins = listOf(

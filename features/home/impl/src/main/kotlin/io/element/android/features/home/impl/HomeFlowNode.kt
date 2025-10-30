@@ -186,12 +186,11 @@ class HomeFlowNode(
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         return when (navTarget) {
-            is NavTarget.ReportRoom -> reportRoomEntryPoint.createNode(this, buildContext, navTarget.roomId)
-            is NavTarget.DeclineInviteAndBlockUser -> declineInviteAndBlockUserEntryPoint.createNode(this, buildContext, navTarget.inviteData)
+            is NavTarget.ReportRoom -> reportRoomEntryPoint.createNode(buildContext, navTarget.roomId)
+            is NavTarget.DeclineInviteAndBlockUser -> declineInviteAndBlockUserEntryPoint.createNode(buildContext, navTarget.inviteData)
             is NavTarget.SelectNewOwnersWhenLeavingRoom -> {
                 val room = runBlocking { matrixClient.getJoinedRoom(navTarget.roomId) } ?: error("Room ${navTarget.roomId} not found")
                 changeRoomMemberRolesEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     room = room,
                     listType = ChangeRoomMemberRolesListType.SelectNewOwnersWhenLeaving,

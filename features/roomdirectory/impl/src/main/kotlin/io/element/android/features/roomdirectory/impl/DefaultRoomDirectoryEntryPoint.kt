@@ -17,7 +17,8 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultRoomDirectoryEntryPoint : RoomDirectoryEntryPoint {
-    override fun createNode(parentNode: Node, buildContext: BuildContext, callback: RoomDirectoryEntryPoint.Callback): Node {
+    context(parentNode: Node)
+    override fun createNode(buildContext: BuildContext, callback: RoomDirectoryEntryPoint.Callback): Node {
         return parentNode.createNode<RoomDirectoryNode>(buildContext, listOf(callback))
     }
 }

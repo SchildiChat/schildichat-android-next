@@ -53,7 +53,8 @@ class DefaultRoomDetailsEntryPointTest {
                 buildContext = buildContext,
                 plugins = plugins,
                 pollHistoryEntryPoint = object : PollHistoryEntryPoint {
-                    override fun createNode(parentNode: Node, buildContext: BuildContext) = lambdaError()
+                    context(parentNode: Node)
+                    override fun createNode(buildContext: BuildContext) = lambdaError()
                 },
                 elementCallEntryPoint = object : ElementCallEntryPoint {
                     override fun startCall(callType: CallType) = lambdaError()
@@ -73,46 +74,49 @@ class DefaultRoomDetailsEntryPointTest {
                 room = FakeJoinedRoom(),
                 analyticsService = FakeAnalyticsService(),
                 messagesEntryPoint = object : MessagesEntryPoint {
+                    context(parentNode: Node)
                     override fun createNode(
-                        parentNode: Node,
                         buildContext: BuildContext,
                         params: MessagesEntryPoint.Params,
                         callback: MessagesEntryPoint.Callback,
                     ) = lambdaError()
                 },
                 knockRequestsListEntryPoint = object : KnockRequestsListEntryPoint {
-                    override fun createNode(parentNode: Node, buildContext: BuildContext) = lambdaError()
+                    context(parentNode: Node)
+                    override fun createNode(buildContext: BuildContext) = lambdaError()
                 },
                 mediaViewerEntryPoint = object : MediaViewerEntryPoint {
                     override fun createParamsForAvatar(filename: String, avatarUrl: String) = lambdaError()
+
+                    context(parentNode: Node)
                     override fun createNode(
-                        parentNode: Node,
                         buildContext: BuildContext,
                         params: MediaViewerEntryPoint.Params,
                         callback: MediaViewerEntryPoint.Callback,
                     ) = lambdaError()
                 },
                 mediaGalleryEntryPoint = object : MediaGalleryEntryPoint {
+                    context(parentNode: Node)
                     override fun createNode(
-                        parentNode: Node,
                         buildContext: BuildContext,
                         callback: MediaGalleryEntryPoint.Callback,
                     ) = lambdaError()
                 },
                 outgoingVerificationEntryPoint = object : OutgoingVerificationEntryPoint {
+                    context(parentNode: Node)
                     override fun createNode(
-                        parentNode: Node,
                         buildContext: BuildContext,
                         params: OutgoingVerificationEntryPoint.Params,
                         callback: OutgoingVerificationEntryPoint.Callback,
                     ) = lambdaError()
                 },
                 reportRoomEntryPoint = object : ReportRoomEntryPoint {
-                    override fun createNode(parentNode: Node, buildContext: BuildContext, roomId: RoomId) = lambdaError()
+                    context(parentNode: Node)
+                    override fun createNode(buildContext: BuildContext, roomId: RoomId) = lambdaError()
                 },
                 changeRoomMemberRolesEntryPoint = object : ChangeRoomMemberRolesEntryPoint {
+                    context(parentNode: Node)
                     override fun createNode(
-                        parentNode: Node,
                         buildContext: BuildContext,
                         room: JoinedRoom,
                         listType: ChangeRoomMemberRolesListType,
@@ -129,12 +133,13 @@ class DefaultRoomDetailsEntryPointTest {
         val params = RoomDetailsEntryPoint.Params(
             initialElement = RoomDetailsEntryPoint.InitialTarget.RoomDetails,
         )
-        val result = entryPoint.createNode(
-            parentNode = parentNode,
-            buildContext = BuildContext.root(null),
-            params = params,
-            callback = callback,
-        )
+        val result = with(parentNode) {
+            entryPoint.createNode(
+                buildContext = BuildContext.root(null),
+                params = params,
+                callback = callback,
+            )
+        }
         assertThat(result).isInstanceOf(RoomDetailsFlowNode::class.java)
         assertThat(result.plugins).contains(params)
         assertThat(result.plugins).contains(callback)

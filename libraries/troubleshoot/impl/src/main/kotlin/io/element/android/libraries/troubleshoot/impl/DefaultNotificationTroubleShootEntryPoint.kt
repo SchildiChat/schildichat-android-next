@@ -16,7 +16,8 @@ import io.element.android.libraries.troubleshoot.api.NotificationTroubleShootEnt
 
 @ContributesBinding(AppScope::class)
 class DefaultNotificationTroubleShootEntryPoint : NotificationTroubleShootEntryPoint {
-    override fun createNode(parentNode: Node, buildContext: BuildContext, callback: NotificationTroubleShootEntryPoint.Callback): Node {
+    context(parentNode: Node)
+    override fun createNode(buildContext: BuildContext, callback: NotificationTroubleShootEntryPoint.Callback): Node {
         return parentNode.createNode<TroubleshootNotificationsNode>(buildContext, listOf(callback))
     }
 }

@@ -14,7 +14,8 @@ import io.element.android.libraries.architecture.FeatureEntryPoint
 import io.element.android.libraries.matrix.api.core.RoomIdOrAlias
 
 interface StartChatEntryPoint : FeatureEntryPoint {
-    fun createNode(parentNode: Node, buildContext: BuildContext, callback: Callback): Node
+    context(parentNode: Node)
+    fun createNode(buildContext: BuildContext, callback: Callback): Node
 
     interface Callback : Plugin {
         fun onRoomCreated(roomIdOrAlias: RoomIdOrAlias, serverNames: List<String>)

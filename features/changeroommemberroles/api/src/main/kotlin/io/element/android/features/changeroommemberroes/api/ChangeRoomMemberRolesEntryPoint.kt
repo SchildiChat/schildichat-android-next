@@ -15,8 +15,8 @@ import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 
 fun interface ChangeRoomMemberRolesEntryPoint : FeatureEntryPoint {
+    context(parentNode: Node)
     fun createNode(
-        parentNode: Node,
         buildContext: BuildContext,
         room: JoinedRoom,
         listType: ChangeRoomMemberRolesListType,

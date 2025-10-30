@@ -34,15 +34,17 @@ class DefaultPollHistoryEntryPointTest {
                 buildContext = buildContext,
                 plugins = plugins,
                 createPollEntryPoint = object : CreatePollEntryPoint {
+                    context(parentNode: Node)
                     override fun createNode(
-                        parentNode: Node,
                         buildContext: BuildContext,
                         params: CreatePollEntryPoint.Params,
                     ) = lambdaError()
                 }
             )
         }
-        val result = entryPoint.createNode(parentNode, BuildContext.root(null))
+        val result = with(parentNode) {
+            entryPoint.createNode(BuildContext.root(null))
+        }
         assertThat(result).isInstanceOf(PollHistoryFlowNode::class.java)
     }
 }

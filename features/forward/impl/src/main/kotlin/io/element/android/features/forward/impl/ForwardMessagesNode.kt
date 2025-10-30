@@ -71,7 +71,6 @@ class ForwardMessagesNode(
         }
 
         return roomSelectEntryPoint.createNode(
-            parentNode = this,
             buildContext = buildContext,
             params = RoomSelectEntryPoint.Params(mode = RoomSelectMode.Forward),
             callback = callback,

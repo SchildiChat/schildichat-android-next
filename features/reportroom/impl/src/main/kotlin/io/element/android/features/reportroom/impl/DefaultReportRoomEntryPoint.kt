@@ -17,7 +17,8 @@ import io.element.android.libraries.matrix.api.core.RoomId
 
 @ContributesBinding(AppScope::class)
 class DefaultReportRoomEntryPoint : ReportRoomEntryPoint {
-    override fun createNode(parentNode: Node, buildContext: BuildContext, roomId: RoomId): Node {
+    context(parentNode: Node)
+    override fun createNode(buildContext: BuildContext, roomId: RoomId): Node {
         return parentNode.createNode<ReportRoomNode>(buildContext, plugins = listOf(ReportRoomNode.Inputs(roomId)))
     }
 }

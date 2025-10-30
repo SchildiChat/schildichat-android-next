@@ -16,7 +16,8 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultStartChatEntryPoint : StartChatEntryPoint {
-    override fun createNode(parentNode: Node, buildContext: BuildContext, callback: StartChatEntryPoint.Callback): Node {
+    context(parentNode: Node)
+    override fun createNode(buildContext: BuildContext, callback: StartChatEntryPoint.Callback): Node {
         return parentNode.createNode<StartChatFlowNode>(buildContext, listOf(callback))
     }
 }

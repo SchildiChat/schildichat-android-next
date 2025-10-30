@@ -47,11 +47,12 @@ class DefaultShowLocationEntryPointTest {
             location = Location(37.4219983, -122.084, 10f),
             description = "My location",
         )
-        val result = entryPoint.createNode(
-            parentNode,
-            BuildContext.root(null),
-            inputs = inputs,
-        )
+        val result = with(parentNode) {
+            entryPoint.createNode(
+                buildContext = BuildContext.root(null),
+                inputs = inputs,
+            )
+        }
         assertThat(result).isInstanceOf(ShowLocationNode::class.java)
         assertThat(result.plugins).contains(inputs)
     }

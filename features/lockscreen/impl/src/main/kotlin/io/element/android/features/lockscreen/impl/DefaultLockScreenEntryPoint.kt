@@ -19,8 +19,8 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultLockScreenEntryPoint : LockScreenEntryPoint {
+    context(parentNode: Node)
     override fun createNode(
-        parentNode: Node,
         buildContext: BuildContext,
         navTarget: LockScreenEntryPoint.Target,
         callback: LockScreenEntryPoint.Callback,

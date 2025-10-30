@@ -18,8 +18,8 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultRoomDetailsEntryPoint : RoomDetailsEntryPoint {
+    context(parentNode: Node)
     override fun createNode(
-        parentNode: Node,
         buildContext: BuildContext,
         params: RoomDetailsEntryPoint.Params,
         callback: RoomDetailsEntryPoint.Callback,

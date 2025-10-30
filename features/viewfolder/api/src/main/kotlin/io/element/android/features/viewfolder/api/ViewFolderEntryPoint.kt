@@ -17,7 +17,8 @@ interface ViewFolderEntryPoint : FeatureEntryPoint {
         val rootPath: String,
     )
 
-    fun createNode(parentNode: Node, buildContext: BuildContext, params: Params, callback: Callback): Node
+    context(parentNode: Node)
+    fun createNode(buildContext: BuildContext, params: Params, callback: Callback): Node
 
     interface Callback : Plugin {
         fun onDone()

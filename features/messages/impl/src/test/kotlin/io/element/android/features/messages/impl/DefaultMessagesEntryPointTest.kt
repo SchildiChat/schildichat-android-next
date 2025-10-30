@@ -66,18 +66,19 @@ class DefaultMessagesEntryPointTest {
                 roomListService = FakeRoomListService(),
                 sessionId = A_SESSION_ID,
                 sendLocationEntryPoint = object : SendLocationEntryPoint {
+                    context(parentNode: Node)
                     override fun createNode(
-                        parentNode: Node,
                         buildContext: BuildContext,
                         timelineMode: Timeline.Mode,
                     ) = lambdaError()
                 },
                 showLocationEntryPoint = object : ShowLocationEntryPoint {
-                    override fun createNode(parentNode: Node, buildContext: BuildContext, inputs: ShowLocationEntryPoint.Inputs) = lambdaError()
+                    context(parentNode: Node)
+                    override fun createNode(buildContext: BuildContext, inputs: ShowLocationEntryPoint.Inputs) = lambdaError()
                 },
                 createPollEntryPoint = object : CreatePollEntryPoint {
+                    context(parentNode: Node)
                     override fun createNode(
-                        parentNode: Node,
                         buildContext: BuildContext,
                         params: Params,
                     ) = lambdaError()
@@ -99,16 +100,16 @@ class DefaultMessagesEntryPointTest {
                 },
                 mediaViewerEntryPoint = object : MediaViewerEntryPoint {
                     override fun createParamsForAvatar(filename: String, avatarUrl: String) = lambdaError()
+                    context(parentNode: Node)
                     override fun createNode(
-                        parentNode: Node,
                         buildContext: BuildContext,
                         params: MediaViewerEntryPoint.Params,
                         callback: MediaViewerEntryPoint.Callback,
                     ) = lambdaError()
                 },
                 forwardEntryPoint = object : ForwardEntryPoint {
+                    context(parentNode: Node)
                     override fun createNode(
-                        parentNode: Node,
                         buildContext: BuildContext,
                         params: ForwardEntryPoint.Params,
                         callback: ForwardEntryPoint.Callback,
@@ -129,7 +130,8 @@ class DefaultMessagesEntryPointTest {
                 pinnedEventsTimelineProvider = createPinnedEventsTimelineProvider(),
                 timelineController = createTimelineController(),
                 knockRequestsListEntryPoint = object : KnockRequestsListEntryPoint {
-                    override fun createNode(parentNode: Node, buildContext: BuildContext) = lambdaError()
+                    context(parentNode: Node)
+                    override fun createNode(buildContext: BuildContext) = lambdaError()
                 },
                 dateFormatter = FakeDateFormatter(),
                 coroutineDispatchers = testCoroutineDispatchers(),
@@ -144,12 +146,13 @@ class DefaultMessagesEntryPointTest {
         }
         val initialTarget = MessagesEntryPoint.InitialTarget.Messages(focusedEventId = AN_EVENT_ID)
         val params = MessagesEntryPoint.Params(initialTarget)
-        val result = entryPoint.createNode(
-            parentNode = parentNode,
-            buildContext = BuildContext.root(null),
-            params = params,
-            callback = callback,
-        )
+        val result = with(parentNode) {
+            entryPoint.createNode(
+                buildContext = BuildContext.root(null),
+                params = params,
+                callback = callback,
+            )
+        }
         assertThat(result).isInstanceOf(MessagesFlowNode::class.java)
         assertThat(result.plugins).contains(MessagesEntryPoint.Params(initialTarget))
         assertThat(result.plugins).contains(callback)

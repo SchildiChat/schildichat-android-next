@@ -37,8 +37,8 @@ class DefaultMediaGalleryEntryPointTest {
                 plugins = plugins,
                 mediaViewerEntryPoint = object : MediaViewerEntryPoint {
                     override fun createParamsForAvatar(filename: String, avatarUrl: String) = lambdaError()
+                    context(parentNode: Node)
                     override fun createNode(
-                        parentNode: Node,
                         buildContext: BuildContext,
                         params: MediaViewerEntryPoint.Params,
                         callback: MediaViewerEntryPoint.Callback,
@@ -51,11 +51,12 @@ class DefaultMediaGalleryEntryPointTest {
             override fun viewInTimeline(eventId: EventId) = lambdaError()
             override fun forward(eventId: EventId) = lambdaError()
         }
-        val result = entryPoint.createNode(
-            parentNode = parentNode,
-            buildContext = BuildContext.root(null),
-            callback = callback,
-        )
+        val result = with(parentNode) {
+            entryPoint.createNode(
+                buildContext = BuildContext.root(null),
+                callback = callback,
+            )
+        }
         assertThat(result).isInstanceOf(MediaGalleryFlowNode::class.java)
         assertThat(result.plugins).contains(callback)
     }

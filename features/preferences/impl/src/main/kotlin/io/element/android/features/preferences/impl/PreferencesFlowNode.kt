@@ -216,7 +216,6 @@ class PreferencesFlowNode(
             }
             NavTarget.TroubleshootNotifications -> {
                 notificationTroubleShootEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     callback = object : NotificationTroubleShootEntryPoint.Callback {
                         override fun onDone() {
@@ -235,9 +234,8 @@ class PreferencesFlowNode(
             }
             NavTarget.PushHistory -> {
                 pushHistoryEntryPoint.createNode(
-                    this,
-                    buildContext,
-                    object : PushHistoryEntryPoint.Callback {
+                    buildContext = buildContext,
+                    callback = object : PushHistoryEntryPoint.Callback {
                         override fun onDone() {
                             if (backstack.canPop()) {
                                 backstack.pop()
@@ -270,7 +268,6 @@ class PreferencesFlowNode(
             }
             NavTarget.LockScreenSettings -> {
                 lockScreenEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     navTarget = LockScreenEntryPoint.Target.Settings,
                     callback = object : LockScreenEntryPoint.Callback {
@@ -290,16 +287,15 @@ class PreferencesFlowNode(
                     }
                 }
                 logoutEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     callback = callBack,
                 )
             }
             is NavTarget.OssLicenses -> {
-                openSourceLicensesEntryPoint.createNode(this, buildContext)
+                openSourceLicensesEntryPoint.createNode(buildContext)
             }
             NavTarget.AccountDeactivation -> {
-                accountDeactivationEntryPoint.createNode(this, buildContext)
+                accountDeactivationEntryPoint.createNode(buildContext)
             }
         }
     }

@@ -31,7 +31,9 @@ class DefaultOpenSourcesLicensesEntryPointTest {
                 plugins = plugins,
             )
         }
-        val result = entryPoint.createNode(parentNode, BuildContext.root(null))
+        val result = with(parentNode) {
+            entryPoint.createNode(BuildContext.root(null))
+        }
         assertThat(result).isInstanceOf(DependenciesFlowNode::class.java)
     }
 }

@@ -67,7 +67,6 @@ class ShareNode(
         }
 
         return roomSelectEntryPoint.createNode(
-            parentNode = this,
             buildContext = buildContext,
             params = RoomSelectEntryPoint.Params(mode = RoomSelectMode.Share),
             callback = callback,

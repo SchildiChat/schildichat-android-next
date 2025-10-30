@@ -10,8 +10,8 @@ import dev.zacsweers.metro.AppScope
 
 @ContributesBinding(AppScope::class)
 class Default${FEATURE_NAME}EntryPoint() : ${FEATURE_NAME}EntryPoint {
-
-    override fun createNode(parentNode: Node, buildContext: BuildContext, callback: ${FEATURE_NAME}EntryPoint.Callback): Node {
+    context(parentNode: Node)
+    override fun createNode(buildContext: BuildContext, callback: ${FEATURE_NAME}EntryPoint.Callback): Node {
         return parentNode.createNode<${FEATURE_NAME}FlowNode>(buildContext, listOf(callback))
     }
 }

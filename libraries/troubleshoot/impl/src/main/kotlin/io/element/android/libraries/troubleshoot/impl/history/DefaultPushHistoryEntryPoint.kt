@@ -16,7 +16,8 @@ import io.element.android.libraries.troubleshoot.api.PushHistoryEntryPoint
 
 @ContributesBinding(AppScope::class)
 class DefaultPushHistoryEntryPoint : PushHistoryEntryPoint {
-    override fun createNode(parentNode: Node, buildContext: BuildContext, callback: PushHistoryEntryPoint.Callback): Node {
+    context(parentNode: Node)
+    override fun createNode(buildContext: BuildContext, callback: PushHistoryEntryPoint.Callback): Node {
         return parentNode.createNode<PushHistoryNode>(buildContext, listOf(callback))
     }
 }

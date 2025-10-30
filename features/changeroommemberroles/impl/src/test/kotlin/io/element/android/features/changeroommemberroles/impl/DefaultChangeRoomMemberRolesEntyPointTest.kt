@@ -31,12 +31,13 @@ class DefaultChangeRoomMemberRolesEntyPointTest {
         }
         val room = FakeJoinedRoom()
         val listType = ChangeRoomMemberRolesListType.Admins
-        val result = entryPoint.createNode(
-            parentNode = parentNode,
-            buildContext = BuildContext.root(null),
-            room = FakeJoinedRoom(),
-            listType = listType,
-        )
+        val result = with(parentNode) {
+            entryPoint.createNode(
+                buildContext = BuildContext.root(null),
+                room = FakeJoinedRoom(),
+                listType = listType,
+            )
+        }
         assertThat(result).isInstanceOf(ChangeRoomMemberRolesRootNode::class.java)
         // Search for the Inputs plugin
         val input = result.plugins.filterIsInstance<ChangeRoomMemberRolesRootNode.Inputs>().single()

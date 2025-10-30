@@ -308,14 +308,13 @@ class RoomDetailsFlowNode(
                     avatarUrl = navTarget.avatarUrl,
                 )
                 mediaViewerEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     params = params,
                     callback = callback,
                 )
             }
             is NavTarget.PollHistory -> {
-                pollHistoryEntryPoint.createNode(this, buildContext)
+                pollHistoryEntryPoint.createNode(buildContext)
             }
             is NavTarget.MediaGallery -> {
                 val callback = object : MediaGalleryEntryPoint.Callback {
@@ -336,7 +335,6 @@ class RoomDetailsFlowNode(
                     }
                 }
                 mediaGalleryEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     callback = callback,
                 )
@@ -367,14 +365,13 @@ class RoomDetailsFlowNode(
                     }
                 }
                 return messagesEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     params = params,
                     callback = callback,
                 )
             }
             NavTarget.KnockRequestsList -> {
-                knockRequestsListEntryPoint.createNode(this, buildContext)
+                knockRequestsListEntryPoint.createNode(buildContext)
             }
             NavTarget.SecurityAndPrivacy -> {
                 createNode<SecurityAndPrivacyFlowNode>(buildContext)
@@ -385,7 +382,6 @@ class RoomDetailsFlowNode(
                     verificationRequest = VerificationRequest.Outgoing.User(userId = navTarget.userId)
                 )
                 outgoingVerificationEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     params = params,
                     callback = object : OutgoingVerificationEntryPoint.Callback {
@@ -404,12 +400,11 @@ class RoomDetailsFlowNode(
                 )
             }
             is NavTarget.ReportRoom -> {
-                reportRoomEntryPoint.createNode(this, buildContext, room.roomId)
+                reportRoomEntryPoint.createNode(buildContext, room.roomId)
             }
 
             is NavTarget.SelectNewOwnersWhenLeaving -> {
                 changeRoomMemberRolesEntryPoint.createNode(
-                    parentNode = this,
                     buildContext = buildContext,
                     room = room,
                     listType = ChangeRoomMemberRolesListType.SelectNewOwnersWhenLeaving,

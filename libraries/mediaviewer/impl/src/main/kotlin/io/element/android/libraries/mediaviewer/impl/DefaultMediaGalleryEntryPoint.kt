@@ -17,7 +17,8 @@ import io.element.android.libraries.mediaviewer.impl.gallery.root.MediaGalleryFl
 
 @ContributesBinding(AppScope::class)
 class DefaultMediaGalleryEntryPoint : MediaGalleryEntryPoint {
-    override fun createNode(parentNode: Node, buildContext: BuildContext, callback: MediaGalleryEntryPoint.Callback): Node {
+    context(parentNode: Node)
+    override fun createNode(buildContext: BuildContext, callback: MediaGalleryEntryPoint.Callback): Node {
         return parentNode.createNode<MediaGalleryFlowNode>(
             buildContext = buildContext,
             plugins = listOf(callback),

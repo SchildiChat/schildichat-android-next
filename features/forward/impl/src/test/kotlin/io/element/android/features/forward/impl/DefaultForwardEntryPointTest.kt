@@ -39,8 +39,8 @@ class DefaultForwardEntryPointTest {
                 plugins = plugins,
                 presenterFactory = { _, _ -> createForwardMessagesPresenter() },
                 roomSelectEntryPoint = object : RoomSelectEntryPoint {
+                    context(parentNode: Node)
                     override fun createNode(
-                        parentNode: Node,
                         buildContext: BuildContext,
                         params: RoomSelectEntryPoint.Params,
                         callback: RoomSelectEntryPoint.Callback,
@@ -55,12 +55,13 @@ class DefaultForwardEntryPointTest {
             eventId = AN_EVENT_ID,
             timelineProvider = FakeTimelineProvider(),
         )
-        val result = entryPoint.createNode(
-            parentNode = parentNode,
-            buildContext = BuildContext.root(null),
-            params = params,
-            callback = callback,
-        )
+        val result = with(parentNode) {
+            entryPoint.createNode(
+                buildContext = BuildContext.root(null),
+                params = params,
+                callback = callback,
+            )
+        }
         assertThat(result).isInstanceOf(ForwardMessagesNode::class.java)
         assertThat(result.plugins).contains(
             ForwardMessagesNode.Inputs(

@@ -35,11 +35,12 @@ class DefaultAccountSelectEntryPointTest {
             override fun onAccountSelected(sessionId: SessionId) = lambdaError()
             override fun onCancel() = lambdaError()
         }
-        val result = entryPoint.createNode(
-            parentNode = parentNode,
-            buildContext = BuildContext.root(null),
-            callback = callback,
-        )
+        val result = with(parentNode) {
+            entryPoint.createNode(
+                buildContext = BuildContext.root(null),
+                callback = callback,
+            )
+        }
         assertThat(result).isInstanceOf(AccountSelectNode::class.java)
         assertThat(result.plugins).contains(callback)
     }

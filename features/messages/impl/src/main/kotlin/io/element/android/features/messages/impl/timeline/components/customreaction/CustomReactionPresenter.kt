@@ -17,10 +17,10 @@ import androidx.compose.runtime.setValue
 import dev.zacsweers.metro.Inject
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.libraries.architecture.Presenter
-import io.element.android.libraries.matrix.api.recentemojis.GetRecentEmojis
+import io.element.android.libraries.recentemojis.api.EmojibaseProvider
+import io.element.android.libraries.recentemojis.api.GetRecentEmojis
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.launch
 
@@ -41,7 +41,7 @@ class CustomReactionPresenter(
         fun handleShowCustomReactionSheet(event: TimelineItem.Event) {
             target.value = CustomReactionState.Target.Loading(event)
             localCoroutineScope.launch {
-                recentEmojis = getRecentEmojis().getOrNull().orEmpty().toImmutableList()
+                recentEmojis = getRecentEmojis().getOrNull() ?: persistentListOf()
                 target.value = CustomReactionState.Target.Success(
                     event = event,
                     emojibaseStore = emojibaseProvider.emojibaseStore

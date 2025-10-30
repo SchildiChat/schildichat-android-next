@@ -14,7 +14,9 @@ import com.google.common.truth.Truth.assertThat
 import io.element.android.features.messages.impl.timeline.aTimelineItemEvent
 import io.element.android.features.messages.impl.timeline.aTimelineItemReactions
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
+import io.element.android.libraries.recentemojis.test.FakeEmojibaseProvider
 import io.element.android.tests.testutils.WarmUpRule
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -25,7 +27,7 @@ class CustomReactionPresenterTest {
 
     private val presenter = CustomReactionPresenter(
         emojibaseProvider = FakeEmojibaseProvider(),
-        getRecentEmojis = { Result.success(emptyList()) },
+        getRecentEmojis = { Result.success(persistentListOf()) },
     )
 
     @Test

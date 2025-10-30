@@ -43,10 +43,10 @@ import io.element.android.libraries.di.RoomScope
 import io.element.android.libraries.featureflag.api.FeatureFlagService
 import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.matrix.api.core.EventId
-import io.element.android.libraries.matrix.api.recentemojis.GetRecentEmojis
 import io.element.android.libraries.matrix.api.room.BaseRoom
 import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.preferences.api.store.AppPreferencesStore
+import io.element.android.libraries.recentemojis.api.GetRecentEmojis
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -86,6 +86,8 @@ class DefaultActionListPresenter(
     }
 
     private val comparator = TimelineItemActionComparator()
+
+    private val suggestedEmojis = persistentListOf("👍️", "👎️", "🔥", "❤️", "👏")
 
     @Composable
     override fun present(): ActionListState {
@@ -146,6 +148,7 @@ class DefaultActionListPresenter(
         val displayEmojiReactions = usersEventPermissions.canSendReaction && timelineItem.content.canReact()
 
         if (actions.isNotEmpty() || displayEmojiReactions || verifiedUserSendFailure != VerifiedUserSendFailure.None) {
+            val recentEmojis = getRecentEmojis().getOrNull()?.toImmutableList() ?: persistentListOf()
             target.value = ActionListState.Target.Success(
                 event = timelineItem,
                 sentTimeFull = dateFormatter.format(
@@ -156,7 +159,10 @@ class DefaultActionListPresenter(
                 displayEmojiReactions = displayEmojiReactions,
                 verifiedUserSendFailure = verifiedUserSendFailure,
                 actions = actions.toImmutableList(),
-                recentEmojis = getRecentEmojis().getOrNull()?.toImmutableList() ?: persistentListOf()
+                // Merge suggested and recent emojis, removing duplicates and returning at most 100
+                recentEmojis = (suggestedEmojis + recentEmojis).distinct()
+                    .take(100)
+                    .toImmutableList()
             )
         } else {
             target.value = ActionListState.Target.None

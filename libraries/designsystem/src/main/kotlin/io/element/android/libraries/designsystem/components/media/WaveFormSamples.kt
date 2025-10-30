@@ -9,7 +9,6 @@ package io.element.android.libraries.designsystem.components.media
 
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toPersistentList
 
 object WaveFormSamples {
     val allRangeWaveForm = List(100) { it.toFloat() / 100 }.toImmutableList()
@@ -26,5 +25,5 @@ object WaveFormSamples {
         0.000f, 0.003f,
     )
 
-    val longRealisticWaveForm = List(4) { realisticWaveForm }.flatten().toPersistentList()
+    val longRealisticWaveForm = List(4) { realisticWaveForm }.flatten().toImmutableList()
 }

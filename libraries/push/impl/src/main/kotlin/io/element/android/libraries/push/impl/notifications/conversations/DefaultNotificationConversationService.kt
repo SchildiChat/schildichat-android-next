@@ -107,7 +107,7 @@ class DefaultNotificationConversationService(
         val shortcutInfo = ShortcutInfoCompat.Builder(context, createShortcutId(sessionId, roomId))
             .setShortLabel(roomName)
             .setIcon(icon)
-            .setIntent(intentProvider.getViewRoomIntent(sessionId, roomId, threadId = null))
+            .setIntent(intentProvider.getViewRoomIntent(sessionId, roomId, threadId = null, eventId = null))
             .setCategories(categories)
             .setLongLived(true)
             .let {

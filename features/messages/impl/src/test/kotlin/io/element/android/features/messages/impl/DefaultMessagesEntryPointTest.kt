@@ -136,7 +136,7 @@ class DefaultMessagesEntryPointTest {
     @Test
     fun `test initial target to nav target mapping`() {
         assertThat(MessagesEntryPoint.InitialTarget.Messages(focusedEventId = AN_EVENT_ID).toNavTarget())
-            .isEqualTo(MessagesFlowNode.NavTarget.Messages(AN_EVENT_ID))
+            .isEqualTo(MessagesFlowNode.NavTarget.Messages(focusedEventId = AN_EVENT_ID))
         assertThat(MessagesEntryPoint.InitialTarget.PinnedMessages.toNavTarget())
             .isEqualTo(MessagesFlowNode.NavTarget.PinnedMessagesList)
     }

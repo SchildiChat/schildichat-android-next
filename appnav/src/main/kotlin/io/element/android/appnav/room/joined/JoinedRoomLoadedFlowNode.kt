@@ -25,18 +25,21 @@ import io.element.android.appnav.di.RoomGraphFactory
 import io.element.android.appnav.room.RoomNavigationTarget
 import io.element.android.features.forward.api.ForwardEntryPoint
 import io.element.android.features.messages.api.MessagesEntryPoint
+import io.element.android.features.messages.api.MessagesEntryPointNode
 import io.element.android.features.roomdetails.api.RoomDetailsEntryPoint
 import io.element.android.features.space.api.SpaceEntryPoint
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.NodeInputs
 import io.element.android.libraries.architecture.inputs
+import io.element.android.libraries.architecture.waitForChildAttached
 import io.element.android.libraries.di.DependencyInjectionGraphOwner
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.di.annotations.SessionCoroutineScope
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.core.ThreadId
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.permalink.PermalinkData
 import io.element.android.libraries.matrix.api.room.JoinedRoom
@@ -240,7 +243,9 @@ class JoinedRoomLoadedFlowNode(
         data object Space : NavTarget
 
         @Parcelize
-        data class Messages(val focusedEventId: EventId? = null) : NavTarget
+        data class Messages(
+            val focusedEventId: EventId? = null,
+        ) : NavTarget
 
         @Parcelize
         data object RoomDetails : NavTarget
@@ -256,6 +261,13 @@ class JoinedRoomLoadedFlowNode(
 
         @Parcelize
         data object RoomNotificationSettings : NavTarget
+    }
+
+    suspend fun attachThread(threadId: ThreadId, focusedEventId: EventId?) {
+        val messageNode = waitForChildAttached<Node, NavTarget> { navTarget ->
+            navTarget is NavTarget.Messages
+        }
+        (messageNode as? MessagesEntryPointNode)?.attachThread(threadId, focusedEventId)
     }
 
     @Composable

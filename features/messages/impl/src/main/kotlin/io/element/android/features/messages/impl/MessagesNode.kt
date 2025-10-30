@@ -337,12 +337,11 @@ class MessagesNode(
             var focusedEventId by rememberSaveable {
                 mutableStateOf(inputs.focusedEventId)
             }
-            LaunchedEffect(Unit) {
-                focusedEventId?.also { eventId ->
-                    state.timelineState.eventSink(TimelineEvents.FocusOnEvent(eventId))
+            LaunchedEffect(focusedEventId) {
+                if (focusedEventId != null) {
+                    state.timelineState.eventSink(TimelineEvents.FocusOnEvent(focusedEventId!!))
+                    focusedEventId = null
                 }
-                // Reset the focused event id to null to avoid refocusing when restoring node.
-                focusedEventId = null
             }
         }
     }

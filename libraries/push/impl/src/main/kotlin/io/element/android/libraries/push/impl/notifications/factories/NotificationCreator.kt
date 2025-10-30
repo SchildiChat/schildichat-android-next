@@ -10,6 +10,7 @@ package io.element.android.libraries.push.impl.notifications.factories
 import android.app.Notification
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.Icon
 import androidx.annotation.ColorInt
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.MessagingStyle
@@ -20,7 +21,7 @@ import dev.zacsweers.metro.ContributesBinding
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.designsystem.utils.CommonDrawables
 import io.element.android.libraries.di.annotations.ApplicationContext
-import io.element.android.libraries.matrix.api.core.SessionId
+import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.ThreadId
 import io.element.android.libraries.matrix.api.timeline.item.event.EventType
 import io.element.android.libraries.matrix.api.user.MatrixUser
@@ -38,6 +39,7 @@ import io.element.android.libraries.push.impl.notifications.model.InviteNotifiab
 import io.element.android.libraries.push.impl.notifications.model.NotifiableMessageEvent
 import io.element.android.libraries.push.impl.notifications.model.SimpleNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.shortcut.createShortcutId
+import io.element.android.libraries.ui.strings.CommonStrings
 import io.element.android.services.toolbox.api.strings.StringProvider
 
 interface NotificationCreator {
@@ -86,6 +88,17 @@ interface NotificationCreator {
     fun createDiagnosticNotification(
         @ColorInt color: Int,
     ): Notification
+
+    companion object {
+        /**
+         * Creates a tag for a message notification given its [roomId] and optional [threadId].
+         */
+        fun messageTag(roomId: RoomId, threadId: ThreadId?): String = if (threadId != null) {
+            "$roomId|$threadId"
+        } else {
+            roomId.value
+        }
+    }
 }
 
 @ContributesBinding(AppScope::class)
@@ -99,7 +112,7 @@ class DefaultNotificationCreator(
     private val quickReplyActionFactory: QuickReplyActionFactory,
     private val bitmapLoader: NotificationBitmapLoader,
     private val acceptInvitationActionFactory: AcceptInvitationActionFactory,
-    private val rejectInvitationActionFactory: RejectInvitationActionFactory
+    private val rejectInvitationActionFactory: RejectInvitationActionFactory,
 ) : NotificationCreator {
     /**
      * Create a notification for a Room.
@@ -117,9 +130,10 @@ class DefaultNotificationCreator(
         @ColorInt color: Int,
     ): Notification {
         // Build the pending intent for when the notification is clicked
+        val eventId = events.firstOrNull()?.eventId
         val openIntent = when {
-            threadId != null -> pendingIntentFactory.createOpenThreadPendingIntent(roomInfo, threadId)
-            else -> pendingIntentFactory.createOpenRoomPendingIntent(roomInfo.sessionId, roomInfo.roomId)
+            threadId != null -> pendingIntentFactory.createOpenThreadPendingIntent(roomInfo.sessionId, roomInfo.roomId, eventId, threadId)
+            else -> pendingIntentFactory.createOpenRoomPendingIntent(roomInfo.sessionId, roomInfo.roomId, eventId)
         }
         val smallIcon = CommonDrawables.ic_notification
         val containsMissedCall = events.any { it.type == EventType.RTC_NOTIFICATION }
@@ -140,19 +154,30 @@ class DefaultNotificationCreator(
                 // Must match those created in the ShortcutInfoCompat.Builder()
                 // for the notification to appear as a "Conversation":
                 // https://developer.android.com/develop/ui/views/notifications/conversations
-                .setShortcutId(createShortcutId(roomInfo.sessionId, roomInfo.roomId))
+                .apply {
+                    if (threadId == null) {
+                        setShortcutId(createShortcutId(roomInfo.sessionId, roomInfo.roomId))
+                    }
+                }
                 // Auto-bundling is enabled for 4 or more notifications on API 24+ (N+)
                 // devices and all Wear devices. But we want a custom grouping, so we specify the groupID
                 .setGroup(roomInfo.sessionId.value)
+                .setGroupSummary(false)
                 // In order to avoid notification making sound twice (due to the summary notification)
-                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
+                .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
                 // Remove notification after opening it or using an action
                 .setAutoCancel(true)
         }
 
         val messagingStyle = existingNotification?.let {
             MessagingStyle.extractMessagingStyleFromNotification(it)
-        } ?: messagingStyleFromCurrentUser(roomInfo.sessionId, currentUser, imageLoader, roomInfo.roomDisplayName, !roomInfo.isDm)
+        } ?: messagingStyleFromCurrentUser(
+            user = currentUser,
+            imageLoader = imageLoader,
+            roomName = roomInfo.roomDisplayName,
+            isThread = threadId != null,
+            roomIsGroup = !roomInfo.isDm,
+        )
 
         messagingStyle.addMessagesFromEvents(events, imageLoader)
 
@@ -162,19 +187,6 @@ class DefaultNotificationCreator(
             .setWhen(lastMessageTimestamp)
             // MESSAGING_STYLE sets title and content for API 16 and above devices.
             .setStyle(messagingStyle)
-            // Not needed anymore?
-            // Title for API < 16 devices.
-            .setContentTitle(roomInfo.roomDisplayName.annotateForDebug(1))
-            // Content for API < 16 devices.
-            .setContentText(stringProvider.getString(R.string.notification_new_messages).annotateForDebug(2))
-            // Number of new notifications for API <24 (M and below) devices.
-            .setSubText(
-                stringProvider.getQuantityString(
-                    R.plurals.notification_new_messages_for_room,
-                    messagingStyle.messages.size,
-                    messagingStyle.messages.size
-                ).annotateForDebug(3)
-            )
             .setSmallIcon(smallIcon)
             // Set primary color (important for Wear 2.0 Notifications).
             .setColor(color)
@@ -197,8 +209,8 @@ class DefaultNotificationCreator(
                 // Clear existing actions since we might be updating an existing notification
                 clearActions()
                 // Add actions and notification intents
-                // Mark room as read
-                addAction(markAsReadActionFactory.create(roomInfo))
+                // Mark room/thread as read
+                addAction(markAsReadActionFactory.create(roomInfo, threadId))
                 // Quick reply
                 if (!roomInfo.hasSmartReplyError) {
                     val latestEventId = events.lastOrNull()?.eventId
@@ -208,7 +220,7 @@ class DefaultNotificationCreator(
                     setContentIntent(openIntent)
                 }
                 if (largeIcon != null) {
-                    setLargeIcon(largeIcon)
+                    setLargeIcon(Icon.createWithBitmap(largeIcon))
                 }
                 setDeleteIntent(pendingIntentFactory.createDismissRoomPendingIntent(roomInfo.sessionId, roomInfo.roomId))
 
@@ -239,7 +251,7 @@ class DefaultNotificationCreator(
                 addAction(rejectInvitationActionFactory.create(inviteNotifiableEvent))
                 addAction(acceptInvitationActionFactory.create(inviteNotifiableEvent))
                 // Build the pending intent for when the notification is clicked
-                setContentIntent(pendingIntentFactory.createOpenRoomPendingIntent(inviteNotifiableEvent.sessionId, inviteNotifiableEvent.roomId))
+                setContentIntent(pendingIntentFactory.createOpenRoomPendingIntent(inviteNotifiableEvent.sessionId, inviteNotifiableEvent.roomId, null))
 
                 if (inviteNotifiableEvent.noisy) {
                     // Compat
@@ -279,7 +291,7 @@ class DefaultNotificationCreator(
             .setSmallIcon(smallIcon)
             .setColor(color)
             .setAutoCancel(true)
-            .setContentIntent(pendingIntentFactory.createOpenRoomPendingIntent(simpleNotifiableEvent.sessionId, simpleNotifiableEvent.roomId))
+            .setContentIntent(pendingIntentFactory.createOpenRoomPendingIntent(simpleNotifiableEvent.sessionId, simpleNotifiableEvent.roomId, null))
             .apply {
                 if (simpleNotifiableEvent.noisy) {
                     // Compat
@@ -447,21 +459,26 @@ class DefaultNotificationCreator(
     }
 
     private suspend fun messagingStyleFromCurrentUser(
-        sessionId: SessionId,
         user: MatrixUser,
         imageLoader: ImageLoader,
         roomName: String,
+        isThread: Boolean,
         roomIsGroup: Boolean
     ): MessagingStyle {
         return MessagingStyle(
             Person.Builder()
                 .setName(user.displayName?.annotateForDebug(50))
                 .setIcon(bitmapLoader.getUserIcon(user.avatarUrl, imageLoader))
-                .setKey(sessionId.value)
+                .setKey(user.userId.value)
                 .build()
         ).also {
-            it.conversationTitle = roomName.takeIf { roomIsGroup }
-            it.isGroupConversation = roomIsGroup
+            it.conversationTitle = if (isThread) {
+                stringProvider.getString(CommonStrings.notification_thread_in_room, roomName)
+            } else {
+                roomName
+            }
+            // So the avatar is displayed even if they're part of a conversation
+            it.isGroupConversation = roomIsGroup || isThread
         }
     }
 

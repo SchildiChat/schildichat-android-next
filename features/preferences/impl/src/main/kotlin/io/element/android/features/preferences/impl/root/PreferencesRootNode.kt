@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
@@ -22,6 +21,7 @@ import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.logout.api.direct.DirectLogoutEvents
 import io.element.android.features.logout.api.direct.DirectLogoutView
 import io.element.android.libraries.androidutils.browser.openUrlInChromeCustomTab
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.user.MatrixUser
 
@@ -50,37 +50,7 @@ class PreferencesRootNode(
         fun startAccountDeactivationFlow()
     }
 
-    private fun onAddAccount() {
-        plugins<Callback>().forEach { it.navigateToAddAccount() }
-    }
-
-    private fun onOpenBugReport() {
-        plugins<Callback>().forEach { it.navigateToBugReport() }
-    }
-
-    private fun onSecureBackupClick() {
-        plugins<Callback>().forEach { it.navigateToSecureBackup() }
-    }
-
-    private fun onOpenDeveloperSettings() {
-        plugins<Callback>().forEach { it.navigateToDeveloperSettings() }
-    }
-
-    private fun onOpenAdvancedSettings() {
-        plugins<Callback>().forEach { it.navigateToAdvancedSettings() }
-    }
-
-    private fun onOpenLabs() {
-        plugins<Callback>().forEach { it.navigateToLabs() }
-    }
-
-    private fun onOpenAnalytics() {
-        plugins<Callback>().forEach { it.navigateToAnalyticsSettings() }
-    }
-
-    private fun onOpenAbout() {
-        plugins<Callback>().forEach { it.navigateToAbout() }
-    }
+    private val callback: Callback = callback()
 
     private fun onManageAccountClick(
         activity: Activity,
@@ -96,30 +66,6 @@ class PreferencesRootNode(
         }
     }
 
-    private fun onOpenNotificationSettings() {
-        plugins<Callback>().forEach { it.navigateToNotificationSettings() }
-    }
-
-    private fun onOpenLockScreenSettings() {
-        plugins<Callback>().forEach { it.navigateToLockScreenSettings() }
-    }
-
-    private fun onOpenUserProfile(matrixUser: MatrixUser) {
-        plugins<Callback>().forEach { it.navigateToUserProfile(matrixUser) }
-    }
-
-    private fun onOpenBlockedUsers() {
-        plugins<Callback>().forEach { it.navigateToBlockedUsers() }
-    }
-
-    private fun onSignOutClick() {
-        plugins<Callback>().forEach { it.startSignOutFlow() }
-    }
-
-    private fun onOpenAccountDeactivation() {
-        plugins<Callback>().forEach { it.startAccountDeactivationFlow() }
-    }
-
     @Composable
     override fun View(modifier: Modifier) {
         val state = presenter.present()
@@ -129,27 +75,27 @@ class PreferencesRootNode(
             state = state,
             modifier = modifier,
             onBackClick = this::navigateUp,
-            onAddAccountClick = this::onAddAccount,
-            onOpenRageShake = this::onOpenBugReport,
-            onOpenAnalytics = this::onOpenAnalytics,
-            onOpenAbout = this::onOpenAbout,
-            onSecureBackupClick = this::onSecureBackupClick,
-            onOpenDeveloperSettings = this::onOpenDeveloperSettings,
-            onOpenAdvancedSettings = this::onOpenAdvancedSettings,
-            onOpenLabs = this::onOpenLabs,
+            onAddAccountClick = callback::navigateToAddAccount,
+            onOpenRageShake = callback::navigateToBugReport,
+            onOpenAnalytics = callback::navigateToAnalyticsSettings,
+            onOpenAbout = callback::navigateToAbout,
+            onSecureBackupClick = callback::navigateToSecureBackup,
+            onOpenDeveloperSettings = callback::navigateToDeveloperSettings,
+            onOpenAdvancedSettings = callback::navigateToAdvancedSettings,
+            onOpenLabs = callback::navigateToLabs,
             onManageAccountClick = { onManageAccountClick(activity, it, isDark) },
-            onOpenNotificationSettings = this::onOpenNotificationSettings,
-            onOpenLockScreenSettings = this::onOpenLockScreenSettings,
-            onOpenUserProfile = this::onOpenUserProfile,
-            onOpenBlockedUsers = this::onOpenBlockedUsers,
+            onOpenNotificationSettings = callback::navigateToNotificationSettings,
+            onOpenLockScreenSettings = callback::navigateToLockScreenSettings,
+            onOpenUserProfile = callback::navigateToUserProfile,
+            onOpenBlockedUsers = callback::navigateToBlockedUsers,
             onSignOutClick = {
                 if (state.directLogoutState.canDoDirectSignOut) {
                     state.directLogoutState.eventSink(DirectLogoutEvents.Logout(ignoreSdkError = false))
                 } else {
-                    onSignOutClick()
+                    callback.startSignOutFlow()
                 }
             },
-            onDeactivateClick = this::onOpenAccountDeactivation
+            onDeactivateClick = callback::startAccountDeactivationFlow
         )
 
         directLogoutView.Render(state = state.directLogoutState)

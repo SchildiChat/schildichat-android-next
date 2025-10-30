@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import com.bumble.appyx.navmodel.backstack.BackStack
 import com.bumble.appyx.navmodel.backstack.operation.pop
 import com.bumble.appyx.navmodel.backstack.operation.push
@@ -28,6 +27,7 @@ import io.element.android.features.viewfolder.impl.model.Item
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.NodeInputs
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.architecture.inputs
 import kotlinx.parcelize.Parcelize
@@ -65,6 +65,7 @@ class ViewFolderFlowNode(
         val rootPath: String,
     ) : NodeInputs
 
+    private val callback: ViewFolderEntryPoint.Callback = callback()
     private val inputs: Inputs = inputs()
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
@@ -108,7 +109,7 @@ class ViewFolderFlowNode(
     ): Node {
         val callback: ViewFolderNode.Callback = object : ViewFolderNode.Callback {
             override fun onBackClick() {
-                onDone()
+                callback.onDone()
             }
 
             override fun navigateToItem(item: Item) {
@@ -132,9 +133,5 @@ class ViewFolderFlowNode(
     @Composable
     override fun View(modifier: Modifier) {
         BackstackView()
-    }
-
-    private fun onDone() {
-        plugins<ViewFolderEntryPoint.Callback>().forEach { it.onDone() }
     }
 }

@@ -180,7 +180,7 @@ private fun createTroubleshootTestSuite(
 
 internal fun createTroubleshootNotificationsPresenter(
     navigator: NotificationTroubleshootNavigator = object : NotificationTroubleshootNavigator {
-        override fun openIgnoredUsers() = lambdaError()
+        override fun navigateToBlockedUsers() = lambdaError()
     },
     troubleshootTestSuite: TroubleshootTestSuite = createTroubleshootTestSuite(),
 ): TroubleshootNotificationsPresenter {

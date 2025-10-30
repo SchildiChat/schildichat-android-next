@@ -16,7 +16,6 @@ import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import com.bumble.appyx.navmodel.backstack.BackStack
 import com.bumble.appyx.navmodel.backstack.operation.pop
 import com.bumble.appyx.navmodel.backstack.operation.push
@@ -55,6 +54,7 @@ import io.element.android.features.poll.api.create.CreatePollEntryPoint
 import io.element.android.features.poll.api.create.CreatePollMode
 import io.element.android.libraries.architecture.BackstackWithOverlayBox
 import io.element.android.libraries.architecture.BaseFlowNode
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.architecture.overlay.Overlay
 import io.element.android.libraries.architecture.overlay.operation.hide
@@ -182,7 +182,7 @@ class MessagesFlowNode(
         data class Thread(val threadRootId: ThreadId, val focusedEventId: EventId?) : NavTarget
     }
 
-    private val callbacks = plugins<MessagesEntryPoint.Callback>()
+    private val callback: MessagesEntryPoint.Callback = callback()
 
     override fun onBuilt() {
         super.onBuilt()
@@ -221,7 +221,7 @@ class MessagesFlowNode(
             is NavTarget.Messages -> {
                 val callback = object : MessagesNode.Callback {
                     override fun navigateToRoomDetails() {
-                        callbacks.forEach { it.navigateToRoomDetails() }
+                        callback.navigateToRoomDetails()
                     }
 
                     override fun handleEventClick(timelineMode: Timeline.Mode, event: TimelineItem.Event): Boolean {
@@ -242,11 +242,11 @@ class MessagesFlowNode(
                     }
 
                     override fun navigateToRoomMemberDetails(userId: UserId) {
-                        callbacks.forEach { it.navigateToRoomMemberDetails(userId) }
+                        callback.navigateToRoomMemberDetails(userId)
                     }
 
                     override fun handlePermalinkClick(data: PermalinkData) {
-                        callbacks.forEach { it.handlePermalinkClick(data, pushToBackstack = true) }
+                        callback.handlePermalinkClick(data, pushToBackstack = true)
                     }
 
                     override fun navigateToEventDebugInfo(eventId: EventId?, debugInfo: TimelineItemDebugInfo) {
@@ -317,7 +317,7 @@ class MessagesFlowNode(
 
                     override fun forwardEvent(eventId: EventId) {
                         // Need to go to the parent because of the overlay
-                        callbacks.forEach { it.forwardEvent(eventId) }
+                        callback.forwardEvent(eventId)
                     }
                 }
                 mediaViewerEntryPoint.nodeBuilder(this, buildContext)
@@ -352,7 +352,7 @@ class MessagesFlowNode(
                     override fun onDone(roomIds: List<RoomId>) {
                         backstack.pop()
                         roomIds.singleOrNull()?.let { roomId ->
-                            callbacks.forEach { it.navigateToRoom(roomId) }
+                            callback.navigateToRoom(roomId)
                         }
                     }
                 }
@@ -400,7 +400,7 @@ class MessagesFlowNode(
                     }
 
                     override fun navigateToRoomMemberDetails(userId: UserId) {
-                        callbacks.forEach { it.navigateToRoomMemberDetails(userId) }
+                        callback.navigateToRoomMemberDetails(userId)
                     }
 
                     override fun viewInTimeline(eventId: EventId) {
@@ -408,7 +408,7 @@ class MessagesFlowNode(
                     }
 
                     override fun handlePermalinkClick(data: PermalinkData.RoomLink) {
-                        callbacks.forEach { it.handlePermalinkClick(data, pushToBackstack = !room.matches(data.roomIdOrAlias)) }
+                        callback.handlePermalinkClick(data, pushToBackstack = !room.matches(data.roomIdOrAlias))
                     }
 
                     override fun navigateToEventDebugInfo(eventId: EventId?, debugInfo: TimelineItemDebugInfo) {
@@ -448,11 +448,11 @@ class MessagesFlowNode(
                     }
 
                     override fun navigateToRoomMemberDetails(userId: UserId) {
-                        callbacks.forEach { it.navigateToRoomMemberDetails(userId) }
+                        callback.navigateToRoomMemberDetails(userId)
                     }
 
                     override fun handlePermalinkClick(data: PermalinkData) {
-                        callbacks.forEach { it.handlePermalinkClick(data, pushToBackstack = true) }
+                        callback.handlePermalinkClick(data, pushToBackstack = true)
                     }
 
                     override fun navigateToEventDebugInfo(eventId: EventId?, debugInfo: TimelineItemDebugInfo) {
@@ -502,7 +502,7 @@ class MessagesFlowNode(
             roomIdOrAlias = room.roomId.toRoomIdOrAlias(),
             eventId = eventId,
         )
-        callbacks.forEach { it.handlePermalinkClick(permalinkData, pushToBackstack = false) }
+        callback.handlePermalinkClick(permalinkData, pushToBackstack = false)
     }
 
     private fun processEventClick(

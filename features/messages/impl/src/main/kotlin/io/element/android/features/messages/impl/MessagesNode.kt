@@ -24,7 +24,6 @@ import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
@@ -48,8 +47,8 @@ import io.element.android.libraries.androidutils.browser.openUrlInChromeCustomTa
 import io.element.android.libraries.androidutils.system.openUrlInExternalApp
 import io.element.android.libraries.androidutils.system.toast
 import io.element.android.libraries.architecture.NodeInputs
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.inputs
-import io.element.android.libraries.core.bool.orFalse
 import io.element.android.libraries.designsystem.utils.OnLifecycleEvent
 import io.element.android.libraries.di.RoomScope
 import io.element.android.libraries.di.annotations.ApplicationContext
@@ -93,13 +92,12 @@ class MessagesNode(
     private val knockRequestsBannerRenderer: KnockRequestsBannerRenderer,
     private val roomMemberModerationRenderer: RoomMemberModerationRenderer,
 ) : Node(buildContext, plugins = plugins), MessagesNavigator {
-    private val callbacks = plugins<Callback>()
-
     data class Inputs(
         val focusedEventId: EventId?,
     ) : NodeInputs
 
     private val inputs = inputs<Inputs>()
+    private val callback: Callback = callback()
 
     private val timelineController = TimelineController(room, room.liveTimeline)
     private val presenter = presenterFactory.create(
@@ -143,32 +141,6 @@ class MessagesNode(
         )
     }
 
-    private fun navigateToRoomDetails() {
-        callbacks.forEach { it.navigateToRoomDetails() }
-    }
-
-    private fun navigateToPinnedMessagesList() {
-        callbacks.forEach { it.navigateToPinnedMessagesList() }
-    }
-
-    private fun navigateToKnockRequestsList() {
-        callbacks.forEach { it.navigateToKnockRequestsList() }
-    }
-
-    private fun onEventClick(timelineMode: Timeline.Mode, event: TimelineItem.Event): Boolean {
-        // Note: cannot use `callbacks.all { it.onEventClick(event) }` because:
-        // - if callbacks is empty, it will return true and we want to return false.
-        // - if a callback returns false, the other callback will not be invoked.
-        return callbacks.takeIf { it.isNotEmpty() }
-            ?.map { it.handleEventClick(timelineMode, event) }
-            ?.all { it }
-            .orFalse()
-    }
-
-    private fun navigateToRoomMemberDetails(userId: UserId) {
-        callbacks.forEach { it.navigateToRoomMemberDetails(userId) }
-    }
-
     private fun onLinkClick(
         activity: Activity,
         darkTheme: Boolean,
@@ -180,7 +152,7 @@ class MessagesNode(
             is PermalinkData.UserLink -> {
                 // Open the room member profile, it will fallback to
                 // the user profile if the user is not in the room
-                callbacks.forEach { it.navigateToRoomMemberDetails(permalink.userId) }
+                callback.navigateToRoomMemberDetails(permalink.userId)
             }
             is PermalinkData.RoomLink -> {
                 handleRoomLinkClick(permalink, eventSink)
@@ -211,28 +183,28 @@ class MessagesNode(
                 displaySameRoomToast()
             }
         } else {
-            callbacks.forEach { it.handlePermalinkClick(roomLink) }
+            callback.handlePermalinkClick(roomLink)
         }
     }
 
     override fun navigateToEventDebugInfo(eventId: EventId?, debugInfo: TimelineItemDebugInfo) {
-        callbacks.forEach { it.navigateToEventDebugInfo(eventId, debugInfo) }
+        callback.navigateToEventDebugInfo(eventId, debugInfo)
     }
 
     override fun forwardEvent(eventId: EventId) {
-        callbacks.forEach { it.forwardEvent(eventId) }
+        callback.forwardEvent(eventId)
     }
 
     override fun navigateToReportMessage(eventId: EventId, senderId: UserId) {
-        callbacks.forEach { it.navigateToReportMessage(eventId, senderId) }
+        callback.navigateToReportMessage(eventId, senderId)
     }
 
     override fun navigateToEditPoll(eventId: EventId) {
-        callbacks.forEach { it.navigateToEditPoll(eventId) }
+        callback.navigateToEditPoll(eventId)
     }
 
     override fun navigateToPreviewAttachments(attachments: ImmutableList<Attachment>, inReplyToEventId: EventId?) {
-        callbacks.forEach { it.navigateToPreviewAttachments(attachments, inReplyToEventId) }
+        callback.navigateToPreviewAttachments(attachments, inReplyToEventId)
     }
 
     override fun navigateToRoom(roomId: RoomId, eventId: EventId?, serverNames: List<String>) {
@@ -240,24 +212,12 @@ class MessagesNode(
             displaySameRoomToast()
         } else {
             val permalinkData = PermalinkData.RoomLink(roomId.toRoomIdOrAlias(), eventId, viaParameters = serverNames.toImmutableList())
-            callbacks.forEach { it.handlePermalinkClick(permalinkData) }
+            callback.handlePermalinkClick(permalinkData)
         }
     }
 
     override fun navigateToThread(threadRootId: ThreadId, focusedEventId: EventId?) {
-        callbacks.forEach { it.navigateToThread(threadRootId, focusedEventId) }
-    }
-
-    private fun navigateToSendLocation() {
-        callbacks.forEach { it.navigateToSendLocation() }
-    }
-
-    private fun navigateToCreatePoll() {
-        callbacks.forEach { it.navigateToCreatePoll() }
-    }
-
-    private fun navigateToRoomCall() {
-        callbacks.forEach { it.navigateToRoomCall(room.roomId) }
+        callback.navigateToThread(threadRootId, focusedEventId)
     }
 
     private fun displaySameRoomToast() {
@@ -288,20 +248,20 @@ class MessagesNode(
             MessagesView(
                 state = state,
                 onBackClick = { state.eventSink(MessagesEvents.MarkAsFullyReadAndExit) },
-                onRoomDetailsClick = ::navigateToRoomDetails,
+                onRoomDetailsClick = callback::navigateToRoomDetails,
                 onEventContentClick = { isLive, event ->
                     if (isLive) {
-                        onEventClick(timelineController.mainTimelineMode(), event)
+                        callback.handleEventClick(timelineController.mainTimelineMode(), event)
                     } else {
                         val detachedTimelineMode = timelineController.detachedTimelineMode()
                         if (detachedTimelineMode != null) {
-                            onEventClick(detachedTimelineMode, event)
+                            callback.handleEventClick(detachedTimelineMode, event)
                         } else {
                             false
                         }
                     }
                 },
-                onUserDataClick = ::navigateToRoomMemberDetails,
+                onUserDataClick = callback::navigateToRoomMemberDetails,
                 onLinkClick = { url, customTab ->
                     onLinkClick(
                         activity = activity,
@@ -311,15 +271,15 @@ class MessagesNode(
                         customTab = customTab,
                     )
                 },
-                onSendLocationClick = ::navigateToSendLocation,
-                onCreatePollClick = ::navigateToCreatePoll,
-                onJoinCallClick = ::navigateToRoomCall,
-                onViewAllPinnedMessagesClick = ::navigateToPinnedMessagesList,
+                onSendLocationClick = callback::navigateToSendLocation,
+                onCreatePollClick = callback::navigateToCreatePoll,
+                onJoinCallClick = { callback.navigateToRoomCall(room.roomId) },
+                onViewAllPinnedMessagesClick = callback::navigateToPinnedMessagesList,
                 modifier = modifier,
                 knockRequestsBannerView = {
                     knockRequestsBannerRenderer.View(
                         modifier = Modifier,
-                        onViewRequestsClick = ::navigateToKnockRequestsList,
+                        onViewRequestsClick = callback::navigateToKnockRequestsList,
                     )
                 },
             )
@@ -327,7 +287,7 @@ class MessagesNode(
                 state = state.roomMemberModerationState,
                 onSelectAction = { action, target ->
                     when (action) {
-                        is ModerationAction.DisplayProfile -> navigateToRoomMemberDetails(target.userId)
+                        is ModerationAction.DisplayProfile -> callback.navigateToRoomMemberDetails(target.userId)
                         else -> state.roomMemberModerationState.eventSink(RoomMemberModerationEvents.ProcessAction(action, target))
                     }
                 },

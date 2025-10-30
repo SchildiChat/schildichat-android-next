@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import com.bumble.appyx.navmodel.backstack.BackStack
 import com.bumble.appyx.navmodel.backstack.operation.pop
 import com.bumble.appyx.navmodel.backstack.operation.push
@@ -38,6 +37,7 @@ import io.element.android.features.preferences.impl.user.editprofile.EditUserPro
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.appyx.canPop
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.core.EventId
@@ -116,20 +116,22 @@ class PreferencesFlowNode(
         data object OssLicenses : NavTarget
     }
 
+    private val callback: PreferencesEntryPoint.Callback = callback()
+
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         return when (navTarget) {
             NavTarget.Root -> {
                 val callback = object : PreferencesRootNode.Callback {
                     override fun navigateToAddAccount() {
-                        plugins<PreferencesEntryPoint.Callback>().forEach { it.navigateToAddAccount() }
+                        callback.navigateToAddAccount()
                     }
 
                     override fun navigateToBugReport() {
-                        plugins<PreferencesEntryPoint.Callback>().forEach { it.navigateToBugReport() }
+                        callback.navigateToBugReport()
                     }
 
                     override fun navigateToSecureBackup() {
-                        plugins<PreferencesEntryPoint.Callback>().forEach { it.navigateToSecureBackup() }
+                        callback.navigateToSecureBackup()
                     }
 
                     override fun navigateToAnalyticsSettings() {
@@ -241,7 +243,7 @@ class PreferencesFlowNode(
                         }
 
                         override fun navigateToEvent(roomId: RoomId, eventId: EventId) {
-                            plugins<PreferencesEntryPoint.Callback>().forEach { it.navigateToEvent(roomId, eventId) }
+                            callback.navigateToEvent(roomId, eventId)
                         }
                     })
                     .build()
@@ -249,7 +251,7 @@ class PreferencesFlowNode(
             is NavTarget.EditDefaultNotificationSetting -> {
                 val callback = object : EditDefaultNotificationSettingNode.Callback {
                     override fun navigateToRoomNotificationSettings(roomId: RoomId) {
-                        plugins<PreferencesEntryPoint.Callback>().forEach { it.navigateToRoomNotificationSettings(roomId) }
+                        callback.navigateToRoomNotificationSettings(roomId)
                     }
                 }
                 val input = EditDefaultNotificationSettingNode.Inputs(navTarget.isOneToOne)
@@ -271,7 +273,7 @@ class PreferencesFlowNode(
             NavTarget.SignOut -> {
                 val callBack: LogoutEntryPoint.Callback = object : LogoutEntryPoint.Callback {
                     override fun navigateToSecureBackup() {
-                        plugins<PreferencesEntryPoint.Callback>().forEach { it.navigateToSecureBackup() }
+                        callback.navigateToSecureBackup()
                     }
                 }
                 logoutEntryPoint.nodeBuilder(this, buildContext)

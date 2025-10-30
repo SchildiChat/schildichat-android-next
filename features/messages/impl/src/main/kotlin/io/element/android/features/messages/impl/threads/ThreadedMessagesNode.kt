@@ -22,7 +22,6 @@ import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
@@ -44,8 +43,8 @@ import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.libraries.androidutils.browser.openUrlInChromeCustomTab
 import io.element.android.libraries.androidutils.system.openUrlInExternalApp
 import io.element.android.libraries.architecture.NodeInputs
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.inputs
-import io.element.android.libraries.core.bool.orFalse
 import io.element.android.libraries.designsystem.utils.OnLifecycleEvent
 import io.element.android.libraries.di.RoomScope
 import io.element.android.libraries.di.annotations.SessionCoroutineScope
@@ -88,14 +87,13 @@ class ThreadedMessagesNode(
     private val permalinkParser: PermalinkParser,
     private val appNavigationStateService: AppNavigationStateService,
 ) : Node(buildContext, plugins = plugins), MessagesNavigator {
-    private val callbacks = plugins<Callback>()
-
     data class Inputs(
         val threadRootEventId: ThreadId,
         val focusedEventId: EventId?,
     ) : NodeInputs
 
     private val inputs = inputs<Inputs>()
+    private val callback: Callback = callback()
 
     // TODO use a loading state node to preload this instead of using `runBlocking`
     private val threadedTimeline = runBlocking { room.createTimeline(CreateTimelineParams.Threaded(threadRootEventId = inputs.threadRootEventId)).getOrThrow() }
@@ -145,20 +143,6 @@ class ThreadedMessagesNode(
         )
     }
 
-    private fun onEventClick(timelineMode: Timeline.Mode, event: TimelineItem.Event): Boolean {
-        // Note: cannot use `callbacks.all { it.onEventClick(event) }` because:
-        // - if callbacks is empty, it will return true and we want to return false.
-        // - if a callback returns false, the other callback will not be invoked.
-        return callbacks.takeIf { it.isNotEmpty() }
-            ?.map { it.handleEventClick(timelineMode, event) }
-            ?.all { it }
-            .orFalse()
-    }
-
-    private fun navigateToRoomMemberDetails(userId: UserId) {
-        callbacks.forEach { it.navigateToRoomMemberDetails(userId) }
-    }
-
     private fun onLinkClick(
         activity: Activity,
         darkTheme: Boolean,
@@ -170,7 +154,7 @@ class ThreadedMessagesNode(
             is PermalinkData.UserLink -> {
                 // Open the room member profile, it will fallback to
                 // the user profile if the user is not in the room
-                callbacks.forEach { it.navigateToRoomMemberDetails(permalink.userId) }
+                callback.navigateToRoomMemberDetails(permalink.userId)
             }
             is PermalinkData.RoomLink -> {
                 handleRoomLinkClick(permalink, eventSink)
@@ -204,52 +188,40 @@ class ThreadedMessagesNode(
                 navigateUp()
             }
         } else {
-            callbacks.forEach { it.handlePermalinkClick(roomLink) }
+            callback.handlePermalinkClick(roomLink)
         }
     }
 
     override fun navigateToEventDebugInfo(eventId: EventId?, debugInfo: TimelineItemDebugInfo) {
-        callbacks.forEach { it.navigateToEventDebugInfo(eventId, debugInfo) }
+        callback.navigateToEventDebugInfo(eventId, debugInfo)
     }
 
     override fun forwardEvent(eventId: EventId) {
-        callbacks.forEach { it.handleForwardEventClick(eventId) }
+        callback.handleForwardEventClick(eventId)
     }
 
     override fun navigateToReportMessage(eventId: EventId, senderId: UserId) {
-        callbacks.forEach { it.navigateToReportMessage(eventId, senderId) }
+        callback.navigateToReportMessage(eventId, senderId)
     }
 
     override fun navigateToEditPoll(eventId: EventId) {
-        callbacks.forEach { it.navigateToEditPoll(eventId) }
+        callback.navigateToEditPoll(eventId)
     }
 
     override fun navigateToPreviewAttachments(attachments: ImmutableList<Attachment>, inReplyToEventId: EventId?) {
-        callbacks.forEach { it.navigateToPreviewAttachments(attachments, inReplyToEventId) }
+        callback.navigateToPreviewAttachments(attachments, inReplyToEventId)
     }
 
     override fun navigateToRoom(roomId: RoomId, eventId: EventId?, serverNames: List<String>) {
         val permalinkData = PermalinkData.RoomLink(roomId.toRoomIdOrAlias(), eventId, viaParameters = serverNames.toImmutableList())
-        callbacks.forEach { it.handlePermalinkClick(permalinkData) }
+        callback.handlePermalinkClick(permalinkData)
     }
 
     override fun navigateToThread(threadRootId: ThreadId, focusedEventId: EventId?) {
-        callbacks.forEach { it.navigateToThread(threadRootId, focusedEventId) }
+        callback.navigateToThread(threadRootId, focusedEventId)
     }
 
     override fun onNavigateUp() = navigateUp()
-
-    private fun navigateToSendLocation() {
-        callbacks.forEach { it.navigateToSendLocation() }
-    }
-
-    private fun navigateToCreatePoll() {
-        callbacks.forEach { it.navigateToCreatePoll() }
-    }
-
-    private fun navigateToRoomCall() {
-        callbacks.forEach { it.navigateToRoomCall(room.roomId) }
-    }
 
     @Composable
     override fun View(modifier: Modifier) {
@@ -271,17 +243,17 @@ class ThreadedMessagesNode(
                 onRoomDetailsClick = {},
                 onEventContentClick = { isLive, event ->
                     if (isLive) {
-                        onEventClick(timelineController.mainTimelineMode(), event)
+                        callback.handleEventClick(timelineController.mainTimelineMode(), event)
                     } else {
                         val detachedTimelineMode = timelineController.detachedTimelineMode()
                         if (detachedTimelineMode != null) {
-                            onEventClick(detachedTimelineMode, event)
+                            callback.handleEventClick(detachedTimelineMode, event)
                         } else {
                             false
                         }
                     }
                 },
-                onUserDataClick = this::navigateToRoomMemberDetails,
+                onUserDataClick = callback::navigateToRoomMemberDetails,
                 onLinkClick = { url, customTab ->
                     onLinkClick(
                         activity = activity,
@@ -291,9 +263,9 @@ class ThreadedMessagesNode(
                         customTab = customTab,
                     )
                 },
-                onSendLocationClick = this::navigateToSendLocation,
-                onCreatePollClick = this::navigateToCreatePoll,
-                onJoinCallClick = this::navigateToRoomCall,
+                onSendLocationClick = callback::navigateToSendLocation,
+                onCreatePollClick = callback::navigateToCreatePoll,
+                onJoinCallClick = { callback.navigateToRoomCall(room.roomId) },
                 onViewAllPinnedMessagesClick = {},
                 modifier = modifier,
                 knockRequestsBannerView = {},

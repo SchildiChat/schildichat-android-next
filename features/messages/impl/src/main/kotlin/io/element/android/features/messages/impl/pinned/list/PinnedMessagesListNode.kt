@@ -17,7 +17,6 @@ import androidx.compose.ui.platform.LocalView
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
@@ -27,6 +26,7 @@ import io.element.android.features.messages.impl.timeline.di.TimelineItemPresent
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.libraries.androidutils.system.copyToClipboard
 import io.element.android.libraries.androidutils.system.openUrlInExternalApp
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.di.RoomScope
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.UserId
@@ -34,7 +34,6 @@ import io.element.android.libraries.matrix.api.permalink.PermalinkData
 import io.element.android.libraries.matrix.api.permalink.PermalinkParser
 import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.matrix.api.timeline.item.TimelineItemDebugInfo
-import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.ui.strings.CommonStrings
 
 @ContributesNode(RoomScope::class)
@@ -56,6 +55,7 @@ class PinnedMessagesListNode(
         fun handleForwardEventClick(eventId: EventId)
     }
 
+    private val callback: Callback = callback()
     private val presenter = presenterFactory.create(
         navigator = this,
         actionListPresenter = actionListPresenterFactory.create(
@@ -63,25 +63,16 @@ class PinnedMessagesListNode(
             timelineMode = Timeline.Mode.PinnedEvents,
         )
     )
-    private val callbacks = plugins<Callback>()
-
-    private fun handleEventClick(event: TimelineItem.Event) {
-        return callbacks.forEach { it.handleEventClick(event) }
-    }
-
-    private fun navigateToRoomMemberDetails(user: MatrixUser) {
-        callbacks.forEach { it.navigateToRoomMemberDetails(user.userId) }
-    }
 
     private fun onLinkClick(context: Context, url: String) {
         when (val permalink = permalinkParser.parse(url)) {
             is PermalinkData.UserLink -> {
                 // Open the room member profile, it will fallback to
                 // the user profile if the user is not in the room
-                callbacks.forEach { it.navigateToRoomMemberDetails(permalink.userId) }
+                callback.navigateToRoomMemberDetails(permalink.userId)
             }
             is PermalinkData.RoomLink -> {
-                callbacks.forEach { it.handlePermalinkClick(permalink) }
+                callback.handlePermalinkClick(permalink)
             }
             is PermalinkData.FallbackLink,
             is PermalinkData.RoomEmailInviteLink -> {
@@ -91,15 +82,15 @@ class PinnedMessagesListNode(
     }
 
     override fun viewInTimeline(eventId: EventId) {
-        callbacks.forEach { it.viewInTimeline(eventId) }
+        callback.viewInTimeline(eventId)
     }
 
     override fun navigateToEventDebugInfo(eventId: EventId?, debugInfo: TimelineItemDebugInfo) {
-        callbacks.forEach { it.navigateToEventDebugInfo(eventId, debugInfo) }
+        callback.navigateToEventDebugInfo(eventId, debugInfo)
     }
 
     override fun forwardEvent(eventId: EventId) {
-        callbacks.forEach { it.handleForwardEventClick(eventId) }
+        callback.handleForwardEventClick(eventId)
     }
 
     @Composable
@@ -113,8 +104,8 @@ class PinnedMessagesListNode(
             PinnedMessagesListView(
                 state = state,
                 onBackClick = ::navigateUp,
-                onEventClick = ::handleEventClick,
-                onUserDataClick = ::navigateToRoomMemberDetails,
+                onEventClick = callback::handleEventClick,
+                onUserDataClick = { callback.navigateToRoomMemberDetails(it.userId) },
                 onLinkClick = { link -> onLinkClick(context, link.url) },
                 onLinkLongClick = {
                     view.performHapticFeedback(

@@ -18,7 +18,6 @@ import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import im.vector.app.features.analytics.plan.MobileScreen
@@ -26,6 +25,7 @@ import io.element.android.annotations.ContributesNode
 import io.element.android.features.leaveroom.api.LeaveRoomRenderer
 import io.element.android.libraries.androidutils.system.startSharePlainTextIntent
 import io.element.android.libraries.architecture.appyx.launchMolecule
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.di.RoomScope
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.room.BaseRoom
@@ -63,7 +63,7 @@ class RoomDetailsNode(
         fun navigateToSelectNewOwnersWhenLeaving()
     }
 
-    private val callback = plugins<Callback>().single()
+    private val callback: Callback = callback()
 
     init {
         lifecycle.subscribe(

@@ -15,7 +15,6 @@ import androidx.lifecycle.lifecycleScope
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import com.bumble.appyx.navmodel.backstack.BackStack
 import com.bumble.appyx.navmodel.backstack.operation.newRoot
 import com.bumble.appyx.navmodel.backstack.operation.pop
@@ -29,6 +28,7 @@ import io.element.android.features.securebackup.api.SecureBackupEntryPoint
 import io.element.android.features.verifysession.api.OutgoingVerificationEntryPoint
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.designsystem.utils.OpenUrlInTabView
 import io.element.android.libraries.di.SessionScope
@@ -69,6 +69,8 @@ class FtueSessionVerificationFlowNode(
         fun onDone()
     }
 
+    private val callback: Callback = callback()
+
     private val secureBackupEntryPointCallback = object : SecureBackupEntryPoint.Callback {
         override fun onDone() {
             lifecycleScope.launch {
@@ -102,13 +104,15 @@ class FtueSessionVerificationFlowNode(
             }
             is NavTarget.UseAnotherDevice -> {
                 outgoingVerificationEntryPoint.nodeBuilder(this, buildContext)
-                    .params(OutgoingVerificationEntryPoint.Params(
-                        showDeviceVerifiedScreen = true,
-                        verificationRequest = VerificationRequest.Outgoing.CurrentSession,
-                    ))
+                    .params(
+                        OutgoingVerificationEntryPoint.Params(
+                            showDeviceVerifiedScreen = true,
+                            verificationRequest = VerificationRequest.Outgoing.CurrentSession,
+                        )
+                    )
                     .callback(object : OutgoingVerificationEntryPoint.Callback {
                         override fun onDone() {
-                            plugins<Callback>().forEach { it.onDone() }
+                            callback.onDone()
                         }
 
                         override fun onBack() {
@@ -133,7 +137,7 @@ class FtueSessionVerificationFlowNode(
                     .params(SecureBackupEntryPoint.Params(SecureBackupEntryPoint.InitialTarget.ResetIdentity))
                     .callback(object : SecureBackupEntryPoint.Callback {
                         override fun onDone() {
-                            plugins<Callback>().forEach { it.onDone() }
+                            callback.onDone()
                         }
                     })
                     .build()

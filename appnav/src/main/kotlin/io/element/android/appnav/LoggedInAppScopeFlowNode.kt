@@ -21,13 +21,13 @@ import com.bumble.appyx.core.navigation.model.permanent.PermanentNavModel
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.node.ParentNode
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.appnav.di.SessionGraphFactory
 import io.element.android.libraries.architecture.NodeInputs
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.di.DependencyInjectionGraphOwner
@@ -60,6 +60,8 @@ class LoggedInAppScopeFlowNode(
         fun navigateToAddAccount()
     }
 
+    private val callback: Callback = callback()
+
     @Parcelize
     object NavTarget : Parcelable
 
@@ -82,11 +84,11 @@ class LoggedInAppScopeFlowNode(
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         val callback = object : LoggedInFlowNode.Callback {
             override fun navigateToBugReport() {
-                plugins<Callback>().forEach { it.navigateToBugReport() }
+                callback.navigateToBugReport()
             }
 
             override fun navigateToAddAccount() {
-                plugins<Callback>().forEach { it.navigateToAddAccount() }
+                callback.navigateToAddAccount()
             }
         }
         return createNode<LoggedInFlowNode>(buildContext, listOf(callback))

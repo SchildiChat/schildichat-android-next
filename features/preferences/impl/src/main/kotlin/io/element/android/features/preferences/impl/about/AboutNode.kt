@@ -19,6 +19,7 @@ import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.libraries.androidutils.browser.openUrlInChromeCustomTab
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.di.SessionScope
 
 @ContributesNode(SessionScope::class)
@@ -31,6 +32,8 @@ class AboutNode(
     interface Callback : Plugin {
         fun navigateToOssLicenses()
     }
+
+    private val callback: Callback = callback()
 
     private fun onElementLegalClick(
         activity: Activity,
@@ -51,9 +54,7 @@ class AboutNode(
             onElementLegalClick = { elementLegal ->
                 onElementLegalClick(activity, isDark, elementLegal)
             },
-            onOpenSourceLicensesClick = {
-                plugins.filterIsInstance<Callback>().forEach { it.navigateToOssLicenses() }
-            },
+            onOpenSourceLicensesClick = callback::navigateToOssLicenses,
             modifier = modifier
         )
     }

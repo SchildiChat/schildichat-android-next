@@ -24,7 +24,6 @@ import com.bumble.appyx.core.navigation.NavKey
 import com.bumble.appyx.core.navigation.model.permanent.PermanentNavModel
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import com.bumble.appyx.navmodel.backstack.BackStack
 import com.bumble.appyx.navmodel.backstack.BackStack.State.ACTIVE
 import com.bumble.appyx.navmodel.backstack.BackStack.State.CREATED
@@ -67,6 +66,7 @@ import io.element.android.features.userprofile.api.UserProfileEntryPoint
 import io.element.android.features.verifysession.api.IncomingVerificationEntryPoint
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.architecture.waitForChildAttached
 import io.element.android.libraries.architecture.waitForNavTargetAttached
@@ -152,6 +152,7 @@ class LoggedInFlowNode(
         fun navigateToAddAccount()
     }
 
+    private val callback: Callback = callback()
     private val loggedInFlowProcessor = LoggedInEventProcessor(
         snackbarDispatcher = snackbarDispatcher,
         roomMembershipObserver = matrixClient.roomMembershipObserver,
@@ -329,7 +330,7 @@ class LoggedInFlowNode(
                     }
 
                     override fun navigateToBugReport() {
-                        plugins<Callback>().forEach { it.navigateToBugReport() }
+                        callback.navigateToBugReport()
                     }
                 }
                 homeEntryPoint
@@ -396,11 +397,11 @@ class LoggedInFlowNode(
             is NavTarget.Settings -> {
                 val callback = object : PreferencesEntryPoint.Callback {
                     override fun navigateToAddAccount() {
-                        plugins<Callback>().forEach { it.navigateToAddAccount() }
+                        callback.navigateToAddAccount()
                     }
 
                     override fun navigateToBugReport() {
-                        plugins<Callback>().forEach { it.navigateToBugReport() }
+                        callback.navigateToAddAccount()
                     }
 
                     override fun navigateToSecureBackup() {

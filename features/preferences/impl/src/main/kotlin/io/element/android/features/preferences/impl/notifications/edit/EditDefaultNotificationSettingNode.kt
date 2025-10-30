@@ -12,11 +12,11 @@ import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.libraries.architecture.NodeInputs
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.core.RoomId
@@ -36,20 +36,16 @@ class EditDefaultNotificationSettingNode(
         val isOneToOne: Boolean
     ) : NodeInputs
 
+    private val callback: Callback = callback()
     private val inputs = inputs<Inputs>()
-    private val callbacks = plugins<Callback>()
     private val presenter = presenterFactory.create(inputs.isOneToOne)
-
-    private fun navigateToRoomNotificationSettings(roomId: RoomId) {
-        callbacks.forEach { it.navigateToRoomNotificationSettings(roomId) }
-    }
 
     @Composable
     override fun View(modifier: Modifier) {
         val state = presenter.present()
         EditDefaultNotificationSettingView(
             state = state,
-            openRoomNotificationSettings = { navigateToRoomNotificationSettings(it) },
+            openRoomNotificationSettings = callback::navigateToRoomNotificationSettings,
             onBackClick = ::navigateUp,
             modifier = modifier,
         )

@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import com.bumble.appyx.navmodel.backstack.BackStack
 import com.bumble.appyx.navmodel.backstack.operation.pop
 import com.bumble.appyx.navmodel.backstack.operation.push
@@ -29,6 +28,7 @@ import io.element.android.features.securebackup.impl.setup.SecureBackupSetupNode
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.appyx.canPop
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.di.SessionScope
 import kotlinx.parcelize.Parcelize
@@ -71,7 +71,7 @@ class SecureBackupFlowNode(
         data object ResetIdentity : NavTarget
     }
 
-    private val callbacks = plugins<SecureBackupEntryPoint.Callback>()
+    private val callback: SecureBackupEntryPoint.Callback = callback()
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         return when (navTarget) {
@@ -116,7 +116,7 @@ class SecureBackupFlowNode(
                         if (backstack.canPop()) {
                             backstack.pop()
                         } else {
-                            callbacks.forEach { it.onDone() }
+                            callback.onDone()
                         }
                     }
                 }
@@ -125,7 +125,7 @@ class SecureBackupFlowNode(
             is NavTarget.ResetIdentity -> {
                 val callback = object : ResetIdentityFlowNode.Callback {
                     override fun onDone() {
-                        callbacks.forEach { it.onDone() }
+                        callback.onDone()
                     }
                 }
                 createNode<ResetIdentityFlowNode>(buildContext, listOf(callback))

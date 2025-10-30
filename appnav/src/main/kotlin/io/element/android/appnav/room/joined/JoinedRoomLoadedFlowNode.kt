@@ -31,6 +31,7 @@ import io.element.android.features.space.api.SpaceEntryPoint
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.NodeInputs
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.architecture.waitForChildAttached
 import io.element.android.libraries.di.DependencyInjectionGraphOwner
@@ -87,7 +88,7 @@ class JoinedRoomLoadedFlowNode(
     ) : NodeInputs
 
     private val inputs: Inputs = inputs()
-    private val callbacks = plugins.filterIsInstance<Callback>()
+    private val callback: Callback = callback()
     override val graph = roomGraphFactory.create(inputs.room)
 
     init {
@@ -124,15 +125,15 @@ class JoinedRoomLoadedFlowNode(
     private fun createRoomDetailsNode(buildContext: BuildContext, initialTarget: RoomDetailsEntryPoint.InitialTarget): Node {
         val callback = object : RoomDetailsEntryPoint.Callback {
             override fun navigateToGlobalNotificationSettings() {
-                callbacks.forEach { it.navigateToGlobalNotificationSettings() }
+                callback.navigateToGlobalNotificationSettings()
             }
 
             override fun navigateToRoom(roomId: RoomId, serverNames: List<String>) {
-                callbacks.forEach { it.navigateToRoom(roomId, serverNames) }
+                callback.navigateToRoom(roomId, serverNames)
             }
 
             override fun handlePermalinkClick(data: PermalinkData, pushToBackstack: Boolean) {
-                callbacks.forEach { it.handlePermalinkClick(data, pushToBackstack) }
+                callback.handlePermalinkClick(data, pushToBackstack)
             }
 
             override fun startForwardEventFlow(eventId: EventId) {
@@ -172,7 +173,7 @@ class JoinedRoomLoadedFlowNode(
                     override fun onDone(roomIds: List<RoomId>) {
                         backstack.pop()
                         roomIds.singleOrNull()?.let { roomId ->
-                            callbacks.forEach { it.navigateToRoom(roomId, emptyList()) }
+                            callback.navigateToRoom(roomId, emptyList())
                         }
                     }
                 }
@@ -187,7 +188,7 @@ class JoinedRoomLoadedFlowNode(
     private fun createSpaceNode(buildContext: BuildContext): Node {
         val callback = object : SpaceEntryPoint.Callback {
             override fun navigateToRoom(roomId: RoomId, viaParameters: List<String>) {
-                callbacks.forEach { it.navigateToRoom(roomId, viaParameters) }
+                callback.navigateToRoom(roomId, viaParameters)
             }
 
             override fun navigateToRoomDetails() {
@@ -218,7 +219,7 @@ class JoinedRoomLoadedFlowNode(
             }
 
             override fun handlePermalinkClick(data: PermalinkData, pushToBackstack: Boolean) {
-                callbacks.forEach { it.handlePermalinkClick(data, pushToBackstack) }
+                callback.handlePermalinkClick(data, pushToBackstack)
             }
 
             override fun forwardEvent(eventId: EventId) {
@@ -226,7 +227,7 @@ class JoinedRoomLoadedFlowNode(
             }
 
             override fun navigateToRoom(roomId: RoomId) {
-                callbacks.forEach { it.navigateToRoom(roomId, emptyList()) }
+                callback.navigateToRoom(roomId, emptyList())
             }
         }
         val params = MessagesEntryPoint.Params(

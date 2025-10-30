@@ -13,12 +13,12 @@ import androidx.compose.ui.platform.LocalContext
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.features.login.impl.util.openLearnMorePage
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.matrix.api.auth.OidcDetails
 
 @ContributesNode(AppScope::class)
@@ -34,17 +34,7 @@ class ChooseAccountProviderNode(
         fun navigateToCreateAccount(url: String)
     }
 
-    private fun onOidcDetails(oidcDetails: OidcDetails) {
-        plugins<Callback>().forEach { it.navigateToOidc(oidcDetails) }
-    }
-
-    private fun onLoginPasswordNeeded() {
-        plugins<Callback>().forEach { it.navigateToLoginPassword() }
-    }
-
-    private fun onCreateAccountContinue(url: String) {
-        plugins<Callback>().forEach { it.navigateToCreateAccount(url) }
-    }
+    private val callback: Callback = callback()
 
     @Composable
     override fun View(modifier: Modifier) {
@@ -54,10 +44,10 @@ class ChooseAccountProviderNode(
             state = state,
             modifier = modifier,
             onBackClick = ::navigateUp,
-            onOidcDetails = ::onOidcDetails,
-            onNeedLoginPassword = ::onLoginPasswordNeeded,
+            onOidcDetails = callback::navigateToOidc,
+            onNeedLoginPassword = callback::navigateToLoginPassword,
             onLearnMoreClick = { openLearnMorePage(context) },
-            onCreateAccountContinue = ::onCreateAccountContinue,
+            onCreateAccountContinue = callback::navigateToCreateAccount,
         )
     }
 }

@@ -12,11 +12,11 @@ import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.features.verifysession.api.OutgoingVerificationEntryPoint
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.di.SessionScope
 
@@ -27,8 +27,7 @@ class OutgoingVerificationNode(
     @Assisted plugins: List<Plugin>,
     presenterFactory: OutgoingVerificationPresenter.Factory,
 ) : Node(buildContext, plugins = plugins) {
-    private val callback = plugins<OutgoingVerificationEntryPoint.Callback>().first()
-
+    private val callback: OutgoingVerificationEntryPoint.Callback = callback()
     private val inputs = inputs<OutgoingVerificationEntryPoint.Params>()
 
     private val presenter = presenterFactory.create(

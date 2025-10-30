@@ -16,7 +16,6 @@ import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.navigation.transition.JumpToEndTransitionHandler
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import com.bumble.appyx.navmodel.backstack.BackStack
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
@@ -29,6 +28,7 @@ import io.element.android.features.startchat.impl.root.StartChatNode
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.OverlayView
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.core.RoomId
@@ -60,15 +60,12 @@ class StartChatFlowNode(
         data object JoinByAddress : NavTarget
     }
 
+    private val callback: StartChatEntryPoint.Callback = callback()
     private val navigator = DefaultStartChatNavigator(
         backstack = backstack,
         overlay = overlay,
-        openRoom = { roomIdOrAlias, viaServers ->
-            plugins<StartChatEntryPoint.Callback>().forEach { it.onRoomCreated(roomIdOrAlias, viaServers) }
-        },
-        openRoomDirectory = {
-            plugins<StartChatEntryPoint.Callback>().forEach { it.navigateToRoomDirectory() }
-        }
+        openRoom = callback::onRoomCreated,
+        openRoomDirectory = callback::navigateToRoomDirectory,
     )
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {

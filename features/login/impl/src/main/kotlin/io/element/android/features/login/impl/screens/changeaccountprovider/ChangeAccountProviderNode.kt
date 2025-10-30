@@ -13,12 +13,12 @@ import androidx.compose.ui.platform.LocalContext
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.features.login.impl.util.openLearnMorePage
+import io.element.android.libraries.architecture.callback
 
 @ContributesNode(AppScope::class)
 @AssistedInject
@@ -32,13 +32,7 @@ class ChangeAccountProviderNode(
         fun navigateToSearchAccountProvider()
     }
 
-    private fun onDone() {
-        plugins<Callback>().forEach { it.onDone() }
-    }
-
-    private fun onOtherClick() {
-        plugins<Callback>().forEach { it.navigateToSearchAccountProvider() }
-    }
+    private val callback: Callback = callback()
 
     @Composable
     override fun View(modifier: Modifier) {
@@ -49,8 +43,8 @@ class ChangeAccountProviderNode(
             modifier = modifier,
             onBackClick = ::navigateUp,
             onLearnMoreClick = { openLearnMorePage(context) },
-            onSuccess = ::onDone,
-            onOtherProviderClick = ::onOtherClick,
+            onSuccess = callback::onDone,
+            onOtherProviderClick = callback::navigateToSearchAccountProvider,
         )
     }
 }

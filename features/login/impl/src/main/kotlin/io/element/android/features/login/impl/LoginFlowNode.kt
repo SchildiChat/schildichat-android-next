@@ -18,7 +18,6 @@ import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import com.bumble.appyx.navmodel.backstack.BackStack
 import com.bumble.appyx.navmodel.backstack.operation.push
 import com.bumble.appyx.navmodel.backstack.operation.singleTop
@@ -41,6 +40,7 @@ import io.element.android.libraries.androidutils.browser.openUrlInChromeCustomTa
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.NodeInputs
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.matrix.api.auth.OidcDetails
@@ -70,6 +70,7 @@ class LoginFlowNode(
         val loginHint: String?,
     ) : NodeInputs
 
+    private val callback: LoginEntryPoint.Callback = callback()
     private var activity: Activity? = null
     private var darkTheme: Boolean = false
 
@@ -147,7 +148,7 @@ class LoginFlowNode(
                     }
 
                     override fun navigateToBugReport() {
-                        plugins<LoginEntryPoint.Callback>().forEach { it.navigateToBugReport() }
+                        callback.navigateToBugReport()
                     }
 
                     override fun navigateToOidc(oidcDetails: OidcDetails) {

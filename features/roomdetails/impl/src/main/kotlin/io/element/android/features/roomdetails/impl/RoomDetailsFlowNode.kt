@@ -16,7 +16,6 @@ import androidx.lifecycle.coroutineScope
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import com.bumble.appyx.navmodel.backstack.BackStack
 import com.bumble.appyx.navmodel.backstack.operation.pop
 import com.bumble.appyx.navmodel.backstack.operation.push
@@ -45,6 +44,7 @@ import io.element.android.features.userprofile.shared.UserProfileNodeHelper
 import io.element.android.features.verifysession.api.OutgoingVerificationEntryPoint
 import io.element.android.libraries.architecture.BackstackWithOverlayBox
 import io.element.android.libraries.architecture.BaseFlowNode
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.architecture.overlay.operation.hide
 import io.element.android.libraries.architecture.overlay.operation.show
@@ -145,6 +145,8 @@ class RoomDetailsFlowNode(
         @Parcelize
         data object SelectNewOwnersWhenLeaving : NavTarget
     }
+
+    private val callback: RoomDetailsEntryPoint.Callback = callback()
 
     override fun onBuilt() {
         super.onBuilt()
@@ -260,7 +262,7 @@ class RoomDetailsFlowNode(
                 val input = RoomNotificationSettingsNode.RoomNotificationSettingInput(navTarget.showUserDefinedSettingStyle)
                 val callback = object : RoomNotificationSettingsNode.Callback {
                     override fun navigateToGlobalNotificationSettings() {
-                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.navigateToGlobalNotificationSettings() }
+                        callback.navigateToGlobalNotificationSettings()
                     }
                 }
                 createNode<RoomNotificationSettingsNode>(buildContext, listOf(input, callback))
@@ -273,7 +275,7 @@ class RoomDetailsFlowNode(
                     }
 
                     override fun navigateToRoom(roomId: RoomId) {
-                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.navigateToRoom(roomId, emptyList()) }
+                        callback.navigateToRoom(roomId, emptyList())
                     }
 
                     override fun startCall(dmRoomId: RoomId) {
@@ -323,13 +325,11 @@ class RoomDetailsFlowNode(
                             roomIdOrAlias = room.roomId.toRoomIdOrAlias(),
                             eventId = eventId,
                         )
-                        plugins<RoomDetailsEntryPoint.Callback>().forEach {
-                            it.handlePermalinkClick(permalinkData, pushToBackstack = false)
-                        }
+                        callback.handlePermalinkClick(permalinkData, pushToBackstack = false)
                     }
 
                     override fun forward(eventId: EventId) {
-                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.startForwardEventFlow(eventId) }
+                        callback.startForwardEventFlow(eventId)
                     }
                 }
                 mediaGalleryEntryPoint.nodeBuilder(this, buildContext)
@@ -350,15 +350,15 @@ class RoomDetailsFlowNode(
                     override fun navigateToRoomMemberDetails(userId: UserId) = Unit
 
                     override fun handlePermalinkClick(data: PermalinkData, pushToBackstack: Boolean) {
-                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.handlePermalinkClick(data, pushToBackstack) }
+                        callback.handlePermalinkClick(data, pushToBackstack)
                     }
 
                     override fun forwardEvent(eventId: EventId) {
-                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.startForwardEventFlow(eventId) }
+                        callback.startForwardEventFlow(eventId)
                     }
 
                     override fun navigateToRoom(roomId: RoomId) {
-                        plugins<RoomDetailsEntryPoint.Callback>().forEach { it.navigateToRoom(roomId, emptyList()) }
+                        callback.navigateToRoom(roomId, emptyList())
                     }
                 }
                 return messagesEntryPoint.nodeBuilder(this, buildContext)

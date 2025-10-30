@@ -22,6 +22,7 @@ import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteV
 import io.element.android.features.space.impl.di.SpaceFlowScope
 import io.element.android.libraries.androidutils.R
 import io.element.android.libraries.androidutils.system.startSharePlainTextIntent
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
@@ -46,7 +47,7 @@ class SpaceNode(
         fun startLeaveSpaceFlow()
     }
 
-    private val callback = plugins.filterIsInstance<Callback>().single()
+    private val callback: Callback = callback()
 
     private fun onShareRoom(context: Context) = lifecycleScope.launch {
         matrixClient.getRoom(spaceRoomList.roomId)?.use { room ->

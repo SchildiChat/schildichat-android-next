@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import com.bumble.appyx.navmodel.backstack.BackStack
 import com.bumble.appyx.navmodel.backstack.operation.pop
 import com.bumble.appyx.navmodel.backstack.operation.push
@@ -28,6 +27,7 @@ import io.element.android.features.userprofile.shared.UserProfileNodeHelper
 import io.element.android.features.verifysession.api.OutgoingVerificationEntryPoint
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.di.SessionScope
@@ -67,6 +67,7 @@ class UserProfileFlowNode(
         data class VerifyUser(val userId: UserId) : NavTarget
     }
 
+    private val callback: UserProfileEntryPoint.Callback = callback()
     private val inputs = inputs<UserProfileEntryPoint.Params>()
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
@@ -78,7 +79,7 @@ class UserProfileFlowNode(
                     }
 
                     override fun navigateToRoom(roomId: RoomId) {
-                        plugins<UserProfileEntryPoint.Callback>().forEach { it.navigateToRoom(roomId) }
+                        callback.navigateToRoom(roomId)
                     }
 
                     override fun startCall(dmRoomId: RoomId) {

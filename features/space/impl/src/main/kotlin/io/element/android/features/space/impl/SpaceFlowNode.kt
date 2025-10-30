@@ -28,6 +28,7 @@ import io.element.android.features.space.impl.leave.LeaveSpaceNode
 import io.element.android.features.space.impl.root.SpaceNode
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.di.DependencyInjectionGraphOwner
@@ -52,7 +53,7 @@ class SpaceFlowNode(
     plugins = plugins,
 ), DependencyInjectionGraphOwner {
     private val inputs: SpaceEntryPoint.Inputs = inputs()
-    private val callback = plugins.filterIsInstance<SpaceEntryPoint.Callback>().single()
+    private val callback: SpaceEntryPoint.Callback = callback()
     private val spaceRoomList = spaceService.spaceRoomList(inputs.roomId)
     override val graph = graphFactory.create(spaceRoomList)
 

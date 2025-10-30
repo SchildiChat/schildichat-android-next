@@ -221,7 +221,7 @@ class ThreadedMessagesNode(
         callback.navigateToThread(threadRootId, focusedEventId)
     }
 
-    override fun onNavigateUp() = navigateUp()
+    override fun close() = navigateUp()
 
     @Composable
     override fun View(modifier: Modifier) {

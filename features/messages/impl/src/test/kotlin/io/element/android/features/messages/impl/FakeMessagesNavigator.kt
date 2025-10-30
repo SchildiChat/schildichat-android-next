@@ -24,7 +24,7 @@ class FakeMessagesNavigator(
     private val onPreviewAttachmentLambda: (attachments: ImmutableList<Attachment>, inReplyToEventId: EventId?) -> Unit = { _, _ -> lambdaError() },
     private val onNavigateToRoomLambda: (roomId: RoomId, threadId: EventId?, serverNames: List<String>) -> Unit = { _, _, _ -> lambdaError() },
     private val onOpenThreadLambda: (threadRootId: ThreadId, focusedEventId: EventId?) -> Unit = { _, _ -> lambdaError() },
-    private val onNavigateUpLambda: () -> Unit = { lambdaError() },
+    private val closeLambda: () -> Unit = { lambdaError() },
 ) : MessagesNavigator {
     override fun navigateToEventDebugInfo(eventId: EventId?, debugInfo: TimelineItemDebugInfo) {
         onShowEventDebugInfoClickLambda(eventId, debugInfo)
@@ -54,7 +54,7 @@ class FakeMessagesNavigator(
         onOpenThreadLambda(threadRootId, focusedEventId)
     }
 
-    override fun onNavigateUp() {
-        onNavigateUpLambda()
+    override fun close() {
+        closeLambda()
     }
 }

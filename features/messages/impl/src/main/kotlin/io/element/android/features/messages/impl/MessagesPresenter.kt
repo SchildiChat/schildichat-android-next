@@ -251,7 +251,7 @@ class MessagesPresenter(
                     if (!markingAsReadAndExiting.getAndSet(true)) {
                         val latestEventId = room.liveTimeline.getLatestEventId().getOrElse {
                             Timber.w(it, "Failed to get latest event id to mark as fully read")
-                            navigator.onNavigateUp()
+                            navigator.close()
                             return@launch
                         }
                         latestEventId?.let { eventId ->
@@ -259,7 +259,7 @@ class MessagesPresenter(
                                 markAsFullyRead(room.roomId, eventId)
                             }
                         }
-                        navigator.onNavigateUp()
+                        navigator.close()
                         markingAsReadAndExiting.set(false)
                     }
                 }

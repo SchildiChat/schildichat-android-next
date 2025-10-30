@@ -23,5 +23,5 @@ interface MessagesNavigator {
     fun navigateToPreviewAttachments(attachments: ImmutableList<Attachment>, inReplyToEventId: EventId?)
     fun navigateToRoom(roomId: RoomId, eventId: EventId?, serverNames: List<String>)
     fun navigateToThread(threadRootId: ThreadId, focusedEventId: EventId?)
-    fun onNavigateUp()
+    fun close()
 }

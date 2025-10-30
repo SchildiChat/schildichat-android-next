@@ -224,7 +224,7 @@ class MessagesNode(
         context.toast(CommonStrings.screen_room_permalink_same_room_android)
     }
 
-    override fun onNavigateUp() = navigateUp()
+    override fun close() = navigateUp()
 
     @Composable
     override fun View(modifier: Modifier) {

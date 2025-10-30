@@ -61,11 +61,11 @@ allprojects {
     // See https://github.com/JLLeitschuh/ktlint-gradle#configuration
     configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
         version = ktLintVersion
-        android.set(true)
-        ignoreFailures.set(false)
-        enableExperimentalRules.set(true)
+        android = true
+        ignoreFailures = false
+        enableExperimentalRules = true
         // display the corresponding rule
-        verbose.set(true)
+        verbose = true
         reporters {
             reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN)
             // To have XML report for Danger

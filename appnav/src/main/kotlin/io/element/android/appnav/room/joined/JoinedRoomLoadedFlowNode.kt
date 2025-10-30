@@ -195,10 +195,6 @@ class JoinedRoomLoadedFlowNode(
                 callback.navigateToRoom(roomId, viaParameters)
             }
 
-            override fun navigateToRoomDetails() {
-                backstack.push(NavTarget.RoomDetails)
-            }
-
             override fun navigateToRoomMemberList() {
                 backstack.push(NavTarget.RoomMemberList)
             }

@@ -18,6 +18,7 @@ import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
 import com.bumble.appyx.navmodel.backstack.BackStack
+import com.bumble.appyx.navmodel.backstack.operation.pop
 import com.bumble.appyx.navmodel.backstack.operation.push
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
@@ -26,14 +27,15 @@ import io.element.android.features.space.api.SpaceEntryPoint
 import io.element.android.features.space.impl.di.SpaceFlowGraph
 import io.element.android.features.space.impl.leave.LeaveSpaceNode
 import io.element.android.features.space.impl.root.SpaceNode
+import io.element.android.features.space.impl.settings.SpaceSettingsNode
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
-import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.di.DependencyInjectionGraphOwner
 import io.element.android.libraries.di.RoomScope
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.room.BaseRoom
 import io.element.android.libraries.matrix.api.spaces.SpaceService
 import kotlinx.parcelize.Parcelize
 
@@ -42,6 +44,7 @@ import kotlinx.parcelize.Parcelize
 class SpaceFlowNode(
     @Assisted val buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
+    room: BaseRoom,
     spaceService: SpaceService,
     graphFactory: SpaceFlowGraph.Factory,
 ) : BaseFlowNode<SpaceFlowNode.NavTarget>(
@@ -52,14 +55,16 @@ class SpaceFlowNode(
     buildContext = buildContext,
     plugins = plugins,
 ), DependencyInjectionGraphOwner {
-    private val inputs: SpaceEntryPoint.Inputs = inputs()
     private val callback: SpaceEntryPoint.Callback = callback()
-    private val spaceRoomList = spaceService.spaceRoomList(inputs.roomId)
+    private val spaceRoomList = spaceService.spaceRoomList(room.roomId)
     override val graph = graphFactory.create(spaceRoomList)
 
     sealed interface NavTarget : Parcelable {
         @Parcelize
         data object Root : NavTarget
+
+        @Parcelize
+        data object Settings : NavTarget
 
         @Parcelize
         data object Leave : NavTarget
@@ -77,7 +82,7 @@ class SpaceFlowNode(
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         return when (navTarget) {
             NavTarget.Leave -> {
-                createNode<LeaveSpaceNode>(buildContext, listOf(inputs))
+                createNode<LeaveSpaceNode>(buildContext)
             }
             NavTarget.Root -> {
                 val callback = object : SpaceNode.Callback {
@@ -85,8 +90,8 @@ class SpaceFlowNode(
                         callback.navigateToRoom(roomId, viaParameters)
                     }
 
-                    override fun navigateToRoomDetails() {
-                        callback.navigateToRoomDetails()
+                    override fun navigateToSpaceSettings() {
+                        backstack.push(NavTarget.Settings)
                     }
 
                     override fun navigateToRoomMemberList() {
@@ -97,7 +102,35 @@ class SpaceFlowNode(
                         backstack.push(NavTarget.Leave)
                     }
                 }
-                createNode<SpaceNode>(buildContext, listOf(inputs, callback))
+                createNode<SpaceNode>(buildContext, listOf(callback))
+            }
+            NavTarget.Settings -> {
+                val callback = object : SpaceSettingsNode.Callback {
+                    override fun onBackClick() {
+                        backstack.pop()
+                    }
+
+                    override fun onSpaceInfoClick() {
+                        //TODO
+                    }
+
+                    override fun onMembersClick() {
+                        callback.navigateToRoomMemberList()
+                    }
+
+                    override fun onRolesAndPermissionsClick() {
+                        //TODO
+                    }
+
+                    override fun onSecurityAndPrivacyClick() {
+                        //TODO
+                    }
+
+                    override fun onLeaveSpaceClick() {
+                        backstack.push(NavTarget.Leave)
+                    }
+                }
+                createNode<SpaceSettingsNode>(buildContext, listOf(callback))
             }
         }
     }

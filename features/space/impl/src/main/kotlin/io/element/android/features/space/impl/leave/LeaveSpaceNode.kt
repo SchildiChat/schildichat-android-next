@@ -16,10 +16,9 @@ import com.bumble.appyx.core.plugin.Plugin
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
-import io.element.android.features.space.api.SpaceEntryPoint
 import io.element.android.features.space.impl.di.SpaceFlowScope
-import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.matrix.api.MatrixClient
+import io.element.android.libraries.matrix.api.room.JoinedRoom
 
 @ContributesNode(SpaceFlowScope::class)
 @AssistedInject
@@ -27,10 +26,10 @@ class LeaveSpaceNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
     matrixClient: MatrixClient,
+    room: JoinedRoom,
     presenterFactory: LeaveSpacePresenter.Factory,
 ) : Node(buildContext, plugins = plugins) {
-    private val inputs: SpaceEntryPoint.Inputs = inputs()
-    private val leaveSpaceHandle = matrixClient.spaceService.getLeaveSpaceHandle(inputs.roomId)
+    private val leaveSpaceHandle = matrixClient.spaceService.getLeaveSpaceHandle(room.roomId)
     private val presenter: LeaveSpacePresenter = presenterFactory.create(leaveSpaceHandle)
 
     override fun onBuilt() {

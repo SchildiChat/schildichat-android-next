@@ -10,8 +10,8 @@ package io.element.android.features.changeroommemberroles.impl
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import dev.zacsweers.metro.ContributesBinding
-import io.element.android.features.changeroommemberroes.api.ChangeRoomMemberRolesEntryPoint
-import io.element.android.features.changeroommemberroes.api.ChangeRoomMemberRolesListType
+import io.element.android.features.changeroommemberroles.api.ChangeRoomMemberRolesEntryPoint
+import io.element.android.features.changeroommemberroles.api.ChangeRoomMemberRolesListType
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.room.JoinedRoom

@@ -28,8 +28,8 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import im.vector.app.features.analytics.plan.MobileScreen
 import io.element.android.annotations.ContributesNode
-import io.element.android.features.changeroommemberroes.api.ChangeRoomMemberRolesEntryPoint
-import io.element.android.features.changeroommemberroes.api.ChangeRoomMemberRolesListType
+import io.element.android.features.changeroommemberroles.api.ChangeRoomMemberRolesEntryPoint
+import io.element.android.features.changeroommemberroles.api.ChangeRoomMemberRolesListType
 import io.element.android.features.home.api.HomeEntryPoint
 import io.element.android.features.home.impl.components.RoomListMenuAction
 import io.element.android.features.home.impl.model.RoomListRoomSummary

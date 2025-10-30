@@ -10,7 +10,7 @@ package io.element.android.features.changeroommemberroles.impl
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.bumble.appyx.core.modality.BuildContext
 import com.google.common.truth.Truth.assertThat
-import io.element.android.features.changeroommemberroes.api.ChangeRoomMemberRolesListType
+import io.element.android.features.changeroommemberroles.api.ChangeRoomMemberRolesListType
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
 import io.element.android.tests.testutils.node.TestParentNode
 import kotlinx.coroutines.test.runTest

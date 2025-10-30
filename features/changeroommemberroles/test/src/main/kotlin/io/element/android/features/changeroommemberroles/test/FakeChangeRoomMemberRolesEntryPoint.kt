@@ -5,12 +5,12 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.features.changeroommemberroes.test
+package io.element.android.features.changeroommemberroles.test
 
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
-import io.element.android.features.changeroommemberroes.api.ChangeRoomMemberRolesEntryPoint
-import io.element.android.features.changeroommemberroes.api.ChangeRoomMemberRolesListType
+import io.element.android.features.changeroommemberroles.api.ChangeRoomMemberRolesEntryPoint
+import io.element.android.features.changeroommemberroles.api.ChangeRoomMemberRolesListType
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.tests.testutils.lambda.lambdaError
 

@@ -58,7 +58,7 @@ allprojects {
     configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
         // See https://github.com/pinterest/ktlint/releases/
         // TODO Regularly check for new version here ^
-        version.set("1.1.1")
+        version.set("1.7.1")
         android.set(true)
         ignoreFailures.set(false)
         enableExperimentalRules.set(true)

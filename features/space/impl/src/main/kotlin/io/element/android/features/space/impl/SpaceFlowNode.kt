@@ -88,7 +88,7 @@ class SpaceFlowNode(
                         callback.navigateToRoomDetails()
                     }
 
-                    override fun onOpenMemberList() {
+                    override fun navigateToRoomMemberList() {
                         callback.navigateToRoomMemberList()
                     }
 

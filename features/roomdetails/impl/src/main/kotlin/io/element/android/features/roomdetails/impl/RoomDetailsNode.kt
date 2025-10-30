@@ -63,7 +63,7 @@ class RoomDetailsNode(
         fun navigateToSelectNewOwnersWhenLeaving()
     }
 
-    private val callback = plugins<Callback>().first()
+    private val callback = plugins<Callback>().single()
 
     init {
         lifecycle.subscribe(
@@ -71,30 +71,6 @@ class RoomDetailsNode(
                 analyticsService.screen(MobileScreen(screenName = MobileScreen.ScreenName.RoomDetails))
             }
         )
-    }
-
-    private fun openRoomMemberList() {
-        callback.navigateToRoomMemberList()
-    }
-
-    private fun openRoomNotificationSettings() {
-        callback.navigateToRoomNotificationSettings()
-    }
-
-    private fun invitePeople() {
-        callback.navigateToInviteMembers()
-    }
-
-    private fun openPollHistory() {
-        callback.navigateToPollHistory()
-    }
-
-    private fun openMediaGallery() {
-        callback.navigateToMediaGallery()
-    }
-
-    private fun onJoinCall() {
-        callback.navigateToRoomCall()
     }
 
     private fun CoroutineScope.onShareRoom(context: Context) = launch {
@@ -110,42 +86,6 @@ class RoomDetailsNode(
             .onFailure {
                 Timber.e(it)
             }
-    }
-
-    private fun onEditRoomDetails() {
-        callback.navigateToRoomDetailsEdit()
-    }
-
-    private fun openAvatarPreview(name: String, url: String) {
-        callback.navigateToAvatarPreview(name, url)
-    }
-
-    private fun openAdminSettings() {
-        callback.navigateToAdminSettings()
-    }
-
-    private fun openPinnedMessages() {
-        callback.navigateToPinnedMessagesList()
-    }
-
-    private fun openKnockRequestsLists() {
-        callback.navigateToKnockRequestsList()
-    }
-
-    private fun openSecurityAndPrivacy() {
-        callback.navigateToSecurityAndPrivacy()
-    }
-
-    private fun onProfileClick(userId: UserId) {
-        callback.navigateToRoomMemberDetails(userId)
-    }
-
-    private fun onReportRoomClick() {
-        callback.navigateToReportRoom()
-    }
-
-    private fun onSelectNewOwnersWhenLeaving() {
-        return callback.navigateToSelectNewOwnersWhenLeaving()
     }
 
     private val stateFlow = launchMolecule { presenter.present() }
@@ -165,34 +105,38 @@ class RoomDetailsNode(
 
         fun onActionClick(action: RoomDetailsAction) {
             when (action) {
-                RoomDetailsAction.Edit -> onEditRoomDetails()
-                RoomDetailsAction.AddTopic -> onEditRoomDetails()
+                RoomDetailsAction.Edit -> {
+                    callback.navigateToRoomDetailsEdit()
+                }
+                RoomDetailsAction.AddTopic -> {
+                    callback.navigateToRoomDetailsEdit()
+                }
             }
         }
 
         RoomDetailsView(
             state = state,
             modifier = modifier,
-            goBack = this::navigateUp,
+            goBack = ::navigateUp,
             onActionClick = ::onActionClick,
             onShareRoom = ::onShareRoom,
-            openRoomMemberList = ::openRoomMemberList,
-            openRoomNotificationSettings = ::openRoomNotificationSettings,
-            invitePeople = ::invitePeople,
-            openAvatarPreview = ::openAvatarPreview,
-            openPollHistory = ::openPollHistory,
-            openMediaGallery = ::openMediaGallery,
-            openAdminSettings = this::openAdminSettings,
-            onJoinCallClick = ::onJoinCall,
-            onPinnedMessagesClick = ::openPinnedMessages,
-            onKnockRequestsClick = ::openKnockRequestsLists,
-            onSecurityAndPrivacyClick = ::openSecurityAndPrivacy,
-            onProfileClick = ::onProfileClick,
-            onReportRoomClick = ::onReportRoomClick,
+            openRoomMemberList = callback::navigateToRoomMemberList,
+            openRoomNotificationSettings = callback::navigateToRoomNotificationSettings,
+            invitePeople = callback::navigateToInviteMembers,
+            openAvatarPreview = callback::navigateToAvatarPreview,
+            openPollHistory = callback::navigateToPollHistory,
+            openMediaGallery = callback::navigateToMediaGallery,
+            openAdminSettings = callback::navigateToAdminSettings,
+            onJoinCallClick = callback::navigateToRoomCall,
+            onPinnedMessagesClick = callback::navigateToPinnedMessagesList,
+            onKnockRequestsClick = callback::navigateToKnockRequestsList,
+            onSecurityAndPrivacyClick = callback::navigateToSecurityAndPrivacy,
+            onProfileClick = callback::navigateToRoomMemberDetails,
+            onReportRoomClick = callback::navigateToReportRoom,
             leaveRoomView = {
                 leaveRoomRenderer.Render(
                     state = state.leaveRoomState,
-                    onSelectNewOwners = { onSelectNewOwnersWhenLeaving() },
+                    onSelectNewOwners = { callback.navigateToSelectNewOwnersWhenLeaving() },
                     modifier = Modifier
                 )
             }

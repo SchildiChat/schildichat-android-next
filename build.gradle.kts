@@ -1,3 +1,5 @@
+import org.gradle.accessors.dm.LibrariesForLibs
+
 /*
  * Copyright 2022-2024 New Vector Ltd.
  *
@@ -26,6 +28,8 @@ plugins {
 tasks.register<Delete>("clean").configure {
     delete(rootProject.layout.buildDirectory)
 }
+
+private val ktLintVersion = the<LibrariesForLibs>().versions.ktlint.get()
 
 allprojects {
     // Detekt
@@ -56,9 +60,7 @@ allprojects {
 
     // See https://github.com/JLLeitschuh/ktlint-gradle#configuration
     configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
-        // See https://github.com/pinterest/ktlint/releases/
-        // TODO Regularly check for new version here ^
-        version.set("1.7.1")
+        version = ktLintVersion
         android.set(true)
         ignoreFailures.set(false)
         enableExperimentalRules.set(true)

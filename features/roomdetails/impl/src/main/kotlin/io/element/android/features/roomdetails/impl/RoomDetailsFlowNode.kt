@@ -148,9 +148,11 @@ class RoomDetailsFlowNode(
 
     override fun onBuilt() {
         super.onBuilt()
-        whenChildrenAttached { commonLifecycle: Lifecycle,
-                               roomDetailsNode: RoomDetailsNode,
-                               changeRoomMemberRolesNode: ChangeRoomMemberRolesEntryPoint.NodeProxy ->
+        whenChildrenAttached {
+            commonLifecycle: Lifecycle,
+            roomDetailsNode: RoomDetailsNode,
+            changeRoomMemberRolesNode: ChangeRoomMemberRolesEntryPoint.NodeProxy,
+            ->
             commonLifecycle.coroutineScope.launch {
                 changeRoomMemberRolesNode.waitForRoleChanged()
                 withContext(NonCancellable) {

@@ -159,6 +159,12 @@ class RustTimeline(
         }
     }
 
+    override suspend fun markAsRead(receiptType: ReceiptType): Result<Unit> = withContext(dispatcher) {
+        runCatchingExceptions {
+            inner.markAsRead(receiptType.toRustReceiptType())
+        }
+    }
+
     private fun updatePaginationStatus(direction: Timeline.PaginationDirection, update: (Timeline.PaginationStatus) -> Timeline.PaginationStatus) {
         when (direction) {
             Timeline.PaginationDirection.BACKWARDS -> backwardPaginationStatus.getAndUpdate(update)
@@ -583,6 +589,12 @@ class RustTimeline(
     override suspend fun unpinEvent(eventId: EventId): Result<Boolean> = withContext(dispatcher) {
         runCatchingExceptions {
             inner.unpinEvent(eventId = eventId.value)
+        }
+    }
+
+    override suspend fun getLatestEventId(): Result<EventId?> = withContext(dispatcher) {
+        runCatchingExceptions {
+            inner.latestEventId()?.let(::EventId)
         }
     }
 

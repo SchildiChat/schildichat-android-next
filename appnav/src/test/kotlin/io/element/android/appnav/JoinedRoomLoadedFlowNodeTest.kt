@@ -37,7 +37,10 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 class JoinedRoomLoadedFlowNodeTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -140,6 +143,7 @@ class JoinedRoomLoadedFlowNodeTest {
         spaceEntryPoint: SpaceEntryPoint = FakeSpaceEntryPoint(),
         forwardEntryPoint: ForwardEntryPoint = FakeForwardEntryPoint(),
         activeRoomsHolder: ActiveRoomsHolder = ActiveRoomsHolder(),
+        matrixClient: FakeMatrixClient = FakeMatrixClient(),
     ) = JoinedRoomLoadedFlowNode(
         buildContext = BuildContext.root(savedStateMap = null),
         plugins = plugins,
@@ -148,9 +152,9 @@ class JoinedRoomLoadedFlowNodeTest {
         spaceEntryPoint = spaceEntryPoint,
         forwardEntryPoint = forwardEntryPoint,
         appNavigationStateService = FakeAppNavigationStateService(),
-        sessionCoroutineScope = this,
+        sessionCoroutineScope = backgroundScope,
         roomGraphFactory = FakeRoomGraphFactory(),
-        matrixClient = FakeMatrixClient(),
+        matrixClient = matrixClient,
         activeRoomsHolder = activeRoomsHolder,
     )
 

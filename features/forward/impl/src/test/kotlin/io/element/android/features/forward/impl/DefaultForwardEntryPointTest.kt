@@ -9,14 +9,13 @@ package io.element.android.features.forward.impl
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.bumble.appyx.core.modality.BuildContext
-import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.testing.junit4.util.MainDispatcherRule
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.forward.api.ForwardEntryPoint
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
 import io.element.android.libraries.matrix.test.timeline.FakeTimelineProvider
-import io.element.android.libraries.roomselect.api.RoomSelectEntryPoint
+import io.element.android.libraries.roomselect.test.FakeRoomSelectEntryPoint
 import io.element.android.tests.testutils.lambda.lambdaError
 import io.element.android.tests.testutils.node.TestParentNode
 import kotlinx.coroutines.test.runTest
@@ -38,14 +37,7 @@ class DefaultForwardEntryPointTest {
                 buildContext = buildContext,
                 plugins = plugins,
                 presenterFactory = { _, _ -> createForwardMessagesPresenter() },
-                roomSelectEntryPoint = object : RoomSelectEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(
-                        buildContext: BuildContext,
-                        params: RoomSelectEntryPoint.Params,
-                        callback: RoomSelectEntryPoint.Callback,
-                    ) = lambdaError()
-                }
+                roomSelectEntryPoint = FakeRoomSelectEntryPoint(),
             )
         }
         val callback = object : ForwardEntryPoint.Callback {

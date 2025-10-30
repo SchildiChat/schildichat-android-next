@@ -9,28 +9,23 @@ package io.element.android.features.roomdetails.impl
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.bumble.appyx.core.modality.BuildContext
-import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.testing.junit4.util.MainDispatcherRule
 import com.google.common.truth.Truth.assertThat
-import io.element.android.features.call.api.CallType
-import io.element.android.features.call.api.ElementCallEntryPoint
-import io.element.android.features.changeroommemberroes.api.ChangeRoomMemberRolesEntryPoint
-import io.element.android.features.changeroommemberroes.api.ChangeRoomMemberRolesListType
-import io.element.android.features.knockrequests.api.list.KnockRequestsListEntryPoint
-import io.element.android.features.messages.api.MessagesEntryPoint
-import io.element.android.features.poll.api.history.PollHistoryEntryPoint
-import io.element.android.features.reportroom.api.ReportRoomEntryPoint
+import io.element.android.features.call.test.FakeElementCallEntryPoint
+import io.element.android.features.changeroommemberroes.test.FakeChangeRoomMemberRolesEntryPoint
+import io.element.android.features.knockrequests.test.FakeKnockRequestsListEntryPoint
+import io.element.android.features.messages.test.FakeMessagesEntryPoint
+import io.element.android.features.poll.test.history.FakePollHistoryEntryPoint
+import io.element.android.features.reportroom.test.FakeReportRoomEntryPoint
 import io.element.android.features.roomdetails.api.RoomDetailsEntryPoint
-import io.element.android.features.verifysession.api.OutgoingVerificationEntryPoint
+import io.element.android.features.verifysession.test.FakeOutgoingVerificationEntryPoint
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
-import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.permalink.PermalinkData
-import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.test.A_USER_ID
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
-import io.element.android.libraries.mediaviewer.api.MediaGalleryEntryPoint
-import io.element.android.libraries.mediaviewer.api.MediaViewerEntryPoint
+import io.element.android.libraries.mediaviewer.test.FakeMediaGalleryEntryPoint
+import io.element.android.libraries.mediaviewer.test.FakeMediaViewerEntryPoint
 import io.element.android.services.analytics.test.FakeAnalyticsService
 import io.element.android.tests.testutils.lambda.lambdaError
 import io.element.android.tests.testutils.node.TestParentNode
@@ -52,76 +47,17 @@ class DefaultRoomDetailsEntryPointTest {
             RoomDetailsFlowNode(
                 buildContext = buildContext,
                 plugins = plugins,
-                pollHistoryEntryPoint = object : PollHistoryEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(buildContext: BuildContext) = lambdaError()
-                },
-                elementCallEntryPoint = object : ElementCallEntryPoint {
-                    override fun startCall(callType: CallType) = lambdaError()
-                    override suspend fun handleIncomingCall(
-                        callType: CallType.RoomCall,
-                        eventId: EventId,
-                        senderId: UserId,
-                        roomName: String?,
-                        senderName: String?,
-                        avatarUrl: String?,
-                        timestamp: Long,
-                        expirationTimestamp: Long,
-                        notificationChannelId: String,
-                        textContent: String?
-                    ) = lambdaError()
-                },
+                pollHistoryEntryPoint = FakePollHistoryEntryPoint(),
+                elementCallEntryPoint = FakeElementCallEntryPoint(),
                 room = FakeJoinedRoom(),
                 analyticsService = FakeAnalyticsService(),
-                messagesEntryPoint = object : MessagesEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(
-                        buildContext: BuildContext,
-                        params: MessagesEntryPoint.Params,
-                        callback: MessagesEntryPoint.Callback,
-                    ) = lambdaError()
-                },
-                knockRequestsListEntryPoint = object : KnockRequestsListEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(buildContext: BuildContext) = lambdaError()
-                },
-                mediaViewerEntryPoint = object : MediaViewerEntryPoint {
-                    override fun createParamsForAvatar(filename: String, avatarUrl: String) = lambdaError()
-
-                    context(parentNode: Node)
-                    override fun createNode(
-                        buildContext: BuildContext,
-                        params: MediaViewerEntryPoint.Params,
-                        callback: MediaViewerEntryPoint.Callback,
-                    ) = lambdaError()
-                },
-                mediaGalleryEntryPoint = object : MediaGalleryEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(
-                        buildContext: BuildContext,
-                        callback: MediaGalleryEntryPoint.Callback,
-                    ) = lambdaError()
-                },
-                outgoingVerificationEntryPoint = object : OutgoingVerificationEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(
-                        buildContext: BuildContext,
-                        params: OutgoingVerificationEntryPoint.Params,
-                        callback: OutgoingVerificationEntryPoint.Callback,
-                    ) = lambdaError()
-                },
-                reportRoomEntryPoint = object : ReportRoomEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(buildContext: BuildContext, roomId: RoomId) = lambdaError()
-                },
-                changeRoomMemberRolesEntryPoint = object : ChangeRoomMemberRolesEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(
-                        buildContext: BuildContext,
-                        room: JoinedRoom,
-                        listType: ChangeRoomMemberRolesListType,
-                    ) = lambdaError()
-                },
+                messagesEntryPoint = FakeMessagesEntryPoint(),
+                knockRequestsListEntryPoint = FakeKnockRequestsListEntryPoint(),
+                mediaViewerEntryPoint = FakeMediaViewerEntryPoint(),
+                mediaGalleryEntryPoint = FakeMediaGalleryEntryPoint(),
+                outgoingVerificationEntryPoint = FakeOutgoingVerificationEntryPoint(),
+                reportRoomEntryPoint = FakeReportRoomEntryPoint(),
+                changeRoomMemberRolesEntryPoint = FakeChangeRoomMemberRolesEntryPoint(),
             )
         }
         val callback = object : RoomDetailsEntryPoint.Callback {

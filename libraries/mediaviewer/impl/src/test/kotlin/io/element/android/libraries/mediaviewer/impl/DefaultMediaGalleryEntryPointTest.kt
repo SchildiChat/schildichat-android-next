@@ -9,13 +9,12 @@ package io.element.android.libraries.mediaviewer.impl
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.bumble.appyx.core.modality.BuildContext
-import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.testing.junit4.util.MainDispatcherRule
 import com.google.common.truth.Truth.assertThat
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.mediaviewer.api.MediaGalleryEntryPoint
-import io.element.android.libraries.mediaviewer.api.MediaViewerEntryPoint
 import io.element.android.libraries.mediaviewer.impl.gallery.root.MediaGalleryFlowNode
+import io.element.android.libraries.mediaviewer.test.FakeMediaViewerEntryPoint
 import io.element.android.tests.testutils.lambda.lambdaError
 import io.element.android.tests.testutils.node.TestParentNode
 import org.junit.Rule
@@ -35,15 +34,7 @@ class DefaultMediaGalleryEntryPointTest {
             MediaGalleryFlowNode(
                 buildContext = buildContext,
                 plugins = plugins,
-                mediaViewerEntryPoint = object : MediaViewerEntryPoint {
-                    override fun createParamsForAvatar(filename: String, avatarUrl: String) = lambdaError()
-                    context(parentNode: Node)
-                    override fun createNode(
-                        buildContext: BuildContext,
-                        params: MediaViewerEntryPoint.Params,
-                        callback: MediaViewerEntryPoint.Callback,
-                    ) = lambdaError()
-                },
+                mediaViewerEntryPoint = FakeMediaViewerEntryPoint(),
             )
         }
         val callback = object : MediaGalleryEntryPoint.Callback {

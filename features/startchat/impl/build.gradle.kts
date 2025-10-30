@@ -51,6 +51,7 @@ dependencies {
     testImplementation(projects.libraries.mediaupload.test)
     testImplementation(projects.libraries.permissions.test)
     testImplementation(projects.libraries.usersearch.test)
+    testImplementation(projects.features.createroom.test)
     testImplementation(projects.features.startchat.test)
     testImplementation(projects.libraries.featureflag.test)
 }

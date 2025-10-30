@@ -9,11 +9,10 @@ package io.element.android.features.rageshake.impl.bugreport
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.bumble.appyx.core.modality.BuildContext
-import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.testing.junit4.util.MainDispatcherRule
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.rageshake.api.bugreport.BugReportEntryPoint
-import io.element.android.features.viewfolder.api.ViewFolderEntryPoint
+import io.element.android.features.viewfolder.test.FakeViewFolderEntryPoint
 import io.element.android.tests.testutils.lambda.lambdaError
 import io.element.android.tests.testutils.node.TestParentNode
 import kotlinx.coroutines.test.runTest
@@ -34,14 +33,7 @@ class DefaultBugReportEntryPointTest {
             BugReportFlowNode(
                 buildContext = buildContext,
                 plugins = plugins,
-                viewFolderEntryPoint = object : ViewFolderEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(
-                        buildContext: BuildContext,
-                        params: ViewFolderEntryPoint.Params,
-                        callback: ViewFolderEntryPoint.Callback,
-                    ) = lambdaError()
-                },
+                viewFolderEntryPoint = FakeViewFolderEntryPoint(),
             )
         }
         val callback = object : BugReportEntryPoint.Callback {

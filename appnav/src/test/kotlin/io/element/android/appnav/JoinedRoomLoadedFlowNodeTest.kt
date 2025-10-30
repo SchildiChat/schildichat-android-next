@@ -22,6 +22,7 @@ import io.element.android.appnav.room.RoomNavigationTarget
 import io.element.android.appnav.room.joined.FakeJoinedRoomLoadedFlowNodeCallback
 import io.element.android.appnav.room.joined.JoinedRoomLoadedFlowNode
 import io.element.android.features.forward.api.ForwardEntryPoint
+import io.element.android.features.forward.test.FakeForwardEntryPoint
 import io.element.android.features.messages.api.MessagesEntryPoint
 import io.element.android.features.roomdetails.api.RoomDetailsEntryPoint
 import io.element.android.features.space.api.SpaceEntryPoint
@@ -98,15 +99,6 @@ class JoinedRoomLoadedFlowNodeTest {
         ) = node(buildContext) {}.also {
             nodeId = it.id
         }
-    }
-
-    private class FakeForwardEntryPoint : ForwardEntryPoint {
-        context(parentNode: Node)
-        override fun createNode(
-            buildContext: BuildContext,
-            params: ForwardEntryPoint.Params,
-            callback: ForwardEntryPoint.Callback,
-        ) = node(buildContext) {}
     }
 
     private fun TestScope.createJoinedRoomLoadedFlowNode(

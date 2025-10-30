@@ -9,19 +9,15 @@ package io.element.android.features.userprofile.impl
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.bumble.appyx.core.modality.BuildContext
-import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.testing.junit4.util.MainDispatcherRule
 import com.google.common.truth.Truth.assertThat
-import io.element.android.features.call.api.CallType
-import io.element.android.features.call.api.ElementCallEntryPoint
+import io.element.android.features.call.test.FakeElementCallEntryPoint
 import io.element.android.features.userprofile.api.UserProfileEntryPoint
-import io.element.android.features.verifysession.api.OutgoingVerificationEntryPoint
-import io.element.android.libraries.matrix.api.core.EventId
+import io.element.android.features.verifysession.test.FakeOutgoingVerificationEntryPoint
 import io.element.android.libraries.matrix.api.core.RoomId
-import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.matrix.test.A_USER_ID
-import io.element.android.libraries.mediaviewer.api.MediaViewerEntryPoint
+import io.element.android.libraries.mediaviewer.test.FakeMediaViewerEntryPoint
 import io.element.android.tests.testutils.lambda.lambdaError
 import io.element.android.tests.testutils.node.TestParentNode
 import org.junit.Rule
@@ -43,38 +39,9 @@ class DefaultUserProfileEntryPointTest {
                 buildContext = buildContext,
                 plugins = plugins,
                 sessionId = A_SESSION_ID,
-                elementCallEntryPoint = object : ElementCallEntryPoint {
-                    override fun startCall(callType: CallType) = lambdaError()
-                    override suspend fun handleIncomingCall(
-                        callType: CallType.RoomCall,
-                        eventId: EventId,
-                        senderId: UserId,
-                        roomName: String?,
-                        senderName: String?,
-                        avatarUrl: String?,
-                        timestamp: Long,
-                        expirationTimestamp: Long,
-                        notificationChannelId: String,
-                        textContent: String?
-                    ) = lambdaError()
-                },
-                mediaViewerEntryPoint = object : MediaViewerEntryPoint {
-                    override fun createParamsForAvatar(filename: String, avatarUrl: String) = lambdaError()
-                    context(parentNode: Node)
-                    override fun createNode(
-                        buildContext: BuildContext,
-                        params: MediaViewerEntryPoint.Params,
-                        callback: MediaViewerEntryPoint.Callback
-                    ) = lambdaError()
-                },
-                outgoingVerificationEntryPoint = object : OutgoingVerificationEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(
-                        buildContext: BuildContext,
-                        params: OutgoingVerificationEntryPoint.Params,
-                        callback: OutgoingVerificationEntryPoint.Callback,
-                    ) = lambdaError()
-                },
+                elementCallEntryPoint = FakeElementCallEntryPoint(),
+                mediaViewerEntryPoint = FakeMediaViewerEntryPoint(),
+                outgoingVerificationEntryPoint = FakeOutgoingVerificationEntryPoint(),
             )
         }
         val callback = object : UserProfileEntryPoint.Callback {

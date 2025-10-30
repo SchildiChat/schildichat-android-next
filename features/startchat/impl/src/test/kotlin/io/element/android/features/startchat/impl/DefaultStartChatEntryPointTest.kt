@@ -9,10 +9,9 @@ package io.element.android.features.startchat.impl
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.bumble.appyx.core.modality.BuildContext
-import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.testing.junit4.util.MainDispatcherRule
 import com.google.common.truth.Truth.assertThat
-import io.element.android.features.createroom.api.CreateRoomEntryPoint
+import io.element.android.features.createroom.api.FakeCreateRoomEntryPoint
 import io.element.android.features.startchat.api.StartChatEntryPoint
 import io.element.android.libraries.matrix.api.core.RoomIdOrAlias
 import io.element.android.tests.testutils.lambda.lambdaError
@@ -34,13 +33,7 @@ class DefaultStartChatEntryPointTest {
             StartChatFlowNode(
                 buildContext = buildContext,
                 plugins = plugins,
-                createRoomEntryPoint = object : CreateRoomEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(
-                        buildContext: BuildContext,
-                        callback: CreateRoomEntryPoint.Callback,
-                    ) = lambdaError()
-                },
+                createRoomEntryPoint = FakeCreateRoomEntryPoint(),
             )
         }
         val callback = object : StartChatEntryPoint.Callback {

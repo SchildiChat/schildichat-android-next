@@ -44,6 +44,9 @@ dependencies {
 
     testCommonDependencies(libs, true)
     testImplementation(projects.libraries.matrix.test)
+    testImplementation(projects.libraries.mediaviewer.test)
+    testImplementation(projects.features.call.test)
+    testImplementation(projects.features.verifysession.test)
     testImplementation(projects.features.startchat.test)
     testImplementation(projects.features.enterprise.test)
 }

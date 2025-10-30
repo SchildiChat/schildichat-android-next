@@ -7,21 +7,19 @@
 
 package io.element.android.features.preferences.impl
 
-import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.bumble.appyx.core.modality.BuildContext
-import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.testing.junit4.util.MainDispatcherRule
 import com.google.common.truth.Truth.assertThat
-import io.element.android.features.deactivation.api.AccountDeactivationEntryPoint
-import io.element.android.features.licenses.api.OpenSourceLicensesEntryPoint
-import io.element.android.features.lockscreen.api.LockScreenEntryPoint
-import io.element.android.features.logout.api.LogoutEntryPoint
+import io.element.android.features.deactivation.test.FakeAccountDeactivationEntryPoint
+import io.element.android.features.licenses.test.FakeOpenSourceLicensesEntryPoint
+import io.element.android.features.lockscreen.test.FakeLockScreenEntryPoint
+import io.element.android.features.logout.test.FakeLogoutEntryPoint
 import io.element.android.features.preferences.api.PreferencesEntryPoint
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
-import io.element.android.libraries.troubleshoot.api.NotificationTroubleShootEntryPoint
-import io.element.android.libraries.troubleshoot.api.PushHistoryEntryPoint
+import io.element.android.libraries.troubleshoot.test.FakeNotificationTroubleShootEntryPoint
+import io.element.android.libraries.troubleshoot.test.FakePushHistoryEntryPoint
 import io.element.android.tests.testutils.lambda.lambdaError
 import io.element.android.tests.testutils.node.TestParentNode
 import org.junit.Rule
@@ -41,45 +39,12 @@ class DefaultPreferencesEntryPointTest {
             PreferencesFlowNode(
                 buildContext = buildContext,
                 plugins = plugins,
-                lockScreenEntryPoint = object : LockScreenEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(
-                        buildContext: BuildContext,
-                        navTarget: LockScreenEntryPoint.Target,
-                        callback: LockScreenEntryPoint.Callback,
-                    ) = lambdaError()
-
-                    override fun pinUnlockIntent(context: Context) = lambdaError()
-                },
-                notificationTroubleShootEntryPoint = object : NotificationTroubleShootEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(
-                        buildContext: BuildContext,
-                        callback: NotificationTroubleShootEntryPoint.Callback,
-                    ) = lambdaError()
-                },
-                pushHistoryEntryPoint = object : PushHistoryEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(
-                        buildContext: BuildContext,
-                        callback: PushHistoryEntryPoint.Callback,
-                    ) = lambdaError()
-                },
-                logoutEntryPoint = object : LogoutEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(
-                        buildContext: BuildContext,
-                        callback: LogoutEntryPoint.Callback,
-                    ) = lambdaError()
-                },
-                openSourceLicensesEntryPoint = object : OpenSourceLicensesEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(buildContext: BuildContext) = lambdaError()
-                },
-                accountDeactivationEntryPoint = object : AccountDeactivationEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(buildContext: BuildContext) = lambdaError()
-                },
+                lockScreenEntryPoint = FakeLockScreenEntryPoint(),
+                notificationTroubleShootEntryPoint = FakeNotificationTroubleShootEntryPoint(),
+                pushHistoryEntryPoint = FakePushHistoryEntryPoint(),
+                logoutEntryPoint = FakeLogoutEntryPoint(),
+                openSourceLicensesEntryPoint = FakeOpenSourceLicensesEntryPoint(),
+                accountDeactivationEntryPoint = FakeAccountDeactivationEntryPoint(),
             )
         }
         val callback = object : PreferencesEntryPoint.Callback {

@@ -10,27 +10,23 @@ package io.element.android.features.messages.impl
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.compose.runtime.Composable
 import com.bumble.appyx.core.modality.BuildContext
-import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.testing.junit4.util.MainDispatcherRule
 import com.google.common.truth.Truth.assertThat
-import io.element.android.features.call.api.CallType
-import io.element.android.features.call.api.ElementCallEntryPoint
-import io.element.android.features.forward.api.ForwardEntryPoint
-import io.element.android.features.knockrequests.api.list.KnockRequestsListEntryPoint
-import io.element.android.features.location.api.SendLocationEntryPoint
-import io.element.android.features.location.api.ShowLocationEntryPoint
+import io.element.android.features.call.test.FakeElementCallEntryPoint
+import io.element.android.features.forward.test.FakeForwardEntryPoint
+import io.element.android.features.knockrequests.test.FakeKnockRequestsListEntryPoint
 import io.element.android.features.location.test.FakeLocationService
+import io.element.android.features.location.test.FakeSendLocationEntryPoint
+import io.element.android.features.location.test.FakeShowLocationEntryPoint
 import io.element.android.features.messages.api.MessagesEntryPoint
 import io.element.android.features.messages.impl.pinned.banner.createPinnedEventsTimelineProvider
 import io.element.android.features.messages.impl.timeline.createTimelineController
-import io.element.android.features.poll.api.create.CreatePollEntryPoint
-import io.element.android.features.poll.api.create.CreatePollEntryPoint.Params
+import io.element.android.features.poll.test.create.FakeCreatePollEntryPoint
 import io.element.android.libraries.dateformatter.test.FakeDateFormatter
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.permalink.PermalinkData
-import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
 import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.matrix.test.A_USER_ID
@@ -38,7 +34,7 @@ import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.roomlist.FakeRoomListService
 import io.element.android.libraries.matrix.ui.messages.RoomMemberProfilesCache
 import io.element.android.libraries.matrix.ui.messages.RoomNamesCache
-import io.element.android.libraries.mediaviewer.api.MediaViewerEntryPoint
+import io.element.android.libraries.mediaviewer.test.FakeMediaViewerEntryPoint
 import io.element.android.libraries.textcomposer.mentions.MentionSpanTheme
 import io.element.android.libraries.textcomposer.mentions.MentionSpanUpdater
 import io.element.android.services.analytics.test.FakeAnalyticsService
@@ -65,56 +61,12 @@ class DefaultMessagesEntryPointTest {
                 plugins = plugins,
                 roomListService = FakeRoomListService(),
                 sessionId = A_SESSION_ID,
-                sendLocationEntryPoint = object : SendLocationEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(
-                        buildContext: BuildContext,
-                        timelineMode: Timeline.Mode,
-                    ) = lambdaError()
-                },
-                showLocationEntryPoint = object : ShowLocationEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(buildContext: BuildContext, inputs: ShowLocationEntryPoint.Inputs) = lambdaError()
-                },
-                createPollEntryPoint = object : CreatePollEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(
-                        buildContext: BuildContext,
-                        params: Params,
-                    ) = lambdaError()
-                },
-                elementCallEntryPoint = object : ElementCallEntryPoint {
-                    override fun startCall(callType: CallType) = lambdaError()
-                    override suspend fun handleIncomingCall(
-                        callType: CallType.RoomCall,
-                        eventId: EventId,
-                        senderId: UserId,
-                        roomName: String?,
-                        senderName: String?,
-                        avatarUrl: String?,
-                        timestamp: Long,
-                        expirationTimestamp: Long,
-                        notificationChannelId: String,
-                        textContent: String?,
-                    ) = lambdaError()
-                },
-                mediaViewerEntryPoint = object : MediaViewerEntryPoint {
-                    override fun createParamsForAvatar(filename: String, avatarUrl: String) = lambdaError()
-                    context(parentNode: Node)
-                    override fun createNode(
-                        buildContext: BuildContext,
-                        params: MediaViewerEntryPoint.Params,
-                        callback: MediaViewerEntryPoint.Callback,
-                    ) = lambdaError()
-                },
-                forwardEntryPoint = object : ForwardEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(
-                        buildContext: BuildContext,
-                        params: ForwardEntryPoint.Params,
-                        callback: ForwardEntryPoint.Callback,
-                    ) = lambdaError()
-                },
+                sendLocationEntryPoint = FakeSendLocationEntryPoint(),
+                showLocationEntryPoint = FakeShowLocationEntryPoint(),
+                createPollEntryPoint = FakeCreatePollEntryPoint(),
+                elementCallEntryPoint = FakeElementCallEntryPoint(),
+                mediaViewerEntryPoint = FakeMediaViewerEntryPoint(),
+                forwardEntryPoint = FakeForwardEntryPoint(),
                 analyticsService = FakeAnalyticsService(),
                 locationService = FakeLocationService(),
                 room = FakeBaseRoom(),
@@ -129,10 +81,7 @@ class DefaultMessagesEntryPointTest {
                 mentionSpanTheme = MentionSpanTheme(A_USER_ID),
                 pinnedEventsTimelineProvider = createPinnedEventsTimelineProvider(),
                 timelineController = createTimelineController(),
-                knockRequestsListEntryPoint = object : KnockRequestsListEntryPoint {
-                    context(parentNode: Node)
-                    override fun createNode(buildContext: BuildContext) = lambdaError()
-                },
+                knockRequestsListEntryPoint = FakeKnockRequestsListEntryPoint(),
                 dateFormatter = FakeDateFormatter(),
                 coroutineDispatchers = testCoroutineDispatchers(),
             )

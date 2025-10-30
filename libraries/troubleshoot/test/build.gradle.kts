@@ -13,6 +13,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.libraries.architecture)
     implementation(projects.libraries.troubleshoot.api)
     implementation(projects.tests.testutils)
     implementation(libs.coroutines.test)

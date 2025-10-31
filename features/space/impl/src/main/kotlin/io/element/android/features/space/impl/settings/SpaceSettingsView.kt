@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
+import io.element.android.features.space.impl.R
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
@@ -162,7 +163,7 @@ private fun SecurityAndPrivacyItem(
     modifier: Modifier = Modifier,
 ) {
     ListItem(
-        headlineContent = { Text("Security & privacy") },
+        headlineContent = { Text(stringResource(R.string.screen_space_settings_security_and_privacy)) },
         leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Lock())),
         onClick = onClick,
         modifier = modifier,
@@ -190,7 +191,7 @@ private fun RolesAndPermissionsItem(
     modifier: Modifier = Modifier,
 ) {
     ListItem(
-        headlineContent = { Text("Roles & permissions") },
+        headlineContent = { Text(stringResource(R.string.screen_space_settings_roles_and_permissions)) },
         leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Admin())),
         onClick = onClick,
         modifier = modifier,

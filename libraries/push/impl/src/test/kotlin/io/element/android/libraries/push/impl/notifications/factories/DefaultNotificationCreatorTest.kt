@@ -278,7 +278,7 @@ class DefaultNotificationCreatorTest {
     }
 
     private fun Notification.commonAssertions(
-        expectedGroup: String? = A_SESSION_ID.value,
+        expectedGroup: String? = aMatrixUser().userId.value,
         expectedCategory: String? = NotificationCompat.CATEGORY_MESSAGE,
     ) {
         assertThat(contentIntent).isNotNull()

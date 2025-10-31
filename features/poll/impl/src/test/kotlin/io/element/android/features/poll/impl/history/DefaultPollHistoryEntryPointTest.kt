@@ -9,11 +9,9 @@ package io.element.android.features.poll.impl.history
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.bumble.appyx.core.modality.BuildContext
-import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.testing.junit4.util.MainDispatcherRule
 import com.google.common.truth.Truth.assertThat
-import io.element.android.features.poll.api.create.CreatePollEntryPoint
-import io.element.android.tests.testutils.lambda.lambdaError
+import io.element.android.features.poll.test.create.FakeCreatePollEntryPoint
 import io.element.android.tests.testutils.node.TestParentNode
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
@@ -33,9 +31,7 @@ class DefaultPollHistoryEntryPointTest {
             PollHistoryFlowNode(
                 buildContext = buildContext,
                 plugins = plugins,
-                createPollEntryPoint = object : CreatePollEntryPoint {
-                    override fun nodeBuilder(parentNode: Node, buildContext: BuildContext) = lambdaError()
-                }
+                createPollEntryPoint = FakeCreatePollEntryPoint(),
             )
         }
         val result = entryPoint.createNode(parentNode, BuildContext.root(null))

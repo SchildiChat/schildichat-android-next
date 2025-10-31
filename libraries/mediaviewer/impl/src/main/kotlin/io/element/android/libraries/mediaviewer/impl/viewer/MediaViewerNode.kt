@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
@@ -23,6 +22,7 @@ import io.element.android.compound.colors.SemanticColorsLightDark
 import io.element.android.compound.theme.ForcedDarkElementTheme
 import io.element.android.features.enterprise.api.EnterpriseService
 import io.element.android.features.viewfolder.api.TextFileViewer
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.audio.api.AudioFocus
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
@@ -57,28 +57,19 @@ class MediaViewerNode(
     private val enterpriseService: EnterpriseService,
 ) : Node(buildContext, plugins = plugins),
     MediaViewerNavigator {
+    private val callback: MediaViewerEntryPoint.Callback = callback()
     private val inputs = inputs<MediaViewerEntryPoint.Params>()
 
-    private fun onDone() {
-        plugins<MediaViewerEntryPoint.Callback>().forEach {
-            it.onDone()
-        }
-    }
-
     override fun onViewInTimelineClick(eventId: EventId) {
-        plugins<MediaViewerEntryPoint.Callback>().forEach {
-            it.onViewInTimeline(eventId)
-        }
+        callback.viewInTimeline(eventId)
     }
 
     override fun onForwardClick(eventId: EventId) {
-        plugins<MediaViewerEntryPoint.Callback>().forEach {
-            it.onForwardEvent(eventId)
-        }
+        callback.forwardEvent(eventId)
     }
 
     override fun onItemDeleted() {
-        onDone()
+        callback.onDone()
     }
 
     private val mediaGallerySource = if (inputs.mode == MediaViewerEntryPoint.MediaViewerMode.SingleMedia) {
@@ -153,7 +144,7 @@ class MediaViewerNode(
                 textFileViewer = textFileViewer,
                 modifier = modifier,
                 audioFocus = audioFocus,
-                onBackClick = ::onDone,
+                onBackClick = callback::onDone,
             )
         }
     }

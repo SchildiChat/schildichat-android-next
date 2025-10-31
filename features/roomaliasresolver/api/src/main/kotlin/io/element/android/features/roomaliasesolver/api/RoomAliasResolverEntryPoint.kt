@@ -16,13 +16,12 @@ import io.element.android.libraries.matrix.api.core.RoomAlias
 import io.element.android.libraries.matrix.api.room.alias.ResolvedRoomAlias
 
 interface RoomAliasResolverEntryPoint : FeatureEntryPoint {
-    fun nodeBuilder(parentNode: Node, buildContext: BuildContext): NodeBuilder
-
-    interface NodeBuilder {
-        fun callback(callback: Callback): NodeBuilder
-        fun params(params: Params): NodeBuilder
-        fun build(): Node
-    }
+    fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: Params,
+        callback: Callback,
+    ): Node
 
     interface Callback : Plugin {
         fun onAliasResolved(data: ResolvedRoomAlias)

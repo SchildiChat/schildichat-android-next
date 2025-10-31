@@ -17,7 +17,11 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultDeclineAndBlockEntryPoint : DeclineInviteAndBlockEntryPoint {
-    override fun createNode(parentNode: Node, buildContext: BuildContext, inviteData: InviteData): Node {
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        inviteData: InviteData,
+    ): Node {
         val inputs = DeclineAndBlockNode.Inputs(inviteData)
         return parentNode.createNode<DeclineAndBlockNode>(buildContext, plugins = listOf(inputs))
     }

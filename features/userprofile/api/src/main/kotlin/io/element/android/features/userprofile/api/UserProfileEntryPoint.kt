@@ -19,14 +19,13 @@ interface UserProfileEntryPoint : FeatureEntryPoint {
     data class Params(val userId: UserId) : NodeInputs
 
     interface Callback : Plugin {
-        fun onOpenRoom(roomId: RoomId)
+        fun navigateToRoom(roomId: RoomId)
     }
 
-    interface NodeBuilder {
-        fun params(params: Params): NodeBuilder
-        fun callback(callback: Callback): NodeBuilder
-        fun build(): Node
-    }
-
-    fun nodeBuilder(parentNode: Node, buildContext: BuildContext): NodeBuilder
+    fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: Params,
+        callback: Callback,
+    ): Node
 }

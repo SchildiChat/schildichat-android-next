@@ -153,18 +153,18 @@ class PinnedMessagesListPresenter(
     ) = launch {
         when (action) {
             TimelineItemAction.ViewSource -> {
-                navigator.onShowEventDebugInfoClick(targetEvent.eventId, targetEvent.debugInfo)
+                navigator.navigateToEventDebugInfo(targetEvent.eventId, targetEvent.debugInfo)
             }
             TimelineItemAction.Forward -> {
                 targetEvent.eventId?.let { eventId ->
-                    navigator.onForwardEventClick(eventId)
+                    navigator.forwardEvent(eventId)
                 }
             }
             TimelineItemAction.Unpin -> handleUnpinAction(targetEvent)
             TimelineItemAction.ViewInTimeline -> {
                 targetEvent.eventId?.let { eventId ->
                     analyticsService.captureInteraction(Interaction.Name.PinnedMessageListViewTimeline)
-                    navigator.onViewInTimelineClick(eventId)
+                    navigator.viewInTimeline(eventId)
                 }
             }
             else -> Unit

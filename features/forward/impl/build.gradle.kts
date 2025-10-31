@@ -34,5 +34,6 @@ dependencies {
 
     testCommonDependencies(libs, true)
     testImplementation(projects.libraries.matrix.test)
+    testImplementation(projects.libraries.roomselect.test)
     testImplementation(projects.libraries.testtags)
 }

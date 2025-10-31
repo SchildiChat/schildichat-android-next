@@ -9,7 +9,6 @@ package io.element.android.features.roomdetails.impl
 
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
-import com.bumble.appyx.core.plugin.Plugin
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import io.element.android.features.roomdetails.api.RoomDetailsEntryPoint
@@ -19,24 +18,16 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultRoomDetailsEntryPoint : RoomDetailsEntryPoint {
-    override fun nodeBuilder(parentNode: Node, buildContext: BuildContext): RoomDetailsEntryPoint.NodeBuilder {
-        return object : RoomDetailsEntryPoint.NodeBuilder {
-            val plugins = ArrayList<Plugin>()
-
-            override fun params(params: RoomDetailsEntryPoint.Params): RoomDetailsEntryPoint.NodeBuilder {
-                plugins += params
-                return this
-            }
-
-            override fun callback(callback: RoomDetailsEntryPoint.Callback): RoomDetailsEntryPoint.NodeBuilder {
-                plugins += callback
-                return this
-            }
-
-            override fun build(): Node {
-                return parentNode.createNode<RoomDetailsFlowNode>(buildContext, plugins)
-            }
-        }
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: RoomDetailsEntryPoint.Params,
+        callback: RoomDetailsEntryPoint.Callback,
+    ): Node {
+        return parentNode.createNode<RoomDetailsFlowNode>(
+            buildContext = buildContext,
+            plugins = listOf(params, callback)
+        )
     }
 }
 

@@ -36,22 +36,24 @@ class DefaultHomeEntryPointTest {
                 directLogoutView = { _ -> lambdaError() },
                 reportRoomEntryPoint = { _, _, _ -> lambdaError() },
                 declineInviteAndBlockUserEntryPoint = { _, _, _ -> lambdaError() },
-                changeRoomMemberRolesEntryPoint = { _, _ -> lambdaError() },
+                changeRoomMemberRolesEntryPoint = { _, _, _, _ -> lambdaError() },
                 leaveRoomRenderer = { _, _, _ -> lambdaError() },
             )
         }
         val callback = object : HomeEntryPoint.Callback {
-            override fun onRoomClick(roomId: RoomId) = lambdaError()
-            override fun onStartChatClick() = lambdaError()
-            override fun onSettingsClick() = lambdaError()
-            override fun onSetUpRecoveryClick() = lambdaError()
-            override fun onSessionConfirmRecoveryKeyClick() = lambdaError()
-            override fun onRoomSettingsClick(roomId: RoomId) = lambdaError()
-            override fun onReportBugClick() = lambdaError()
+            override fun navigateToRoom(roomId: RoomId) = lambdaError()
+            override fun navigateToCreateRoom() = lambdaError()
+            override fun navigateToSettings() = lambdaError()
+            override fun navigateToSetUpRecovery() = lambdaError()
+            override fun navigateToEnterRecoveryKey() = lambdaError()
+            override fun navigateToRoomSettings(roomId: RoomId) = lambdaError()
+            override fun navigateToBugReport() = lambdaError()
         }
-        val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
-            .callback(callback)
-            .build()
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            callback = callback,
+        )
         assertThat(result).isInstanceOf(HomeFlowNode::class.java)
         assertThat(result.plugins).contains(callback)
     }

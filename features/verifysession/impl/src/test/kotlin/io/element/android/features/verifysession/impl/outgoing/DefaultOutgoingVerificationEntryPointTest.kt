@@ -34,7 +34,7 @@ class DefaultOutgoingVerificationEntryPointTest {
             )
         }
         val callback = object : OutgoingVerificationEntryPoint.Callback {
-            override fun onLearnMoreAboutEncryption() = lambdaError()
+            override fun navigateToLearnMoreAboutEncryption() = lambdaError()
             override fun onBack() = lambdaError()
             override fun onDone() = lambdaError()
         }
@@ -42,10 +42,12 @@ class DefaultOutgoingVerificationEntryPointTest {
             showDeviceVerifiedScreen = true,
             verificationRequest = anOutgoingSessionVerificationRequest(),
         )
-        val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
-            .params(params)
-            .callback(callback)
-            .build()
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            params = params,
+            callback = callback,
+        )
         assertThat(result).isInstanceOf(OutgoingVerificationNode::class.java)
         assertThat(result.plugins).contains(params)
         assertThat(result.plugins).contains(callback)

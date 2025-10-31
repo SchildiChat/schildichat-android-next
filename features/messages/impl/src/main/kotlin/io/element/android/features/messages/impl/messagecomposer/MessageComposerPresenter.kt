@@ -528,7 +528,7 @@ class MessageComposerPresenter(
         )
         val mediaAttachment = Attachment.Media(localMedia)
         val inReplyToEventId = (messageComposerContext.composerMode as? MessageComposerMode.Reply)?.eventId
-        navigator.onPreviewAttachment(persistentListOf(mediaAttachment), inReplyToEventId)
+        navigator.navigateToPreviewAttachments(persistentListOf(mediaAttachment), inReplyToEventId)
 
         // Reset composer since the attachment will be sent in a separate flow
         messageComposerContext.composerMode = MessageComposerMode.Normal

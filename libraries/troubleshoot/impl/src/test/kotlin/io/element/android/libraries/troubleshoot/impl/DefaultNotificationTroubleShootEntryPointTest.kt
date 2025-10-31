@@ -34,11 +34,13 @@ class DefaultNotificationTroubleShootEntryPointTest {
         }
         val callback = object : NotificationTroubleShootEntryPoint.Callback {
             override fun onDone() = lambdaError()
-            override fun openIgnoredUsers() = lambdaError()
+            override fun navigateToBlockedUsers() = lambdaError()
         }
-        val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
-            .callback(callback)
-            .build()
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            callback = callback,
+        )
         assertThat(result).isInstanceOf(TroubleshootNotificationsNode::class.java)
         assertThat(result.plugins).contains(callback)
     }

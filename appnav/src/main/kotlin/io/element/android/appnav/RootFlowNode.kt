@@ -227,11 +227,11 @@ class RootFlowNode(
                     }
                 val inputs = LoggedInAppScopeFlowNode.Inputs(matrixClient)
                 val callback = object : LoggedInAppScopeFlowNode.Callback {
-                    override fun onOpenBugReport() {
+                    override fun navigateToBugReport() {
                         backstack.push(NavTarget.BugReport)
                     }
 
-                    override fun onAddAccount() {
+                    override fun navigateToAddAccount() {
                         backstack.push(NavTarget.NotLoggedInFlow(null))
                     }
                 }
@@ -239,7 +239,7 @@ class RootFlowNode(
             }
             is NavTarget.NotLoggedInFlow -> {
                 val callback = object : NotLoggedInFlowNode.Callback {
-                    override fun onOpenBugReport() {
+                    override fun navigateToBugReport() {
                         backstack.push(NavTarget.BugReport)
                     }
                 }
@@ -249,11 +249,13 @@ class RootFlowNode(
                 createNode<NotLoggedInFlowNode>(buildContext, plugins = listOf(params, callback))
             }
             is NavTarget.SignedOutFlow -> {
-                signedOutEntryPoint.nodeBuilder(this, buildContext).params(
-                    SignedOutEntryPoint.Params(
-                        sessionId = navTarget.sessionId
-                    )
-                ).build()
+                signedOutEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = SignedOutEntryPoint.Params(
+                        sessionId = navTarget.sessionId,
+                    ),
+                )
             }
             NavTarget.SplashScreen -> emptyNode(buildContext)
             NavTarget.BugReport -> {
@@ -262,11 +264,15 @@ class RootFlowNode(
                         backstack.pop()
                     }
                 }
-                bugReportEntryPoint.nodeBuilder(this, buildContext).callback(callback).build()
+                bugReportEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    callback = callback,
+                )
             }
             is NavTarget.AccountSelect -> {
                 val callback: AccountSelectEntryPoint.Callback = object : AccountSelectEntryPoint.Callback {
-                    override fun onSelectAccount(sessionId: SessionId) {
+                    override fun onAccountSelected(sessionId: SessionId) {
                         lifecycleScope.launch {
                             if (sessionId == navTarget.currentSessionId) {
                                 // Ensure that the account selection Node is removed from the backstack
@@ -287,7 +293,11 @@ class RootFlowNode(
                         backstack.pop()
                     }
                 }
-                accountSelectEntryPoint.nodeBuilder(this, buildContext).callback(callback).build()
+                accountSelectEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    callback = callback,
+                )
             }
         }
     }

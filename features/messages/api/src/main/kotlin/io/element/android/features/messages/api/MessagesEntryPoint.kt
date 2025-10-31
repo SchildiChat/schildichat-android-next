@@ -31,23 +31,22 @@ interface MessagesEntryPoint : FeatureEntryPoint {
         data object PinnedMessages : InitialTarget
     }
 
-    interface NodeBuilder {
-        fun params(params: Params): NodeBuilder
-        fun callback(callback: Callback): NodeBuilder
-        fun build(): Node
-    }
-
     interface Callback : Plugin {
-        fun onRoomDetailsClick()
-        fun onUserDataClick(userId: UserId)
-        fun onPermalinkClick(data: PermalinkData, pushToBackstack: Boolean)
+        fun navigateToRoomDetails()
+        fun navigateToRoomMemberDetails(userId: UserId)
+        fun handlePermalinkClick(data: PermalinkData, pushToBackstack: Boolean)
         fun forwardEvent(eventId: EventId)
-        fun openRoom(roomId: RoomId)
+        fun navigateToRoom(roomId: RoomId)
     }
 
     data class Params(val initialTarget: InitialTarget) : NodeInputs
 
-    fun nodeBuilder(parentNode: Node, buildContext: BuildContext): NodeBuilder
+    fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: Params,
+        callback: Callback,
+    ): Node
 }
 
 interface MessagesEntryPointNode {

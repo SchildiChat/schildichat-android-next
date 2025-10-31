@@ -48,8 +48,8 @@ class DefaultShowLocationEntryPointTest {
             description = "My location",
         )
         val result = entryPoint.createNode(
-            parentNode,
-            BuildContext.root(null),
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
             inputs = inputs,
         )
         assertThat(result).isInstanceOf(ShowLocationNode::class.java)

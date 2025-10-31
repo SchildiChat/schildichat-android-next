@@ -63,7 +63,7 @@ class UserProfileNode(
         }
 
         fun onStartDM(roomId: RoomId) {
-            callback.onStartDM(roomId)
+            callback.navigateToRoom(roomId)
         }
 
         val state = presenter.present()
@@ -74,9 +74,9 @@ class UserProfileNode(
             goBack = this::navigateUp,
             onShareUser = ::onShareUser,
             onOpenDm = ::onStartDM,
-            onStartCall = callback::onStartCall,
-            openAvatarPreview = callback::openAvatarPreview,
-            onVerifyClick = callback::onVerifyUser,
+            onStartCall = callback::startCall,
+            openAvatarPreview = callback::navigateToAvatarPreview,
+            onVerifyClick = callback::startVerifyUserFlow,
         )
     }
 }

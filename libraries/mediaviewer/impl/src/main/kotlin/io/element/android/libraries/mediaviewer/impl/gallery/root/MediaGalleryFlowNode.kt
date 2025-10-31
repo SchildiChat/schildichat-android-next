@@ -13,13 +13,13 @@ import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import com.bumble.appyx.navmodel.backstack.BackStack
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.libraries.architecture.BackstackWithOverlayBox
 import io.element.android.libraries.architecture.BaseFlowNode
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.architecture.overlay.Overlay
 import io.element.android.libraries.architecture.overlay.operation.hide
@@ -70,41 +70,25 @@ class MediaGalleryFlowNode(
         ) : NavTarget
     }
 
-    private fun onBackClick() {
-        plugins<MediaGalleryEntryPoint.Callback>().forEach {
-            it.onBackClick()
-        }
-    }
-
-    private fun onViewInTimeline(eventId: EventId) {
-        plugins<MediaGalleryEntryPoint.Callback>().forEach {
-            it.onViewInTimeline(eventId)
-        }
-    }
-
-    private fun forwardEvent(eventId: EventId) {
-        plugins<MediaGalleryEntryPoint.Callback>().forEach {
-            it.forwardEvent(eventId)
-        }
-    }
+    private val callback: MediaGalleryEntryPoint.Callback = callback()
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         return when (navTarget) {
             NavTarget.Root -> {
                 val callback = object : MediaGalleryNode.Callback {
                     override fun onBackClick() {
-                        this@MediaGalleryFlowNode.onBackClick()
+                        callback.onBackClick()
                     }
 
-                    override fun onViewInTimeline(eventId: EventId) {
-                        this@MediaGalleryFlowNode.onViewInTimeline(eventId)
+                    override fun viewInTimeline(eventId: EventId) {
+                        callback.viewInTimeline(eventId)
                     }
 
-                    override fun onForward(eventId: EventId) {
-                        forwardEvent(eventId)
+                    override fun forward(eventId: EventId) {
+                        callback.forward(eventId)
                     }
 
-                    override fun onItemClick(item: MediaItem.Event) {
+                    override fun showItem(item: MediaItem.Event) {
                         val mode = when (item) {
                             is MediaItem.Audio,
                             is MediaItem.Voice,
@@ -131,28 +115,28 @@ class MediaGalleryFlowNode(
                         overlay.hide()
                     }
 
-                    override fun onViewInTimeline(eventId: EventId) {
-                        this@MediaGalleryFlowNode.onViewInTimeline(eventId)
+                    override fun viewInTimeline(eventId: EventId) {
+                        callback.viewInTimeline(eventId)
                     }
 
-                    override fun onForwardEvent(eventId: EventId) {
+                    override fun forwardEvent(eventId: EventId) {
                         // Need to go to the parent because of the overlay
-                        forwardEvent(eventId)
+                        callback.forward(eventId)
                     }
                 }
-                mediaViewerEntryPoint.nodeBuilder(this, buildContext)
-                    .params(
-                        MediaViewerEntryPoint.Params(
-                            mode = navTarget.mode,
-                            eventId = navTarget.eventId,
-                            mediaInfo = navTarget.mediaInfo,
-                            mediaSource = navTarget.mediaSource,
-                            thumbnailSource = navTarget.thumbnailSource,
-                            canShowInfo = true,
-                        )
-                    )
-                    .callback(callback)
-                    .build()
+                mediaViewerEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = MediaViewerEntryPoint.Params(
+                        mode = navTarget.mode,
+                        eventId = navTarget.eventId,
+                        mediaInfo = navTarget.mediaInfo,
+                        mediaSource = navTarget.mediaSource,
+                        thumbnailSource = navTarget.thumbnailSource,
+                        canShowInfo = true,
+                    ),
+                    callback = callback,
+                )
             }
         }
     }

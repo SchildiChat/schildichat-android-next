@@ -11,19 +11,11 @@ import dev.zacsweers.metro.AppScope
 @ContributesBinding(AppScope::class)
 class Default${FEATURE_NAME}EntryPoint() : ${FEATURE_NAME}EntryPoint {
 
-    override fun nodeBuilder(parentNode: Node, buildContext: BuildContext): ${FEATURE_NAME}EntryPoint.NodeBuilder {
-        val plugins = ArrayList<Plugin>()
-
-        return object : ${FEATURE_NAME}EntryPoint.NodeBuilder {
-
-            override fun callback(callback: ${FEATURE_NAME}EntryPoint.Callback): ${FEATURE_NAME}EntryPoint.NodeBuilder {
-                plugins += callback
-                return this
-            }
-
-            override fun build(): Node {
-                return parentNode.createNode<${FEATURE_NAME}FlowNode>(buildContext, plugins)
-            }
-        }
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        callback: ${FEATURE_NAME}EntryPoint.Callback,
+    ): Node {
+        return parentNode.createNode<${FEATURE_NAME}FlowNode>(buildContext, listOf(callback))
     }
 }

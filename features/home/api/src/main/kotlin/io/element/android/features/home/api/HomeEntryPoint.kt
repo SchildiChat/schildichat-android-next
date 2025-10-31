@@ -14,19 +14,19 @@ import io.element.android.libraries.architecture.FeatureEntryPoint
 import io.element.android.libraries.matrix.api.core.RoomId
 
 interface HomeEntryPoint : FeatureEntryPoint {
-    fun nodeBuilder(parentNode: Node, buildContext: BuildContext): NodeBuilder
-    interface NodeBuilder {
-        fun callback(callback: Callback): NodeBuilder
-        fun build(): Node
-    }
+    fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        callback: Callback,
+    ): Node
 
     interface Callback : Plugin {
-        fun onRoomClick(roomId: RoomId)
-        fun onStartChatClick()
-        fun onSettingsClick()
-        fun onSetUpRecoveryClick()
-        fun onSessionConfirmRecoveryKeyClick()
-        fun onRoomSettingsClick(roomId: RoomId)
-        fun onReportBugClick()
+        fun navigateToRoom(roomId: RoomId)
+        fun navigateToCreateRoom()
+        fun navigateToSettings()
+        fun navigateToSetUpRecovery()
+        fun navigateToEnterRecoveryKey()
+        fun navigateToRoomSettings(roomId: RoomId)
+        fun navigateToBugReport()
     }
 }

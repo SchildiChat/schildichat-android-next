@@ -106,27 +106,27 @@ class SpaceFlowNode(
             }
             NavTarget.Settings -> {
                 val callback = object : SpaceSettingsNode.Callback {
-                    override fun onBackClick() {
+                    override fun closeSettings() {
                         backstack.pop()
                     }
 
-                    override fun onSpaceInfoClick() {
+                    override fun navigateToSpaceInfo() {
                         //TODO
                     }
 
-                    override fun onMembersClick() {
+                    override fun navigateToSpaceMembers() {
                         callback.navigateToRoomMemberList()
                     }
 
-                    override fun onRolesAndPermissionsClick() {
+                    override fun navigateToRolesAndPermissions() {
                         //TODO
                     }
 
-                    override fun onSecurityAndPrivacyClick() {
+                    override fun navigateToSecurityAndPrivacy() {
                         //TODO
                     }
 
-                    override fun onLeaveSpaceClick() {
+                    override fun startLeaveSpaceFlow() {
                         backstack.push(NavTarget.Leave)
                     }
                 }

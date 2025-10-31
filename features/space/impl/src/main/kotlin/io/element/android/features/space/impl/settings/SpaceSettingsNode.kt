@@ -29,13 +29,13 @@ class SpaceSettingsNode(
     private val presenter: SpaceSettingsPresenter,
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
-        fun onBackClick()
+        fun closeSettings()
 
-        fun onSpaceInfoClick()
-        fun onMembersClick()
-        fun onRolesAndPermissionsClick()
-        fun onSecurityAndPrivacyClick()
-        fun onLeaveSpaceClick()
+        fun navigateToSpaceInfo()
+        fun navigateToSpaceMembers()
+        fun navigateToRolesAndPermissions()
+        fun navigateToSecurityAndPrivacy()
+        fun startLeaveSpaceFlow()
     }
 
     private val callback = plugins<Callback>().single()
@@ -47,12 +47,12 @@ class SpaceSettingsNode(
         SpaceSettingsView(
             state = state,
             modifier = modifier,
-            onSpaceInfoClick = callback::onSpaceInfoClick,
-            onBackClick = callback::onBackClick,
-            onMembersClick = callback::onMembersClick,
-            onRolesAndPermissionsClick = callback::onRolesAndPermissionsClick,
-            onSecurityAndPrivacyClick = callback::onSecurityAndPrivacyClick,
-            onLeaveSpaceClick = callback::onLeaveSpaceClick,
+            onSpaceInfoClick = callback::navigateToSpaceInfo,
+            onBackClick = callback::closeSettings,
+            onMembersClick = callback::navigateToSpaceMembers,
+            onRolesAndPermissionsClick = callback::navigateToRolesAndPermissions,
+            onSecurityAndPrivacyClick = callback::navigateToSecurityAndPrivacy,
+            onLeaveSpaceClick = callback::startLeaveSpaceFlow,
         )
     }
 }

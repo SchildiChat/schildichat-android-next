@@ -82,7 +82,16 @@ class SpaceFlowNode(
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         return when (navTarget) {
             NavTarget.Leave -> {
-                createNode<LeaveSpaceNode>(buildContext)
+                val callback = object : LeaveSpaceNode.Callback {
+                    override fun closeLeaveSpaceFlow() {
+                        backstack.pop()
+                    }
+
+                    override fun navigateToRolesAndPermissions() {
+                        // TODO
+                    }
+                }
+                createNode<LeaveSpaceNode>(buildContext, listOf(callback))
             }
             NavTarget.Root -> {
                 val callback = object : SpaceNode.Callback {
@@ -111,7 +120,7 @@ class SpaceFlowNode(
                     }
 
                     override fun navigateToSpaceInfo() {
-                        //TODO
+                        // TODO
                     }
 
                     override fun navigateToSpaceMembers() {
@@ -119,11 +128,11 @@ class SpaceFlowNode(
                     }
 
                     override fun navigateToRolesAndPermissions() {
-                        //TODO
+                        // TODO
                     }
 
                     override fun navigateToSecurityAndPrivacy() {
-                        //TODO
+                        // TODO
                     }
 
                     override fun startLeaveSpaceFlow() {

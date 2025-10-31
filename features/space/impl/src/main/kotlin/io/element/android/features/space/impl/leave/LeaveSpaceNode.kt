@@ -13,6 +13,7 @@ import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
+import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
@@ -29,8 +30,15 @@ class LeaveSpaceNode(
     room: JoinedRoom,
     presenterFactory: LeaveSpacePresenter.Factory,
 ) : Node(buildContext, plugins = plugins) {
+    interface Callback : Plugin {
+        fun closeLeaveSpaceFlow()
+        fun navigateToRolesAndPermissions()
+    }
+
     private val leaveSpaceHandle = matrixClient.spaceService.getLeaveSpaceHandle(room.roomId)
     private val presenter: LeaveSpacePresenter = presenterFactory.create(leaveSpaceHandle)
+
+    private val callback = plugins<Callback>().single()
 
     override fun onBuilt() {
         super.onBuilt()
@@ -46,7 +54,8 @@ class LeaveSpaceNode(
         val state = presenter.present()
         LeaveSpaceView(
             state = state,
-            onCancel = ::navigateUp,
+            onCancel = callback::closeLeaveSpaceFlow,
+            onRolesAndPermissionsClick = callback::navigateToRolesAndPermissions,
             modifier = modifier
         )
     }

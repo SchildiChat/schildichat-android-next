@@ -90,7 +90,6 @@ fun SpaceSettingsView(
                     onClick = onLeaveSpaceClick
                 )
             })
-
         }
     }
 }

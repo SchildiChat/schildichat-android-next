@@ -25,6 +25,7 @@ import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.ThreadId
 import io.element.android.libraries.matrix.api.timeline.item.event.EventType
 import io.element.android.libraries.matrix.api.user.MatrixUser
+import io.element.android.libraries.matrix.ui.model.getBestName
 import io.element.android.libraries.push.api.notifications.NotificationBitmapLoader
 import io.element.android.libraries.push.impl.R
 import io.element.android.libraries.push.impl.notifications.RoomEventGroupInfo
@@ -446,7 +447,8 @@ class DefaultNotificationCreator(
     ): MessagingStyle {
         return MessagingStyle(
             Person.Builder()
-                .setName(user.displayName?.annotateForDebug(50))
+                // Note: name cannot be empty else NotificationCompat.MessagingStyle() will crash
+                .setName(user.getBestName().annotateForDebug(50))
                 .setIcon(bitmapLoader.getUserIcon(user.avatarUrl, imageLoader))
                 .setKey(user.userId.value)
                 .build()

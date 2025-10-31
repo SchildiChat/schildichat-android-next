@@ -10,10 +10,8 @@ package io.element.android.libraries.push.impl.notifications
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.SingleIn
-import io.element.android.libraries.core.data.tryOrNull
 import io.element.android.libraries.core.log.logger.LoggerTag
 import io.element.android.libraries.di.annotations.AppCoroutineScope
-import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.MatrixClientProvider
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
@@ -31,7 +29,6 @@ import io.element.android.services.appnavstate.api.NavigationState
 import io.element.android.services.appnavstate.api.currentSessionId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 private val loggerTag = LoggerTag("DefaultNotificationDrawerManager", LoggerTag.NotificationLoggerTag)
 
@@ -190,29 +187,9 @@ class DefaultNotificationDrawerManager(
                 // We have an avatar and a display name, use it
                 userFromCache
             } else {
-                client.getSafeUserProfile()
+                client.getUserProfile().getOrNull() ?: MatrixUser(sessionId)
             }
-
             notificationRenderer.render(currentUser, useCompleteNotificationFormat, notifiableEvents, imageLoader)
         }
-    }
-
-    private suspend fun MatrixClient.getSafeUserProfile(): MatrixUser {
-        return tryOrNull(
-            onException = { Timber.tag(loggerTag.value).e(it, "Unable to retrieve info for user ${sessionId.value}") },
-            operation = {
-                val profile = getUserProfile().getOrNull()
-                // displayName cannot be empty else NotificationCompat.MessagingStyle() will crash
-                if (profile?.displayName.isNullOrEmpty()) {
-                    profile?.copy(displayName = sessionId.value)
-                } else {
-                    profile
-                }
-            }
-        ) ?: MatrixUser(
-            userId = sessionId,
-            displayName = sessionId.value,
-            avatarUrl = null
-        )
     }
 }

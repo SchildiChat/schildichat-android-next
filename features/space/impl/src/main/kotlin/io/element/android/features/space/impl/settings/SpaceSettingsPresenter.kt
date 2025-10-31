@@ -31,7 +31,6 @@ class SpaceSettingsPresenter(
             memberCount = roomInfo.activeMembersCount,
             showRolesAndPermissions = isUserAdmin,
             showSecurityAndPrivacy = isUserAdmin,
-            isTombstoned = roomInfo.successorRoom != null,
             eventSink = {},
         )
     }

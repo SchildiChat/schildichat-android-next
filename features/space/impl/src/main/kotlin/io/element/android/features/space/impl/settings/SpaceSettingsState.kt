@@ -15,7 +15,6 @@ data class SpaceSettingsState(
     val name: String,
     val canonicalAlias: RoomAlias?,
     val avatarUrl: String?,
-    val isTombstoned: Boolean,
     val memberCount: Long,
     val showRolesAndPermissions: Boolean,
     val showSecurityAndPrivacy: Boolean,

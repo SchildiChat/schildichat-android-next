@@ -41,13 +41,14 @@ import io.element.android.libraries.designsystem.theme.components.ListItemStyle
 import io.element.android.libraries.designsystem.theme.components.Scaffold
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TopAppBar
+import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.ui.strings.CommonStrings
 
 @Composable
 fun SpaceSettingsView(
     state: SpaceSettingsState,
     onBackClick: () -> Unit,
-    onSpaceInfoClick: ()->Unit,
+    onSpaceInfoClick: () -> Unit,
     onMembersClick: () -> Unit,
     onRolesAndPermissionsClick: () -> Unit,
     onSecurityAndPrivacyClick: () -> Unit,
@@ -65,59 +66,74 @@ fun SpaceSettingsView(
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(onClick = onSpaceInfoClick)
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Avatar(
-                    avatarData = AvatarData(state.roomId.value, state.name, state.avatarUrl, AvatarSize.SpaceListItem),
-                    avatarType = AvatarType.Space(
-                        isTombstoned = state.isTombstoned,
-                    ),
-                    contentDescription = state.avatarUrl?.let { stringResource(CommonStrings.a11y_room_avatar) },
-                )
-                Spacer(Modifier.width(16.dp))
-                Column {
-                    Text(
-                        text = state.name,
-                        style = ElementTheme.typography.fontHeadingMdRegular,
-                        color = ElementTheme.colors.textPrimary,
-                    )
-                    if (state.canonicalAlias != null) {
-                        Text(
-                            text = state.canonicalAlias.value,
-                            style = ElementTheme.typography.fontBodyMdRegular,
-                            color = ElementTheme.colors.textSecondary,
-                        )
-                    }
-                }
-            }
-            Section(isVisible = state.showSecurityAndPrivacy) {
+            SpaceInfoSection(
+                roomId = state.roomId,
+                name = state.name,
+                avatarUrl = state.avatarUrl,
+                canonicalAlias = state.canonicalAlias?.value,
+                onSpaceInfoClick = onSpaceInfoClick,
+            )
+            Section(isVisible = state.showSecurityAndPrivacy, content = {
                 SecurityAndPrivacyItem(
                     onClick = onSecurityAndPrivacyClick
                 )
-            }
-            Section {
+            })
+            Section(content = {
                 MembersItem(state.memberCount, onClick = onMembersClick)
                 if (state.showRolesAndPermissions) {
                     RolesAndPermissionsItem(onClick = onRolesAndPermissionsClick)
                 }
-            }
-            Section {
+            })
+            Section(content = {
                 LeaveSpaceItem(
                     onClick = onLeaveSpaceClick
                 )
-            }
+            })
 
         }
     }
 }
 
 @Composable
-private fun ColumnScope.Section(
+private fun SpaceInfoSection(
+    roomId: RoomId,
+    name: String,
+    avatarUrl: String?,
+    canonicalAlias: String?,
+    onSpaceInfoClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onSpaceInfoClick)
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Avatar(
+            avatarData = AvatarData(roomId.value, name, avatarUrl, AvatarSize.SpaceListItem),
+            avatarType = AvatarType.Space(),
+            contentDescription = avatarUrl?.let { stringResource(CommonStrings.a11y_avatar) },
+        )
+        Spacer(Modifier.width(16.dp))
+        Column {
+            Text(
+                text = name,
+                style = ElementTheme.typography.fontHeadingMdRegular,
+                color = ElementTheme.colors.textPrimary,
+            )
+            if (canonicalAlias != null) {
+                Text(
+                    text = canonicalAlias,
+                    style = ElementTheme.typography.fontBodyMdRegular,
+                    color = ElementTheme.colors.textSecondary,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun Section(
     modifier: Modifier = Modifier,
     isVisible: Boolean = true,
     content: @Composable ColumnScope.() -> Unit,

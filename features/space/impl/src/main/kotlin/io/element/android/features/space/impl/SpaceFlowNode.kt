@@ -35,7 +35,7 @@ import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.di.DependencyInjectionGraphOwner
 import io.element.android.libraries.di.RoomScope
 import io.element.android.libraries.matrix.api.core.RoomId
-import io.element.android.libraries.matrix.api.room.BaseRoom
+import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.spaces.SpaceService
 import kotlinx.parcelize.Parcelize
 
@@ -44,7 +44,7 @@ import kotlinx.parcelize.Parcelize
 class SpaceFlowNode(
     @Assisted val buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
-    room: BaseRoom,
+    room: JoinedRoom,
     spaceService: SpaceService,
     graphFactory: SpaceFlowGraph.Factory,
 ) : BaseFlowNode<SpaceFlowNode.NavTarget>(

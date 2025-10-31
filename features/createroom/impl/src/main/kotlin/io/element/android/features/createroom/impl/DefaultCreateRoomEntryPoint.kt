@@ -16,8 +16,11 @@ import io.element.android.libraries.di.SessionScope
 
 @ContributesBinding(SessionScope::class)
 class DefaultCreateRoomEntryPoint : CreateRoomEntryPoint {
-    context(parentNode: Node)
-    override fun createNode(buildContext: BuildContext, callback: CreateRoomEntryPoint.Callback): Node {
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        callback: CreateRoomEntryPoint.Callback,
+    ): Node {
         return parentNode.createNode<CreateRoomFlowNode>(buildContext, listOf(callback))
     }
 }

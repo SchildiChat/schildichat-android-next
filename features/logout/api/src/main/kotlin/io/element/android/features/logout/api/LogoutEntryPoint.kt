@@ -13,8 +13,11 @@ import com.bumble.appyx.core.plugin.Plugin
 import io.element.android.libraries.architecture.FeatureEntryPoint
 
 interface LogoutEntryPoint : FeatureEntryPoint {
-    context(parentNode: Node)
-    fun createNode(buildContext: BuildContext, callback: Callback): Node
+    fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        callback: Callback,
+    ): Node
 
     interface Callback : Plugin {
         fun navigateToSecureBackup()

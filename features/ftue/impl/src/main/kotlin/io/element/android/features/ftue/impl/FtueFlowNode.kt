@@ -102,7 +102,7 @@ class FtueFlowNode(
                 createNode<NotificationsOptInNode>(buildContext, listOf(callback))
             }
             NavTarget.AnalyticsOptIn -> {
-                analyticsEntryPoint.createNode(buildContext)
+                analyticsEntryPoint.createNode(this, buildContext)
             }
             NavTarget.LockScreenSetup -> {
                 val callback = object : LockScreenEntryPoint.Callback {
@@ -111,6 +111,7 @@ class FtueFlowNode(
                     }
                 }
                 lockScreenEntryPoint.createNode(
+                    parentNode = this,
                     buildContext = buildContext,
                     navTarget = LockScreenEntryPoint.Target.Setup,
                     callback = callback,

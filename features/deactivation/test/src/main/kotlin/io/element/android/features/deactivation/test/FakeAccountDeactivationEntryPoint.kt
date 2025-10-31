@@ -13,8 +13,10 @@ import io.element.android.features.deactivation.api.AccountDeactivationEntryPoin
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakeAccountDeactivationEntryPoint : AccountDeactivationEntryPoint {
-    context(parentNode: Node)
-    override fun createNode(buildContext: BuildContext): Node {
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+    ): Node {
         lambdaError()
     }
 }

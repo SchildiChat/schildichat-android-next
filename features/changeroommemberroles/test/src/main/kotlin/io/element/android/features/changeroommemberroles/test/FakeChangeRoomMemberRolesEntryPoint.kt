@@ -15,8 +15,8 @@ import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakeChangeRoomMemberRolesEntryPoint : ChangeRoomMemberRolesEntryPoint {
-    context(parentNode: Node)
     override fun createNode(
+        parentNode: Node,
         buildContext: BuildContext,
         room: JoinedRoom,
         listType: ChangeRoomMemberRolesListType,

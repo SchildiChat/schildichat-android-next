@@ -6,8 +6,11 @@ import com.bumble.appyx.core.plugin.Plugin
 import io.element.android.libraries.architecture.FeatureEntryPoint
 
 interface ${FEATURE_NAME}EntryPoint : FeatureEntryPoint {
-    context(parentNode: Node)
-    fun createNode(buildContext: BuildContext, callback: Callback): Node
+    fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        callback: Callback,
+    ): Node
 
     interface Callback : Plugin {
         // Add your callbacks

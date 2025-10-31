@@ -64,7 +64,11 @@ class JoinRoomFlowNode(
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         return when (navTarget) {
-            is NavTarget.DeclineInviteAndBlockUser -> declineAndBlockEntryPoint.createNode(buildContext, navTarget.inviteData)
+            is NavTarget.DeclineInviteAndBlockUser -> declineAndBlockEntryPoint.createNode(
+                parentNode = this,
+                buildContext = buildContext,
+                inviteData = navTarget.inviteData,
+            )
             NavTarget.Root -> rootNode(buildContext)
         }
     }

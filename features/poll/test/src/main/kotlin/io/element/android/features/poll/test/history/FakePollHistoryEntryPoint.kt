@@ -13,8 +13,8 @@ import io.element.android.features.poll.api.history.PollHistoryEntryPoint
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakePollHistoryEntryPoint : PollHistoryEntryPoint {
-    context(parentNode: Node)
     override fun createNode(
+        parentNode: Node,
         buildContext: BuildContext,
     ): Node = lambdaError()
 }

@@ -31,8 +31,12 @@ interface PreferencesEntryPoint : FeatureEntryPoint {
 
     data class Params(val initialElement: InitialTarget) : NodeInputs
 
-    context(parentNode: Node)
-    fun createNode(buildContext: BuildContext, params: Params, callback: Callback): Node
+    fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: Params,
+        callback: Callback,
+    ): Node
 
     interface Callback : Plugin {
         fun navigateToAddAccount()

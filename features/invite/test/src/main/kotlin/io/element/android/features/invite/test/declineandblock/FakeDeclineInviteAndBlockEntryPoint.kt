@@ -14,8 +14,11 @@ import io.element.android.features.invite.api.declineandblock.DeclineInviteAndBl
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakeDeclineInviteAndBlockEntryPoint : DeclineInviteAndBlockEntryPoint {
-    context(parentNode: Node)
-    override fun createNode(buildContext: BuildContext, inviteData: InviteData): Node {
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        inviteData: InviteData,
+    ): Node {
         lambdaError()
     }
 }

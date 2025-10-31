@@ -17,6 +17,9 @@ interface SignedOutEntryPoint : FeatureEntryPoint {
         val sessionId: SessionId,
     )
 
-    context(parentNode: Node)
-    fun createNode(buildContext: BuildContext, params: Params): Node
+    fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: Params,
+    ): Node
 }

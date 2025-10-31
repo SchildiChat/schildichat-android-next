@@ -34,9 +34,7 @@ class DefaultPollHistoryEntryPointTest {
                 createPollEntryPoint = FakeCreatePollEntryPoint(),
             )
         }
-        val result = with(parentNode) {
-            entryPoint.createNode(BuildContext.root(null))
-        }
+        val result = entryPoint.createNode(parentNode, BuildContext.root(null))
         assertThat(result).isInstanceOf(PollHistoryFlowNode::class.java)
     }
 }

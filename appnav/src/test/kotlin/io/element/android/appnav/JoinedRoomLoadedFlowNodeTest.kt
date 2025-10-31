@@ -55,8 +55,8 @@ class JoinedRoomLoadedFlowNodeTest {
         var parameters: MessagesEntryPoint.Params? = null
         var callback: MessagesEntryPoint.Callback? = null
 
-        context(parentNode: Node)
         override fun createNode(
+            parentNode: Node,
             buildContext: BuildContext,
             params: MessagesEntryPoint.Params,
             callback: MessagesEntryPoint.Callback,
@@ -78,8 +78,8 @@ class JoinedRoomLoadedFlowNodeTest {
     private class FakeRoomDetailsEntryPoint : RoomDetailsEntryPoint {
         var nodeId: String? = null
 
-        context(parentNode: Node)
         override fun createNode(
+            parentNode: Node,
             buildContext: BuildContext,
             params: RoomDetailsEntryPoint.Params,
             callback: RoomDetailsEntryPoint.Callback,
@@ -91,8 +91,8 @@ class JoinedRoomLoadedFlowNodeTest {
     private class FakeSpaceEntryPoint : SpaceEntryPoint {
         var nodeId: String? = null
 
-        context(parentNode: Node)
         override fun createNode(
+            parentNode: Node,
             buildContext: BuildContext,
             inputs: SpaceEntryPoint.Inputs,
             callback: SpaceEntryPoint.Callback,

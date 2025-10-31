@@ -40,12 +40,11 @@ class DefaultStartChatEntryPointTest {
             override fun onRoomCreated(roomIdOrAlias: RoomIdOrAlias, serverNames: List<String>) = lambdaError()
             override fun navigateToRoomDirectory() = lambdaError()
         }
-        val result = with(parentNode) {
-            entryPoint.createNode(
-                buildContext = BuildContext.root(null),
-                callback = callback,
-            )
-        }
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            callback = callback,
+        )
         assertThat(result).isInstanceOf(StartChatFlowNode::class.java)
         assertThat(result.plugins).contains(callback)
     }

@@ -16,8 +16,12 @@ import io.element.android.libraries.di.SessionScope
 
 @ContributesBinding(SessionScope::class)
 class DefaultMessagesEntryPoint : MessagesEntryPoint {
-    context(parentNode: Node)
-    override fun createNode(buildContext: BuildContext, params: MessagesEntryPoint.Params, callback: MessagesEntryPoint.Callback): Node {
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: MessagesEntryPoint.Params,
+        callback: MessagesEntryPoint.Callback,
+    ): Node {
         return parentNode.createNode<MessagesFlowNode>(buildContext, listOf(params, callback))
     }
 }

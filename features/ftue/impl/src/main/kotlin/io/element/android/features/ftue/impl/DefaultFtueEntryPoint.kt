@@ -16,8 +16,7 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultFtueEntryPoint : FtueEntryPoint {
-    context(parentNode: Node)
-    override fun createNode(buildContext: BuildContext): Node {
+    override fun createNode(parentNode: Node, buildContext: BuildContext): Node {
         return parentNode.createNode<FtueFlowNode>(buildContext)
     }
 }

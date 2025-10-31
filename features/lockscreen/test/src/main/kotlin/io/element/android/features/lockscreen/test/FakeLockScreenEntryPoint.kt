@@ -15,8 +15,8 @@ import io.element.android.features.lockscreen.api.LockScreenEntryPoint
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakeLockScreenEntryPoint : LockScreenEntryPoint {
-    context(parentNode: Node)
     override fun createNode(
+        parentNode: Node,
         buildContext: BuildContext,
         navTarget: LockScreenEntryPoint.Target,
         callback: LockScreenEntryPoint.Callback,

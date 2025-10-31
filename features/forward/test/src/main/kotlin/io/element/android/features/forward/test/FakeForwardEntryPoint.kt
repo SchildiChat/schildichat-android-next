@@ -13,8 +13,8 @@ import io.element.android.features.forward.api.ForwardEntryPoint
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakeForwardEntryPoint : ForwardEntryPoint {
-    context(parentNode: Node)
     override fun createNode(
+        parentNode: Node,
         buildContext: BuildContext,
         params: ForwardEntryPoint.Params,
         callback: ForwardEntryPoint.Callback,

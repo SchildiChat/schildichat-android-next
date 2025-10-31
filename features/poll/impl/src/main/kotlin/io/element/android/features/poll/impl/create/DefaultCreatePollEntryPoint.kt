@@ -16,8 +16,11 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultCreatePollEntryPoint : CreatePollEntryPoint {
-    context(parentNode: Node)
-    override fun createNode(buildContext: BuildContext, params: CreatePollEntryPoint.Params): Node {
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: CreatePollEntryPoint.Params,
+    ): Node {
         return parentNode.createNode<CreatePollNode>(
             buildContext = buildContext,
             plugins = listOf(CreatePollNode.Inputs(timelineMode = params.timelineMode, mode = params.mode))

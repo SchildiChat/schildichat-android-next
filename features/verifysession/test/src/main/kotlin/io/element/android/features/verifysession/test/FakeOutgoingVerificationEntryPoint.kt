@@ -13,8 +13,8 @@ import io.element.android.features.verifysession.api.OutgoingVerificationEntryPo
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakeOutgoingVerificationEntryPoint : OutgoingVerificationEntryPoint {
-    context(parentNode: Node)
     override fun createNode(
+        parentNode: Node,
         buildContext: BuildContext,
         params: OutgoingVerificationEntryPoint.Params,
         callback: OutgoingVerificationEntryPoint.Callback,

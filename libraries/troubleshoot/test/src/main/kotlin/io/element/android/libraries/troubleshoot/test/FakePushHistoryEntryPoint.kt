@@ -13,8 +13,8 @@ import io.element.android.libraries.troubleshoot.api.PushHistoryEntryPoint
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakePushHistoryEntryPoint : PushHistoryEntryPoint {
-    context(parentNode: Node)
     override fun createNode(
+        parentNode: Node,
         buildContext: BuildContext,
         callback: PushHistoryEntryPoint.Callback,
     ): Node = lambdaError()

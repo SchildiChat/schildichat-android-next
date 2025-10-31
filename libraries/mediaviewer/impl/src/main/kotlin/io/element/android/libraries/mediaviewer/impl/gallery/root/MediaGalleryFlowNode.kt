@@ -125,6 +125,7 @@ class MediaGalleryFlowNode(
                     }
                 }
                 mediaViewerEntryPoint.createNode(
+                    parentNode = this,
                     buildContext = buildContext,
                     params = MediaViewerEntryPoint.Params(
                         mode = navTarget.mode,

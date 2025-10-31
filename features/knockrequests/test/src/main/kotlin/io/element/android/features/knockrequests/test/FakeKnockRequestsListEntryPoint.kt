@@ -13,6 +13,8 @@ import io.element.android.features.knockrequests.api.list.KnockRequestsListEntry
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakeKnockRequestsListEntryPoint : KnockRequestsListEntryPoint {
-    context(parentNode: Node)
-    override fun createNode(buildContext: BuildContext): Node = lambdaError()
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+    ): Node = lambdaError()
 }

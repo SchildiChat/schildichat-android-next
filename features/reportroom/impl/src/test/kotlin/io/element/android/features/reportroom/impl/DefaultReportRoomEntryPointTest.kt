@@ -32,9 +32,11 @@ class DefaultReportRoomEntryPointTest {
                 }
             )
         }
-        val result = with(parentNode) {
-            entryPoint.createNode(BuildContext.root(null), A_ROOM_ID)
-        }
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            roomId = A_ROOM_ID,
+        )
         assertThat(result).isInstanceOf(ReportRoomNode::class.java)
         assertThat(result.plugins).contains(ReportRoomNode.Inputs(A_ROOM_ID))
     }

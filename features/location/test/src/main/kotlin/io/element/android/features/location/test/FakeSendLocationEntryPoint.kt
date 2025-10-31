@@ -14,8 +14,8 @@ import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakeSendLocationEntryPoint : SendLocationEntryPoint {
-    context(parentNode: Node)
     override fun createNode(
+        parentNode: Node,
         buildContext: BuildContext,
         timelineMode: Timeline.Mode,
     ): Node = lambdaError()

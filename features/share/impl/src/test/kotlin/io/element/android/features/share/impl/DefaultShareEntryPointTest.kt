@@ -45,13 +45,12 @@ class DefaultShareEntryPointTest {
         val params = ShareEntryPoint.Params(
             intent = Intent(),
         )
-        val result = with(parentNode) {
-            entryPoint.createNode(
-                buildContext = BuildContext.root(null),
-                params = params,
-                callback = callback,
-            )
-        }
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            params = params,
+            callback = callback,
+        )
         assertThat(result).isInstanceOf(ShareNode::class.java)
         assertThat(result.plugins).contains(ShareNode.Inputs(params.intent))
         assertThat(result.plugins).contains(callback)

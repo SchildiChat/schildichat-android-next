@@ -13,8 +13,8 @@ import io.element.android.features.messages.api.MessagesEntryPoint
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakeMessagesEntryPoint : MessagesEntryPoint {
-    context(parentNode: Node)
     override fun createNode(
+        parentNode: Node,
         buildContext: BuildContext,
         params: MessagesEntryPoint.Params,
         callback: MessagesEntryPoint.Callback,

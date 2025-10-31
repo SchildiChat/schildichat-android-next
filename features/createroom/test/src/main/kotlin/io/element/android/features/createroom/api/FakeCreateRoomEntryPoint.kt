@@ -12,8 +12,8 @@ import com.bumble.appyx.core.node.Node
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakeCreateRoomEntryPoint : CreateRoomEntryPoint {
-    context(parentNode: Node)
     override fun createNode(
+        parentNode: Node,
         buildContext: BuildContext,
         callback: CreateRoomEntryPoint.Callback,
     ): Node = lambdaError()

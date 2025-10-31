@@ -16,8 +16,12 @@ import io.element.android.libraries.di.SessionScope
 
 @ContributesBinding(SessionScope::class)
 class DefaultSpaceEntryPoint : SpaceEntryPoint {
-    context(parentNode: Node)
-    override fun createNode(buildContext: BuildContext, inputs: SpaceEntryPoint.Inputs, callback: SpaceEntryPoint.Callback): Node {
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        inputs: SpaceEntryPoint.Inputs,
+        callback: SpaceEntryPoint.Callback,
+    ): Node {
         return parentNode.createNode<SpaceFlowNode>(
             buildContext = buildContext,
             plugins = listOf(inputs, callback),

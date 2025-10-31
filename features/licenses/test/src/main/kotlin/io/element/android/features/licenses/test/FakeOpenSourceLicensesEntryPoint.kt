@@ -13,8 +13,10 @@ import io.element.android.features.licenses.api.OpenSourceLicensesEntryPoint
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakeOpenSourceLicensesEntryPoint : OpenSourceLicensesEntryPoint {
-    context(parentNode: Node)
-    override fun createNode(buildContext: BuildContext): Node {
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+    ): Node {
         lambdaError()
     }
 }

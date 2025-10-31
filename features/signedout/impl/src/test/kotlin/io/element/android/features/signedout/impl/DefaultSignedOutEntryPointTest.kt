@@ -34,12 +34,11 @@ class DefaultSignedOutEntryPointTest {
             )
         }
         val params = SignedOutEntryPoint.Params(A_SESSION_ID)
-        val result = with(parentNode) {
-            entryPoint.createNode(
-                buildContext = BuildContext.root(null),
-                params = params,
-            )
-        }
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            params = params,
+        )
         assertThat(result).isInstanceOf(SignedOutNode::class.java)
         assertThat(result.plugins).contains(SignedOutNode.Inputs(params.sessionId))
     }

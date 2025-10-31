@@ -16,8 +16,12 @@ import io.element.android.libraries.di.SessionScope
 
 @ContributesBinding(SessionScope::class)
 class DefaultShareEntryPoint : ShareEntryPoint {
-    context(parentNode: Node)
-    override fun createNode(buildContext: BuildContext, params: ShareEntryPoint.Params, callback: ShareEntryPoint.Callback): Node {
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: ShareEntryPoint.Params,
+        callback: ShareEntryPoint.Callback,
+    ): Node {
         return parentNode.createNode<ShareNode>(
             buildContext = buildContext,
             plugins = listOf(

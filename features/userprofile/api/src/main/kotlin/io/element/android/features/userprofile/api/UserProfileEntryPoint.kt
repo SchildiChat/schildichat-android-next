@@ -22,6 +22,10 @@ interface UserProfileEntryPoint : FeatureEntryPoint {
         fun navigateToRoom(roomId: RoomId)
     }
 
-    context(parentNode: Node)
-    fun createNode(buildContext: BuildContext, params: Params, callback: Callback): Node
+    fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: Params,
+        callback: Callback,
+    ): Node
 }

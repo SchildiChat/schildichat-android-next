@@ -33,9 +33,7 @@ class DefaultAnalyticsEntryPointTest {
                 )
             )
         }
-        val result = with(parentNode) {
-            entryPoint.createNode(BuildContext.root(null))
-        }
+        val result = entryPoint.createNode(parentNode, BuildContext.root(null))
         assertThat(result).isInstanceOf(AnalyticsOptInNode::class.java)
     }
 }

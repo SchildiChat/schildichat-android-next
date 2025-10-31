@@ -18,6 +18,9 @@ interface CreatePollEntryPoint : FeatureEntryPoint {
         val mode: CreatePollMode,
     )
 
-    context(parentNode: Node)
-    fun createNode(buildContext: BuildContext, params: Params): Node
+    fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: Params,
+    ): Node
 }

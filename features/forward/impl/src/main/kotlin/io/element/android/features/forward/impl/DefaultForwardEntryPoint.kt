@@ -16,8 +16,12 @@ import io.element.android.libraries.di.SessionScope
 
 @ContributesBinding(SessionScope::class)
 class DefaultForwardEntryPoint : ForwardEntryPoint {
-    context(parentNode: Node)
-    override fun createNode(buildContext: BuildContext, params: ForwardEntryPoint.Params, callback: ForwardEntryPoint.Callback): Node {
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: ForwardEntryPoint.Params,
+        callback: ForwardEntryPoint.Callback,
+    ): Node {
         return parentNode.createNode<ForwardMessagesNode>(
             buildContext = buildContext,
             plugins = listOf(

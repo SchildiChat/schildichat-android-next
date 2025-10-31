@@ -78,6 +78,7 @@ class BugReportFlowNode(
                     rootPath = navTarget.rootPath,
                 )
                 viewFolderEntryPoint.createNode(
+                    parentNode = this,
                     buildContext = buildContext,
                     params = params,
                     callback = callback,

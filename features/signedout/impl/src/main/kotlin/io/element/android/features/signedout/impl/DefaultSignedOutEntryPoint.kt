@@ -16,8 +16,11 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultSignedOutEntryPoint : SignedOutEntryPoint {
-    context(parentNode: Node)
-    override fun createNode(buildContext: BuildContext, params: SignedOutEntryPoint.Params): Node {
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: SignedOutEntryPoint.Params,
+    ): Node {
         return parentNode.createNode<SignedOutNode>(
             buildContext = buildContext,
             plugins = listOf(SignedOutNode.Inputs(params.sessionId))

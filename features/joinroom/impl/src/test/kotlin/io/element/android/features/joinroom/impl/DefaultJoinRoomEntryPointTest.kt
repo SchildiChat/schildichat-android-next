@@ -48,9 +48,11 @@ class DefaultJoinRoomEntryPointTest {
             serverNames = emptyList(),
             trigger = JoinedRoom.Trigger.RoomDirectory,
         )
-        val result = with(parentNode) {
-            entryPoint.createNode(BuildContext.root(null), inputs)
-        }
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            inputs = inputs,
+        )
         assertThat(result).isInstanceOf(JoinRoomFlowNode::class.java)
         assertThat(result.plugins).contains(inputs)
     }

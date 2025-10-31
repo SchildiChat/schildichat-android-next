@@ -15,8 +15,8 @@ import io.element.android.libraries.architecture.NodeInputs
 import io.element.android.libraries.matrix.api.core.RoomId
 
 interface SpaceEntryPoint : FeatureEntryPoint {
-    context(parentNode: Node)
     fun createNode(
+        parentNode: Node,
         buildContext: BuildContext,
         inputs: Inputs,
         callback: Callback

@@ -13,8 +13,8 @@ import io.element.android.libraries.roomselect.api.RoomSelectEntryPoint
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakeRoomSelectEntryPoint : RoomSelectEntryPoint {
-    context(parentNode: Node)
     override fun createNode(
+        parentNode: Node,
         buildContext: BuildContext,
         params: RoomSelectEntryPoint.Params,
         callback: RoomSelectEntryPoint.Callback,

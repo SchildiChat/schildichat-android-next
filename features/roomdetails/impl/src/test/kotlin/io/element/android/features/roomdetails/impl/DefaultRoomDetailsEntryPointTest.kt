@@ -69,13 +69,12 @@ class DefaultRoomDetailsEntryPointTest {
         val params = RoomDetailsEntryPoint.Params(
             initialElement = RoomDetailsEntryPoint.InitialTarget.RoomDetails,
         )
-        val result = with(parentNode) {
-            entryPoint.createNode(
-                buildContext = BuildContext.root(null),
-                params = params,
-                callback = callback,
-            )
-        }
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            params = params,
+            callback = callback,
+        )
         assertThat(result).isInstanceOf(RoomDetailsFlowNode::class.java)
         assertThat(result.plugins).contains(params)
         assertThat(result.plugins).contains(callback)

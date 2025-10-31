@@ -14,8 +14,11 @@ import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakeReportRoomEntryPoint : ReportRoomEntryPoint {
-    context(parentNode: Node)
-    override fun createNode(buildContext: BuildContext, roomId: RoomId): Node {
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        roomId: RoomId,
+    ): Node {
         lambdaError()
     }
 }

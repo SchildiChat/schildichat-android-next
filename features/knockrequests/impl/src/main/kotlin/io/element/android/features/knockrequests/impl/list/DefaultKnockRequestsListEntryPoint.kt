@@ -16,8 +16,7 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultKnockRequestsListEntryPoint : KnockRequestsListEntryPoint {
-    context(parentNode: Node)
-    override fun createNode(buildContext: BuildContext): Node {
+    override fun createNode(parentNode: Node, buildContext: BuildContext): Node {
         return parentNode.createNode<KnockRequestsListNode>(buildContext)
     }
 }

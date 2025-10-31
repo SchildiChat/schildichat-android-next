@@ -18,8 +18,11 @@ import io.element.android.libraries.matrix.api.core.RoomIdOrAlias
 import java.util.Optional
 
 interface JoinRoomEntryPoint : FeatureEntryPoint {
-    context(parentNode: Node)
-    fun createNode(buildContext: BuildContext, inputs: Inputs): Node
+    fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        inputs: Inputs,
+    ): Node
 
     data class Inputs(
         val roomId: RoomId,

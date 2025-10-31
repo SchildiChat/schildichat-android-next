@@ -28,9 +28,7 @@ class DefaultAccountDeactivationEntryPointTest {
                 presenter = createPresenter(),
             )
         }
-        val result = with(parentNode) {
-            entryPoint.createNode(BuildContext.root(null))
-        }
+        val result = entryPoint.createNode(parentNode, BuildContext.root(null))
         assertThat(result).isInstanceOf(AccountDeactivationNode::class.java)
     }
 }

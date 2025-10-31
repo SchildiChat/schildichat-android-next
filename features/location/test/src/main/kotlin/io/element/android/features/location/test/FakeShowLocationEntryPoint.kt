@@ -13,8 +13,8 @@ import io.element.android.features.location.api.ShowLocationEntryPoint
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakeShowLocationEntryPoint : ShowLocationEntryPoint {
-    context(parentNode: Node)
     override fun createNode(
+        parentNode: Node,
         buildContext: BuildContext,
         inputs: ShowLocationEntryPoint.Inputs,
     ): Node = lambdaError()

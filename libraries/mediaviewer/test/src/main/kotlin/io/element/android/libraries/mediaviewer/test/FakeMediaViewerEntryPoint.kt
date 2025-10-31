@@ -15,8 +15,8 @@ import io.element.android.tests.testutils.lambda.lambdaError
 class FakeMediaViewerEntryPoint : MediaViewerEntryPoint {
     override fun createParamsForAvatar(filename: String, avatarUrl: String) = lambdaError()
 
-    context(parentNode: Node)
     override fun createNode(
+        parentNode: Node,
         buildContext: BuildContext,
         params: MediaViewerEntryPoint.Params,
         callback: MediaViewerEntryPoint.Callback,

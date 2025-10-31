@@ -16,8 +16,11 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultLogoutEntryPoint : LogoutEntryPoint {
-    context(parentNode: Node)
-    override fun createNode(buildContext: BuildContext, callback: LogoutEntryPoint.Callback): Node {
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        callback: LogoutEntryPoint.Callback,
+    ): Node {
         return parentNode.createNode<LogoutNode>(buildContext, listOf(callback))
     }
 }

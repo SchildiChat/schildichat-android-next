@@ -13,8 +13,8 @@ import io.element.android.features.logout.api.LogoutEntryPoint
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakeLogoutEntryPoint : LogoutEntryPoint {
-    context(parentNode: Node)
     override fun createNode(
+        parentNode: Node,
         buildContext: BuildContext,
         callback: LogoutEntryPoint.Callback,
     ): Node = lambdaError()

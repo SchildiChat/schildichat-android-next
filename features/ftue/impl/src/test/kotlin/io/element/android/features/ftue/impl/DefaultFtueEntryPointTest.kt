@@ -32,14 +32,12 @@ class DefaultFtueEntryPointTest {
             FtueFlowNode(
                 buildContext = buildContext,
                 plugins = plugins,
-                analyticsEntryPoint = { _ -> lambdaError() },
+                analyticsEntryPoint = { _, _ -> lambdaError() },
                 defaultFtueService = createDefaultFtueService(),
                 lockScreenEntryPoint = FakeLockScreenEntryPoint(),
             )
         }
-        val result = with(parentNode) {
-            entryPoint.createNode(BuildContext.root(null))
-        }
+        val result = entryPoint.createNode(parentNode, BuildContext.root(null))
         assertThat(result).isInstanceOf(FtueFlowNode::class.java)
     }
 }

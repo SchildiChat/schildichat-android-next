@@ -104,6 +104,7 @@ class FtueSessionVerificationFlowNode(
             }
             is NavTarget.UseAnotherDevice -> {
                 outgoingVerificationEntryPoint.createNode(
+                    parentNode = this,
                     buildContext = buildContext,
                     params = OutgoingVerificationEntryPoint.Params(
                         showDeviceVerifiedScreen = true,
@@ -127,6 +128,7 @@ class FtueSessionVerificationFlowNode(
             }
             is NavTarget.EnterRecoveryKey -> {
                 secureBackupEntryPoint.createNode(
+                    parentNode = this,
                     buildContext = buildContext,
                     params = SecureBackupEntryPoint.Params(SecureBackupEntryPoint.InitialTarget.EnterRecoveryKey),
                     callback = secureBackupEntryPointCallback
@@ -134,6 +136,7 @@ class FtueSessionVerificationFlowNode(
             }
             is NavTarget.ResetIdentity -> {
                 secureBackupEntryPoint.createNode(
+                    parentNode = this,
                     buildContext = buildContext,
                     params = SecureBackupEntryPoint.Params(SecureBackupEntryPoint.InitialTarget.ResetIdentity),
                     callback = object : SecureBackupEntryPoint.Callback {

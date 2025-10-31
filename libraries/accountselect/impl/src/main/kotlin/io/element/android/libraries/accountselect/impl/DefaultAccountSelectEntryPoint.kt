@@ -16,8 +16,11 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultAccountSelectEntryPoint : AccountSelectEntryPoint {
-    context(parentNode: Node)
-    override fun createNode(buildContext: BuildContext, callback: AccountSelectEntryPoint.Callback): Node {
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        callback: AccountSelectEntryPoint.Callback,
+    ): Node {
         return parentNode.createNode<AccountSelectNode>(buildContext, listOf(callback))
     }
 }

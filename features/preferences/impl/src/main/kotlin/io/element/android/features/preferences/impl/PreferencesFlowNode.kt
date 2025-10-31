@@ -216,6 +216,7 @@ class PreferencesFlowNode(
             }
             NavTarget.TroubleshootNotifications -> {
                 notificationTroubleShootEntryPoint.createNode(
+                    parentNode = this,
                     buildContext = buildContext,
                     callback = object : NotificationTroubleShootEntryPoint.Callback {
                         override fun onDone() {
@@ -234,6 +235,7 @@ class PreferencesFlowNode(
             }
             NavTarget.PushHistory -> {
                 pushHistoryEntryPoint.createNode(
+                    parentNode = this,
                     buildContext = buildContext,
                     callback = object : PushHistoryEntryPoint.Callback {
                         override fun onDone() {
@@ -268,6 +270,7 @@ class PreferencesFlowNode(
             }
             NavTarget.LockScreenSettings -> {
                 lockScreenEntryPoint.createNode(
+                    parentNode = this,
                     buildContext = buildContext,
                     navTarget = LockScreenEntryPoint.Target.Settings,
                     callback = object : LockScreenEntryPoint.Callback {
@@ -287,15 +290,16 @@ class PreferencesFlowNode(
                     }
                 }
                 logoutEntryPoint.createNode(
+                    parentNode = this,
                     buildContext = buildContext,
                     callback = callBack,
                 )
             }
             is NavTarget.OssLicenses -> {
-                openSourceLicensesEntryPoint.createNode(buildContext)
+                openSourceLicensesEntryPoint.createNode(this, buildContext)
             }
             NavTarget.AccountDeactivation -> {
-                accountDeactivationEntryPoint.createNode(buildContext)
+                accountDeactivationEntryPoint.createNode(this, buildContext)
             }
         }
     }

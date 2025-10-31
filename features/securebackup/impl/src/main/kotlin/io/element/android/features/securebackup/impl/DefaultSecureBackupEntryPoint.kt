@@ -16,8 +16,8 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultSecureBackupEntryPoint : SecureBackupEntryPoint {
-    context(parentNode: Node)
     override fun createNode(
+        parentNode: Node,
         buildContext: BuildContext,
         params: SecureBackupEntryPoint.Params,
         callback: SecureBackupEntryPoint.Callback,

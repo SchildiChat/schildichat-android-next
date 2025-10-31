@@ -13,6 +13,9 @@ import io.element.android.libraries.architecture.FeatureEntryPoint
 import io.element.android.libraries.matrix.api.core.RoomId
 
 fun interface ReportRoomEntryPoint : FeatureEntryPoint {
-    context(parentNode: Node)
-    fun createNode(buildContext: BuildContext, roomId: RoomId): Node
+    fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        roomId: RoomId,
+    ): Node
 }

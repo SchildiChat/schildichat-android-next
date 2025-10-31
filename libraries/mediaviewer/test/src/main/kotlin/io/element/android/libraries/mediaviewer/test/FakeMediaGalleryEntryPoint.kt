@@ -13,8 +13,8 @@ import io.element.android.libraries.mediaviewer.api.MediaGalleryEntryPoint
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakeMediaGalleryEntryPoint : MediaGalleryEntryPoint {
-    context(parentNode: Node)
     override fun createNode(
+        parentNode: Node,
         buildContext: BuildContext,
         callback: MediaGalleryEntryPoint.Callback,
     ): Node = lambdaError()

@@ -13,8 +13,8 @@ import io.element.android.libraries.troubleshoot.api.NotificationTroubleShootEnt
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakeNotificationTroubleShootEntryPoint : NotificationTroubleShootEntryPoint {
-    context(parentNode: Node)
     override fun createNode(
+        parentNode: Node,
         buildContext: BuildContext,
         callback: NotificationTroubleShootEntryPoint.Callback,
     ): Node = lambdaError()

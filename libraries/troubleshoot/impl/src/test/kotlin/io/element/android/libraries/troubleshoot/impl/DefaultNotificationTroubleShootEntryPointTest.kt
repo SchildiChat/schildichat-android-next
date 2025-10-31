@@ -36,12 +36,11 @@ class DefaultNotificationTroubleShootEntryPointTest {
             override fun onDone() = lambdaError()
             override fun navigateToBlockedUsers() = lambdaError()
         }
-        val result = with(parentNode) {
-            entryPoint.createNode(
-                buildContext = BuildContext.root(null),
-                callback = callback,
-            )
-        }
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            callback = callback,
+        )
         assertThat(result).isInstanceOf(TroubleshootNotificationsNode::class.java)
         assertThat(result.plugins).contains(callback)
     }

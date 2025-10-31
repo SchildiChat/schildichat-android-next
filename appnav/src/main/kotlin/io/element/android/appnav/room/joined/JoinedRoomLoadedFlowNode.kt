@@ -141,6 +141,7 @@ class JoinedRoomLoadedFlowNode(
             }
         }
         return roomDetailsEntryPoint.createNode(
+            parentNode = this,
             buildContext = buildContext,
             params = RoomDetailsEntryPoint.Params(initialTarget),
             callback = callback,
@@ -179,6 +180,7 @@ class JoinedRoomLoadedFlowNode(
                     }
                 }
                 forwardEntryPoint.createNode(
+                    parentNode = this,
                     buildContext = buildContext,
                     params = params,
                     callback = callback,
@@ -202,6 +204,7 @@ class JoinedRoomLoadedFlowNode(
             }
         }
         return spaceEntryPoint.createNode(
+            parentNode = this,
             buildContext = buildContext,
             inputs = SpaceEntryPoint.Inputs(roomId = inputs.room.roomId),
             callback = callback,
@@ -237,6 +240,7 @@ class JoinedRoomLoadedFlowNode(
             MessagesEntryPoint.InitialTarget.Messages(navTarget.focusedEventId)
         )
         return messagesEntryPoint.createNode(
+            parentNode = this,
             buildContext = buildContext,
             params = params,
             callback = callback,

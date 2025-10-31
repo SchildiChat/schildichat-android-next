@@ -122,7 +122,7 @@ class DefaultOnRedactedEventReceivedTest {
                     }
                 )
             },
-            displayer = FakeNotificationDisplayer(showNotificationMessageResult = showNotificationLambda),
+            displayer = FakeNotificationDisplayer(showNotificationResult = showNotificationLambda),
         )
         sut.onRedactedEventsReceived(listOf(ResolvedPushEvent.Redaction(A_SESSION_ID, A_ROOM_ID, AN_EVENT_ID, null)))
 

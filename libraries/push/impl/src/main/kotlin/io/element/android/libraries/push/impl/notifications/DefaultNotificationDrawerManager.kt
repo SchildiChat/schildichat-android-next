@@ -141,7 +141,7 @@ class DefaultNotificationDrawerManager(
      */
     override fun clearMessagesForThread(sessionId: SessionId, roomId: RoomId, threadId: ThreadId) {
         val tag = NotificationCreator.messageTag(roomId, threadId)
-        notificationManager.cancel(tag, NotificationIdProvider.getRoomMessagesNotificationId(sessionId))
+        notificationDisplayer.cancelNotification(tag, NotificationIdProvider.getRoomMessagesNotificationId(sessionId))
         clearSummaryNotificationIfNeeded(sessionId)
     }
 

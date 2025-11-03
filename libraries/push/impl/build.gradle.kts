@@ -21,6 +21,10 @@ android {
             isIncludeAndroidResources = true
         }
     }
+
+    buildTypes {
+        register("nightly")
+    }
 }
 
 setupDependencyInjection()

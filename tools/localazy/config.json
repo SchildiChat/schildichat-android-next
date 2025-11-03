@@ -366,7 +366,7 @@
       ]
     },
     {
-      "name" : ":features:changeroommemberroles:impl",
+      "name" : ":features:rolesandpermissions:impl",
       "includeRegex" : [
         "screen_room_change_.*",
         "screen_room_roles_.*",

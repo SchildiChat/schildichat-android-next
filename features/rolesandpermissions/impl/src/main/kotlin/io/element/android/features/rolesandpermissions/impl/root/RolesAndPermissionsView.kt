@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
-import io.element.android.features.roomdetails.impl.R
+import io.element.android.features.rolesandpermissions.impl.R
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.designsystem.components.ProgressDialog
 import io.element.android.libraries.designsystem.components.async.AsyncActionView

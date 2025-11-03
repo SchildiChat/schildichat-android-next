@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import io.element.android.compound.tokens.generated.CompoundIcons
-import io.element.android.features.roomdetails.impl.R
+import io.element.android.features.rolesandpermissions.impl.R
 import io.element.android.libraries.core.bool.orFalse
 import io.element.android.libraries.designsystem.components.async.AsyncActionView
 import io.element.android.libraries.designsystem.components.button.BackButton

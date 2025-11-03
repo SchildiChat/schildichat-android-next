@@ -8,9 +8,7 @@
 package io.element.android.features.messages.impl.pinned
 
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
-import dev.zacsweers.metro.binding
 import io.element.android.features.messages.api.pinned.PinnedEventsTimelineProvider
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
@@ -31,8 +29,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 
 @SingleIn(RoomScope::class)
-@ContributesBinding(RoomScope::class, binding = binding<PinnedEventsTimelineProvider>())
-@Inject
+@ContributesBinding(RoomScope::class)
 class DefaultPinnedEventsTimelineProvider(
     private val room: JoinedRoom,
     private val syncService: SyncService,

@@ -785,7 +785,7 @@ class MediaViewerPresenterTest {
 
     @Test
     fun `present - forward hides the bottom sheet and invokes the navigator`() = runTest {
-        val onForwardClickLambda = lambdaRecorder<EventId, Unit> { }
+        val onForwardClickLambda = lambdaRecorder<EventId, Boolean, Unit> { _, _ -> }
         val navigator = FakeMediaViewerNavigator(
             onForwardClickLambda = onForwardClickLambda,
         )
@@ -804,7 +804,8 @@ class MediaViewerPresenterTest {
             initialState.eventSink(MediaViewerEvents.Forward(AN_EVENT_ID))
             val finalState = awaitItem()
             assertThat(finalState.mediaBottomSheetState).isEqualTo(MediaBottomSheetState.Hidden)
-            onForwardClickLambda.assertions().isCalledOnce().with(value(AN_EVENT_ID))
+            onForwardClickLambda.assertions().isCalledOnce()
+                .with(value(AN_EVENT_ID), value(false))
         }
     }
 

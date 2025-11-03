@@ -38,6 +38,10 @@ class FakeMediaGalleryDataSource(
         return groupedMediaItemsFlow.replayCache.firstOrNull() ?: AsyncData.Uninitialized
     }
 
+    override fun fromPinnedEvents(): Boolean {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun loadMore(direction: Timeline.PaginationDirection) {
         loadMoreLambda(direction)
     }

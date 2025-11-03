@@ -5,7 +5,7 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.features.roomdetails.impl.rolesandpermissions
+package io.element.android.features.rolesandpermissions.impl
 
 import android.os.Parcelable
 import androidx.compose.runtime.Composable
@@ -22,8 +22,9 @@ import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesEntryPoint
 import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesListType
-import io.element.android.features.roomdetails.impl.rolesandpermissions.permissions.ChangeRoomPermissionsNode
-import io.element.android.features.roomdetails.impl.rolesandpermissions.permissions.ChangeRoomPermissionsSection
+import io.element.android.features.rolesandpermissions.impl.permissions.ChangeRoomPermissionsNode
+import io.element.android.features.rolesandpermissions.impl.permissions.ChangeRoomPermissionsSection
+import io.element.android.features.rolesandpermissions.impl.root.RolesAndPermissionsNode
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.createNode
@@ -37,8 +38,8 @@ import kotlinx.parcelize.Parcelize
 class RolesAndPermissionsFlowNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
-    private val changeRoomMemberRolesEntryPoint: ChangeRoomMemberRolesEntryPoint,
     private val joinedRoom: JoinedRoom,
+    private val changeRoomMemberRolesEntryPoint: ChangeRoomMemberRolesEntryPoint,
 ) : BaseFlowNode<RolesAndPermissionsFlowNode.NavTarget>(
     backstack = BackStack(
         initialElement = NavTarget.AdminSettings,

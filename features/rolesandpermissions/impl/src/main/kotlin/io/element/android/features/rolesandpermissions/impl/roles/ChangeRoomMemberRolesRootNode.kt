@@ -21,6 +21,7 @@ import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.appnav.di.RoomGraphFactory
 import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesEntryPoint
+import io.element.android.features.rolesandpermissions.api.RolesAndPermissionsEntryPoint
 import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesListType
 import io.element.android.libraries.architecture.NodeInputs
 import io.element.android.libraries.architecture.createNode

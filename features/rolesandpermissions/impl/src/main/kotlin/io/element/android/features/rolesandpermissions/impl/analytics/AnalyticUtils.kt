@@ -5,7 +5,7 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.features.roomdetails.impl.analytics
+package io.element.android.features.rolesandpermissions.impl.analytics
 
 import im.vector.app.features.analytics.plan.RoomModeration
 import io.element.android.libraries.matrix.api.room.RoomMember

@@ -9,12 +9,12 @@ package io.element.android.features.rolesandpermissions.test
 
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
-import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesEntryPoint
+import io.element.android.features.rolesandpermissions.api.RolesAndPermissionsEntryPoint
 import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesListType
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.tests.testutils.lambda.lambdaError
 
-class FakeChangeRoomMemberRolesEntryPoint : ChangeRoomMemberRolesEntryPoint {
+class FakeChangeRoomMemberRolesEntryPoint : RolesAndPermissionsEntryPoint {
     override fun createNode(
         parentNode: Node,
         buildContext: BuildContext,

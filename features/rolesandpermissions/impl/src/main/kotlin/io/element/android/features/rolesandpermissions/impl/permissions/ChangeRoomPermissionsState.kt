@@ -5,7 +5,7 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.features.roomdetails.impl.rolesandpermissions.permissions
+package io.element.android.features.rolesandpermissions.impl.permissions
 
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.room.powerlevels.RoomPowerLevelsValues

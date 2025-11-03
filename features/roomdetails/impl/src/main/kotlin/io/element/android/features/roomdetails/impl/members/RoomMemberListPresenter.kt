@@ -179,7 +179,7 @@ class RoomMemberListPresenter(
             isSearchActive = isSearchActive,
             canInvite = canInvite,
             moderationState = roomModerationState,
-            eventSink = { handleEvents(it) },
+            eventSink = ::handleEvents,
         )
     }
 

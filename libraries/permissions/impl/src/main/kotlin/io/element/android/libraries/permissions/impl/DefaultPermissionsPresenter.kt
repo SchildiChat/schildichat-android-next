@@ -125,7 +125,7 @@ class DefaultPermissionsPresenter(
             showDialog = showDialog.value,
             permissionAlreadyAsked = isAlreadyAsked,
             permissionAlreadyDenied = isAlreadyDenied,
-            eventSink = { handleEvents(it) }
+            eventSink = ::handleEvents,
         )
     }
 

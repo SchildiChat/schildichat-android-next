@@ -54,7 +54,7 @@ class ForwardMessagesPresenter(
 
         return ForwardMessagesState(
             forwardAction = forwardingActionState.value,
-            eventSink = { handleEvents(it) }
+            eventSink = ::handleEvents,
         )
     }
 

@@ -140,7 +140,7 @@ class RoomMemberModerationPresenter(
             kickUserAsyncAction = kickUserAsyncAction.value,
             banUserAsyncAction = banUserAsyncAction.value,
             unbanUserAsyncAction = unbanUserAsyncAction.value,
-            eventSink = { handleEvent(it) },
+            eventSink = ::handleEvent,
         )
     }
 

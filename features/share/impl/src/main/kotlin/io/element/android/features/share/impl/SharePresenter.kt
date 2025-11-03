@@ -63,7 +63,7 @@ class SharePresenter(
 
         return ShareState(
             shareAction = shareActionState.value,
-            eventSink = { handleEvents(it) }
+            eventSink = ::handleEvents,
         )
     }
 

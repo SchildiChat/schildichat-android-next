@@ -9,7 +9,7 @@ android_gradle_plugin = "8.11.1"
 kotlin = "2.2.20"
 kotlinpoet = "2.2.0"
 ksp = "2.2.20-2.0.2"
-firebaseAppDistribution = "5.1.1"
+firebaseAppDistribution = "5.2.0"
 
 # AndroidX
 core = "1.17.0"
@@ -52,7 +52,7 @@ haze = "1.6.10"
 dependencyAnalysis = "3.4.1"
 
 # DI
-metro = "0.7.2"
+metro = "0.7.3"
 
 # Auto service
 autoservice = "1.1.1"
@@ -78,7 +78,7 @@ kotlinpoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlin
 kover_gradle_plugin = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kover" }
 ksp_gradle_plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 # https://firebase.google.com/docs/android/setup#available-libraries
-google_firebase_bom = "com.google.firebase:firebase-bom:34.4.0"
+google_firebase_bom = "com.google.firebase:firebase-bom:34.5.0"
 firebase_appdistribution_gradle = { module = "com.google.firebase:firebase-appdistribution-gradle", version.ref = "firebaseAppDistribution" }
 autonomousapps_dependencyanalysis_plugin = { module = "com.autonomousapps:dependency-analysis-gradle-plugin", version.ref = "dependencyAnalysis" }
 ksp_plugin = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
@@ -177,7 +177,7 @@ test_detekt_test = { module = "io.gitlab.arturbosch.detekt:detekt-test", version
 # https://github.com/matrix-org/matrix-rust-components-kotlin/commits/main/sdk/sdk-android/src/main/kotlin/org/matrix/rustcomponents/sdk/matrix_sdk_ffi.kt
 # All new features should not be implemented in the pull request that upgrades the version, developers should
 # only fix API breaks and may add some TODOs.
-matrix_sdk = "org.matrix.rustcomponents:sdk-android:25.10.29"
+matrix_sdk = "org.matrix.rustcomponents:sdk-android:25.10.31"
 
 # Others
 coil = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }

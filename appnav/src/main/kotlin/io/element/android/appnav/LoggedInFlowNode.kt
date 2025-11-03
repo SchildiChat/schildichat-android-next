@@ -404,7 +404,7 @@ class LoggedInFlowNode(
                     }
 
                     override fun navigateToBugReport() {
-                        callback.navigateToAddAccount()
+                        callback.navigateToBugReport()
                     }
 
                     override fun navigateToSecureBackup() {

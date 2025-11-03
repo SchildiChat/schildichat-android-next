@@ -61,6 +61,8 @@ class MediaViewerDataSource(
     private val localMediaStates: MutableMap<String, MutableState<AsyncData<LocalMedia>>> =
         mutableMapOf()
 
+    fun fromPinnedEvents(): Boolean = galleryDataSource.fromPinnedEvents()
+
     fun setup() {
         galleryDataSource.start()
     }

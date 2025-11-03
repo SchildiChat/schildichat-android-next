@@ -64,8 +64,8 @@ class MediaViewerNode(
         callback.viewInTimeline(eventId)
     }
 
-    override fun onForwardClick(eventId: EventId) {
-        callback.forwardEvent(eventId)
+    override fun onForwardClick(eventId: EventId, fromPinnedEvents: Boolean) {
+        callback.forwardEvent(eventId, fromPinnedEvents)
     }
 
     override fun onItemDeleted() {

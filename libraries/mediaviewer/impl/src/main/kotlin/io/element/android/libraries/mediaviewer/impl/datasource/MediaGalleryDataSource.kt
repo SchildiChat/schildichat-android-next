@@ -32,6 +32,7 @@ interface MediaGalleryDataSource {
     fun start()
     fun groupedMediaItemsFlow(): Flow<AsyncData<GroupedMediaItems>>
     fun getLastData(): AsyncData<GroupedMediaItems>
+    fun fromPinnedEvents(): Boolean
     suspend fun loadMore(direction: Timeline.PaginationDirection)
     suspend fun deleteItem(eventId: EventId)
 }
@@ -45,6 +46,10 @@ class TimelineMediaGalleryDataSource(
     private val mediaItemsPostProcessor: MediaItemsPostProcessor,
 ) : MediaGalleryDataSource {
     private var timeline: Timeline? = null
+
+    override fun fromPinnedEvents(): Boolean {
+        return timeline?.mode == Timeline.Mode.PinnedEvents
+    }
 
     private val groupedMediaItemsFlow = MutableSharedFlow<AsyncData<GroupedMediaItems>>(replay = 1)
 

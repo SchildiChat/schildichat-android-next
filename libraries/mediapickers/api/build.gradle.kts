@@ -13,12 +13,12 @@ plugins {
 
 android {
     namespace = "io.element.android.libraries.mediapickers.api"
+}
 
-    dependencies {
-        implementation(projects.libraries.uiStrings)
-        implementation(projects.libraries.core)
-        implementation(projects.libraries.di)
+dependencies {
+    implementation(projects.libraries.uiStrings)
+    implementation(projects.libraries.core)
+    implementation(projects.libraries.di)
 
-        testCommonDependencies(libs)
-    }
+    testCommonDependencies(libs)
 }

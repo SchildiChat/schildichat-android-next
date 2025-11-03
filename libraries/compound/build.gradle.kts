@@ -18,12 +18,12 @@ android {
     testOptions {
         unitTests.isIncludeAndroidResources = true
     }
+}
 
-    dependencies {
-        implementation(libs.showkase)
-        testCommonDependencies(libs)
-        testImplementation(libs.test.roborazzi)
-        testImplementation(libs.test.roborazzi.compose)
-        testImplementation(libs.test.roborazzi.junit)
-    }
+dependencies {
+    implementation(libs.showkase)
+    testCommonDependencies(libs)
+    testImplementation(libs.test.roborazzi)
+    testImplementation(libs.test.roborazzi.compose)
+    testImplementation(libs.test.roborazzi.junit)
 }

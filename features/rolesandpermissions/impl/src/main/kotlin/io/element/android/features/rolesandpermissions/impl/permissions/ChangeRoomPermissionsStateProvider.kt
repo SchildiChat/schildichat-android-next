@@ -11,41 +11,33 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.matrix.api.room.powerlevels.RoomPowerLevelsValues
-import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableMap
 
 class ChangeRoomPermissionsStateProvider : PreviewParameterProvider<ChangeRoomPermissionsState> {
     override val values: Sequence<ChangeRoomPermissionsState>
         get() = sequenceOf(
-            aChangeRoomPermissionsState(section = ChangeRoomPermissionsSection.RoomDetails),
-            aChangeRoomPermissionsState(section = ChangeRoomPermissionsSection.MessagesAndContent),
-            aChangeRoomPermissionsState(section = ChangeRoomPermissionsSection.MembershipModeration),
-            aChangeRoomPermissionsState(section = ChangeRoomPermissionsSection.RoomDetails, hasChanges = true),
-            aChangeRoomPermissionsState(section = ChangeRoomPermissionsSection.RoomDetails, hasChanges = true, saveAction = AsyncAction.Loading),
+            aChangeRoomPermissionsState(),
+            aChangeRoomPermissionsState(hasChanges = true),
+            aChangeRoomPermissionsState(hasChanges = true, saveAction = AsyncAction.Loading),
             aChangeRoomPermissionsState(
-                section = ChangeRoomPermissionsSection.RoomDetails,
                 hasChanges = true,
                 saveAction = AsyncAction.Failure(IllegalStateException("Failed to save changes"))
             ),
-            aChangeRoomPermissionsState(
-                section = ChangeRoomPermissionsSection.RoomDetails,
-                hasChanges = true,
-                confirmExitAction = AsyncAction.ConfirmingNoParams,
-            ),
+            aChangeRoomPermissionsState(hasChanges = true, confirmExitAction = AsyncAction.ConfirmingNoParams),
         )
 }
 
 internal fun aChangeRoomPermissionsState(
-    section: ChangeRoomPermissionsSection,
     currentPermissions: RoomPowerLevelsValues = previewPermissions(),
-    items: List<RoomPermissionType> = ChangeRoomPermissionsPresenter.itemsForSection(section),
+    itemsBySection: Map<RoomPermissionsSection, ImmutableList<RoomPermissionType>> = ChangeRoomPermissionsPresenter.buildItems(false),
     hasChanges: Boolean = false,
     saveAction: AsyncAction<Unit> = AsyncAction.Uninitialized,
     confirmExitAction: AsyncAction<Unit> = AsyncAction.Uninitialized,
     eventSink: (ChangeRoomPermissionsEvent) -> Unit = {},
 ) = ChangeRoomPermissionsState(
-    section = section,
     currentPermissions = currentPermissions,
-    items = items.toImmutableList(),
+    itemsBySection = itemsBySection.toImmutableMap(),
     hasChanges = hasChanges,
     saveAction = saveAction,
     confirmExitAction = confirmExitAction,

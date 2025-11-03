@@ -23,6 +23,7 @@ import io.element.android.libraries.designsystem.components.async.AsyncActionVie
 import io.element.android.libraries.designsystem.components.button.BackButton
 import io.element.android.libraries.designsystem.components.dialogs.ConfirmationDialog
 import io.element.android.libraries.designsystem.components.list.ListItemContent
+import io.element.android.libraries.designsystem.components.preferences.PreferenceDropdown
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.IconSource
@@ -36,6 +37,7 @@ import io.element.android.libraries.designsystem.theme.components.TopAppBar
 import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.matrix.api.room.powerlevels.RoomPowerLevelsValues
 import io.element.android.libraries.ui.strings.CommonStrings
+import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,13 +52,8 @@ fun ChangeRoomPermissionsView(
     Scaffold(
         modifier = modifier,
         topBar = {
-            val title = when (state.section) {
-                ChangeRoomPermissionsSection.RoomDetails -> stringResource(R.string.screen_room_change_permissions_room_details)
-                ChangeRoomPermissionsSection.MessagesAndContent -> stringResource(R.string.screen_room_change_permissions_messages_and_content)
-                ChangeRoomPermissionsSection.MembershipModeration -> stringResource(R.string.screen_room_change_permissions_member_moderation)
-            }
             TopAppBar(
-                titleStr = title,
+                titleStr = stringResource(R.string.screen_room_roles_and_permissions_permissions_header),
                 navigationIcon = {
                     BackButton(onClick = { state.eventSink(ChangeRoomPermissionsEvent.Exit) })
                 },
@@ -75,29 +72,25 @@ fun ChangeRoomPermissionsView(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            for ((index, permissionItem) in state.items.withIndex()) {
+            state.itemsBySection.onEachIndexed { index, (section, items) ->
                 item {
-                    ListSectionHeader(titleForSection(item = permissionItem), hasDivider = index > 0)
-                    SelectRoleItem(
-                        permissionsItem = permissionItem,
-                        role = RoomMember.Role.Admin,
-                        currentPermissions = state.currentPermissions
-                    ) { item, role ->
-                        state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(item, role))
-                    }
-                    SelectRoleItem(
-                        permissionsItem = permissionItem,
-                        role = RoomMember.Role.Moderator,
-                        currentPermissions = state.currentPermissions
-                    ) { item, role ->
-                        state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(item, role))
-                    }
-                    SelectRoleItem(
-                        permissionsItem = permissionItem,
-                        role = RoomMember.Role.User,
-                        currentPermissions = state.currentPermissions
-                    ) { item, role ->
-                        state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(item, role))
+                    ListSectionHeader(titleForSection(section), hasDivider = index>0)
+                }
+                for (permissionType in items) {
+                    item {
+                        PreferenceDropdown(
+                            title = titleForType(permissionType),
+                            selectedOption = state.selectedRoleForType(permissionType),
+                            options = SelectableRole.entries.toImmutableList(),
+                            onSelectOption = { role ->
+                                state.eventSink(
+                                    ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(
+                                        action = permissionType,
+                                        role = role
+                                    )
+                                )
+                            }
+                        )
                     }
                 }
             }
@@ -126,47 +119,15 @@ fun ChangeRoomPermissionsView(
         onErrorDismiss = {},
     )
 }
-
 @Composable
-private fun SelectRoleItem(
-    permissionsItem: RoomPermissionType,
-    role: RoomMember.Role,
-    currentPermissions: RoomPowerLevelsValues?,
-    onClick: (RoomPermissionType, RoomMember.Role) -> Unit
-) {
-    val title = when (role) {
-        RoomMember.Role.Admin -> stringResource(R.string.screen_room_change_permissions_administrators)
-        RoomMember.Role.Moderator -> stringResource(R.string.screen_room_change_permissions_moderators)
-        RoomMember.Role.User -> stringResource(R.string.screen_room_change_permissions_everyone)
-        else -> error("Unsupported role selected: $role")
-    }
-    ListItem(
-        headlineContent = { Text(text = title) },
-        trailingContent = if (currentPermissions?.isSelected(permissionsItem, role).orFalse()) {
-            ListItemContent.Icon(IconSource.Vector(CompoundIcons.Check()))
-        } else {
-            null
-        },
-        style = ListItemStyle.Primary,
-        onClick = { onClick(permissionsItem, role) },
-    )
-}
-
-private fun RoomPowerLevelsValues.isSelected(item: RoomPermissionType, role: RoomMember.Role): Boolean {
-    return when (item) {
-        RoomPermissionType.BAN -> RoomMember.Role.forPowerLevel(ban) == role
-        RoomPermissionType.INVITE -> RoomMember.Role.forPowerLevel(invite) == role
-        RoomPermissionType.KICK -> RoomMember.Role.forPowerLevel(kick) == role
-        RoomPermissionType.SEND_EVENTS -> RoomMember.Role.forPowerLevel(sendEvents) == role
-        RoomPermissionType.REDACT_EVENTS -> RoomMember.Role.forPowerLevel(redactEvents) == role
-        RoomPermissionType.ROOM_NAME -> RoomMember.Role.forPowerLevel(roomName) == role
-        RoomPermissionType.ROOM_AVATAR -> RoomMember.Role.forPowerLevel(roomAvatar) == role
-        RoomPermissionType.ROOM_TOPIC -> RoomMember.Role.forPowerLevel(roomTopic) == role
-    }
+private fun titleForSection(section: RoomPermissionsSection): String = when (section) {
+    RoomPermissionsSection.RoomDetails -> stringResource(R.string.screen_room_change_permissions_room_details)
+    RoomPermissionsSection.MessagesAndContent -> stringResource(R.string.screen_room_change_permissions_messages_and_content)
+    RoomPermissionsSection.MembershipModeration -> stringResource(R.string.screen_room_change_permissions_member_moderation)
 }
 
 @Composable
-private fun titleForSection(item: RoomPermissionType): String = when (item) {
+private fun titleForType(type: RoomPermissionType): String = when (type) {
     RoomPermissionType.INVITE -> stringResource(R.string.screen_room_change_permissions_invite_people)
     RoomPermissionType.KICK -> stringResource(R.string.screen_room_change_permissions_remove_people)
     RoomPermissionType.BAN -> stringResource(R.string.screen_room_change_permissions_ban_people)

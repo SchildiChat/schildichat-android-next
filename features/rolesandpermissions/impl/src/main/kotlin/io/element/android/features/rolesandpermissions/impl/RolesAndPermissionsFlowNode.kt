@@ -23,7 +23,6 @@ import io.element.android.annotations.ContributesNode
 import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesEntryPoint
 import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesListType
 import io.element.android.features.rolesandpermissions.impl.permissions.ChangeRoomPermissionsNode
-import io.element.android.features.rolesandpermissions.impl.permissions.ChangeRoomPermissionsSection
 import io.element.android.features.rolesandpermissions.impl.root.RolesAndPermissionsNode
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
@@ -59,7 +58,7 @@ class RolesAndPermissionsFlowNode(
         data object ModeratorList : NavTarget
 
         @Parcelize
-        data class ChangeRoomPermissions(val section: ChangeRoomPermissionsSection) : NavTarget
+        data object ChangeRoomPermissions: NavTarget
     }
 
     override fun onBuilt() {
@@ -84,17 +83,10 @@ class RolesAndPermissionsFlowNode(
                         backstack.push(NavTarget.ModeratorList)
                     }
 
-                    override fun openEditRoomDetailsPermissions() {
-                        backstack.push(NavTarget.ChangeRoomPermissions(ChangeRoomPermissionsSection.RoomDetails))
+                    override fun openEditPermissions() {
+                        backstack.push(NavTarget.ChangeRoomPermissions)
                     }
 
-                    override fun openMessagesAndContentPermissions() {
-                        backstack.push(NavTarget.ChangeRoomPermissions(ChangeRoomPermissionsSection.MessagesAndContent))
-                    }
-
-                    override fun openModerationPermissions() {
-                        backstack.push(NavTarget.ChangeRoomPermissions(ChangeRoomPermissionsSection.MembershipModeration))
-                    }
                 }
                 createNode<RolesAndPermissionsNode>(
                     buildContext = buildContext,
@@ -118,11 +110,7 @@ class RolesAndPermissionsFlowNode(
                 )
             }
             is NavTarget.ChangeRoomPermissions -> {
-                val inputs = ChangeRoomPermissionsNode.Inputs(navTarget.section)
-                createNode<ChangeRoomPermissionsNode>(
-                    buildContext = buildContext,
-                    plugins = listOf(inputs),
-                )
+                createNode<ChangeRoomPermissionsNode>(buildContext = buildContext)
             }
         }
     }

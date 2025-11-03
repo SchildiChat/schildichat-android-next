@@ -7,7 +7,6 @@
 
 package io.element.android.features.rolesandpermissions.impl.permissions
 
-import android.os.Parcelable
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
@@ -16,25 +15,15 @@ import com.bumble.appyx.core.plugin.Plugin
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
-import io.element.android.libraries.architecture.NodeInputs
-import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.di.RoomScope
-import kotlinx.parcelize.Parcelize
 
 @ContributesNode(RoomScope::class)
 @AssistedInject
 class ChangeRoomPermissionsNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
-    presenterFactory: ChangeRoomPermissionsPresenter.Factory,
+    private val presenter: ChangeRoomPermissionsPresenter,
 ) : Node(buildContext, plugins = plugins) {
-    @Parcelize
-    data class Inputs(
-        val section: ChangeRoomPermissionsSection,
-    ) : NodeInputs, Parcelable
-
-    private val inputs: Inputs = inputs()
-    private val presenter = presenterFactory.create(inputs.section)
 
     @Composable
     override fun View(modifier: Modifier) {
@@ -45,11 +34,4 @@ class ChangeRoomPermissionsNode(
             onBackClick = this::navigateUp,
         )
     }
-}
-
-@Parcelize
-enum class ChangeRoomPermissionsSection : Parcelable {
-    RoomDetails,
-    MessagesAndContent,
-    MembershipModeration,
 }

@@ -15,50 +15,50 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import dev.zacsweers.metro.Assisted
-import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.Inject
 import io.element.android.features.rolesandpermissions.impl.analytics.trackPermissionChangeAnalytics
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.matrix.api.room.JoinedRoom
+import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.matrix.api.room.powerlevels.RoomPowerLevelsValues
 import io.element.android.services.analytics.api.AnalyticsService
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@AssistedInject
+@Inject
 class ChangeRoomPermissionsPresenter(
-    @Assisted private val section: ChangeRoomPermissionsSection,
     private val room: JoinedRoom,
     private val analyticsService: AnalyticsService,
 ) : Presenter<ChangeRoomPermissionsState> {
     companion object {
-        internal fun itemsForSection(section: ChangeRoomPermissionsSection) = when (section) {
-            ChangeRoomPermissionsSection.RoomDetails -> persistentListOf(
+        private fun itemsForSection(section: RoomPermissionsSection) = when (section) {
+            RoomPermissionsSection.RoomDetails -> persistentListOf(
                 RoomPermissionType.ROOM_NAME,
                 RoomPermissionType.ROOM_AVATAR,
                 RoomPermissionType.ROOM_TOPIC,
             )
-            ChangeRoomPermissionsSection.MessagesAndContent -> persistentListOf(
+            RoomPermissionsSection.MessagesAndContent -> persistentListOf(
                 RoomPermissionType.SEND_EVENTS,
                 RoomPermissionType.REDACT_EVENTS,
             )
-            ChangeRoomPermissionsSection.MembershipModeration -> persistentListOf(
+            RoomPermissionsSection.MembershipModeration -> persistentListOf(
                 RoomPermissionType.INVITE,
                 RoomPermissionType.KICK,
                 RoomPermissionType.BAN,
             )
         }
-    }
-    @AssistedFactory
-    interface Factory {
-        fun create(section: ChangeRoomPermissionsSection): ChangeRoomPermissionsPresenter
+
+        internal fun buildItems(forSpace: Boolean) = persistentMapOf(
+            RoomPermissionsSection.RoomDetails to itemsForSection(RoomPermissionsSection.RoomDetails),
+            RoomPermissionsSection.MessagesAndContent to itemsForSection(RoomPermissionsSection.MessagesAndContent),
+            RoomPermissionsSection.MembershipModeration to itemsForSection(RoomPermissionsSection.MembershipModeration),
+        )
     }
 
-    private val items: ImmutableList<RoomPermissionType> = itemsForSection(section)
+    private val items = buildItems(forSpace = room.info().isSpace)
 
     private var initialPermissions by mutableStateOf<RoomPowerLevelsValues?>(null)
     private var currentPermissions by mutableStateOf<RoomPowerLevelsValues?>(null)
@@ -80,15 +80,20 @@ class ChangeRoomPermissionsPresenter(
         fun handleEvent(event: ChangeRoomPermissionsEvent) {
             when (event) {
                 is ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction -> {
+                    val powerLevel = when (event.role) {
+                        SelectableRole.Admin -> RoomMember.Role.Admin.powerLevel
+                        SelectableRole.Moderator -> RoomMember.Role.Moderator.powerLevel
+                        SelectableRole.Everyone -> RoomMember.Role.User.powerLevel
+                    }
                     currentPermissions = when (event.action) {
-                        RoomPermissionType.BAN -> currentPermissions?.copy(ban = event.role.powerLevel)
-                        RoomPermissionType.INVITE -> currentPermissions?.copy(invite = event.role.powerLevel)
-                        RoomPermissionType.KICK -> currentPermissions?.copy(kick = event.role.powerLevel)
-                        RoomPermissionType.SEND_EVENTS -> currentPermissions?.copy(sendEvents = event.role.powerLevel)
-                        RoomPermissionType.REDACT_EVENTS -> currentPermissions?.copy(redactEvents = event.role.powerLevel)
-                        RoomPermissionType.ROOM_NAME -> currentPermissions?.copy(roomName = event.role.powerLevel)
-                        RoomPermissionType.ROOM_AVATAR -> currentPermissions?.copy(roomAvatar = event.role.powerLevel)
-                        RoomPermissionType.ROOM_TOPIC -> currentPermissions?.copy(roomTopic = event.role.powerLevel)
+                        RoomPermissionType.BAN -> currentPermissions?.copy(ban = powerLevel)
+                        RoomPermissionType.INVITE -> currentPermissions?.copy(invite = powerLevel)
+                        RoomPermissionType.KICK -> currentPermissions?.copy(kick = powerLevel)
+                        RoomPermissionType.SEND_EVENTS -> currentPermissions?.copy(sendEvents = powerLevel)
+                        RoomPermissionType.REDACT_EVENTS -> currentPermissions?.copy(redactEvents = powerLevel)
+                        RoomPermissionType.ROOM_NAME -> currentPermissions?.copy(roomName = powerLevel)
+                        RoomPermissionType.ROOM_AVATAR -> currentPermissions?.copy(roomAvatar = powerLevel)
+                        RoomPermissionType.ROOM_TOPIC -> currentPermissions?.copy(roomTopic = powerLevel)
                     }
                 }
                 is ChangeRoomPermissionsEvent.Save -> coroutineScope.save()
@@ -106,9 +111,8 @@ class ChangeRoomPermissionsPresenter(
             }
         }
         return ChangeRoomPermissionsState(
-            section = section,
             currentPermissions = currentPermissions,
-            items = items,
+            itemsBySection = items,
             hasChanges = hasChanges,
             saveAction = saveAction,
             confirmExitAction = confirmExitAction,

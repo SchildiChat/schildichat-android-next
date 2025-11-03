@@ -10,9 +10,11 @@
 package io.element.android.libraries.designsystem.components.preferences
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
@@ -26,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.libraries.designsystem.components.list.ListItemContent
@@ -33,6 +36,7 @@ import io.element.android.libraries.designsystem.components.preferences.componen
 import io.element.android.libraries.designsystem.preview.ElementThemedPreview
 import io.element.android.libraries.designsystem.preview.PreviewGroup
 import io.element.android.libraries.designsystem.theme.components.DropdownMenuItem
+import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.ListItem
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.toEnabledColor
@@ -143,6 +147,15 @@ private fun <T : DropdownOption> DropdownTrailingContent(
                             text = option.getText(),
                             style = ElementTheme.typography.fontBodyMdRegular
                         )
+                    },
+                    trailingIcon = {
+                        if(option == selectedOption){
+                            Icon(
+                                imageVector = CompoundIcons.Check(),
+                                contentDescription = null,
+                                tint = ElementTheme.colors.iconSuccessPrimary,
+                            )
+                        }
                     },
                     onClick = {
                         onSelectOption(option)

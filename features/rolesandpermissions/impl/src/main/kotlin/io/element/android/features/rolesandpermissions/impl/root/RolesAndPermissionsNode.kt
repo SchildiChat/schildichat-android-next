@@ -39,9 +39,8 @@ class RolesAndPermissionsNode(
     interface Callback : Plugin, RolesAndPermissionsNavigator {
         override fun openAdminList()
         override fun openModeratorList()
-        override fun openEditRoomDetailsPermissions()
-        override fun openMessagesAndContentPermissions()
-        override fun openModerationPermissions()
+        override fun openEditPermissions()
+
         override fun onBackClick() {}
     }
 
@@ -85,7 +84,5 @@ interface RolesAndPermissionsNavigator {
     fun onBackClick() {}
     fun openAdminList() {}
     fun openModeratorList() {}
-    fun openEditRoomDetailsPermissions() {}
-    fun openMessagesAndContentPermissions() {}
-    fun openModerationPermissions() {}
+    fun openEditPermissions() {}
 }

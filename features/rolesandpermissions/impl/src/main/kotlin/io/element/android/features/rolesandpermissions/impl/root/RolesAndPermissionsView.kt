@@ -78,25 +78,16 @@ fun RolesAndPermissionsView(
                 leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Edit()))
             )
         }
-        ListSectionHeader(title = stringResource(R.string.screen_room_roles_and_permissions_permissions_header), hasDivider = true)
+        HorizontalDivider()
         ListItem(
-            headlineContent = { Text(stringResource(R.string.screen_room_roles_and_permissions_room_details)) },
-            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Info())),
-            onClick = { rolesAndPermissionsNavigator.openEditRoomDetailsPermissions() },
-        )
-        ListItem(
-            headlineContent = { Text(stringResource(R.string.screen_room_roles_and_permissions_messages_and_content)) },
-            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Chat())),
-            onClick = { rolesAndPermissionsNavigator.openMessagesAndContentPermissions() },
-        )
-        ListItem(
-            headlineContent = { Text(stringResource(R.string.screen_room_roles_and_permissions_member_moderation)) },
-            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.User())),
-            onClick = { rolesAndPermissionsNavigator.openModerationPermissions() },
+            headlineContent = { Text(stringResource(R.string.screen_room_roles_and_permissions_permissions_header)) },
+            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Settings())),
+            onClick = { rolesAndPermissionsNavigator.openEditPermissions() },
         )
         HorizontalDivider()
         ListItem(
             headlineContent = { Text(stringResource(R.string.screen_room_roles_and_permissions_reset)) },
+            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Delete())),
             onClick = { state.eventSink(RolesAndPermissionsEvents.ResetPermissions) },
             style = ListItemStyle.Destructive,
         )

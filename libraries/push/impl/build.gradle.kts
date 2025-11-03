@@ -23,7 +23,9 @@ android {
     }
 
     buildTypes {
-        register("nightly")
+        register("nightly") {
+            matchingFallbacks += listOf("release")
+        }
     }
 }
 

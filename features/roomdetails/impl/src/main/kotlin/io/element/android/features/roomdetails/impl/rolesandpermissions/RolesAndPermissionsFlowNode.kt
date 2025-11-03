@@ -20,8 +20,8 @@ import com.bumble.appyx.navmodel.backstack.operation.push
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
-import io.element.android.features.changeroommemberroles.api.ChangeRoomMemberRolesEntryPoint
-import io.element.android.features.changeroommemberroles.api.ChangeRoomMemberRolesListType
+import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesEntryPoint
+import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesListType
 import io.element.android.features.roomdetails.impl.rolesandpermissions.permissions.ChangeRoomPermissionsNode
 import io.element.android.features.roomdetails.impl.rolesandpermissions.permissions.ChangeRoomPermissionsSection
 import io.element.android.libraries.architecture.BackstackView

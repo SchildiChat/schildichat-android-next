@@ -56,7 +56,7 @@ dependencies {
     implementation(projects.features.verifysession.api)
     implementation(projects.features.reportroom.api)
     implementation(projects.features.roommembermoderation.api)
-    implementation(projects.features.changeroommemberroles.api)
+    implementation(projects.features.rolesandpermissions.api)
     implementation(projects.features.invitepeople.api)
 
     testCommonDependencies(libs, true)
@@ -69,7 +69,7 @@ dependencies {
     testImplementation(projects.libraries.usersearch.test)
     testImplementation(projects.libraries.featureflag.test)
     testImplementation(projects.features.call.test)
-    testImplementation(projects.features.changeroommemberroles.test)
+    testImplementation(projects.features.rolesandpermissions.test)
     testImplementation(projects.features.knockrequests.test)
     testImplementation(projects.features.messages.test)
     testImplementation(projects.features.poll.test)

@@ -809,6 +809,33 @@ class MediaViewerPresenterTest {
         }
     }
 
+    @Test
+    fun `present - forward from pinned events hides the bottom sheet and invokes the navigator`() = runTest {
+        val onForwardClickLambda = lambdaRecorder<EventId, Boolean, Unit> { _, _ -> }
+        val navigator = FakeMediaViewerNavigator(
+            onForwardClickLambda = onForwardClickLambda,
+        )
+        val presenter = createMediaViewerPresenter(
+            mode = MediaViewerEntryPoint.MediaViewerMode.TimelineFilesAndAudios(timelineMode = Timeline.Mode.PinnedEvents),
+            localMediaFactory = localMediaFactory,
+            mediaViewerNavigator = navigator,
+            room = FakeJoinedRoom(
+                baseRoom = FakeBaseRoom(canRedactOwnResult = { Result.success(true) }),
+            ),
+        )
+        presenter.test {
+            val initialState = awaitItem()
+            initialState.eventSink(MediaViewerEvents.OpenInfo(aMediaViewerPageData()))
+            val withBottomSheetState = awaitItem()
+            assertThat(withBottomSheetState.mediaBottomSheetState).isInstanceOf(MediaBottomSheetState.MediaDetailsBottomSheetState::class.java)
+            initialState.eventSink(MediaViewerEvents.Forward(AN_EVENT_ID))
+            val finalState = awaitItem()
+            assertThat(finalState.mediaBottomSheetState).isEqualTo(MediaBottomSheetState.Hidden)
+            onForwardClickLambda.assertions().isCalledOnce()
+                .with(value(AN_EVENT_ID), value(true))
+        }
+    }
+
     private suspend fun <T> ReceiveTurbine<T>.awaitFirstItem(): T {
         return awaitItem()
     }

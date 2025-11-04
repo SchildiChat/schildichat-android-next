@@ -15,10 +15,10 @@ setupDependencyInjection()
 
 android {
     namespace = "io.element.android.libraries.mediapickers.test"
+}
 
-    dependencies {
-        implementation(projects.libraries.core)
-        implementation(projects.libraries.di)
-        api(projects.libraries.mediapickers.api)
-    }
+dependencies {
+    implementation(projects.libraries.core)
+    implementation(projects.libraries.di)
+    api(projects.libraries.mediapickers.api)
 }

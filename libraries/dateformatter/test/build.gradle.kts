@@ -11,9 +11,9 @@ plugins {
 
 android {
     namespace = "io.element.android.libraries.dateformatter.test"
+}
 
-    dependencies {
-        api(projects.libraries.dateformatter.api)
-        api(libs.datetime)
-    }
+dependencies {
+    api(projects.libraries.dateformatter.api)
+    api(libs.datetime)
 }

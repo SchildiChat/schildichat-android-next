@@ -71,14 +71,16 @@ class DefaultMediaViewerEntryPointTest {
         }
         val callback = object : MediaViewerEntryPoint.Callback {
             override fun onDone() = lambdaError()
-            override fun onViewInTimeline(eventId: EventId) = lambdaError()
-            override fun onForwardEvent(eventId: EventId) = lambdaError()
+            override fun viewInTimeline(eventId: EventId) = lambdaError()
+            override fun forwardEvent(eventId: EventId, fromPinnedEvents: Boolean) = lambdaError()
         }
         val params = createMediaViewerEntryPointParams()
-        val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
-            .params(params)
-            .callback(callback)
-            .build()
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            params = params,
+            callback = callback,
+        )
         assertThat(result).isInstanceOf(MediaViewerNode::class.java)
         assertThat(result.plugins).contains(params)
         assertThat(result.plugins).contains(callback)
@@ -115,16 +117,19 @@ class DefaultMediaViewerEntryPointTest {
         }
         val callback = object : MediaViewerEntryPoint.Callback {
             override fun onDone() = lambdaError()
-            override fun onViewInTimeline(eventId: EventId) = lambdaError()
-            override fun onForwardEvent(eventId: EventId) = lambdaError()
+            override fun viewInTimeline(eventId: EventId) = lambdaError()
+            override fun forwardEvent(eventId: EventId, fromPinnedEvents: Boolean) = lambdaError()
         }
-        val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
-            .avatar(
-                filename = "fn",
-                avatarUrl = "avatarUrl",
-            )
-            .callback(callback)
-            .build()
+        val params = entryPoint.createParamsForAvatar(
+            filename = "fn",
+            avatarUrl = "avatarUrl",
+        )
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            params = params,
+            callback = callback,
+        )
         assertThat(result).isInstanceOf(MediaViewerNode::class.java)
         assertThat(result.plugins).contains(
             MediaViewerEntryPoint.Params(

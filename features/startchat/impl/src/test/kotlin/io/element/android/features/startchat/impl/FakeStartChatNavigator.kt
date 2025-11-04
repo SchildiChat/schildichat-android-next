@@ -17,7 +17,7 @@ class FakeStartChatNavigator(
     private val dismissJoinRoomByAddressLambda: () -> Unit = {},
     private val openRoomDirectoryLambda: () -> Unit = {},
 ) : StartChatNavigator {
-    override fun onOpenRoom(roomIdOrAlias: RoomIdOrAlias, serverNames: List<String>) {
+    override fun onRoomCreated(roomIdOrAlias: RoomIdOrAlias, serverNames: List<String>) {
         openRoomLambda(roomIdOrAlias, serverNames)
     }
 

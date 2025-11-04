@@ -19,14 +19,13 @@ interface LoginEntryPoint : FeatureEntryPoint {
     )
 
     interface Callback : Plugin {
-        fun onReportProblem()
+        fun navigateToBugReport()
     }
 
-    fun nodeBuilder(parentNode: Node, buildContext: BuildContext): NodeBuilder
-
-    interface NodeBuilder {
-        fun params(params: Params): NodeBuilder
-        fun callback(callback: Callback): NodeBuilder
-        fun build(): Node
-    }
+    fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: Params,
+        callback: Callback,
+    ): Node
 }

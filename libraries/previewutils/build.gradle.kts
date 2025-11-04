@@ -11,11 +11,11 @@ plugins {
 
 android {
     namespace = "io.element.android.libraries.previewutils"
+}
 
-    dependencies {
-        implementation(projects.libraries.designsystem)
-        implementation(projects.libraries.matrix.api)
+dependencies {
+    implementation(projects.libraries.designsystem)
+    implementation(projects.libraries.matrix.api)
 
-        implementation(libs.kotlinx.collections.immutable)
-    }
+    implementation(libs.kotlinx.collections.immutable)
 }

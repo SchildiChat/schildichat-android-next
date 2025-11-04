@@ -13,10 +13,10 @@ import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.di.RoomScope
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.mediaviewer.impl.gallery.di.LocalMediaItemPresenterFactories
@@ -38,33 +38,19 @@ class MediaGalleryNode(
 
     interface Callback : Plugin {
         fun onBackClick()
-        fun onItemClick(item: MediaItem.Event)
-        fun onViewInTimeline(eventId: EventId)
-        fun onForward(eventId: EventId)
+        fun showItem(item: MediaItem.Event)
+        fun viewInTimeline(eventId: EventId)
+        fun forward(eventId: EventId)
     }
 
-    private fun onBackClick() {
-        plugins<Callback>().forEach {
-            it.onBackClick()
-        }
-    }
+    private val callback: Callback = callback()
 
     override fun onViewInTimelineClick(eventId: EventId) {
-        plugins<Callback>().forEach {
-            it.onViewInTimeline(eventId)
-        }
+        callback.viewInTimeline(eventId)
     }
 
     override fun onForwardClick(eventId: EventId) {
-        plugins<Callback>().forEach {
-            it.onForward(eventId)
-        }
-    }
-
-    private fun onItemClick(item: MediaItem.Event) {
-        plugins<Callback>().forEach {
-            it.onItemClick(item)
-        }
+        callback.forward(eventId)
     }
 
     @Composable
@@ -75,8 +61,8 @@ class MediaGalleryNode(
             val state = presenter.present()
             MediaGalleryView(
                 state = state,
-                onBackClick = ::onBackClick,
-                onItemClick = ::onItemClick,
+                onBackClick = callback::onBackClick,
+                onItemClick = callback::showItem,
                 modifier = modifier,
             )
         }

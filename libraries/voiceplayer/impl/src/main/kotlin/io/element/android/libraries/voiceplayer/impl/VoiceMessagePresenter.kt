@@ -84,7 +84,7 @@ class VoiceMessagePresenter(
             }
         }
 
-        fun eventSink(event: VoiceMessageEvents) {
+        fun handleEvent(event: VoiceMessageEvents) {
             when (event) {
                 is VoiceMessageEvents.PlayPause -> {
                     if (playerState.isPlaying) {
@@ -119,7 +119,7 @@ class VoiceMessagePresenter(
             progress = progress,
             time = time,
             showCursor = showCursor,
-            eventSink = { eventSink(it) },
+            eventSink = ::handleEvent,
         )
     }
 }

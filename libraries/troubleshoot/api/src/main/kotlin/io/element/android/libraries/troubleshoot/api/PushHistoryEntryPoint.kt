@@ -15,15 +15,14 @@ import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
 
 interface PushHistoryEntryPoint : FeatureEntryPoint {
-    fun nodeBuilder(parentNode: Node, buildContext: BuildContext): NodeBuilder
-
-    interface NodeBuilder {
-        fun callback(callback: Callback): NodeBuilder
-        fun build(): Node
-    }
+    fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        callback: Callback,
+    ): Node
 
     interface Callback : Plugin {
         fun onDone()
-        fun navigateTo(roomId: RoomId, eventId: EventId)
+        fun navigateToEvent(roomId: RoomId, eventId: EventId)
     }
 }

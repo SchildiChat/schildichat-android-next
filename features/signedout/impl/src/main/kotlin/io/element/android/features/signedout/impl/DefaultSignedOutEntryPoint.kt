@@ -9,7 +9,6 @@ package io.element.android.features.signedout.impl
 
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
-import com.bumble.appyx.core.plugin.Plugin
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import io.element.android.features.signedout.api.SignedOutEntryPoint
@@ -17,18 +16,14 @@ import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
 class DefaultSignedOutEntryPoint : SignedOutEntryPoint {
-    override fun nodeBuilder(parentNode: Node, buildContext: BuildContext): SignedOutEntryPoint.NodeBuilder {
-        val plugins = ArrayList<Plugin>()
-
-        return object : SignedOutEntryPoint.NodeBuilder {
-            override fun params(params: SignedOutEntryPoint.Params): SignedOutEntryPoint.NodeBuilder {
-                plugins += SignedOutNode.Inputs(params.sessionId)
-                return this
-            }
-
-            override fun build(): Node {
-                return parentNode.createNode<SignedOutNode>(buildContext, plugins)
-            }
-        }
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: SignedOutEntryPoint.Params,
+    ): Node {
+        return parentNode.createNode<SignedOutNode>(
+            buildContext = buildContext,
+            plugins = listOf(SignedOutNode.Inputs(params.sessionId))
+        )
     }
 }

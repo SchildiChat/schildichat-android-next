@@ -18,7 +18,6 @@ import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import com.bumble.appyx.navmodel.backstack.BackStack
 import com.bumble.appyx.navmodel.backstack.operation.push
 import com.bumble.appyx.navmodel.backstack.operation.singleTop
@@ -41,6 +40,7 @@ import io.element.android.libraries.androidutils.browser.openUrlInChromeCustomTa
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.NodeInputs
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.matrix.api.auth.OidcDetails
@@ -70,6 +70,7 @@ class LoginFlowNode(
         val loginHint: String?,
     ) : NodeInputs
 
+    private val callback: LoginEntryPoint.Callback = callback()
     private var activity: Activity? = null
     private var darkTheme: Boolean = false
 
@@ -126,13 +127,13 @@ class LoginFlowNode(
         return when (navTarget) {
             NavTarget.OnBoarding -> {
                 val callback = object : OnBoardingNode.Callback {
-                    override fun onSignUp() {
+                    override fun navigateToSignUpFlow() {
                         backstack.push(
                             NavTarget.ConfirmAccountProvider(isAccountCreation = true)
                         )
                     }
 
-                    override fun onSignIn(mustChooseAccountProvider: Boolean) {
+                    override fun navigateToSignInFlow(mustChooseAccountProvider: Boolean) {
                         backstack.push(
                             if (mustChooseAccountProvider) {
                                 NavTarget.ChooseAccountProvider
@@ -142,23 +143,23 @@ class LoginFlowNode(
                         )
                     }
 
-                    override fun onSignInWithQrCode() {
+                    override fun navigateToQrCode() {
                         backstack.push(NavTarget.QrCode)
                     }
 
-                    override fun onReportProblem() {
-                        plugins<LoginEntryPoint.Callback>().forEach { it.onReportProblem() }
+                    override fun navigateToBugReport() {
+                        callback.navigateToBugReport()
                     }
 
-                    override fun onOidcDetails(oidcDetails: OidcDetails) {
+                    override fun navigateToOidc(oidcDetails: OidcDetails) {
                         navigateToMas(oidcDetails)
                     }
 
-                    override fun onCreateAccountContinue(url: String) {
+                    override fun navigateToCreateAccount(url: String) {
                         backstack.push(NavTarget.CreateAccount(url))
                     }
 
-                    override fun onLoginPasswordNeeded() {
+                    override fun navigateToLoginPassword() {
                         backstack.push(NavTarget.LoginPassword)
                     }
                 }
@@ -171,15 +172,15 @@ class LoginFlowNode(
             }
             NavTarget.ChooseAccountProvider -> {
                 val callback = object : ChooseAccountProviderNode.Callback {
-                    override fun onOidcDetails(oidcDetails: OidcDetails) {
+                    override fun navigateToOidc(oidcDetails: OidcDetails) {
                         navigateToMas(oidcDetails)
                     }
 
-                    override fun onCreateAccountContinue(url: String) {
+                    override fun navigateToCreateAccount(url: String) {
                         backstack.push(NavTarget.CreateAccount(url))
                     }
 
-                    override fun onLoginPasswordNeeded() {
+                    override fun navigateToLoginPassword() {
                         backstack.push(NavTarget.LoginPassword)
                     }
                 }
@@ -193,19 +194,19 @@ class LoginFlowNode(
                     isAccountCreation = navTarget.isAccountCreation,
                 )
                 val callback = object : ConfirmAccountProviderNode.Callback {
-                    override fun onOidcDetails(oidcDetails: OidcDetails) {
+                    override fun navigateToOidc(oidcDetails: OidcDetails) {
                         navigateToMas(oidcDetails)
                     }
 
-                    override fun onCreateAccountContinue(url: String) {
+                    override fun navigateToCreateAccount(url: String) {
                         backstack.push(NavTarget.CreateAccount(url))
                     }
 
-                    override fun onLoginPasswordNeeded() {
+                    override fun navigateToLoginPassword() {
                         backstack.push(NavTarget.LoginPassword)
                     }
 
-                    override fun onChangeAccountProvider() {
+                    override fun navigateToChangeAccountProvider() {
                         backstack.push(NavTarget.ChangeAccountProvider)
                     }
                 }
@@ -221,7 +222,7 @@ class LoginFlowNode(
                         backstack.singleTop(confirmAccountProvider)
                     }
 
-                    override fun onOtherClick() {
+                    override fun navigateToSearchAccountProvider() {
                         backstack.push(NavTarget.SearchAccountProvider)
                     }
                 }

@@ -251,7 +251,7 @@ class MessagesPresenter(
                     if (!markingAsReadAndExiting.getAndSet(true)) {
                         val latestEventId = room.liveTimeline.getLatestEventId().getOrElse {
                             Timber.w(it, "Failed to get latest event id to mark as fully read")
-                            navigator.onNavigateUp()
+                            navigator.close()
                             return@launch
                         }
                         latestEventId?.let { eventId ->
@@ -259,7 +259,7 @@ class MessagesPresenter(
                                 markAsFullyRead(room.roomId, eventId)
                             }
                         }
-                        navigator.onNavigateUp()
+                        navigator.close()
                         markingAsReadAndExiting.set(false)
                     }
                 }
@@ -355,7 +355,7 @@ class MessagesPresenter(
                         is TimelineItemThreadInfo.ThreadResponse -> targetEvent.threadInfo.threadRootId
                         is TimelineItemThreadInfo.ThreadRoot, null -> targetEvent.eventId?.toThreadId()
                     } ?: return@launch
-                    navigator.onOpenThread(threadId, null)
+                    navigator.navigateToThread(threadId, null)
                 } else {
                     handleActionReply(targetEvent, composerState, timelineProtectionState)
                 }
@@ -463,7 +463,7 @@ class MessagesPresenter(
         when (targetEvent.content) {
             is TimelineItemPollContent -> {
                 if (targetEvent.eventId == null) return
-                navigator.onEditPollClick(targetEvent.eventId)
+                navigator.navigateToEditPoll(targetEvent.eventId)
             }
             else -> {
                 val composerMode = MessageComposerMode.Edit(
@@ -528,17 +528,17 @@ class MessagesPresenter(
     }
 
     private fun handleShowDebugInfoAction(event: TimelineItem.Event) {
-        navigator.onShowEventDebugInfoClick(event.eventId, event.debugInfo)
+        navigator.navigateToEventDebugInfo(event.eventId, event.debugInfo)
     }
 
     private fun handleForwardAction(event: TimelineItem.Event) {
         if (event.eventId == null) return
-        navigator.onForwardEventClick(event.eventId)
+        navigator.forwardEvent(event.eventId)
     }
 
     private fun handleReportAction(event: TimelineItem.Event) {
         if (event.eventId == null) return
-        navigator.onReportContentClick(event.eventId, event.senderId)
+        navigator.navigateToReportMessage(event.eventId, event.senderId)
     }
 
     private fun handleEndPollAction(

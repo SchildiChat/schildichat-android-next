@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import com.bumble.appyx.navmodel.backstack.BackStack
 import com.bumble.appyx.navmodel.backstack.operation.pop
 import com.bumble.appyx.navmodel.backstack.operation.push
@@ -25,6 +24,7 @@ import io.element.android.features.rageshake.api.bugreport.BugReportEntryPoint
 import io.element.android.features.viewfolder.api.ViewFolderEntryPoint
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import kotlinx.parcelize.Parcelize
 
@@ -42,9 +42,7 @@ class BugReportFlowNode(
     buildContext = buildContext,
     plugins = plugins
 ) {
-    private fun onDone() {
-        plugins<BugReportEntryPoint.Callback>().forEach { it.onDone() }
-    }
+    private val callback: BugReportEntryPoint.Callback = callback()
 
     sealed interface NavTarget : Parcelable {
         @Parcelize
@@ -61,10 +59,10 @@ class BugReportFlowNode(
             NavTarget.Root -> {
                 val callback = object : BugReportNode.Callback {
                     override fun onDone() {
-                        this@BugReportFlowNode.onDone()
+                        callback.onDone()
                     }
 
-                    override fun onViewLogs(basePath: String) {
+                    override fun navigateToViewLogs(basePath: String) {
                         backstack.push(NavTarget.ViewLogs(rootPath = basePath))
                     }
                 }
@@ -79,11 +77,12 @@ class BugReportFlowNode(
                 val params = ViewFolderEntryPoint.Params(
                     rootPath = navTarget.rootPath,
                 )
-                viewFolderEntryPoint
-                    .nodeBuilder(this, buildContext)
-                    .params(params)
-                    .callback(callback)
-                    .build()
+                viewFolderEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = params,
+                    callback = callback,
+                )
             }
         }
     }

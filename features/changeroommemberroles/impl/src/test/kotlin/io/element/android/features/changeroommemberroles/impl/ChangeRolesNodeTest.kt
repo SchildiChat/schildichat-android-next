@@ -8,7 +8,7 @@
 package io.element.android.features.changeroommemberroles.impl
 
 import com.google.common.truth.Truth.assertThat
-import io.element.android.features.changeroommemberroes.api.ChangeRoomMemberRolesListType
+import io.element.android.features.changeroommemberroles.api.ChangeRoomMemberRolesListType
 import io.element.android.libraries.matrix.api.room.RoomMember
 import org.junit.Test
 

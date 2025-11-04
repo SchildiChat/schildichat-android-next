@@ -17,16 +17,14 @@ import io.element.android.libraries.matrix.api.timeline.Timeline
 
 @ContributesBinding(AppScope::class)
 class DefaultSendLocationEntryPoint : SendLocationEntryPoint {
-    override fun builder(timelineMode: Timeline.Mode): SendLocationEntryPoint.Builder {
-        return Builder(timelineMode)
-    }
-
-    class Builder(private val timelineMode: Timeline.Mode) : SendLocationEntryPoint.Builder {
-        override fun build(parentNode: Node, buildContext: BuildContext): Node {
-            return parentNode.createNode<SendLocationNode>(
-                buildContext = buildContext,
-                plugins = listOf(SendLocationNode.Inputs(timelineMode))
-            )
-        }
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        timelineMode: Timeline.Mode,
+    ): Node {
+        return parentNode.createNode<SendLocationNode>(
+            buildContext = buildContext,
+            plugins = listOf(SendLocationNode.Inputs(timelineMode))
+        )
     }
 }

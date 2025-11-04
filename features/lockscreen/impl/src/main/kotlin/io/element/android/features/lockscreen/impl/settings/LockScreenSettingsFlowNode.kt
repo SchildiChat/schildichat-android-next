@@ -110,7 +110,7 @@ class LockScreenSettingsFlowNode(
             }
             NavTarget.Settings -> {
                 val callback = object : LockScreenSettingsNode.Callback {
-                    override fun onChangePinClick() {
+                    override fun navigateToSetupPin() {
                         backstack.push(NavTarget.SetupPin)
                     }
                 }

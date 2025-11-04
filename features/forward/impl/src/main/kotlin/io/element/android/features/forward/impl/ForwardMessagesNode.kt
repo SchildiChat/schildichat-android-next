@@ -22,6 +22,7 @@ import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.features.forward.api.ForwardEntryPoint
 import io.element.android.libraries.architecture.NodeInputs
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.core.EventId
@@ -55,8 +56,8 @@ class ForwardMessagesNode(
     ) : NodeInputs
 
     private val inputs = inputs<Inputs>()
+    private val callback: ForwardEntryPoint.Callback = callback()
     private val presenter = presenterFactory.create(inputs.eventId.value, inputs.timelineProvider)
-    private val callbacks = plugins.filterIsInstance<ForwardEntryPoint.Callback>()
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         val callback = object : RoomSelectEntryPoint.Callback {
@@ -65,14 +66,16 @@ class ForwardMessagesNode(
             }
 
             override fun onCancel() {
-                onForwardDone(emptyList())
+                callback.onDone(emptyList())
             }
         }
 
-        return roomSelectEntryPoint.nodeBuilder(this, buildContext)
-            .callback(callback)
-            .params(RoomSelectEntryPoint.Params(mode = RoomSelectMode.Forward))
-            .build()
+        return roomSelectEntryPoint.createNode(
+            parentNode = this,
+            buildContext = buildContext,
+            params = RoomSelectEntryPoint.Params(mode = RoomSelectMode.Forward),
+            callback = callback,
+        )
     }
 
     @Composable
@@ -86,12 +89,8 @@ class ForwardMessagesNode(
             val state = presenter.present()
             ForwardMessagesView(
                 state = state,
-                onForwardSuccess = ::onForwardDone,
+                onForwardSuccess = callback::onDone,
             )
         }
-    }
-
-    private fun onForwardDone(roomIds: List<RoomId>) {
-        callbacks.forEach { it.onDone(roomIds) }
     }
 }

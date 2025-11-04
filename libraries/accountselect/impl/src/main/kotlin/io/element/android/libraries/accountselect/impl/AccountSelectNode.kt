@@ -17,7 +17,7 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.libraries.accountselect.api.AccountSelectEntryPoint
-import io.element.android.libraries.matrix.api.core.SessionId
+import io.element.android.libraries.architecture.callback
 
 @ContributesNode(AppScope::class)
 @AssistedInject
@@ -26,23 +26,15 @@ class AccountSelectNode(
     @Assisted plugins: List<Plugin>,
     private val presenter: AccountSelectPresenter,
 ) : Node(buildContext, plugins = plugins) {
-    private val callbacks = plugins.filterIsInstance<AccountSelectEntryPoint.Callback>()
-
-    private fun onDismiss() {
-        callbacks.forEach { it.onCancel() }
-    }
-
-    private fun onSelectAccount(sessionId: SessionId) {
-        callbacks.forEach { it.onSelectAccount(sessionId) }
-    }
+    private val callback: AccountSelectEntryPoint.Callback = callback()
 
     @Composable
     override fun View(modifier: Modifier) {
         val state = presenter.present()
         AccountSelectView(
             state = state,
-            onDismiss = ::onDismiss,
-            onSelectAccount = ::onSelectAccount,
+            onDismiss = callback::onCancel,
+            onSelectAccount = callback::onAccountSelected,
             modifier = modifier,
         )
     }

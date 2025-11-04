@@ -61,7 +61,7 @@ jobs:
         run: ./gradlew :app:assembleGplayDebug -PallWarningsAsErrors=true $CI_GRADLE_ARG_PROPERTIES
       - name: Upload debug Enterprise APKs
         if: ${{ matrix.variant == 'debug' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: elementx-enterprise-debug
           path: |

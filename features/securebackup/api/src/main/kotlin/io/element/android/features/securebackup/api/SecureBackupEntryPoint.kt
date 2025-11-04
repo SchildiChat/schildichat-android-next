@@ -32,15 +32,14 @@ interface SecureBackupEntryPoint : FeatureEntryPoint {
 
     data class Params(val initialElement: InitialTarget) : NodeInputs
 
-    fun nodeBuilder(parentNode: Node, buildContext: BuildContext): NodeBuilder
+    fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: Params,
+        callback: Callback,
+    ): Node
 
     interface Callback : Plugin {
         fun onDone()
-    }
-
-    interface NodeBuilder {
-        fun params(params: Params): NodeBuilder
-        fun callback(callback: Callback): NodeBuilder
-        fun build(): Node
     }
 }

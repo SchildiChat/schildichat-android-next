@@ -20,8 +20,8 @@ import com.bumble.appyx.navmodel.backstack.operation.push
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
-import io.element.android.features.changeroommemberroes.api.ChangeRoomMemberRolesEntryPoint
-import io.element.android.features.changeroommemberroes.api.ChangeRoomMemberRolesListType
+import io.element.android.features.changeroommemberroles.api.ChangeRoomMemberRolesEntryPoint
+import io.element.android.features.changeroommemberroles.api.ChangeRoomMemberRolesListType
 import io.element.android.features.roomdetails.impl.rolesandpermissions.permissions.ChangeRoomPermissionsNode
 import io.element.android.features.roomdetails.impl.rolesandpermissions.permissions.ChangeRoomPermissionsSection
 import io.element.android.libraries.architecture.BackstackView
@@ -101,16 +101,20 @@ class RolesAndPermissionsFlowNode(
                 )
             }
             is NavTarget.AdminList -> {
-                changeRoomMemberRolesEntryPoint.builder(this, buildContext)
-                    .room(joinedRoom)
-                    .listType(ChangeRoomMemberRolesListType.Admins)
-                    .build()
+                changeRoomMemberRolesEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    room = joinedRoom,
+                    listType = ChangeRoomMemberRolesListType.Admins,
+                )
             }
             is NavTarget.ModeratorList -> {
-                changeRoomMemberRolesEntryPoint.builder(this, buildContext)
-                    .room(joinedRoom)
-                    .listType(ChangeRoomMemberRolesListType.Moderators)
-                    .build()
+                changeRoomMemberRolesEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    room = joinedRoom,
+                    listType = ChangeRoomMemberRolesListType.Moderators,
+                )
             }
             is NavTarget.ChangeRoomPermissions -> {
                 val inputs = ChangeRoomPermissionsNode.Inputs(navTarget.section)

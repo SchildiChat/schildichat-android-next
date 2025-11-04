@@ -13,5 +13,5 @@ import io.element.android.tests.testutils.lambda.lambdaError
 class FakeNotificationTroubleshootNavigator(
     private val openIgnoredUsersResult: () -> Unit = { lambdaError() },
 ) : NotificationTroubleshootNavigator {
-    override fun openIgnoredUsers() = openIgnoredUsersResult()
+    override fun navigateToBlockedUsers() = openIgnoredUsersResult()
 }

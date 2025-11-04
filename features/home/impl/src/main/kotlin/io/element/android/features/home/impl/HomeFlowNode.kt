@@ -21,7 +21,6 @@ import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.node.node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import com.bumble.appyx.navmodel.backstack.BackStack
 import com.bumble.appyx.navmodel.backstack.operation.pop
 import com.bumble.appyx.navmodel.backstack.operation.push
@@ -29,8 +28,8 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import im.vector.app.features.analytics.plan.MobileScreen
 import io.element.android.annotations.ContributesNode
-import io.element.android.features.changeroommemberroes.api.ChangeRoomMemberRolesEntryPoint
-import io.element.android.features.changeroommemberroes.api.ChangeRoomMemberRolesListType
+import io.element.android.features.changeroommemberroles.api.ChangeRoomMemberRolesEntryPoint
+import io.element.android.features.changeroommemberroles.api.ChangeRoomMemberRolesListType
 import io.element.android.features.home.api.HomeEntryPoint
 import io.element.android.features.home.impl.components.RoomListMenuAction
 import io.element.android.features.home.impl.model.RoomListRoomSummary
@@ -44,6 +43,7 @@ import io.element.android.features.reportroom.api.ReportRoomEntryPoint
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.appyx.launchMolecule
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.deeplink.api.usecase.InviteFriendsUseCase
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.MatrixClient
@@ -78,6 +78,7 @@ class HomeFlowNode(
     buildContext = buildContext,
     plugins = plugins
 ) {
+    private val callback: HomeEntryPoint.Callback = callback()
     private val stateFlow = launchMolecule { presenter.present() }
 
     override fun onBuilt() {
@@ -115,35 +116,11 @@ class HomeFlowNode(
         data class SelectNewOwnersWhenLeavingRoom(val roomId: RoomId) : NavTarget
     }
 
-    private fun onRoomClick(roomId: RoomId) {
-        plugins<HomeEntryPoint.Callback>().forEach { it.onRoomClick(roomId) }
-    }
-
-    private fun onOpenSettings() {
-        plugins<HomeEntryPoint.Callback>().forEach { it.onSettingsClick() }
-    }
-
-    private fun onStartChatClick() {
-        plugins<HomeEntryPoint.Callback>().forEach { it.onStartChatClick() }
-    }
-
-    private fun onSetUpRecoveryClick() {
-        plugins<HomeEntryPoint.Callback>().forEach { it.onSetUpRecoveryClick() }
-    }
-
-    private fun onSessionConfirmRecoveryKeyClick() {
-        plugins<HomeEntryPoint.Callback>().forEach { it.onSessionConfirmRecoveryKeyClick() }
-    }
-
-    private fun onRoomSettingsClick(roomId: RoomId) {
-        plugins<HomeEntryPoint.Callback>().forEach { it.onRoomSettingsClick(roomId) }
-    }
-
-    private fun onReportRoomClick(roomId: RoomId) {
+    private fun navigateToReportRoom(roomId: RoomId) {
         backstack.push(NavTarget.ReportRoom(roomId))
     }
 
-    private fun onDeclineInviteAndBlockUserClick(roomSummary: RoomListRoomSummary) {
+    private fun navigateToDeclineInviteAndBlockUser(roomSummary: RoomListRoomSummary) {
         backstack.push(NavTarget.DeclineInviteAndBlockUser(roomSummary.toInviteData()))
     }
 
@@ -153,12 +130,12 @@ class HomeFlowNode(
                 inviteFriendsUseCase.execute(activity)
             }
             RoomListMenuAction.ReportBug -> {
-                plugins<HomeEntryPoint.Callback>().forEach { it.onReportBugClick() }
+                callback.navigateToBugReport()
             }
         }
     }
 
-    private fun onSelectNewOwnersWhenLeavingRoom(roomId: RoomId) {
+    private fun navigateToSelectNewOwnersWhenLeavingRoom(roomId: RoomId) {
         backstack.push(NavTarget.SelectNewOwnersWhenLeavingRoom(roomId))
     }
 
@@ -172,20 +149,20 @@ class HomeFlowNode(
             val activity = requireNotNull(LocalActivity.current)
             HomeView(
                 homeState = state,
-                onRoomClick = this::onRoomClick,
-                onSettingsClick = this::onOpenSettings,
-                onStartChatClick = this::onStartChatClick,
-                onSetUpRecoveryClick = this::onSetUpRecoveryClick,
-                onConfirmRecoveryKeyClick = this::onSessionConfirmRecoveryKeyClick,
-                onRoomSettingsClick = this::onRoomSettingsClick,
+                onRoomClick = callback::navigateToRoom,
+                onSettingsClick = callback::navigateToSettings,
+                onStartChatClick = callback::navigateToCreateRoom,
+                onSetUpRecoveryClick = callback::navigateToSetUpRecovery,
+                onConfirmRecoveryKeyClick = callback::navigateToEnterRecoveryKey,
+                onRoomSettingsClick = callback::navigateToRoomSettings,
                 onMenuActionClick = { onMenuActionClick(activity, it) },
-                onReportRoomClick = this::onReportRoomClick,
-                onDeclineInviteAndBlockUser = this::onDeclineInviteAndBlockUserClick,
+                onReportRoomClick = ::navigateToReportRoom,
+                onDeclineInviteAndBlockUser = ::navigateToDeclineInviteAndBlockUser,
                 modifier = modifier,
                 acceptDeclineInviteView = {
                     acceptDeclineInviteView.Render(
                         state = state.roomListState.acceptDeclineInviteState,
-                        onAcceptInviteSuccess = this::onRoomClick,
+                        onAcceptInviteSuccess = callback::navigateToRoom,
                         onDeclineInviteSuccess = { },
                         modifier = Modifier
                     )
@@ -193,7 +170,7 @@ class HomeFlowNode(
                 leaveRoomView = {
                     leaveRoomRenderer.Render(
                         state = state.roomListState.leaveRoomState,
-                        onSelectNewOwners = this::onSelectNewOwnersWhenLeavingRoom,
+                        onSelectNewOwners = ::navigateToSelectNewOwnersWhenLeavingRoom,
                         modifier = Modifier
                     )
                 }
@@ -209,14 +186,28 @@ class HomeFlowNode(
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         return when (navTarget) {
-            is NavTarget.ReportRoom -> reportRoomEntryPoint.createNode(this, buildContext, navTarget.roomId)
-            is NavTarget.DeclineInviteAndBlockUser -> declineInviteAndBlockUserEntryPoint.createNode(this, buildContext, navTarget.inviteData)
+            is NavTarget.ReportRoom -> {
+                reportRoomEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    roomId = navTarget.roomId,
+                )
+            }
+            is NavTarget.DeclineInviteAndBlockUser -> {
+                declineInviteAndBlockUserEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    inviteData = navTarget.inviteData,
+                )
+            }
             is NavTarget.SelectNewOwnersWhenLeavingRoom -> {
                 val room = runBlocking { matrixClient.getJoinedRoom(navTarget.roomId) } ?: error("Room ${navTarget.roomId} not found")
-                changeRoomMemberRolesEntryPoint.builder(this, buildContext)
-                    .room(room)
-                    .listType(ChangeRoomMemberRolesListType.SelectNewOwnersWhenLeaving)
-                    .build()
+                changeRoomMemberRolesEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    room = room,
+                    listType = ChangeRoomMemberRolesListType.SelectNewOwnersWhenLeaving,
+                )
             }
             NavTarget.Root -> rootNode(buildContext)
         }

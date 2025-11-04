@@ -17,4 +17,5 @@ dependencies {
     implementation(projects.libraries.matrix.api)
     api(projects.features.poll.api)
     implementation(libs.kotlinx.collections.immutable)
+    implementation(projects.tests.testutils)
 }

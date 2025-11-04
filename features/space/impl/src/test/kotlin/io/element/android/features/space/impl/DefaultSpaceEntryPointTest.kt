@@ -44,14 +44,16 @@ class DefaultSpaceEntryPointTest {
             )
         }
         val callback = object : SpaceEntryPoint.Callback {
-            override fun onOpenRoom(roomId: RoomId, viaParameters: List<String>) = lambdaError()
-            override fun onOpenDetails() = lambdaError()
-            override fun onOpenMemberList() = lambdaError()
+            override fun navigateToRoom(roomId: RoomId, viaParameters: List<String>) = lambdaError()
+            override fun navigateToRoomDetails() = lambdaError()
+            override fun navigateToRoomMemberList() = lambdaError()
         }
-        val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
-            .inputs(nodeInputs)
-            .callback(callback)
-            .build()
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            inputs = nodeInputs,
+            callback = callback,
+        )
         assertThat(result).isInstanceOf(SpaceFlowNode::class.java)
         assertThat(result.plugins).contains(nodeInputs)
         assertThat(result.plugins).contains(callback)

@@ -1256,8 +1256,8 @@ class MessagesPresenterTest {
     fun `present - handle MarkAsFullyReadAndExit marks the room as fully read and navigates up`() = runTest {
         val markAsFullyReadRecorder = lambdaRecorder<RoomId, EventId, Unit> { _, _ -> }
         val markAsFullyReadUseCase = FakeMarkAsFullyRead(markAsFullyReadRecorder)
-        val onNavigateUpRecorder = lambdaRecorder<Unit> {}
-        val navigator = FakeMessagesNavigator(onNavigateUpLambda = onNavigateUpRecorder)
+        val closeLambda = lambdaRecorder<Unit> {}
+        val navigator = FakeMessagesNavigator(closeLambda = closeLambda)
 
         val presenter = createMessagesPresenter(
             timeline = FakeTimeline(getLatestEventIdResult = { Result.success(AN_EVENT_ID) }),
@@ -1271,7 +1271,7 @@ class MessagesPresenterTest {
             runCurrent()
 
             markAsFullyReadRecorder.assertions().isCalledOnce()
-            onNavigateUpRecorder.assertions().isCalledOnce()
+            closeLambda.assertions().isCalledOnce()
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -1280,8 +1280,8 @@ class MessagesPresenterTest {
     @Test
     fun `present - handle MarkAsFullyReadAndExit still navigates up if marking as read fails`() = runTest {
         val markAsFullyReadUseCase = FakeMarkAsFullyRead { _, _ -> error("boom") }
-        val onNavigateUpRecorder = lambdaRecorder<Unit> {}
-        val navigator = FakeMessagesNavigator(onNavigateUpLambda = onNavigateUpRecorder)
+        val closeLambda = lambdaRecorder<Unit> {}
+        val navigator = FakeMessagesNavigator(closeLambda = closeLambda)
 
         val presenter = createMessagesPresenter(
             timeline = FakeTimeline(getLatestEventIdResult = { Result.success(AN_EVENT_ID) }),
@@ -1294,7 +1294,7 @@ class MessagesPresenterTest {
 
             runCurrent()
 
-            onNavigateUpRecorder.assertions().isCalledOnce()
+            closeLambda.assertions().isCalledOnce()
 
             cancelAndIgnoreRemainingEvents()
         }

@@ -12,10 +12,10 @@ import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.di.RoomScope
 import io.element.android.libraries.matrix.api.core.EventId
 
@@ -30,19 +30,17 @@ class PollHistoryNode(
     plugins = plugins,
 ) {
     interface Callback : Plugin {
-        fun onEditPoll(pollStartEventId: EventId)
+        fun navigateToEditPoll(pollStartEventId: EventId)
     }
 
-    private fun onEditPoll(pollStartEventId: EventId) {
-        plugins<Callback>().forEach { it.onEditPoll(pollStartEventId) }
-    }
+    private val callback: Callback = callback()
 
     @Composable
     override fun View(modifier: Modifier) {
         PollHistoryView(
             state = presenter.present(),
             modifier = modifier,
-            onEditPoll = ::onEditPoll,
+            onEditPoll = callback::navigateToEditPoll,
             goBack = this::navigateUp,
         )
     }

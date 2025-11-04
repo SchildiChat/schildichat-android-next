@@ -147,11 +147,11 @@ class QrCodeLoginFlowNode(
         return when (navTarget) {
             is NavTarget.Initial -> {
                 val callback = object : QrCodeIntroNode.Callback {
-                    override fun onCancelClicked() {
+                    override fun cancel() {
                         navigateUp()
                     }
 
-                    override fun onContinue() {
+                    override fun navigateToQrCodeScan() {
                         backstack.push(NavTarget.QrCodeScan)
                     }
                 }
@@ -159,11 +159,11 @@ class QrCodeLoginFlowNode(
             }
             is NavTarget.QrCodeScan -> {
                 val callback = object : QrCodeScanNode.Callback {
-                    override fun onScannedCode(qrCodeLoginData: MatrixQrCodeLoginData) {
+                    override fun handleScannedCode(qrCodeLoginData: MatrixQrCodeLoginData) {
                         lifecycleScope.startAuthentication(qrCodeLoginData)
                     }
 
-                    override fun onCancelClicked() {
+                    override fun cancel() {
                         backstack.pop()
                     }
                 }

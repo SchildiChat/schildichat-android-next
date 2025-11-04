@@ -13,7 +13,14 @@ import io.element.android.libraries.architecture.FeatureEntryPoint
 import io.element.android.libraries.architecture.NodeInputs
 
 interface ShowLocationEntryPoint : FeatureEntryPoint {
-    data class Inputs(val location: Location, val description: String?) : NodeInputs
+    data class Inputs(
+        val location: Location,
+        val description: String?,
+    ) : NodeInputs
 
-    fun createNode(parentNode: Node, buildContext: BuildContext, inputs: Inputs): Node
+    fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        inputs: Inputs,
+    ): Node
 }

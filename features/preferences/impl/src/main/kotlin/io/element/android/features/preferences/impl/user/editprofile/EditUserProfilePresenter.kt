@@ -143,7 +143,7 @@ class EditUserProfilePresenter(
             saveButtonEnabled = canSave && saveAction.value !is AsyncAction.Loading,
             saveAction = saveAction.value,
             cameraPermissionState = cameraPermissionState,
-            eventSink = { handleEvents(it) },
+            eventSink = ::handleEvents,
         )
     }
 

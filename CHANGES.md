@@ -1,3 +1,12 @@
+Changes in Element X v25.11.0
+=============================
+
+Hotfix release.
+
+Includes https://github.com/element-hq/element-x-android/pull/5615, which fixes an issue that prevented Element Call notifications from being displayed sometimes.
+
+**Full Changelog**: https://github.com/element-hq/element-x-android/compare/v25.10.1...v25.11.0
+
 Changes in Element X v25.10.1
 =============================
 

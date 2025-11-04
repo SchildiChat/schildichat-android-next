@@ -56,7 +56,7 @@ class TimelineProtectionPresenter(
 
         return TimelineProtectionState(
             protectionState = protectionState,
-            eventSink = { event -> handleEvent(event) }
+            eventSink = ::handleEvent,
         )
     }
 }

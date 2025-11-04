@@ -11,8 +11,8 @@ plugins {
 
 android {
     namespace = "io.element.android.libraries.cryptography.test"
+}
 
-    dependencies {
-        api(projects.libraries.cryptography.api)
-    }
+dependencies {
+    api(projects.libraries.cryptography.api)
 }

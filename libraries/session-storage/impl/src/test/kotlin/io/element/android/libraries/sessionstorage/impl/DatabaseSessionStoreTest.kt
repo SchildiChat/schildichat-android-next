@@ -52,6 +52,7 @@ class DatabaseSessionStoreTest {
 
         assertThat(database.sessionDataQueries.selectLatest().executeAsOneOrNull()).isEqualTo(aSessionData)
         assertThat(database.sessionDataQueries.selectAll().executeAsList().size).isEqualTo(1)
+        assertThat(database.sessionDataQueries.count().executeAsOneOrNull()).isEqualTo(1)
     }
 
     @Test
@@ -109,6 +110,7 @@ class DatabaseSessionStoreTest {
 
         assertThat(foundSession).isEqualTo(aSessionData)
         assertThat(database.sessionDataQueries.selectAll().executeAsList().size).isEqualTo(2)
+        assertThat(database.sessionDataQueries.count().executeAsOneOrNull()).isEqualTo(2)
     }
 
     @Test
@@ -196,12 +198,16 @@ class DatabaseSessionStoreTest {
                 position = 1,
                 lastUsageIndex = 1,
             )
+            assertThat(database.sessionDataQueries.count().executeAsOneOrNull()).isEqualTo(1)
             databaseSessionStore.addSession(secondSessionData.toApiModel())
             assertThat(awaitItem().size).isEqualTo(2)
+            assertThat(database.sessionDataQueries.count().executeAsOneOrNull()).isEqualTo(2)
             databaseSessionStore.removeSession(aSessionData.userId)
             assertThat(awaitItem().size).isEqualTo(1)
+            assertThat(database.sessionDataQueries.count().executeAsOneOrNull()).isEqualTo(1)
             databaseSessionStore.removeSession(secondSessionData.userId)
             assertThat(awaitItem()).isEmpty()
+            assertThat(database.sessionDataQueries.count().executeAsOneOrNull()).isEqualTo(0)
         }
     }
 

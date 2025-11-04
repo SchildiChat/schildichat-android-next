@@ -9,7 +9,6 @@ package io.element.android.libraries.mediaviewer.impl
 
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
-import com.bumble.appyx.core.plugin.Plugin
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import io.element.android.libraries.architecture.createNode
@@ -18,18 +17,14 @@ import io.element.android.libraries.mediaviewer.impl.gallery.root.MediaGalleryFl
 
 @ContributesBinding(AppScope::class)
 class DefaultMediaGalleryEntryPoint : MediaGalleryEntryPoint {
-    override fun nodeBuilder(parentNode: Node, buildContext: BuildContext): MediaGalleryEntryPoint.NodeBuilder {
-        val plugins = ArrayList<Plugin>()
-
-        return object : MediaGalleryEntryPoint.NodeBuilder {
-            override fun callback(callback: MediaGalleryEntryPoint.Callback): MediaGalleryEntryPoint.NodeBuilder {
-                plugins += callback
-                return this
-            }
-
-            override fun build(): Node {
-                return parentNode.createNode<MediaGalleryFlowNode>(buildContext, plugins)
-            }
-        }
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        callback: MediaGalleryEntryPoint.Callback,
+    ): Node {
+        return parentNode.createNode<MediaGalleryFlowNode>(
+            buildContext = buildContext,
+            plugins = listOf(callback),
+        )
     }
 }

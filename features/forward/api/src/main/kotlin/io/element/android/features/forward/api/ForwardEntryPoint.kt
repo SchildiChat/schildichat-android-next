@@ -17,12 +17,6 @@ import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.timeline.TimelineProvider
 
 interface ForwardEntryPoint : FeatureEntryPoint {
-    interface NodeBuilder {
-        fun params(params: Params): NodeBuilder
-        fun callback(callback: Callback): NodeBuilder
-        fun build(): Node
-    }
-
     interface Callback : Plugin {
         fun onDone(roomIds: List<RoomId>)
     }
@@ -32,5 +26,10 @@ interface ForwardEntryPoint : FeatureEntryPoint {
         val timelineProvider: TimelineProvider,
     ) : NodeInputs
 
-    fun nodeBuilder(parentNode: Node, buildContext: BuildContext): NodeBuilder
+    fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: Params,
+        callback: Callback,
+    ): Node
 }

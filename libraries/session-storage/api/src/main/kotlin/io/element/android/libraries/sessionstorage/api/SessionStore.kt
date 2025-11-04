@@ -51,6 +51,11 @@ interface SessionStore {
     suspend fun getAllSessions(): List<SessionData>
 
     /**
+     * Get the number of sessions.
+     */
+    suspend fun numberOfSessions(): Int
+
+    /**
      * Get the latest session, or null if no session exists.
      */
     suspend fun getLatestSession(): SessionData?

@@ -52,6 +52,7 @@ dependencies {
     testImplementation(projects.libraries.matrix.test)
     testImplementation(projects.libraries.sessionStorage.test)
     testImplementation(projects.features.rageshake.test)
+    testImplementation(projects.features.viewfolder.test)
     testImplementation(projects.libraries.preferences.test)
     testImplementation(projects.services.toolbox.test)
     testImplementation(libs.network.mockwebserver)

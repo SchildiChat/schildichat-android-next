@@ -7,6 +7,7 @@
 
 package io.element.android.libraries.matrix.impl.encryption
 
+import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.core.extensions.flatMap
 import io.element.android.libraries.core.extensions.mapFailure
@@ -42,6 +43,7 @@ import org.matrix.rustcomponents.sdk.Client
 import org.matrix.rustcomponents.sdk.EnableRecoveryProgressListener
 import org.matrix.rustcomponents.sdk.Encryption
 import org.matrix.rustcomponents.sdk.UserIdentity
+import timber.log.Timber
 import org.matrix.rustcomponents.sdk.BackupUploadState as RustBackupUploadState
 import org.matrix.rustcomponents.sdk.EnableRecoveryProgress as RustEnableRecoveryProgress
 import org.matrix.rustcomponents.sdk.RecoveryException as RustRecoveryException
@@ -103,14 +105,20 @@ class RustEncryptionService(
      * TODO This is a temporary workaround, when we will have a way to observe
      * the sessions, this code will have to be updated.
      */
-    override val hasDevicesToVerifyAgainst: StateFlow<Boolean> = flow {
+    override val hasDevicesToVerifyAgainst: StateFlow<AsyncData<Boolean>> = flow {
         while (currentCoroutineContext().isActive) {
-            val result = hasDevicesToVerifyAgainst().getOrDefault(false)
-            emit(result)
+            val result = hasDevicesToVerifyAgainst()
+            result
+                .onSuccess {
+                    emit(AsyncData.Success(it))
+                }
+                .onFailure {
+                    Timber.e(it, "Failed to get hasDevicesToVerifyAgainst, retrying in 5s...")
+                }
             delay(5_000)
         }
     }
-        .stateIn(sessionCoroutineScope, SharingStarted.Eagerly, false)
+        .stateIn(sessionCoroutineScope, SharingStarted.Eagerly, AsyncData.Uninitialized)
 
     override suspend fun enableBackups(): Result<Unit> = withContext(dispatchers.io) {
         runCatchingExceptions {

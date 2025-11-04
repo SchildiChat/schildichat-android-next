@@ -18,7 +18,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import dev.zacsweers.metro.Inject
-import io.element.android.features.messages.impl.pinned.PinnedEventsTimelineProvider
+import io.element.android.features.messages.impl.pinned.DefaultPinnedEventsTimelineProvider
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.matrix.api.room.BaseRoom
@@ -35,7 +35,7 @@ import kotlinx.coroutines.flow.onEach
 class PinnedMessagesBannerPresenter(
     private val room: BaseRoom,
     private val itemFactory: PinnedMessagesBannerItemFactory,
-    private val pinnedEventsTimelineProvider: PinnedEventsTimelineProvider,
+    private val pinnedEventsTimelineProvider: DefaultPinnedEventsTimelineProvider,
 ) : Presenter<PinnedMessagesBannerState> {
     private val pinnedItems = mutableStateOf<AsyncData<ImmutableList<PinnedMessagesBannerItem>>>(AsyncData.Uninitialized)
 

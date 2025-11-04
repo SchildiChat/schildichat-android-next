@@ -35,7 +35,7 @@ interface MessagesEntryPoint : FeatureEntryPoint {
         fun navigateToRoomDetails()
         fun navigateToRoomMemberDetails(userId: UserId)
         fun handlePermalinkClick(data: PermalinkData, pushToBackstack: Boolean)
-        fun forwardEvent(eventId: EventId)
+        fun forwardEvent(eventId: EventId, fromPinnedEvents: Boolean)
         fun navigateToRoom(roomId: RoomId)
     }
 
@@ -47,8 +47,8 @@ interface MessagesEntryPoint : FeatureEntryPoint {
         params: Params,
         callback: Callback,
     ): Node
-}
 
-interface MessagesEntryPointNode {
-    suspend fun attachThread(threadId: ThreadId, focusedEventId: EventId?)
+    interface NodeProxy {
+        suspend fun attachThread(threadId: ThreadId, focusedEventId: EventId?)
+    }
 }

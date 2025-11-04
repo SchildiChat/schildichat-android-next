@@ -40,7 +40,7 @@ interface RoomDetailsEntryPoint : FeatureEntryPoint {
         fun navigateToGlobalNotificationSettings()
         fun navigateToRoom(roomId: RoomId, serverNames: List<String>)
         fun handlePermalinkClick(data: PermalinkData, pushToBackstack: Boolean)
-        fun startForwardEventFlow(eventId: EventId)
+        fun startForwardEventFlow(eventId: EventId, fromPinnedEvents: Boolean)
     }
 
     fun createNode(

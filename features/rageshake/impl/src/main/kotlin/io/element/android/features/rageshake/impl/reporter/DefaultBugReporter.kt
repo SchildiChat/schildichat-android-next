@@ -165,7 +165,7 @@ class DefaultBugReporter(
                     }
                 }
                 val sessionData = sessionStore.getLatestSession()
-                val numberOfAccounts = sessionStore.getAllSessions().size
+                val numberOfAccounts = sessionStore.numberOfSessions()
                 val deviceId = sessionData?.deviceId ?: "undefined"
                 val userId = sessionData?.userId?.let { UserId(it) }
                 // build the multi part request

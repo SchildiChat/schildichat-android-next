@@ -349,7 +349,7 @@ class RootFlowNode(
         } else {
             // wait for the current session to be restored
             val loggedInFlowNode = attachSession(latestSessionId)
-            if (sessionStore.getAllSessions().size > 1) {
+            if (sessionStore.numberOfSessions() > 1) {
                 // Several accounts, let the user choose which one to use
                 backstack.push(
                     NavTarget.AccountSelect(
@@ -379,7 +379,7 @@ class RootFlowNode(
                 is PermalinkData.FallbackLink -> Unit
                 is PermalinkData.RoomEmailInviteLink -> Unit
                 else -> {
-                    if (sessionStore.getAllSessions().size > 1) {
+                    if (sessionStore.numberOfSessions() > 1) {
                         // Several accounts, let the user choose which one to use
                         backstack.push(
                             NavTarget.AccountSelect(

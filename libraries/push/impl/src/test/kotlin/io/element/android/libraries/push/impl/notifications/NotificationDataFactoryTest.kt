@@ -55,7 +55,9 @@ class NotificationDataFactoryTest {
             aNotificationAccountParams(),
             AN_INVITATION_EVENT,
         )
-        val result = listOf(AN_INVITATION_EVENT).toNotifications(aNotificationAccountParams())
+        val roomInvitation = listOf(AN_INVITATION_EVENT)
+        val result = toNotifications(roomInvitation, aNotificationAccountParams())
+
         assertThat(result).isEqualTo(
             listOf(
                 OneShotNotification(
@@ -75,7 +77,7 @@ class NotificationDataFactoryTest {
             aNotificationAccountParams(),
             AN_INVITATION_EVENT,
         )
-        val result = listOf(A_SIMPLE_EVENT).toNotifications(aNotificationAccountParams())
+        val result = toNotifications(listOf(A_SIMPLE_EVENT), aNotificationAccountParams())
         assertThat(result).containsExactly(
             OneShotNotification(
                 notification = expectedNotification,
@@ -109,7 +111,8 @@ class NotificationDataFactoryTest {
             threadId = null,
         )
         val fakeImageLoader = FakeImageLoader()
-        val result = listOf(A_MESSAGE_EVENT).toNotifications(
+        val result = toNotifications(
+            messages = listOf(A_MESSAGE_EVENT),
             notificationAccountParams = aNotificationAccountParams(
                 user = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
             ),
@@ -125,7 +128,8 @@ class NotificationDataFactoryTest {
     fun `given a room with only redacted events when mapping to notification then is Empty`() = testWith(notificationDataFactory) {
         val redactedRoom = A_MESSAGE_EVENT.copy(isRedacted = true)
         val fakeImageLoader = FakeImageLoader()
-        val result = listOf(redactedRoom).toNotifications(
+        val result = toNotifications(
+            messages = listOf(redactedRoom),
             notificationAccountParams = aNotificationAccountParams(
                 user = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
             ),
@@ -164,7 +168,8 @@ class NotificationDataFactoryTest {
         )
 
         val fakeImageLoader = FakeImageLoader()
-        val result = roomWithRedactedMessage.toNotifications(
+        val result = toNotifications(
+            messages = roomWithRedactedMessage,
             notificationAccountParams = aNotificationAccountParams(
                 user = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
             ),

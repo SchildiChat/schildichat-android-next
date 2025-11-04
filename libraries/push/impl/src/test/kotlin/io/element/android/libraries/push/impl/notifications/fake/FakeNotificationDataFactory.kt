@@ -40,35 +40,39 @@ class FakeNotificationDataFactory(
     var fallbackEventToNotificationsResult: LambdaOneParamRecorder<List<FallbackNotifiableEvent>, List<OneShotNotification>> =
         lambdaRecorder { _ -> emptyList() },
 ) : NotificationDataFactory {
-    override suspend fun List<NotifiableMessageEvent>.toNotifications(
+    override suspend fun toNotifications(
+        messages: List<NotifiableMessageEvent>,
         imageLoader: ImageLoader,
         notificationAccountParams: NotificationAccountParams,
     ): List<RoomNotification> {
-        return messageEventToNotificationsResult(this, imageLoader, notificationAccountParams)
+        return messageEventToNotificationsResult(messages, imageLoader, notificationAccountParams)
     }
 
     @JvmName("toNotificationInvites")
     @Suppress("INAPPLICABLE_JVM_NAME")
-    override fun List<InviteNotifiableEvent>.toNotifications(
+    override fun toNotifications(
+        invites: List<InviteNotifiableEvent>,
         notificationAccountParams: NotificationAccountParams,
     ): List<OneShotNotification> {
-        return inviteToNotificationsResult(this)
+        return inviteToNotificationsResult(invites)
     }
 
     @JvmName("toNotificationSimpleEvents")
     @Suppress("INAPPLICABLE_JVM_NAME")
-    override fun List<SimpleNotifiableEvent>.toNotifications(
+    override fun toNotifications(
+        simpleEvents: List<SimpleNotifiableEvent>,
         notificationAccountParams: NotificationAccountParams,
     ): List<OneShotNotification> {
-        return simpleEventToNotificationsResult(this)
+        return simpleEventToNotificationsResult(simpleEvents)
     }
 
     @JvmName("toNotificationFallbackEvents")
     @Suppress("INAPPLICABLE_JVM_NAME")
-    override fun List<FallbackNotifiableEvent>.toNotifications(
+    override fun toNotifications(
+        fallback: List<FallbackNotifiableEvent>,
         notificationAccountParams: NotificationAccountParams,
     ): List<OneShotNotification> {
-        return fallbackEventToNotificationsResult(this)
+        return fallbackEventToNotificationsResult(fallback)
     }
 
     override fun createSummaryNotification(

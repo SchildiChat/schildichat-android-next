@@ -51,18 +51,10 @@ class NotificationRenderer(
             showSessionId = numberOfAccounts > 1,
         )
         val groupedEvents = eventsToProcess.groupByType()
-        val roomNotifications = with(notificationDataFactory) {
-            groupedEvents.roomEvents.toNotifications(imageLoader, notificationAccountParams)
-        }
-        val invitationNotifications = with(notificationDataFactory) {
-            groupedEvents.invitationEvents.toNotifications(notificationAccountParams)
-        }
-        val simpleNotifications = with(notificationDataFactory) {
-            groupedEvents.simpleEvents.toNotifications(notificationAccountParams)
-        }
-        val fallbackNotifications = with(notificationDataFactory) {
-            groupedEvents.fallbackEvents.toNotifications(notificationAccountParams)
-        }
+        val roomNotifications = notificationDataFactory.toNotifications(groupedEvents.roomEvents, imageLoader, notificationAccountParams)
+        val invitationNotifications = notificationDataFactory.toNotifications(groupedEvents.invitationEvents, notificationAccountParams)
+        val simpleNotifications = notificationDataFactory.toNotifications(groupedEvents.simpleEvents, notificationAccountParams)
+        val fallbackNotifications = notificationDataFactory.toNotifications(groupedEvents.fallbackEvents, notificationAccountParams)
         val summaryNotification = notificationDataFactory.createSummaryNotification(
             roomNotifications = roomNotifications,
             invitationNotifications = invitationNotifications,

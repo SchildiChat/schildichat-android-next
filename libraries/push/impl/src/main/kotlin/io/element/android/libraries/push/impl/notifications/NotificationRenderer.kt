@@ -44,7 +44,7 @@ class NotificationRenderer(
     ) {
         val color = enterpriseService.brandColorsFlow(currentUser.userId).first()?.toArgb()
             ?: NotificationConfig.NOTIFICATION_ACCENT_COLOR
-        val numberOfAccounts = sessionStore.getAllSessions().size
+        val numberOfAccounts = sessionStore.numberOfSessions()
         val notificationAccountParams = NotificationAccountParams(
             user = currentUser,
             color = color,

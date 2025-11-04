@@ -47,6 +47,9 @@ SELECT * FROM SessionData ORDER BY lastUsageIndex DESC LIMIT 1;
 selectAll:
 SELECT * FROM SessionData ORDER BY lastUsageIndex DESC;
 
+count:
+SELECT count(*) FROM SessionData;
+
 selectByUserId:
 SELECT * FROM SessionData WHERE userId = ?;
 

@@ -161,6 +161,15 @@ class DatabaseSessionStore(
         }
     }
 
+    override suspend fun numberOfSessions(): Int {
+        return sessionDataMutex.withLock {
+            database.sessionDataQueries.count()
+                .executeAsOneOrNull()
+                ?.toInt()
+                ?: 0
+        }
+    }
+
     override fun sessionsFlow(): Flow<List<SessionData>> {
         return database.sessionDataQueries.selectAll()
             .asFlow()

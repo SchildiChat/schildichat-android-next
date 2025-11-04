@@ -122,7 +122,7 @@ class DefaultActionListPresenter(
 
         return ActionListState(
             target = target.value,
-            eventSink = { handleEvents(it) }
+            eventSink = ::handleEvents,
         )
     }
 

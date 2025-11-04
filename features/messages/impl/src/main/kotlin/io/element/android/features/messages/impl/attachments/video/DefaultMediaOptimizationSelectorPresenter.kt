@@ -172,7 +172,7 @@ class DefaultMediaOptimizationSelectorPresenter(
             selectedVideoPreset = selectedVideoOptimizationPreset.dataOrNull(),
             displayMediaSelectorViews = displayMediaSelectorViews,
             displayVideoPresetSelectorDialog = displayVideoPresetSelectorDialog,
-            eventSink = { handleEvent(it) },
+            eventSink = ::handleEvent,
         )
     }
 

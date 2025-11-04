@@ -112,7 +112,7 @@ class ChangeRoomPermissionsPresenter(
             hasChanges = hasChanges,
             saveAction = saveAction,
             confirmExitAction = confirmExitAction,
-            eventSink = { handleEvent(it) }
+            eventSink = ::handleEvent,
         )
     }
 

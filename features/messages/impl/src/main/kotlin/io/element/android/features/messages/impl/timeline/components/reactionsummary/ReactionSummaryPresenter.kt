@@ -48,7 +48,7 @@ class ReactionSummaryPresenter(
         }
         return ReactionSummaryState(
             target = targetWithAvatars.value,
-            eventSink = { handleEvents(it) }
+            eventSink = ::handleEvents,
         )
     }
 

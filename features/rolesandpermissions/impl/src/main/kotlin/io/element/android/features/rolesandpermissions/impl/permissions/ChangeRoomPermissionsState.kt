@@ -25,9 +25,9 @@ data class ChangeRoomPermissionsState(
     val saveAction: AsyncAction<Unit>,
     val confirmExitAction: AsyncAction<Unit>,
     val eventSink: (ChangeRoomPermissionsEvent) -> Unit,
-){
+) {
     fun selectedRoleForType(type: RoomPermissionType): SelectableRole? {
-        if(currentPermissions == null) return null
+        if (currentPermissions == null) return null
         val role = when (type) {
             RoomPermissionType.BAN -> RoomMember.Role.forPowerLevel(currentPermissions.ban)
             RoomPermissionType.INVITE -> RoomMember.Role.forPowerLevel(currentPermissions.invite)
@@ -38,14 +38,13 @@ data class ChangeRoomPermissionsState(
             RoomPermissionType.ROOM_AVATAR -> RoomMember.Role.forPowerLevel(currentPermissions.roomAvatar)
             RoomPermissionType.ROOM_TOPIC -> RoomMember.Role.forPowerLevel(currentPermissions.roomTopic)
         }
-        return when(role){
+        return when (role) {
             is RoomMember.Role.Owner,
             RoomMember.Role.Admin -> SelectableRole.Admin
             RoomMember.Role.Moderator -> SelectableRole.Moderator
             RoomMember.Role.User -> SelectableRole.Everyone
         }
     }
-
 }
 
 enum class RoomPermissionsSection {
@@ -54,7 +53,7 @@ enum class RoomPermissionsSection {
     MembershipModeration,
 }
 
-enum class SelectableRole: DropdownOption {
+enum class SelectableRole : DropdownOption {
     Admin {
         @Composable
         @ReadOnlyComposable
@@ -71,7 +70,6 @@ enum class SelectableRole: DropdownOption {
         override fun getText(): String = stringResource(R.string.screen_room_change_permissions_everyone)
     }
 }
-
 
 enum class RoomPermissionType {
     BAN,

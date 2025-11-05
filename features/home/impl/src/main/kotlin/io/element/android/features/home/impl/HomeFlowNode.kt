@@ -96,7 +96,7 @@ class HomeFlowNode(
                 val isNewOwnerSelected = changeRoomMemberRolesNode.waitForCompletion()
                 withContext(NonCancellable) {
                     backstack.pop()
-                    if(isNewOwnerSelected) {
+                    if (isNewOwnerSelected) {
                         onNewOwnersSelected(changeRoomMemberRolesNode.roomId)
                     }
                 }

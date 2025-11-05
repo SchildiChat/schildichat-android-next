@@ -24,7 +24,7 @@ import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.matrix.api.room.powerlevels.RoomPowerLevelsValues
 import io.element.android.services.analytics.api.AnalyticsService
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -51,14 +51,22 @@ class ChangeRoomPermissionsPresenter(
             )
         }
 
-        internal fun buildItems(forSpace: Boolean) = persistentMapOf(
-            RoomPermissionsSection.RoomDetails to itemsForSection(RoomPermissionsSection.RoomDetails),
-            RoomPermissionsSection.MessagesAndContent to itemsForSection(RoomPermissionsSection.MessagesAndContent),
-            RoomPermissionsSection.MembershipModeration to itemsForSection(RoomPermissionsSection.MembershipModeration),
-        )
+        private fun RoomPermissionsSection.shouldShow(isSpace: Boolean): Boolean {
+            return when (this) {
+                RoomPermissionsSection.RoomDetails -> true
+                RoomPermissionsSection.MembershipModeration -> true
+                RoomPermissionsSection.MessagesAndContent -> !isSpace
+            }
+        }
+
+        internal fun buildItems(isSpace: Boolean) =
+            RoomPermissionsSection.entries
+                .filter { section -> section.shouldShow(isSpace) }
+                .associateWith { itemsForSection(it) }
+                .toImmutableMap()
     }
 
-    private val items = buildItems(forSpace = room.info().isSpace)
+    private val itemsBySection = buildItems(isSpace = room.info().isSpace)
 
     private var initialPermissions by mutableStateOf<RoomPowerLevelsValues?>(null)
     private var currentPermissions by mutableStateOf<RoomPowerLevelsValues?>(null)
@@ -112,7 +120,7 @@ class ChangeRoomPermissionsPresenter(
         }
         return ChangeRoomPermissionsState(
             currentPermissions = currentPermissions,
-            itemsBySection = items,
+            itemsBySection = itemsBySection,
             hasChanges = hasChanges,
             saveAction = saveAction,
             confirmExitAction = confirmExitAction,

@@ -25,7 +25,6 @@ class ChangeRoomPermissionsNode(
     @Assisted plugins: List<Plugin>,
     private val presenter: ChangeRoomPermissionsPresenter,
 ) : Node(buildContext, plugins = plugins) {
-
     interface Callback : Plugin {
         fun onComplete(changesSaved: Boolean)
     }

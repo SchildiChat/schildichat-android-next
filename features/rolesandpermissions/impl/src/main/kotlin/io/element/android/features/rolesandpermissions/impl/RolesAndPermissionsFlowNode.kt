@@ -62,7 +62,7 @@ class RolesAndPermissionsFlowNode(
         data object ChangeModerators : NavTarget
 
         @Parcelize
-        data object ChangeRoomPermissions: NavTarget
+        data object ChangeRoomPermissions : NavTarget
     }
 
     private val asyncIndicatorState = AsyncIndicatorState()
@@ -101,7 +101,6 @@ class RolesAndPermissionsFlowNode(
                     override fun openEditPermissions() {
                         backstack.push(NavTarget.ChangeRoomPermissions)
                     }
-
                 }
                 createNode<RolesAndPermissionsNode>(
                     buildContext = buildContext,
@@ -126,8 +125,6 @@ class RolesAndPermissionsFlowNode(
             }
         }
     }
-
-
 
     @Composable
     override fun View(modifier: Modifier) {

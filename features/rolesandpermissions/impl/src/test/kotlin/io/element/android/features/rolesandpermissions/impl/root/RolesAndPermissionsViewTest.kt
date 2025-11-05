@@ -5,13 +5,13 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.features.roomdetails.impl.rolesandpermissions
+package io.element.android.features.rolesandpermissions.impl.root
 
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import io.element.android.features.roomdetails.impl.R
+import io.element.android.features.rolesandpermissions.impl.R
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.ui.strings.CommonStrings
@@ -83,14 +83,12 @@ class RolesAndPermissionsViewTest {
 
     @Test
     @Config(qualifiers = "h640dp")
-    fun `tapping on any of the permission items open the change permissions screen`() {
-        ensureCalledTimes(3) { callback ->
+    fun `tapping permission item open the change permissions screen`() {
+        ensureCalledTimes(1) { callback ->
             rule.setRolesAndPermissionsView(
-                openPermissionScreens = callback,
+                openEditPermissions = callback,
             )
-            rule.clickOn(R.string.screen_room_roles_and_permissions_room_details)
-            rule.clickOn(R.string.screen_room_roles_and_permissions_messages_and_content)
-            rule.clickOn(R.string.screen_room_roles_and_permissions_member_moderation)
+            rule.clickOn(R.string.screen_room_roles_and_permissions_permissions_header)
         }
     }
 
@@ -184,7 +182,7 @@ private fun <R : TestRule> AndroidComposeTestRule<R, ComponentActivity>.setRoles
     goBack: () -> Unit = EnsureNeverCalled(),
     openAdminList: () -> Unit = EnsureNeverCalled(),
     openModeratorList: () -> Unit = EnsureNeverCalled(),
-    openPermissionScreens: () -> Unit = EnsureNeverCalled(),
+    openEditPermissions: () -> Unit = EnsureNeverCalled(),
 ) {
     setSafeContent {
         RolesAndPermissionsView(
@@ -193,9 +191,7 @@ private fun <R : TestRule> AndroidComposeTestRule<R, ComponentActivity>.setRoles
                 override fun onBackClick() = goBack()
                 override fun openAdminList() = openAdminList()
                 override fun openModeratorList() = openModeratorList()
-                override fun openEditRoomDetailsPermissions() = openPermissionScreens()
-                override fun openModerationPermissions() = openPermissionScreens()
-                override fun openMessagesAndContentPermissions() = openPermissionScreens()
+                override fun openEditPermissions() = openEditPermissions()
             }
         )
     }

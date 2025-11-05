@@ -5,7 +5,7 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.features.roomdetails.impl.rolesandpermissions.permissions
+package io.element.android.features.rolesandpermissions.impl.permissions
 
 import app.cash.molecule.RecompositionMode
 import app.cash.molecule.moleculeFlow
@@ -17,7 +17,6 @@ import im.vector.app.features.analytics.plan.RoomModeration
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.room.RoomMember.Role.Admin
 import io.element.android.libraries.matrix.api.room.RoomMember.Role.Moderator
-import io.element.android.libraries.matrix.api.room.RoomMember.Role.User
 import io.element.android.libraries.matrix.api.room.powerlevels.RoomPowerLevelsValues
 import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
@@ -26,19 +25,17 @@ import io.element.android.services.analytics.test.FakeAnalyticsService
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
-class ChangeBaseRoomPermissionsPresenterTest {
+class ChangeRoomPermissionsPresenterTest {
     @Test
     fun `present - initial state`() = runTest {
-        val section = ChangeRoomPermissionsSection.RoomDetails
-        val presenter = createChangeRoomPermissionsPresenter(section = section)
+        val presenter = createChangeRoomPermissionsPresenter()
         moleculeFlow(RecompositionMode.Immediate) {
             presenter.present()
         }.test {
             // Initial state, no permissions loaded
             awaitItem().run {
-                assertThat(this.section).isEqualTo(section)
                 assertThat(this.currentPermissions).isNull()
-                assertThat(this.items).isNotEmpty()
+                assertThat(this.itemsBySection).isNotEmpty()
                 assertThat(this.hasChanges).isFalse()
                 assertThat(this.saveAction).isEqualTo(AsyncAction.Uninitialized)
                 assertThat(this.confirmExitAction).isEqualTo(AsyncAction.Uninitialized)
@@ -50,42 +47,22 @@ class ChangeBaseRoomPermissionsPresenterTest {
     }
 
     @Test
-    fun `present - RoomDetails section contains the right items`() = runTest {
-        val section = ChangeRoomPermissionsSection.RoomDetails
-        val presenter = createChangeRoomPermissionsPresenter(section = section)
+    fun `present - items by section are correct for room`() = runTest {
+        val presenter = createChangeRoomPermissionsPresenter()
         moleculeFlow(RecompositionMode.Immediate) {
             presenter.present()
         }.test {
-            assertThat(awaitUpdatedItem().items).containsExactly(
+            val itemsBySection = awaitUpdatedItem().itemsBySection
+            assertThat(itemsBySection[RoomPermissionsSection.RoomDetails]).containsExactly(
                 RoomPermissionType.ROOM_NAME,
                 RoomPermissionType.ROOM_AVATAR,
                 RoomPermissionType.ROOM_TOPIC,
             )
-        }
-    }
-
-    @Test
-    fun `present - MessagesAndContent section contains the right items`() = runTest {
-        val section = ChangeRoomPermissionsSection.MessagesAndContent
-        val presenter = createChangeRoomPermissionsPresenter(section = section)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
-            assertThat(awaitUpdatedItem().items).containsExactly(
+            assertThat(itemsBySection[RoomPermissionsSection.MessagesAndContent]).containsExactly(
                 RoomPermissionType.SEND_EVENTS,
                 RoomPermissionType.REDACT_EVENTS,
             )
-        }
-    }
-
-    @Test
-    fun `present - MembershipModeration section contains the right items`() = runTest {
-        val section = ChangeRoomPermissionsSection.MembershipModeration
-        val presenter = createChangeRoomPermissionsPresenter(section = section)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
-            assertThat(awaitUpdatedItem().items).containsExactly(
+            assertThat(itemsBySection[RoomPermissionsSection.MembershipModeration]).containsExactly(
                 RoomPermissionType.INVITE,
                 RoomPermissionType.KICK,
                 RoomPermissionType.BAN,
@@ -103,7 +80,7 @@ class ChangeBaseRoomPermissionsPresenterTest {
             assertThat(state.currentPermissions?.roomName).isEqualTo(Admin.powerLevel)
             assertThat(state.hasChanges).isFalse()
 
-            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.ROOM_NAME, Moderator))
+            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.ROOM_NAME, SelectableRole.Moderator))
 
             awaitItem().run {
                 assertThat(currentPermissions?.roomName).isEqualTo(Moderator.powerLevel)
@@ -120,18 +97,18 @@ class ChangeBaseRoomPermissionsPresenterTest {
         }.test {
             val state = awaitUpdatedItem()
 
-            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.INVITE, Moderator))
-            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.KICK, Moderator))
-            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.BAN, Moderator))
-            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.SEND_EVENTS, Moderator))
-            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.REDACT_EVENTS, Moderator))
-            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.ROOM_NAME, Moderator))
-            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.ROOM_AVATAR, Moderator))
-            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.ROOM_TOPIC, Moderator))
+            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.INVITE, SelectableRole.Moderator))
+            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.KICK, SelectableRole.Moderator))
+            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.BAN, SelectableRole.Moderator))
+            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.SEND_EVENTS, SelectableRole.Moderator))
+            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.REDACT_EVENTS, SelectableRole.Moderator))
+            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.ROOM_NAME, SelectableRole.Moderator))
+            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.ROOM_AVATAR, SelectableRole.Moderator))
+            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.ROOM_TOPIC, SelectableRole.Moderator))
 
-            val items = cancelAndConsumeRemainingEvents()
+            val itemsBySection = cancelAndConsumeRemainingEvents()
 
-            (items.last() as? Event.Item<ChangeRoomPermissionsState>)?.value?.run {
+            (itemsBySection.last() as? Event.Item<ChangeRoomPermissionsState>)?.value?.run {
                 assertThat(currentPermissions).isEqualTo(
                     RoomPowerLevelsValues(
                         invite = Moderator.powerLevel,
@@ -165,14 +142,14 @@ class ChangeBaseRoomPermissionsPresenterTest {
             assertThat(state.currentPermissions?.roomName).isEqualTo(Admin.powerLevel)
             assertThat(state.hasChanges).isFalse()
 
-            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.ROOM_NAME, Moderator))
-            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.ROOM_AVATAR, Moderator))
-            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.ROOM_TOPIC, Moderator))
-            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.SEND_EVENTS, Moderator))
-            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.REDACT_EVENTS, User))
-            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.KICK, Admin))
-            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.BAN, Admin))
-            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.INVITE, Admin))
+            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.ROOM_NAME, SelectableRole.Moderator))
+            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.ROOM_AVATAR, SelectableRole.Moderator))
+            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.ROOM_TOPIC, SelectableRole.Moderator))
+            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.SEND_EVENTS, SelectableRole.Moderator))
+            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.REDACT_EVENTS, SelectableRole.Everyone))
+            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.KICK, SelectableRole.Admin))
+            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.BAN, SelectableRole.Admin))
+            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.INVITE, SelectableRole.Admin))
             skipItems(7)
             assertThat(awaitItem().hasChanges).isTrue()
 
@@ -230,7 +207,7 @@ class ChangeBaseRoomPermissionsPresenterTest {
             assertThat(state.currentPermissions?.roomName).isEqualTo(Admin.powerLevel)
             assertThat(state.hasChanges).isFalse()
 
-            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.ROOM_NAME, Moderator))
+            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.ROOM_NAME, SelectableRole.Moderator))
             assertThat(awaitItem().hasChanges).isTrue()
 
             state.eventSink(ChangeRoomPermissionsEvent.Save)
@@ -259,7 +236,7 @@ class ChangeBaseRoomPermissionsPresenterTest {
             presenter.present()
         }.test {
             val state = awaitUpdatedItem()
-            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.ROOM_NAME, Moderator))
+            state.eventSink(ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(RoomPermissionType.ROOM_NAME, SelectableRole.Moderator))
             assertThat(awaitItem().hasChanges).isTrue()
 
             state.eventSink(ChangeRoomPermissionsEvent.Exit)
@@ -285,13 +262,11 @@ class ChangeBaseRoomPermissionsPresenterTest {
     }
 
     private fun createChangeRoomPermissionsPresenter(
-        section: ChangeRoomPermissionsSection = ChangeRoomPermissionsSection.RoomDetails,
         room: FakeJoinedRoom = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(powerLevelsResult = { Result.success(defaultPermissions()) }),
         ),
         analyticsService: FakeAnalyticsService = FakeAnalyticsService(),
     ) = ChangeRoomPermissionsPresenter(
-        section = section,
         room = room,
         analyticsService = analyticsService,
     )

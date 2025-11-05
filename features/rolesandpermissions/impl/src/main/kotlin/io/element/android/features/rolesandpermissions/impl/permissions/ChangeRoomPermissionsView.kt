@@ -74,6 +74,7 @@ fun ChangeRoomPermissionsView(
                             selectedOption = state.selectedRoleForType(permissionType),
                             options = SelectableRole.entries.toImmutableList(),
                             onSelectOption = { role ->
+                                println("Selected $role for $permissionType")
                                 state.eventSink(
                                     ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(
                                         action = permissionType,

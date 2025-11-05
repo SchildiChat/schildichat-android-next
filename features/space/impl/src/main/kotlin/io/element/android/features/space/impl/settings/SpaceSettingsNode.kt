@@ -5,11 +5,12 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.features.space.impl.leave
+package io.element.android.features.space.impl.settings
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
@@ -17,46 +18,41 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.features.space.impl.di.SpaceFlowScope
+import io.element.android.libraries.architecture.appyx.launchMolecule
 import io.element.android.libraries.architecture.callback
-import io.element.android.libraries.matrix.api.MatrixClient
-import io.element.android.libraries.matrix.api.room.JoinedRoom
 
 @ContributesNode(SpaceFlowScope::class)
 @AssistedInject
-class LeaveSpaceNode(
+class SpaceSettingsNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
-    matrixClient: MatrixClient,
-    room: JoinedRoom,
-    presenterFactory: LeaveSpacePresenter.Factory,
+    private val presenter: SpaceSettingsPresenter,
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
-        fun closeLeaveSpaceFlow()
-        fun navigateToRolesAndPermissions()
-    }
+        fun closeSettings()
 
-    private val leaveSpaceHandle = matrixClient.spaceService.getLeaveSpaceHandle(room.roomId)
-    private val presenter: LeaveSpacePresenter = presenterFactory.create(leaveSpaceHandle)
+        fun navigateToSpaceInfo()
+        fun navigateToSpaceMembers()
+        fun navigateToRolesAndPermissions()
+        fun navigateToSecurityAndPrivacy()
+        fun startLeaveSpaceFlow()
+    }
 
     private val callback: Callback = callback()
-
-    override fun onBuilt() {
-        super.onBuilt()
-        lifecycle.subscribe(
-            onDestroy = {
-                leaveSpaceHandle.close()
-            }
-        )
-    }
+    private val stateFlow = launchMolecule { presenter.present() }
 
     @Composable
     override fun View(modifier: Modifier) {
-        val state = presenter.present()
-        LeaveSpaceView(
+        val state by stateFlow.collectAsState()
+        SpaceSettingsView(
             state = state,
-            onCancel = callback::closeLeaveSpaceFlow,
+            modifier = modifier,
+            onSpaceInfoClick = callback::navigateToSpaceInfo,
+            onBackClick = callback::closeSettings,
+            onMembersClick = callback::navigateToSpaceMembers,
             onRolesAndPermissionsClick = callback::navigateToRolesAndPermissions,
-            modifier = modifier
+            onSecurityAndPrivacyClick = callback::navigateToSecurityAndPrivacy,
+            onLeaveSpaceClick = callback::startLeaveSpaceFlow,
         )
     }
 }

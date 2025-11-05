@@ -28,7 +28,6 @@ interface SpaceEntryPoint : FeatureEntryPoint {
 
     interface Callback : Plugin {
         fun navigateToRoom(roomId: RoomId, viaParameters: List<String>)
-        fun navigateToRoomDetails()
         fun navigateToRoomMemberList()
     }
 }

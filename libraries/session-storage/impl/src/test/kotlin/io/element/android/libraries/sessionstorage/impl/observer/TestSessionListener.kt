@@ -13,7 +13,7 @@ import io.element.android.libraries.sessionstorage.api.observer.SessionListener
 class TestSessionListener : SessionListener {
     sealed interface Event {
         data class Created(val userId: String) : Event
-        data class Deleted(val userId: String) : Event
+        data class Deleted(val userId: String, val wasLastSession: Boolean) : Event
     }
 
     private val trackRecord: MutableList<Event> = mutableListOf()
@@ -22,8 +22,8 @@ class TestSessionListener : SessionListener {
         trackRecord.add(Event.Created(userId))
     }
 
-    override suspend fun onSessionDeleted(userId: String) {
-        trackRecord.add(Event.Deleted(userId))
+    override suspend fun onSessionDeleted(userId: String, wasLastSession: Boolean) {
+        trackRecord.add(Event.Deleted(userId, wasLastSession))
     }
 
     fun assertEvents(vararg events: Event) {

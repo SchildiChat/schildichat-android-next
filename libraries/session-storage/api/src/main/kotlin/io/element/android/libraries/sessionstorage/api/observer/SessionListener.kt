@@ -8,6 +8,6 @@
 package io.element.android.libraries.sessionstorage.api.observer
 
 interface SessionListener {
-    suspend fun onSessionCreated(userId: String)
-    suspend fun onSessionDeleted(userId: String)
+    suspend fun onSessionCreated(userId: String) {}
+    suspend fun onSessionDeleted(userId: String, wasLastSession: Boolean) {}
 }

@@ -201,7 +201,7 @@ class CallScreenPresenter(
             userAgent = userAgent,
             isCallActive = isWidgetLoaded,
             isInWidgetMode = isInWidgetMode,
-            eventSink = { handleEvents(it) },
+            eventSink = ::handleEvents,
         )
     }
 

@@ -8,14 +8,19 @@
 package io.element.android.libraries.push.impl.troubleshoot
 
 import com.google.common.truth.Truth.assertThat
+import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.test.AN_EXCEPTION
 import io.element.android.libraries.matrix.test.A_FAILURE_REASON
+import io.element.android.libraries.matrix.test.A_SESSION_ID
+import io.element.android.libraries.push.api.PushService
 import io.element.android.libraries.push.api.gateway.PushGatewayFailure
 import io.element.android.libraries.push.test.FakePushService
 import io.element.android.libraries.pushproviders.test.FakePushProvider
 import io.element.android.libraries.troubleshoot.api.test.NotificationTroubleshootTestState
 import io.element.android.libraries.troubleshoot.test.FakeNotificationTroubleshootNavigator
 import io.element.android.libraries.troubleshoot.test.runAndTestState
+import io.element.android.services.toolbox.api.strings.StringProvider
+import io.element.android.services.toolbox.api.systemclock.SystemClock
 import io.element.android.services.toolbox.test.strings.FakeStringProvider
 import io.element.android.services.toolbox.test.systemclock.FakeSystemClock
 import io.element.android.tests.testutils.lambda.lambdaRecorder
@@ -25,13 +30,7 @@ import org.junit.Test
 class PushLoopbackTestTest {
     @Test
     fun `test PushLoopbackTest timeout - push is not received`() = runTest {
-        val diagnosticPushHandler = DiagnosticPushHandler()
-        val sut = PushLoopbackTest(
-            pushService = FakePushService(),
-            diagnosticPushHandler = diagnosticPushHandler,
-            clock = FakeSystemClock(),
-            stringProvider = FakeStringProvider(),
-        )
+        val sut = createPushLoopbackTest()
         sut.runAndTestState {
             assertThat(awaitItem().status).isEqualTo(NotificationTroubleshootTestState.Status.Idle(true))
             assertThat(awaitItem().status).isEqualTo(NotificationTroubleshootTestState.Status.InProgress)
@@ -42,16 +41,12 @@ class PushLoopbackTestTest {
 
     @Test
     fun `test PushLoopbackTest PusherRejected error`() = runTest {
-        val diagnosticPushHandler = DiagnosticPushHandler()
-        val sut = PushLoopbackTest(
+        val sut = createPushLoopbackTest(
             pushService = FakePushService(
                 testPushBlock = {
                     throw PushGatewayFailure.PusherRejected()
                 }
             ),
-            diagnosticPushHandler = diagnosticPushHandler,
-            clock = FakeSystemClock(),
-            stringProvider = FakeStringProvider(),
         )
         sut.runAndTestState {
             assertThat(awaitItem().status).isEqualTo(NotificationTroubleshootTestState.Status.Idle(true))
@@ -65,9 +60,8 @@ class PushLoopbackTestTest {
 
     @Test
     fun `test PushLoopbackTest PusherRejected error with quick fix`() = runTest {
-        val diagnosticPushHandler = DiagnosticPushHandler()
         val rotateTokenLambda = lambdaRecorder<Result<Unit>> { Result.success(Unit) }
-        val sut = PushLoopbackTest(
+        val sut = createPushLoopbackTest(
             pushService = FakePushService(
                 testPushBlock = {
                     throw PushGatewayFailure.PusherRejected()
@@ -79,9 +73,6 @@ class PushLoopbackTestTest {
                     )
                 }
             ),
-            diagnosticPushHandler = diagnosticPushHandler,
-            clock = FakeSystemClock(),
-            stringProvider = FakeStringProvider(),
         )
         sut.runAndTestState {
             assertThat(awaitItem().status).isEqualTo(NotificationTroubleshootTestState.Status.Idle(true))
@@ -97,14 +88,10 @@ class PushLoopbackTestTest {
 
     @Test
     fun `test PushLoopbackTest setup error`() = runTest {
-        val diagnosticPushHandler = DiagnosticPushHandler()
-        val sut = PushLoopbackTest(
+        val sut = createPushLoopbackTest(
             pushService = FakePushService(
                 testPushBlock = { false }
             ),
-            diagnosticPushHandler = diagnosticPushHandler,
-            clock = FakeSystemClock(),
-            stringProvider = FakeStringProvider(),
         )
         sut.runAndTestState {
             assertThat(awaitItem().status).isEqualTo(NotificationTroubleshootTestState.Status.Idle(true))
@@ -116,16 +103,12 @@ class PushLoopbackTestTest {
 
     @Test
     fun `test PushLoopbackTest other error`() = runTest {
-        val diagnosticPushHandler = DiagnosticPushHandler()
-        val sut = PushLoopbackTest(
+        val sut = createPushLoopbackTest(
             pushService = FakePushService(
                 testPushBlock = {
                     throw AN_EXCEPTION
                 }
             ),
-            diagnosticPushHandler = diagnosticPushHandler,
-            clock = FakeSystemClock(),
-            stringProvider = FakeStringProvider(),
         )
         sut.runAndTestState {
             assertThat(awaitItem().status).isEqualTo(NotificationTroubleshootTestState.Status.Idle(true))
@@ -139,14 +122,12 @@ class PushLoopbackTestTest {
     @Test
     fun `test PushLoopbackTest push is received`() = runTest {
         val diagnosticPushHandler = DiagnosticPushHandler()
-        val sut = PushLoopbackTest(
+        val sut = createPushLoopbackTest(
             pushService = FakePushService(testPushBlock = {
                 diagnosticPushHandler.handlePush()
                 true
             }),
             diagnosticPushHandler = diagnosticPushHandler,
-            clock = FakeSystemClock(),
-            stringProvider = FakeStringProvider(),
         )
         sut.runAndTestState {
             assertThat(awaitItem().status).isEqualTo(NotificationTroubleshootTestState.Status.Idle(true))
@@ -156,3 +137,17 @@ class PushLoopbackTestTest {
         }
     }
 }
+
+private fun createPushLoopbackTest(
+    sessionId: SessionId = A_SESSION_ID,
+    pushService: PushService = FakePushService(),
+    diagnosticPushHandler: DiagnosticPushHandler = DiagnosticPushHandler(),
+    clock: SystemClock = FakeSystemClock(),
+    stringProvider: StringProvider = FakeStringProvider(),
+) = PushLoopbackTest(
+    sessionId = sessionId,
+    pushService = pushService,
+    diagnosticPushHandler = diagnosticPushHandler,
+    clock = clock,
+    stringProvider = stringProvider
+)

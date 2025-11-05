@@ -67,6 +67,10 @@ class InMemorySessionStore(
         return sessionDataListFlow.value
     }
 
+    override suspend fun numberOfSessions(): Int {
+        return sessionDataListFlow.value.size
+    }
+
     override suspend fun getLatestSession(): SessionData? {
         return sessionDataListFlow.value.firstOrNull()
     }

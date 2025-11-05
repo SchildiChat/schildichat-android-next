@@ -40,10 +40,12 @@ class DefaultViewFolderEntryPointTest {
         val params = ViewFolderEntryPoint.Params(
             rootPath = "path",
         )
-        val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
-            .params(params)
-            .callback(callback)
-            .build()
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            params = params,
+            callback = callback,
+        )
         assertThat(result).isInstanceOf(ViewFolderFlowNode::class.java)
         assertThat(result.plugins).contains(ViewFolderFlowNode.Inputs(params.rootPath))
         assertThat(result.plugins).contains(callback)

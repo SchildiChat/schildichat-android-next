@@ -87,7 +87,7 @@ class RoomSelectPresenter(
             query = searchQuery,
             isSearchActive = isSearchActive,
             selectedRooms = selectedRooms,
-            eventSink = { handleEvents(it) }
+            eventSink = ::handleEvents,
         )
     }
 }

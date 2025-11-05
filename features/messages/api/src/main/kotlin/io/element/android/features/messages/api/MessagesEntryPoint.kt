@@ -15,6 +15,7 @@ import io.element.android.libraries.architecture.FeatureEntryPoint
 import io.element.android.libraries.architecture.NodeInputs
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.core.ThreadId
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.permalink.PermalinkData
 import kotlinx.parcelize.Parcelize
@@ -22,26 +23,32 @@ import kotlinx.parcelize.Parcelize
 interface MessagesEntryPoint : FeatureEntryPoint {
     sealed interface InitialTarget : Parcelable {
         @Parcelize
-        data class Messages(val focusedEventId: EventId?) : InitialTarget
+        data class Messages(
+            val focusedEventId: EventId?,
+        ) : InitialTarget
 
         @Parcelize
         data object PinnedMessages : InitialTarget
     }
 
-    interface NodeBuilder {
-        fun params(params: Params): NodeBuilder
-        fun callback(callback: Callback): NodeBuilder
-        fun build(): Node
-    }
-
     interface Callback : Plugin {
-        fun onRoomDetailsClick()
-        fun onUserDataClick(userId: UserId)
-        fun onPermalinkClick(data: PermalinkData, pushToBackstack: Boolean)
-        fun onForwardedToSingleRoom(roomId: RoomId)
+        fun navigateToRoomDetails()
+        fun navigateToRoomMemberDetails(userId: UserId)
+        fun handlePermalinkClick(data: PermalinkData, pushToBackstack: Boolean)
+        fun forwardEvent(eventId: EventId, fromPinnedEvents: Boolean)
+        fun navigateToRoom(roomId: RoomId)
     }
 
     data class Params(val initialTarget: InitialTarget) : NodeInputs
 
-    fun nodeBuilder(parentNode: Node, buildContext: BuildContext): NodeBuilder
+    fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: Params,
+        callback: Callback,
+    ): Node
+
+    interface NodeProxy {
+        suspend fun attachThread(threadId: ThreadId, focusedEventId: EventId?)
+    }
 }

@@ -12,10 +12,10 @@ import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.di.SessionScope
 
 @ContributesNode(SessionScope::class)
@@ -32,18 +32,14 @@ class LoggedInNode(
         fun navigateToNotificationTroubleshoot()
     }
 
-    private fun navigateToNotificationTroubleshoot() {
-        plugins<Callback>().forEach {
-            it.navigateToNotificationTroubleshoot()
-        }
-    }
+    private val callback: Callback = callback()
 
     @Composable
     override fun View(modifier: Modifier) {
         val loggedInState = loggedInPresenter.present()
         LoggedInView(
             state = loggedInState,
-            navigateToNotificationTroubleshoot = ::navigateToNotificationTroubleshoot,
+            navigateToNotificationTroubleshoot = callback::navigateToNotificationTroubleshoot,
             modifier = modifier
         )
     }

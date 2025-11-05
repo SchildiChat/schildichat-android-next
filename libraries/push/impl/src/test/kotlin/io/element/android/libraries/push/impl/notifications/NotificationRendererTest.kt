@@ -7,6 +7,7 @@
 
 package io.element.android.libraries.push.impl.notifications
 
+import io.element.android.features.enterprise.test.FakeEnterpriseService
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
 import io.element.android.libraries.matrix.test.A_ROOM_ID
@@ -58,6 +59,7 @@ class NotificationRendererTest {
     private val notificationRenderer = NotificationRenderer(
         notificationDisplayer = notificationDisplayer,
         notificationDataFactory = notificationDataFactory,
+        enterpriseService = FakeEnterpriseService(),
     )
 
     @Test
@@ -69,7 +71,7 @@ class NotificationRendererTest {
 
     @Test
     fun `given a room message group notification is added when rendering then show the message notification and update summary`() = runTest {
-        roomGroupMessageCreator.createRoomMessageResult = lambdaRecorder { _, _, _, _, _ -> A_NOTIFICATION }
+        roomGroupMessageCreator.createRoomMessageResult = lambdaRecorder { _, _, _, _, _, _ -> A_NOTIFICATION }
 
         renderEventsAsNotifications(listOf(aNotifiableMessageEvent()))
 

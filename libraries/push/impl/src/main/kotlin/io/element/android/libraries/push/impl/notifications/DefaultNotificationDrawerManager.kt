@@ -11,7 +11,6 @@ import androidx.annotation.VisibleForTesting
 import androidx.core.app.NotificationManagerCompat
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import io.element.android.libraries.core.data.tryOrNull
 import io.element.android.libraries.core.log.logger.LoggerTag
@@ -26,6 +25,7 @@ import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.ui.media.ImageLoaderHolder
 import io.element.android.libraries.push.api.notifications.NotificationCleaner
 import io.element.android.libraries.push.api.notifications.NotificationIdProvider
+import io.element.android.libraries.push.impl.notifications.factories.NotificationCreator
 import io.element.android.libraries.push.impl.notifications.model.NotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.shouldIgnoreEventInRoom
 import io.element.android.services.appnavstate.api.AppNavigationStateService
@@ -45,7 +45,6 @@ private val loggerTag = LoggerTag("DefaultNotificationDrawerManager", LoggerTag.
  */
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-@Inject
 class DefaultNotificationDrawerManager(
     private val notificationManager: NotificationManagerCompat,
     private val notificationRenderer: NotificationRenderer,
@@ -95,10 +94,10 @@ class DefaultNotificationDrawerManager(
                 )
             }
             is NavigationState.Thread -> {
-                onEnteringThread(
-                    navigationState.parentRoom.parentSpace.parentSession.sessionId,
-                    navigationState.parentRoom.roomId,
-                    navigationState.threadId
+                clearMessagesForThread(
+                    sessionId = navigationState.parentRoom.parentSpace.parentSession.sessionId,
+                    roomId = navigationState.parentRoom.roomId,
+                    threadId = navigationState.threadId,
                 )
             }
         }
@@ -147,6 +146,16 @@ class DefaultNotificationDrawerManager(
         clearSummaryNotificationIfNeeded(sessionId)
     }
 
+    /**
+     * Should be called when the application is currently opened and showing timeline for the given threadId.
+     * Used to ignore events related to that thread (no need to display notification) and clean any existing notification on this room.
+     */
+    override fun clearMessagesForThread(sessionId: SessionId, roomId: RoomId, threadId: ThreadId) {
+        val tag = NotificationCreator.messageTag(roomId, threadId)
+        notificationManager.cancel(tag, NotificationIdProvider.getRoomMessagesNotificationId(sessionId))
+        clearSummaryNotificationIfNeeded(sessionId)
+    }
+
     override fun clearMembershipNotificationForSession(sessionId: SessionId) {
         activeNotificationsProvider.getMembershipNotificationForSession(sessionId)
             .forEach { notificationManager.cancel(it.tag, it.id) }
@@ -176,16 +185,6 @@ class DefaultNotificationDrawerManager(
         if (summaryNotification != null && activeNotificationsProvider.count(sessionId) == 1) {
             notificationManager.cancel(null, summaryNotification.id)
         }
-    }
-
-    /**
-     * Should be called when the application is currently opened and showing timeline for the given threadId.
-     * Used to ignore events related to that thread (no need to display notification) and clean any existing notification on this room.
-     */
-    @Suppress("UNUSED_PARAMETER")
-    private fun onEnteringThread(sessionId: SessionId, roomId: RoomId, threadId: ThreadId) {
-        // TODO maybe we'll have to embed more data in the tag to get a threadId
-        // Do nothing for now
     }
 
     private suspend fun renderEvents(eventsToRender: List<NotifiableEvent>) {

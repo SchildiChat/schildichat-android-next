@@ -9,23 +9,21 @@ package io.element.android.libraries.push.impl.test
 
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
 import io.element.android.appconfig.PushConfig
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.push.impl.pushgateway.PushGatewayNotifyRequest
-import io.element.android.libraries.pushproviders.api.CurrentUserPushConfig
+import io.element.android.libraries.pushproviders.api.Config
 
 interface TestPush {
-    suspend fun execute(config: CurrentUserPushConfig)
+    suspend fun execute(config: Config)
 }
 
 @ContributesBinding(AppScope::class)
-@Inject
 class DefaultTestPush(
     private val pushGatewayNotifyRequest: PushGatewayNotifyRequest,
 ) : TestPush {
-    override suspend fun execute(config: CurrentUserPushConfig) {
+    override suspend fun execute(config: Config) {
         pushGatewayNotifyRequest.execute(
             PushGatewayNotifyRequest.Params(
                 url = config.url,

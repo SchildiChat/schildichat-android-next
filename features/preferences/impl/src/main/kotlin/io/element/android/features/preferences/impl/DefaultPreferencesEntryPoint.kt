@@ -9,34 +9,23 @@ package io.element.android.features.preferences.impl
 
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
-import com.bumble.appyx.core.plugin.Plugin
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
 import io.element.android.features.preferences.api.PreferencesEntryPoint
 import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
-@Inject
 class DefaultPreferencesEntryPoint : PreferencesEntryPoint {
-    override fun nodeBuilder(parentNode: Node, buildContext: BuildContext): PreferencesEntryPoint.NodeBuilder {
-        return object : PreferencesEntryPoint.NodeBuilder {
-            val plugins = ArrayList<Plugin>()
-
-            override fun params(params: PreferencesEntryPoint.Params): PreferencesEntryPoint.NodeBuilder {
-                plugins += params
-                return this
-            }
-
-            override fun callback(callback: PreferencesEntryPoint.Callback): PreferencesEntryPoint.NodeBuilder {
-                plugins += callback
-                return this
-            }
-
-            override fun build(): Node {
-                return parentNode.createNode<PreferencesFlowNode>(buildContext, plugins)
-            }
-        }
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: PreferencesEntryPoint.Params,
+        callback: PreferencesEntryPoint.Callback,
+    ): Node {
+        return parentNode.createNode<PreferencesFlowNode>(
+            buildContext = buildContext,
+            plugins = listOf(params, callback)
+        )
     }
 }
 

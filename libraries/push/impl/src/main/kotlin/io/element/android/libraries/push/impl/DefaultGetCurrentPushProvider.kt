@@ -9,25 +9,15 @@ package io.element.android.libraries.push.impl
 
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
+import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.push.api.GetCurrentPushProvider
 import io.element.android.libraries.pushstore.api.UserPushStoreFactory
-import io.element.android.services.appnavstate.api.AppNavigationStateService
-import io.element.android.services.appnavstate.api.currentSessionId
 
 @ContributesBinding(AppScope::class)
-@Inject
 class DefaultGetCurrentPushProvider(
     private val pushStoreFactory: UserPushStoreFactory,
-    private val appNavigationStateService: AppNavigationStateService,
 ) : GetCurrentPushProvider {
-    override suspend fun getCurrentPushProvider(): String? {
-        return appNavigationStateService
-            .appNavigationState
-            .value
-            .navigationState
-            .currentSessionId()
-            ?.let { pushStoreFactory.getOrCreate(it) }
-            ?.getPushProviderName()
+    override suspend fun getCurrentPushProvider(sessionId: SessionId): String? {
+        return pushStoreFactory.getOrCreate(sessionId).getPushProviderName()
     }
 }

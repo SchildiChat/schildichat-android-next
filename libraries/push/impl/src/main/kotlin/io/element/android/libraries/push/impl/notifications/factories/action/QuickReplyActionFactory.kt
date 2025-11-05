@@ -16,6 +16,7 @@ import androidx.core.app.RemoteInput
 import dev.zacsweers.metro.Inject
 import io.element.android.appconfig.NotificationConfig
 import io.element.android.libraries.androidutils.uri.createIgnoredUri
+import io.element.android.libraries.designsystem.icons.CompoundDrawables
 import io.element.android.libraries.di.annotations.ApplicationContext
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
@@ -45,7 +46,7 @@ class QuickReplyActionFactory(
             .build()
 
         return NotificationCompat.Action.Builder(
-            R.drawable.vector_notification_quick_reply,
+            CompoundDrawables.ic_compound_reply,
             stringProvider.getString(R.string.notification_room_action_quick_reply),
             replyPendingIntent
         )

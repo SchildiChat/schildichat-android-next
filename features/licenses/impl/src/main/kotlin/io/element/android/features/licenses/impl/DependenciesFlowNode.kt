@@ -52,7 +52,7 @@ class DependenciesFlowNode(
         return when (navTarget) {
             is NavTarget.LicensesList -> {
                 val callback = object : DependencyLicensesListNode.Callback {
-                    override fun onOpenLicense(license: DependencyLicenseItem) {
+                    override fun navigateToLicense(license: DependencyLicenseItem) {
                         backstack.push(NavTarget.LicenseDetails(license))
                     }
                 }

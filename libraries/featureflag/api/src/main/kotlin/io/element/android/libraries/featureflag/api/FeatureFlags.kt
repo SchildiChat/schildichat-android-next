@@ -114,7 +114,7 @@ enum class FeatureFlags(
         title = "Sync notifications with WorkManager",
         description = "Use WorkManager to schedule notification sync tasks when a push is received." +
             " This should improve reliability and battery usage.",
-        defaultValue = { false },
+        defaultValue = { true },
         isFinished = false,
     ),
 }

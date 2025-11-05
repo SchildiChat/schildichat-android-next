@@ -35,7 +35,6 @@ dependencies {
     testCommonDependencies(libs)
     testImplementation(projects.libraries.matrix.test)
     testImplementation(projects.libraries.preferences.test)
-    testImplementation(projects.services.appnavstate.test)
     testImplementation(projects.libraries.pushstore.test)
 
     androidTestImplementation(libs.coroutines.test)

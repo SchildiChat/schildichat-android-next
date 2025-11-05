@@ -11,12 +11,12 @@ plugins {
 
 android {
     namespace = "io.element.android.libraries.preferences.test"
+}
 
-    dependencies {
-        api(projects.libraries.preferences.api)
-        implementation(projects.libraries.matrix.api)
-        implementation(projects.tests.testutils)
-        implementation(libs.coroutines.core)
-        implementation(libs.androidx.datastore.preferences)
-    }
+dependencies {
+    api(projects.libraries.preferences.api)
+    implementation(projects.libraries.matrix.api)
+    implementation(projects.tests.testutils)
+    implementation(libs.coroutines.core)
+    implementation(libs.androidx.datastore.preferences)
 }

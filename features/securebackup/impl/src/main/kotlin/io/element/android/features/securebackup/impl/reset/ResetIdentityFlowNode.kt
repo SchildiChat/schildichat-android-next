@@ -20,7 +20,6 @@ import androidx.lifecycle.LifecycleOwner
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import com.bumble.appyx.navmodel.backstack.BackStack
 import com.bumble.appyx.navmodel.backstack.operation.push
 import dev.zacsweers.metro.Assisted
@@ -33,6 +32,7 @@ import io.element.android.libraries.androidutils.browser.openUrlInChromeCustomTa
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.designsystem.components.ProgressDialog
 import io.element.android.libraries.di.SessionScope
@@ -63,6 +63,8 @@ class ResetIdentityFlowNode(
         fun onDone()
     }
 
+    private val callback: Callback = callback()
+
     sealed interface NavTarget : Parcelable {
         @Parcelize
         data object Root : NavTarget
@@ -86,7 +88,7 @@ class ResetIdentityFlowNode(
                     cancelResetJob()
 
                     resetIdentityFlowManager.whenResetIsDone {
-                        plugins<Callback>().forEach { it.onDone() }
+                        callback.onDone()
                     }
                 }
             }

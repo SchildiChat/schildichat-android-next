@@ -13,6 +13,7 @@ import androidx.core.app.NotificationCompat
 import com.google.common.truth.Truth.assertThat
 import io.element.android.appconfig.NotificationConfig
 import io.element.android.libraries.matrix.api.media.MediaSource
+import io.element.android.libraries.matrix.test.A_COLOR_INT
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_TIMESTAMP
 import io.element.android.libraries.matrix.ui.components.aMatrixUser
@@ -52,6 +53,8 @@ class DefaultBaseRoomGroupMessageCreatorTest {
             roomId = A_ROOM_ID,
             imageLoader = fakeImageLoader.getImageLoader(),
             existingNotification = null,
+            threadId = null,
+            color = A_COLOR_INT,
         )
         assertThat(result.number).isEqualTo(1)
         @Suppress("DEPRECATION")
@@ -74,6 +77,8 @@ class DefaultBaseRoomGroupMessageCreatorTest {
             roomId = A_ROOM_ID,
             imageLoader = fakeImageLoader.getImageLoader(),
             existingNotification = null,
+            threadId = null,
+            color = A_COLOR_INT,
         )
         @Suppress("DEPRECATION")
         assertThat(result.priority).isEqualTo(NotificationCompat.PRIORITY_DEFAULT)
@@ -138,6 +143,8 @@ class DefaultBaseRoomGroupMessageCreatorTest {
             roomId = A_ROOM_ID,
             imageLoader = fakeImageLoader.getImageLoader(),
             existingNotification = null,
+            threadId = null,
+            color = A_COLOR_INT,
         )
         assertThat(result.number).isEqualTo(1)
         assertThat(fakeImageLoader.getCoilRequests()).containsExactlyElementsIn(expectedCoilRequests)
@@ -156,6 +163,8 @@ class DefaultBaseRoomGroupMessageCreatorTest {
             roomId = A_ROOM_ID,
             imageLoader = fakeImageLoader.getImageLoader(),
             existingNotification = null,
+            threadId = null,
+            color = A_COLOR_INT,
         )
         assertThat(result.number).isEqualTo(2)
         assertThat(result.`when`).isEqualTo(A_TIMESTAMP + 10)
@@ -184,6 +193,8 @@ class DefaultBaseRoomGroupMessageCreatorTest {
             roomId = A_ROOM_ID,
             imageLoader = fakeImageLoader.getImageLoader(),
             existingNotification = null,
+            threadId = null,
+            color = A_COLOR_INT,
         )
         val actionTitles = result.actions?.map { it.title }
         assertThat(actionTitles).isEqualTo(
@@ -208,6 +219,8 @@ class DefaultBaseRoomGroupMessageCreatorTest {
             roomId = A_ROOM_ID,
             imageLoader = fakeImageLoader.getImageLoader(),
             existingNotification = null,
+            threadId = null,
+            color = A_COLOR_INT,
         )
         assertThat(result.number).isEqualTo(1)
         assertThat(result.`when`).isEqualTo(A_TIMESTAMP)

@@ -13,13 +13,13 @@ import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.features.rageshake.api.reporter.BugReporter
 import io.element.android.libraries.androidutils.system.toast
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.ui.strings.CommonStrings
 
 @ContributesNode(AppScope::class)
@@ -32,16 +32,10 @@ class BugReportNode(
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
         fun onDone()
-        fun onViewLogs(basePath: String)
+        fun navigateToViewLogs(basePath: String)
     }
 
-    private fun onViewLogs(basePath: String) {
-        plugins<Callback>().forEach { it.onViewLogs(basePath) }
-    }
-
-    private fun onDone() {
-        plugins<Callback>().forEach { it.onDone() }
-    }
+    private val callback: Callback = callback()
 
     @Composable
     override fun View(modifier: Modifier) {
@@ -53,12 +47,12 @@ class BugReportNode(
             onBackClick = { navigateUp() },
             onSuccess = {
                 activity?.toast(CommonStrings.common_report_submitted)
-                onDone()
+                callback.onDone()
             },
             onViewLogs = {
                 // Force a logcat dump
                 bugReporter.saveLogCat()
-                onViewLogs(bugReporter.logDirectory().absolutePath)
+                callback.navigateToViewLogs(bugReporter.logDirectory().absolutePath)
             }
         )
     }

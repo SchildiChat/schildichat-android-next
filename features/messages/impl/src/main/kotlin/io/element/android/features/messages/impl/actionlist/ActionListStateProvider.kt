@@ -27,6 +27,8 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 open class ActionListStateProvider : PreviewParameterProvider<ActionListState> {
+    private val suggestedEmojis = persistentListOf("👍️", "👎️", "🔥", "❤️", "👏")
+
     override val values: Sequence<ActionListState>
         get() {
             val reactionsState = aTimelineItemReactions(1, isHighlighted = true)
@@ -42,7 +44,7 @@ open class ActionListStateProvider : PreviewParameterProvider<ActionListState> {
                         displayEmojiReactions = true,
                         verifiedUserSendFailure = VerifiedUserSendFailure.None,
                         actions = aTimelineItemActionList(),
-                        recentEmojis = persistentListOf(),
+                        recentEmojis = suggestedEmojis,
                     )
                 ),
                 anActionListState(
@@ -58,7 +60,7 @@ open class ActionListStateProvider : PreviewParameterProvider<ActionListState> {
                         actions = aTimelineItemActionList(
                             copyAction = TimelineItemAction.CopyCaption,
                         ),
-                        recentEmojis = persistentListOf(),
+                        recentEmojis = suggestedEmojis,
                     )
                 ),
                 anActionListState(
@@ -73,7 +75,7 @@ open class ActionListStateProvider : PreviewParameterProvider<ActionListState> {
                         actions = aTimelineItemActionList(
                             copyAction = TimelineItemAction.CopyCaption,
                         ),
-                        recentEmojis = persistentListOf(),
+                        recentEmojis = suggestedEmojis,
                     )
                 ),
                 anActionListState(
@@ -88,7 +90,7 @@ open class ActionListStateProvider : PreviewParameterProvider<ActionListState> {
                         actions = aTimelineItemActionList(
                             copyAction = null,
                         ),
-                        recentEmojis = persistentListOf(),
+                        recentEmojis = suggestedEmojis,
                     )
                 ),
                 anActionListState(
@@ -103,7 +105,7 @@ open class ActionListStateProvider : PreviewParameterProvider<ActionListState> {
                         actions = aTimelineItemActionList(
                             copyAction = TimelineItemAction.CopyCaption,
                         ),
-                        recentEmojis = persistentListOf(),
+                        recentEmojis = suggestedEmojis,
                     )
                 ),
                 anActionListState(
@@ -118,7 +120,7 @@ open class ActionListStateProvider : PreviewParameterProvider<ActionListState> {
                         actions = aTimelineItemActionList(
                             copyAction = null,
                         ),
-                        recentEmojis = persistentListOf(),
+                        recentEmojis = suggestedEmojis,
                     )
                 ),
                 anActionListState(
@@ -131,7 +133,7 @@ open class ActionListStateProvider : PreviewParameterProvider<ActionListState> {
                         displayEmojiReactions = true,
                         verifiedUserSendFailure = VerifiedUserSendFailure.None,
                         actions = aTimelineItemActionList(),
-                        recentEmojis = persistentListOf(),
+                        recentEmojis = suggestedEmojis,
                     )
                 ),
                 anActionListState(
@@ -144,7 +146,7 @@ open class ActionListStateProvider : PreviewParameterProvider<ActionListState> {
                         displayEmojiReactions = false,
                         verifiedUserSendFailure = VerifiedUserSendFailure.None,
                         actions = aTimelineItemActionList(),
-                        recentEmojis = persistentListOf(),
+                        recentEmojis = suggestedEmojis,
                     ),
                 ),
                 anActionListState(
@@ -157,7 +159,7 @@ open class ActionListStateProvider : PreviewParameterProvider<ActionListState> {
                         displayEmojiReactions = false,
                         verifiedUserSendFailure = VerifiedUserSendFailure.None,
                         actions = aTimelineItemPollActionList(),
-                        recentEmojis = persistentListOf(),
+                        recentEmojis = suggestedEmojis,
                     ),
                 ),
                 anActionListState(
@@ -170,7 +172,7 @@ open class ActionListStateProvider : PreviewParameterProvider<ActionListState> {
                         displayEmojiReactions = true,
                         verifiedUserSendFailure = VerifiedUserSendFailure.None,
                         actions = aTimelineItemActionList(),
-                        recentEmojis = persistentListOf(),
+                        recentEmojis = suggestedEmojis,
                     )
                 ),
                 anActionListState(
@@ -180,7 +182,7 @@ open class ActionListStateProvider : PreviewParameterProvider<ActionListState> {
                         displayEmojiReactions = true,
                         verifiedUserSendFailure = anUnsignedDeviceSendFailure(),
                         actions = aTimelineItemActionList(),
-                        recentEmojis = persistentListOf(),
+                        recentEmojis = suggestedEmojis,
                     )
                 ),
             )

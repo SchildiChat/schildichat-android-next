@@ -39,7 +39,7 @@ class IgnoredUsersTestTest {
         )
         val openIgnoredUsersResult = lambdaRecorder<Unit> {}
         val navigator = object : NotificationTroubleshootNavigator {
-            override fun openIgnoredUsers() = openIgnoredUsersResult()
+            override fun navigateToBlockedUsers() = openIgnoredUsersResult()
         }
         sut.quickFix(
             coroutineScope = backgroundScope,

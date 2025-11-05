@@ -9,7 +9,6 @@ package io.element.android.libraries.matrix.impl.auth
 
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.core.extensions.mapFailure
@@ -52,7 +51,6 @@ import uniffi.matrix_sdk.OAuthAuthorizationData
 
 @ContributesBinding(AppScope::class)
 @SingleIn(AppScope::class)
-@Inject
 class RustMatrixAuthenticationService(
     private val sessionPathsFactory: SessionPathsFactory,
     private val coroutineDispatchers: CoroutineDispatchers,
@@ -287,14 +285,16 @@ class RustMatrixAuthenticationService(
             runCatchingExceptions {
                 val client = makeQrCodeLoginClient(
                     sessionPaths = emptySessionPaths,
-                    passphrase = pendingPassphrase,
                     qrCodeData = sdkQrCodeLoginData,
                 )
                 client.loginWithQrCode(
-                    qrCodeData = qrCodeData.rustQrCodeData,
                     oidcConfiguration = oidcConfiguration,
-                    progressListener = progressListener,
-                )
+                ).use {
+                    it.scan(
+                        qrCodeData = qrCodeData.rustQrCodeData,
+                        progressListener = progressListener,
+                    )
+                }
                 // Ensure that the user is not already logged in with the same account
                 ensureNotAlreadyLoggedIn(client)
                 val sessionData = client.session()
@@ -343,7 +343,6 @@ class RustMatrixAuthenticationService(
 
     private suspend fun makeQrCodeLoginClient(
         sessionPaths: SessionPaths,
-        passphrase: String?,
         qrCodeData: QrCodeData,
     ): Client {
         Timber.d("Creating client for QR Code login with simplified sliding sync")
@@ -353,7 +352,6 @@ class RustMatrixAuthenticationService(
                 passphrase = pendingPassphrase,
                 slidingSyncType = ClientBuilderSlidingSync.Discovered,
             )
-            .sessionPassphrase(passphrase)
             .serverNameOrHomeserverUrl(qrCodeData.serverName()!!)
             .build()
     }

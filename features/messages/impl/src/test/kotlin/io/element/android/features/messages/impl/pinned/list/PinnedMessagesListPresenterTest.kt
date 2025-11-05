@@ -13,7 +13,7 @@ import io.element.android.features.messages.impl.actionlist.anActionListState
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemAction
 import io.element.android.features.messages.impl.fixtures.aTimelineItemsFactoryCreator
 import io.element.android.features.messages.impl.link.aLinkState
-import io.element.android.features.messages.impl.pinned.PinnedEventsTimelineProvider
+import io.element.android.features.messages.impl.pinned.DefaultPinnedEventsTimelineProvider
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.features.messages.impl.timeline.protection.aTimelineProtectionState
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarDispatcher
@@ -300,7 +300,7 @@ class PinnedMessagesListPresenterTest {
         analyticsService: AnalyticsService = FakeAnalyticsService(),
         featureFlagService: FakeFeatureFlagService = FakeFeatureFlagService(),
     ): PinnedMessagesListPresenter {
-        val timelineProvider = PinnedEventsTimelineProvider(
+        val timelineProvider = DefaultPinnedEventsTimelineProvider(
             room = room,
             syncService = syncService,
             dispatchers = testCoroutineDispatchers(),

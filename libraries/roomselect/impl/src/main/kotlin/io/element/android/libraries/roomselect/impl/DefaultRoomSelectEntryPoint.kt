@@ -9,33 +9,25 @@ package io.element.android.libraries.roomselect.impl
 
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
-import com.bumble.appyx.core.plugin.Plugin
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.roomselect.api.RoomSelectEntryPoint
 
 @ContributesBinding(SessionScope::class)
-@Inject
 class DefaultRoomSelectEntryPoint : RoomSelectEntryPoint {
-    override fun nodeBuilder(parentNode: Node, buildContext: BuildContext): RoomSelectEntryPoint.NodeBuilder {
-        val plugins = ArrayList<Plugin>()
-
-        return object : RoomSelectEntryPoint.NodeBuilder {
-            override fun params(params: RoomSelectEntryPoint.Params): RoomSelectEntryPoint.NodeBuilder {
-                plugins += RoomSelectNode.Inputs(mode = params.mode)
-                return this
-            }
-
-            override fun callback(callback: RoomSelectEntryPoint.Callback): RoomSelectEntryPoint.NodeBuilder {
-                plugins += callback
-                return this
-            }
-
-            override fun build(): Node {
-                return parentNode.createNode<RoomSelectNode>(buildContext, plugins)
-            }
-        }
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: RoomSelectEntryPoint.Params,
+        callback: RoomSelectEntryPoint.Callback,
+    ): Node {
+        return parentNode.createNode<RoomSelectNode>(
+            buildContext = buildContext,
+            plugins = listOf(
+                RoomSelectNode.Inputs(mode = params.mode),
+                callback,
+            )
+        )
     }
 }

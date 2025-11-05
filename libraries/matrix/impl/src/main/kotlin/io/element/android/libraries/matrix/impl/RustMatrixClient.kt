@@ -17,6 +17,7 @@ import io.element.android.libraries.core.extensions.runCatchingExceptions
 import io.element.android.libraries.featureflag.api.FeatureFlagService
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.DeviceId
+import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomAlias
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.RoomIdOrAlias
@@ -286,7 +287,7 @@ class RustMatrixClient(
     override suspend fun getUrl(url: String): Result<ByteArray> = withContext(sessionDispatcher) {
         runCatchingExceptions {
             innerClient.getUrl(url)
-        }
+        }.mapFailure { it.mapClientException() }
     }
 
     override suspend fun getRoom(roomId: RoomId): BaseRoom? = withContext(sessionDispatcher) {
@@ -710,6 +711,13 @@ class RustMatrixClient(
     override suspend fun getRecentEmojis(): Result<List<String>> = withContext(sessionDispatcher) {
         runCatchingExceptions {
             innerClient.getRecentEmojis().map { it.emoji }
+        }
+    }
+
+    override suspend fun markRoomAsFullyRead(roomId: RoomId, eventId: EventId): Result<Unit> = withContext(sessionDispatcher) {
+        runCatchingExceptions {
+            val room = innerClient.getRoom(roomId.value) ?: error("Could not fetch associated room")
+            room.markAsFullyReadUnchecked(eventId.value)
         }
     }
 

@@ -9,11 +9,12 @@ package io.element.android.libraries.push.impl.notifications
 
 import android.app.Notification
 import android.graphics.Bitmap
+import androidx.annotation.ColorInt
 import coil3.ImageLoader
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.core.ThreadId
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.push.api.notifications.NotificationBitmapLoader
 import io.element.android.libraries.push.impl.R
@@ -27,13 +28,14 @@ interface RoomGroupMessageCreator {
         currentUser: MatrixUser,
         events: List<NotifiableMessageEvent>,
         roomId: RoomId,
+        threadId: ThreadId?,
         imageLoader: ImageLoader,
         existingNotification: Notification?,
+        @ColorInt color: Int,
     ): Notification
 }
 
 @ContributesBinding(AppScope::class)
-@Inject
 class DefaultRoomGroupMessageCreator(
     private val bitmapLoader: NotificationBitmapLoader,
     private val stringProvider: StringProvider,
@@ -43,8 +45,10 @@ class DefaultRoomGroupMessageCreator(
         currentUser: MatrixUser,
         events: List<NotifiableMessageEvent>,
         roomId: RoomId,
+        threadId: ThreadId?,
         imageLoader: ImageLoader,
         existingNotification: Notification?,
+        @ColorInt color: Int,
     ): Notification {
         val lastKnownRoomEvent = events.last()
         val roomName = lastKnownRoomEvent.roomName ?: lastKnownRoomEvent.senderDisambiguatedDisplayName ?: "Room name (${roomId.value.take(8)}…)"
@@ -62,24 +66,25 @@ class DefaultRoomGroupMessageCreator(
         val smartReplyErrors = events.filter { it.isSmartReplyError() }
         val roomIsDm = !roomIsGroup
         return notificationCreator.createMessagesListNotification(
-                RoomEventGroupInfo(
-                    sessionId = currentUser.userId,
-                    roomId = roomId,
-                    roomDisplayName = roomName,
-                    isDm = roomIsDm,
-                    hasSmartReplyError = smartReplyErrors.isNotEmpty(),
-                    shouldBing = events.any { it.noisy },
-                    customSound = events.last().soundName,
-                    isUpdated = events.last().isUpdated,
-                ),
-                threadId = lastKnownRoomEvent.threadId,
-                largeIcon = largeBitmap,
-                lastMessageTimestamp = lastMessageTimestamp,
-                tickerText = tickerText,
-                currentUser = currentUser,
-                existingNotification = existingNotification,
-                imageLoader = imageLoader,
-                events = events,
+            RoomEventGroupInfo(
+                sessionId = currentUser.userId,
+                roomId = roomId,
+                roomDisplayName = roomName,
+                isDm = roomIsDm,
+                hasSmartReplyError = smartReplyErrors.isNotEmpty(),
+                shouldBing = events.any { it.noisy },
+                customSound = events.last().soundName,
+                isUpdated = events.last().isUpdated,
+            ),
+            threadId = threadId,
+            largeIcon = largeBitmap,
+            lastMessageTimestamp = lastMessageTimestamp,
+            tickerText = tickerText,
+            currentUser = currentUser,
+            existingNotification = existingNotification,
+            imageLoader = imageLoader,
+            events = events,
+            color = color,
         )
     }
 

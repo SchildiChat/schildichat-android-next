@@ -43,7 +43,6 @@ import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.modifiers.onKeyboardContextMenuAction
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
-import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.unreadIndicator
@@ -81,56 +80,50 @@ fun SpaceRoomItemView(
             interactionSource = remember { MutableInteractionSource() }
         )
         .onKeyboardContextMenuAction { onLongClick }
-    Box(modifier = modifier.then(clickModifier)) {
-        Column(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+    Column(
+        modifier = modifier
+            .then(clickModifier)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+    ) {
+        SpaceRoomItemScaffold(
+            avatarData = spaceRoom.getAvatarData(AvatarSize.SpaceListItem),
+            isSpace = spaceRoom.isSpace,
+            hideAvatars = hideAvatars,
+            heroes = spaceRoom.heroes
+                .map { hero -> hero.getAvatarData(AvatarSize.SpaceListItem) }
+                .toImmutableList(),
+            trailingAction = trailingAction,
         ) {
-            SpaceRoomItemScaffold(
-                avatarData = spaceRoom.getAvatarData(AvatarSize.SpaceListItem),
-                isSpace = spaceRoom.isSpace,
-                hideAvatars = hideAvatars,
-                heroes = spaceRoom.heroes
-                    .map { hero -> hero.getAvatarData(AvatarSize.SpaceListItem) }
-                    .toImmutableList(),
-                trailingAction = trailingAction,
-            ) {
-                NameAndIndicatorRow(
-                    name = spaceRoom.displayName,
-                    showIndicator = showUnreadIndicator
+            NameAndIndicatorRow(
+                name = spaceRoom.displayName,
+                showIndicator = showUnreadIndicator
+            )
+            Spacer(modifier = Modifier.height(1.dp))
+            SubtitleRow(
+                visibilityIcon = spaceRoom.visibilityIcon(),
+                subtitle = spaceRoom.subtitle()
+            )
+            Spacer(modifier = Modifier.height(1.dp))
+            val info = spaceRoom.info()
+            if (info.isNotBlank()) {
+                Text(
+                    modifier = Modifier.weight(1f),
+                    style = ElementTheme.typography.fontBodyMdRegular,
+                    text = info,
+                    color = ElementTheme.colors.textSecondary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
-                Spacer(modifier = Modifier.height(1.dp))
-                SubtitleRow(
-                    visibilityIcon = spaceRoom.visibilityIcon(),
-                    subtitle = spaceRoom.subtitle()
-                )
-                Spacer(modifier = Modifier.height(1.dp))
-                val info = spaceRoom.info()
-                if (info.isNotBlank()) {
-                    Text(
-                        modifier = Modifier.weight(1f),
-                        style = ElementTheme.typography.fontBodyMdRegular,
-                        text = info,
-                        color = ElementTheme.colors.textSecondary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-            }
-            if (bottomAction != null) {
-                Spacer(modifier = Modifier.height(12.dp))
-                // Match the padding of the text content (avatar + spacer)
-                Box(modifier = Modifier.padding(start = AvatarSize.SpaceListItem.dp + 16.dp)) {
-                    bottomAction()
-                }
-                Spacer(modifier = Modifier.height(4.dp))
             }
         }
-        HorizontalDivider(
-            modifier = Modifier
-            // Match the padding of the text content (padding + avatar + spacer)
-            .padding(start = AvatarSize.SpaceListItem.dp + 16.dp + 16.dp)
-            .align(Alignment.BottomCenter)
-        )
+        if (bottomAction != null) {
+            Spacer(modifier = Modifier.height(12.dp))
+            // Match the padding of the text content (avatar + spacer)
+            Box(modifier = Modifier.padding(start = AvatarSize.SpaceListItem.dp + 16.dp)) {
+                bottomAction()
+            }
+            Spacer(modifier = Modifier.height(4.dp))
+        }
     }
 }
 
@@ -264,7 +257,6 @@ internal fun SpaceRoomItemViewPreview(@PreviewParameter(SpaceRoomProvider::class
         hideAvatars = false,
         onClick = {},
         onLongClick = {},
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
         bottomAction = if (spaceRoom.state == CurrentUserMembership.INVITED) {
             { InviteButtonsRowMolecule({}, {}) }
         } else {

@@ -16,9 +16,9 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.libraries.architecture.NodeInputs
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.di.SessionScope
-import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.roomselect.api.RoomSelectEntryPoint
 import io.element.android.libraries.roomselect.api.RoomSelectMode
 
@@ -35,24 +35,15 @@ class RoomSelectNode(
 
     private val inputs: Inputs = inputs()
     private val presenter = presenterFactory.create(inputs.mode)
-
-    private val callbacks = plugins.filterIsInstance<RoomSelectEntryPoint.Callback>()
-
-    private fun onDismiss() {
-        callbacks.forEach { it.onCancel() }
-    }
-
-    private fun onSubmit(roomIds: List<RoomId>) {
-        callbacks.forEach { it.onRoomSelected(roomIds) }
-    }
+    private val callback: RoomSelectEntryPoint.Callback = callback()
 
     @Composable
     override fun View(modifier: Modifier) {
         val state = presenter.present()
         RoomSelectView(
             state = state,
-            onDismiss = ::onDismiss,
-            onSubmit = ::onSubmit,
+            onDismiss = callback::onCancel,
+            onSubmit = callback::onRoomSelected,
             modifier = modifier
         )
     }

@@ -14,5 +14,8 @@ android {
 }
 
 dependencies {
-    implementation(projects.features.location.api)
+    api(projects.features.location.api)
+    implementation(projects.libraries.matrix.api)
+    implementation(libs.appyx.core)
+    implementation(projects.tests.testutils)
 }

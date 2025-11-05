@@ -20,12 +20,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -34,7 +34,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -51,7 +50,6 @@ import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconButton
 import io.element.android.libraries.designsystem.theme.components.Scaffold
 import io.element.android.libraries.designsystem.theme.components.TopAppBar
-import io.element.android.libraries.designsystem.utils.copy
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.ui.strings.CommonStrings
 
@@ -113,7 +111,11 @@ private fun RoomListSearchContent(
                 },
                 navigationIcon = { BackButton(onClick = ::onBackButtonClick) },
                 title = {
-                    var value by remember { mutableStateOf(TextFieldValue(state.query)) }
+                    // TODO replace `state.query` with TextFieldState when it's available for M3 TextField
+                    // The stateSaver will keep the selection state when returning to this UI
+                    var value by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+                        mutableStateOf(TextFieldValue(state.query))
+                    }
 
                     val focusRequester = remember { FocusRequester() }
                     FilledTextField(
@@ -139,6 +141,8 @@ private fun RoomListSearchContent(
                             if (value.text.isNotEmpty()) {
                                 IconButton(onClick = {
                                     state.eventSink(RoomListSearchEvents.ClearQuery)
+                                    // Clear local state too
+                                    value = value.copy(text = "")
                                 }) {
                                     Icon(
                                         imageVector = CompoundIcons.Close(),
@@ -150,14 +154,12 @@ private fun RoomListSearchContent(
                     )
 
                     LaunchedEffect(Unit) {
-                        value = value.copy(selection = TextRange(value.text.length))
                         if (!focusRequester.restoreFocusedChild()) {
                             focusRequester.requestFocus()
                         }
                         focusRequester.saveFocusedChild()
                     }
                 },
-                windowInsets = TopAppBarDefaults.windowInsets.copy(top = 0)
             )
         }
     ) { padding ->

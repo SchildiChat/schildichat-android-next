@@ -11,7 +11,7 @@ import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.timeline.item.TimelineItemDebugInfo
 
 interface PinnedMessagesListNavigator {
-    fun onViewInTimelineClick(eventId: EventId)
-    fun onShowEventDebugInfoClick(eventId: EventId?, debugInfo: TimelineItemDebugInfo)
-    fun onForwardEventClick(eventId: EventId)
+    fun viewInTimeline(eventId: EventId)
+    fun navigateToEventDebugInfo(eventId: EventId?, debugInfo: TimelineItemDebugInfo)
+    fun forwardEvent(eventId: EventId)
 }

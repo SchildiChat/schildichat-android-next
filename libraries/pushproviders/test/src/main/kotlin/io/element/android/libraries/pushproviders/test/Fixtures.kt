@@ -7,12 +7,12 @@
 
 package io.element.android.libraries.pushproviders.test
 
-import io.element.android.libraries.pushproviders.api.CurrentUserPushConfig
+import io.element.android.libraries.pushproviders.api.Config
 
-fun aCurrentUserPushConfig(
+fun aSessionPushConfig(
     url: String = "aUrl",
     pushKey: String = "aPushKey",
-) = CurrentUserPushConfig(
+) = Config(
     url = url,
     pushKey = pushKey,
 )

@@ -30,19 +30,19 @@ android {
             )
         }
     }
+}
 
-    dependencies {
-        implementation(projects.libraries.core)
-        implementation(projects.libraries.designsystem)
-        implementation(projects.libraries.di)
-        implementation(projects.libraries.uiStrings)
-        implementation(projects.services.toolbox.api)
+dependencies {
+    implementation(projects.libraries.core)
+    implementation(projects.libraries.designsystem)
+    implementation(projects.libraries.di)
+    implementation(projects.libraries.uiStrings)
+    implementation(projects.services.toolbox.api)
 
-        api(projects.libraries.dateformatter.api)
-        api(libs.datetime)
+    api(projects.libraries.dateformatter.api)
+    api(libs.datetime)
 
-        testCommonDependencies(libs, true)
-        testImplementation(projects.libraries.dateformatter.test)
-        testImplementation(projects.services.toolbox.test)
-    }
+    testCommonDependencies(libs, true)
+    testImplementation(projects.libraries.dateformatter.test)
+    testImplementation(projects.services.toolbox.test)
 }

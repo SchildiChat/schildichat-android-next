@@ -18,7 +18,7 @@ interface PushService {
     /**
      * Return the current push provider, or null if none.
      */
-    suspend fun getCurrentPushProvider(): PushProvider?
+    suspend fun getCurrentPushProvider(sessionId: SessionId): PushProvider?
 
     /**
      * Return the list of push providers, available at compile time, sorted by index.
@@ -51,7 +51,7 @@ interface PushService {
     /**
      * Return false in case of early error.
      */
-    suspend fun testPush(): Boolean
+    suspend fun testPush(sessionId: SessionId): Boolean
 
     /**
      * Get a flow of total number of received Push.

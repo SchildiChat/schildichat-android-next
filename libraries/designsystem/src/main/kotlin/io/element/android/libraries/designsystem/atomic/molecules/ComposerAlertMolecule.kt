@@ -18,12 +18,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
+import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
@@ -34,8 +37,8 @@ import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.text.toAnnotatedString
 import io.element.android.libraries.designsystem.theme.components.Button
 import io.element.android.libraries.designsystem.theme.components.ButtonSize
+import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.Text
-import io.element.android.libraries.designsystem.utils.BooleanProvider
 import io.element.android.libraries.ui.strings.CommonStrings
 
 @Composable
@@ -44,20 +47,37 @@ fun ComposerAlertMolecule(
     content: AnnotatedString,
     onSubmitClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isCritical: Boolean = false,
+    level: ComposerAlertLevel = ComposerAlertLevel.Default,
+    showIcon: Boolean = false,
     submitText: String = stringResource(CommonStrings.action_ok),
 ) {
     Column(
         modifier.fillMaxWidth()
     ) {
-        val lineColor = if (isCritical) ElementTheme.colors.borderCriticalSubtle else ElementTheme.colors.borderInfoSubtle
+        val lineColor = when (level) {
+            ComposerAlertLevel.Default -> ElementTheme.colors.borderInfoSubtle
+            ComposerAlertLevel.Info -> ElementTheme.colors.borderInfoSubtle
+            ComposerAlertLevel.Critical -> ElementTheme.colors.borderCriticalSubtle
+        }
+
+        val startColor = when (level) {
+            ComposerAlertLevel.Default -> ElementTheme.colors.bgInfoSubtle
+            ComposerAlertLevel.Info -> ElementTheme.colors.bgInfoSubtle
+            ComposerAlertLevel.Critical -> ElementTheme.colors.bgCriticalSubtle
+        }
+
+        val textColor = when (level) {
+            ComposerAlertLevel.Default -> ElementTheme.colors.textPrimary
+            ComposerAlertLevel.Info -> ElementTheme.colors.textInfoPrimary
+            ComposerAlertLevel.Critical -> ElementTheme.colors.textCriticalPrimary
+        }
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
                 .background(lineColor)
         )
-        val startColor = if (isCritical) ElementTheme.colors.bgCriticalSubtle else ElementTheme.colors.bgInfoSubtle
         val brush = Brush.verticalGradient(
             listOf(startColor, ElementTheme.colors.bgCanvasDefault),
         )
@@ -77,16 +97,28 @@ fun ComposerAlertMolecule(
                             avatarData = avatar,
                             avatarType = AvatarType.User,
                         )
+                    } else if (showIcon) {
+                        val icon = when (level) {
+                            ComposerAlertLevel.Default -> CompoundIcons.Info()
+                            ComposerAlertLevel.Info -> CompoundIcons.Info()
+                            ComposerAlertLevel.Critical -> CompoundIcons.Error()
+                        }
+                        val iconTint = when (level) {
+                            ComposerAlertLevel.Default -> ElementTheme.colors.iconPrimary
+                            ComposerAlertLevel.Info -> ElementTheme.colors.iconInfoPrimary
+                            ComposerAlertLevel.Critical -> ElementTheme.colors.iconCriticalPrimary
+                        }
+                        Icon(
+                            painter = rememberVectorPainter(icon),
+                            tint = iconTint,
+                            contentDescription = null,
+                        )
                     }
                     Text(
                         text = content,
                         modifier = Modifier.weight(1f),
                         style = ElementTheme.typography.fontBodyMdRegular,
-                        color = if (isCritical) {
-                            ElementTheme.colors.textCriticalPrimary
-                        } else {
-                            ElementTheme.colors.textPrimary
-                        },
+                        color = textColor,
                         textAlign = TextAlign.Start,
                     )
                 }
@@ -101,13 +133,45 @@ fun ComposerAlertMolecule(
     }
 }
 
+enum class ComposerAlertLevel {
+    Default,
+    Info,
+    Critical
+}
+
+internal data class ComposerAlertMoleculeParams(
+    val level: ComposerAlertLevel,
+    val avatar: AvatarData? = null,
+    val showIcon: Boolean = false,
+)
+
+internal class ComposerAlertMoleculeParamsProvider : PreviewParameterProvider<ComposerAlertMoleculeParams> {
+    private val allLevels = sequenceOf(
+        ComposerAlertLevel.Default,
+        ComposerAlertLevel.Info,
+        ComposerAlertLevel.Critical
+    )
+
+    override val values: Sequence<ComposerAlertMoleculeParams>
+        get() = allLevels.flatMap { level ->
+            sequenceOf(
+                ComposerAlertMoleculeParams(level = level),
+                ComposerAlertMoleculeParams(level = level, avatar = anAvatarData(size = AvatarSize.ComposerAlert)),
+                ComposerAlertMoleculeParams(level = level, showIcon = true),
+            )
+        }
+}
+
 @PreviewsDayNight
 @Composable
-internal fun ComposerAlertMoleculePreview(@PreviewParameter(BooleanProvider::class) isCritical: Boolean) = ElementPreview {
+internal fun ComposerAlertMoleculePreview(
+    @PreviewParameter(ComposerAlertMoleculeParamsProvider::class) params: ComposerAlertMoleculeParams,
+) = ElementPreview {
     ComposerAlertMolecule(
-        avatar = anAvatarData(size = AvatarSize.ComposerAlert),
+        avatar = params.avatar,
         content = "Alice’s verified identity has changed. Learn more".toAnnotatedString(),
-        isCritical = isCritical,
+        level = params.level,
+        showIcon = params.showIcon,
         onSubmitClick = {},
     )
 }

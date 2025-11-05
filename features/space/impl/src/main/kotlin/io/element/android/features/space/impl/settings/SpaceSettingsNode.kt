@@ -14,12 +14,12 @@ import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.features.space.impl.di.SpaceFlowScope
 import io.element.android.libraries.architecture.appyx.launchMolecule
+import io.element.android.libraries.architecture.callback
 
 @ContributesNode(SpaceFlowScope::class)
 @AssistedInject
@@ -38,7 +38,7 @@ class SpaceSettingsNode(
         fun startLeaveSpaceFlow()
     }
 
-    private val callback = plugins<Callback>().single()
+    private val callback: Callback = callback()
     private val stateFlow = launchMolecule { presenter.present() }
 
     @Composable

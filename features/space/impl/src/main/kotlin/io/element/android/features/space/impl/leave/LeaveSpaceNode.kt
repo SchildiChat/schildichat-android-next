@@ -13,11 +13,11 @@ import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.features.space.impl.di.SpaceFlowScope
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 
@@ -38,7 +38,7 @@ class LeaveSpaceNode(
     private val leaveSpaceHandle = matrixClient.spaceService.getLeaveSpaceHandle(room.roomId)
     private val presenter: LeaveSpacePresenter = presenterFactory.create(leaveSpaceHandle)
 
-    private val callback = plugins<Callback>().single()
+    private val callback: Callback = callback()
 
     override fun onBuilt() {
         super.onBuilt()

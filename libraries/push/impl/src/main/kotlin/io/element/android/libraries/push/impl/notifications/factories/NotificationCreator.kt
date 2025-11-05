@@ -431,27 +431,37 @@ class DefaultNotificationCreator(
                     senderPerson
                 )
                 else -> {
-                    val message = MessagingStyle.Message(
-                        event.body?.annotateForDebug(71),
-                        event.timestamp,
-                        senderPerson
-                    ).also { message ->
-                        event.imageUri?.let {
-                            message.setData(event.imageMimeType ?: "image/", it)
-                        }
-                        message.extras.putString(MESSAGE_EVENT_ID, event.eventId.value)
-                    }
-                    addMessage(message)
-
-                    // Add additional message for captions
-                    if (event.imageUri != null && event.body != null) {
-                        addMessage(
-                            MessagingStyle.Message(
-                                event.body,
-                                event.timestamp,
-                                senderPerson,
-                            )
+                    if (event.imageMimeType != null && event.imageUri != null) {
+                        // Image case
+                        val message = MessagingStyle.Message(
+                            // This text will not be rendered, but some systems does not render the image
+                            // if the text is null
+                            stringProvider.getString(CommonStrings.common_image),
+                            event.timestamp,
+                            senderPerson,
                         )
+                            .setData(event.imageMimeType, event.imageUri)
+                        message.extras.putString(MESSAGE_EVENT_ID, event.eventId.value)
+                        addMessage(message)
+                        // Add additional message for captions
+                        if (event.body != null) {
+                            addMessage(
+                                MessagingStyle.Message(
+                                    event.body.annotateForDebug(72),
+                                    event.timestamp,
+                                    senderPerson,
+                                )
+                            )
+                        }
+                    } else {
+                        // Text case
+                        val message = MessagingStyle.Message(
+                            event.body?.annotateForDebug(71),
+                            event.timestamp,
+                            senderPerson
+                        )
+                        message.extras.putString(MESSAGE_EVENT_ID, event.eventId.value)
+                        addMessage(message)
                     }
                 }
             }

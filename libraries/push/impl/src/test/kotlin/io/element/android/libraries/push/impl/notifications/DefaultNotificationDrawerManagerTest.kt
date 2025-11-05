@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.Color
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.enterprise.api.EnterpriseService
 import io.element.android.features.enterprise.test.FakeEnterpriseService
-import io.element.android.libraries.matrix.test.AN_AVATAR_URL
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_SESSION_ID
@@ -118,8 +117,11 @@ class DefaultNotificationDrawerManagerTest {
     }
 
     @Test
-    fun `when MatrixClient has no cached user name a fallback one is used to render the notification`() = runTest {
-        val matrixClient = FakeMatrixClient(userDisplayName = null)
+    fun `when MatrixClient has no cached user name and avatar, the profile is loaded to render the notification`() = runTest {
+        val matrixClient = FakeMatrixClient(
+            userDisplayName = null,
+            userAvatarUrl = null,
+        )
         val matrixClientProvider = FakeMatrixClientProvider(getClient = { Result.success(matrixClient) })
         val messageCreator = FakeRoomGroupMessageCreator()
         val defaultNotificationDrawerManager = createDefaultNotificationDrawerManager(
@@ -153,7 +155,7 @@ class DefaultNotificationDrawerManagerTest {
                     any(),
                 ),
                 listOf(
-                    value(aNotificationAccountParams(user = aMatrixUser(id = A_SESSION_ID.value, displayName = A_SESSION_ID.value))),
+                    value(aNotificationAccountParams(user = aMatrixUser(id = A_SESSION_ID.value, displayName = ""))),
                     any(),
                     any(),
                     any(),
@@ -161,7 +163,7 @@ class DefaultNotificationDrawerManagerTest {
                     any(),
                 ),
                 listOf(
-                    value(aNotificationAccountParams(user = aMatrixUser(id = A_SESSION_ID.value, displayName = A_SESSION_ID.value, avatarUrl = AN_AVATAR_URL))),
+                    value(aNotificationAccountParams(user = aMatrixUser(id = A_SESSION_ID.value, displayName = null, avatarUrl = null))),
                     any(),
                     any(),
                     any(),

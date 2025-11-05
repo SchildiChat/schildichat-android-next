@@ -10,14 +10,10 @@
 package io.element.android.libraries.designsystem.components.preferences
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,6 +31,7 @@ import io.element.android.libraries.designsystem.components.list.ListItemContent
 import io.element.android.libraries.designsystem.components.preferences.components.preferenceIcon
 import io.element.android.libraries.designsystem.preview.ElementThemedPreview
 import io.element.android.libraries.designsystem.preview.PreviewGroup
+import io.element.android.libraries.designsystem.theme.components.DropdownMenu
 import io.element.android.libraries.designsystem.theme.components.DropdownMenuItem
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.ListItem
@@ -118,27 +115,25 @@ private fun <T : DropdownOption> DropdownTrailingContent(
     onSelectOption: (T) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = onExpandedChange,
+    Row(
         modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
-            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = selectedOption?.getText().orEmpty(),
-                maxLines = 1,
-                style = ElementTheme.typography.fontBodyMdRegular,
-                color = ElementTheme.colors.textSecondary,
-            )
-            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-        }
-        ExposedDropdownMenu(
+        Text(
+            text = selectedOption?.getText().orEmpty(),
+            maxLines = 1,
+            style = ElementTheme.typography.fontBodyMdRegular,
+            color = ElementTheme.colors.textSecondary,
+        )
+        Icon(
+            imageVector = CompoundIcons.ChevronDown(),
+            contentDescription = null,
+            tint = ElementTheme.colors.iconSecondary,
+        )
+        DropdownMenu(
             expanded = expanded,
+            minWidth = 0.dp,
             onDismissRequest = { onExpandedChange(false) },
-            matchTextFieldWidth = false,
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
@@ -149,11 +144,11 @@ private fun <T : DropdownOption> DropdownTrailingContent(
                         )
                     },
                     trailingIcon = {
-                        if(option == selectedOption){
+                        if (option == selectedOption) {
                             Icon(
                                 imageVector = CompoundIcons.Check(),
                                 contentDescription = null,
-                                tint = ElementTheme.colors.iconSuccessPrimary,
+                                tint = ElementTheme.colors.iconAccentPrimary,
                             )
                         }
                     },

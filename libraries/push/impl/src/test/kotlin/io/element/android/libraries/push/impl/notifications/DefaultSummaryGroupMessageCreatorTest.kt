@@ -10,9 +10,8 @@ package io.element.android.libraries.push.impl.notifications
 import android.app.Notification
 import androidx.core.app.NotificationCompat
 import com.google.common.truth.Truth.assertThat
-import io.element.android.libraries.matrix.test.A_COLOR_INT
 import io.element.android.libraries.matrix.test.A_ROOM_ID
-import io.element.android.libraries.matrix.ui.components.aMatrixUser
+import io.element.android.libraries.push.impl.notifications.factories.aNotificationAccountParams
 import io.element.android.libraries.push.impl.notifications.fake.FakeNotificationCreator
 import io.element.android.services.toolbox.test.strings.FakeStringProvider
 import io.element.android.services.toolbox.test.systemclock.A_FAKE_TIMESTAMP
@@ -34,7 +33,7 @@ class DefaultSummaryGroupMessageCreatorTest {
         )
 
         val result = summaryCreator.createSummaryNotification(
-            currentUser = aMatrixUser(),
+            notificationAccountParams = aNotificationAccountParams(),
             roomNotifications = listOf(
                 RoomNotification(
                     notification = Notification(),
@@ -49,12 +48,11 @@ class DefaultSummaryGroupMessageCreatorTest {
             invitationNotifications = emptyList(),
             simpleNotifications = emptyList(),
             fallbackNotifications = emptyList(),
-            color = A_COLOR_INT,
         )
 
         notificationCreator.createSummaryListNotificationResult.assertions()
             .isCalledOnce()
-            .with(any(), nonNull(), any(), any())
+            .with(any(), any(), nonNull(), any(), any())
 
         // Set from the events included
         @Suppress("DEPRECATION")

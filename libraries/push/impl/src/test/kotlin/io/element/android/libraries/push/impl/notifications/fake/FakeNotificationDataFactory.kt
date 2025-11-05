@@ -7,13 +7,12 @@
 
 package io.element.android.libraries.push.impl.notifications.fake
 
-import androidx.annotation.ColorInt
 import coil3.ImageLoader
-import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.push.impl.notifications.NotificationDataFactory
 import io.element.android.libraries.push.impl.notifications.OneShotNotification
 import io.element.android.libraries.push.impl.notifications.RoomNotification
 import io.element.android.libraries.push.impl.notifications.SummaryNotification
+import io.element.android.libraries.push.impl.notifications.factories.NotificationAccountParams
 import io.element.android.libraries.push.impl.notifications.fixtures.A_NOTIFICATION
 import io.element.android.libraries.push.impl.notifications.model.FallbackNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.InviteNotifiableEvent
@@ -25,14 +24,15 @@ import io.element.android.tests.testutils.lambda.LambdaThreeParamsRecorder
 import io.element.android.tests.testutils.lambda.lambdaRecorder
 
 class FakeNotificationDataFactory(
-    var messageEventToNotificationsResult: LambdaThreeParamsRecorder<List<NotifiableMessageEvent>, MatrixUser, ImageLoader, List<RoomNotification>> =
-        lambdaRecorder { _, _, _ -> emptyList() },
+    var messageEventToNotificationsResult: LambdaThreeParamsRecorder<
+        List<NotifiableMessageEvent>, ImageLoader, NotificationAccountParams, List<RoomNotification>
+        > = lambdaRecorder { _, _, _ -> emptyList() },
     var summaryToNotificationsResult: LambdaFiveParamsRecorder<
-        MatrixUser,
         List<RoomNotification>,
         List<OneShotNotification>,
         List<OneShotNotification>,
         List<OneShotNotification>,
+        NotificationAccountParams,
         SummaryNotification
         > = lambdaRecorder { _, _, _, _, _ -> SummaryNotification.Update(A_NOTIFICATION) },
     var inviteToNotificationsResult: LambdaOneParamRecorder<List<InviteNotifiableEvent>, List<OneShotNotification>> = lambdaRecorder { _ -> emptyList() },
@@ -42,18 +42,17 @@ class FakeNotificationDataFactory(
 ) : NotificationDataFactory {
     override suspend fun toNotifications(
         messages: List<NotifiableMessageEvent>,
-        currentUser: MatrixUser,
         imageLoader: ImageLoader,
-        @ColorInt color: Int,
+        notificationAccountParams: NotificationAccountParams,
     ): List<RoomNotification> {
-        return messageEventToNotificationsResult(messages, currentUser, imageLoader)
+        return messageEventToNotificationsResult(messages, imageLoader, notificationAccountParams)
     }
 
     @JvmName("toNotificationInvites")
     @Suppress("INAPPLICABLE_JVM_NAME")
     override fun toNotifications(
         invites: List<InviteNotifiableEvent>,
-        @ColorInt color: Int,
+        notificationAccountParams: NotificationAccountParams,
     ): List<OneShotNotification> {
         return inviteToNotificationsResult(invites)
     }
@@ -62,7 +61,7 @@ class FakeNotificationDataFactory(
     @Suppress("INAPPLICABLE_JVM_NAME")
     override fun toNotifications(
         simpleEvents: List<SimpleNotifiableEvent>,
-        @ColorInt color: Int,
+        notificationAccountParams: NotificationAccountParams,
     ): List<OneShotNotification> {
         return simpleEventToNotificationsResult(simpleEvents)
     }
@@ -71,25 +70,24 @@ class FakeNotificationDataFactory(
     @Suppress("INAPPLICABLE_JVM_NAME")
     override fun toNotifications(
         fallback: List<FallbackNotifiableEvent>,
-        @ColorInt color: Int,
+        notificationAccountParams: NotificationAccountParams,
     ): List<OneShotNotification> {
         return fallbackEventToNotificationsResult(fallback)
     }
 
     override fun createSummaryNotification(
-        currentUser: MatrixUser,
         roomNotifications: List<RoomNotification>,
         invitationNotifications: List<OneShotNotification>,
         simpleNotifications: List<OneShotNotification>,
         fallbackNotifications: List<OneShotNotification>,
-        @ColorInt color: Int,
+        notificationAccountParams: NotificationAccountParams,
     ): SummaryNotification {
         return summaryToNotificationsResult(
-            currentUser,
             roomNotifications,
             invitationNotifications,
             simpleNotifications,
             fallbackNotifications,
+            notificationAccountParams,
         )
     }
 }

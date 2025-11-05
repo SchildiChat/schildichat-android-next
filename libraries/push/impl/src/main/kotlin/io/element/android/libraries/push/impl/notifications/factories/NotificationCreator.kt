@@ -25,6 +25,7 @@ import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.ThreadId
 import io.element.android.libraries.matrix.api.timeline.item.event.EventType
 import io.element.android.libraries.matrix.api.user.MatrixUser
+import io.element.android.libraries.matrix.ui.model.getBestName
 import io.element.android.libraries.push.api.notifications.NotificationBitmapLoader
 import io.element.android.libraries.push.impl.R
 import io.element.android.libraries.push.impl.notifications.RoomEventGroupInfo
@@ -47,42 +48,40 @@ interface NotificationCreator {
      * Create a notification for a Room.
      */
     suspend fun createMessagesListNotification(
+        notificationAccountParams: NotificationAccountParams,
         roomInfo: RoomEventGroupInfo,
         threadId: ThreadId?,
         largeIcon: Bitmap?,
         lastMessageTimestamp: Long,
         tickerText: String,
-        currentUser: MatrixUser,
         existingNotification: Notification?,
         imageLoader: ImageLoader,
         events: List<NotifiableMessageEvent>,
-        @ColorInt color: Int,
     ): Notification
 
     fun createRoomInvitationNotification(
+        notificationAccountParams: NotificationAccountParams,
         inviteNotifiableEvent: InviteNotifiableEvent,
-        @ColorInt color: Int,
     ): Notification
 
     fun createSimpleEventNotification(
+        notificationAccountParams: NotificationAccountParams,
         simpleNotifiableEvent: SimpleNotifiableEvent,
-        @ColorInt color: Int,
     ): Notification
 
     fun createFallbackNotification(
+        notificationAccountParams: NotificationAccountParams,
         fallbackNotifiableEvent: FallbackNotifiableEvent,
-        @ColorInt color: Int,
     ): Notification
 
     /**
      * Create the summary notification.
      */
     fun createSummaryListNotification(
-        currentUser: MatrixUser,
+        notificationAccountParams: NotificationAccountParams,
         compatSummary: String,
         noisy: Boolean,
         lastMessageTimestamp: Long,
-        @ColorInt color: Int,
     ): Notification
 
     fun createDiagnosticNotification(
@@ -118,16 +117,15 @@ class DefaultNotificationCreator(
      * Create a notification for a Room.
      */
     override suspend fun createMessagesListNotification(
+        notificationAccountParams: NotificationAccountParams,
         roomInfo: RoomEventGroupInfo,
         threadId: ThreadId?,
         largeIcon: Bitmap?,
         lastMessageTimestamp: Long,
         tickerText: String,
-        currentUser: MatrixUser,
         existingNotification: Notification?,
         imageLoader: ImageLoader,
         events: List<NotifiableMessageEvent>,
-        @ColorInt color: Int,
     ): Notification {
         // Build the pending intent for when the notification is clicked
         val eventId = events.firstOrNull()?.eventId
@@ -135,7 +133,6 @@ class DefaultNotificationCreator(
             threadId != null -> pendingIntentFactory.createOpenThreadPendingIntent(roomInfo.sessionId, roomInfo.roomId, eventId, threadId)
             else -> pendingIntentFactory.createOpenRoomPendingIntent(roomInfo.sessionId, roomInfo.roomId, eventId)
         }
-        val smallIcon = CommonDrawables.ic_notification
         val containsMissedCall = events.any { it.type == EventType.RTC_NOTIFICATION }
         val channelId = if (containsMissedCall) {
             notificationChannels.getChannelForIncomingCall(false)
@@ -159,9 +156,6 @@ class DefaultNotificationCreator(
                         setShortcutId(createShortcutId(roomInfo.sessionId, roomInfo.roomId))
                     }
                 }
-                // Auto-bundling is enabled for 4 or more notifications on API 24+ (N+)
-                // devices and all Wear devices. But we want a custom grouping, so we specify the groupID
-                .setGroup(roomInfo.sessionId.value)
                 .setGroupSummary(false)
                 // In order to avoid notification making sound twice (due to the summary notification)
                 .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
@@ -171,8 +165,8 @@ class DefaultNotificationCreator(
 
         val messagingStyle = existingNotification?.let {
             MessagingStyle.extractMessagingStyleFromNotification(it)
-        } ?: messagingStyleFromCurrentUser(
-            user = currentUser,
+        } ?: createMessagingStyleFromCurrentUser(
+            user = notificationAccountParams.user,
             imageLoader = imageLoader,
             roomName = roomInfo.roomDisplayName,
             isThread = threadId != null,
@@ -187,9 +181,7 @@ class DefaultNotificationCreator(
             .setWhen(lastMessageTimestamp)
             // MESSAGING_STYLE sets title and content for API 16 and above devices.
             .setStyle(messagingStyle)
-            .setSmallIcon(smallIcon)
-            // Set primary color (important for Wear 2.0 Notifications).
-            .setColor(color)
+            .configureWith(notificationAccountParams)
             // Sets priority for 25 and below. For 26 and above, 'priority' is deprecated for
             // 'importance' which is set in the NotificationChannel. The integers representing
             // 'priority' are different from 'importance', so make sure you don't mix them.
@@ -202,7 +194,7 @@ class DefaultNotificationCreator(
                         setSound(it)
                     }
                      */
-                    setLights(color, 500, 500)
+                    setLights(notificationAccountParams.color, 500, 500)
                 } else {
                     priority = NotificationCompat.PRIORITY_LOW
                 }
@@ -234,19 +226,16 @@ class DefaultNotificationCreator(
     }
 
     override fun createRoomInvitationNotification(
+        notificationAccountParams: NotificationAccountParams,
         inviteNotifiableEvent: InviteNotifiableEvent,
-        @ColorInt color: Int,
     ): Notification {
-        val smallIcon = CommonDrawables.ic_notification
         val channelId = notificationChannels.getChannelIdForMessage(inviteNotifiableEvent.noisy)
         return NotificationCompat.Builder(context, channelId)
             .setOnlyAlertOnce(true)
             .setContentTitle((inviteNotifiableEvent.roomName ?: buildMeta.applicationName).annotateForDebug(5))
             .setContentText(inviteNotifiableEvent.description.annotateForDebug(6))
-            .setGroup(inviteNotifiableEvent.sessionId.value)
             .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
-            .setSmallIcon(smallIcon)
-            .setColor(color)
+            .configureWith(notificationAccountParams)
             .apply {
                 addAction(rejectInvitationActionFactory.create(inviteNotifiableEvent))
                 addAction(acceptInvitationActionFactory.create(inviteNotifiableEvent))
@@ -261,7 +250,7 @@ class DefaultNotificationCreator(
                         setSound(it)
                     }
                      */
-                    setLights(color, 500, 500)
+                    setLights(notificationAccountParams.color, 500, 500)
                 } else {
                     priority = NotificationCompat.PRIORITY_LOW
                 }
@@ -277,19 +266,16 @@ class DefaultNotificationCreator(
     }
 
     override fun createSimpleEventNotification(
+        notificationAccountParams: NotificationAccountParams,
         simpleNotifiableEvent: SimpleNotifiableEvent,
-        @ColorInt color: Int,
     ): Notification {
-        val smallIcon = CommonDrawables.ic_notification
         val channelId = notificationChannels.getChannelIdForMessage(simpleNotifiableEvent.noisy)
         return NotificationCompat.Builder(context, channelId)
             .setOnlyAlertOnce(true)
             .setContentTitle(buildMeta.applicationName.annotateForDebug(7))
             .setContentText(simpleNotifiableEvent.description.annotateForDebug(8))
-            .setGroup(simpleNotifiableEvent.sessionId.value)
             .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
-            .setSmallIcon(smallIcon)
-            .setColor(color)
+            .configureWith(notificationAccountParams)
             .setAutoCancel(true)
             .setContentIntent(pendingIntentFactory.createOpenRoomPendingIntent(simpleNotifiableEvent.sessionId, simpleNotifiableEvent.roomId, null))
             .apply {
@@ -301,7 +287,7 @@ class DefaultNotificationCreator(
                         setSound(it)
                     }
                      */
-                    setLights(color, 500, 500)
+                    setLights(notificationAccountParams.color, 500, 500)
                 } else {
                     priority = NotificationCompat.PRIORITY_LOW
                 }
@@ -310,19 +296,16 @@ class DefaultNotificationCreator(
     }
 
     override fun createFallbackNotification(
+        notificationAccountParams: NotificationAccountParams,
         fallbackNotifiableEvent: FallbackNotifiableEvent,
-        @ColorInt color: Int,
     ): Notification {
-        val smallIcon = CommonDrawables.ic_notification
         val channelId = notificationChannels.getChannelIdForMessage(false)
         return NotificationCompat.Builder(context, channelId)
             .setOnlyAlertOnce(true)
             .setContentTitle(buildMeta.applicationName.annotateForDebug(7))
             .setContentText(fallbackNotifiableEvent.description.orEmpty().annotateForDebug(8))
-            .setGroup(fallbackNotifiableEvent.sessionId.value)
             .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
-            .setSmallIcon(smallIcon)
-            .setColor(color)
+            .configureWith(notificationAccountParams)
             .setAutoCancel(true)
             .setWhen(fallbackNotifiableEvent.timestamp)
             // Ideally we'd use `createOpenRoomPendingIntent` here, but the broken notification might apply to an invite
@@ -343,24 +326,21 @@ class DefaultNotificationCreator(
      * Create the summary notification.
      */
     override fun createSummaryListNotification(
-        currentUser: MatrixUser,
+        notificationAccountParams: NotificationAccountParams,
         compatSummary: String,
         noisy: Boolean,
         lastMessageTimestamp: Long,
-        @ColorInt color: Int,
     ): Notification {
-        val smallIcon = CommonDrawables.ic_notification
         val channelId = notificationChannels.getChannelIdForMessage(noisy)
+        val userId = notificationAccountParams.user.userId
         return NotificationCompat.Builder(context, channelId)
             .setOnlyAlertOnce(true)
             // used in compat < N, after summary is built based on child notifications
             .setWhen(lastMessageTimestamp)
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-            .setSmallIcon(smallIcon)
-            .setGroup(currentUser.userId.value)
             // set this notification as the summary for the group
             .setGroupSummary(true)
-            .setColor(color)
+            .configureWith(notificationAccountParams)
             .apply {
                 if (noisy) {
                     // Compat
@@ -370,14 +350,14 @@ class DefaultNotificationCreator(
                         setSound(it)
                     }
                      */
-                    setLights(color, 500, 500)
+                    setLights(notificationAccountParams.color, 500, 500)
                 } else {
                     // compat
                     priority = NotificationCompat.PRIORITY_LOW
                 }
             }
-            .setContentIntent(pendingIntentFactory.createOpenSessionPendingIntent(currentUser.userId))
-            .setDeleteIntent(pendingIntentFactory.createDismissSummaryPendingIntent(currentUser.userId))
+            .setContentIntent(pendingIntentFactory.createOpenSessionPendingIntent(userId))
+            .setDeleteIntent(pendingIntentFactory.createDismissSummaryPendingIntent(userId))
             .build()
     }
 
@@ -468,7 +448,7 @@ class DefaultNotificationCreator(
         }
     }
 
-    private suspend fun messagingStyleFromCurrentUser(
+    private suspend fun createMessagingStyleFromCurrentUser(
         user: MatrixUser,
         imageLoader: ImageLoader,
         roomName: String,
@@ -477,7 +457,8 @@ class DefaultNotificationCreator(
     ): MessagingStyle {
         return MessagingStyle(
             Person.Builder()
-                .setName(user.displayName?.annotateForDebug(50))
+                // Note: name cannot be empty else NotificationCompat.MessagingStyle() will crash
+                .setName(user.getBestName().annotateForDebug(50))
                 .setIcon(bitmapLoader.getUserIcon(user.avatarUrl, imageLoader))
                 .setKey(user.userId.value)
                 .build()
@@ -494,6 +475,15 @@ class DefaultNotificationCreator(
 
     companion object {
         const val MESSAGE_EVENT_ID = "message_event_id"
+    }
+}
+
+private fun NotificationCompat.Builder.configureWith(notificationAccountParams: NotificationAccountParams) = apply {
+    setSmallIcon(CommonDrawables.ic_notification)
+    setColor(notificationAccountParams.color)
+    setGroup(notificationAccountParams.user.userId.value)
+    if (notificationAccountParams.showSessionId) {
+        setSubText(notificationAccountParams.user.userId.value)
     }
 }
 

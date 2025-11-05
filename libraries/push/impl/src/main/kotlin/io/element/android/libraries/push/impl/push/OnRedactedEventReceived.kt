@@ -73,7 +73,7 @@ class DefaultOnRedactedEventReceived(
                     oldMessage.person
                 )
                 messagingStyle.messages[messageToRedactIndex] = newMessage
-                notificationDisplayer.showNotificationMessage(
+                notificationDisplayer.showNotification(
                     statusBarNotification.tag,
                     statusBarNotification.id,
                     NotificationCompat.Builder(context, notification)

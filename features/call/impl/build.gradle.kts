@@ -93,6 +93,7 @@ dependencies {
     testImplementation(projects.libraries.featureflag.test)
     testImplementation(projects.libraries.preferences.test)
     testImplementation(projects.libraries.matrix.test)
+    testImplementation(projects.libraries.matrixuiTest)
     testImplementation(projects.libraries.push.test)
     testImplementation(projects.services.analytics.test)
     testImplementation(projects.services.appnavstate.test)

@@ -74,7 +74,6 @@ fun ChangeRoomPermissionsView(
                             selectedOption = state.selectedRoleForType(permissionType),
                             options = SelectableRole.entries.toImmutableList(),
                             onSelectOption = { role ->
-                                println("Selected $role for $permissionType")
                                 state.eventSink(
                                     ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(
                                         action = permissionType,
@@ -114,9 +113,10 @@ fun ChangeRoomPermissionsView(
 
 @Composable
 private fun titleForSection(section: RoomPermissionsSection): String = when (section) {
-    RoomPermissionsSection.RoomDetails -> stringResource(R.string.screen_room_change_permissions_room_details)
-    RoomPermissionsSection.MessagesAndContent -> stringResource(R.string.screen_room_change_permissions_messages_and_content)
-    RoomPermissionsSection.MembershipModeration -> stringResource(R.string.screen_room_change_permissions_member_moderation)
+    RoomPermissionsSection.SpaceDetails -> stringResource(R.string.screen_room_roles_and_permissions_space_details)
+    RoomPermissionsSection.RoomDetails -> stringResource(R.string.screen_room_roles_and_permissions_room_details)
+    RoomPermissionsSection.MessagesAndContent -> stringResource(R.string.screen_room_roles_and_permissions_messages_and_content)
+    RoomPermissionsSection.MembershipModeration -> stringResource(R.string.screen_room_roles_and_permissions_member_moderation)
 }
 
 @Composable

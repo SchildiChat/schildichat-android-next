@@ -35,6 +35,7 @@ class ChangeRoomPermissionsPresenter(
 ) : Presenter<ChangeRoomPermissionsState> {
     companion object {
         private fun itemsForSection(section: RoomPermissionsSection) = when (section) {
+            RoomPermissionsSection.SpaceDetails,
             RoomPermissionsSection.RoomDetails -> persistentListOf(
                 RoomPermissionType.ROOM_NAME,
                 RoomPermissionType.ROOM_AVATAR,
@@ -53,9 +54,10 @@ class ChangeRoomPermissionsPresenter(
 
         private fun RoomPermissionsSection.shouldShow(isSpace: Boolean): Boolean {
             return when (this) {
-                RoomPermissionsSection.RoomDetails -> true
+                RoomPermissionsSection.RoomDetails -> !isSpace
                 RoomPermissionsSection.MembershipModeration -> true
                 RoomPermissionsSection.MessagesAndContent -> !isSpace
+                RoomPermissionsSection.SpaceDetails -> isSpace
             }
         }
 

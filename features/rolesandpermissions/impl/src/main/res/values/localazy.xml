@@ -9,10 +9,10 @@
   <string name="screen_room_change_permissions_messages_and_content">"Messages and content"</string>
   <string name="screen_room_change_permissions_moderators">"Admins and moderators"</string>
   <string name="screen_room_change_permissions_remove_people">"Remove people and decline requests to join"</string>
-  <string name="screen_room_change_permissions_room_avatar">"Change room avatar"</string>
+  <string name="screen_room_change_permissions_room_avatar">"Change avatar"</string>
   <string name="screen_room_change_permissions_room_details">"Room details"</string>
-  <string name="screen_room_change_permissions_room_name">"Change room name"</string>
-  <string name="screen_room_change_permissions_room_topic">"Change room topic"</string>
+  <string name="screen_room_change_permissions_room_name">"Change name"</string>
+  <string name="screen_room_change_permissions_room_topic">"Change topic"</string>
   <string name="screen_room_change_permissions_send_messages">"Send messages"</string>
   <string name="screen_room_change_role_administrators_title">"Edit Admins"</string>
   <string name="screen_room_change_role_confirm_add_admin_description">"You will not be able to undo this action. You are promoting the user to have the same power level as you."</string>
@@ -66,5 +66,6 @@
   <string name="screen_room_roles_and_permissions_reset_confirm_title">"Reset permissions?"</string>
   <string name="screen_room_roles_and_permissions_roles_header">"Roles"</string>
   <string name="screen_room_roles_and_permissions_room_details">"Room details"</string>
+  <string name="screen_room_roles_and_permissions_space_details">"Space details"</string>
   <string name="screen_room_roles_and_permissions_title">"Roles and permissions"</string>
 </resources>

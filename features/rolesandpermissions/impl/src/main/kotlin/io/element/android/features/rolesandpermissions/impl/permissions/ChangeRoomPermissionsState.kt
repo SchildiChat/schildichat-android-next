@@ -48,6 +48,7 @@ data class ChangeRoomPermissionsState(
 }
 
 enum class RoomPermissionsSection {
+    SpaceDetails,
     RoomDetails,
     MessagesAndContent,
     MembershipModeration,

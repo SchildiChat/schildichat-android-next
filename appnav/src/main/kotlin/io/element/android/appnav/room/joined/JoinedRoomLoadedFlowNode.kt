@@ -22,10 +22,10 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.appnav.di.RoomGraphFactory
+import io.element.android.appnav.di.TimelineBindings
 import io.element.android.appnav.room.RoomNavigationTarget
 import io.element.android.features.forward.api.ForwardEntryPoint
 import io.element.android.features.messages.api.MessagesEntryPoint
-import io.element.android.features.messages.api.MessagesEntryPointNode
 import io.element.android.features.roomdetails.api.RoomDetailsEntryPoint
 import io.element.android.features.space.api.SpaceEntryPoint
 import io.element.android.libraries.architecture.BackstackView
@@ -47,8 +47,6 @@ import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.services.appnavstate.api.ActiveRoomsHolder
 import io.element.android.services.appnavstate.api.AppNavigationStateService
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import timber.log.Timber
@@ -136,8 +134,8 @@ class JoinedRoomLoadedFlowNode(
                 callback.handlePermalinkClick(data, pushToBackstack)
             }
 
-            override fun startForwardEventFlow(eventId: EventId) {
-                backstack.push(NavTarget.ForwardEvent(eventId))
+            override fun startForwardEventFlow(eventId: EventId, fromPinnedEvents: Boolean) {
+                backstack.push(NavTarget.ForwardEvent(eventId, fromPinnedEvents))
             }
         }
         return roomDetailsEntryPoint.createNode(
@@ -169,7 +167,11 @@ class JoinedRoomLoadedFlowNode(
                 createSpaceNode(buildContext)
             }
             is NavTarget.ForwardEvent -> {
-                val timelineProvider = { MutableStateFlow(inputs.room.liveTimeline).asStateFlow() }
+                val timelineProvider = if (navTarget.fromPinnedEvents) {
+                    (graph as TimelineBindings).pinnedEventsTimelineProvider
+                } else {
+                    (graph as TimelineBindings).timelineProvider
+                }
                 val params = ForwardEntryPoint.Params(navTarget.eventId, timelineProvider)
                 val callback = object : ForwardEntryPoint.Callback {
                     override fun onDone(roomIds: List<RoomId>) {
@@ -193,10 +195,6 @@ class JoinedRoomLoadedFlowNode(
         val callback = object : SpaceEntryPoint.Callback {
             override fun navigateToRoom(roomId: RoomId, viaParameters: List<String>) {
                 callback.navigateToRoom(roomId, viaParameters)
-            }
-
-            override fun navigateToRoomDetails() {
-                backstack.push(NavTarget.RoomDetails)
             }
 
             override fun navigateToRoomMemberList() {
@@ -228,8 +226,8 @@ class JoinedRoomLoadedFlowNode(
                 callback.handlePermalinkClick(data, pushToBackstack)
             }
 
-            override fun forwardEvent(eventId: EventId) {
-                backstack.push(NavTarget.ForwardEvent(eventId))
+            override fun forwardEvent(eventId: EventId, fromPinnedEvents: Boolean) {
+                backstack.push(NavTarget.ForwardEvent(eventId, fromPinnedEvents))
             }
 
             override fun navigateToRoom(roomId: RoomId) {
@@ -266,7 +264,7 @@ class JoinedRoomLoadedFlowNode(
         data class RoomMemberDetails(val userId: UserId) : NavTarget
 
         @Parcelize
-        data class ForwardEvent(val eventId: EventId) : NavTarget
+        data class ForwardEvent(val eventId: EventId, val fromPinnedEvents: Boolean) : NavTarget
 
         @Parcelize
         data object RoomNotificationSettings : NavTarget
@@ -276,7 +274,7 @@ class JoinedRoomLoadedFlowNode(
         val messageNode = waitForChildAttached<Node, NavTarget> { navTarget ->
             navTarget is NavTarget.Messages
         }
-        (messageNode as? MessagesEntryPointNode)?.attachThread(threadId, focusedEventId)
+        (messageNode as? MessagesEntryPoint.NodeProxy)?.attachThread(threadId, focusedEventId)
     }
 
     @Composable

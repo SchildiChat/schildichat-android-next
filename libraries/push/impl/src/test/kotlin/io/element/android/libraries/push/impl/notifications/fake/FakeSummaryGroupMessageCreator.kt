@@ -8,30 +8,28 @@
 package io.element.android.libraries.push.impl.notifications.fake
 
 import android.app.Notification
-import androidx.annotation.ColorInt
-import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.push.impl.notifications.OneShotNotification
 import io.element.android.libraries.push.impl.notifications.RoomNotification
 import io.element.android.libraries.push.impl.notifications.SummaryGroupMessageCreator
+import io.element.android.libraries.push.impl.notifications.factories.NotificationAccountParams
 import io.element.android.libraries.push.impl.notifications.fixtures.A_NOTIFICATION
 import io.element.android.tests.testutils.lambda.LambdaFiveParamsRecorder
 import io.element.android.tests.testutils.lambda.lambdaRecorder
 
 class FakeSummaryGroupMessageCreator(
     var createSummaryNotificationResult: LambdaFiveParamsRecorder<
-        MatrixUser, List<RoomNotification>, List<OneShotNotification>, List<OneShotNotification>, List<OneShotNotification>, Notification> =
+        NotificationAccountParams, List<RoomNotification>, List<OneShotNotification>, List<OneShotNotification>, List<OneShotNotification>, Notification> =
         lambdaRecorder { _, _, _, _, _ -> A_NOTIFICATION }
 ) : SummaryGroupMessageCreator {
     override fun createSummaryNotification(
-        currentUser: MatrixUser,
+        notificationAccountParams: NotificationAccountParams,
         roomNotifications: List<RoomNotification>,
         invitationNotifications: List<OneShotNotification>,
         simpleNotifications: List<OneShotNotification>,
         fallbackNotifications: List<OneShotNotification>,
-        @ColorInt color: Int,
     ): Notification {
         return createSummaryNotificationResult(
-            currentUser,
+            notificationAccountParams,
             roomNotifications,
             invitationNotifications,
             simpleNotifications,

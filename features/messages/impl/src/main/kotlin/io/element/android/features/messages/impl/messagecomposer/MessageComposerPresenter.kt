@@ -382,7 +382,7 @@ class MessageComposerPresenter(
             suggestions = suggestions.toImmutableList(),
             resolveMentionDisplay = resolveMentionDisplay,
             resolveAtRoomMentionDisplay = resolveAtRoomMentionDisplay,
-            eventSink = { handleEvents(it) },
+            eventSink = ::handleEvents,
         )
     }
 

@@ -42,7 +42,7 @@ class SpaceNode(
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
         fun navigateToRoom(roomId: RoomId, viaParameters: List<String>)
-        fun navigateToRoomDetails()
+        fun navigateToSpaceSettings()
         fun navigateToRoomMemberList()
         fun startLeaveSpaceFlow()
     }
@@ -80,7 +80,7 @@ class SpaceNode(
                 callback.navigateToRoom(spaceRoom.roomId, spaceRoom.via)
             },
             onDetailsClick = {
-                callback.navigateToRoomDetails()
+                callback.navigateToSpaceSettings()
             },
             onShareSpace = {
                 onShareRoom(context)

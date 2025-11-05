@@ -328,7 +328,7 @@ private fun SpaceViewTopBar(
                     },
                     text = {
                         Text(
-                            text = stringResource(id = CommonStrings.action_leave),
+                            text = stringResource(id = CommonStrings.action_leave_space),
                             color = ElementTheme.colors.textCriticalPrimary,
                         )
                     },

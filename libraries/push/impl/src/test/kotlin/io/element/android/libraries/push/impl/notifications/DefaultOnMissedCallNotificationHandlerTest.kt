@@ -7,7 +7,6 @@
 
 package io.element.android.libraries.push.impl.notifications
 
-import io.element.android.features.enterprise.test.FakeEnterpriseService
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_SESSION_ID
@@ -16,23 +15,19 @@ import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.matrix.test.FakeMatrixClientProvider
 import io.element.android.libraries.matrix.test.notification.FakeNotificationService
 import io.element.android.libraries.matrix.test.notification.aNotificationData
+import io.element.android.libraries.matrix.ui.test.media.FakeImageLoaderHolder
 import io.element.android.libraries.push.impl.notifications.fake.FakeActiveNotificationsProvider
 import io.element.android.libraries.push.impl.notifications.fake.FakeNotificationDataFactory
 import io.element.android.libraries.push.impl.notifications.fake.FakeNotificationDisplayer
 import io.element.android.libraries.push.impl.notifications.fixtures.aNotifiableMessageEvent
 import io.element.android.libraries.push.test.notifications.FakeCallNotificationEventResolver
-import io.element.android.libraries.push.test.notifications.FakeImageLoaderHolder
 import io.element.android.services.appnavstate.test.FakeAppNavigationStateService
 import io.element.android.tests.testutils.lambda.lambdaRecorder
-import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 
-@RunWith(RobolectricTestRunner::class)
 class DefaultOnMissedCallNotificationHandlerTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
@@ -52,11 +47,9 @@ class DefaultOnMissedCallNotificationHandlerTest {
         val defaultOnMissedCallNotificationHandler = DefaultOnMissedCallNotificationHandler(
             matrixClientProvider = matrixClientProvider,
             defaultNotificationDrawerManager = DefaultNotificationDrawerManager(
-                notificationManager = mockk(relaxed = true),
-                notificationRenderer = NotificationRenderer(
-                    notificationDisplayer = FakeNotificationDisplayer(),
+                notificationDisplayer = FakeNotificationDisplayer(),
+                notificationRenderer = createNotificationRenderer(
                     notificationDataFactory = dataFactory,
-                    enterpriseService = FakeEnterpriseService(),
                 ),
                 appNavigationStateService = FakeAppNavigationStateService(),
                 coroutineScope = backgroundScope,

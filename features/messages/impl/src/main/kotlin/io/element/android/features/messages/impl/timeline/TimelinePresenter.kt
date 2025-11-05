@@ -289,7 +289,7 @@ class TimelinePresenter(
             messageShield = messageShield.value,
             resolveVerifiedUserSendFailureState = resolveVerifiedUserSendFailureState,
             displayThreadSummaries = displayThreadSummaries,
-            eventSink = { handleEvents(it) }
+            eventSink = ::handleEvents,
         )
     }
 

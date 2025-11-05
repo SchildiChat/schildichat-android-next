@@ -21,6 +21,12 @@ android {
             isIncludeAndroidResources = true
         }
     }
+
+    buildTypes {
+        register("nightly") {
+            matchingFallbacks += listOf("release")
+        }
+    }
 }
 
 setupDependencyInjection()
@@ -70,6 +76,7 @@ dependencies {
     testCommonDependencies(libs)
     testImplementation(libs.coil.test)
     testImplementation(projects.libraries.matrix.test)
+    testImplementation(projects.libraries.matrixuiTest)
     testImplementation(projects.libraries.preferences.test)
     testImplementation(projects.libraries.sessionStorage.test)
     testImplementation(projects.libraries.push.test)

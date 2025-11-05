@@ -103,7 +103,7 @@ class UserProfileFlowNode(
                         // Cannot happen
                     }
 
-                    override fun forwardEvent(eventId: EventId) {
+                    override fun forwardEvent(eventId: EventId, fromPinnedEvents: Boolean) {
                         // Cannot happen
                     }
                 }

@@ -100,7 +100,7 @@ class RolesAndPermissionsPresenter(
             canDemoteSelf = canDemoteSelf.value,
             changeOwnRoleAction = changeOwnRoleAction.value,
             resetPermissionsAction = resetPermissionsAction.value,
-            eventSink = { handleEvent(it) },
+            eventSink = ::handleEvent,
         )
     }
 

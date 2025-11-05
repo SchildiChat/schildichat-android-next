@@ -13,8 +13,8 @@ plugins {
 
 android {
     namespace = "io.element.android.libraries.dateformatter.api"
+}
 
-    dependencies {
-        testCommonDependencies(libs)
-    }
+dependencies {
+    testCommonDependencies(libs)
 }

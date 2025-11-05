@@ -64,8 +64,8 @@ class MediaViewerNode(
         callback.viewInTimeline(eventId)
     }
 
-    override fun onForwardClick(eventId: EventId) {
-        callback.forwardEvent(eventId)
+    override fun onForwardClick(eventId: EventId, fromPinnedEvents: Boolean) {
+        callback.forwardEvent(eventId, fromPinnedEvents)
     }
 
     override fun onItemDeleted() {
@@ -81,11 +81,7 @@ class MediaViewerNode(
             timelineMediaGalleryDataSource
         } else {
             // Can we use a specific timeline?
-            val timelineMode = when (val mode = inputs.mode) {
-                is MediaViewerEntryPoint.MediaViewerMode.TimelineImagesAndVideos -> mode.timelineMode
-                is MediaViewerEntryPoint.MediaViewerMode.TimelineFilesAndAudios -> mode.timelineMode
-                else -> null
-            }
+            val timelineMode = inputs.mode.getTimelineMode()
             when (timelineMode) {
                 null -> timelineMediaGalleryDataSource
                 Timeline.Mode.Live,
@@ -147,5 +143,13 @@ class MediaViewerNode(
                 onBackClick = callback::onDone,
             )
         }
+    }
+}
+
+internal fun MediaViewerEntryPoint.MediaViewerMode.getTimelineMode(): Timeline.Mode? {
+    return when (this) {
+        is MediaViewerEntryPoint.MediaViewerMode.TimelineImagesAndVideos -> timelineMode
+        is MediaViewerEntryPoint.MediaViewerMode.TimelineFilesAndAudios -> timelineMode
+        else -> null
     }
 }

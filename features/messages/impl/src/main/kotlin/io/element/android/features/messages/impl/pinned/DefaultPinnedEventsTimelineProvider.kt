@@ -7,8 +7,9 @@
 
 package io.element.android.features.messages.impl.pinned
 
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.SingleIn
+import io.element.android.features.messages.api.pinned.PinnedEventsTimelineProvider
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.core.coroutine.mapState
@@ -17,7 +18,6 @@ import io.element.android.libraries.matrix.api.room.CreateTimelineParams
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.sync.SyncService
 import io.element.android.libraries.matrix.api.timeline.Timeline
-import io.element.android.libraries.matrix.api.timeline.TimelineProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,12 +29,12 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 
 @SingleIn(RoomScope::class)
-@Inject
-class PinnedEventsTimelineProvider(
+@ContributesBinding(RoomScope::class)
+class DefaultPinnedEventsTimelineProvider(
     private val room: JoinedRoom,
     private val syncService: SyncService,
     private val dispatchers: CoroutineDispatchers,
-) : TimelineProvider {
+) : PinnedEventsTimelineProvider {
     private val _timelineStateFlow: MutableStateFlow<AsyncData<Timeline>> =
         MutableStateFlow(AsyncData.Uninitialized)
 

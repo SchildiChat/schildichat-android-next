@@ -23,6 +23,6 @@ interface MediaGalleryEntryPoint : FeatureEntryPoint {
     interface Callback : Plugin {
         fun onBackClick()
         fun viewInTimeline(eventId: EventId)
-        fun forward(eventId: EventId)
+        fun forward(eventId: EventId, fromPinnedEvents: Boolean)
     }
 }

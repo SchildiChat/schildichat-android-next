@@ -71,7 +71,7 @@ class CustomReactionPresenter(
             target = target.value,
             selectedEmoji = selectedEmoji,
             recentEmojis = recentEmojis,
-            eventSink = { handleEvents(it) }
+            eventSink = ::handleEvents,
         )
     }
 }

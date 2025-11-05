@@ -32,10 +32,9 @@ import io.element.android.features.location.api.LocationService
 import io.element.android.features.location.api.SendLocationEntryPoint
 import io.element.android.features.location.api.ShowLocationEntryPoint
 import io.element.android.features.messages.api.MessagesEntryPoint
-import io.element.android.features.messages.api.MessagesEntryPointNode
 import io.element.android.features.messages.impl.attachments.Attachment
 import io.element.android.features.messages.impl.attachments.preview.AttachmentsPreviewNode
-import io.element.android.features.messages.impl.pinned.PinnedEventsTimelineProvider
+import io.element.android.features.messages.impl.pinned.DefaultPinnedEventsTimelineProvider
 import io.element.android.features.messages.impl.pinned.list.PinnedMessagesListNode
 import io.element.android.features.messages.impl.report.ReportMessageNode
 import io.element.android.features.messages.impl.threads.ThreadedMessagesNode
@@ -115,7 +114,7 @@ class MessagesFlowNode(
     private val roomNamesCache: RoomNamesCache,
     private val mentionSpanUpdater: MentionSpanUpdater,
     private val mentionSpanTheme: MentionSpanTheme,
-    private val pinnedEventsTimelineProvider: PinnedEventsTimelineProvider,
+    private val pinnedEventsTimelineProvider: DefaultPinnedEventsTimelineProvider,
     private val timelineController: TimelineController,
     private val knockRequestsListEntryPoint: KnockRequestsListEntryPoint,
     private val dateFormatter: DateFormatter,
@@ -130,8 +129,7 @@ class MessagesFlowNode(
     ),
     buildContext = buildContext,
     plugins = plugins,
-),
-    MessagesEntryPointNode {
+), MessagesEntryPoint.NodeProxy {
     sealed interface NavTarget : Parcelable {
         @Parcelize
         data class Messages(val focusedEventId: EventId?) : NavTarget
@@ -315,9 +313,9 @@ class MessagesFlowNode(
                         this@MessagesFlowNode.viewInTimeline(eventId)
                     }
 
-                    override fun forwardEvent(eventId: EventId) {
+                    override fun forwardEvent(eventId: EventId, fromPinnedEvents: Boolean) {
                         // Need to go to the parent because of the overlay
-                        callback.forwardEvent(eventId)
+                        callback.forwardEvent(eventId, fromPinnedEvents)
                     }
                 }
                 mediaViewerEntryPoint.createNode(

@@ -27,6 +27,7 @@ import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.designsystem.theme.components.SearchBarResultState
+import io.element.android.libraries.di.annotations.SessionCoroutineScope
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.room.RoomMember
@@ -41,10 +42,12 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AssistedInject
 class ChangeRolesPresenter(
@@ -214,9 +217,13 @@ class ChangeRolesPresenter(
                 saveState.value = AsyncAction.Failure(it)
             }
             .onSuccess {
-                saveState.value = AsyncAction.Success(true)
                 // Asynchronously reload the room members
-                launch { room.updateMembers() }
+                launch {
+                    withContext(NonCancellable) {
+                        room.updateMembers()
+                    }
+                }
+                saveState.value = AsyncAction.Success(true)
             }
     }
 }

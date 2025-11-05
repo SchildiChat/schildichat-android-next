@@ -23,7 +23,6 @@ import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.matrix.api.room.toMatrixUser
 import io.element.android.libraries.matrix.ui.components.aMatrixUserList
 import io.element.android.libraries.ui.strings.CommonStrings
-import io.element.android.tests.testutils.EnsureNeverCalled
 import io.element.android.tests.testutils.EnsureNeverCalledWithParam
 import io.element.android.tests.testutils.EventsRecorder
 import io.element.android.tests.testutils.clickOn
@@ -306,12 +305,10 @@ class ChangeRolesViewTest {
 
     private fun <R : TestRule> AndroidComposeTestRule<R, ComponentActivity>.setChangeRolesContent(
         state: ChangeRolesState,
-        onBackClick: () -> Unit = EnsureNeverCalled(),
     ) {
         setContent {
             ChangeRolesView(
                 state = state,
-                navigateUp = onBackClick,
             )
         }
     }

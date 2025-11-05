@@ -5,16 +5,16 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.features.rolesandpermissions.test
+package io.element.android.features.changeroommemberroles.test
 
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
-import io.element.android.features.rolesandpermissions.api.RolesAndPermissionsEntryPoint
+import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesEntryPoint
 import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesListType
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.tests.testutils.lambda.lambdaError
 
-class FakeChangeRoomMemberRolesEntryPoint : RolesAndPermissionsEntryPoint {
+class FakeChangeRoomMemberRolesEntryPoint : ChangeRoomMemberRolesEntryPoint {
     override fun createNode(
         parentNode: Node,
         buildContext: BuildContext,

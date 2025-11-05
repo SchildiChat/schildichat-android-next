@@ -157,10 +157,12 @@ class RoomDetailsFlowNode(
             changeRoomMemberRolesNode: ChangeRoomMemberRolesEntryPoint.NodeProxy,
             ->
             commonLifecycle.coroutineScope.launch {
-                changeRoomMemberRolesNode.waitForRoleChanged()
+                val isNewOwnerSelected = changeRoomMemberRolesNode.waitForCompletion()
                 withContext(NonCancellable) {
                     backstack.pop()
-                    roomDetailsNode.onNewOwnersSelected()
+                    if (isNewOwnerSelected) {
+                        roomDetailsNode.onNewOwnersSelected()
+                    }
                 }
             }
         }

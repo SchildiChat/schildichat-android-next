@@ -8,8 +8,11 @@
 package io.element.android.features.rolesandpermissions.impl
 
 import android.os.Parcelable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.coroutineScope
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
@@ -20,15 +23,18 @@ import com.bumble.appyx.navmodel.backstack.operation.push
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
-import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesEntryPoint
 import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesListType
 import io.element.android.features.rolesandpermissions.impl.permissions.ChangeRoomPermissionsNode
+import io.element.android.features.rolesandpermissions.impl.roles.ChangeRolesNode
 import io.element.android.features.rolesandpermissions.impl.root.RolesAndPermissionsNode
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.createNode
+import io.element.android.libraries.designsystem.components.async.AsyncIndicator
+import io.element.android.libraries.designsystem.components.async.AsyncIndicatorHost
+import io.element.android.libraries.designsystem.components.async.AsyncIndicatorState
 import io.element.android.libraries.di.RoomScope
-import io.element.android.libraries.matrix.api.room.JoinedRoom
+import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
@@ -37,11 +43,9 @@ import kotlinx.parcelize.Parcelize
 class RolesAndPermissionsFlowNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
-    private val joinedRoom: JoinedRoom,
-    private val changeRoomMemberRolesEntryPoint: ChangeRoomMemberRolesEntryPoint,
 ) : BaseFlowNode<RolesAndPermissionsFlowNode.NavTarget>(
     backstack = BackStack(
-        initialElement = NavTarget.AdminSettings,
+        initialElement = NavTarget.Root,
         savedStateMap = buildContext.savedStateMap,
     ),
     buildContext = buildContext,
@@ -49,38 +53,49 @@ class RolesAndPermissionsFlowNode(
 ) {
     sealed interface NavTarget : Parcelable {
         @Parcelize
-        data object AdminSettings : NavTarget
+        data object Root : NavTarget
 
         @Parcelize
-        data object AdminList : NavTarget
+        data object ChangeAdmins : NavTarget
 
         @Parcelize
-        data object ModeratorList : NavTarget
+        data object ChangeModerators : NavTarget
 
         @Parcelize
         data object ChangeRoomPermissions: NavTarget
     }
 
+    private val asyncIndicatorState = AsyncIndicatorState()
+
     override fun onBuilt() {
         super.onBuilt()
-        whenChildAttached { lifecycle, node: ChangeRoomMemberRolesEntryPoint.NodeProxy ->
+        whenChildAttached { lifecycle, node: ChangeRolesNode ->
             lifecycle.coroutineScope.launch {
-                node.waitForRoleChanged()
-                backstack.pop()
+                val changesSaved = node.waitForCompletion()
+                onChangeComplete(changesSaved)
+            }
+        }
+    }
+
+    private fun onChangeComplete(changesSaved: Boolean) {
+        backstack.pop()
+        if (changesSaved) {
+            asyncIndicatorState.enqueue(durationMs = AsyncIndicator.DURATION_SHORT) {
+                AsyncIndicator.Custom(text = stringResource(CommonStrings.common_saved_changes))
             }
         }
     }
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         return when (navTarget) {
-            is NavTarget.AdminSettings -> {
+            is NavTarget.Root -> {
                 val callback = object : RolesAndPermissionsNode.Callback {
                     override fun openAdminList() {
-                        backstack.push(NavTarget.AdminList)
+                        backstack.push(NavTarget.ChangeAdmins)
                     }
 
                     override fun openModeratorList() {
-                        backstack.push(NavTarget.ModeratorList)
+                        backstack.push(NavTarget.ChangeModerators)
                     }
 
                     override fun openEditPermissions() {
@@ -93,30 +108,32 @@ class RolesAndPermissionsFlowNode(
                     plugins = listOf(callback),
                 )
             }
-            is NavTarget.AdminList -> {
-                changeRoomMemberRolesEntryPoint.createNode(
-                    parentNode = this,
-                    buildContext = buildContext,
-                    room = joinedRoom,
-                    listType = ChangeRoomMemberRolesListType.Admins,
-                )
+            is NavTarget.ChangeAdmins -> {
+                val inputs = ChangeRolesNode.Inputs(ChangeRoomMemberRolesListType.Admins)
+                createNode<ChangeRolesNode>(buildContext = buildContext, plugins = listOf(inputs))
             }
-            is NavTarget.ModeratorList -> {
-                changeRoomMemberRolesEntryPoint.createNode(
-                    parentNode = this,
-                    buildContext = buildContext,
-                    room = joinedRoom,
-                    listType = ChangeRoomMemberRolesListType.Moderators,
-                )
+            is NavTarget.ChangeModerators -> {
+                val inputs = ChangeRolesNode.Inputs(ChangeRoomMemberRolesListType.Moderators)
+                createNode<ChangeRolesNode>(buildContext = buildContext, plugins = listOf(inputs))
             }
             is NavTarget.ChangeRoomPermissions -> {
-                createNode<ChangeRoomPermissionsNode>(buildContext = buildContext)
+                val callback = object : ChangeRoomPermissionsNode.Callback {
+                    override fun onComplete(changesSaved: Boolean) {
+                        onChangeComplete(changesSaved)
+                    }
+                }
+                createNode<ChangeRoomPermissionsNode>(buildContext = buildContext, plugins = listOf(callback))
             }
         }
     }
 
+
+
     @Composable
     override fun View(modifier: Modifier) {
-        BackstackView()
+        Box(modifier = modifier) {
+            BackstackView()
+            AsyncIndicatorHost(modifier = Modifier.statusBarsPadding(), asyncIndicatorState)
+        }
     }
 }

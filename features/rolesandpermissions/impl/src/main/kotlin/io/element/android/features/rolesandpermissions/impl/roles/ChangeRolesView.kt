@@ -29,8 +29,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -42,7 +40,6 @@ import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.rolesandpermissions.impl.R
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.designsystem.components.async.AsyncActionView
-import io.element.android.libraries.designsystem.components.async.AsyncIndicator
 import io.element.android.libraries.designsystem.components.async.AsyncIndicatorHost
 import io.element.android.libraries.designsystem.components.async.rememberAsyncIndicatorState
 import io.element.android.libraries.designsystem.components.avatar.Avatar
@@ -77,10 +74,8 @@ import kotlinx.collections.immutable.ImmutableList
 @Composable
 fun ChangeRolesView(
     state: ChangeRolesState,
-    navigateUp: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val latestNavigateUp by rememberUpdatedState(newValue = navigateUp)
     BackHandler(enabled = !state.isSearchActive) {
         state.eventSink(ChangeRolesEvent.Exit)
     }
@@ -168,18 +163,9 @@ fun ChangeRolesView(
 
         val asyncIndicatorState = rememberAsyncIndicatorState()
         AsyncIndicatorHost(modifier = Modifier.statusBarsPadding(), asyncIndicatorState)
-
         AsyncActionView(
             async = state.savingState,
-            onSuccess = { changeSaved ->
-                if (changeSaved) {
-                    asyncIndicatorState.enqueue(durationMs = AsyncIndicator.DURATION_SHORT) {
-                        AsyncIndicator.Custom(text = stringResource(CommonStrings.common_saved_changes))
-                    }
-                } else {
-                    latestNavigateUp()
-                }
-            },
+            onSuccess = {},
             confirmationDialog = { confirming ->
                 when (confirming) {
                     is AsyncAction.ConfirmingCancellation -> {
@@ -416,8 +402,7 @@ private fun MemberRow(
 internal fun ChangeRolesViewPreview(@PreviewParameter(ChangeRolesStateProvider::class) state: ChangeRolesState) {
     ElementPreview {
         ChangeRolesView(
-            state = state,
-            navigateUp = {},
+            state = state
         )
     }
 }

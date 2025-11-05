@@ -40,7 +40,6 @@ import io.element.android.features.logout.api.direct.DirectLogoutView
 import io.element.android.features.reportroom.api.ReportRoomEntryPoint
 import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesEntryPoint
 import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesListType
-import io.element.android.features.rolesandpermissions.api.RolesAndPermissionsEntryPoint
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.appyx.launchMolecule
@@ -94,10 +93,12 @@ class HomeFlowNode(
             changeRoomMemberRolesNode: ChangeRoomMemberRolesEntryPoint.NodeProxy,
             ->
             commonLifecycle.coroutineScope.launch {
-                changeRoomMemberRolesNode.waitForRoleChanged()
+                val isNewOwnerSelected = changeRoomMemberRolesNode.waitForCompletion()
                 withContext(NonCancellable) {
                     backstack.pop()
-                    onNewOwnersSelected(changeRoomMemberRolesNode.roomId)
+                    if(isNewOwnerSelected) {
+                        onNewOwnersSelected(changeRoomMemberRolesNode.roomId)
+                    }
                 }
             }
         }

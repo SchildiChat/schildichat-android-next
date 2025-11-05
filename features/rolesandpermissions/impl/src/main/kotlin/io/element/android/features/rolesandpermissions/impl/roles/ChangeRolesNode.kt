@@ -21,6 +21,7 @@ import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRoles
 import io.element.android.libraries.architecture.NodeInputs
 import io.element.android.libraries.architecture.appyx.launchMolecule
 import io.element.android.libraries.architecture.inputs
+import io.element.android.libraries.core.bool.orFalse
 import io.element.android.libraries.di.RoomScope
 import io.element.android.libraries.matrix.api.room.RoomMember
 import kotlinx.coroutines.flow.first
@@ -40,17 +41,17 @@ class ChangeRolesNode(
     private val presenter = presenterFactory.create(inputs.listType.toRoomMemberRole())
     private val stateFlow = launchMolecule { presenter.present() }
 
-    suspend fun waitForRoleChanged() {
-        stateFlow.first { it.savingState.isSuccess() }
+    suspend fun waitForCompletion(): Boolean {
+        val successState = stateFlow.first { it.savingState.isSuccess() }
+        return successState.savingState.dataOrNull().orFalse()
     }
 
     @Composable
     override fun View(modifier: Modifier) {
         val state by stateFlow.collectAsState()
         ChangeRolesView(
-            modifier = modifier,
             state = state,
-            navigateUp = this::navigateUp,
+            modifier = modifier,
         )
     }
 }

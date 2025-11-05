@@ -16,26 +16,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.rolesandpermissions.impl.R
-import io.element.android.libraries.core.bool.orFalse
 import io.element.android.libraries.designsystem.components.async.AsyncActionView
 import io.element.android.libraries.designsystem.components.button.BackButton
 import io.element.android.libraries.designsystem.components.dialogs.ConfirmationDialog
-import io.element.android.libraries.designsystem.components.list.ListItemContent
 import io.element.android.libraries.designsystem.components.preferences.PreferenceDropdown
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
-import io.element.android.libraries.designsystem.theme.components.IconSource
-import io.element.android.libraries.designsystem.theme.components.ListItem
-import io.element.android.libraries.designsystem.theme.components.ListItemStyle
 import io.element.android.libraries.designsystem.theme.components.ListSectionHeader
 import io.element.android.libraries.designsystem.theme.components.Scaffold
-import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TextButton
 import io.element.android.libraries.designsystem.theme.components.TopAppBar
-import io.element.android.libraries.matrix.api.room.RoomMember
-import io.element.android.libraries.matrix.api.room.powerlevels.RoomPowerLevelsValues
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.toImmutableList
 
@@ -43,7 +34,7 @@ import kotlinx.collections.immutable.toImmutableList
 @Composable
 fun ChangeRoomPermissionsView(
     state: ChangeRoomPermissionsState,
-    onBackClick: () -> Unit,
+    onComplete: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     BackHandler {
@@ -74,7 +65,7 @@ fun ChangeRoomPermissionsView(
         ) {
             state.itemsBySection.onEachIndexed { index, (section, items) ->
                 item {
-                    ListSectionHeader(titleForSection(section), hasDivider = index>0)
+                    ListSectionHeader(titleForSection(section), hasDivider = index > 0)
                 }
                 for (permissionType in items) {
                     item {
@@ -99,13 +90,13 @@ fun ChangeRoomPermissionsView(
 
     AsyncActionView(
         async = state.saveAction,
-        onSuccess = { onBackClick() },
+        onSuccess = { onComplete(true) },
         onErrorDismiss = { state.eventSink(ChangeRoomPermissionsEvent.ResetPendingActions) }
     )
 
     AsyncActionView(
         async = state.confirmExitAction,
-        onSuccess = { onBackClick() },
+        onSuccess = { onComplete(false) },
         confirmationDialog = {
             ConfirmationDialog(
                 title = stringResource(R.string.screen_room_change_role_unsaved_changes_title),
@@ -119,6 +110,7 @@ fun ChangeRoomPermissionsView(
         onErrorDismiss = {},
     )
 }
+
 @Composable
 private fun titleForSection(section: RoomPermissionsSection): String = when (section) {
     RoomPermissionsSection.RoomDetails -> stringResource(R.string.screen_room_change_permissions_room_details)
@@ -144,7 +136,7 @@ internal fun ChangeRoomPermissionsViewPreview(@PreviewParameter(ChangeRoomPermis
     ElementPreview {
         ChangeRoomPermissionsView(
             state = state,
-            onBackClick = {},
+            onComplete = {},
         )
     }
 }

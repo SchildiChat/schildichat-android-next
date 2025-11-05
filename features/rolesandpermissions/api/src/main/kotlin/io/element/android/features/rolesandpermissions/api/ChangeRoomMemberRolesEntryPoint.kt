@@ -24,11 +24,11 @@ fun interface ChangeRoomMemberRolesEntryPoint : FeatureEntryPoint {
 
     interface NodeProxy {
         val roomId: RoomId
-        suspend fun waitForRoleChanged()
+        suspend fun waitForCompletion(): Boolean
     }
 }
 
-enum class ChangeRoomMemberRolesListType : NodeInputs {
+enum class ChangeRoomMemberRolesListType {
     SelectNewOwnersWhenLeaving,
     Admins,
     Moderators

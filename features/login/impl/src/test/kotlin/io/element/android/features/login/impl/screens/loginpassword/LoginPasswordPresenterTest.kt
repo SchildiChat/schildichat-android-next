@@ -42,8 +42,11 @@ class LoginPasswordPresenterTest {
 
     @Test
     fun `present - enter login and password`() = runTest {
-        val authenticationService = FakeMatrixAuthenticationService()
-        authenticationService.givenHomeserver(A_HOMESERVER)
+        val authenticationService = FakeMatrixAuthenticationService(
+            setHomeserverResult = {
+                Result.success(A_HOMESERVER)
+            },
+        )
         createLoginPasswordPresenter(
             authenticationService = authenticationService,
         ).test {
@@ -61,8 +64,11 @@ class LoginPasswordPresenterTest {
 
     @Test
     fun `present - submit`() = runTest {
-        val authenticationService = FakeMatrixAuthenticationService()
-        authenticationService.givenHomeserver(A_HOMESERVER)
+        val authenticationService = FakeMatrixAuthenticationService(
+            setHomeserverResult = {
+                Result.success(A_HOMESERVER)
+            },
+        )
         createLoginPasswordPresenter(
             authenticationService = authenticationService,
         ).test {
@@ -81,8 +87,11 @@ class LoginPasswordPresenterTest {
 
     @Test
     fun `present - submit with error`() = runTest {
-        val authenticationService = FakeMatrixAuthenticationService()
-        authenticationService.givenHomeserver(A_HOMESERVER)
+        val authenticationService = FakeMatrixAuthenticationService(
+            setHomeserverResult = {
+                Result.success(A_HOMESERVER)
+            },
+        )
         createLoginPasswordPresenter(
             authenticationService = authenticationService,
         ).test {
@@ -102,8 +111,11 @@ class LoginPasswordPresenterTest {
 
     @Test
     fun `present - clear error`() = runTest {
-        val authenticationService = FakeMatrixAuthenticationService()
-        authenticationService.givenHomeserver(A_HOMESERVER)
+        val authenticationService = FakeMatrixAuthenticationService(
+            setHomeserverResult = {
+                Result.success(A_HOMESERVER)
+            },
+        )
         createLoginPasswordPresenter(
             authenticationService = authenticationService,
         ).test {

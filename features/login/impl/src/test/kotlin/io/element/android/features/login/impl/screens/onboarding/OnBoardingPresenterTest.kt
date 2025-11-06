@@ -214,7 +214,11 @@ class OnBoardingPresenterTest {
 
     @Test
     fun `present - default account provider - login and clear error`() = runTest {
-        val authenticationService = FakeMatrixAuthenticationService()
+        val authenticationService = FakeMatrixAuthenticationService(
+            setHomeserverResult = {
+                Result.failure(AN_EXCEPTION)
+            },
+        )
         val presenter = createPresenter(
             params = OnBoardingNode.Params(
                 accountProvider = A_HOMESERVER_URL,
@@ -231,7 +235,6 @@ class OnBoardingPresenterTest {
             skipItems(3)
             awaitItem().also {
                 assertThat(it.defaultAccountProvider).isEqualTo(A_HOMESERVER_URL)
-                authenticationService.givenChangeServerError(AN_EXCEPTION)
                 it.eventSink(OnBoardingEvents.OnSignIn(A_HOMESERVER_URL))
                 skipItems(1) // Loading
 

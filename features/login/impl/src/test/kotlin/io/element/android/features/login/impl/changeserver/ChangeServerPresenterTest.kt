@@ -18,6 +18,7 @@ import io.element.android.features.wellknown.test.FakeWellknownRetriever
 import io.element.android.features.wellknown.test.anElementWellKnown
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.core.uri.ensureProtocol
+import io.element.android.libraries.matrix.test.AN_EXCEPTION
 import io.element.android.libraries.matrix.test.A_HOMESERVER
 import io.element.android.libraries.matrix.test.A_HOMESERVER_URL
 import io.element.android.libraries.matrix.test.auth.FakeMatrixAuthenticationService
@@ -46,7 +47,11 @@ class ChangeServerPresenterTest {
 
     @Test
     fun `present - change server ok`() = runTest {
-        val authenticationService = FakeMatrixAuthenticationService()
+        val authenticationService = FakeMatrixAuthenticationService(
+            setHomeserverResult = {
+                Result.success(A_HOMESERVER)
+            },
+        )
         createPresenter(
             authenticationService = authenticationService,
             enterpriseService = FakeEnterpriseService(
@@ -55,7 +60,6 @@ class ChangeServerPresenterTest {
         ).test {
             val initialState = awaitItem()
             assertThat(initialState.changeServerAction).isEqualTo(AsyncData.Uninitialized)
-            authenticationService.givenHomeserver(A_HOMESERVER)
             initialState.eventSink.invoke(ChangeServerEvents.ChangeServer(AccountProvider(url = A_HOMESERVER_URL)))
             val loadingState = awaitItem()
             assertThat(loadingState.changeServerAction).isInstanceOf(AsyncData.Loading::class.java)
@@ -66,10 +70,16 @@ class ChangeServerPresenterTest {
 
     @Test
     fun `present - change server error`() = runTest {
+        val authenticationService = FakeMatrixAuthenticationService(
+            setHomeserverResult = {
+                Result.failure(AN_EXCEPTION)
+            },
+        )
         createPresenter(
             enterpriseService = FakeEnterpriseService(
                 isAllowedToConnectToHomeserverResult = { true },
             ),
+            authenticationService = authenticationService,
         ).test {
             val initialState = awaitItem()
             assertThat(initialState.changeServerAction).isEqualTo(AsyncData.Uninitialized)

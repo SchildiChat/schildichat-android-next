@@ -15,7 +15,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import dev.zacsweers.metro.Assisted
@@ -27,6 +26,7 @@ import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.designsystem.theme.components.SearchBarResultState
+import io.element.android.libraries.di.annotations.RoomCoroutineScope
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.room.RoomMember
@@ -41,12 +41,10 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @AssistedInject
 class ChangeRolesPresenter(
@@ -54,6 +52,7 @@ class ChangeRolesPresenter(
     private val room: JoinedRoom,
     private val dispatchers: CoroutineDispatchers,
     private val analyticsService: AnalyticsService,
+    @RoomCoroutineScope private val roomCoroutineScope: CoroutineScope,
 ) : Presenter<ChangeRolesState> {
     @AssistedFactory
     fun interface Factory {
@@ -62,7 +61,6 @@ class ChangeRolesPresenter(
 
     @Composable
     override fun present(): ChangeRolesState {
-        val coroutineScope = rememberCoroutineScope()
         val dataSource = remember { RoomMemberListDataSource(room, dispatchers) }
         var query by rememberSaveable { mutableStateOf<String?>(null) }
         var searchActive by rememberSaveable { mutableStateOf(false) }
@@ -145,7 +143,7 @@ class ChangeRolesPresenter(
                             saveState.value = AsyncAction.ConfirmingNoParams
                         }
                         !saveState.value.isLoading() -> {
-                            coroutineScope.save(usersWithRole.value, selectedUsers, saveState)
+                            roomCoroutineScope.save(usersWithRole.value, selectedUsers, saveState)
                         }
                     }
                 }
@@ -217,11 +215,7 @@ class ChangeRolesPresenter(
             }
             .onSuccess {
                 // Asynchronously reload the room members
-                launch {
-                    withContext(NonCancellable) {
-                        room.updateMembers()
-                    }
-                }
+                launch { room.updateMembers() }
                 saveState.value = AsyncAction.Success(true)
             }
     }

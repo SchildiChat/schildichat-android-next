@@ -17,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import dev.zacsweers.metro.Inject
-import io.element.android.features.roommembermoderation.api.ModerationAction
 import io.element.android.features.roommembermoderation.api.RoomMemberModerationEvents
 import io.element.android.features.roommembermoderation.api.RoomMemberModerationState
 import io.element.android.libraries.architecture.AsyncData
@@ -164,11 +163,7 @@ class RoomMemberListPresenter(
                 is RoomMemberListEvents.OnSearchActiveChanged -> isSearchActive = event.active
                 is RoomMemberListEvents.UpdateSearchQuery -> searchQuery = event.query
                 is RoomMemberListEvents.RoomMemberSelected ->
-                    if (event.roomMember.membership == RoomMembershipState.BAN) {
-                        roomModerationState.eventSink(RoomMemberModerationEvents.ProcessAction(ModerationAction.UnbanUser, event.roomMember.toMatrixUser()))
-                    } else {
-                        roomModerationState.eventSink(RoomMemberModerationEvents.ShowActionsForUser(event.roomMember.toMatrixUser()))
-                    }
+                    roomModerationState.eventSink(RoomMemberModerationEvents.ShowActionsForUser(event.roomMember.toMatrixUser()))
             }
         }
 

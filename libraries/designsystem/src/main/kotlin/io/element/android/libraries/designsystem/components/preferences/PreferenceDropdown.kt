@@ -10,8 +10,10 @@
 package io.element.android.libraries.designsystem.components.preferences
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -22,6 +24,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
@@ -87,6 +91,7 @@ fun <T : DropdownOption> PreferenceDropdown(
                     onSelectOption = onSelectOption,
                     expanded = isDropdownExpanded,
                     onExpandedChange = { isDropdownExpanded = it },
+                    modifier = Modifier.fillMaxSize(0.3f)
                 )
             }
         ),
@@ -117,12 +122,16 @@ private fun <T : DropdownOption> DropdownTrailingContent(
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End,
     ) {
         Text(
             text = selectedOption?.getText().orEmpty(),
             maxLines = 1,
             style = ElementTheme.typography.fontBodyMdRegular,
             color = ElementTheme.colors.textSecondary,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.End,
+            modifier = Modifier.weight(1f),
         )
         Icon(
             imageVector = CompoundIcons.ChevronDown(),

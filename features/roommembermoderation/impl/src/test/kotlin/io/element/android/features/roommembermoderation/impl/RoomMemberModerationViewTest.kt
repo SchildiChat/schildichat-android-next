@@ -181,7 +181,7 @@ class RoomMemberModerationViewTest {
             ),
         )
         rule.pressTag(TestTags.dialogPositive.value)
-        eventsRecorder.assertSingle(InternalRoomMemberModerationEvents.DoUnbanUser)
+        eventsRecorder.assertSingle(InternalRoomMemberModerationEvents.DoUnbanUser(""))
     }
 
     @Test

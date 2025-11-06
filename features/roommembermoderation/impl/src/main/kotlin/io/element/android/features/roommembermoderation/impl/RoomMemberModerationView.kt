@@ -166,18 +166,21 @@ private fun RoomMemberAsyncActions(
         }
         when (val action = state.unbanUserAsyncAction) {
             is AsyncAction.Confirming -> {
-                ConfirmationDialog(
+                TextFieldDialog(
                     title = stringResource(R.string.screen_bottom_sheet_manage_room_member_unban_member_confirmation_title),
-                    content = stringResource(R.string.screen_bottom_sheet_manage_room_member_unban_member_confirmation_description),
                     submitText = stringResource(R.string.screen_bottom_sheet_manage_room_member_unban_member_confirmation_action),
-                    onSubmitClick = {
+                    onSubmit = { reason ->
                         val userDisplayName = selectedUser?.getBestName().orEmpty()
                         asyncIndicatorState.enqueue {
                             AsyncIndicator.Loading(text = stringResource(R.string.screen_bottom_sheet_manage_room_member_unbanning_user, userDisplayName))
                         }
-                        state.eventSink(InternalRoomMemberModerationEvents.DoUnbanUser)
+                        state.eventSink(InternalRoomMemberModerationEvents.DoUnbanUser(reason = reason))
                     },
-                    onDismiss = { state.eventSink(InternalRoomMemberModerationEvents.Reset) },
+                    onDismissRequest = { state.eventSink(InternalRoomMemberModerationEvents.Reset) },
+                    placeholder = stringResource(id = CommonStrings.common_reason),
+                    label = stringResource(id = CommonStrings.common_reason),
+                    content = stringResource(R.string.screen_bottom_sheet_manage_room_member_unban_member_confirmation_description),
+                    value = "",
                 )
             }
             is AsyncAction.Failure -> {

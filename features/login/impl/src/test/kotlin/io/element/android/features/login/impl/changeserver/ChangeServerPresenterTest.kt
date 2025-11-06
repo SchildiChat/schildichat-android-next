@@ -10,6 +10,7 @@ package io.element.android.features.login.impl.changeserver
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.enterprise.api.EnterpriseService
 import io.element.android.features.enterprise.test.FakeEnterpriseService
+import io.element.android.features.login.impl.R
 import io.element.android.features.login.impl.aMatrixHomeServerDetails
 import io.element.android.features.login.impl.accesscontrol.DefaultAccountProviderAccessControl
 import io.element.android.features.login.impl.accountprovider.AccountProvider
@@ -49,7 +50,7 @@ class ChangeServerPresenterTest {
     fun `present - change server ok`() = runTest {
         val authenticationService = FakeMatrixAuthenticationService(
             setHomeserverResult = {
-                Result.success(aMatrixHomeServerDetails())
+                Result.success(aMatrixHomeServerDetails(supportsOidcLogin = true))
             },
         )
         createPresenter(
@@ -92,6 +93,32 @@ class ChangeServerPresenterTest {
             failureState.eventSink.invoke(ChangeServerEvents.ClearError)
             val finalState = awaitItem()
             assertThat(finalState.changeServerAction).isEqualTo(AsyncData.Uninitialized)
+        }
+    }
+
+    @Test
+    fun `present - change server unsupported server`() = runTest {
+        val authenticationService = FakeMatrixAuthenticationService(
+            setHomeserverResult = {
+                Result.success(aMatrixHomeServerDetails())
+            },
+        )
+        createPresenter(
+            enterpriseService = FakeEnterpriseService(
+                isAllowedToConnectToHomeserverResult = { true },
+            ),
+            authenticationService = authenticationService,
+        ).test {
+            val initialState = awaitItem()
+            assertThat(initialState.changeServerAction).isEqualTo(AsyncData.Uninitialized)
+            initialState.eventSink.invoke(ChangeServerEvents.ChangeServer(AccountProvider(url = A_HOMESERVER_URL)))
+            val loadingState = awaitItem()
+            assertThat(loadingState.changeServerAction).isInstanceOf(AsyncData.Loading::class.java)
+            val failureState = awaitItem()
+            assertThat(failureState.changeServerAction).isInstanceOf(AsyncData.Failure::class.java)
+            assertThat(failureState.changeServerAction.errorOrNull()).isEqualTo(
+                ChangeServerError.Error(R.string.screen_login_error_unsupported_authentication)
+            )
         }
     }
 

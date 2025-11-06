@@ -40,6 +40,7 @@ sealed class ChangeServerError : Exception() {
 
     companion object {
         fun from(error: Throwable): ChangeServerError = when (error) {
+            is ChangeServerError -> error
             is AuthenticationException.SlidingSyncVersion -> SlidingSyncAlert
             is AuthenticationException.Oidc -> Error(messageStr = error.message)
             is AccountProviderAccessException.NeedElementProException -> NeedElementPro(

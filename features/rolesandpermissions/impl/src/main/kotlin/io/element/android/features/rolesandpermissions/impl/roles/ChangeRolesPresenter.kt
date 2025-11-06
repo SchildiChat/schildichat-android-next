@@ -104,7 +104,6 @@ class ChangeRolesPresenter(
 
         val roomInfo by room.roomInfoFlow.collectAsState()
         fun canChangeMemberRole(userId: UserId): Boolean {
-            // This is used to group the
             val currentUserRole = roomInfo.roleOf(room.sessionId)
             val otherUserRole = roomInfo.roleOf(userId)
             return currentUserRole.powerLevel > otherUserRole.powerLevel

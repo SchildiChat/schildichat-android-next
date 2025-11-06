@@ -351,21 +351,15 @@ class ChangeRolesPresenterTest {
         moleculeFlow(RecompositionMode.Immediate) {
             presenter.present()
         }.test {
-            skipItems(1)
+            skipItems(2)
             val initialState = awaitItem()
             assertThat(initialState.selectedUsers).hasSize(1)
-
             initialState.eventSink(ChangeRolesEvent.UserSelectionToggled(MatrixUser(A_USER_ID_2)))
             awaitItem().eventSink(ChangeRolesEvent.Save)
             val confirmingState = awaitItem()
             assertThat(confirmingState.savingState).isEqualTo(AsyncAction.ConfirmingNoParams)
-
             confirmingState.eventSink(ChangeRolesEvent.Save)
-
-            val loadingState = awaitItem()
-            assertThat(loadingState.savingState).isInstanceOf(AsyncAction.Loading::class.java)
-            skipItems(1)
-
+            assertThat(awaitItem().savingState).isInstanceOf(AsyncAction.Loading::class.java)
             assertThat(awaitItem().savingState).isEqualTo(AsyncAction.Success(true))
         }
     }
@@ -413,18 +407,12 @@ class ChangeRolesPresenterTest {
         moleculeFlow(RecompositionMode.Immediate) {
             presenter.present()
         }.test {
-            skipItems(1)
+            skipItems(2)
             val initialState = awaitItem()
             assertThat(initialState.selectedUsers).hasSize(1)
-
             initialState.eventSink(ChangeRolesEvent.UserSelectionToggled(MatrixUser(A_USER_ID_2)))
-
             awaitItem().eventSink(ChangeRolesEvent.Save)
-
-            val loadingState = awaitItem()
-            assertThat(loadingState.savingState).isInstanceOf(AsyncAction.Loading::class.java)
-            skipItems(1)
-
+            assertThat(awaitItem().savingState).isInstanceOf(AsyncAction.Loading::class.java)
             assertThat(awaitItem().savingState).isEqualTo(AsyncAction.Success(true))
             assertThat(analyticsService.capturedEvents.last()).isEqualTo(RoomModeration(RoomModeration.Action.ChangeMemberRole, RoomModeration.Role.Moderator))
         }
@@ -491,7 +479,7 @@ class ChangeRolesPresenterTest {
         moleculeFlow(RecompositionMode.Immediate) {
             presenter.present()
         }.test {
-            skipItems(1)
+            skipItems(2)
             val initialState = awaitItem()
             assertThat(initialState.selectedUsers).hasSize(1)
 
@@ -501,8 +489,6 @@ class ChangeRolesPresenterTest {
 
             val loadingState = awaitItem()
             assertThat(loadingState.savingState).isInstanceOf(AsyncAction.Loading::class.java)
-            skipItems(1)
-
             assertThat(awaitItem().savingState).isEqualTo(AsyncAction.Success(true))
             assertThat(analyticsService.capturedEvents.last()).isEqualTo(RoomModeration(RoomModeration.Action.ChangeMemberRole, RoomModeration.Role.User))
         }
@@ -520,7 +506,7 @@ class ChangeRolesPresenterTest {
         moleculeFlow(RecompositionMode.Immediate) {
             presenter.present()
         }.test {
-            skipItems(1)
+            skipItems(2)
             val initialState = awaitItem()
             assertThat(initialState.selectedUsers).hasSize(1)
 
@@ -529,7 +515,6 @@ class ChangeRolesPresenterTest {
             awaitItem().eventSink(ChangeRolesEvent.Save)
             val loadingState = awaitItem()
             assertThat(loadingState.savingState).isInstanceOf(AsyncAction.Loading::class.java)
-            skipItems(1)
             val failedState = awaitItem()
             assertThat(failedState.savingState).isInstanceOf(AsyncAction.Failure::class.java)
 
@@ -567,5 +552,6 @@ internal fun TestScope.createChangeRolesPresenter(
         room = room,
         dispatchers = dispatchers,
         analyticsService = analyticsService,
+        roomCoroutineScope = this,
     )
 }

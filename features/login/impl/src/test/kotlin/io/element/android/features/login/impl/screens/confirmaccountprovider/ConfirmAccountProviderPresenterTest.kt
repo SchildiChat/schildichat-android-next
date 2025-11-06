@@ -7,9 +7,6 @@
 
 package io.element.android.features.login.impl.screens.confirmaccountprovider
 
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.moleculeFlow
-import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.appconfig.AuthenticationConfig
 import io.element.android.features.enterprise.test.FakeEnterpriseService
@@ -28,6 +25,7 @@ import io.element.android.libraries.oidc.api.OidcAction
 import io.element.android.libraries.oidc.api.OidcActionFlow
 import io.element.android.libraries.oidc.test.customtab.FakeOidcActionFlow
 import io.element.android.tests.testutils.WarmUpRule
+import io.element.android.tests.testutils.test
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -39,9 +37,7 @@ class ConfirmAccountProviderPresenterTest {
     @Test
     fun `present - initial test`() = runTest {
         val presenter = createConfirmAccountProviderPresenter()
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.isAccountCreation).isFalse()
             assertThat(initialState.submitEnabled).isTrue()
@@ -60,9 +56,7 @@ class ConfirmAccountProviderPresenterTest {
         val presenter = createConfirmAccountProviderPresenter(
             matrixAuthenticationService = authenticationService,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink.invoke(ConfirmAccountProviderEvents.Continue)
             val loadingState = awaitItem()
@@ -85,9 +79,7 @@ class ConfirmAccountProviderPresenterTest {
         val presenter = createConfirmAccountProviderPresenter(
             matrixAuthenticationService = authenticationService,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink.invoke(ConfirmAccountProviderEvents.Continue)
             val loadingState = awaitItem()
@@ -112,9 +104,7 @@ class ConfirmAccountProviderPresenterTest {
             matrixAuthenticationService = authenticationService,
             defaultOidcActionFlow = defaultOidcActionFlow,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink.invoke(ConfirmAccountProviderEvents.Continue)
             val loadingState = awaitItem()
@@ -143,9 +133,7 @@ class ConfirmAccountProviderPresenterTest {
             matrixAuthenticationService = authenticationService,
             defaultOidcActionFlow = defaultOidcActionFlow,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink.invoke(ConfirmAccountProviderEvents.Continue)
             val loadingState = awaitItem()
@@ -173,9 +161,7 @@ class ConfirmAccountProviderPresenterTest {
             matrixAuthenticationService = authenticationService,
             defaultOidcActionFlow = defaultOidcActionFlow,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink.invoke(ConfirmAccountProviderEvents.Continue)
             val loadingState = awaitItem()
@@ -199,9 +185,7 @@ class ConfirmAccountProviderPresenterTest {
             matrixAuthenticationService = authenticationService,
             defaultOidcActionFlow = defaultOidcActionFlow,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink.invoke(ConfirmAccountProviderEvents.Continue)
             val loadingState = awaitItem()
@@ -232,9 +216,7 @@ class ConfirmAccountProviderPresenterTest {
             matrixAuthenticationService = authenticationService,
             defaultOidcActionFlow = defaultOidcActionFlow,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink.invoke(ConfirmAccountProviderEvents.Continue)
             val loadingState = awaitItem()
@@ -260,9 +242,7 @@ class ConfirmAccountProviderPresenterTest {
         val presenter = createConfirmAccountProviderPresenter(
             matrixAuthenticationService = authenticationService,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink.invoke(ConfirmAccountProviderEvents.Continue)
             skipItems(1) // Loading
@@ -282,9 +262,7 @@ class ConfirmAccountProviderPresenterTest {
         val presenter = createConfirmAccountProviderPresenter(
             matrixAuthenticationService = authenticationService,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
 
             // Submit will return an error
@@ -317,9 +295,7 @@ class ConfirmAccountProviderPresenterTest {
                 throw AccountCreationNotSupported()
             },
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink(ConfirmAccountProviderEvents.Continue)
             skipItems(1) // Loading
@@ -344,9 +320,7 @@ class ConfirmAccountProviderPresenterTest {
             params = ConfirmAccountProviderPresenter.Params(isAccountCreation = true),
             matrixAuthenticationService = authenticationService,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink(ConfirmAccountProviderEvents.Continue)
             skipItems(1) // Loading
@@ -369,9 +343,7 @@ class ConfirmAccountProviderPresenterTest {
             matrixAuthenticationService = authenticationService,
             webClientUrlForAuthenticationRetriever = FakeWebClientUrlForAuthenticationRetriever { aUrl },
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink(ConfirmAccountProviderEvents.Continue)
             skipItems(1) // Loading
@@ -394,9 +366,7 @@ class ConfirmAccountProviderPresenterTest {
             matrixAuthenticationService = authenticationService,
             webClientUrlForAuthenticationRetriever = FakeWebClientUrlForAuthenticationRetriever { aUrl },
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink(ConfirmAccountProviderEvents.Continue)
             skipItems(1) // Loading

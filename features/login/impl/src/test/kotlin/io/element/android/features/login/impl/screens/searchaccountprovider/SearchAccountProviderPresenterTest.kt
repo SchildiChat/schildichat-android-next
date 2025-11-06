@@ -7,9 +7,6 @@
 
 package io.element.android.features.login.impl.screens.searchaccountprovider
 
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.moleculeFlow
-import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.login.impl.changeserver.aChangeServerState
 import io.element.android.features.login.impl.resolver.HomeserverResolver
@@ -18,6 +15,7 @@ import io.element.android.libraries.matrix.test.auth.FakeHomeServerLoginCompatib
 import io.element.android.tests.testutils.WarmUpRule
 import io.element.android.tests.testutils.lambda.lambdaRecorder
 import io.element.android.tests.testutils.lambda.value
+import io.element.android.tests.testutils.test
 import io.element.android.tests.testutils.testCoroutineDispatchers
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
@@ -34,9 +32,7 @@ class SearchAccountProviderPresenterTest {
             homeserverResolver = HomeserverResolver(testCoroutineDispatchers(), fakeLoginCompatibilityChecker),
             changeServerPresenter = { aChangeServerState() }
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.userInput).isEmpty()
             assertThat(initialState.userInputResult).isEqualTo(AsyncData.Uninitialized)
@@ -50,9 +46,7 @@ class SearchAccountProviderPresenterTest {
             homeserverResolver = HomeserverResolver(testCoroutineDispatchers(), fakeLoginCompatibilityChecker),
             changeServerPresenter = { aChangeServerState() }
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink.invoke(SearchAccountProviderEvents.UserInput("https://test.org"))
             val withInputState = awaitItem()
@@ -76,9 +70,7 @@ class SearchAccountProviderPresenterTest {
             homeserverResolver = HomeserverResolver(testCoroutineDispatchers(), fakeWellknownRetriever),
             changeServerPresenter = { aChangeServerState() }
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink.invoke(SearchAccountProviderEvents.UserInput("test"))
             val withInputState = awaitItem()
@@ -111,9 +103,7 @@ class SearchAccountProviderPresenterTest {
             homeserverResolver = HomeserverResolver(testCoroutineDispatchers(), fakeLoginCompatibilityChecker),
             changeServerPresenter = { aChangeServerState() }
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink.invoke(SearchAccountProviderEvents.UserInput("test"))
             val withInputState = awaitItem()
@@ -153,9 +143,7 @@ class SearchAccountProviderPresenterTest {
             homeserverResolver = HomeserverResolver(testCoroutineDispatchers(), fakeLoginCompatibilityChecker),
             changeServerPresenter = { aChangeServerState() }
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink.invoke(SearchAccountProviderEvents.UserInput("test"))
             val withInputState = awaitItem()

@@ -7,9 +7,6 @@
 
 package io.element.android.features.login.impl.screens.changeaccountprovider
 
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.moleculeFlow
-import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.enterprise.api.EnterpriseService
 import io.element.android.features.enterprise.test.FakeEnterpriseService
@@ -18,6 +15,7 @@ import io.element.android.features.login.impl.changeserver.aChangeServerState
 import io.element.android.libraries.matrix.test.AN_ACCOUNT_PROVIDER
 import io.element.android.libraries.matrix.test.AN_ACCOUNT_PROVIDER_2
 import io.element.android.tests.testutils.WarmUpRule
+import io.element.android.tests.testutils.test
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -34,9 +32,7 @@ class ChangeAccountProviderPresenterTest {
                 defaultHomeserverListResult = { emptyList() }
             ),
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.accountProviders).isEqualTo(
                 listOf(
@@ -63,9 +59,7 @@ class ChangeAccountProviderPresenterTest {
                 }
             ),
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.accountProviders).isEqualTo(
                 listOf(
@@ -99,9 +93,7 @@ class ChangeAccountProviderPresenterTest {
                 }
             ),
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.accountProviders).isEqualTo(
                 listOf(

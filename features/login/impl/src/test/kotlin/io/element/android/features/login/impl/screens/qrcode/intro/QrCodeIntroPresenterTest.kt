@@ -7,14 +7,12 @@
 
 package io.element.android.features.login.impl.screens.qrcode.intro
 
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.moleculeFlow
-import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.matrix.test.core.aBuildMeta
 import io.element.android.libraries.permissions.test.FakePermissionsPresenter
 import io.element.android.libraries.permissions.test.FakePermissionsPresenterFactory
+import io.element.android.tests.testutils.test
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -22,9 +20,7 @@ class QrCodeIntroPresenterTest {
     @Test
     fun `present - initial state`() = runTest {
         val presenter = createQrCodeIntroPresenter()
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             awaitItem().run {
                 assertThat(appName).isEqualTo("AppName")
                 assertThat(desktopAppName).isEqualTo("DesktopAppName")
@@ -39,9 +35,7 @@ class QrCodeIntroPresenterTest {
         val permissionsPresenter = FakePermissionsPresenter().apply { setPermissionGranted() }
         val permissionsPresenterFactory = FakePermissionsPresenterFactory(permissionsPresenter)
         val presenter = createQrCodeIntroPresenter(permissionsPresenterFactory = permissionsPresenterFactory)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             awaitItem().eventSink(QrCodeIntroEvents.Continue)
             assertThat(awaitItem().canContinue).isTrue()
         }
@@ -52,9 +46,7 @@ class QrCodeIntroPresenterTest {
         val permissionsPresenter = FakePermissionsPresenter()
         val permissionsPresenterFactory = FakePermissionsPresenterFactory(permissionsPresenter)
         val presenter = createQrCodeIntroPresenter(permissionsPresenterFactory = permissionsPresenterFactory)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             awaitItem().eventSink(QrCodeIntroEvents.Continue)
             assertThat(awaitItem().cameraPermissionState.showDialog).isTrue()
         }

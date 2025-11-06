@@ -52,9 +52,10 @@ class HomeserverResolver(
                 }
             }
         }
-        // If list is empty, and the user has entered an URL, do not block the user.
-        if (currentList.isEmpty() && trimmedUserInput.isValidUrl()) {
-            emit(listOf(HomeserverData(homeserverUrl = trimmedUserInput)))
+        // If list is empty, and candidateBase is a valid an URL, do not block the user.
+        // A unsupported homeserver / homeserver not found error will be displayed if the user continues
+        if (currentList.isEmpty() && candidateBase.isValidUrl()) {
+            emit(listOf(HomeserverData(homeserverUrl = candidateBase)))
         }
     }
 

@@ -85,7 +85,13 @@ class SearchAccountProviderPresenterTest {
             assertThat(withInputState.userInput).isEqualTo("test")
             assertThat(initialState.userInputResult).isEqualTo(AsyncData.Uninitialized)
             assertThat(awaitItem().userInputResult).isInstanceOf(AsyncData.Loading::class.java)
-            assertThat(awaitItem().userInputResult).isEqualTo(AsyncData.Uninitialized)
+            assertThat(awaitItem().userInputResult).isEqualTo(
+                AsyncData.Success(
+                    listOf(
+                        aHomeserverData(homeserverUrl = "https://test"),
+                    )
+                )
+            )
         }
     }
 

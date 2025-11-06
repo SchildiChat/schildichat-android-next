@@ -32,7 +32,7 @@ android {
             value = if (isEnterpriseBuild) {
                 BuildTimeConfig.BUG_REPORT_URL ?: ""
             } else {
-                "https://riot.im/bugreports/submit"
+                "https://rageshakes.element.io/api/submit"
             },
         )
         buildConfigFieldStr(

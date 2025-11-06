@@ -13,6 +13,7 @@ import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.appconfig.AuthenticationConfig
 import io.element.android.features.enterprise.test.FakeEnterpriseService
+import io.element.android.features.login.impl.aMatrixHomeServerDetails
 import io.element.android.features.login.impl.accountprovider.AccountProviderDataSource
 import io.element.android.features.login.impl.login.LoginMode
 import io.element.android.features.login.impl.screens.createaccount.AccountCreationNotSupported
@@ -22,8 +23,6 @@ import io.element.android.features.login.impl.web.WebClientUrlForAuthenticationR
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.matrix.api.auth.MatrixAuthenticationService
 import io.element.android.libraries.matrix.test.AN_EXCEPTION
-import io.element.android.libraries.matrix.test.A_HOMESERVER
-import io.element.android.libraries.matrix.test.A_HOMESERVER_OIDC
 import io.element.android.libraries.matrix.test.auth.FakeMatrixAuthenticationService
 import io.element.android.libraries.oidc.api.OidcAction
 import io.element.android.libraries.oidc.api.OidcActionFlow
@@ -55,7 +54,7 @@ class ConfirmAccountProviderPresenterTest {
     fun `present - continue password login`() = runTest {
         val authenticationService = FakeMatrixAuthenticationService(
             setHomeserverResult = {
-                Result.success(A_HOMESERVER)
+                Result.success(aMatrixHomeServerDetails(supportsPasswordLogin = true))
             },
         )
         val presenter = createConfirmAccountProviderPresenter(
@@ -80,7 +79,7 @@ class ConfirmAccountProviderPresenterTest {
     fun `present - continue oidc`() = runTest {
         val authenticationService = FakeMatrixAuthenticationService(
             setHomeserverResult = {
-                Result.success(A_HOMESERVER_OIDC)
+                Result.success(aMatrixHomeServerDetails(supportsOidcLogin = true))
             },
         )
         val presenter = createConfirmAccountProviderPresenter(
@@ -105,7 +104,7 @@ class ConfirmAccountProviderPresenterTest {
     fun `present - oidc - cancel with failure`() = runTest {
         val authenticationService = FakeMatrixAuthenticationService(
             setHomeserverResult = {
-                Result.success(A_HOMESERVER_OIDC)
+                Result.success(aMatrixHomeServerDetails(supportsOidcLogin = true))
             },
         )
         val defaultOidcActionFlow = FakeOidcActionFlow()
@@ -136,7 +135,7 @@ class ConfirmAccountProviderPresenterTest {
     fun `present - oidc - cancel with success`() = runTest {
         val authenticationService = FakeMatrixAuthenticationService(
             setHomeserverResult = {
-                Result.success(A_HOMESERVER_OIDC)
+                Result.success(aMatrixHomeServerDetails(supportsOidcLogin = true))
             },
         )
         val defaultOidcActionFlow = FakeOidcActionFlow()
@@ -166,7 +165,7 @@ class ConfirmAccountProviderPresenterTest {
     fun `present - oidc - cancel to unblock`() = runTest {
         val authenticationService = FakeMatrixAuthenticationService(
             setHomeserverResult = {
-                Result.success(A_HOMESERVER_OIDC)
+                Result.success(aMatrixHomeServerDetails(supportsOidcLogin = true))
             },
         )
         val defaultOidcActionFlow = FakeOidcActionFlow()
@@ -192,7 +191,7 @@ class ConfirmAccountProviderPresenterTest {
     fun `present - oidc - success with failure`() = runTest {
         val authenticationService = FakeMatrixAuthenticationService(
             setHomeserverResult = {
-                Result.success(A_HOMESERVER_OIDC)
+                Result.success(aMatrixHomeServerDetails(supportsOidcLogin = true))
             },
         )
         val defaultOidcActionFlow = FakeOidcActionFlow()
@@ -225,7 +224,7 @@ class ConfirmAccountProviderPresenterTest {
     fun `present - oidc - success with success`() = runTest {
         val authenticationService = FakeMatrixAuthenticationService(
             setHomeserverResult = {
-                Result.success(A_HOMESERVER_OIDC)
+                Result.success(aMatrixHomeServerDetails(supportsOidcLogin = true))
             },
         )
         val defaultOidcActionFlow = FakeOidcActionFlow()
@@ -308,7 +307,7 @@ class ConfirmAccountProviderPresenterTest {
     fun `present - confirm account creation without oidc and without url generates an error`() = runTest {
         val authenticationService = FakeMatrixAuthenticationService(
             setHomeserverResult = {
-                Result.success(A_HOMESERVER)
+                Result.success(aMatrixHomeServerDetails())
             },
         )
         val presenter = createConfirmAccountProviderPresenter(
@@ -338,7 +337,7 @@ class ConfirmAccountProviderPresenterTest {
     fun `present - confirm account creation with oidc is successful`() = runTest {
         val authenticationService = FakeMatrixAuthenticationService(
             setHomeserverResult = {
-                Result.success(A_HOMESERVER_OIDC)
+                Result.success(aMatrixHomeServerDetails(supportsOidcLogin = true))
             },
         )
         val presenter = createConfirmAccountProviderPresenter(
@@ -362,7 +361,7 @@ class ConfirmAccountProviderPresenterTest {
         val aUrl = "aUrl"
         val authenticationService = FakeMatrixAuthenticationService(
             setHomeserverResult = {
-                Result.success(A_HOMESERVER_OIDC)
+                Result.success(aMatrixHomeServerDetails(supportsOidcLogin = true))
             },
         )
         val presenter = createConfirmAccountProviderPresenter(
@@ -387,7 +386,7 @@ class ConfirmAccountProviderPresenterTest {
         val aUrl = "aUrl"
         val authenticationService = FakeMatrixAuthenticationService(
             setHomeserverResult = {
-                Result.success(A_HOMESERVER)
+                Result.success(aMatrixHomeServerDetails())
             },
         )
         val presenter = createConfirmAccountProviderPresenter(

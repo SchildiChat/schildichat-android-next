@@ -10,6 +10,7 @@ package io.element.android.features.login.impl.changeserver
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.enterprise.api.EnterpriseService
 import io.element.android.features.enterprise.test.FakeEnterpriseService
+import io.element.android.features.login.impl.aMatrixHomeServerDetails
 import io.element.android.features.login.impl.accesscontrol.DefaultAccountProviderAccessControl
 import io.element.android.features.login.impl.accountprovider.AccountProvider
 import io.element.android.features.login.impl.accountprovider.AccountProviderDataSource
@@ -19,7 +20,6 @@ import io.element.android.features.wellknown.test.anElementWellKnown
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.core.uri.ensureProtocol
 import io.element.android.libraries.matrix.test.AN_EXCEPTION
-import io.element.android.libraries.matrix.test.A_HOMESERVER
 import io.element.android.libraries.matrix.test.A_HOMESERVER_URL
 import io.element.android.libraries.matrix.test.auth.FakeMatrixAuthenticationService
 import io.element.android.libraries.wellknown.api.ElementWellKnown
@@ -49,7 +49,7 @@ class ChangeServerPresenterTest {
     fun `present - change server ok`() = runTest {
         val authenticationService = FakeMatrixAuthenticationService(
             setHomeserverResult = {
-                Result.success(A_HOMESERVER)
+                Result.success(aMatrixHomeServerDetails())
             },
         )
         createPresenter(

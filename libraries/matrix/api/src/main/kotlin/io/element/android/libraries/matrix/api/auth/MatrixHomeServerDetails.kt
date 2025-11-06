@@ -7,12 +7,8 @@
 
 package io.element.android.libraries.matrix.api.auth
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
 data class MatrixHomeServerDetails(
     val url: String,
     val supportsPasswordLogin: Boolean,
     val supportsOidcLogin: Boolean,
-) : Parcelable
+)

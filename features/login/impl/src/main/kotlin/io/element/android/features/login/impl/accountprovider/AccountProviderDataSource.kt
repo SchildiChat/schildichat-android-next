@@ -31,16 +31,16 @@ class AccountProviderDataSource(
 
     val flow: StateFlow<AccountProvider> = accountProvider.asStateFlow()
 
-    fun reset() {
-        accountProvider.tryEmit(defaultAccountProvider)
+    suspend fun reset() {
+        accountProvider.emit(defaultAccountProvider)
     }
 
-    fun setUrl(url: String) {
+    suspend fun setUrl(url: String) {
         setAccountProvider(createAccountProvider(url))
     }
 
-    fun setAccountProvider(data: AccountProvider) {
-        accountProvider.tryEmit(data)
+    suspend fun setAccountProvider(data: AccountProvider) {
+        accountProvider.emit(data)
     }
 
     private fun createAccountProvider(url: String): AccountProvider {

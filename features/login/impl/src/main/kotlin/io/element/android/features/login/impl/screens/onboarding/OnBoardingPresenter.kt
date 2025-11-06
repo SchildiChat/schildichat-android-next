@@ -30,6 +30,7 @@ import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.sessionstorage.api.SessionStore
 import io.element.android.libraries.ui.utils.MultipleTapToUnlock
+import kotlinx.coroutines.launch
 
 @AssistedInject
 class OnBoardingPresenter(
@@ -99,11 +100,10 @@ class OnBoardingPresenter(
 
         fun handleEvent(event: OnBoardingEvents) {
             when (event) {
-                is OnBoardingEvents.OnSignIn -> {
+                is OnBoardingEvents.OnSignIn -> localCoroutineScope.launch {
                     // Ensure that the current account provider is set
                     accountProviderDataSource.setUrl(event.defaultAccountProvider)
                     loginHelper.submit(
-                        coroutineScope = localCoroutineScope,
                         isAccountCreation = false,
                         homeserverUrl = event.defaultAccountProvider,
                         loginHint = params.loginHint?.takeIf { forcedAccountProvider == null },

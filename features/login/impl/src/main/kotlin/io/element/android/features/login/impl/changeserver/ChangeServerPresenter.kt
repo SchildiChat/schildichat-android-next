@@ -60,11 +60,9 @@ class ChangeServerPresenter(
                 title = data.title,
                 accountProviderUrl = data.url,
             )
-            authenticationService.setHomeserver(data.url).map {
-                authenticationService.getHomeserverDetails().value!!
-                // Valid, remember user choice
-                accountProviderDataSource.userSelection(data)
-            }.getOrThrow()
+            authenticationService.setHomeserver(data.url).getOrThrow()
+            // Homeserver is valid, remember user choice
+            accountProviderDataSource.userSelection(data)
         }.runCatchingUpdatingState(changeServerAction, errorTransform = ChangeServerError::from)
     }
 }

@@ -65,8 +65,7 @@ class LoginHelper(
         loginHint: String?,
     ) = coroutineScope.launch {
         suspend {
-            authenticationService.setHomeserver(homeserverUrl).map {
-                val matrixHomeServerDetails = authenticationService.getHomeserverDetails().value!!
+            authenticationService.setHomeserver(homeserverUrl).map { matrixHomeServerDetails ->
                 if (matrixHomeServerDetails.supportsOidcLogin) {
                     // Retrieve the details right now
                     val oidcPrompt = if (isAccountCreation) OidcPrompt.Create else OidcPrompt.Login

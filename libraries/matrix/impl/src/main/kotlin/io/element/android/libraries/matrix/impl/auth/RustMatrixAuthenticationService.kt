@@ -37,7 +37,6 @@ import io.element.android.libraries.sessionstorage.api.LoginType
 import io.element.android.libraries.sessionstorage.api.SessionStore
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
 import org.matrix.rustcomponents.sdk.Client
 import org.matrix.rustcomponents.sdk.ClientBuilder
@@ -111,9 +110,7 @@ class RustMatrixAuthenticationService(
         return passphrase
     }
 
-    override fun getHomeserverDetails(): StateFlow<MatrixHomeServerDetails?> = currentHomeserver
-
-    override suspend fun setHomeserver(homeserver: String): Result<Unit> =
+    override suspend fun setHomeserver(homeserver: String): Result<MatrixHomeServerDetails> =
         withContext(coroutineDispatchers.io) {
             val emptySessionPath = rotateSessionPath()
             runCatchingExceptions {
@@ -123,7 +120,7 @@ class RustMatrixAuthenticationService(
 
                 currentClient = client
                 val homeServerDetails = client.homeserverLoginDetails().map()
-                currentHomeserver.value = homeServerDetails.copy(url = homeserver)
+                homeServerDetails.copy(url = homeserver)
             }.onFailure {
                 clear()
             }.mapFailure { failure ->

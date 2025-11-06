@@ -37,7 +37,7 @@ import io.element.android.libraries.designsystem.components.async.AsyncActionVie
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.components.button.BackButton
-import io.element.android.libraries.designsystem.components.dialogs.ConfirmationDialog
+import io.element.android.libraries.designsystem.components.dialogs.SaveChangesDialog
 import io.element.android.libraries.designsystem.modifiers.clearFocusOnTap
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
@@ -152,9 +152,7 @@ fun RoomDetailsEditView(
         },
         confirmationDialog = {
             if (state.saveAction == AsyncAction.ConfirmingCancellation) {
-                ConfirmationDialog(
-                    title = stringResource(CommonStrings.dialog_unsaved_changes_title),
-                    content = stringResource(CommonStrings.dialog_unsaved_changes_description_android),
+                SaveChangesDialog(
                     onSubmitClick = { state.eventSink(RoomDetailsEditEvents.OnBackPress) },
                     onDismiss = { state.eventSink(RoomDetailsEditEvents.CloseDialog) }
                 )

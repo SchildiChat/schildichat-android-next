@@ -32,7 +32,7 @@ class BugReportPresenter(
     private val bugReporter: BugReporter,
     private val crashDataStore: CrashDataStore,
     private val screenshotHolder: ScreenshotHolder,
-    @AppCoroutineScope
+    @param:AppCoroutineScope
     private val appCoroutineScope: CoroutineScope,
 ) : Presenter<BugReportState> {
     private class BugReporterUploadListener(
@@ -77,7 +77,7 @@ class BugReportPresenter(
         val sendingAction: MutableState<AsyncAction<Unit>> = remember {
             mutableStateOf(AsyncAction.Uninitialized)
         }
-        val formState: MutableState<BugReportFormState> = remember {
+        val formState: MutableState<BugReportFormState> = rememberSaveable {
             mutableStateOf(BugReportFormState.Default)
         }
         val uploadListener = BugReporterUploadListener(sendingProgress, sendingAction)

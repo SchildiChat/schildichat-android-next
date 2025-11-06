@@ -36,10 +36,10 @@ class AccountProviderDataSource(
     }
 
     fun setUrl(url: String) {
-        userSelection(createAccountProvider(url))
+        setAccountProvider(createAccountProvider(url))
     }
 
-    fun userSelection(data: AccountProvider) {
+    fun setAccountProvider(data: AccountProvider) {
         accountProvider.tryEmit(data)
     }
 

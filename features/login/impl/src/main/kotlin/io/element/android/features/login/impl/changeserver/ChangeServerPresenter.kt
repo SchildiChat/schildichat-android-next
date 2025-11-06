@@ -65,7 +65,7 @@ class ChangeServerPresenter(
                 throw ChangeServerError.UnsupportedServer
             }
             // Homeserver is valid, remember user choice
-            accountProviderDataSource.userSelection(data)
+            accountProviderDataSource.setAccountProvider(data)
         }.runCatchingUpdatingState(changeServerAction, errorTransform = ChangeServerError::from)
     }
 }

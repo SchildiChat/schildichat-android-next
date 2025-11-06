@@ -86,7 +86,7 @@ class AccountProviderDataSourceTest {
         sut.flow.test {
             val initialState = awaitItem()
             assertThat(initialState.url).isEqualTo(AuthenticationConfig.MATRIX_ORG_URL)
-            sut.userSelection(AccountProvider(url = "https://example.com"))
+            sut.setAccountProvider(AccountProvider(url = "https://example.com"))
             val changedState = awaitItem()
             assertThat(changedState).isEqualTo(
                 AccountProvider(

@@ -31,7 +31,7 @@ fun SaveChangesDialog(
 
 @PreviewsDayNight
 @Composable
-internal fun SaveChangeDialogPreview() = ElementPreview {
+internal fun SaveChangesDialogPreview() = ElementPreview {
     SaveChangesDialog(
         onSubmitClick = {},
         onDismiss = {}

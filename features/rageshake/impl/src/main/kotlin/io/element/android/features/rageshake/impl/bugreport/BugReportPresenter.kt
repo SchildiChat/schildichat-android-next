@@ -77,7 +77,7 @@ class BugReportPresenter(
         val sendingAction: MutableState<AsyncAction<Unit>> = remember {
             mutableStateOf(AsyncAction.Uninitialized)
         }
-        val formState: MutableState<BugReportFormState> = remember {
+        val formState: MutableState<BugReportFormState> = rememberSaveable {
             mutableStateOf(BugReportFormState.Default)
         }
         val uploadListener = BugReporterUploadListener(sendingProgress, sendingAction)

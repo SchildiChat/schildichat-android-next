@@ -59,7 +59,7 @@ class ChooseSelfVerificationModePresenter(
 
         val directLogoutState = directLogoutPresenter.present()
 
-        fun eventHandler(event: ChooseSelfVerificationModeEvent) {
+        fun handleEvent(event: ChooseSelfVerificationModeEvent) {
             when (event) {
                 ChooseSelfVerificationModeEvent.SignOut -> directLogoutState.eventSink(DirectLogoutEvents.Logout(ignoreSdkError = false))
             }
@@ -68,7 +68,7 @@ class ChooseSelfVerificationModePresenter(
         return ChooseSelfVerificationModeState(
             buttonsState = buttonsState,
             directLogoutState = directLogoutState,
-            eventSink = ::eventHandler,
+            eventSink = ::handleEvent,
         )
     }
 }

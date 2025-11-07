@@ -19,7 +19,7 @@ class AuthenticationExceptionMappingTest {
     fun `mapping an exception with no message returns null message`() {
         val exception = Exception()
         val mappedException = exception.mapAuthenticationException()
-        assertThat(mappedException.message).isEqualTo(null)
+        assertThat(mappedException.message).isNull()
     }
 
     @Test

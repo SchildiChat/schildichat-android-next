@@ -98,7 +98,6 @@ private fun TestScope.createRustTimeline(
     coroutineScope: CoroutineScope = backgroundScope,
     dispatcher: CoroutineDispatcher = testCoroutineDispatchers().io,
     roomContentForwarder: RoomContentForwarder = RoomContentForwarder(FakeFfiRoomListService()),
-    onNewSyncedEvent: () -> Unit = {},
 ): RustTimeline {
     return RustTimeline(
         inner = inner,
@@ -108,6 +107,5 @@ private fun TestScope.createRustTimeline(
         coroutineScope = coroutineScope,
         dispatcher = dispatcher,
         roomContentForwarder = roomContentForwarder,
-        onNewSyncedEvent = onNewSyncedEvent,
     )
 }

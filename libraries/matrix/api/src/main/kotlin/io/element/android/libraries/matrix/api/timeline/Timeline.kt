@@ -54,6 +54,7 @@ interface Timeline : AutoCloseable {
 
     val mode: Mode
     val membershipChangeEventReceived: Flow<Unit>
+    val onSyncedEventReceived: Flow<Unit>
     suspend fun sendReadReceipt(eventId: EventId, receiptType: ReceiptType): Result<Unit>
     suspend fun markAsRead(receiptType: ReceiptType): Result<Unit>
     suspend fun paginate(direction: PaginationDirection): Result<Boolean>
@@ -233,4 +234,5 @@ interface Timeline : AutoCloseable {
      * Get the latest event id of the timeline.
      */
     suspend fun getLatestEventId(): Result<EventId?>
+
 }

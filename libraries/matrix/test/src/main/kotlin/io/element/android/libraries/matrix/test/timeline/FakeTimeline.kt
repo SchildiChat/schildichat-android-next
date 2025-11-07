@@ -47,6 +47,7 @@ class FakeTimeline(
         )
     ),
     override val membershipChangeEventReceived: Flow<Unit> = MutableSharedFlow(),
+    override val onSyncedEventReceived: Flow<Unit> = MutableSharedFlow(),
     private val cancelSendResult: (TransactionId) -> Result<Unit> = { lambdaError() },
     override val mode: Timeline.Mode = Timeline.Mode.Live,
     private val markAsReadResult: (ReceiptType) -> Result<Unit> = { lambdaError() },

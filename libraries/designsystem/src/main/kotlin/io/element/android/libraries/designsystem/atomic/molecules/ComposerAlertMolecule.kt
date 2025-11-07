@@ -23,15 +23,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
-import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.components.avatar.AvatarType
-import io.element.android.libraries.designsystem.components.avatar.anAvatarData
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.text.toAnnotatedString
@@ -137,29 +134,6 @@ enum class ComposerAlertLevel {
     Default,
     Info,
     Critical
-}
-
-internal data class ComposerAlertMoleculeParams(
-    val level: ComposerAlertLevel,
-    val avatar: AvatarData? = null,
-    val showIcon: Boolean = false,
-)
-
-internal class ComposerAlertMoleculeParamsProvider : PreviewParameterProvider<ComposerAlertMoleculeParams> {
-    private val allLevels = sequenceOf(
-        ComposerAlertLevel.Default,
-        ComposerAlertLevel.Info,
-        ComposerAlertLevel.Critical
-    )
-
-    override val values: Sequence<ComposerAlertMoleculeParams>
-        get() = allLevels.flatMap { level ->
-            sequenceOf(
-                ComposerAlertMoleculeParams(level = level),
-                ComposerAlertMoleculeParams(level = level, avatar = anAvatarData(size = AvatarSize.ComposerAlert)),
-                ComposerAlertMoleculeParams(level = level, showIcon = true),
-            )
-        }
 }
 
 @PreviewsDayNight

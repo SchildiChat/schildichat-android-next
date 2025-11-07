@@ -11,4 +11,6 @@ data class MatrixHomeServerDetails(
     val url: String,
     val supportsPasswordLogin: Boolean,
     val supportsOidcLogin: Boolean,
-)
+) {
+    val isSupported = supportsPasswordLogin || supportsOidcLogin
+}

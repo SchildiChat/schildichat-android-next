@@ -118,7 +118,7 @@ class DeveloperSettingsPresenter(
                     enabledFeatures = enabledFeatures,
                     featureKey = event.feature.key,
                     enabled = event.isEnabled,
-                    triggerClearCache = { handleEvents(DeveloperSettingsEvents.ClearCache) }
+                    triggerClearCache = { handleEvent(DeveloperSettingsEvents.ClearCache) }
                 )
                 is DeveloperSettingsEvents.SetCustomElementCallBaseUrl -> coroutineScope.launch {
                     val urlToSave = event.baseUrl.takeIf { !it.isNullOrEmpty() }

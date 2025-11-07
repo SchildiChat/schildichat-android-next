@@ -291,8 +291,9 @@ class MessagesPresenter(
             pinnedMessagesBannerState = pinnedMessagesBannerState,
             dmUserVerificationState = dmUserVerificationState,
             roomMemberModerationState = roomMemberModerationState,
-            successorRoom = roomInfo.successorRoom
-        ) { handleEvents(it) }
+            successorRoom = roomInfo.successorRoom,
+            eventSink = ::handleEvent,
+        )
     }
 
     @Composable

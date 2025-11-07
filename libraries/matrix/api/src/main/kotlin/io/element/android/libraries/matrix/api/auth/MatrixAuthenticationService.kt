@@ -13,7 +13,6 @@ import io.element.android.libraries.matrix.api.auth.external.ExternalSession
 import io.element.android.libraries.matrix.api.auth.qrlogin.MatrixQrCodeLoginData
 import io.element.android.libraries.matrix.api.auth.qrlogin.QrCodeLoginStep
 import io.element.android.libraries.matrix.api.core.SessionId
-import kotlinx.coroutines.flow.StateFlow
 
 interface MatrixAuthenticationService {
     /**
@@ -22,8 +21,12 @@ interface MatrixAuthenticationService {
      * Generally this method should not be used directly, prefer using [MatrixClientProvider.getOrRestore] instead.
      */
     suspend fun restoreSession(sessionId: SessionId): Result<MatrixClient>
-    fun getHomeserverDetails(): StateFlow<MatrixHomeServerDetails?>
-    suspend fun setHomeserver(homeserver: String): Result<Unit>
+
+    /**
+     * Set the homeserver to use for authentication, and return its details.
+     */
+    suspend fun setHomeserver(homeserver: String): Result<MatrixHomeServerDetails>
+
     suspend fun login(username: String, password: String): Result<SessionId>
 
     /**

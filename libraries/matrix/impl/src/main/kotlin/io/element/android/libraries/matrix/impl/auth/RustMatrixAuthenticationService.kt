@@ -36,8 +36,6 @@ import io.element.android.libraries.matrix.impl.paths.SessionPathsFactory
 import io.element.android.libraries.sessionstorage.api.LoginType
 import io.element.android.libraries.sessionstorage.api.SessionStore
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
 import org.matrix.rustcomponents.sdk.Client
 import org.matrix.rustcomponents.sdk.ClientBuilder
@@ -67,7 +65,6 @@ class RustMatrixAuthenticationService(
     // Ideally it would be possible to get the sessionPath from the Client to avoid doing this.
     private var sessionPaths: SessionPaths? = null
     private var currentClient: Client? = null
-    private var currentHomeserver = MutableStateFlow<MatrixHomeServerDetails?>(null)
 
     private val newMatrixClientObservers = mutableListOf<(MatrixClient) -> Unit>()
     override fun listenToNewMatrixClients(lambda: (MatrixClient) -> Unit) {
@@ -111,9 +108,7 @@ class RustMatrixAuthenticationService(
         return passphrase
     }
 
-    override fun getHomeserverDetails(): StateFlow<MatrixHomeServerDetails?> = currentHomeserver
-
-    override suspend fun setHomeserver(homeserver: String): Result<Unit> =
+    override suspend fun setHomeserver(homeserver: String): Result<MatrixHomeServerDetails> =
         withContext(coroutineDispatchers.io) {
             val emptySessionPath = rotateSessionPath()
             runCatchingExceptions {
@@ -122,8 +117,7 @@ class RustMatrixAuthenticationService(
                 }
 
                 currentClient = client
-                val homeServerDetails = client.homeserverLoginDetails().map()
-                currentHomeserver.value = homeServerDetails.copy(url = homeserver)
+                client.homeserverLoginDetails().map()
             }.onFailure {
                 clear()
             }.mapFailure { failure ->

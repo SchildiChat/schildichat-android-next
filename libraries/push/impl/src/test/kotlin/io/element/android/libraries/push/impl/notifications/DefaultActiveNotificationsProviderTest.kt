@@ -44,7 +44,7 @@ class DefaultActiveNotificationsProviderTest {
     @Test
     fun `getMembershipNotificationsForSession returns only membership notifications for that session id`() {
         val activeNotifications = listOf(
-            aStatusBarNotification(id = notificationIdProvider.getRoomMessagesNotificationId(A_SESSION_ID), groupId = A_SESSION_ID.value,),
+            aStatusBarNotification(id = notificationIdProvider.getRoomMessagesNotificationId(A_SESSION_ID), groupId = A_SESSION_ID.value),
             aStatusBarNotification(id = notificationIdProvider.getSummaryNotificationId(A_SESSION_ID_2), groupId = A_SESSION_ID_2.value),
             aStatusBarNotification(
                 id = notificationIdProvider.getRoomInvitationNotificationId(A_SESSION_ID_2),

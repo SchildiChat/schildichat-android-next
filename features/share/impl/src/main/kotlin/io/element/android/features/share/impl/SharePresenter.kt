@@ -55,7 +55,7 @@ class SharePresenter(
 
     @Composable
     override fun present(): ShareState {
-        fun handleEvents(event: ShareEvents) {
+        fun handleEvent(event: ShareEvents) {
             when (event) {
                 ShareEvents.ClearError -> shareActionState.value = AsyncAction.Uninitialized
             }
@@ -63,7 +63,7 @@ class SharePresenter(
 
         return ShareState(
             shareAction = shareActionState.value,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

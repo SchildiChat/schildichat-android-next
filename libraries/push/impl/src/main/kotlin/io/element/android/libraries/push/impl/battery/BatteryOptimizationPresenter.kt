@@ -47,7 +47,7 @@ class BatteryOptimizationPresenter(
             onPauseOrDispose {}
         }
 
-        fun handleEvents(event: BatteryOptimizationEvents) {
+        fun handleEvent(event: BatteryOptimizationEvents) {
             when (event) {
                 BatteryOptimizationEvents.Dismiss -> coroutineScope.launch {
                     mutableBatteryOptimizationStore.onOptimizationBannerDismissed()
@@ -66,7 +66,7 @@ class BatteryOptimizationPresenter(
 
         return BatteryOptimizationState(
             shouldDisplayBanner = localShouldDisplayBanner && storeShouldDisplayBanner && !isSystemIgnoringBatteryOptimizations,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 }

@@ -33,7 +33,7 @@ class AccountDeactivationPresenter(
 
         val formState = remember { mutableStateOf(DeactivateFormState.Default) }
 
-        fun handleEvents(event: AccountDeactivationEvents) {
+        fun handleEvent(event: AccountDeactivationEvents) {
             when (event) {
                 is AccountDeactivationEvents.SetEraseData -> {
                     updateFormState(formState) {
@@ -63,7 +63,7 @@ class AccountDeactivationPresenter(
         return AccountDeactivationState(
             deactivateFormState = formState.value,
             accountDeactivationAction = action.value,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

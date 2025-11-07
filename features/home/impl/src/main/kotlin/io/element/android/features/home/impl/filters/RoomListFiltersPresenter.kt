@@ -27,7 +27,7 @@ class RoomListFiltersPresenter(
 
     @Composable
     override fun present(): RoomListFiltersState {
-        fun handleEvents(event: RoomListFiltersEvents) {
+        fun handleEvent(event: RoomListFiltersEvents) {
             when (event) {
                 RoomListFiltersEvents.ClearSelectedFilters -> {
                     filterSelectionStrategy.clear()
@@ -63,7 +63,7 @@ class RoomListFiltersPresenter(
 
         return RoomListFiltersState(
             filterSelectionStates = filters,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 }

@@ -103,7 +103,7 @@ class DefaultInvitePeoplePresenter(
             )
         }
 
-        fun handleEvents(event: InvitePeopleEvents) {
+        fun handleEvent(event: InvitePeopleEvents) {
             when (event) {
                 is DefaultInvitePeopleEvents.OnSearchActiveChanged -> {
                     searchActive = event.active
@@ -139,7 +139,7 @@ class DefaultInvitePeoplePresenter(
             searchResults = searchResults.value,
             showSearchLoader = showSearchLoader.value,
             sendInvitesAction = sendInvitesAction.value,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

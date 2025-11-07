@@ -30,7 +30,7 @@ class AnalyticsPreferencesPresenter(
         val localCoroutineScope = rememberCoroutineScope()
         val isEnabled = analyticsService.userConsentFlow.collectAsState(initial = false)
 
-        fun handleEvents(event: AnalyticsOptInEvents) {
+        fun handleEvent(event: AnalyticsOptInEvents) {
             when (event) {
                 is AnalyticsOptInEvents.EnableAnalytics -> localCoroutineScope.setIsEnabled(event.isEnabled)
             }
@@ -40,7 +40,7 @@ class AnalyticsPreferencesPresenter(
             applicationName = buildMeta.applicationName,
             isEnabled = isEnabled.value,
             policyUrl = AnalyticsConfig.POLICY_LINK,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

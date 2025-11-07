@@ -53,7 +53,7 @@ class QrCodeScanPresenter(
             authenticationAction.value = AsyncAction.Failure(it)
         }
 
-        fun handleEvents(event: QrCodeScanEvents) {
+        fun handleEvent(event: QrCodeScanEvents) {
             when (event) {
                 QrCodeScanEvents.TryAgain -> {
                     isScanning = true
@@ -69,7 +69,7 @@ class QrCodeScanPresenter(
         return QrCodeScanState(
             isScanning = isScanning,
             authenticationAction = authenticationAction.value,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

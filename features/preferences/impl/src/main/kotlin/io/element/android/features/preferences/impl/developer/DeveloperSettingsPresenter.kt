@@ -112,7 +112,7 @@ class DeveloperSettingsPresenter(
             computeCacheSize(cacheSize)
         }
 
-        fun handleEvents(event: DeveloperSettingsEvents) {
+        fun handleEvent(event: DeveloperSettingsEvents) {
             when (event) {
                 is DeveloperSettingsEvents.UpdateEnabledFeature -> coroutineScope.updateEnabledFeature(
                     enabledFeatures = enabledFeatures,
@@ -161,7 +161,7 @@ class DeveloperSettingsPresenter(
             tracingLogPacks = tracingLogPacks,
             isEnterpriseBuild = enterpriseService.isEnterpriseBuild,
             showColorPicker = showColorPicker,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

@@ -93,7 +93,7 @@ class SpacePresenter(
 
         val acceptDeclineInviteState = acceptDeclineInvitePresenter.present()
 
-        fun handleEvents(event: SpaceEvents) {
+        fun handleEvent(event: SpaceEvents) {
             when (event) {
                 SpaceEvents.LoadMore -> localCoroutineScope.paginate()
                 is SpaceEvents.Join -> {
@@ -128,7 +128,7 @@ class SpacePresenter(
             joinActions = joinActions.toImmutableMap(),
             acceptDeclineInviteState = acceptDeclineInviteState,
             topicViewerState = topicViewerState,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

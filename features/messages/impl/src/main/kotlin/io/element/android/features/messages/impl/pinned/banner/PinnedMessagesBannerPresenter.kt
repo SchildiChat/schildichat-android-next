@@ -70,7 +70,7 @@ class PinnedMessagesBannerPresenter(
             expectedPinnedMessagesCount = expectedPinnedMessagesCount,
             pinnedItems = pinnedItems.value,
             currentPinnedMessageIndex = currentPinnedMessageIndex,
-            eventSink = ::handleEvent
+            eventSink = ::handleEvent,
         )
     }
 

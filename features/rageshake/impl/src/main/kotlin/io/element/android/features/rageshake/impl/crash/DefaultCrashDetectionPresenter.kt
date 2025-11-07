@@ -47,7 +47,7 @@ class DefaultCrashDetectionPresenter(
                 }
         }.collectAsState(false)
 
-        fun handleEvents(event: CrashDetectionEvents) {
+        fun handleEvent(event: CrashDetectionEvents) {
             when (event) {
                 CrashDetectionEvents.ResetAllCrashData -> localCoroutineScope.resetAll()
                 CrashDetectionEvents.ResetAppHasCrashed -> localCoroutineScope.resetAppHasCrashed()
@@ -57,7 +57,7 @@ class DefaultCrashDetectionPresenter(
         return CrashDetectionState(
             appName = buildMeta.applicationName,
             crashDetected = crashDetected,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

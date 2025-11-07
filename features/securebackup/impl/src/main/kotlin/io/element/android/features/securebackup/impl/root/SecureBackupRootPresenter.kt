@@ -58,7 +58,7 @@ class SecureBackupRootPresenter(
             }
         }
 
-        fun handleEvents(event: SecureBackupRootEvents) {
+        fun handleEvent(event: SecureBackupRootEvents) {
             when (event) {
                 SecureBackupRootEvents.RetryKeyBackupState -> localCoroutineScope.getKeyBackupStatus(doesBackupExistOnServerAction)
                 SecureBackupRootEvents.EnableKeyStorage -> localCoroutineScope.enableBackup(enableAction)
@@ -78,7 +78,7 @@ class SecureBackupRootPresenter(
             appName = buildMeta.applicationName,
             displayKeyStorageDisabledError = displayKeyStorageDisabledError,
             snackbarMessage = snackbarMessage,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

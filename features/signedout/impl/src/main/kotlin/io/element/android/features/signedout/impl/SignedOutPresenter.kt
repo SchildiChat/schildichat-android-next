@@ -42,7 +42,7 @@ class SignedOutPresenter(
         }.collectAsState(initial = null)
         val coroutineScope = rememberCoroutineScope()
 
-        fun handleEvents(event: SignedOutEvents) {
+        fun handleEvent(event: SignedOutEvents) {
             when (event) {
                 SignedOutEvents.SignInAgain -> coroutineScope.launch {
                     sessionStore.removeSession(sessionId.value)
@@ -53,7 +53,7 @@ class SignedOutPresenter(
         return SignedOutState(
             appName = buildMeta.applicationName,
             signedOutSession = signedOutSession,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 }

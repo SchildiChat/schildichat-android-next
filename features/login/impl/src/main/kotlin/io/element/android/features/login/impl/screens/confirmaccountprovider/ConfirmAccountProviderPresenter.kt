@@ -40,7 +40,7 @@ class ConfirmAccountProviderPresenter(
 
         val loginMode by loginHelper.collectLoginMode()
 
-        fun handleEvents(event: ConfirmAccountProviderEvents) {
+        fun handleEvent(event: ConfirmAccountProviderEvents) {
             when (event) {
                 ConfirmAccountProviderEvents.Continue -> {
                     loginHelper.submit(
@@ -58,7 +58,7 @@ class ConfirmAccountProviderPresenter(
             accountProvider = accountProvider,
             isAccountCreation = params.isAccountCreation,
             loginMode = loginMode,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 }

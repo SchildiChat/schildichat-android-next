@@ -43,7 +43,7 @@ class ReportRoomPresenter(
 
         val coroutineScope = rememberCoroutineScope()
 
-        fun handleEvents(event: ReportRoomEvents) {
+        fun handleEvent(event: ReportRoomEvents) {
             when (event) {
                 ReportRoomEvents.Report -> coroutineScope.reportRoom(reason, leaveRoom, reportAction)
                 ReportRoomEvents.ToggleLeaveRoom -> {
@@ -61,7 +61,7 @@ class ReportRoomPresenter(
             reason = reason,
             leaveRoom = leaveRoom,
             reportAction = reportAction.value,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

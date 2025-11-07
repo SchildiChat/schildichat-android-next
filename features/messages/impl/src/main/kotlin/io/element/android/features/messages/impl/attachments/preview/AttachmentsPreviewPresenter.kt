@@ -141,7 +141,7 @@ class AttachmentsPreviewPresenter(
             }
         }
 
-        fun handleEvents(attachmentsPreviewEvents: AttachmentsPreviewEvents) {
+        fun handleEvent(attachmentsPreviewEvents: AttachmentsPreviewEvents) {
             when (attachmentsPreviewEvents) {
                 is AttachmentsPreviewEvents.SendAttachment -> {
                     ongoingSendAttachmentJob.value = coroutineScope.launch {
@@ -230,7 +230,7 @@ class AttachmentsPreviewPresenter(
             textEditorState = textEditorState,
             mediaOptimizationSelectorState = mediaOptimizationSelectorState,
             displayFileTooLargeError = displayFileTooLargeError,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

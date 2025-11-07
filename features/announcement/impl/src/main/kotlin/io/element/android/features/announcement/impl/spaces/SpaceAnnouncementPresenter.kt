@@ -24,7 +24,7 @@ class SpaceAnnouncementPresenter(
     override fun present(): SpaceAnnouncementState {
         val localCoroutineScope = rememberCoroutineScope()
 
-        fun handleEvents(event: SpaceAnnouncementEvents) {
+        fun handleEvent(event: SpaceAnnouncementEvents) {
             when (event) {
                 SpaceAnnouncementEvents.Continue -> localCoroutineScope.launch {
                     announcementStore.setAnnouncementStatus(Announcement.Space, AnnouncementStatus.Shown)
@@ -33,7 +33,7 @@ class SpaceAnnouncementPresenter(
         }
 
         return SpaceAnnouncementState(
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 }

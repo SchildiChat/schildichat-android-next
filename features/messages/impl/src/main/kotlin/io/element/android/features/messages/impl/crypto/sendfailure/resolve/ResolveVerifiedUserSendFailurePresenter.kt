@@ -47,7 +47,7 @@ class ResolveVerifiedUserSendFailurePresenter(
         }
         val coroutineScope = rememberCoroutineScope()
 
-        fun handleEvents(event: ResolveVerifiedUserSendFailureEvents) {
+        fun handleEvent(event: ResolveVerifiedUserSendFailureEvents) {
             when (event) {
                 is ResolveVerifiedUserSendFailureEvents.ComputeForMessage -> {
                     val sendState = event.messageEvent.localSendState as? LocalEventSendState.Failed.VerifiedUser
@@ -92,7 +92,7 @@ class ResolveVerifiedUserSendFailurePresenter(
             verifiedUserSendFailure = verifiedUserSendFailure,
             resolveAction = resolveAction.value,
             retryAction = retryAction.value,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 }

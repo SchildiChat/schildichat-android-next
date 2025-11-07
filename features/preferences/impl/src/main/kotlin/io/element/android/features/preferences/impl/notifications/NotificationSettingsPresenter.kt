@@ -129,7 +129,7 @@ class NotificationSettingsPresenter(
                 )
         }
 
-        fun handleEvents(event: NotificationSettingsEvents) {
+        fun handleEvent(event: NotificationSettingsEvents) {
             when (event) {
                 is NotificationSettingsEvents.SetAtRoomNotificationsEnabled -> {
                     localCoroutineScope.setAtRoomNotificationsEnabled(event.enabled, changeNotificationSettingAction)
@@ -167,7 +167,7 @@ class NotificationSettingsPresenter(
             availablePushDistributors = availableDistributors,
             showChangePushProviderDialog = showChangePushProviderDialog,
             fullScreenIntentPermissionsState = key(refreshFullScreenIntentSettings) { fullScreenIntentPermissionsPresenter.present() },
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

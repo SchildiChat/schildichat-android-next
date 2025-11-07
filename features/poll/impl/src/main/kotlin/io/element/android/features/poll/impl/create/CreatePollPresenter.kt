@@ -96,7 +96,7 @@ class CreatePollPresenter(
 
         val scope = rememberCoroutineScope()
 
-        fun handleEvents(event: CreatePollEvents) {
+        fun handleEvent(event: CreatePollEvents) {
             when (event) {
                 is CreatePollEvents.Save -> scope.launch {
                     if (canSave) {
@@ -183,7 +183,7 @@ class CreatePollPresenter(
             pollKind = poll.pollKind,
             showBackConfirmation = showBackConfirmation,
             showDeleteConfirmation = showDeleteConfirmation,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

@@ -61,7 +61,7 @@ class PushHistoryPresenter(
         var resetAction: AsyncAction<Unit> by remember { mutableStateOf(AsyncAction.Uninitialized) }
         var showNotSameAccountError by remember { mutableStateOf(false) }
 
-        fun handleEvents(event: PushHistoryEvents) {
+        fun handleEvent(event: PushHistoryEvents) {
             when (event) {
                 is PushHistoryEvents.SetShowOnlyErrors -> {
                     showOnlyErrors = event.showOnlyErrors
@@ -97,7 +97,7 @@ class PushHistoryPresenter(
             showOnlyErrors = showOnlyErrors,
             resetAction = resetAction,
             showNotSameAccountError = showNotSameAccountError,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 }

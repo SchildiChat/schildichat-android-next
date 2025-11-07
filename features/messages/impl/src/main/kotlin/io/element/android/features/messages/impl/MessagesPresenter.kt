@@ -221,7 +221,7 @@ class MessagesPresenter(
             onPauseOrDispose {}
         }
 
-        fun handleEvents(event: MessagesEvents) {
+        fun handleEvent(event: MessagesEvents) {
             when (event) {
                 is MessagesEvents.HandleAction -> {
                     localCoroutineScope.handleTimelineAction(

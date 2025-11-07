@@ -161,7 +161,7 @@ class CallScreenPresenter(
             }
         }
 
-        fun handleEvents(event: CallScreenEvents) {
+        fun handleEvent(event: CallScreenEvents) {
             when (event) {
                 is CallScreenEvents.Hangup -> {
                     val widgetId = callWidgetDriver.value?.id
@@ -201,7 +201,7 @@ class CallScreenPresenter(
             userAgent = userAgent,
             isCallActive = isWidgetLoaded,
             isInWidgetMode = isInWidgetMode,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

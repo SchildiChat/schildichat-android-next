@@ -92,7 +92,7 @@ class OutgoingVerificationPresenter(
             observeVerificationService()
         }
 
-        fun handleEvents(event: OutgoingVerificationViewEvents) {
+        fun handleEvent(event: OutgoingVerificationViewEvents) {
             Timber.d("Verification user action: ${event::class.simpleName}")
             when (event) {
                 // Just relay the event to the state machine
@@ -109,7 +109,7 @@ class OutgoingVerificationPresenter(
         return OutgoingVerificationState(
             step = step,
             request = verificationRequest,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

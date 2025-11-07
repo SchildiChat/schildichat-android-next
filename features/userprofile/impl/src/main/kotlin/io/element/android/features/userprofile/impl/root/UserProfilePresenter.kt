@@ -99,7 +99,7 @@ class UserProfilePresenter(
         }
         val userProfile by produceState<MatrixUser?>(null) { value = client.getProfile(userId).getOrNull() }
 
-        fun handleEvents(event: UserProfileEvents) {
+        fun handleEvent(event: UserProfileEvents) {
             when (event) {
                 is UserProfileEvents.BlockUser -> {
                     if (event.needsConfirmation) {
@@ -151,7 +151,7 @@ class UserProfilePresenter(
             dmRoomId = dmRoomId,
             canCall = canCall,
             snackbarMessage = null,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

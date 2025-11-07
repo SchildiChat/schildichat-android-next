@@ -151,7 +151,7 @@ class JoinRoomPresenter(
             contentState.markRoomInviteAsSeen()
         }
 
-        fun handleEvents(event: JoinRoomEvents) {
+        fun handleEvent(event: JoinRoomEvents) {
             when (event) {
                 JoinRoomEvents.JoinRoom -> coroutineScope.joinRoom(joinAction)
                 is JoinRoomEvents.KnockRoom -> coroutineScope.knockRoom(knockAction, knockMessage)
@@ -197,7 +197,7 @@ class JoinRoomPresenter(
             knockMessage = knockMessage,
             hideInviteAvatars = hideInviteAvatars,
             canReportRoom = canReportRoom,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

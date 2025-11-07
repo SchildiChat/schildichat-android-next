@@ -53,7 +53,7 @@ class ReportMessagePresenter(
         var blockUser by rememberSaveable { mutableStateOf(false) }
         var result: MutableState<AsyncAction<Unit>> = remember { mutableStateOf(AsyncAction.Uninitialized) }
 
-        fun handleEvents(event: ReportMessageEvents) {
+        fun handleEvent(event: ReportMessageEvents) {
             when (event) {
                 is ReportMessageEvents.UpdateReason -> reason = event.reason
                 ReportMessageEvents.ToggleBlockUser -> blockUser = !blockUser
@@ -66,7 +66,7 @@ class ReportMessagePresenter(
             reason = reason,
             blockUser = blockUser,
             result = result.value,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

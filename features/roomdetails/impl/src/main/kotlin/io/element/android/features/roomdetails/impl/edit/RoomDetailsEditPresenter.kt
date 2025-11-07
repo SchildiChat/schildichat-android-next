@@ -140,7 +140,7 @@ class RoomDetailsEditPresenter(
 
         val saveAction: MutableState<AsyncAction<Unit>> = remember { mutableStateOf(AsyncAction.Uninitialized) }
         val localCoroutineScope = rememberCoroutineScope()
-        fun handleEvents(event: RoomDetailsEditEvents) {
+        fun handleEvent(event: RoomDetailsEditEvents) {
             when (event) {
                 is RoomDetailsEditEvents.Save -> localCoroutineScope.saveChanges(
                     currentNameTrimmed = roomRawNameTrimmed,
@@ -191,7 +191,7 @@ class RoomDetailsEditPresenter(
             saveButtonEnabled = saveButtonEnabled,
             saveAction = saveAction.value,
             cameraPermissionState = cameraPermissionState,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

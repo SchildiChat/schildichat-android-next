@@ -56,7 +56,7 @@ class ShowLocationPresenter(
             }
         }
 
-        fun handleEvents(event: ShowLocationEvents) {
+        fun handleEvent(event: ShowLocationEvents) {
             when (event) {
                 ShowLocationEvents.Share -> locationActions.share(location, description)
                 is ShowLocationEvents.TrackMyLocation -> {
@@ -86,7 +86,7 @@ class ShowLocationPresenter(
             hasLocationPermission = permissionsState.isAnyGranted,
             isTrackMyLocation = isTrackMyLocation,
             appName = appName,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 }

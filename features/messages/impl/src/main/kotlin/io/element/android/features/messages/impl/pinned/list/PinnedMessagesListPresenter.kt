@@ -130,7 +130,7 @@ class PinnedMessagesListPresenter(
             }
         )
 
-        fun handleEvents(event: PinnedMessagesListEvents) {
+        fun handleEvent(event: PinnedMessagesListEvents) {
             when (event) {
                 is PinnedMessagesListEvents.HandleAction -> sessionCoroutineScope.handleTimelineAction(event.action, event.event)
             }
@@ -143,7 +143,7 @@ class PinnedMessagesListPresenter(
             displayThreadSummaries = displayThreadSummaries,
             userEventPermissions = userEventPermissions,
             timelineItems = pinnedMessageItems,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

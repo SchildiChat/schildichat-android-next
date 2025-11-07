@@ -39,7 +39,7 @@ class QrCodeIntroPresenter(
             }
         }
 
-        fun handleEvents(event: QrCodeIntroEvents) {
+        fun handleEvent(event: QrCodeIntroEvents) {
             when (event) {
                 QrCodeIntroEvents.Continue -> if (cameraPermissionState.permissionGranted) {
                     canContinue = true
@@ -55,7 +55,7 @@ class QrCodeIntroPresenter(
             desktopAppName = buildMeta.desktopApplicationName,
             cameraPermissionState = cameraPermissionState,
             canContinue = canContinue,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 }

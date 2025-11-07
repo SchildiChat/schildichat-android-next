@@ -24,7 +24,7 @@ class LinkPresenter(
     override fun present(): LinkState {
         val linkClick: MutableState<AsyncAction<Link>> = remember { mutableStateOf(AsyncAction.Uninitialized) }
 
-        fun handleEvents(linkEvents: LinkEvents) {
+        fun handleEvent(linkEvents: LinkEvents) {
             when (linkEvents) {
                 is LinkEvents.OnLinkClick -> {
                     linkClick.value = AsyncAction.Loading
@@ -48,7 +48,7 @@ class LinkPresenter(
         }
         return LinkState(
             linkClick = linkClick.value,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 }

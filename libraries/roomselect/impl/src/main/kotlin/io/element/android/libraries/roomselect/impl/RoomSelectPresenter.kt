@@ -63,7 +63,7 @@ class RoomSelectPresenter(
             }
         }
 
-        fun handleEvents(event: RoomSelectEvents) {
+        fun handleEvent(event: RoomSelectEvents) {
             when (event) {
                 is RoomSelectEvents.SetSelectedRoom -> {
                     selectedRooms = persistentListOf(event.room)
@@ -87,7 +87,7 @@ class RoomSelectPresenter(
             query = searchQuery,
             isSearchActive = isSearchActive,
             selectedRooms = selectedRooms,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 }

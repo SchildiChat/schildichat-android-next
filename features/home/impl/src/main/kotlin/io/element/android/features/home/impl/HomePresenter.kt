@@ -85,7 +85,7 @@ class HomePresenter(
         val showAvatarIndicator by indicatorService.showRoomListTopBarIndicator()
         val directLogoutState = logoutPresenter.present()
 
-        fun handleEvents(event: HomeEvents) {
+        fun handleEvent(event: HomeEvents) {
             when (event) {
                 is HomeEvents.SelectHomeNavigationBarItem -> coroutineState.launch {
                     if (event.item == HomeNavigationBarItem.Spaces) {
@@ -117,7 +117,7 @@ class HomePresenter(
             canReportBug = canReportBug,
             directLogoutState = directLogoutState,
             isSpaceFeatureEnabled = isSpaceFeatureEnabled,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 }

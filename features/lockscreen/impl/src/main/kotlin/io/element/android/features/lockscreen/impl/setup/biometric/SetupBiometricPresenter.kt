@@ -34,7 +34,7 @@ class SetupBiometricPresenter(
         val coroutineScope = rememberCoroutineScope()
         val biometricUnlock = biometricAuthenticatorManager.rememberConfirmBiometricAuthenticator()
 
-        fun handleEvents(event: SetupBiometricEvents) {
+        fun handleEvent(event: SetupBiometricEvents) {
             when (event) {
                 SetupBiometricEvents.AllowBiometric -> coroutineScope.launch {
                     biometricUnlock.setup()
@@ -52,7 +52,7 @@ class SetupBiometricPresenter(
 
         return SetupBiometricState(
             isBiometricSetupDone = isBiometricSetupDone,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 }

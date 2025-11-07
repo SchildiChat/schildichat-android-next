@@ -37,7 +37,7 @@ class TroubleshootNotificationsPresenter(
         }
 
         val testSuiteState by troubleshootTestSuite.state.collectAsState()
-        fun handleEvents(event: TroubleshootNotificationsEvents) {
+        fun handleEvent(event: TroubleshootNotificationsEvents) {
             when (event) {
                 TroubleshootNotificationsEvents.StartTests -> coroutineScope.launch {
                     troubleshootTestSuite.runTestSuite(this)
@@ -57,7 +57,7 @@ class TroubleshootNotificationsPresenter(
 
         return TroubleshootNotificationsState(
             testSuiteState = testSuiteState,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 }

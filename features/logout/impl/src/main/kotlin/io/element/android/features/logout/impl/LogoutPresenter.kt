@@ -73,7 +73,7 @@ class LogoutPresenter(
             }
         }
 
-        fun handleEvents(event: LogoutEvents) {
+        fun handleEvent(event: LogoutEvents) {
             when (event) {
                 is LogoutEvents.Logout -> {
                     if (logoutAction.value.isConfirming() || event.ignoreSdkError) {
@@ -96,7 +96,7 @@ class LogoutPresenter(
             backupUploadState = backupUploadState,
             waitingForALongTime = waitingForALongTime,
             logoutAction = logoutAction.value,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

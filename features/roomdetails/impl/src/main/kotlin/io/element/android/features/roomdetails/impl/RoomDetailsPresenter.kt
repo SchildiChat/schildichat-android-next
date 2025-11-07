@@ -136,7 +136,7 @@ class RoomDetailsPresenter(
         val snackbarDispatcher = LocalSnackbarDispatcher.current
         val snackbarMessage by snackbarDispatcher.collectSnackbarMessageAsState()
 
-        fun handleEvents(event: RoomDetailsEvent) {
+        fun handleEvent(event: RoomDetailsEvent) {
             when (event) {
                 is RoomDetailsEvent.LeaveRoom -> {
                     leaveRoomState.eventSink(LeaveRoomEvent.LeaveRoom(room.roomId, needsConfirmation = event.needsConfirmation))
@@ -204,7 +204,7 @@ class RoomDetailsPresenter(
             canReportRoom = canReportRoom,
             isTombstoned = roomInfo.successorRoom != null,
             showDebugInfo = isDeveloperModeEnabled,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

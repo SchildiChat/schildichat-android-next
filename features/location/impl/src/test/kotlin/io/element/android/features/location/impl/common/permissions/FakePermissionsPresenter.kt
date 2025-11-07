@@ -19,7 +19,7 @@ class FakePermissionsPresenter : PermissionsPresenter {
     private var state = PermissionsState(
         permissions = PermissionsState.Permissions.NoneGranted,
         shouldShowRationale = false,
-        eventSink = ::handleEvent
+        eventSink = ::handleEvent,
     )
         set(value) {
             field = value.copy(eventSink = ::handleEvent)

@@ -28,7 +28,7 @@ class ResetIdentityRootPresenter : Presenter<ResetIdentityRootState> {
 
         return ResetIdentityRootState(
             displayConfirmationDialog = displayConfirmDialog,
-            eventSink = ::handleEvent
+            eventSink = ::handleEvent,
         )
     }
 }

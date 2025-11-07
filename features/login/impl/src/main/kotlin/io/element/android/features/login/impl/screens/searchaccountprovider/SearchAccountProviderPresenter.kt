@@ -45,7 +45,7 @@ class SearchAccountProviderPresenter(
             onUserInput(userInput, data)
         }
 
-        fun handleEvents(event: SearchAccountProviderEvents) {
+        fun handleEvent(event: SearchAccountProviderEvents) {
             when (event) {
                 is SearchAccountProviderEvents.UserInput -> {
                     userInput = event.input
@@ -57,7 +57,7 @@ class SearchAccountProviderPresenter(
             userInput = userInput,
             userInputResult = data.value,
             changeServerState = changeServerState,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

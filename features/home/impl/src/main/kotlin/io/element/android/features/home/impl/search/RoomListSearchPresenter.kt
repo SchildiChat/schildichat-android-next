@@ -40,7 +40,7 @@ class RoomListSearchPresenter(
             dataSource.setSearchQuery(searchQuery)
         }
 
-        fun handleEvents(event: RoomListSearchEvents) {
+        fun handleEvent(event: RoomListSearchEvents) {
             when (event) {
                 RoomListSearchEvents.ClearQuery -> {
                     searchQuery = ""
@@ -61,7 +61,7 @@ class RoomListSearchPresenter(
             isSearchActive = isSearchActive,
             query = searchQuery,
             results = searchResults,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 }

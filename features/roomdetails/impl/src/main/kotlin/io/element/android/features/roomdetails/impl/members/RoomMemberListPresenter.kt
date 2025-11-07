@@ -159,7 +159,7 @@ class RoomMemberListPresenter(
             }
         }
 
-        fun handleEvents(event: RoomMemberListEvents) {
+        fun handleEvent(event: RoomMemberListEvents) {
             when (event) {
                 is RoomMemberListEvents.OnSearchActiveChanged -> isSearchActive = event.active
                 is RoomMemberListEvents.UpdateSearchQuery -> searchQuery = event.query
@@ -179,7 +179,7 @@ class RoomMemberListPresenter(
             isSearchActive = isSearchActive,
             canInvite = canInvite,
             moderationState = roomModerationState,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

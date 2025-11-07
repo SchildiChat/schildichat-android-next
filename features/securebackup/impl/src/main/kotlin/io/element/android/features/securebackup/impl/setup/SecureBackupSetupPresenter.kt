@@ -52,7 +52,7 @@ class SecureBackupSetupPresenter(
         }
         var showSaveConfirmationDialog by remember { mutableStateOf(false) }
 
-        fun handleEvents(event: SecureBackupSetupEvents) {
+        fun handleEvent(event: SecureBackupSetupEvents) {
             when (event) {
                 SecureBackupSetupEvents.CreateRecoveryKey -> {
                     coroutineScope.createOrChangeRecoveryKey(stateAndDispatch)
@@ -81,7 +81,7 @@ class SecureBackupSetupPresenter(
             recoveryKeyViewState = recoveryKeyViewState,
             setupState = setupState,
             showSaveConfirmationDialog = showSaveConfirmationDialog,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

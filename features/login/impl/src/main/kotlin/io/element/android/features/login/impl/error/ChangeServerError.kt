@@ -32,8 +32,17 @@ sealed class ChangeServerError : Exception() {
     companion object {
         fun from(error: Throwable): ChangeServerError = when (error) {
             is ChangeServerError -> error
-            is AuthenticationException.SlidingSyncVersion -> SlidingSyncAlert
-            is AuthenticationException.Oidc -> Error(messageStr = error.message)
+            is AuthenticationException -> {
+                when (error) {
+                    is AuthenticationException.SlidingSyncVersion -> SlidingSyncAlert
+                    is AuthenticationException.InvalidServerName,
+                    is AuthenticationException.ServerUnreachable -> InvalidServer
+                    // AccountAlreadyLoggedIn error should not happen at this point
+                    is AuthenticationException.AccountAlreadyLoggedIn -> Error(messageStr = error.message)
+                    is AuthenticationException.Generic -> Error(messageStr = error.message)
+                    is AuthenticationException.Oidc -> Error(messageStr = error.message)
+                }
+            }
             is AccountProviderAccessException.NeedElementProException -> NeedElementPro(
                 unauthorisedAccountProviderTitle = error.unauthorisedAccountProviderTitle,
                 applicationId = error.applicationId,

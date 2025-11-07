@@ -10,9 +10,9 @@ class ${NAME}Presenter() : Presenter<${NAME}State> {
     @Composable
     override fun present(): ${NAME}State {
 
-        fun handleEvent(event: ${NAME}Events) {
+        fun handleEvent(event: ${NAME}Event) {
             when (event) {
-                ${NAME}Events.MyEvent -> Unit
+                ${NAME}Event.MyEvent -> Unit
             }
         }
 

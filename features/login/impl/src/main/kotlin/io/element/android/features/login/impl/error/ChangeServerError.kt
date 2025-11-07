@@ -7,23 +7,13 @@
 
 package io.element.android.features.login.impl.error
 
-import androidx.annotation.StringRes
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.ui.res.stringResource
 import io.element.android.features.login.impl.changeserver.AccountProviderAccessException
 import io.element.android.libraries.matrix.api.auth.AuthenticationException
-import io.element.android.libraries.ui.strings.CommonStrings
 
 sealed class ChangeServerError : Exception() {
     data class Error(
-        @StringRes val messageId: Int? = null,
         val messageStr: String? = null,
-    ) : ChangeServerError() {
-        @Composable
-        @ReadOnlyComposable
-        fun message(): String = messageStr ?: stringResource(messageId ?: CommonStrings.error_unknown)
-    }
+    ) : ChangeServerError()
 
     data class NeedElementPro(
         val unauthorisedAccountProviderTitle: String,
@@ -52,7 +42,7 @@ sealed class ChangeServerError : Exception() {
                 unauthorisedAccountProviderTitle = error.unauthorisedAccountProviderTitle,
                 authorisedAccountProviderTitles = error.authorisedAccountProviderTitles,
             )
-            else -> InvalidServer
+            else -> Error(messageStr = error.message)
         }
     }
 }

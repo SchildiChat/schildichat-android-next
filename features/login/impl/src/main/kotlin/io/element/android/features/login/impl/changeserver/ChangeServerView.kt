@@ -26,6 +26,7 @@ import io.element.android.libraries.designsystem.components.dialogs.ErrorDialog
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.LocalBuildMeta
+import io.element.android.libraries.ui.strings.CommonStrings
 
 @Composable
 fun ChangeServerView(
@@ -58,7 +59,7 @@ fun ChangeServerView(
                 is ChangeServerError.Error -> {
                     ErrorDialog(
                         modifier = modifier,
-                        content = error.message(),
+                        content = error.messageStr ?: stringResource(CommonStrings.error_unknown),
                         onSubmit = {
                             eventSink.invoke(ChangeServerEvents.ClearError)
                         }

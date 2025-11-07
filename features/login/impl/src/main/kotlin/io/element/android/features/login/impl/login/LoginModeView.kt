@@ -54,7 +54,7 @@ fun LoginModeView(
                         }
                         is ChangeServerError.Error -> {
                             ErrorDialog(
-                                content = error.message(),
+                                content = error.messageStr ?: stringResource(CommonStrings.error_unknown),
                                 onSubmit = onClearError,
                             )
                         }
@@ -102,7 +102,7 @@ fun LoginModeView(
                 }
                 is AuthenticationException.AccountAlreadyLoggedIn -> {
                     ErrorDialog(
-                        content = stringResource(CommonStrings.error_account_already_logged_in, error.message.orEmpty()),
+                        content = stringResource(CommonStrings.error_account_already_logged_in, error.userId),
                         onSubmit = onClearError,
                     )
                 }

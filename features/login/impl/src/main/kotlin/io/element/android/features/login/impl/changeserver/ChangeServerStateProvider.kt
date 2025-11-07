@@ -8,7 +8,6 @@
 package io.element.android.features.login.impl.changeserver
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import io.element.android.features.login.impl.R
 import io.element.android.features.login.impl.error.ChangeServerError
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.ui.strings.CommonStrings
@@ -37,9 +36,7 @@ open class ChangeServerStateProvider : PreviewParameterProvider<ChangeServerStat
             ),
             aChangeServerState(
                 changeServerAction = AsyncData.Failure(
-                    ChangeServerError.Error(
-                        R.string.screen_login_error_unsupported_authentication
-                    )
+                    ChangeServerError.UnsupportedServer
                 )
             ),
         )

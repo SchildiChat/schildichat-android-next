@@ -39,6 +39,22 @@ fun ChangeServerView(
     when (state.changeServerAction) {
         is AsyncData.Failure -> {
             when (val error = state.changeServerAction.error as? ChangeServerError) {
+                ChangeServerError.InvalidServer ->
+                    ErrorDialog(
+                        modifier = modifier,
+                        content = stringResource(R.string.screen_change_server_error_invalid_homeserver),
+                        onSubmit = {
+                            eventSink.invoke(ChangeServerEvents.ClearError)
+                        }
+                    )
+                ChangeServerError.UnsupportedServer ->
+                    ErrorDialog(
+                        modifier = modifier,
+                        content = stringResource(R.string.screen_login_error_unsupported_authentication),
+                        onSubmit = {
+                            eventSink.invoke(ChangeServerEvents.ClearError)
+                        }
+                    )
                 is ChangeServerError.Error -> {
                     ErrorDialog(
                         modifier = modifier,

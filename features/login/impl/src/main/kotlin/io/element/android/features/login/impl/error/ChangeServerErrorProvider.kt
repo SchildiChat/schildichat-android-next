@@ -8,14 +8,11 @@
 package io.element.android.features.login.impl.error
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import io.element.android.features.login.impl.R
 
 class ChangeServerErrorProvider : PreviewParameterProvider<ChangeServerError> {
     override val values: Sequence<ChangeServerError>
         get() = sequenceOf(
-            ChangeServerError.Error(
-                messageId = R.string.screen_change_server_error_invalid_homeserver,
-            ),
+            ChangeServerError.InvalidServer,
             ChangeServerError.Error(
                 messageStr = "An error description",
             ),
@@ -28,5 +25,6 @@ class ChangeServerErrorProvider : PreviewParameterProvider<ChangeServerError> {
                 authorisedAccountProviderTitles = listOf("provider.org", "provider.io"),
             ),
             ChangeServerError.SlidingSyncAlert,
+            ChangeServerError.UnsupportedServer,
         )
 }

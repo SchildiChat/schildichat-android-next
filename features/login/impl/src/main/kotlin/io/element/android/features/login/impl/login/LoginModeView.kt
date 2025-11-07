@@ -41,6 +41,17 @@ fun LoginModeView(
             when (val error = loginMode.error) {
                 is ChangeServerError -> {
                     when (error) {
+                        ChangeServerError.InvalidServer ->
+                            ErrorDialog(
+                                content = stringResource(R.string.screen_change_server_error_invalid_homeserver),
+                                onSubmit = onClearError,
+                            )
+                        is ChangeServerError.UnsupportedServer -> {
+                            ErrorDialog(
+                                content = stringResource(R.string.screen_login_error_unsupported_authentication),
+                                onSubmit = onClearError,
+                            )
+                        }
                         is ChangeServerError.Error -> {
                             ErrorDialog(
                                 content = error.message(),

@@ -13,7 +13,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import dev.zacsweers.metro.Inject
-import io.element.android.features.login.impl.R
 import io.element.android.features.login.impl.accesscontrol.DefaultAccountProviderAccessControl
 import io.element.android.features.login.impl.accountprovider.AccountProvider
 import io.element.android.features.login.impl.accountprovider.AccountProviderDataSource
@@ -63,10 +62,7 @@ class ChangeServerPresenter(
             )
             val details = authenticationService.setHomeserver(data.url).getOrThrow()
             if (details.supportsOidcLogin.not() && details.supportsPasswordLogin.not()) {
-                // Unsupported homeserver
-                throw ChangeServerError.Error(
-                    messageId = R.string.screen_login_error_unsupported_authentication,
-                )
+                throw ChangeServerError.UnsupportedServer
             }
             // Homeserver is valid, remember user choice
             accountProviderDataSource.userSelection(data)

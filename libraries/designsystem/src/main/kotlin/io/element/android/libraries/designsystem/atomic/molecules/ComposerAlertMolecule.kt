@@ -106,7 +106,7 @@ fun ComposerAlertMolecule(
                             ComposerAlertLevel.Critical -> ElementTheme.colors.iconCriticalPrimary
                         }
                         Icon(
-                            painter = rememberVectorPainter(icon),
+                            imageVector = icon,
                             tint = iconTint,
                             contentDescription = null,
                         )

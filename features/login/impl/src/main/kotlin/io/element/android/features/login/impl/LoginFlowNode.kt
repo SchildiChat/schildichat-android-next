@@ -43,9 +43,11 @@ import io.element.android.libraries.architecture.NodeInputs
 import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.architecture.inputs
+import io.element.android.libraries.di.annotations.AppCoroutineScope
 import io.element.android.libraries.matrix.api.auth.OidcDetails
 import io.element.android.libraries.oidc.api.OidcAction
 import io.element.android.libraries.oidc.api.OidcActionFlow
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -57,6 +59,8 @@ class LoginFlowNode(
     @Assisted plugins: List<Plugin>,
     private val accountProviderDataSource: AccountProviderDataSource,
     private val oidcActionFlow: OidcActionFlow,
+    @AppCoroutineScope
+    private val appCoroutineScope: CoroutineScope,
 ) : BaseFlowNode<LoginFlowNode.NavTarget>(
     backstack = BackStack(
         initialElement = NavTarget.OnBoarding,
@@ -268,7 +272,9 @@ class LoginFlowNode(
         DisposableEffect(Unit) {
             onDispose {
                 activity = null
-                accountProviderDataSource.reset()
+                appCoroutineScope.launch {
+                    accountProviderDataSource.reset()
+                }
             }
         }
         BackstackView()

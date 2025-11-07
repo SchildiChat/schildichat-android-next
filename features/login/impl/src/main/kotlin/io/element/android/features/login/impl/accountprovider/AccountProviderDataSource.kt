@@ -21,28 +21,34 @@ import kotlinx.coroutines.flow.asStateFlow
 class AccountProviderDataSource(
     enterpriseService: EnterpriseService,
 ) {
-    private val defaultAccountProvider =
-        (enterpriseService.defaultHomeserverList().firstOrNull { it != EnterpriseService.ANY_ACCOUNT_PROVIDER } ?: AuthenticationConfig.MATRIX_ORG_URL)
-            .let { url ->
-                AccountProvider(
-                    url = url,
-                    subtitle = null,
-                    isPublic = url == AuthenticationConfig.MATRIX_ORG_URL,
-                    isMatrixOrg = url == AuthenticationConfig.MATRIX_ORG_URL,
-                )
-            }
-
-    private val accountProvider: MutableStateFlow<AccountProvider> = MutableStateFlow(
-        defaultAccountProvider
+    private val defaultAccountProvider = createAccountProvider(
+        url = enterpriseService.defaultHomeserverList()
+            .firstOrNull { it != EnterpriseService.ANY_ACCOUNT_PROVIDER }
+            ?: AuthenticationConfig.MATRIX_ORG_URL
     )
+
+    private val accountProvider: MutableStateFlow<AccountProvider> = MutableStateFlow(defaultAccountProvider)
 
     val flow: StateFlow<AccountProvider> = accountProvider.asStateFlow()
 
-    fun reset() {
-        accountProvider.tryEmit(defaultAccountProvider)
+    suspend fun reset() {
+        accountProvider.emit(defaultAccountProvider)
     }
 
-    fun userSelection(data: AccountProvider) {
-        accountProvider.tryEmit(data)
+    suspend fun setUrl(url: String) {
+        setAccountProvider(createAccountProvider(url))
+    }
+
+    suspend fun setAccountProvider(data: AccountProvider) {
+        accountProvider.emit(data)
+    }
+
+    private fun createAccountProvider(url: String): AccountProvider {
+        return AccountProvider(
+            url = url,
+            subtitle = null,
+            isPublic = url == AuthenticationConfig.MATRIX_ORG_URL,
+            isMatrixOrg = url == AuthenticationConfig.MATRIX_ORG_URL,
+        )
     }
 }

@@ -22,6 +22,7 @@ import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.uri.ensureProtocol
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.launch
 
 @Inject
 class ChooseAccountProviderPresenter(
@@ -37,10 +38,9 @@ class ChooseAccountProviderPresenter(
 
         fun handleEvent(event: ChooseAccountProviderEvents) {
             when (event) {
-                ChooseAccountProviderEvents.Continue -> {
+                ChooseAccountProviderEvents.Continue -> localCoroutineScope.launch {
                     selectedAccountProvider?.let {
                         loginHelper.submit(
-                            coroutineScope = localCoroutineScope,
                             isAccountCreation = false,
                             homeserverUrl = it.url,
                             loginHint = null,

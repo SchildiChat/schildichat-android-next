@@ -25,8 +25,6 @@ import io.element.android.libraries.matrix.api.auth.MatrixAuthenticationService
 import io.element.android.libraries.matrix.api.auth.OidcPrompt
 import io.element.android.libraries.oidc.api.OidcAction
 import io.element.android.libraries.oidc.api.OidcActionFlow
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 /**
  * This class is responsible for managing the login flow, including handling OIDC actions and
@@ -58,12 +56,11 @@ class LoginHelper(
         loginModeState.value = AsyncData.Uninitialized
     }
 
-    fun submit(
-        coroutineScope: CoroutineScope,
+    suspend fun submit(
         isAccountCreation: Boolean,
         homeserverUrl: String,
         loginHint: String?,
-    ) = coroutineScope.launch {
+    ) {
         suspend {
             authenticationService.setHomeserver(homeserverUrl).map { matrixHomeServerDetails ->
                 if (matrixHomeServerDetails.supportsOidcLogin) {

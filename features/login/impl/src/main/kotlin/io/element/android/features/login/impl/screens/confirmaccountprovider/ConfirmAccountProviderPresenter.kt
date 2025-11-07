@@ -17,6 +17,7 @@ import dev.zacsweers.metro.AssistedInject
 import io.element.android.features.login.impl.accountprovider.AccountProviderDataSource
 import io.element.android.features.login.impl.login.LoginHelper
 import io.element.android.libraries.architecture.Presenter
+import kotlinx.coroutines.launch
 
 @AssistedInject
 class ConfirmAccountProviderPresenter(
@@ -42,9 +43,8 @@ class ConfirmAccountProviderPresenter(
 
         fun handleEvents(event: ConfirmAccountProviderEvents) {
             when (event) {
-                ConfirmAccountProviderEvents.Continue -> {
+                ConfirmAccountProviderEvents.Continue -> localCoroutineScope.launch {
                     loginHelper.submit(
-                        coroutineScope = localCoroutineScope,
                         isAccountCreation = params.isAccountCreation,
                         homeserverUrl = accountProvider.url,
                         loginHint = null,

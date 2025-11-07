@@ -12,81 +12,84 @@ import android.graphics.Bitmap
 import androidx.annotation.ColorInt
 import coil3.ImageLoader
 import io.element.android.libraries.matrix.api.core.ThreadId
-import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.push.impl.notifications.RoomEventGroupInfo
+import io.element.android.libraries.push.impl.notifications.factories.NotificationAccountParams
 import io.element.android.libraries.push.impl.notifications.factories.NotificationCreator
 import io.element.android.libraries.push.impl.notifications.fixtures.A_NOTIFICATION
 import io.element.android.libraries.push.impl.notifications.model.FallbackNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.InviteNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.NotifiableMessageEvent
 import io.element.android.libraries.push.impl.notifications.model.SimpleNotifiableEvent
-import io.element.android.tests.testutils.lambda.LambdaFourParamsRecorder
+import io.element.android.tests.testutils.lambda.LambdaFiveParamsRecorder
 import io.element.android.tests.testutils.lambda.LambdaListAnyParamsRecorder
-import io.element.android.tests.testutils.lambda.LambdaNoParamRecorder
 import io.element.android.tests.testutils.lambda.LambdaOneParamRecorder
+import io.element.android.tests.testutils.lambda.LambdaTwoParamsRecorder
 import io.element.android.tests.testutils.lambda.lambdaAnyRecorder
 import io.element.android.tests.testutils.lambda.lambdaRecorder
 
 class FakeNotificationCreator(
     var createMessagesListNotificationResult: LambdaListAnyParamsRecorder<Notification> = lambdaAnyRecorder { A_NOTIFICATION },
-    var createRoomInvitationNotificationResult: LambdaOneParamRecorder<InviteNotifiableEvent, Notification> = lambdaRecorder { _ -> A_NOTIFICATION },
-    var createSimpleNotificationResult: LambdaOneParamRecorder<SimpleNotifiableEvent, Notification> = lambdaRecorder { _ -> A_NOTIFICATION },
-    var createFallbackNotificationResult: LambdaOneParamRecorder<FallbackNotifiableEvent, Notification> = lambdaRecorder { _ -> A_NOTIFICATION },
-    var createSummaryListNotificationResult: LambdaFourParamsRecorder<MatrixUser, String, Boolean, Long, Notification> =
-        lambdaRecorder { _, _, _, _ -> A_NOTIFICATION },
-    var createDiagnosticNotificationResult: LambdaNoParamRecorder<Notification> = lambdaRecorder<Notification> { A_NOTIFICATION },
+    var createRoomInvitationNotificationResult: LambdaTwoParamsRecorder<NotificationAccountParams, InviteNotifiableEvent, Notification> =
+        lambdaRecorder { _, _ -> A_NOTIFICATION },
+    var createSimpleNotificationResult: LambdaTwoParamsRecorder<NotificationAccountParams, SimpleNotifiableEvent, Notification> =
+        lambdaRecorder { _, _ -> A_NOTIFICATION },
+    var createFallbackNotificationResult: LambdaTwoParamsRecorder<NotificationAccountParams, FallbackNotifiableEvent, Notification> =
+        lambdaRecorder { _, _ -> A_NOTIFICATION },
+    var createSummaryListNotificationResult: LambdaFiveParamsRecorder<
+        NotificationAccountParams, String, Boolean, Long, NotificationAccountParams, Notification
+        > = lambdaRecorder { _, _, _, _, _ -> A_NOTIFICATION },
+    var createDiagnosticNotificationResult: LambdaOneParamRecorder<Int, Notification> =
+        lambdaRecorder<Int, Notification> { _ -> A_NOTIFICATION },
 ) : NotificationCreator {
     override suspend fun createMessagesListNotification(
+        notificationAccountParams: NotificationAccountParams,
         roomInfo: RoomEventGroupInfo,
         threadId: ThreadId?,
         largeIcon: Bitmap?,
         lastMessageTimestamp: Long,
         tickerText: String,
-        currentUser: MatrixUser,
         existingNotification: Notification?,
         imageLoader: ImageLoader,
         events: List<NotifiableMessageEvent>,
-        @ColorInt color: Int,
     ): Notification {
         return createMessagesListNotificationResult(
-            listOf(roomInfo, threadId, largeIcon, lastMessageTimestamp, tickerText, currentUser, existingNotification, imageLoader, events)
+            listOf(notificationAccountParams, roomInfo, threadId, largeIcon, lastMessageTimestamp, tickerText, existingNotification, imageLoader, events)
         )
     }
 
     override fun createRoomInvitationNotification(
+        notificationAccountParams: NotificationAccountParams,
         inviteNotifiableEvent: InviteNotifiableEvent,
-        @ColorInt color: Int,
     ): Notification {
-        return createRoomInvitationNotificationResult(inviteNotifiableEvent)
+        return createRoomInvitationNotificationResult(notificationAccountParams, inviteNotifiableEvent)
     }
 
     override fun createSimpleEventNotification(
+        notificationAccountParams: NotificationAccountParams,
         simpleNotifiableEvent: SimpleNotifiableEvent,
-        @ColorInt color: Int,
     ): Notification {
-        return createSimpleNotificationResult(simpleNotifiableEvent)
+        return createSimpleNotificationResult(notificationAccountParams, simpleNotifiableEvent)
     }
 
     override fun createFallbackNotification(
+        notificationAccountParams: NotificationAccountParams,
         fallbackNotifiableEvent: FallbackNotifiableEvent,
-        @ColorInt color: Int,
     ): Notification {
-        return createFallbackNotificationResult(fallbackNotifiableEvent)
+        return createFallbackNotificationResult(notificationAccountParams, fallbackNotifiableEvent)
     }
 
     override fun createSummaryListNotification(
-        currentUser: MatrixUser,
+        notificationAccountParams: NotificationAccountParams,
         compatSummary: String,
         noisy: Boolean,
         lastMessageTimestamp: Long,
-        @ColorInt color: Int,
     ): Notification {
-        return createSummaryListNotificationResult(currentUser, compatSummary, noisy, lastMessageTimestamp)
+        return createSummaryListNotificationResult(notificationAccountParams, compatSummary, noisy, lastMessageTimestamp, notificationAccountParams)
     }
 
     override fun createDiagnosticNotification(
         @ColorInt color: Int,
     ): Notification {
-        return createDiagnosticNotificationResult()
+        return createDiagnosticNotificationResult(color)
     }
 }

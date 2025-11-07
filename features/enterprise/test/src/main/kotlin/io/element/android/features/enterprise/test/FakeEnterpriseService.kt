@@ -24,11 +24,12 @@ class FakeEnterpriseService(
     private val defaultHomeserverListResult: () -> List<String> = { emptyList() },
     private val isAllowedToConnectToHomeserverResult: (String) -> Boolean = { lambdaError() },
     initialSemanticColors: SemanticColorsLightDark = SemanticColorsLightDark.default,
+    initialBrandColor: Color? = null,
     private val overrideBrandColorResult: (SessionId?, String?) -> Unit = { _, _ -> lambdaError() },
     private val firebasePushGatewayResult: () -> String? = { lambdaError() },
     private val unifiedPushDefaultPushGatewayResult: () -> String? = { lambdaError() },
 ) : EnterpriseService {
-    private val brandColorState = MutableStateFlow<Color?>(null)
+    private val brandColorState = MutableStateFlow(initialBrandColor)
     private val semanticColorsState = MutableStateFlow(initialSemanticColors)
 
     override suspend fun isEnterpriseUser(sessionId: SessionId): Boolean = simulateLongTask {

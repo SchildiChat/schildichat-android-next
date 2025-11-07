@@ -210,7 +210,8 @@
     {
       "name" : ":features:space:impl",
       "includeRegex" : [
-        "screen\\.leave_space\\..*"
+        "screen\\.leave_space\\..*",
+        "screen\\.space_settings\\..*"
       ]
     },
     {
@@ -366,10 +367,11 @@
       ]
     },
     {
-      "name" : ":features:changeroommemberroles:impl",
+      "name" : ":features:rolesandpermissions:impl",
       "includeRegex" : [
         "screen_room_change_.*",
         "screen_room_roles_.*",
+        "screen\\.room_roles_and_permissions\\..*",
         "screen_room_member_list.*"
       ]
     }

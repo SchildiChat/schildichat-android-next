@@ -19,17 +19,17 @@ import io.element.android.tests.testutils.lambda.lambdaRecorder
 import io.element.android.tests.testutils.lambda.value
 
 class FakeNotificationDisplayer(
-    var showNotificationMessageResult: LambdaThreeParamsRecorder<String?, Int, Notification, Boolean> = lambdaRecorder { _, _, _ -> true },
-    var cancelNotificationMessageResult: LambdaTwoParamsRecorder<String?, Int, Unit> = lambdaRecorder { _, _ -> },
+    var showNotificationResult: LambdaThreeParamsRecorder<String?, Int, Notification, Boolean> = lambdaRecorder { _, _, _ -> true },
+    var cancelNotificationResult: LambdaTwoParamsRecorder<String?, Int, Unit> = lambdaRecorder { _, _ -> },
     var displayDiagnosticNotificationResult: LambdaOneParamRecorder<Notification, Boolean> = lambdaRecorder { _ -> true },
     var dismissDiagnosticNotificationResult: LambdaNoParamRecorder<Unit> = lambdaRecorder { -> },
 ) : NotificationDisplayer {
-    override fun showNotificationMessage(tag: String?, id: Int, notification: Notification): Boolean {
-        return showNotificationMessageResult(tag, id, notification)
+    override fun showNotification(tag: String?, id: Int, notification: Notification): Boolean {
+        return showNotificationResult(tag, id, notification)
     }
 
-    override fun cancelNotificationMessage(tag: String?, id: Int) {
-        return cancelNotificationMessageResult(tag, id)
+    override fun cancelNotification(tag: String?, id: Int) {
+        return cancelNotificationResult(tag, id)
     }
 
     override fun displayDiagnosticNotification(notification: Notification): Boolean {
@@ -41,7 +41,7 @@ class FakeNotificationDisplayer(
     }
 
     fun verifySummaryCancelled(times: Int = 1) {
-        cancelNotificationMessageResult.assertions().isCalledExactly(times).withSequence(
+        cancelNotificationResult.assertions().isCalledExactly(times).withSequence(
             listOf(value(null), value(NotificationIdProvider.getSummaryNotificationId(A_SESSION_ID)))
         )
     }

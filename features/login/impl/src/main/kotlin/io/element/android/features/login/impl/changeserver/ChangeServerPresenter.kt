@@ -61,7 +61,7 @@ class ChangeServerPresenter(
                 accountProviderUrl = data.url,
             )
             val details = authenticationService.setHomeserver(data.url).getOrThrow()
-            if (details.isSupported) {
+            if (!details.isSupported) {
                 throw ChangeServerError.UnsupportedServer
             }
             // Homeserver is valid, remember user choice

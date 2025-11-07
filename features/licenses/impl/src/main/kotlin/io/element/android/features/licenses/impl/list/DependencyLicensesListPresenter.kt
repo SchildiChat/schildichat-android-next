@@ -56,10 +56,10 @@ class DependencyLicensesListPresenter(
             }
         }
 
-        fun handleEvent(dependencyLicensesListEvent: DependencyLicensesListEvent) {
-            when (dependencyLicensesListEvent) {
+        fun handleEvent(event: DependencyLicensesListEvent) {
+            when (event) {
                 is DependencyLicensesListEvent.SetFilter -> {
-                    filter = dependencyLicensesListEvent.filter
+                    filter = event.filter
                 }
             }
         }

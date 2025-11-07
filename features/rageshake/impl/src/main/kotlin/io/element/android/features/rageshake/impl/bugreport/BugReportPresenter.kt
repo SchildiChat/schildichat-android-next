@@ -32,7 +32,7 @@ class BugReportPresenter(
     private val bugReporter: BugReporter,
     private val crashDataStore: CrashDataStore,
     private val screenshotHolder: ScreenshotHolder,
-    @param:AppCoroutineScope
+    @AppCoroutineScope
     private val appCoroutineScope: CoroutineScope,
 ) : Presenter<BugReportState> {
     private class BugReporterUploadListener(

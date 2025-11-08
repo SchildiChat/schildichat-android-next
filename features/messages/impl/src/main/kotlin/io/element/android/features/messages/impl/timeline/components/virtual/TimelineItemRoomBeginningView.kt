@@ -45,7 +45,6 @@ fun TimelineItemRoomBeginningView(
                 avatar = null,
                 content = stringResource(R.string.screen_room_timeline_upgraded_room_message).toAnnotatedString(),
                 onSubmitClick = { onPredecessorRoomClick(predecessorRoom.roomId) },
-                isCritical = false,
                 submitText = stringResource(R.string.screen_room_timeline_upgraded_room_action)
             )
         }

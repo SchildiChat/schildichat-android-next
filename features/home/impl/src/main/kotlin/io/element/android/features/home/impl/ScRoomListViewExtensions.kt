@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import chat.schildi.features.home.spaces.SpaceListDataSource
 import chat.schildi.features.home.spaces.resolveSpaceName
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
@@ -27,6 +28,10 @@ fun scRoomListScrollBehavior(): TopAppBarScrollBehavior? {
 
 @Composable
 fun RoomListState.resolveSpaceName() = (this.contentState as? RoomListContentState.Rooms)?.let { it.spacesList.resolveSpaceName(it.spaceSelectionHierarchy) }
+
+fun RoomListState.isShowingUpstreamSpaceList() = (this.contentState as? RoomListContentState.Rooms)?.let {
+    it.spaceSelectionHierarchy.firstOrNull() == SpaceListDataSource.UpstreamSpaceListItem.SPACE_ID
+} == true
 
 @Composable
 fun Modifier.addSpaceNavPadding(spaceBarHeight: Int): Modifier =

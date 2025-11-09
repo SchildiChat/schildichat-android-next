@@ -11,6 +11,7 @@ import androidx.compose.runtime.Immutable
 import chat.schildi.features.home.spaces.SpaceListDataSource
 import chat.schildi.features.home.spaces.SpaceUnreadCountsDataSource
 import io.element.android.features.home.impl.filters.RoomListFiltersState
+import io.element.android.features.home.impl.isShowingUpstreamSpaceList
 import io.element.android.features.home.impl.model.RoomListRoomSummary
 import io.element.android.features.home.impl.search.RoomListSearchState
 import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteState
@@ -36,7 +37,7 @@ data class RoomListState(
     val canReportRoom: Boolean,
     val eventSink: (RoomListEvents) -> Unit,
 ) {
-    val displayFilters = contentState is RoomListContentState.Rooms
+    val displayFilters = contentState is RoomListContentState.Rooms && !isShowingUpstreamSpaceList()
 
     sealed interface ContextMenu {
         data object Hidden : ContextMenu

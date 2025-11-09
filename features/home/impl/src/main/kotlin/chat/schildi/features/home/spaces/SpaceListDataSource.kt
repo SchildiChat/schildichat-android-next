@@ -463,12 +463,16 @@ class SpaceListDataSource(
         override val name: String,
         override val icon: ImageVector,
     ) : PseudoSpaceItem(
-        "upstream",
+        ID,
         icon,
     ) {
         override val unreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts? = null
         override fun applyFilter(rooms: List<RoomListRoomSummary>) = persistentListOf<RoomListRoomSummary>()
         override fun enrich(getUnreadCounts: (AbstractSpaceHierarchyItem) -> SpaceUnreadCountsDataSource.SpaceUnreadCounts?) = this
+        companion object {
+            private const val ID = "upstream"
+            const val SPACE_ID = PSEUDO_SPACE_ID_PREFIX + ID // For easier external checking
+        }
     }
 
     data class PseudoSpaceSettings(

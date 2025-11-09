@@ -7,9 +7,9 @@ import chat.schildi.theme.ScTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBarColors.toScTopAppBarColors(): TopAppBarColors {
+fun TopAppBarColors.toScTopAppBarColors(isEmpty: Boolean): TopAppBarColors {
     val bg = ScTheme.exposures.appBarBg
-    return if (bg == null) {
+    return if (bg == null || isEmpty) {
         this
     } else {
         this.copy(containerColor = bg, scrolledContainerColor = bg)

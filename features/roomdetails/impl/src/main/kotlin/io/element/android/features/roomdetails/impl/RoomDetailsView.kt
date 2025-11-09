@@ -296,7 +296,7 @@ private fun RoomDetailsTopBar(
     var showMenu by remember { mutableStateOf(false) }
 
     TopAppBar(
-        title = { },
+        //title = { },
         navigationIcon = { BackButton(onClick = goBack) },
         actions = {
             if (showEdit) {

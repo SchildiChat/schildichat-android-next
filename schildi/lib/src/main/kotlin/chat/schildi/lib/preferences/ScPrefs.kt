@@ -34,7 +34,6 @@ object ScPrefs {
     val DEBOUNCE_OFFLINE_STATE = ScBoolPref("DEBOUNCE_OFFLINE_STATE", true, R.string.sc_pref_debounce_offline_state_title, R.string.sc_pref_debounce_offline_state_summary, authorsChoice = null, upstreamChoice = false)
 
     // Chat overview
-    val COMPACT_APP_BAR = ScBoolPref("COMPACT_APP_BAR", true, R.string.sc_pref_compact_app_bar_title, R.string.sc_pref_compact_app_bar_summary, upstreamChoice = false)
     val SC_OVERVIEW_LAYOUT = ScBoolPref("SC_OVERVIEW_LAYOUT", true, R.string.sc_pref_sc_overview_layout_title, R.string.sc_pref_sc_layout_summary, upstreamChoice = false)
     val CLIENT_GENERATED_UNREAD_COUNTS = ScBoolPref("CLIENT_GENERATED_UNREAD_COUNTS", true, R.string.sc_client_generated_unread_counts_title, R.string.sc_client_generated_unread_counts_summary, upstreamChoice = true, authorsChoice = true, disabledValue = true, dependencies = SC_DANGER_ZONE.asDependencies())
     val RENDER_SILENT_UNREAD = ScBoolPref("RENDER_SILENT_UNREAD", true, R.string.sc_pref_render_silent_unread_title, R.string.sc_pref_render_silent_unread_summary, upstreamChoice = true, authorsChoice = true, disabledValue = false)
@@ -150,7 +149,6 @@ object ScPrefs {
         )),
         ScPrefScreen(R.string.sc_pref_category_chat_overview, null, listOf(
             SC_OVERVIEW_LAYOUT,
-            COMPACT_APP_BAR,
             ELEMENT_ROOM_LIST_FILTERS,
             SNC_FAB,
             HIDE_INVITES,
@@ -263,7 +261,6 @@ object ScPrefs {
             SC_THEME,
             SC_OVERVIEW_LAYOUT.copy(titleRes = R.string.sc_pref_sc_layout_title),
             EL_TYPOGRAPHY,
-            COMPACT_APP_BAR,
         )),
         ScPrefCategory(R.string.sc_pref_category_spaces, null, listOf(
             SPACE_NAV,

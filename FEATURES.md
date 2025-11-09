@@ -20,7 +20,6 @@ Note that following list of changes compared to Element X is likely incomplete, 
     - Show unread chats on top (while optionally ignoring muted unreads)
     - Pin favorites
     - Show low priority on bottom
-- Non-expanding compact app bar in the chat overview †
 - Show start-new-chat action in the top app bar rather than as floating action button †
 - Show unread counts †
 - Show alt text for inline images / custom emotes, instead of not showing them at all
@@ -66,12 +65,13 @@ Note that following list of changes compared to Element X is likely incomplete, 
 
 ## Historic
 
-- Render media captions ([MSC2530](https://github.com/matrix-org/matrix-spec-proposals/pull/2530)): has been implemented upstream at v0.4.7
+- Render media captions ([MSC2530](https://github.com/matrix-org/matrix-spec-proposals/pull/2530)): adopted by upstream at v0.4.7
 - Bigger emoji-only messages: upstreamed at v0.5.2
 - Show avatar placeholders instead of blank space for avatars that failed to load
 - Copy URLs to clipboard in text messages on longclick
 - Copy user MXIDs to clipboard by long-pressing on the member-detail screen
-- Suggest and record frequently used emoji reactions (synced with desktop clients via `io.element.recent_emoji` account data), implemented by upstream in v25.10.0
+- Suggest and record frequently used emoji reactions (synced with desktop clients via `io.element.recent_emoji` account data), adopted by upstream in v25.10.0
+- Non-expanding compact app bar in the chat overview, adopted by upstream in v25.11.2
 
 
 †: Can be partly enabled or disabled by user setting  

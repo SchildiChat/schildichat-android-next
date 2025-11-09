@@ -20,10 +20,10 @@ import io.element.android.features.home.impl.roomlist.RoomListState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun scRoomListScrollBehavior(): TopAppBarScrollBehavior? {
-    return if (ScPrefs.COMPACT_APP_BAR.value())
-        TopAppBarDefaults.pinnedScrollBehavior()
-    else
+    return if (ScPrefs.ELEMENT_ROOM_LIST_FILTERS.value())
         null
+    else
+        TopAppBarDefaults.pinnedScrollBehavior()
 }
 
 @Composable

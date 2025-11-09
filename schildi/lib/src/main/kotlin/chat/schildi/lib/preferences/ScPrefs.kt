@@ -26,7 +26,6 @@ object ScPrefs {
     val SC_RESTORE_ADVANCED_THEME_DEFAULTS = ScActionablePref("SC_RESTORE_ADVANCED_THEME_DEFAULTS", R.string.sc_pref_restore_defaults)
     val SC_RESTORE_UPSTREAM = ScActionablePref("SC_RESTORE_UPSTREAM", R.string.sc_pref_restore_element, dependencies = SC_DANGER_ZONE.asDependencies())
     val SC_RESTORE_AUTHORS_CHOICE = ScActionablePref("SC_RESTORE_AUTHORS_CHOICE", R.string.sc_pref_restore_authors_choice, dependencies = SC_DANGER_ZONE.asDependencies())
-    val NOTIFICATION_WORKER = ScBoolPref("NOTIFICATION_WORKER", DEFAULT_ENABLE_NOTIFICATION_WORKER, R.string.sc_pref_notification_worker_title, R.string.sc_pref_notification_worker_summary, dependencies = SC_DANGER_ZONE.asDependencies())
 
     // Appearance
     val SC_THEME = ScBoolPref("SC_THEMES", true, R.string.sc_pref_sc_themes_title, R.string.sc_pref_sc_themes_summary, upstreamChoice = false)
@@ -35,7 +34,6 @@ object ScPrefs {
     // General behavior
     val FAST_TRANSITIONS = ScBoolPref("FAST_TRANSITIONS", true, R.string.sc_pref_fast_transitions_title, R.string.sc_pref_fast_transitions_summary, upstreamChoice = false)
     val NOTIFICATION_ONLY_ALERT_ONCE = ScBoolPref("NOTIFICATION_ONLY_ALERT_ONCE", false, R.string.sc_pref_notification_only_alert_once_title, R.string.sc_pref_notification_only_alert_once_summary, upstreamChoice = false)
-    val NOTIFY_FAILED_NOTIFICATION_LOOKUP = ScBoolPref("NOTIFY_FAILED_NOTIFICATION_LOOKUP", true, R.string.sc_pref_notify_failed_notification_lookup_title, R.string.sc_pref_notify_failed_notification_lookup_summary, upstreamChoice = false, disabledValue = false, dependencies = NOTIFICATION_WORKER.asDependencies())
     val SHOW_SYNCING_INDICATOR = ScBoolPref("SHOW_SYNCING_INDICATOR", true, R.string.sc_pref_syncing_indicator_title, R.string.sc_pref_syncing_indicator_summary, upstreamChoice = true, authorsChoice = true)
     val DEBOUNCE_OFFLINE_STATE = ScBoolPref("DEBOUNCE_OFFLINE_STATE", true, R.string.sc_pref_debounce_offline_state_title, R.string.sc_pref_debounce_offline_state_summary, authorsChoice = null, upstreamChoice = false)
 
@@ -220,7 +218,6 @@ object ScPrefs {
         )),
         ScPrefScreen(R.string.sc_pref_category_notifications, null, listOf(
             NOTIFICATION_ONLY_ALERT_ONCE,
-            NOTIFY_FAILED_NOTIFICATION_LOOKUP,
         )),
         ScPrefScreen(R.string.sc_pref_screen_experimental_title, R.string.sc_pref_screen_experimental_summary, listOf(
             ScPrefCategory(R.string.sc_pref_category_timeline, null, listOf(
@@ -242,7 +239,6 @@ object ScPrefs {
             SC_DANGER_ZONE,
             ScPrefScreen(R.string.sc_pref_chamber_of_secrets_title, null, listOf(
                 ScDisclaimerPref("SC_CHAMBER_OF_SECRETS_DISCLAIMER", R.string.sc_pref_chamber_of_secrets_summary),
-                NOTIFICATION_WORKER,
                 CLIENT_GENERATED_UNREAD_COUNTS,
                 SYNC_READ_RECEIPT_AND_MARKER,
                 MARK_READ_REQUIRES_SEEN_UNREAD_LINE,

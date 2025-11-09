@@ -13,7 +13,6 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import io.element.android.features.call.api.CallType
 import io.element.android.features.call.api.ElementCallEntryPoint
-import io.element.android.libraries.core.extensions.runCatchingExceptions
 import io.element.android.libraries.core.log.logger.LoggerTag
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.di.annotations.AppCoroutineScope
@@ -24,7 +23,6 @@ import io.element.android.libraries.push.impl.history.onInvalidPushReceived
 import io.element.android.libraries.push.impl.history.onSuccess
 import io.element.android.libraries.push.impl.history.onUnableToResolveEvent
 import io.element.android.libraries.push.impl.history.onUnableToRetrieveSession
-import io.element.android.libraries.push.impl.history.scOnDeferredPushHandling
 import io.element.android.libraries.push.impl.notifications.FallbackNotificationFactory
 import io.element.android.libraries.push.impl.notifications.NotificationEventRequest
 import io.element.android.libraries.push.impl.notifications.NotificationResolverQueue
@@ -46,10 +44,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-private val loggerTag = LoggerTag("DefaultPushHandler", LoggerTag.PushLoggerTag)
+private val loggerTag = LoggerTag("PushHandler", LoggerTag.PushLoggerTag)
 
 @SingleIn(AppScope::class)
-//@ContributesBinding(AppScope::class)
+@ContributesBinding(AppScope::class)
 @Inject
 class DefaultPushHandler(
     private val onNotifiableEventReceived: OnNotifiableEventReceived,
@@ -70,14 +68,6 @@ class DefaultPushHandler(
 ) : PushHandler {
     init {
         processPushEventResults()
-    }
-
-    override suspend fun scHandleReceived() = incrementPushDataStore.incrementPushCounter()
-    override suspend fun scHandleDeferred(providerInfo: String, pushData: PushData?) =
-        pushHistoryService.scOnDeferredPushHandling(providerInfo, pushData)
-    override suspend fun scHandleLookupFailure(providerInfo: String, pushData: PushData) {
-        // SC should already have done that...
-        Timber.e("ScPushHandler did not take care of scHandleLookupFailure")
     }
 
     /**
@@ -216,7 +206,7 @@ class DefaultPushHandler(
      * @param pushData the data received in the push.
      * @param providerInfo the provider info.
      */
-    override suspend fun handle(pushData: PushData, providerInfo: String): Boolean {
+    override suspend fun handle(pushData: PushData, providerInfo: String) {
         Timber.tag(loggerTag.value).d("## handling pushData: ${pushData.roomId}/${pushData.eventId}")
         if (buildMeta.lowPrivacyLoggingEnabled) {
             Timber.tag(loggerTag.value).d("## pushData: $pushData")
@@ -229,7 +219,6 @@ class DefaultPushHandler(
         } else {
             handleInternal(pushData, providerInfo)
         }
-        return true
     }
 
     override suspend fun handleInvalid(providerInfo: String, data: String) {

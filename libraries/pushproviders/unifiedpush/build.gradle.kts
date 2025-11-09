@@ -20,7 +20,6 @@ setupDependencyInjection()
 
 dependencies {
     implementation(projects.schildi.lib)
-    implementation(libs.androidx.work) // SC
     implementation(projects.features.enterprise.api)
     implementation(projects.libraries.androidutils)
     implementation(projects.libraries.core)

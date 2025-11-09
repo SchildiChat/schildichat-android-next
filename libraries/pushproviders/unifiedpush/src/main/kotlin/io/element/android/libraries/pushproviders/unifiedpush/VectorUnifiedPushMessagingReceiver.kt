@@ -9,7 +9,6 @@ package io.element.android.libraries.pushproviders.unifiedpush
 
 import android.content.Context
 import android.content.Intent
-import chat.schildi.lib.preferences.ScPreferencesStore
 import dev.zacsweers.metro.Inject
 import io.element.android.libraries.architecture.bindings
 import io.element.android.libraries.core.log.logger.LoggerTag
@@ -32,7 +31,6 @@ class VectorUnifiedPushMessagingReceiver : MessagingReceiver() {
     @Inject lateinit var pushHandler: PushHandler
     @Inject lateinit var guardServiceStarter: GuardServiceStarter
     @Inject lateinit var unifiedPushStore: UnifiedPushStore
-    @Inject lateinit var scPreferencesStore: ScPreferencesStore
     @Inject lateinit var unifiedPushGatewayResolver: UnifiedPushGatewayResolver
     @Inject lateinit var unifiedPushGatewayUrlResolver: UnifiedPushGatewayUrlResolver
     @Inject lateinit var newGatewayHandler: UnifiedPushNewGatewayHandler
@@ -54,11 +52,7 @@ class VectorUnifiedPushMessagingReceiver : MessagingReceiver() {
      */
     override fun onMessage(context: Context, message: PushMessage, instance: String) {
         Timber.tag(loggerTag.value).d("New message, decrypted: ${message.decrypted}")
-        if (ScPushWorker.launch(context, message.content, instance, pushHandler, pushParser, scPreferencesStore, coroutineScope)) {
-            return
-        }
         coroutineScope.launch {
-            pushHandler.scHandleReceived()
             val pushData = pushParser.parse(message.content, instance)
             if (pushData == null) {
                 Timber.tag(loggerTag.value).w("Invalid data received from UnifiedPush")

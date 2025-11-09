@@ -98,3 +98,5 @@ const val A_TIMESTAMP = 567L
 const val A_FORMATTED_DATE = "April 6, 1980 at 6:35 PM"
 
 const val A_LOGIN_HINT = "mxid:@alice:example.org"
+
+const val A_COLOR_INT = 0xFF0000

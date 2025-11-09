@@ -12,14 +12,13 @@ import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.features.roomaliasesolver.api.RoomAliasResolverEntryPoint
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.di.SessionScope
-import io.element.android.libraries.matrix.api.room.alias.ResolvedRoomAlias
 
 @ContributesNode(SessionScope::class)
 @AssistedInject
@@ -28,22 +27,19 @@ class RoomAliasResolverNode(
     @Assisted plugins: List<Plugin>,
     presenterFactory: RoomAliasResolverPresenter.Factory,
 ) : Node(buildContext, plugins = plugins) {
+    private val callback: RoomAliasResolverEntryPoint.Callback = callback()
     private val inputs = inputs<RoomAliasResolverEntryPoint.Params>()
 
     private val presenter = presenterFactory.create(
         inputs.roomAlias
     )
 
-    private fun onAliasResolved(data: ResolvedRoomAlias) {
-        plugins<RoomAliasResolverEntryPoint.Callback>().forEach { it.onAliasResolved(data) }
-    }
-
     @Composable
     override fun View(modifier: Modifier) {
         val state = presenter.present()
         RoomAliasResolverView(
             state = state,
-            onSuccess = ::onAliasResolved,
+            onSuccess = callback::onAliasResolved,
             onBackClick = ::navigateUp,
             modifier = modifier
         )

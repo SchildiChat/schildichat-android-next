@@ -7,19 +7,16 @@
 
 package io.element.android.libraries.push.impl.workmanager
 
+import android.os.Build
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkRequest
-import androidx.work.workDataOf
-import io.element.android.libraries.androidutils.json.JsonProvider
-import io.element.android.libraries.core.extensions.runCatchingExceptions
-import io.element.android.libraries.matrix.api.core.EventId
-import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.push.api.push.NotificationEventRequest
 import io.element.android.libraries.workmanager.api.WorkManagerRequest
 import io.element.android.libraries.workmanager.api.WorkManagerRequestType
 import io.element.android.libraries.workmanager.api.workManagerTag
+import io.element.android.services.toolbox.api.sdk.BuildVersionSdkIntProvider
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import timber.log.Timber
@@ -28,25 +25,28 @@ import java.security.InvalidParameterException
 class SyncNotificationWorkManagerRequest(
     private val sessionId: SessionId,
     private val notificationEventRequests: List<NotificationEventRequest>,
-    private val json: JsonProvider,
+    private val workerDataConverter: WorkerDataConverter,
+    private val buildVersionSdkIntProvider: BuildVersionSdkIntProvider,
 ) : WorkManagerRequest {
     override fun build(): Result<WorkRequest> {
         if (notificationEventRequests.isEmpty()) {
             return Result.failure(InvalidParameterException("notificationEventRequests cannot be empty"))
         }
-
-        val json = runCatchingExceptions { json().encodeToString(notificationEventRequests.map { it.toData() }) }
-            .getOrElse {
-                Timber.e(it, "Failed to serialize notification requests")
-                return Result.failure(it)
-            }
-
+        val data = workerDataConverter.serialize(notificationEventRequests).getOrElse {
+            return Result.failure(it)
+        }
         Timber.d("Scheduling ${notificationEventRequests.size} notification requests with WorkManager for $sessionId")
-
         return Result.success(
             OneTimeWorkRequestBuilder<FetchNotificationsWorker>()
-                .setInputData(workDataOf("requests" to json))
-                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                .setInputData(data)
+                .apply {
+                    // Expedited workers aren't needed on Android 12 or lower:
+                    // They force displaying a foreground sync notification for no good reason, since they sync almost immediately anyway
+                    // See https://developer.android.com/develop/background-work/background-tasks/persistent/getting-started/define-work#backwards-compat
+                    if (buildVersionSdkIntProvider.isAtLeast(Build.VERSION_CODES.TIRAMISU)) {
+                        setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                    }
+                }
                 .setTraceTag(workManagerTag(sessionId, WorkManagerRequestType.NOTIFICATION_SYNC))
                 // TODO investigate using this instead of the resolver queue
                 // .setInputMerger()
@@ -64,23 +64,5 @@ class SyncNotificationWorkManagerRequest(
         val eventId: String,
         @SerialName("provider_info")
         val providerInfo: String,
-    ) {
-        fun toRequest(): NotificationEventRequest {
-            return NotificationEventRequest(
-                sessionId = SessionId(sessionId),
-                roomId = RoomId(roomId),
-                eventId = EventId(eventId),
-                providerInfo = providerInfo,
-            )
-        }
-    }
-}
-
-private fun NotificationEventRequest.toData(): SyncNotificationWorkManagerRequest.Data {
-    return SyncNotificationWorkManagerRequest.Data(
-        sessionId = sessionId.value,
-        roomId = roomId.value,
-        eventId = eventId.value,
-        providerInfo = providerInfo,
     )
 }

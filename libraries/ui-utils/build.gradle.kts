@@ -13,11 +13,11 @@ plugins {
 
 android {
     namespace = "io.element.android.libraries.ui.utils"
+}
 
-    dependencies {
-        implementation(projects.libraries.androidutils)
-        implementation(projects.services.toolbox.impl)
+dependencies {
+    implementation(projects.libraries.androidutils)
+    implementation(projects.services.toolbox.impl)
 
-        testCommonDependencies(libs)
-    }
+    testCommonDependencies(libs)
 }

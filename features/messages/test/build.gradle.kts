@@ -23,4 +23,5 @@ dependencies {
     implementation(projects.libraries.preferences.api)
     implementation(projects.libraries.voicerecorder.test)
     implementation(projects.services.analytics.test)
+    implementation(projects.tests.testutils)
 }

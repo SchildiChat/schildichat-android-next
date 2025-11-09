@@ -36,7 +36,7 @@ class ReadReceiptBottomSheetPresenter : Presenter<ReadReceiptBottomSheetState> {
 
         return ReadReceiptBottomSheetState(
             selectedEvent = selectedEvent,
-            eventSink = { handleEvent(it) },
+            eventSink = ::handleEvent,
         )
     }
 }

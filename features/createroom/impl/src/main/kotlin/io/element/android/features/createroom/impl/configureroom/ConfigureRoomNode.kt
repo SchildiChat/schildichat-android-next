@@ -13,11 +13,11 @@ import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import im.vector.app.features.analytics.plan.MobileScreen
 import io.element.android.annotations.ContributesNode
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.services.analytics.api.AnalyticsService
@@ -42,9 +42,7 @@ class ConfigureRoomNode(
         )
     }
 
-    private fun onCreateRoomSuccess(roomId: RoomId) {
-        plugins<Callback>().forEach { it.onCreateRoomSuccess(roomId) }
-    }
+    private val callback: Callback = callback()
 
     @Composable
     override fun View(modifier: Modifier) {
@@ -53,7 +51,7 @@ class ConfigureRoomNode(
             state = state,
             modifier = modifier,
             onBackClick = this::navigateUp,
-            onCreateRoomSuccess = ::onCreateRoomSuccess,
+            onCreateRoomSuccess = callback::onCreateRoomSuccess,
         )
     }
 }

@@ -9,33 +9,22 @@ package io.element.android.features.roomaliasresolver.impl
 
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
-import com.bumble.appyx.core.plugin.Plugin
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
 import io.element.android.features.roomaliasesolver.api.RoomAliasResolverEntryPoint
 import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
-@Inject
 class DefaultRoomAliasResolverEntryPoint : RoomAliasResolverEntryPoint {
-    override fun nodeBuilder(parentNode: Node, buildContext: BuildContext): RoomAliasResolverEntryPoint.NodeBuilder {
-        val plugins = ArrayList<Plugin>()
-
-        return object : RoomAliasResolverEntryPoint.NodeBuilder {
-            override fun callback(callback: RoomAliasResolverEntryPoint.Callback): RoomAliasResolverEntryPoint.NodeBuilder {
-                plugins += callback
-                return this
-            }
-
-            override fun params(params: RoomAliasResolverEntryPoint.Params): RoomAliasResolverEntryPoint.NodeBuilder {
-                plugins += params
-                return this
-            }
-
-            override fun build(): Node {
-                return parentNode.createNode<RoomAliasResolverNode>(buildContext, plugins)
-            }
-        }
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: RoomAliasResolverEntryPoint.Params,
+        callback: RoomAliasResolverEntryPoint.Callback,
+    ): Node {
+        return parentNode.createNode<RoomAliasResolverNode>(
+            buildContext = buildContext,
+            plugins = listOf(params, callback),
+        )
     }
 }

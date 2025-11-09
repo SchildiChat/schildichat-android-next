@@ -8,7 +8,7 @@
 package io.element.android.features.messages.impl.pinned.banner
 
 import com.google.common.truth.Truth.assertThat
-import io.element.android.features.messages.impl.pinned.PinnedEventsTimelineProvider
+import io.element.android.features.messages.impl.pinned.DefaultPinnedEventsTimelineProvider
 import io.element.android.libraries.eventformatter.test.FakePinnedMessagesBannerFormatter
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.sync.SyncService
@@ -195,7 +195,7 @@ class PinnedMessagesBannerPresenterTest {
 internal fun TestScope.createPinnedEventsTimelineProvider(
     room: JoinedRoom = FakeJoinedRoom(),
     syncService: SyncService = FakeSyncService(),
-) = PinnedEventsTimelineProvider(
+) = DefaultPinnedEventsTimelineProvider(
     room = room,
     syncService = syncService,
     dispatchers = testCoroutineDispatchers(),

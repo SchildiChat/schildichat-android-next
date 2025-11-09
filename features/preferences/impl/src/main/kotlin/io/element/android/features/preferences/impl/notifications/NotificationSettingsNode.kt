@@ -12,10 +12,10 @@ import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.di.SessionScope
 
 @ContributesNode(SessionScope::class)
@@ -26,28 +26,20 @@ class NotificationSettingsNode(
     private val presenter: NotificationSettingsPresenter,
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
-        fun editDefaultNotificationMode(isOneToOne: Boolean)
-        fun onTroubleshootNotificationsClick()
+        fun navigateToEditDefaultNotificationSetting(isOneToOne: Boolean)
+        fun navigateToTroubleshootNotifications()
     }
 
-    private val callbacks = plugins<Callback>()
-
-    private fun openEditDefault(isOneToOne: Boolean) {
-        callbacks.forEach { it.editDefaultNotificationMode(isOneToOne) }
-    }
-
-    private fun onTroubleshootNotificationsClick() {
-        callbacks.forEach { it.onTroubleshootNotificationsClick() }
-    }
+    private val callback: Callback = callback()
 
     @Composable
     override fun View(modifier: Modifier) {
         val state = presenter.present()
         NotificationSettingsView(
             state = state,
-            onOpenEditDefault = { openEditDefault(isOneToOne = it) },
+            onOpenEditDefault = callback::navigateToEditDefaultNotificationSetting,
             onBackClick = ::navigateUp,
-            onTroubleshootNotificationsClick = ::onTroubleshootNotificationsClick,
+            onTroubleshootNotificationsClick = callback::navigateToTroubleshootNotifications,
             modifier = modifier,
         )
     }

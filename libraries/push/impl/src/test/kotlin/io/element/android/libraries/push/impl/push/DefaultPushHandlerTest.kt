@@ -46,6 +46,7 @@ import io.element.android.libraries.push.impl.notifications.model.NotifiableEven
 import io.element.android.libraries.push.impl.notifications.model.ResolvedPushEvent
 import io.element.android.libraries.push.impl.test.DefaultTestPush
 import io.element.android.libraries.push.impl.troubleshoot.DiagnosticPushHandler
+import io.element.android.libraries.push.impl.workmanager.WorkerDataConverter
 import io.element.android.libraries.pushproviders.api.PushData
 import io.element.android.libraries.pushstore.api.UserPushStore
 import io.element.android.libraries.pushstore.api.clientsecret.PushClientSecret
@@ -54,6 +55,7 @@ import io.element.android.libraries.pushstore.test.userpushstore.FakeUserPushSto
 import io.element.android.libraries.pushstore.test.userpushstore.clientsecret.FakePushClientSecret
 import io.element.android.libraries.workmanager.api.WorkManagerRequest
 import io.element.android.libraries.workmanager.test.FakeWorkManagerScheduler
+import io.element.android.services.toolbox.test.sdk.FakeBuildVersionSdkIntProvider
 import io.element.android.services.toolbox.test.strings.FakeStringProvider
 import io.element.android.services.toolbox.test.systemclock.FakeSystemClock
 import io.element.android.tests.testutils.lambda.any
@@ -690,7 +692,7 @@ class DefaultPushHandlerTest {
         notificationChannels: FakeNotificationChannels = FakeNotificationChannels(),
         pushHistoryService: PushHistoryService = FakePushHistoryService(),
         syncOnNotifiableEvent: SyncOnNotifiableEvent = SyncOnNotifiableEvent {},
-        featureFlagService: FakeFeatureFlagService = FakeFeatureFlagService(),
+        featureFlagService: FakeFeatureFlagService = FakeFeatureFlagService(initialState = mapOf(FeatureFlags.SyncNotificationsWithWorkManager.key to false)),
         workManagerScheduler: FakeWorkManagerScheduler = FakeWorkManagerScheduler(),
     ): DefaultPushHandler {
         return DefaultPushHandler(
@@ -715,7 +717,8 @@ class DefaultPushHandlerTest {
                 appCoroutineScope = backgroundScope,
                 workManagerScheduler = workManagerScheduler,
                 featureFlagService = featureFlagService,
-                json = DefaultJsonProvider(),
+                workerDataConverter = WorkerDataConverter(DefaultJsonProvider()),
+                buildVersionSdkIntProvider = FakeBuildVersionSdkIntProvider(33),
             ),
             appCoroutineScope = backgroundScope,
             fallbackNotificationFactory = FallbackNotificationFactory(

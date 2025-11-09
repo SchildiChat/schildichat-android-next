@@ -16,9 +16,9 @@ import io.element.android.libraries.matrix.test.A_SECRET
 import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.pushproviders.api.Distributor
-import io.element.android.libraries.pushproviders.test.aCurrentUserPushConfig
-import io.element.android.libraries.pushproviders.unifiedpush.troubleshoot.FakeUnifiedPushCurrentUserPushConfigProvider
+import io.element.android.libraries.pushproviders.test.aSessionPushConfig
 import io.element.android.libraries.pushproviders.unifiedpush.troubleshoot.FakeUnifiedPushDistributorProvider
+import io.element.android.libraries.pushproviders.unifiedpush.troubleshoot.FakeUnifiedPushSessionPushConfigProvider
 import io.element.android.libraries.pushstore.api.clientsecret.PushClientSecret
 import io.element.android.libraries.pushstore.test.userpushstore.clientsecret.FakePushClientSecret
 import io.element.android.tests.testutils.lambda.lambdaRecorder
@@ -211,13 +211,13 @@ class UnifiedPushProviderTest {
 
     @Test
     fun `getCurrentUserPushConfig invokes the provider methods`() = runTest {
-        val currentUserPushConfig = aCurrentUserPushConfig()
+        val currentUserPushConfig = aSessionPushConfig()
         val unifiedPushProvider = createUnifiedPushProvider(
-            unifiedPushCurrentUserPushConfigProvider = FakeUnifiedPushCurrentUserPushConfigProvider(
-                currentUserPushConfig = { currentUserPushConfig }
+            unifiedPushSessionPushConfigProvider = FakeUnifiedPushSessionPushConfigProvider(
+                config = { currentUserPushConfig }
             )
         )
-        val result = unifiedPushProvider.getCurrentUserPushConfig()
+        val result = unifiedPushProvider.getPushConfig(A_SESSION_ID)
         assertThat(result).isEqualTo(currentUserPushConfig)
     }
 
@@ -248,7 +248,7 @@ class UnifiedPushProviderTest {
         unRegisterUnifiedPushUseCase: UnregisterUnifiedPushUseCase = FakeUnregisterUnifiedPushUseCase(),
         pushClientSecret: PushClientSecret = FakePushClientSecret(),
         unifiedPushStore: UnifiedPushStore = FakeUnifiedPushStore(),
-        unifiedPushCurrentUserPushConfigProvider: UnifiedPushCurrentUserPushConfigProvider = FakeUnifiedPushCurrentUserPushConfigProvider(),
+        unifiedPushSessionPushConfigProvider: UnifiedPushSessionPushConfigProvider = FakeUnifiedPushSessionPushConfigProvider(),
     ): UnifiedPushProvider {
         return UnifiedPushProvider(
             unifiedPushDistributorProvider = unifiedPushDistributorProvider,
@@ -256,7 +256,7 @@ class UnifiedPushProviderTest {
             unRegisterUnifiedPushUseCase = unRegisterUnifiedPushUseCase,
             pushClientSecret = pushClientSecret,
             unifiedPushStore = unifiedPushStore,
-            unifiedPushCurrentUserPushConfigProvider = unifiedPushCurrentUserPushConfigProvider,
+            unifiedPushSessionPushConfigProvider = unifiedPushSessionPushConfigProvider,
         )
     }
 }

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.TopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,11 +18,11 @@ import io.element.android.features.home.impl.roomlist.RoomListState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun scRoomListScrollBehavior(appBarState: TopAppBarState): TopAppBarScrollBehavior {
+fun scRoomListScrollBehavior(): TopAppBarScrollBehavior? {
     return if (ScPrefs.COMPACT_APP_BAR.value())
         TopAppBarDefaults.pinnedScrollBehavior()
     else
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(appBarState)
+        null
 }
 
 @Composable

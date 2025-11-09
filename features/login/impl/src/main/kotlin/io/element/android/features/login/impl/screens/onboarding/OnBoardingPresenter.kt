@@ -91,7 +91,7 @@ class OnBoardingPresenter(
         }
         val isAddingAccount by produceState(initialValue = false) {
             // We are adding an account if there is at least one session already stored
-            value = sessionStore.getAllSessions().isNotEmpty()
+            value = sessionStore.numberOfSessions() > 0
         }
 
         val loginMode by loginHelper.collectLoginMode()

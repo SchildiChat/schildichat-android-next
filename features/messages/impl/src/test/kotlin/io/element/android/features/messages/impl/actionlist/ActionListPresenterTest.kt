@@ -42,9 +42,11 @@ import io.element.android.libraries.matrix.test.A_USER_ID
 import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.aRoomInfo
 import io.element.android.libraries.preferences.test.InMemoryAppPreferencesStore
+import io.element.android.libraries.recentemojis.api.GetRecentEmojis
 import io.element.android.tests.testutils.WarmUpRule
 import io.element.android.tests.testutils.test
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -53,6 +55,8 @@ import org.junit.Test
 class ActionListPresenterTest {
     @get:Rule
     val warmUpRule = WarmUpRule()
+
+    private val suggestedEmojis = persistentListOf("👍️", "👎️", "🔥", "❤️", "👏")
 
     @Test
     fun `present - initial state`() = runTest {
@@ -95,7 +99,7 @@ class ActionListPresenterTest {
                     actions = persistentListOf(
                         TimelineItemAction.ViewSource,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
             initialState.eventSink.invoke(ActionListEvents.Clear)
@@ -137,7 +141,7 @@ class ActionListPresenterTest {
                     actions = persistentListOf(
                         TimelineItemAction.ViewSource,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
             initialState.eventSink.invoke(ActionListEvents.Clear)
@@ -185,7 +189,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.ViewSource,
                         TimelineItemAction.ReportContent,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
             initialState.eventSink.invoke(ActionListEvents.Clear)
@@ -232,7 +236,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.ViewSource,
                         TimelineItemAction.ReportContent,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
             initialState.eventSink.invoke(ActionListEvents.Clear)
@@ -279,7 +283,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.ViewSource,
                         TimelineItemAction.ReportContent,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
             initialState.eventSink.invoke(ActionListEvents.Clear)
@@ -328,7 +332,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.ReportContent,
                         TimelineItemAction.Redact,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
             initialState.eventSink.invoke(ActionListEvents.Clear)
@@ -377,7 +381,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.ReportContent,
                         TimelineItemAction.Redact,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
             initialState.eventSink.invoke(ActionListEvents.Clear)
@@ -425,7 +429,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.ViewSource,
                         TimelineItemAction.Redact,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
             initialState.eventSink.invoke(ActionListEvents.Clear)
@@ -472,7 +476,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.ViewSource,
                         TimelineItemAction.Redact,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
             initialState.eventSink.invoke(ActionListEvents.Clear)
@@ -519,7 +523,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.CopyText,
                         TimelineItemAction.ViewSource,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
             initialState.eventSink.invoke(ActionListEvents.Clear)
@@ -563,7 +567,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.CopyText,
                         TimelineItemAction.ViewSource,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
             initialState.eventSink.invoke(ActionListEvents.Clear)
@@ -611,7 +615,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.ViewSource,
                         TimelineItemAction.Redact,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
             initialState.eventSink.invoke(ActionListEvents.Clear)
@@ -663,7 +667,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.ViewSource,
                         TimelineItemAction.Redact,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
             initialState.eventSink.invoke(ActionListEvents.Clear)
@@ -713,7 +717,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.ViewSource,
                         TimelineItemAction.ReportContent,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
             initialState.eventSink.invoke(ActionListEvents.Clear)
@@ -754,7 +758,7 @@ class ActionListPresenterTest {
                     actions = persistentListOf(
                         TimelineItemAction.ViewSource,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
             initialState.eventSink.invoke(ActionListEvents.Clear)
@@ -828,7 +832,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.CopyText,
                         TimelineItemAction.Redact,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
             initialState.eventSink.invoke(ActionListEvents.Clear)
@@ -875,7 +879,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.ViewSource,
                         TimelineItemAction.Redact,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
             initialState.eventSink.invoke(ActionListEvents.Clear)
@@ -929,7 +933,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.ViewSource,
                         TimelineItemAction.Redact,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
             initialState.eventSink.invoke(ActionListEvents.Clear)
@@ -1023,7 +1027,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.CopyText,
                         TimelineItemAction.Redact,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
         }
@@ -1068,7 +1072,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.Pin,
                         TimelineItemAction.Redact,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
         }
@@ -1112,7 +1116,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.Pin,
                         TimelineItemAction.Redact,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
         }
@@ -1155,7 +1159,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.Pin,
                         TimelineItemAction.Redact,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
         }
@@ -1201,7 +1205,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.Pin,
                         TimelineItemAction.Redact,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
         }
@@ -1239,7 +1243,7 @@ class ActionListPresenterTest {
                     actions = persistentListOf(
                         TimelineItemAction.ViewSource
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
         }
@@ -1317,7 +1321,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.Pin,
                         TimelineItemAction.Redact,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
         }
@@ -1371,7 +1375,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.Pin,
                         TimelineItemAction.Redact,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
         }
@@ -1426,7 +1430,7 @@ class ActionListPresenterTest {
                         TimelineItemAction.Pin,
                         TimelineItemAction.Redact,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
         }
@@ -1478,9 +1482,54 @@ class ActionListPresenterTest {
                         TimelineItemAction.Reply,
                         TimelineItemAction.Redact,
                     ),
-                    recentEmojis = persistentListOf(),
+                    recentEmojis = suggestedEmojis,
                 )
             )
+        }
+    }
+
+    @Test
+    fun `present - recentEmojis merges suggested and recent emojis`() = runTest {
+        val suggestedEmojis = persistentListOf("👍️", "👎️", "🔥", "❤️", "👏")
+        val otherEmojis = (0..100).map { it.toString() }
+
+        val presenter = createActionListPresenter(
+            isDeveloperModeEnabled = false,
+            recentEmojis = GetRecentEmojis { Result.success((listOf("👍️", ":)", "❤️") + otherEmojis).toImmutableList()) },
+        )
+        moleculeFlow(RecompositionMode.Immediate) {
+            presenter.present()
+        }.test {
+            val initialState = awaitItem()
+            val messageEvent = aMessageEvent(
+                eventId = null,
+                transactionId = A_TRANSACTION_ID,
+                isMine = true,
+                isEditable = false,
+                content = aTimelineItemVoiceContent(
+                    caption = null,
+                ),
+            )
+
+            initialState.eventSink.invoke(
+                ActionListEvents.ComputeForMessage(
+                    event = messageEvent,
+                    userEventPermissions = aUserEventPermissions(
+                        canRedactOwn = true,
+                        canRedactOther = false,
+                        canSendMessage = true,
+                        canSendReaction = true,
+                        canPinUnpin = true
+                    )
+                )
+            )
+            val successState = awaitItem()
+            assertThat(successState.target).isInstanceOf(ActionListState.Target.Success::class.java)
+
+            // Check items are deduplicated between suggested and recent emojis and we take at most 100 items
+            val expectedEmojis = (suggestedEmojis + persistentListOf(":)") + otherEmojis).take(100)
+            assertThat((successState.target as ActionListState.Target.Success).recentEmojis)
+                .isEqualTo(expectedEmojis)
         }
     }
 }
@@ -1490,6 +1539,7 @@ private fun createActionListPresenter(
     room: BaseRoom = FakeBaseRoom(),
     timelineMode: Timeline.Mode = Timeline.Mode.Live,
     featureFlagService: FakeFeatureFlagService = FakeFeatureFlagService(),
+    recentEmojis: GetRecentEmojis = GetRecentEmojis { Result.success(persistentListOf()) },
 ): ActionListPresenter {
     val preferencesStore = InMemoryAppPreferencesStore(isDeveloperModeEnabled = isDeveloperModeEnabled)
     return DefaultActionListPresenter(
@@ -1500,6 +1550,6 @@ private fun createActionListPresenter(
         dateFormatter = FakeDateFormatter(),
         timelineMode = timelineMode,
         featureFlagService = featureFlagService,
-        getRecentEmojis = { Result.success(persistentListOf()) },
+        getRecentEmojis = recentEmojis,
     )
 }

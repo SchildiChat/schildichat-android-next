@@ -46,4 +46,5 @@ dependencies {
     testImplementation(projects.libraries.matrix.test)
     testImplementation(projects.libraries.mediaupload.test)
     testImplementation(projects.libraries.preferences.test)
+    testImplementation(projects.libraries.roomselect.test)
 }

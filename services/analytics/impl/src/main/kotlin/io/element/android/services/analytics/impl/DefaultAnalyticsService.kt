@@ -9,7 +9,6 @@ package io.element.android.services.analytics.impl
 
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import dev.zacsweers.metro.binding
 import im.vector.app.features.analytics.itf.VectorAnalyticsEvent
@@ -17,7 +16,6 @@ import im.vector.app.features.analytics.itf.VectorAnalyticsScreen
 import im.vector.app.features.analytics.plan.SuperProperties
 import im.vector.app.features.analytics.plan.UserProperties
 import io.element.android.libraries.di.annotations.AppCoroutineScope
-import io.element.android.libraries.sessionstorage.api.SessionStore
 import io.element.android.libraries.sessionstorage.api.observer.SessionListener
 import io.element.android.libraries.sessionstorage.api.observer.SessionObserver
 import io.element.android.services.analytics.api.AnalyticsService
@@ -33,7 +31,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class, binding = binding<AnalyticsService>())
-@Inject
 class DefaultAnalyticsService(
     private val analyticsProviders: Set<@JvmSuppressWildcards AnalyticsProvider>,
     private val analyticsStore: AnalyticsStore,
@@ -41,7 +38,6 @@ class DefaultAnalyticsService(
     @AppCoroutineScope
     private val coroutineScope: CoroutineScope,
     private val sessionObserver: SessionObserver,
-    private val sessionStore: SessionStore,
 ) : AnalyticsService, SessionListener {
     // Cache for the store values
     private val userConsent = AtomicBoolean(false)
@@ -77,13 +73,9 @@ class DefaultAnalyticsService(
         analyticsStore.setAnalyticsId(analyticsId)
     }
 
-    override suspend fun onSessionCreated(userId: String) {
-        // Nothing to do
-    }
-
-    override suspend fun onSessionDeleted(userId: String) {
+    override suspend fun onSessionDeleted(userId: String, wasLastSession: Boolean) {
         // Delete the store when the last session is deleted
-        if (sessionStore.getAllSessions().isEmpty()) {
+        if (wasLastSession) {
             analyticsStore.reset()
         }
     }

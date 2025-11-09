@@ -10,6 +10,7 @@ package io.element.android.libraries.push.impl.notifications
 import android.app.Notification
 import androidx.core.app.NotificationCompat
 import com.google.common.truth.Truth.assertThat
+import io.element.android.libraries.matrix.test.A_COLOR_INT
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.ui.components.aMatrixUser
 import io.element.android.libraries.push.impl.notifications.fake.FakeNotificationCreator
@@ -42,11 +43,13 @@ class DefaultSummaryGroupMessageCreatorTest {
                     messageCount = 1,
                     latestTimestamp = A_FAKE_TIMESTAMP + 10,
                     shouldBing = true,
+                    threadId = null,
                 )
             ),
             invitationNotifications = emptyList(),
             simpleNotifications = emptyList(),
             fallbackNotifications = emptyList(),
+            color = A_COLOR_INT,
         )
 
         notificationCreator.createSummaryListNotificationResult.assertions()

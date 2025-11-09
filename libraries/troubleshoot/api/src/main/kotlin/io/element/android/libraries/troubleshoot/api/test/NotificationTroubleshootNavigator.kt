@@ -8,5 +8,5 @@
 package io.element.android.libraries.troubleshoot.api.test
 
 interface NotificationTroubleshootNavigator {
-    fun openIgnoredUsers()
+    fun navigateToBlockedUsers()
 }

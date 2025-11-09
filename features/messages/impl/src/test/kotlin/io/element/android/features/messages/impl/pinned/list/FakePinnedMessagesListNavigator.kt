@@ -12,17 +12,17 @@ import io.element.android.libraries.matrix.api.timeline.item.TimelineItemDebugIn
 
 class FakePinnedMessagesListNavigator : PinnedMessagesListNavigator {
     var onViewInTimelineClickLambda: ((EventId) -> Unit)? = null
-    override fun onViewInTimelineClick(eventId: EventId) {
+    override fun viewInTimeline(eventId: EventId) {
         onViewInTimelineClickLambda?.invoke(eventId)
     }
 
     var onShowEventDebugInfoClickLambda: ((EventId?, TimelineItemDebugInfo) -> Unit)? = null
-    override fun onShowEventDebugInfoClick(eventId: EventId?, debugInfo: TimelineItemDebugInfo) {
+    override fun navigateToEventDebugInfo(eventId: EventId?, debugInfo: TimelineItemDebugInfo) {
         onShowEventDebugInfoClickLambda?.invoke(eventId, debugInfo)
     }
 
     var onForwardEventClickLambda: ((EventId) -> Unit)? = null
-    override fun onForwardEventClick(eventId: EventId) {
+    override fun forwardEvent(eventId: EventId) {
         onForwardEventClickLambda?.invoke(eventId)
     }
 }

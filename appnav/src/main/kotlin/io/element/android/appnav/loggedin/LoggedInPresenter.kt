@@ -136,7 +136,7 @@ class LoggedInPresenter(
 
     private suspend fun ensurePusherIsRegistered(pusherRegistrationState: MutableState<AsyncData<Unit>>) {
         Timber.tag(pusherTag.value).d("Ensure pusher is registered")
-        val currentPushProvider = pushService.getCurrentPushProvider()
+        val currentPushProvider = pushService.getCurrentPushProvider(matrixClient.sessionId)
         val result = if (currentPushProvider == null) {
             Timber.tag(pusherTag.value).d("Register with the first available push provider with at least one distributor")
             val pushProvider = pushService.getAvailablePushProviders()

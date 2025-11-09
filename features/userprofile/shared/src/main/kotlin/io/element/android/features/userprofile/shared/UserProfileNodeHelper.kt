@@ -21,10 +21,10 @@ class UserProfileNodeHelper(
     private val userId: UserId,
 ) {
     interface Callback : NodeInputs {
-        fun openAvatarPreview(username: String, avatarUrl: String)
-        fun onStartDM(roomId: RoomId)
-        fun onStartCall(dmRoomId: RoomId)
-        fun onVerifyUser(userId: UserId)
+        fun navigateToAvatarPreview(username: String, avatarUrl: String)
+        fun navigateToRoom(roomId: RoomId)
+        fun startCall(dmRoomId: RoomId)
+        fun startVerifyUserFlow(userId: UserId)
     }
 
     fun onShareUser(

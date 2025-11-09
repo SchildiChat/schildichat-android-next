@@ -21,6 +21,12 @@ android {
             isIncludeAndroidResources = true
         }
     }
+
+    buildTypes {
+        register("nightly") {
+            matchingFallbacks += listOf("release")
+        }
+    }
 }
 
 setupDependencyInjection()
@@ -59,6 +65,7 @@ dependencies {
     implementation(projects.libraries.troubleshoot.api)
     implementation(projects.libraries.workmanager.api)
     implementation(projects.features.call.api)
+    implementation(projects.features.enterprise.api)
     implementation(projects.features.lockscreen.api)
     implementation(projects.libraries.featureflag.api)
     api(projects.libraries.pushproviders.api)
@@ -80,6 +87,7 @@ dependencies {
     testImplementation(projects.libraries.troubleshoot.test)
     testImplementation(projects.libraries.workmanager.test)
     testImplementation(projects.features.call.test)
+    testImplementation(projects.features.enterprise.test)
     testImplementation(projects.features.lockscreen.test)
     testImplementation(projects.features.networkmonitor.test)
     testImplementation(projects.services.appnavstate.test)

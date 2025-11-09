@@ -94,7 +94,7 @@ class NotificationSettingsPresenter(
         var refreshPushProvider by remember { mutableIntStateOf(0) }
 
         LaunchedEffect(refreshPushProvider) {
-            val p = pushService.getCurrentPushProvider()
+            val p = pushService.getCurrentPushProvider(matrixClient.sessionId)
             val distributor = p?.getCurrentDistributor(matrixClient.sessionId)
             currentDistributor = if (distributor != null) {
                 AsyncData.Success(distributor)

@@ -10,16 +10,17 @@ package io.element.android.libraries.matrix.impl.fixtures.fakes
 import org.matrix.rustcomponents.sdk.Client
 import org.matrix.rustcomponents.sdk.ClientBuilder
 import org.matrix.rustcomponents.sdk.ClientSessionDelegate
-import org.matrix.rustcomponents.sdk.NoPointer
+import org.matrix.rustcomponents.sdk.NoHandle
 import org.matrix.rustcomponents.sdk.RequestConfig
 import org.matrix.rustcomponents.sdk.SlidingSyncVersionBuilder
+import org.matrix.rustcomponents.sdk.SqliteStoreBuilder
 import uniffi.matrix_sdk.BackupDownloadStrategy
 import uniffi.matrix_sdk_crypto.CollectStrategy
 import uniffi.matrix_sdk_crypto.DecryptionSettings
 
 class FakeFfiClientBuilder(
     val buildResult: () -> Client = { FakeFfiClient(withUtdHook = {}) }
-) : ClientBuilder(NoPointer) {
+) : ClientBuilder(NoHandle) {
     override fun addRootCertificates(certificates: List<ByteArray>) = this
     override fun autoEnableBackups(autoEnableBackups: Boolean) = this
     override fun autoEnableCrossSigning(autoEnableCrossSigning: Boolean) = this
@@ -29,7 +30,6 @@ class FakeFfiClientBuilder(
     override fun decryptionSettings(decryptionSettings: DecryptionSettings): ClientBuilder = this
     override fun disableSslVerification() = this
     override fun homeserverUrl(url: String) = this
-    override fun sessionPassphrase(passphrase: String?) = this
     override fun proxy(url: String) = this
     override fun requestConfig(config: RequestConfig) = this
     override fun roomKeyRecipientStrategy(strategy: CollectStrategy) = this
@@ -42,5 +42,6 @@ class FakeFfiClientBuilder(
     override fun username(username: String) = this
     override fun enableShareHistoryOnInvite(enableShareHistoryOnInvite: Boolean): ClientBuilder = this
     override fun threadsEnabled(enabled: Boolean, threadSubscriptions: Boolean): ClientBuilder = this
+    override fun sqliteStore(config: SqliteStoreBuilder): ClientBuilder = this
     override suspend fun build() = buildResult()
 }

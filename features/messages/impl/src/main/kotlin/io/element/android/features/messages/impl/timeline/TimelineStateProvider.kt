@@ -58,7 +58,7 @@ fun aTimelineState(
 ): TimelineState {
     val focusedEventId = timelineItems.filterIsInstance<TimelineItem.Event>().getOrNull(focusedEventIndex)?.eventId
     val focusRequestState = if (focusedEventId != null) {
-        FocusRequestState.Success(focusedEventId, focusedEventIndex)
+        FocusRequestState.Success(focusedEventId, focusedEventIndex, forReadMarker = false)
     } else {
         FocusRequestState.None
     }

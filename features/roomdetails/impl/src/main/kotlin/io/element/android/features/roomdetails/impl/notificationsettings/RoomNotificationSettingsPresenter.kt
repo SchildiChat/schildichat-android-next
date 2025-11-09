@@ -135,7 +135,7 @@ class RoomNotificationSettingsPresenter(
             setNotificationSettingAction = setNotificationSettingAction.value,
             restoreDefaultAction = restoreDefaultAction.value,
             displayMentionsOnlyDisclaimer = shouldDisplayMentionsOnlyDisclaimer,
-            eventSink = { handleEvents(it) },
+            eventSink = ::handleEvents,
         )
     }
 

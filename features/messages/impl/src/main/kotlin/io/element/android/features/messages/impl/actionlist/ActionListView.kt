@@ -99,8 +99,6 @@ import io.element.android.libraries.matrix.ui.messages.sender.SenderName
 import io.element.android.libraries.matrix.ui.messages.sender.SenderNameMode
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -347,7 +345,6 @@ private fun MessageSummary(
 }
 
 private val emojiRippleRadius = 24.dp
-private val suggestedEmojis = persistentListOf("👍️", "👎️", "🔥", "❤️", "👏")
 
 @Composable
 private fun EmojiReactionsRow(
@@ -361,13 +358,6 @@ private fun EmojiReactionsRow(
         modifier = modifier.padding(end = 16.dp, top = 16.dp, bottom = 16.dp),
     ) {
         val backgroundColor = ElementTheme.colors.bgCanvasDefault
-
-        val emojis = remember(recentEmojis) {
-            //(suggestedEmojis + recentEmojis.filter { it !in suggestedEmojis })
-            (recentEmojis + suggestedEmojis.filter { it !in suggestedEmojis })
-                .take(100)
-                .toImmutableList()
-        }
 
         LazyRow(
             modifier = Modifier
@@ -391,7 +381,7 @@ private fun EmojiReactionsRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            items(emojis) { emoji ->
+            items(recentEmojis) { emoji ->
                 val isHighlighted = highlightedEmojis.contains(emoji)
                 EmojiButton(
                     modifier = Modifier

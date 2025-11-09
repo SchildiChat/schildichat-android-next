@@ -25,31 +25,30 @@ android {
             consumerProguardFiles("consumer-rules.pro")
         }
     }
+}
 
-    dependencies {
-        // SC lib and theme required as API for compose previews using ElementPreview
-        api(projects.schildi.lib)
-        api(projects.schildi.theme)
+dependencies {
+    // SC lib and theme required as API for compose previews using ElementPreview
+    api(projects.schildi.lib)
+    api(projects.schildi.theme)
 
-        api(projects.libraries.compound)
+    api(projects.libraries.compound)
 
-        implementation(libs.androidx.compose.material3.windowsizeclass)
-        implementation(libs.androidx.compose.material3.adaptive)
-        implementation(libs.coil.compose)
-        implementation(libs.vanniktech.blurhash)
-        implementation(projects.features.enterprise.api)
-        implementation(projects.libraries.androidutils)
-        implementation(projects.libraries.architecture)
-        implementation(projects.libraries.core)
-        implementation(projects.libraries.preferences.api)
-        implementation(projects.libraries.testtags)
-        implementation(projects.libraries.uiStrings)
+    implementation(libs.androidx.compose.material3.windowsizeclass)
+    implementation(libs.androidx.compose.material3.adaptive)
+    implementation(libs.coil.compose)
+    implementation(libs.vanniktech.blurhash)
+    implementation(projects.libraries.androidutils)
+    implementation(projects.libraries.architecture)
+    implementation(projects.libraries.core)
+    implementation(projects.libraries.preferences.api)
+    implementation(projects.libraries.testtags)
+    implementation(projects.libraries.uiStrings)
 
-        ksp(libs.showkase.processor)
-        implementation(libs.showkase)
+    ksp(libs.showkase.processor)
+    implementation(libs.showkase)
 
-        testCommonDependencies(libs)
-    }
+    testCommonDependencies(libs)
 }
 
 // SC resource override

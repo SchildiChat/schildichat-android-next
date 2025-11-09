@@ -10,7 +10,7 @@ package io.element.android.features.changeroommemberroles.impl
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.bumble.appyx.core.modality.BuildContext
 import com.google.common.truth.Truth.assertThat
-import io.element.android.features.changeroommemberroes.api.ChangeRoomMemberRolesListType
+import io.element.android.features.changeroommemberroles.api.ChangeRoomMemberRolesListType
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
 import io.element.android.tests.testutils.node.TestParentNode
 import kotlinx.coroutines.test.runTest
@@ -31,10 +31,12 @@ class DefaultChangeRoomMemberRolesEntyPointTest {
         }
         val room = FakeJoinedRoom()
         val listType = ChangeRoomMemberRolesListType.Admins
-        val result = entryPoint.builder(parentNode, BuildContext.root(null))
-            .room(FakeJoinedRoom())
-            .listType(listType)
-            .build()
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            room = FakeJoinedRoom(),
+            listType = listType,
+        )
         assertThat(result).isInstanceOf(ChangeRoomMemberRolesRootNode::class.java)
         // Search for the Inputs plugin
         val input = result.plugins.filterIsInstance<ChangeRoomMemberRolesRootNode.Inputs>().single()

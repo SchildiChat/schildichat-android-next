@@ -9,33 +9,19 @@ package io.element.android.features.verifysession.impl.outgoing
 
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
-import com.bumble.appyx.core.plugin.Plugin
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
 import io.element.android.features.verifysession.api.OutgoingVerificationEntryPoint
 import io.element.android.libraries.architecture.createNode
 
 @ContributesBinding(AppScope::class)
-@Inject
 class DefaultOutgoingVerificationEntryPoint : OutgoingVerificationEntryPoint {
-    override fun nodeBuilder(parentNode: Node, buildContext: BuildContext): OutgoingVerificationEntryPoint.NodeBuilder {
-        val plugins = ArrayList<Plugin>()
-
-        return object : OutgoingVerificationEntryPoint.NodeBuilder {
-            override fun callback(callback: OutgoingVerificationEntryPoint.Callback): OutgoingVerificationEntryPoint.NodeBuilder {
-                plugins += callback
-                return this
-            }
-
-            override fun params(params: OutgoingVerificationEntryPoint.Params): OutgoingVerificationEntryPoint.NodeBuilder {
-                plugins += params
-                return this
-            }
-
-            override fun build(): Node {
-                return parentNode.createNode<OutgoingVerificationNode>(buildContext, plugins)
-            }
-        }
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: OutgoingVerificationEntryPoint.Params,
+        callback: OutgoingVerificationEntryPoint.Callback,
+    ): Node {
+        return parentNode.createNode<OutgoingVerificationNode>(buildContext, listOf(params, callback))
     }
 }

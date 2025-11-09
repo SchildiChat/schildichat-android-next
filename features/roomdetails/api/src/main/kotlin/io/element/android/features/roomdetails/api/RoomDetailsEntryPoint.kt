@@ -13,6 +13,7 @@ import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
 import io.element.android.libraries.architecture.FeatureEntryPoint
 import io.element.android.libraries.architecture.NodeInputs
+import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.permalink.PermalinkData
@@ -24,6 +25,9 @@ interface RoomDetailsEntryPoint : FeatureEntryPoint {
         data object RoomDetails : InitialTarget
 
         @Parcelize
+        data object RoomMemberList : InitialTarget
+
+        @Parcelize
         data class RoomMemberDetails(val roomMemberId: UserId) : InitialTarget
 
         @Parcelize
@@ -33,17 +37,16 @@ interface RoomDetailsEntryPoint : FeatureEntryPoint {
     data class Params(val initialElement: InitialTarget) : NodeInputs
 
     interface Callback : Plugin {
-        fun onOpenGlobalNotificationSettings()
-        fun onOpenRoom(roomId: RoomId, serverNames: List<String>)
-        fun onPermalinkClick(data: PermalinkData, pushToBackstack: Boolean)
-        fun onForwardedToSingleRoom(roomId: RoomId)
+        fun navigateToGlobalNotificationSettings()
+        fun navigateToRoom(roomId: RoomId, serverNames: List<String>)
+        fun handlePermalinkClick(data: PermalinkData, pushToBackstack: Boolean)
+        fun startForwardEventFlow(eventId: EventId, fromPinnedEvents: Boolean)
     }
 
-    interface NodeBuilder {
-        fun params(params: Params): NodeBuilder
-        fun callback(callback: Callback): NodeBuilder
-        fun build(): Node
-    }
-
-    fun nodeBuilder(parentNode: Node, buildContext: BuildContext): NodeBuilder
+    fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        params: Params,
+        callback: Callback,
+    ): Node
 }

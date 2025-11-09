@@ -26,7 +26,7 @@ import io.element.android.features.messages.impl.UserEventPermissions
 import io.element.android.features.messages.impl.actionlist.ActionListState
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemAction
 import io.element.android.features.messages.impl.link.LinkState
-import io.element.android.features.messages.impl.pinned.PinnedEventsTimelineProvider
+import io.element.android.features.messages.impl.pinned.DefaultPinnedEventsTimelineProvider
 import io.element.android.features.messages.impl.timeline.TimelineRoomInfo
 import io.element.android.features.messages.impl.timeline.factories.TimelineItemsFactory
 import io.element.android.features.messages.impl.timeline.factories.TimelineItemsFactoryConfig
@@ -66,7 +66,7 @@ class PinnedMessagesListPresenter(
     @Assisted private val navigator: PinnedMessagesListNavigator,
     private val room: JoinedRoom,
     timelineItemsFactoryCreator: TimelineItemsFactory.Creator,
-    private val timelineProvider: PinnedEventsTimelineProvider,
+    private val timelineProvider: DefaultPinnedEventsTimelineProvider,
     private val timelineProtectionPresenter: Presenter<TimelineProtectionState>,
     private val linkPresenter: Presenter<LinkState>,
     private val snackbarDispatcher: SnackbarDispatcher,
@@ -153,18 +153,18 @@ class PinnedMessagesListPresenter(
     ) = launch {
         when (action) {
             TimelineItemAction.ViewSource -> {
-                navigator.onShowEventDebugInfoClick(targetEvent.eventId, targetEvent.debugInfo)
+                navigator.navigateToEventDebugInfo(targetEvent.eventId, targetEvent.debugInfo)
             }
             TimelineItemAction.Forward -> {
                 targetEvent.eventId?.let { eventId ->
-                    navigator.onForwardEventClick(eventId)
+                    navigator.forwardEvent(eventId)
                 }
             }
             TimelineItemAction.Unpin -> handleUnpinAction(targetEvent)
             TimelineItemAction.ViewInTimeline -> {
                 targetEvent.eventId?.let { eventId ->
                     analyticsService.captureInteraction(Interaction.Name.PinnedMessageListViewTimeline)
-                    navigator.onViewInTimelineClick(eventId)
+                    navigator.viewInTimeline(eventId)
                 }
             }
             else -> Unit

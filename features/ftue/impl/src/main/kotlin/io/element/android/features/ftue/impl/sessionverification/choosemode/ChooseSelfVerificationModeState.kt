@@ -8,10 +8,15 @@
 package io.element.android.features.ftue.impl.sessionverification.choosemode
 
 import io.element.android.features.logout.api.direct.DirectLogoutState
+import io.element.android.libraries.architecture.AsyncData
 
 data class ChooseSelfVerificationModeState(
-    val canUseAnotherDevice: Boolean,
-    val canEnterRecoveryKey: Boolean,
+    val buttonsState: AsyncData<ButtonsState>,
     val directLogoutState: DirectLogoutState,
     val eventSink: (ChooseSelfVerificationModeEvent) -> Unit,
-)
+) {
+    data class ButtonsState(
+        val canUseAnotherDevice: Boolean,
+        val canEnterRecoveryKey: Boolean,
+    )
+}

@@ -7,6 +7,7 @@
 
 package io.element.android.libraries.matrix.api.encryption
 
+import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.encryption.identity.IdentityState
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +18,7 @@ interface EncryptionService {
     val recoveryStateStateFlow: StateFlow<RecoveryState>
     val enableRecoveryProgressStateFlow: StateFlow<EnableRecoveryProgress>
     val isLastDevice: StateFlow<Boolean>
-    val hasDevicesToVerifyAgainst: StateFlow<Boolean>
+    val hasDevicesToVerifyAgainst: StateFlow<AsyncData<Boolean>>
 
     suspend fun enableBackups(): Result<Unit>
 

@@ -33,5 +33,7 @@ dependencies {
 
     testCommonDependencies(libs)
     testImplementation(projects.libraries.sessionStorage.test)
+    testImplementation(projects.services.analytics.test)
     testImplementation(projects.services.analyticsproviders.test)
+    testImplementation(projects.services.toolbox.test)
 }

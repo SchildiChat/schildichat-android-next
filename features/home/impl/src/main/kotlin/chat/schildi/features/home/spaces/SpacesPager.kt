@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -94,6 +95,7 @@ import kotlin.math.roundToInt
 @Composable
 fun SpacesPager(
     homeState: HomeState?,
+    lazyListState: LazyListState,
     spacesList: ImmutableList<SpaceListDataSource.AbstractSpaceHierarchyItem>,
     totalUnreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts?,
     spaceSelectionHierarchy: ImmutableList<String>,
@@ -111,6 +113,7 @@ fun SpacesPager(
     Column(modifier) {
         SpacesPager(
             homeState = homeState,
+            lazyListState = lazyListState,
             spacesList = spacesList,
             totalUnreadCounts = totalUnreadCounts,
             spaceSelection = spaceSelectionHierarchy,
@@ -135,6 +138,7 @@ fun SpacesPager(
 @Composable
 private fun ColumnScope.SpacesPager(
     homeState: HomeState?,
+    lazyListState: LazyListState,
     spacesList: ImmutableList<SpaceListDataSource.AbstractSpaceHierarchyItem>,
     totalUnreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts?,
     spaceSelection: ImmutableList<String>,
@@ -182,6 +186,7 @@ private fun ColumnScope.SpacesPager(
         if (safeSpace != null) {
             SpacesPager(
                 homeState = homeState,
+                lazyListState = lazyListState,
                 spacesList = safeSpace.spaces,
                 totalUnreadCounts = totalUnreadCounts,
                 selectSpace = selectSpace,
@@ -240,6 +245,7 @@ private fun ColumnScope.SpacesPager(
                         modifier = Modifier
                             .fillMaxWidth(),
                         state = homeState.homeSpacesState,
+                        lazyListState = lazyListState,
                         onSpaceClick = onUpstreamSpaceClick,
                     )
                 } else {

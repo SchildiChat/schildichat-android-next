@@ -62,7 +62,7 @@ class IgnoredUsersTest(
         coroutineScope: CoroutineScope,
         navigator: NotificationTroubleshootNavigator,
     ) {
-        navigator.openIgnoredUsers()
+        navigator.navigateToBlockedUsers()
     }
 
     override suspend fun reset() = delegate.reset()

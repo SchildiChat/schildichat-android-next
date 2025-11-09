@@ -94,7 +94,7 @@ class JoinRoomByAddressPresenter(
 
     private fun onRoomFound(state: RoomAddressState.RoomFound) {
         navigator.onDismissJoinRoomByAddress()
-        navigator.onOpenRoom(
+        navigator.onRoomCreated(
             roomIdOrAlias = state.resolved.roomId.toRoomIdOrAlias(),
             serverNames = state.resolved.servers
         )

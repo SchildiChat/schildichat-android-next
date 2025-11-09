@@ -55,6 +55,7 @@ sealed interface FocusRequestState {
         val index: Int = -1,
         // This is used to know if the event has been rendered yet.
         val rendered: Boolean = false,
+        val forReadMarker: Boolean, // SC
     ) : FocusRequestState {
         val isIndexed
             get() = index != -1

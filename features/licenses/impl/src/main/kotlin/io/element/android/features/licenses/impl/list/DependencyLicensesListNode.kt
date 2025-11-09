@@ -12,12 +12,12 @@ import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.features.licenses.impl.model.DependencyLicenseItem
+import io.element.android.libraries.architecture.callback
 
 @ContributesNode(AppScope::class)
 @AssistedInject
@@ -30,13 +30,10 @@ class DependencyLicensesListNode(
     plugins = plugins
 ) {
     interface Callback : Plugin {
-        fun onOpenLicense(license: DependencyLicenseItem)
+        fun navigateToLicense(license: DependencyLicenseItem)
     }
 
-    private fun onOpenLicense(license: DependencyLicenseItem) {
-        plugins<Callback>()
-            .forEach { it.onOpenLicense(license) }
-    }
+    private val callback: Callback = callback()
 
     @Composable
     override fun View(modifier: Modifier) {
@@ -44,7 +41,7 @@ class DependencyLicensesListNode(
         DependencyLicensesListView(
             state = state,
             onBackClick = ::navigateUp,
-            onOpenLicense = ::onOpenLicense,
+            onOpenLicense = callback::navigateToLicense,
         )
     }
 }

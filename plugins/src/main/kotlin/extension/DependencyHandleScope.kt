@@ -119,6 +119,7 @@ fun DependencyHandlerScope.allLibrariesImpl() {
     implementation(project(":libraries:wellknown:impl"))
     implementation(project(":libraries:oidc:impl"))
     implementation(project(":libraries:workmanager:impl"))
+    implementation(project(":libraries:recentemojis:impl"))
 }
 
 fun DependencyHandlerScope.allServicesImpl() {

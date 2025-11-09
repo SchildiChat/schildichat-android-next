@@ -7,17 +7,24 @@
 
 package io.element.android.libraries.push.impl.notifications
 
+import androidx.compose.ui.graphics.toArgb
 import coil3.ImageLoader
 import dev.zacsweers.metro.Inject
+import io.element.android.appconfig.NotificationConfig
+import io.element.android.features.enterprise.api.EnterpriseService
 import io.element.android.libraries.core.log.logger.LoggerTag
+import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.push.api.notifications.NotificationIdProvider
+import io.element.android.libraries.push.impl.notifications.factories.NotificationCreator
+import io.element.android.libraries.push.impl.notifications.factories.scNotificationColor
 import io.element.android.libraries.push.impl.notifications.model.FallbackNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.InviteNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.NotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.NotifiableMessageEvent
 import io.element.android.libraries.push.impl.notifications.model.NotifiableRingingCallEvent
 import io.element.android.libraries.push.impl.notifications.model.SimpleNotifiableEvent
+import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
 private val loggerTag = LoggerTag("NotificationRenderer", LoggerTag.NotificationLoggerTag)
@@ -26,6 +33,8 @@ private val loggerTag = LoggerTag("NotificationRenderer", LoggerTag.Notification
 class NotificationRenderer(
     private val notificationDisplayer: NotificationDisplayer,
     private val notificationDataFactory: NotificationDataFactory,
+    private val enterpriseService: EnterpriseService,
+    private val buildMeta: BuildMeta, // SC
 ) {
     suspend fun render(
         currentUser: MatrixUser,
@@ -33,17 +42,21 @@ class NotificationRenderer(
         eventsToProcess: List<NotifiableEvent>,
         imageLoader: ImageLoader,
     ) {
+        val color = enterpriseService.brandColorsFlow(currentUser.userId).first()?.toArgb()
+            ?: buildMeta.scNotificationColor
+            ?: NotificationConfig.NOTIFICATION_ACCENT_COLOR
         val groupedEvents = eventsToProcess.groupByType()
-        val roomNotifications = notificationDataFactory.toNotifications(groupedEvents.roomEvents, currentUser, imageLoader)
-        val invitationNotifications = notificationDataFactory.toNotifications(groupedEvents.invitationEvents)
-        val simpleNotifications = notificationDataFactory.toNotifications(groupedEvents.simpleEvents)
-        val fallbackNotifications = notificationDataFactory.toNotifications(groupedEvents.fallbackEvents)
+        val roomNotifications = notificationDataFactory.toNotifications(groupedEvents.roomEvents, currentUser, imageLoader, color)
+        val invitationNotifications = notificationDataFactory.toNotifications(groupedEvents.invitationEvents, color)
+        val simpleNotifications = notificationDataFactory.toNotifications(groupedEvents.simpleEvents, color)
+        val fallbackNotifications = notificationDataFactory.toNotifications(groupedEvents.fallbackEvents, color)
         val summaryNotification = notificationDataFactory.createSummaryNotification(
             currentUser = currentUser,
             roomNotifications = roomNotifications,
             invitationNotifications = invitationNotifications,
             simpleNotifications = simpleNotifications,
             fallbackNotifications = fallbackNotifications,
+            color = color,
         )
 
         // Remove summary first to avoid briefly displaying it after dismissing the last notification
@@ -56,8 +69,12 @@ class NotificationRenderer(
         }
 
         roomNotifications.forEach { notificationData ->
+            val tag = NotificationCreator.messageTag(
+                roomId = notificationData.roomId,
+                threadId = notificationData.threadId
+            )
             notificationDisplayer.showNotificationMessage(
-                tag = notificationData.roomId.value,
+                tag = tag,
                 id = NotificationIdProvider.getRoomMessagesNotificationId(currentUser.userId),
                 notification = notificationData.notification
             )

@@ -27,6 +27,7 @@ class SingleMediaGalleryDataSource(
     override fun start() = Unit
     override fun groupedMediaItemsFlow() = flowOf(AsyncData.Success(data))
     override fun getLastData(): AsyncData<GroupedMediaItems> = AsyncData.Success(data)
+
     override suspend fun loadMore(direction: Timeline.PaginationDirection) = Unit
     override suspend fun deleteItem(eventId: EventId) = Unit
 

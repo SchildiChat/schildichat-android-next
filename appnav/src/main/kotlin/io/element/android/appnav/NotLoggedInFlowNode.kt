@@ -18,7 +18,6 @@ import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
-import com.bumble.appyx.core.plugin.plugins
 import com.bumble.appyx.navmodel.backstack.BackStack
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -29,6 +28,7 @@ import io.element.android.features.login.api.LoginParams
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.NodeInputs
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.designsystem.utils.ForceOrientationInMobileDevices
 import io.element.android.libraries.designsystem.utils.ScreenOrientation
@@ -55,9 +55,10 @@ class NotLoggedInFlowNode(
     ) : NodeInputs
 
     interface Callback : Plugin {
-        fun onOpenBugReport()
+        fun navigateToBugReport()
     }
 
+    private val callback: Callback = callback()
     private val inputs = inputs<Params>()
 
     override fun onBuilt() {
@@ -78,20 +79,19 @@ class NotLoggedInFlowNode(
         return when (navTarget) {
             NavTarget.Root -> {
                 val callback = object : LoginEntryPoint.Callback {
-                    override fun onReportProblem() {
-                        plugins<Callback>().forEach { it.onOpenBugReport() }
+                    override fun navigateToBugReport() {
+                        callback.navigateToBugReport()
                     }
                 }
-                loginEntryPoint
-                    .nodeBuilder(this, buildContext)
-                    .params(
-                        LoginEntryPoint.Params(
-                            accountProvider = inputs.loginParams?.accountProvider,
-                            loginHint = inputs.loginParams?.loginHint,
-                        )
-                    )
-                    .callback(callback)
-                    .build()
+                loginEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    params = LoginEntryPoint.Params(
+                        accountProvider = inputs.loginParams?.accountProvider,
+                        loginHint = inputs.loginParams?.loginHint,
+                    ),
+                    callback = callback,
+                )
             }
         }
     }

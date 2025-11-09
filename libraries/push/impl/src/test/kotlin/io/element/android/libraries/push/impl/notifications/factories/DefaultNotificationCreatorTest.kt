@@ -16,6 +16,7 @@ import com.google.common.truth.Truth.assertThat
 import io.element.android.appconfig.NotificationConfig
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
+import io.element.android.libraries.matrix.test.A_COLOR_INT
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.matrix.test.A_THREAD_ID
@@ -31,6 +32,7 @@ import io.element.android.libraries.push.impl.notifications.factories.action.Acc
 import io.element.android.libraries.push.impl.notifications.factories.action.MarkAsReadActionFactory
 import io.element.android.libraries.push.impl.notifications.factories.action.QuickReplyActionFactory
 import io.element.android.libraries.push.impl.notifications.factories.action.RejectInvitationActionFactory
+import io.element.android.libraries.push.impl.notifications.fixtures.aNotifiableMessageEvent
 import io.element.android.libraries.push.impl.notifications.model.FallbackNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.InviteNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.SimpleNotifiableEvent
@@ -50,7 +52,9 @@ class DefaultNotificationCreatorTest {
     @Test
     fun `test createDiagnosticNotification`() {
         val sut = createNotificationCreator()
-        val result = sut.createDiagnosticNotification()
+        val result = sut.createDiagnosticNotification(
+            color = A_COLOR_INT,
+        )
         result.commonAssertions(
             expectedGroup = null,
             expectedCategory = NotificationCompat.CATEGORY_STATUS,
@@ -72,7 +76,8 @@ class DefaultNotificationCreatorTest {
                 isUpdated = false,
                 timestamp = A_FAKE_TIMESTAMP,
                 cause = null,
-            )
+            ),
+            color = A_COLOR_INT,
         )
         result.commonAssertions(
             expectedCategory = null,
@@ -97,7 +102,8 @@ class DefaultNotificationCreatorTest {
                 canBeReplaced = false,
                 isRedacted = false,
                 isUpdated = false,
-            )
+            ),
+            color = A_COLOR_INT,
         )
         result.commonAssertions(
             expectedCategory = null,
@@ -122,7 +128,8 @@ class DefaultNotificationCreatorTest {
                 canBeReplaced = false,
                 isRedacted = false,
                 isUpdated = false,
-            )
+            ),
+            color = A_COLOR_INT,
         )
         result.commonAssertions(
             expectedCategory = null,
@@ -148,7 +155,8 @@ class DefaultNotificationCreatorTest {
                 isRedacted = false,
                 isUpdated = false,
                 roomName = "roomName",
-            )
+            ),
+            color = A_COLOR_INT,
         )
         result.commonAssertions(
             expectedCategory = null,
@@ -181,7 +189,8 @@ class DefaultNotificationCreatorTest {
                 isRedacted = false,
                 isUpdated = false,
                 roomName = "roomName",
-            )
+            ),
+            color = A_COLOR_INT,
         )
         result.commonAssertions(
             expectedCategory = null,
@@ -197,6 +206,7 @@ class DefaultNotificationCreatorTest {
             compatSummary = "compatSummary",
             noisy = false,
             lastMessageTimestamp = 123_456L,
+            color = A_COLOR_INT,
         )
         result.commonAssertions(
             expectedGroup = matrixUser.userId.value,
@@ -212,6 +222,7 @@ class DefaultNotificationCreatorTest {
             compatSummary = "compatSummary",
             noisy = true,
             lastMessageTimestamp = 123_456L,
+            color = A_COLOR_INT,
         )
         result.commonAssertions(
             expectedGroup = matrixUser.userId.value,
@@ -239,7 +250,8 @@ class DefaultNotificationCreatorTest {
             currentUser = aMatrixUser(),
             existingNotification = null,
             imageLoader = FakeImageLoader().getImageLoader(),
-            events = emptyList(),
+            events = listOf(aNotifiableMessageEvent()),
+            color = A_COLOR_INT,
         )
         result.commonAssertions()
     }
@@ -265,7 +277,8 @@ class DefaultNotificationCreatorTest {
             currentUser = aMatrixUser(),
             existingNotification = null,
             imageLoader = FakeImageLoader().getImageLoader(),
-            events = emptyList(),
+            events = listOf(aNotifiableMessageEvent()),
+            color = A_COLOR_INT,
         )
         result.commonAssertions()
     }

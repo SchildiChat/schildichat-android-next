@@ -31,7 +31,6 @@ dependencies {
     implementation(projects.libraries.pushproviders.api)
     implementation(projects.libraries.architecture)
     implementation(projects.libraries.core)
-    implementation(projects.services.appnavstate.api)
     implementation(projects.services.toolbox.api)
 
     implementation(projects.libraries.network)
@@ -55,5 +54,4 @@ dependencies {
     testImplementation(projects.libraries.pushstore.test)
     testImplementation(projects.libraries.troubleshoot.test)
     testImplementation(projects.services.toolbox.test)
-    testImplementation(projects.services.appnavstate.test)
 }

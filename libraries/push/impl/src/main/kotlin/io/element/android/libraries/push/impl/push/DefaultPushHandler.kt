@@ -9,7 +9,6 @@ package io.element.android.libraries.push.impl.push
 
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import io.element.android.features.call.api.CallType
 import io.element.android.features.call.api.ElementCallEntryPoint
@@ -51,7 +50,6 @@ private val loggerTag = LoggerTag("PushHandler", LoggerTag.PushLoggerTag)
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-@Inject
 class DefaultPushHandler(
     private val onNotifiableEventReceived: OnNotifiableEventReceived,
     private val onRedactedEventReceived: OnRedactedEventReceived,
@@ -185,9 +183,9 @@ class DefaultPushHandler(
                     }
                 }
 
-                // Process redactions of messages
+                // Process redactions of messages in background to not block operations with higher priority
                 if (redactions.isNotEmpty()) {
-                    onRedactedEventReceived.onRedactedEventsReceived(redactions)
+                    appCoroutineScope.launch { onRedactedEventReceived.onRedactedEventsReceived(redactions) }
                 }
 
                 // Find and process ringing call notifications separately

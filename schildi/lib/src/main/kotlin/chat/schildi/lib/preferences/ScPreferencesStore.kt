@@ -19,6 +19,7 @@ import dev.zacsweers.metro.SingleIn
 import io.element.android.libraries.di.annotations.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
@@ -40,6 +41,8 @@ interface ScPreferencesStore {
     fun <T> combinedSettingFlow(transform: ((ScPref<*>) -> Any?) -> T): Flow<T> = combinedSettingValueAndEnabledFlow { getPref, _ ->
         transform(getPref)
     }
+
+    suspend fun <T>getSetting(scPref: ScPref<T>): T = settingFlow(scPref).first()
 }
 
 fun <T>ScPref<T>.safeLookup(getPref: (ScPref<*>) -> Any?): T {

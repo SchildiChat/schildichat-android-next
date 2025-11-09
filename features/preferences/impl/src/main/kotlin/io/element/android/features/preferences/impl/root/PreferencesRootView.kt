@@ -65,7 +65,7 @@ fun PreferencesRootView(
     onOpenAbout: () -> Unit,
     onOpenDeveloperSettings: () -> Unit,
     onOpenAdvancedSettings: () -> Unit,
-    onOpenScTweaks: (ScPrefScreen?) -> Unit,
+    navigateToScTweaks: (ScPrefScreen?) -> Unit,
     onOpenLabs: () -> Unit,
     onOpenNotificationSettings: () -> Unit,
     onOpenUserProfile: (MatrixUser) -> Unit,
@@ -94,7 +94,7 @@ fun PreferencesRootView(
         ListItem(
             headlineContent = { Text(stringResource(id = chat.schildi.lib.R.string.sc_pref_tweaks_title)) },
             leadingContent = ListItemContent.Icon(IconSource.Vector(Icons.Outlined.PrecisionManufacturing)),
-            onClick = { onOpenScTweaks(null) },
+            onClick = { navigateToScTweaks(null) },
         )
 
         if (state.isMultiAccountEnabled) {
@@ -366,7 +366,7 @@ private fun ContentToPreview(matrixUser: MatrixUser) {
         onOpenRageShake = {},
         onOpenDeveloperSettings = {},
         onOpenAdvancedSettings = {},
-        onOpenScTweaks = {},
+        navigateToScTweaks = {},
         onOpenLabs = {},
         onOpenAbout = {},
         onSecureBackupClick = {},

@@ -10,7 +10,6 @@ package io.element.android.libraries.matrix.ui.media
 import coil3.ImageLoader
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.SessionId
@@ -24,7 +23,6 @@ interface ImageLoaderHolder {
 
 @ContributesBinding(AppScope::class)
 @SingleIn(AppScope::class)
-@Inject
 class DefaultImageLoaderHolder(
     private val loggedInImageLoaderFactory: LoggedInImageLoaderFactory,
     private val sessionObserver: SessionObserver,
@@ -37,9 +35,7 @@ class DefaultImageLoaderHolder(
 
     private fun observeSessions() {
         sessionObserver.addListener(object : SessionListener {
-            override suspend fun onSessionCreated(userId: String) = Unit
-
-            override suspend fun onSessionDeleted(userId: String) {
+            override suspend fun onSessionDeleted(userId: String, wasLastSession: Boolean) {
                 remove(SessionId(userId))
             }
         })

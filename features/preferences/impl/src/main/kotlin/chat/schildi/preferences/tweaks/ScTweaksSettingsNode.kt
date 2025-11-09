@@ -57,7 +57,7 @@ class ScTweaksSettingsNode(
     ) : NodeInputs
 
     interface Callback : Plugin {
-        fun onOpenScTweaks(scPrefScreen: ScPrefScreen)
+        fun navigateToScTweaks(scPrefScreen: ScPrefScreen)
     }
 
     private val prefScreen = inputs<Inputs>().prefScreen
@@ -70,14 +70,14 @@ class ScTweaksSettingsNode(
             state = state,
             modifier = modifier,
             onBackClick = ::navigateUp,
-            onOpenPrefScreen = this::onOpenScTweaks,
+            onOpenPrefScreen = this::navigateToScTweaks,
             handleScPrefAction = this::handleScPrefAction,
         )
     }
 
-    private fun onOpenScTweaks(scPrefScreen: ScPrefScreen) {
+    private fun navigateToScTweaks(scPrefScreen: ScPrefScreen) {
         plugins<Callback>().forEach {
-            it.onOpenScTweaks(scPrefScreen)
+            it.navigateToScTweaks(scPrefScreen)
         }
     }
 

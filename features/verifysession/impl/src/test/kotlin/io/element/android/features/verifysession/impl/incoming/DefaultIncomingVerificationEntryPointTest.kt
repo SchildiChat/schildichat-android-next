@@ -37,10 +37,12 @@ class DefaultIncomingVerificationEntryPointTest {
         val params = IncomingVerificationEntryPoint.Params(
             verificationRequest = anIncomingSessionVerificationRequest()
         )
-        val result = entryPoint.nodeBuilder(parentNode, BuildContext.root(null))
-            .params(params)
-            .callback(callback)
-            .build()
+        val result = entryPoint.createNode(
+            parentNode = parentNode,
+            buildContext = BuildContext.root(null),
+            params = params,
+            callback = callback,
+        )
         assertThat(result).isInstanceOf(IncomingVerificationNode::class.java)
         assertThat(result.plugins).contains(params)
         assertThat(result.plugins).contains(callback)

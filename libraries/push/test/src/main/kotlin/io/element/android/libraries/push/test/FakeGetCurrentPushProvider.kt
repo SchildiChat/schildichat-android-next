@@ -7,10 +7,11 @@
 
 package io.element.android.libraries.push.test
 
+import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.push.api.GetCurrentPushProvider
 
 class FakeGetCurrentPushProvider(
     private val currentPushProvider: String?
 ) : GetCurrentPushProvider {
-    override suspend fun getCurrentPushProvider(): String? = currentPushProvider
+    override suspend fun getCurrentPushProvider(sessionId: SessionId): String? = currentPushProvider
 }

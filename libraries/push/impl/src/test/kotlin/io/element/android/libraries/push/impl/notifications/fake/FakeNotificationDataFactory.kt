@@ -7,6 +7,7 @@
 
 package io.element.android.libraries.push.impl.notifications.fake
 
+import androidx.annotation.ColorInt
 import coil3.ImageLoader
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.push.impl.notifications.NotificationDataFactory
@@ -33,31 +34,45 @@ class FakeNotificationDataFactory(
         List<OneShotNotification>,
         List<OneShotNotification>,
         SummaryNotification
-    > = lambdaRecorder { _, _, _, _, _ -> SummaryNotification.Update(A_NOTIFICATION) },
+        > = lambdaRecorder { _, _, _, _, _ -> SummaryNotification.Update(A_NOTIFICATION) },
     var inviteToNotificationsResult: LambdaOneParamRecorder<List<InviteNotifiableEvent>, List<OneShotNotification>> = lambdaRecorder { _ -> emptyList() },
     var simpleEventToNotificationsResult: LambdaOneParamRecorder<List<SimpleNotifiableEvent>, List<OneShotNotification>> = lambdaRecorder { _ -> emptyList() },
     var fallbackEventToNotificationsResult: LambdaOneParamRecorder<List<FallbackNotifiableEvent>, List<OneShotNotification>> =
         lambdaRecorder { _ -> emptyList() },
 ) : NotificationDataFactory {
-    override suspend fun toNotifications(messages: List<NotifiableMessageEvent>, currentUser: MatrixUser, imageLoader: ImageLoader): List<RoomNotification> {
+    override suspend fun toNotifications(
+        messages: List<NotifiableMessageEvent>,
+        currentUser: MatrixUser,
+        imageLoader: ImageLoader,
+        @ColorInt color: Int,
+    ): List<RoomNotification> {
         return messageEventToNotificationsResult(messages, currentUser, imageLoader)
     }
 
     @JvmName("toNotificationInvites")
     @Suppress("INAPPLICABLE_JVM_NAME")
-    override fun toNotifications(invites: List<InviteNotifiableEvent>): List<OneShotNotification> {
+    override fun toNotifications(
+        invites: List<InviteNotifiableEvent>,
+        @ColorInt color: Int,
+    ): List<OneShotNotification> {
         return inviteToNotificationsResult(invites)
     }
 
     @JvmName("toNotificationSimpleEvents")
     @Suppress("INAPPLICABLE_JVM_NAME")
-    override fun toNotifications(simpleEvents: List<SimpleNotifiableEvent>): List<OneShotNotification> {
+    override fun toNotifications(
+        simpleEvents: List<SimpleNotifiableEvent>,
+        @ColorInt color: Int,
+    ): List<OneShotNotification> {
         return simpleEventToNotificationsResult(simpleEvents)
     }
 
     @JvmName("toNotificationFallbackEvents")
     @Suppress("INAPPLICABLE_JVM_NAME")
-    override fun toNotifications(fallback: List<FallbackNotifiableEvent>): List<OneShotNotification> {
+    override fun toNotifications(
+        fallback: List<FallbackNotifiableEvent>,
+        @ColorInt color: Int,
+    ): List<OneShotNotification> {
         return fallbackEventToNotificationsResult(fallback)
     }
 
@@ -67,6 +82,7 @@ class FakeNotificationDataFactory(
         invitationNotifications: List<OneShotNotification>,
         simpleNotifications: List<OneShotNotification>,
         fallbackNotifications: List<OneShotNotification>,
+        @ColorInt color: Int,
     ): SummaryNotification {
         return summaryToNotificationsResult(
             currentUser,

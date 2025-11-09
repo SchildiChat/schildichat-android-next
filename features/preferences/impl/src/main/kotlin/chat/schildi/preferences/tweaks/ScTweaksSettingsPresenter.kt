@@ -28,12 +28,12 @@ import chat.schildi.lib.preferences.prefValMap
 import chat.schildi.lib.preferences.settingState
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import io.element.android.libraries.architecture.Presenter
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@Inject
+@AssistedInject
 class ScTweaksSettingsPresenter(
     private val scPreferencesStore: ScPreferencesStore,
     private val scAppStateStore: ScAppStateStore,

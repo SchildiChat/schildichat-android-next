@@ -24,7 +24,6 @@ import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.messages.impl.timeline.TimelineEvents
 import io.element.android.features.messages.impl.timeline.TimelineRoomInfo
@@ -222,7 +221,7 @@ private fun Modifier.focusedEvent(
     focusedEventOffset: Dp,
 ): Modifier {
     val highlightedLineColor = ElementTheme.colors.borderAccentSubtle
-    val gradientColors = gradientSubtleColors()
+    val gradientColors = scMessageHighlightColors() ?: gradientSubtleColors()
     val verticalOffset = focusedEventOffset.toPx()
     val verticalRatio = 0.7f
     return drawWithCache {

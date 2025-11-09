@@ -7,9 +7,6 @@
 
 package io.element.android.features.messages.impl.attachments.preview
 
-import androidx.compose.runtime.Immutable
-
-@Immutable
 sealed interface AttachmentsPreviewEvents {
     data object SendAttachment : AttachmentsPreviewEvents
     data object CancelAndDismiss : AttachmentsPreviewEvents

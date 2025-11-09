@@ -23,8 +23,12 @@ data class DeveloperSettingsState(
     val customElementCallBaseUrlState: CustomElementCallBaseUrlState,
     val tracingLogLevel: AsyncData<LogLevelItem>,
     val tracingLogPacks: ImmutableList<TraceLogPack>,
+    val isEnterpriseBuild: Boolean,
+    val showColorPicker: Boolean,
     val eventSink: (DeveloperSettingsEvents) -> Unit
-)
+) {
+    val showLoader = clearCacheAction is AsyncAction.Loading
+}
 
 data class CustomElementCallBaseUrlState(
     val baseUrl: String?,

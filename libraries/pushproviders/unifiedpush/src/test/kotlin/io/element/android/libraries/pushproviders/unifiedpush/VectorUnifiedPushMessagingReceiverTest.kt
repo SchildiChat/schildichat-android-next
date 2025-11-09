@@ -191,6 +191,7 @@ class VectorUnifiedPushMessagingReceiverTest {
     }
 
     private fun TestScope.createVectorUnifiedPushMessagingReceiver(
+        unifiedPushParser: UnifiedPushParser = createUnifiedPushParser(),
         pushHandler: PushHandler = FakePushHandler(),
         unifiedPushStore: UnifiedPushStore = FakeUnifiedPushStore(),
         unifiedPushGatewayResolver: UnifiedPushGatewayResolver = FakeUnifiedPushGatewayResolver(),
@@ -199,7 +200,7 @@ class VectorUnifiedPushMessagingReceiverTest {
         endpointRegistrationHandler: EndpointRegistrationHandler = EndpointRegistrationHandler(),
     ): VectorUnifiedPushMessagingReceiver {
         return VectorUnifiedPushMessagingReceiver().apply {
-            this.pushParser = UnifiedPushParser()
+            this.pushParser = unifiedPushParser
             this.pushHandler = pushHandler
             this.guardServiceStarter = NoopGuardServiceStarter()
             this.unifiedPushStore = unifiedPushStore
@@ -223,7 +224,9 @@ private fun aPushMessage(
 private fun aPushEndpoint(
     url: String = "anEndpoint",
     pubKeySet: PublicKeySet? = null,
+    temporary: Boolean = false,
 ) = PushEndpoint(
     url = url,
     pubKeySet = pubKeySet,
+    temporary = temporary,
 )

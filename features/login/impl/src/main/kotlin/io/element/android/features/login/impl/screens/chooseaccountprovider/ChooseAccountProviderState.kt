@@ -10,10 +10,10 @@ package io.element.android.features.login.impl.screens.chooseaccountprovider
 import io.element.android.features.login.impl.accountprovider.AccountProvider
 import io.element.android.features.login.impl.login.LoginMode
 import io.element.android.libraries.architecture.AsyncData
+import kotlinx.collections.immutable.ImmutableList
 
-// Do not use default value, so no member get forgotten in the presenters.
 data class ChooseAccountProviderState(
-    val accountProviders: List<AccountProvider>,
+    val accountProviders: ImmutableList<AccountProvider>,
     val selectedAccountProvider: AccountProvider?,
     val loginMode: AsyncData<LoginMode>,
     val eventSink: (ChooseAccountProviderEvents) -> Unit,

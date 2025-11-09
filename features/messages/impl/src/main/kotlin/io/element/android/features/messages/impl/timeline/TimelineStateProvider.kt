@@ -259,7 +259,7 @@ internal fun aTimelineRoomInfo(
     userHasPermissionToSendMessage = userHasPermissionToSendMessage,
     userHasPermissionToSendReaction = true,
     roomCallState = aStandByCallState(),
-    pinnedEventIds = pinnedEventIds,
+    pinnedEventIds = pinnedEventIds.toImmutableList(),
     typingNotificationState = typingNotificationState,
     predecessorRoom = predecessorRoom,
 )

@@ -8,6 +8,7 @@
 package io.element.android.libraries.wellknown.impl
 
 import com.google.common.truth.Truth.assertThat
+import io.element.android.libraries.androidutils.json.DefaultJsonProvider
 import io.element.android.libraries.matrix.test.AN_EXCEPTION
 import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.wellknown.api.ElementWellKnown
@@ -16,7 +17,6 @@ import io.element.android.libraries.wellknown.api.WellKnownBaseConfig
 import io.element.android.tests.testutils.lambda.lambdaRecorder
 import io.element.android.tests.testutils.lambda.value
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.Json
 import org.junit.Test
 
 class DefaultSessionWellknownRetrieverTest {
@@ -107,7 +107,7 @@ class DefaultSessionWellknownRetrieverTest {
                     "other": true
                 }""".trimIndent().toByteArray()
                 )
-            }
+            },
         )
         assertThat(sut.getWellKnown()).isEqualTo(
             WellKnown(
@@ -201,7 +201,7 @@ class DefaultSessionWellknownRetrieverTest {
                     "other": true
                 }""".trimIndent().toByteArray()
                 )
-            }
+            },
         )
         assertThat(sut.getElementWellKnown()).isEqualTo(
             ElementWellKnown(
@@ -244,6 +244,6 @@ class DefaultSessionWellknownRetrieverTest {
             userIdServerNameLambda = { "user.domain.org" },
             getUrlLambda = getUrlLambda,
         ),
-        parser = Json { ignoreUnknownKeys = true }
+        json = DefaultJsonProvider(),
     )
 }

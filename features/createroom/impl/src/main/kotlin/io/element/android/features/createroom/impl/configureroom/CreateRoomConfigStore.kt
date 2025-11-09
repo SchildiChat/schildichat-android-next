@@ -62,7 +62,7 @@ class CreateRoomConfigStore(
     fun setAvatarUri(uri: Uri?, cached: Boolean = false) {
         cachedAvatarUri = uri.takeIf { cached }
         createRoomConfigFlow.getAndUpdate { config ->
-            config.copy(avatarUri = uri)
+            config.copy(avatarUri = uri?.toString())
         }
     }
 

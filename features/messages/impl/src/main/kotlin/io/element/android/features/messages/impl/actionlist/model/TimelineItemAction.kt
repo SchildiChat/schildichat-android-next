@@ -9,11 +9,9 @@ package io.element.android.features.messages.impl.actionlist.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.runtime.Immutable
 import io.element.android.libraries.designsystem.icons.CompoundDrawables
 import io.element.android.libraries.ui.strings.CommonStrings
 
-@Immutable
 enum class TimelineItemAction(
     @StringRes val titleRes: Int,
     @DrawableRes val icon: Int,

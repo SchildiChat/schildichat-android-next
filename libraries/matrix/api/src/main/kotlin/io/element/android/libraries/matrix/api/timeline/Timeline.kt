@@ -8,6 +8,7 @@
 package io.element.android.libraries.matrix.api.timeline
 
 import android.os.Parcelable
+import androidx.compose.runtime.Immutable
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.ThreadId
@@ -42,6 +43,7 @@ interface Timeline : AutoCloseable {
     }
 
     @Parcelize
+    @Immutable
     sealed interface Mode : Parcelable {
         data object Live : Mode
         data class FocusedOnEvent(val eventId: EventId) : Mode

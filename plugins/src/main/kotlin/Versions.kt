@@ -38,7 +38,7 @@ private const val versionYear = 25
  * Month of the version on 2 digits. Value must be in [1,12].
  * Do not update this value. it is updated by the release script.
  */
-private const val versionMonth = 10
+private const val versionMonth = 11
 
 /**
  * Release number in the month. Value must be in [0,99].

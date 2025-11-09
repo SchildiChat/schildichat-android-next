@@ -8,10 +8,13 @@
 package io.element.android.libraries.matrix.api.verification
 
 import android.os.Parcelable
+import androidx.compose.runtime.Immutable
 import io.element.android.libraries.matrix.api.core.UserId
 import kotlinx.parcelize.Parcelize
 
+@Immutable
 sealed interface VerificationRequest : Parcelable {
+    @Immutable
     sealed interface Outgoing : VerificationRequest {
         @Parcelize
         data object CurrentSession : Outgoing

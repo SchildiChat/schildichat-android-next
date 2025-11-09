@@ -22,16 +22,19 @@ sealed interface VoiceRecorderState {
      * The recorder is currently recording.
      *
      * @property elapsedTime The elapsed time since the recording started.
-     * @property levels The current audio levels of the recording as a fraction of 1.
+     * @property levels The current audio levels of the recording as a fraction of 1. All values are between 0 and 1.
      */
-    data class Recording(val elapsedTime: Duration, val levels: List<Float>) : VoiceRecorderState
+    data class Recording(
+        val elapsedTime: Duration,
+        val levels: List<Float>,
+    ) : VoiceRecorderState
 
     /**
      * The recorder has finished recording.
      *
      * @property file The recorded file.
      * @property mimeType The mime type of the file.
-     * @property waveform The waveform of the recording.
+     * @property waveform The waveform of the recording. All values are between 0 and 1.
      * @property duration The total time spent recording.
      */
     data class Finished(

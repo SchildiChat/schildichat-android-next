@@ -54,7 +54,7 @@ import chat.schildi.lib.preferences.value
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.libraries.androidutils.ui.showKeyboard
-import io.element.android.libraries.designsystem.components.media.createFakeWaveform
+import io.element.android.libraries.designsystem.components.media.WaveFormSamples
 import io.element.android.libraries.designsystem.preview.DAY_MODE_NAME
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.NIGHT_MODE_NAME
@@ -810,30 +810,33 @@ internal fun TextComposerCaptionPreview() = ElementPreview {
 internal fun TextComposerVoicePreview() = ElementPreview {
     PreviewColumn(
         items = persistentListOf(
-            VoiceMessageState.Recording(61.seconds, createFakeWaveform()),
+            VoiceMessageState.Recording(
+                duration = 61.seconds,
+                levels = WaveFormSamples.realisticWaveForm,
+            ),
             VoiceMessageState.Preview(
                 isSending = false,
                 isPlaying = false,
                 showCursor = false,
-                waveform = createFakeWaveform(),
+                waveform = WaveFormSamples.realisticWaveForm,
                 time = 0.seconds,
-                playbackProgress = 0.0f
+                playbackProgress = 0.0f,
             ),
             VoiceMessageState.Preview(
                 isSending = false,
                 isPlaying = true,
                 showCursor = true,
-                waveform = createFakeWaveform(),
+                waveform = WaveFormSamples.realisticWaveForm,
                 time = 3.seconds,
-                playbackProgress = 0.2f
+                playbackProgress = 0.2f,
             ),
             VoiceMessageState.Preview(
                 isSending = true,
                 isPlaying = false,
                 showCursor = false,
-                waveform = createFakeWaveform(),
+                waveform = WaveFormSamples.realisticWaveForm,
                 time = 61.seconds,
-                playbackProgress = 0.0f
+                playbackProgress = 0.0f,
             ),
         )
     ) { voiceMessageState ->
@@ -850,12 +853,15 @@ internal fun TextComposerVoicePreview() = ElementPreview {
 internal fun TextComposerVoiceNotEncryptedPreview() = ElementPreview {
     PreviewColumn(
         items = persistentListOf(
-            VoiceMessageState.Recording(61.seconds, createFakeWaveform()),
+            VoiceMessageState.Recording(
+                duration = 61.seconds,
+                levels = WaveFormSamples.realisticWaveForm,
+            ),
             VoiceMessageState.Preview(
                 isSending = false,
                 isPlaying = false,
                 showCursor = false,
-                waveform = createFakeWaveform(),
+                waveform = WaveFormSamples.realisticWaveForm,
                 time = 0.seconds,
                 playbackProgress = 0.0f
             ),
@@ -863,7 +869,7 @@ internal fun TextComposerVoiceNotEncryptedPreview() = ElementPreview {
                 isSending = false,
                 isPlaying = true,
                 showCursor = true,
-                waveform = createFakeWaveform(),
+                waveform = WaveFormSamples.realisticWaveForm,
                 time = 3.seconds,
                 playbackProgress = 0.2f
             ),
@@ -871,7 +877,7 @@ internal fun TextComposerVoiceNotEncryptedPreview() = ElementPreview {
                 isSending = true,
                 isPlaying = false,
                 showCursor = false,
-                waveform = createFakeWaveform(),
+                waveform = WaveFormSamples.realisticWaveForm,
                 time = 61.seconds,
                 playbackProgress = 0.0f
             ),

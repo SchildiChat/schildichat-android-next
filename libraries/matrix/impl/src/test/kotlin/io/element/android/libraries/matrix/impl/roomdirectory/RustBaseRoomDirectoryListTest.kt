@@ -42,7 +42,7 @@ class RustBaseRoomDirectoryListTest {
             )
             val initialItem = awaitItem()
             assertThat(initialItem).isEqualTo(
-                RoomDirectoryList.State(
+                RoomDirectoryList.SearchResult(
                     hasMoreToLoad = true,
                     items = listOf(mapper.map(aRustRoomDescription()))
                 )
@@ -57,7 +57,7 @@ class RustBaseRoomDirectoryListTest {
             )
             val nextItem = awaitItem()
             assertThat(nextItem).isEqualTo(
-                RoomDirectoryList.State(
+                RoomDirectoryList.SearchResult(
                     hasMoreToLoad = false,
                     items = listOf(
                         mapper.map(aRustRoomDescription()),
@@ -66,7 +66,7 @@ class RustBaseRoomDirectoryListTest {
             )
             val finalItem = awaitItem()
             assertThat(finalItem).isEqualTo(
-                RoomDirectoryList.State(
+                RoomDirectoryList.SearchResult(
                     hasMoreToLoad = false,
                     items = listOf(
                         mapper.map(aRustRoomDescription()),

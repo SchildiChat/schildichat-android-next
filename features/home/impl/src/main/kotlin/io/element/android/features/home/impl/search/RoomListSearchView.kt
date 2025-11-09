@@ -25,6 +25,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -34,6 +35,8 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import chat.schildi.lib.preferences.ScPrefs
@@ -45,7 +48,6 @@ import io.element.android.features.home.impl.contentType
 import io.element.android.features.home.impl.model.RoomListRoomSummary
 import io.element.android.features.home.impl.roomlist.RoomListEvents
 import io.element.android.libraries.designsystem.components.button.BackButton
-import io.element.android.libraries.designsystem.components.form.textFieldState
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.FilledTextField
@@ -115,18 +117,18 @@ private fun RoomListSearchContent(
                 },
                 navigationIcon = { BackButton(onClick = ::onBackButtonClick) },
                 title = {
-                    var filter by textFieldState(state.query)
+                    var value by remember { mutableStateOf(TextFieldValue(state.query)) }
 
                     val focusRequester = remember { FocusRequester() }
                     FilledTextField(
                         modifier = Modifier
                             .fillMaxWidth()
                             .focusRequester(focusRequester),
-                        value = filter,
+                        value = value,
                         singleLine = true,
                         onValueChange = {
-                            filter = it
-                            state.eventSink(RoomListSearchEvents.QueryChanged(it))
+                            value = it
+                            state.eventSink(RoomListSearchEvents.QueryChanged(it.text))
                         },
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,
@@ -138,7 +140,7 @@ private fun RoomListSearchContent(
                             errorIndicatorColor = Color.Transparent,
                         ),
                         trailingIcon = {
-                            if (filter.isNotEmpty()) {
+                            if (value.text.isNotEmpty()) {
                                 IconButton(onClick = {
                                     state.eventSink(RoomListSearchEvents.ClearQuery)
                                 }) {
@@ -152,7 +154,11 @@ private fun RoomListSearchContent(
                     )
 
                     LaunchedEffect(Unit) {
-                        focusRequester.requestFocus()
+                        value = value.copy(selection = TextRange(value.text.length))
+                        if (!focusRequester.restoreFocusedChild()) {
+                            focusRequester.requestFocus()
+                        }
+                        focusRequester.saveFocusedChild()
                     }
                 },
                 windowInsets = TopAppBarDefaults.windowInsets.copy(top = 0)

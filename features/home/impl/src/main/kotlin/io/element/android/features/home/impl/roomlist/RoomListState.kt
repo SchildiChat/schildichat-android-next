@@ -24,7 +24,6 @@ import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 
-@Immutable
 data class RoomListState(
     val contextMenu: ContextMenu,
     val declineInviteMenu: DeclineInviteMenu,

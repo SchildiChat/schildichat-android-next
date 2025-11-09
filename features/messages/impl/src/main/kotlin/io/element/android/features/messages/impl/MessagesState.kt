@@ -7,7 +7,6 @@
 
 package io.element.android.features.messages.impl
 
-import androidx.compose.runtime.Immutable
 import io.element.android.features.messages.api.timeline.voicemessages.composer.VoiceMessageComposerState
 import io.element.android.features.messages.impl.actionlist.ActionListState
 import io.element.android.features.messages.impl.crypto.identity.IdentityChangeState
@@ -29,7 +28,6 @@ import io.element.android.libraries.matrix.api.encryption.identity.IdentityState
 import io.element.android.libraries.matrix.api.room.tombstone.SuccessorRoom
 import kotlinx.collections.immutable.ImmutableList
 
-@Immutable
 data class MessagesState(
     val roomId: RoomId,
     val roomName: String?,

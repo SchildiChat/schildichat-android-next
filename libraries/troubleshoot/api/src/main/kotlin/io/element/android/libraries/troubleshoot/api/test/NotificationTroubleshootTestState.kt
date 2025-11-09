@@ -7,11 +7,14 @@
 
 package io.element.android.libraries.troubleshoot.api.test
 
+import androidx.compose.runtime.Immutable
+
 data class NotificationTroubleshootTestState(
     val name: String,
     val description: String,
     val status: Status,
 ) {
+    @Immutable
     sealed interface Status {
         data class Idle(val visible: Boolean) : Status
         data object InProgress : Status

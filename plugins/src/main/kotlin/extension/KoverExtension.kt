@@ -158,7 +158,6 @@ fun Project.setupKover() {
                         "io.element.android.libraries.designsystem.swipe.SwipeableActionsState",
                         "io.element.android.libraries.designsystem.theme.components.bottomsheet.CustomSheetState",
                         "io.element.android.libraries.maplibre.compose.CameraPositionState",
-                        "io.element.android.libraries.maplibre.compose.SaveableCameraPositionState",
                         "io.element.android.libraries.maplibre.compose.SymbolState",
                         "io.element.android.libraries.matrix.api.room.RoomMembershipState",
                         "io.element.android.libraries.matrix.api.room.RoomMembersState",

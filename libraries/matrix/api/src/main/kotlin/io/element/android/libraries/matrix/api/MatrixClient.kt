@@ -35,6 +35,7 @@ import io.element.android.libraries.matrix.api.roomlist.RoomListService
 import io.element.android.libraries.matrix.api.spaces.SpaceService
 import io.element.android.libraries.matrix.api.sync.SlidingSyncVersion
 import io.element.android.libraries.matrix.api.sync.SyncService
+import io.element.android.libraries.matrix.api.timeline.ReceiptType
 import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.matrix.api.user.MatrixSearchUserResults
 import io.element.android.libraries.matrix.api.user.MatrixUser
@@ -196,7 +197,7 @@ interface MatrixClient {
      * This method should be used with caution as providing the [eventId] ourselves can result in incorrect read receipts.
      * Use [Timeline.markAsRead] instead when possible.
      */
-    suspend fun markRoomAsFullyRead(roomId: RoomId, eventId: EventId): Result<Unit>
+    suspend fun markRoomAsFullyRead(roomId: RoomId, eventId: EventId, withReadReceipt: ReceiptType?): Result<Unit>
 }
 
 /**

@@ -34,6 +34,7 @@ import io.element.android.libraries.matrix.api.roomlist.RoomListService
 import io.element.android.libraries.matrix.api.spaces.SpaceService
 import io.element.android.libraries.matrix.api.sync.SlidingSyncVersion
 import io.element.android.libraries.matrix.api.sync.SyncService
+import io.element.android.libraries.matrix.api.timeline.ReceiptType
 import io.element.android.libraries.matrix.api.user.MatrixSearchUserResults
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.api.verification.SessionVerificationService
@@ -354,7 +355,7 @@ class FakeMatrixClient(
         return getRecentEmojisLambda()
     }
 
-    override suspend fun markRoomAsFullyRead(roomId: RoomId, eventId: EventId): Result<Unit> {
+    override suspend fun markRoomAsFullyRead(roomId: RoomId, eventId: EventId, withReadReceipt: ReceiptType?): Result<Unit> {
         return markRoomAsFullyReadResult(roomId, eventId)
     }
 }

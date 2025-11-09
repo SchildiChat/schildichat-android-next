@@ -27,15 +27,8 @@ class DefaultMarkAsFullyRead(
     private val coroutineDispatchers: CoroutineDispatchers,
 ) : MarkAsFullyRead {
     override suspend fun invoke(roomId: RoomId, eventId: EventId, withReadReceipt: ReceiptType?): Result<Unit> = withContext(coroutineDispatchers.io) {
-        matrixClient.markRoomAsFullyRead(roomId, eventId).onFailure {
+        matrixClient.markRoomAsFullyRead(roomId, eventId, withReadReceipt).onFailure {
             Timber.e(it, "Failed to mark room $roomId as fully read for event $eventId")
-        }.also { // SC extras
-            if (withReadReceipt != null) {
-                /* TODO?
-            room.forceSendSingleReadReceipt(receiptType = withReadReceipt, eventId = eventId)
-                .onFailure { Timber.e("Failed to send aux read receipt for room $roomId", it) }
-             */
-            }
         }
     }
 }

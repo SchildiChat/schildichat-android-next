@@ -196,6 +196,7 @@ fun MessagesView(
                                 onBackClick = onBackClick,
                             )
                         } else {
+                            Column { // SC wrong indention
                             MessagesViewTopBar(
                                 roomName = state.roomName,
                                 roomAvatar = state.roomAvatar,
@@ -210,6 +211,7 @@ fun MessagesView(
                                 onViewAllPinnedMessagesClick = onViewAllPinnedMessagesClick, // SC
                             )
                             ScReadMarkerDebug(state.timelineState.scReadState)
+                            } // SC wrong indention
                         }
                 },
                 content = { padding ->

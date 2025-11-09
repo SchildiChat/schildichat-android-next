@@ -1,13 +1,9 @@
 package chat.schildi.lib.preferences
 
-import android.os.Build
 import chat.schildi.lib.R
 import io.element.android.libraries.ui.strings.CommonStrings
 
 object ScPrefs {
-
-    // On old devices, non-worker approach is more reliable
-    val DEFAULT_ENABLE_NOTIFICATION_WORKER = Build.VERSION.SDK_INT >= 31
 
     object SpaceUnreadCountMode {
         const val MESSAGES = "MESSAGES"

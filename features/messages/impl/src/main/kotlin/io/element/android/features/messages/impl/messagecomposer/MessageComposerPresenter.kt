@@ -132,7 +132,7 @@ class MessageComposerPresenter(
     private val mediaSender = mediaSenderFactory.create(timelineMode = timelineController.mainTimelineMode())
 
     private val cameraPermissionPresenter = permissionsPresenterFactory.create(Manifest.permission.CAMERA)
-    private var pendingEvent: MessageComposerEvents? = null
+    private var pendingEvent: MessageComposerEvent? = null
     private val suggestionSearchTrigger = MutableStateFlow<Suggestion?>(null)
 
     // Used to disable some UI related elements in tests
@@ -186,8 +186,8 @@ class MessageComposerPresenter(
         LaunchedEffect(cameraPermissionState.permissionGranted) {
             if (cameraPermissionState.permissionGranted) {
                 when (pendingEvent) {
-                    is MessageComposerEvents.PickAttachmentSource.PhotoFromCamera -> cameraPhotoPicker.launch()
-                    is MessageComposerEvents.PickAttachmentSource.VideoFromCamera -> cameraVideoPicker.launch()
+                    is MessageComposerEvent.PickAttachmentSource.PhotoFromCamera -> cameraPhotoPicker.launch()
+                    is MessageComposerEvent.PickAttachmentSource.VideoFromCamera -> cameraVideoPicker.launch()
                     else -> Unit
                 }
                 pendingEvent = null
@@ -228,10 +228,10 @@ class MessageComposerPresenter(
             }
         }
 
-        fun handleEvent(event: MessageComposerEvents) {
+        fun handleEvent(event: MessageComposerEvent) {
             when (event) {
-                MessageComposerEvents.ToggleFullScreenState -> isFullScreen.value = !isFullScreen.value
-                MessageComposerEvents.CloseSpecialMode -> {
+                MessageComposerEvent.ToggleFullScreenState -> isFullScreen.value = !isFullScreen.value
+                MessageComposerEvent.CloseSpecialMode -> {
                     if (messageComposerContext.composerMode.isEditing) {
                         localCoroutineScope.launch {
                             resetComposer(markdownTextEditorState, richTextEditorState, fromEdit = true)
@@ -240,13 +240,13 @@ class MessageComposerPresenter(
                         messageComposerContext.composerMode = MessageComposerMode.Normal
                     }
                 }
-                is MessageComposerEvents.SendMessage -> {
+                is MessageComposerEvent.SendMessage -> {
                     sessionCoroutineScope.sendMessage(
                         markdownTextEditorState = markdownTextEditorState,
                         richTextEditorState = richTextEditorState,
                     )
                 }
-                is MessageComposerEvents.SendUri -> {
+                is MessageComposerEvent.SendUri -> {
                     val inReplyToEventId = (messageComposerContext.composerMode as? MessageComposerMode.Reply)?.eventId
                     sessionCoroutineScope.sendAttachment(
                         attachment = Attachment.Media(
@@ -263,22 +263,22 @@ class MessageComposerPresenter(
                     // Reset composer since the attachment has been sent
                     messageComposerContext.composerMode = MessageComposerMode.Normal
                 }
-                is MessageComposerEvents.SetMode -> {
+                is MessageComposerEvent.SetMode -> {
                     localCoroutineScope.setMode(event.composerMode, markdownTextEditorState, richTextEditorState)
                 }
-                MessageComposerEvents.AddAttachment -> localCoroutineScope.launch {
+                MessageComposerEvent.AddAttachment -> localCoroutineScope.launch {
                     showAttachmentSourcePicker = true
                 }
-                MessageComposerEvents.DismissAttachmentMenu -> showAttachmentSourcePicker = false
-                MessageComposerEvents.PickAttachmentSource.FromGallery -> localCoroutineScope.launch {
+                MessageComposerEvent.DismissAttachmentMenu -> showAttachmentSourcePicker = false
+                MessageComposerEvent.PickAttachmentSource.FromGallery -> localCoroutineScope.launch {
                     showAttachmentSourcePicker = false
                     galleryMediaPicker.launch()
                 }
-                MessageComposerEvents.PickAttachmentSource.FromFiles -> localCoroutineScope.launch {
+                MessageComposerEvent.PickAttachmentSource.FromFiles -> localCoroutineScope.launch {
                     showAttachmentSourcePicker = false
                     filesPicker.launch()
                 }
-                MessageComposerEvents.PickAttachmentSource.PhotoFromCamera -> localCoroutineScope.launch {
+                MessageComposerEvent.PickAttachmentSource.PhotoFromCamera -> localCoroutineScope.launch {
                     showAttachmentSourcePicker = false
                     if (cameraPermissionState.permissionGranted) {
                         cameraPhotoPicker.launch()
@@ -287,7 +287,7 @@ class MessageComposerPresenter(
                         cameraPermissionState.eventSink(PermissionsEvents.RequestPermissions)
                     }
                 }
-                MessageComposerEvents.PickAttachmentSource.VideoFromCamera -> localCoroutineScope.launch {
+                MessageComposerEvent.PickAttachmentSource.VideoFromCamera -> localCoroutineScope.launch {
                     showAttachmentSourcePicker = false
                     if (cameraPermissionState.permissionGranted) {
                         cameraVideoPicker.launch()
@@ -296,32 +296,32 @@ class MessageComposerPresenter(
                         cameraPermissionState.eventSink(PermissionsEvents.RequestPermissions)
                     }
                 }
-                MessageComposerEvents.PickAttachmentSource.Location -> {
+                MessageComposerEvent.PickAttachmentSource.Location -> {
                     showAttachmentSourcePicker = false
                     // Navigation to the location picker screen is done at the view layer
                 }
-                MessageComposerEvents.PickAttachmentSource.Poll -> {
+                MessageComposerEvent.PickAttachmentSource.Poll -> {
                     showAttachmentSourcePicker = false
                     // Navigation to the create poll screen is done at the view layer
                 }
-                is MessageComposerEvents.ToggleTextFormatting -> {
+                is MessageComposerEvent.ToggleTextFormatting -> {
                     showAttachmentSourcePicker = false
                     localCoroutineScope.toggleTextFormatting(event.enabled, markdownTextEditorState, richTextEditorState)
                 }
-                is MessageComposerEvents.Error -> {
+                is MessageComposerEvent.Error -> {
                     analyticsService.trackError(event.error)
                 }
-                is MessageComposerEvents.TypingNotice -> {
+                is MessageComposerEvent.TypingNotice -> {
                     if (sendTypingNotifications) {
                         localCoroutineScope.launch {
                             room.typingNotice(event.isTyping)
                         }
                     }
                 }
-                is MessageComposerEvents.SuggestionReceived -> {
+                is MessageComposerEvent.SuggestionReceived -> {
                     suggestionSearchTrigger.value = event.suggestion
                 }
-                is MessageComposerEvents.InsertSuggestion -> {
+                is MessageComposerEvent.InsertSuggestion -> {
                     localCoroutineScope.launch {
                         if (showTextFormatting) {
                             when (val suggestion = event.resolvedSuggestion) {
@@ -348,7 +348,7 @@ class MessageComposerPresenter(
                         }
                     }
                 }
-                MessageComposerEvents.SaveDraft -> {
+                MessageComposerEvent.SaveDraft -> {
                     val draft = createDraftFromState(markdownTextEditorState, richTextEditorState)
                     sessionCoroutineScope.updateDraft(draft, isVolatile = false)
                 }

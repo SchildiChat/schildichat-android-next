@@ -20,7 +20,7 @@ import io.element.android.features.messages.impl.actionlist.model.TimelineItemAc
 import io.element.android.features.messages.impl.crypto.identity.anIdentityChangeState
 import io.element.android.features.messages.impl.fixtures.aMessageEvent
 import io.element.android.features.messages.impl.link.aLinkState
-import io.element.android.features.messages.impl.messagecomposer.MessageComposerEvents
+import io.element.android.features.messages.impl.messagecomposer.MessageComposerEvent
 import io.element.android.features.messages.impl.messagecomposer.MessageComposerState
 import io.element.android.features.messages.impl.messagecomposer.aMessageComposerState
 import io.element.android.features.messages.impl.pinned.banner.aLoadedPinnedMessagesBannerState
@@ -304,7 +304,7 @@ class MessagesPresenterTest {
 
     @Test
     fun `present - handle action reply`() = runTest {
-        val composerRecorder = EventsRecorder<MessageComposerEvents>()
+        val composerRecorder = EventsRecorder<MessageComposerEvent>()
         val presenter = createMessagesPresenter(
             messageComposerPresenter = { aMessageComposerState(eventSink = composerRecorder) },
         )
@@ -313,7 +313,7 @@ class MessagesPresenterTest {
             initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Reply, aMessageEvent()))
             awaitItem()
             composerRecorder.assertSingle(
-                MessageComposerEvents.SetMode(
+                MessageComposerEvent.SetMode(
                     composerMode = MessageComposerMode.Reply(
                         replyToDetails = InReplyToDetails.Loading(AN_EVENT_ID),
                         hideImage = false,
@@ -335,7 +335,7 @@ class MessagesPresenterTest {
 
     @Test
     fun `present - handle action reply to an image media message`() = runTest {
-        val composerRecorder = EventsRecorder<MessageComposerEvents>()
+        val composerRecorder = EventsRecorder<MessageComposerEvent>()
         val presenter = createMessagesPresenter(
             messageComposerPresenter = { aMessageComposerState(eventSink = composerRecorder) },
         )
@@ -364,7 +364,7 @@ class MessagesPresenterTest {
             initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Reply, mediaMessage))
             awaitItem()
             composerRecorder.assertSingle(
-                MessageComposerEvents.SetMode(
+                MessageComposerEvent.SetMode(
                     composerMode = MessageComposerMode.Reply(
                         replyToDetails = InReplyToDetails.Loading(AN_EVENT_ID),
                         hideImage = false,
@@ -376,7 +376,7 @@ class MessagesPresenterTest {
 
     @Test
     fun `present - handle action reply to a video media message`() = runTest {
-        val composerRecorder = EventsRecorder<MessageComposerEvents>()
+        val composerRecorder = EventsRecorder<MessageComposerEvent>()
         val presenter = createMessagesPresenter(
             messageComposerPresenter = { aMessageComposerState(eventSink = composerRecorder) },
         )
@@ -406,7 +406,7 @@ class MessagesPresenterTest {
             initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Reply, mediaMessage))
             awaitItem()
             composerRecorder.assertSingle(
-                MessageComposerEvents.SetMode(
+                MessageComposerEvent.SetMode(
                     composerMode = MessageComposerMode.Reply(
                         replyToDetails = InReplyToDetails.Loading(AN_EVENT_ID),
                         hideImage = false,
@@ -418,7 +418,7 @@ class MessagesPresenterTest {
 
     @Test
     fun `present - handle action reply to a file media message`() = runTest {
-        val composerRecorder = EventsRecorder<MessageComposerEvents>()
+        val composerRecorder = EventsRecorder<MessageComposerEvent>()
         val presenter = createMessagesPresenter(
             messageComposerPresenter = { aMessageComposerState(eventSink = composerRecorder) },
         )
@@ -441,7 +441,7 @@ class MessagesPresenterTest {
             initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Reply, mediaMessage))
             awaitItem()
             composerRecorder.assertSingle(
-                MessageComposerEvents.SetMode(
+                MessageComposerEvent.SetMode(
                     composerMode = MessageComposerMode.Reply(
                         replyToDetails = InReplyToDetails.Loading(AN_EVENT_ID),
                         hideImage = false,
@@ -453,7 +453,7 @@ class MessagesPresenterTest {
 
     @Test
     fun `present - handle action edit`() = runTest {
-        val composerRecorder = EventsRecorder<MessageComposerEvents>()
+        val composerRecorder = EventsRecorder<MessageComposerEvent>()
         val presenter = createMessagesPresenter(
             messageComposerPresenter = { aMessageComposerState(eventSink = composerRecorder) },
         )
@@ -462,7 +462,7 @@ class MessagesPresenterTest {
             initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Edit, aMessageEvent()))
             awaitItem()
             composerRecorder.assertSingle(
-                MessageComposerEvents.SetMode(
+                MessageComposerEvent.SetMode(
                     composerMode = MessageComposerMode.Edit(
                         eventOrTransactionId = AN_EVENT_ID.toEventOrTransactionId(),
                         content = (aMessageEvent().content as TimelineItemTextContent).body
@@ -892,7 +892,7 @@ class MessagesPresenterTest {
 
     @Test
     fun `present - handle action reply to a poll`() = runTest {
-        val composerRecorder = EventsRecorder<MessageComposerEvents>()
+        val composerRecorder = EventsRecorder<MessageComposerEvent>()
         val presenter = createMessagesPresenter(
             messageComposerPresenter = { aMessageComposerState(eventSink = composerRecorder) },
         )
@@ -904,7 +904,7 @@ class MessagesPresenterTest {
             initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Reply, poll))
             skipItems(1)
             composerRecorder.assertSingle(
-                MessageComposerEvents.SetMode(
+                MessageComposerEvent.SetMode(
                     composerMode = MessageComposerMode.Reply(
                         replyToDetails = InReplyToDetails.Loading(AN_EVENT_ID),
                         hideImage = false,
@@ -1009,7 +1009,7 @@ class MessagesPresenterTest {
                 caption = A_CAPTION,
             )
         )
-        val composerRecorder = EventsRecorder<MessageComposerEvents>()
+        val composerRecorder = EventsRecorder<MessageComposerEvent>()
         val presenter = createMessagesPresenter(
             messageComposerPresenter = { aMessageComposerState(eventSink = composerRecorder) },
         )
@@ -1018,7 +1018,7 @@ class MessagesPresenterTest {
             initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.EditCaption, messageEvent))
             awaitItem()
             composerRecorder.assertSingle(
-                MessageComposerEvents.SetMode(
+                MessageComposerEvent.SetMode(
                     composerMode = MessageComposerMode.EditCaption(
                         eventOrTransactionId = AN_EVENT_ID.toEventOrTransactionId(),
                         content = A_CAPTION,
@@ -1030,7 +1030,7 @@ class MessagesPresenterTest {
 
     @Test
     fun `present - handle action add caption`() = runTest {
-        val composerRecorder = EventsRecorder<MessageComposerEvents>()
+        val composerRecorder = EventsRecorder<MessageComposerEvent>()
         val presenter = createMessagesPresenter(
             messageComposerPresenter = { aMessageComposerState(eventSink = composerRecorder) },
         )
@@ -1044,7 +1044,7 @@ class MessagesPresenterTest {
             initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.AddCaption, messageEvent))
             awaitItem()
             composerRecorder.assertSingle(
-                MessageComposerEvents.SetMode(
+                MessageComposerEvent.SetMode(
                     composerMode = MessageComposerMode.EditCaption(
                         eventOrTransactionId = AN_EVENT_ID.toEventOrTransactionId(),
                         content = "",
@@ -1231,7 +1231,7 @@ class MessagesPresenterTest {
 
     @Test
     fun `present - handle action reply in a thread with threads disabled`() = runTest {
-        val composerRecorder = EventsRecorder<MessageComposerEvents>()
+        val composerRecorder = EventsRecorder<MessageComposerEvent>()
         val presenter = createMessagesPresenter(
             featureFlagService = FakeFeatureFlagService(
                 initialState = mapOf(FeatureFlags.Threads.key to false)
@@ -1243,7 +1243,7 @@ class MessagesPresenterTest {
             initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.ReplyInThread, aMessageEvent()))
             awaitItem()
             composerRecorder.assertSingle(
-                MessageComposerEvents.SetMode(
+                MessageComposerEvent.SetMode(
                     composerMode = MessageComposerMode.Reply(
                         replyToDetails = InReplyToDetails.Loading(AN_EVENT_ID),
                         hideImage = false,

@@ -32,7 +32,7 @@ fun aMessageComposerState(
     showAttachmentSourcePicker: Boolean = false,
     canShareLocation: Boolean = true,
     suggestions: ImmutableList<ResolvedSuggestion> = persistentListOf(),
-    eventSink: (MessageComposerEvents) -> Unit = {},
+    eventSink: (MessageComposerEvent) -> Unit = {},
 ) = MessageComposerState(
     textEditorState = textEditorState,
     isFullScreen = isFullScreen,

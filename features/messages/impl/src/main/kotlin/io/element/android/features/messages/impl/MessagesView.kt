@@ -52,7 +52,7 @@ import io.element.android.features.messages.impl.link.LinkEvents
 import io.element.android.features.messages.impl.link.LinkView
 import io.element.android.features.messages.impl.messagecomposer.AttachmentsBottomSheet
 import io.element.android.features.messages.impl.messagecomposer.DisabledComposerView
-import io.element.android.features.messages.impl.messagecomposer.MessageComposerEvents
+import io.element.android.features.messages.impl.messagecomposer.MessageComposerEvent
 import io.element.android.features.messages.impl.messagecomposer.MessageComposerView
 import io.element.android.features.messages.impl.messagecomposer.suggestions.SuggestionsPickerView
 import io.element.android.features.messages.impl.pinned.banner.PinnedMessagesBannerState
@@ -256,7 +256,7 @@ fun MessagesView(
                             roomAvatarData = state.roomAvatar,
                             suggestions = state.composerState.suggestions,
                             onSelectSuggestion = {
-                                state.composerState.eventSink(MessageComposerEvents.InsertSuggestion(it))
+                                state.composerState.eventSink(MessageComposerEvent.InsertSuggestion(it))
                             }
                         )
                     }

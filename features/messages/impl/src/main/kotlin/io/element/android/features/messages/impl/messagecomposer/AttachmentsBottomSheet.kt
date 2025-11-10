@@ -64,7 +64,7 @@ internal fun AttachmentsBottomSheet(
     // Send 'DismissAttachmentMenu' event when the bottomsheet was just hidden
     LaunchedEffect(isVisible) {
         if (!isVisible) {
-            state.eventSink(MessageComposerEvents.DismissAttachmentMenu)
+            state.eventSink(MessageComposerEvent.DismissAttachmentMenu)
         }
     }
 
@@ -99,25 +99,25 @@ private fun AttachmentSourcePickerMenu(
             .imePadding()
     ) {
         ListItem(
-            modifier = Modifier.clickable { state.eventSink(MessageComposerEvents.PickAttachmentSource.PhotoFromCamera) },
+            modifier = Modifier.clickable { state.eventSink(MessageComposerEvent.PickAttachmentSource.PhotoFromCamera) },
             leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.TakePhoto())),
             headlineContent = { Text(stringResource(R.string.screen_room_attachment_source_camera_photo)) },
             style = ListItemStyle.Primary,
         )
         ListItem(
-            modifier = Modifier.clickable { state.eventSink(MessageComposerEvents.PickAttachmentSource.VideoFromCamera) },
+            modifier = Modifier.clickable { state.eventSink(MessageComposerEvent.PickAttachmentSource.VideoFromCamera) },
             leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.VideoCall())),
             headlineContent = { Text(stringResource(R.string.screen_room_attachment_source_camera_video)) },
             style = ListItemStyle.Primary,
         )
         ListItem(
-            modifier = Modifier.clickable { state.eventSink(MessageComposerEvents.PickAttachmentSource.FromGallery) },
+            modifier = Modifier.clickable { state.eventSink(MessageComposerEvent.PickAttachmentSource.FromGallery) },
             leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Image())),
             headlineContent = { Text(stringResource(R.string.screen_room_attachment_source_gallery)) },
             style = ListItemStyle.Primary,
         )
         ListItem(
-            modifier = Modifier.clickable { state.eventSink(MessageComposerEvents.PickAttachmentSource.FromFiles) },
+            modifier = Modifier.clickable { state.eventSink(MessageComposerEvent.PickAttachmentSource.FromFiles) },
             leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Attachment())),
             headlineContent = { Text(stringResource(R.string.screen_room_attachment_source_files)) },
             style = ListItemStyle.Primary,
@@ -125,7 +125,7 @@ private fun AttachmentSourcePickerMenu(
         if (state.canShareLocation) {
             ListItem(
                 modifier = Modifier.clickable {
-                    state.eventSink(MessageComposerEvents.PickAttachmentSource.Location)
+                    state.eventSink(MessageComposerEvent.PickAttachmentSource.Location)
                     onSendLocationClick()
                 },
                 leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.LocationPin())),
@@ -135,7 +135,7 @@ private fun AttachmentSourcePickerMenu(
         }
         ListItem(
             modifier = Modifier.clickable {
-                state.eventSink(MessageComposerEvents.PickAttachmentSource.Poll)
+                state.eventSink(MessageComposerEvent.PickAttachmentSource.Poll)
                 onCreatePollClick()
             },
             leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Polls())),
@@ -144,7 +144,7 @@ private fun AttachmentSourcePickerMenu(
         )
         if (enableTextFormatting) {
             ListItem(
-                modifier = Modifier.clickable { state.eventSink(MessageComposerEvents.ToggleTextFormatting(enabled = true)) },
+                modifier = Modifier.clickable { state.eventSink(MessageComposerEvent.ToggleTextFormatting(enabled = true)) },
                 leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.TextFormatting())),
                 headlineContent = { Text(stringResource(R.string.screen_room_attachment_text_formatting)) },
                 style = ListItemStyle.Primary,

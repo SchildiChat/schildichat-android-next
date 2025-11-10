@@ -25,7 +25,9 @@ class KonsistLicenseTest {
 
     private val enterpriseLicense = """
         /\*
-         \* © 20\d\d New Vector Limited, Element Software SARL, Element Software Inc\.,
+         \* © 20\d\d((, |-)20\d\d)? Element Creations Ltd\.
+        (?:.*\n)* \*
+         \* Element Creations Ltd, Element Software SARL, Element Software Inc\.,
          \* and Element Software GmbH \(the "Element Group"\) only make this file available
          \* under a proprietary license model\.
          \*

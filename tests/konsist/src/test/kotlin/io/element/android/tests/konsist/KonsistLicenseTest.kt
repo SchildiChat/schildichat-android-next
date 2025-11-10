@@ -1,7 +1,7 @@
 /*
  * Copyright 2024, 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -17,7 +17,7 @@ class KonsistLicenseTest {
         /\*
         (?:.*\n)* \* Copyright 20\d\d((, |-)20\d\d)? New Vector Ltd.
         (?:.*\n)* \*
-         \* SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+         \* SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
          \* Please see LICENSE files in the repository root for full details.
          \*/
         """.trimIndent().toRegex()

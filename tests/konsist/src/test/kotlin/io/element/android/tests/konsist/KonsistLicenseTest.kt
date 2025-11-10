@@ -83,7 +83,7 @@ class KonsistLicenseTest {
                     it.name.startsWith("Template ").not()
             }
             .assertTrue {
-                it.text.count("Element Creations") == 1
+                it.text.count("Element Creations Ltd.") == 1
             }
     }
 }

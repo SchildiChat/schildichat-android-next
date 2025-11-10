@@ -35,6 +35,7 @@ class ScThemeExposures(
     messageHighlightBg: Color?,
     composerBlockBg: Color?,
     composerBlockFg: Color?,
+    spaceBarBg: Color?,
 ) {
     var isScTheme by mutableStateOf(isScTheme)
         private set
@@ -80,6 +81,8 @@ class ScThemeExposures(
         private set
     var composerBlockFg by mutableStateOf(composerBlockFg)
         private set
+    var spaceBarBg by mutableStateOf(spaceBarBg)
+        private set
 
     fun copy(
         isScTheme: Boolean = this.isScTheme,
@@ -104,6 +107,7 @@ class ScThemeExposures(
         messageHighlightBg: Color? = this.messageHighlightBg,
         composerBlockBg: Color? = this.composerBlockBg,
         composerBlockFg: Color? = this.composerBlockFg,
+        spaceBarBg: Color? = this.spaceBarBg,
     ) = ScThemeExposures(
         isScTheme = isScTheme,
         horizontalDividerThickness = horizontalDividerThickness,
@@ -127,6 +131,7 @@ class ScThemeExposures(
         messageHighlightBg = messageHighlightBg,
         composerBlockBg = composerBlockBg,
         composerBlockFg = composerBlockFg,
+        spaceBarBg = spaceBarBg,
     )
 
     fun updateColorsFrom(other: ScThemeExposures) {
@@ -152,6 +157,7 @@ class ScThemeExposures(
         messageHighlightBg = other.messageHighlightBg
         composerBlockBg = other.composerBlockBg
         composerBlockFg = other.composerBlockFg
+        spaceBarBg = other.spaceBarBg
     }
 }
 
@@ -178,6 +184,7 @@ internal val elementLightScExposures = ScThemeExposures(
     messageHighlightBg = null,
     composerBlockBg = null,
     composerBlockFg = null,
+    spaceBarBg = null,
 )
 
 internal val elementDarkScExposures = ScThemeExposures(
@@ -203,4 +210,5 @@ internal val elementDarkScExposures = ScThemeExposures(
     messageHighlightBg = null,
     composerBlockBg = null,
     composerBlockFg = null,
+    spaceBarBg = null,
 )

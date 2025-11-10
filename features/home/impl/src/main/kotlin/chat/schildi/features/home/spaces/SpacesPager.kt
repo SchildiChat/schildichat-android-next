@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -64,17 +62,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
+import chat.schildi.lib.compose.TabRowDefaults
 import chat.schildi.lib.compose.TabRowDefaults.tabIndicatorOffset
 import chat.schildi.lib.preferences.ScAppStateStore
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import chat.schildi.lib.util.formatUnreadCount
 import chat.schildi.theme.ScTheme
-import dev.chrisbanes.haze.hazeSource
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.home.impl.HomeState
 import io.element.android.features.home.impl.spaces.HomeSpacesView
-import io.element.android.libraries.androidutils.throttler.FirstThrottler
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.components.avatar.AvatarType
@@ -299,7 +296,7 @@ private fun ColumnScope.SpacesPager(
         selectedTabIndex = selectedTabRendered,
         edgePadding = 0.dp,
         minTabWidth = 0.dp,
-        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        containerColor = ScTheme.exposures.spaceBarBg ?: TabRowDefaults.primaryContainerColor,
         indicator = { tabPositions ->
             Box(
                 Modifier

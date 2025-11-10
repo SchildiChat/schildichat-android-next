@@ -79,6 +79,7 @@ internal val sclExposures = ScThemeExposures(
     messageHighlightBg = ScColors.colorAccentGreenAlpha_80,
     composerBlockBg = null,
     composerBlockFg = null,
+    spaceBarBg = ScColors.colorWhite_ee,
 )
 
 @OptIn(CoreColorToken::class)

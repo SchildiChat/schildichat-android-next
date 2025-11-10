@@ -18,7 +18,6 @@ import org.matrix.rustcomponents.sdk.MessageLikeEventContent
 import org.matrix.rustcomponents.sdk.StateEventContent
 import org.matrix.rustcomponents.sdk.TimelineEvent
 import org.matrix.rustcomponents.sdk.TimelineEventType
-import org.matrix.rustcomponents.sdk.use
 import org.matrix.rustcomponents.sdk.RtcNotificationType as SdkRtcNotificationType
 
 class TimelineEventToNotificationContentMapper {

@@ -44,17 +44,21 @@ class RustNotificationService(
             }
             val items = notificationClient.getNotifications(requests)
             buildMap {
-                val eventIds = requests.flatMap { it.eventIds }
+                val allEventIds = requests.flatMap { it.eventIds }
+                val eventIds = allEventIds.distinct()
+                Timber.i("SC_DST mapping ${allEventIds.size} event notifications, distinct ${eventIds.size}; [${allEventIds.joinToString()}]")
                 for (rawEventId in eventIds) {
                     val roomId = RoomId(requests.find { it.eventIds.contains(rawEventId) }?.roomId!!)
                     val eventId = EventId(rawEventId)
                     items[rawEventId].use { result ->
+                        val outerResult = result
+                        Timber.i("SC_DST handling $rawEventId -> $result @ ${System.identityHashCode(result)}")
                         when (result) {
                             is BatchNotificationResult.Ok -> {
                                 when (val status = result.status) {
                                     is NotificationStatus.Event -> {
                                         val result = notificationMapper.map(sessionId, eventId, roomId, status.item)
-                                        result.onFailure { Timber.e(it, "Could not map notification event $eventId") }
+                                        result.onFailure { Timber.e(it, "Could not map notification event $eventId @ ${System.identityHashCode(outerResult)}; ${System.identityHashCode(status.item)}") }
                                         put(eventId, result)
                                     }
                                     is NotificationStatus.EventNotFound -> {

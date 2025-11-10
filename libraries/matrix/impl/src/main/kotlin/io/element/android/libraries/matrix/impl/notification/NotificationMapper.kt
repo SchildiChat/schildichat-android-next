@@ -18,9 +18,10 @@ import io.element.android.libraries.matrix.api.notification.NotificationContent
 import io.element.android.libraries.matrix.api.notification.NotificationData
 import io.element.android.libraries.matrix.api.room.isDm
 import io.element.android.services.toolbox.api.systemclock.SystemClock
+import org.matrix.rustcomponents.sdk.Disposable
 import org.matrix.rustcomponents.sdk.NotificationEvent
 import org.matrix.rustcomponents.sdk.NotificationItem
-import org.matrix.rustcomponents.sdk.use
+import timber.log.Timber
 
 class NotificationMapper(
     private val clock: SystemClock,
@@ -80,3 +81,17 @@ class NotificationContentMapper {
 private fun NotificationItem.timestamp(): Long? {
     return (this.event as? NotificationEvent.Timeline)?.event?.timestamp()?.toLong()
 }
+
+inline fun <T : Disposable?, R> T.use(block: (T) -> R) =
+    try {
+        block(this)
+    } finally {
+        try {
+            // N.B. our implementation is on the nullable type `Disposable?`.
+            val trace = Exception("SC_DST destruction trace")
+            Timber.i(trace, "SC_DST destroying ${this?.javaClass?.canonicalName} @ ${System.identityHashCode(this)}")
+            this?.destroy()
+        } catch (e: Throwable) {
+            // swallow
+        }
+    }

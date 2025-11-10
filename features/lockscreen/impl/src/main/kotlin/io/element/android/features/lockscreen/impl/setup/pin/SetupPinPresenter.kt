@@ -73,7 +73,7 @@ class SetupPinPresenter(
             }
         }
 
-        fun handleEvents(event: SetupPinEvents) {
+        fun handleEvent(event: SetupPinEvents) {
             when (event) {
                 is SetupPinEvents.OnPinEntryChanged -> {
                     // Use the fromConfirmationStep flag from ui to avoid race condition.
@@ -106,7 +106,7 @@ class SetupPinPresenter(
             isConfirmationStep = isConfirmationStep,
             setupPinFailure = setupPinFailure,
             appName = buildMeta.applicationName,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 }

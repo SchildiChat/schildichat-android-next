@@ -27,7 +27,7 @@ class AnalyticsOptInPresenter(
     override fun present(): AnalyticsOptInState {
         val localCoroutineScope = rememberCoroutineScope()
 
-        fun handleEvents(event: AnalyticsOptInEvents) {
+        fun handleEvent(event: AnalyticsOptInEvents) {
             when (event) {
                 is AnalyticsOptInEvents.EnableAnalytics -> localCoroutineScope.setIsEnabled(event.isEnabled)
             }
@@ -39,7 +39,7 @@ class AnalyticsOptInPresenter(
         return AnalyticsOptInState(
             applicationName = buildMeta.applicationName,
             hasPolicyLink = AnalyticsConfig.POLICY_LINK.isNotEmpty(),
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

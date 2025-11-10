@@ -68,7 +68,6 @@ class DefaultVoiceMessageComposerPresenter(
     }
 
     private val permissionsPresenter = permissionsPresenterFactory.create(Manifest.permission.RECORD_AUDIO)
-
     private val mediaSender = mediaSenderFactory.create(timelineMode)
 
     @Composable
@@ -88,7 +87,7 @@ class DefaultVoiceMessageComposerPresenter(
             player.setMedia(recording.file.path)
         }
 
-        val onLifecycleEvent = { event: Lifecycle.Event ->
+        fun handleLifecycleEvent(event: Lifecycle.Event) {
             when (event) {
                 Lifecycle.Event.ON_PAUSE -> {
                     sessionCoroutineScope.finishRecording()
@@ -101,13 +100,12 @@ class DefaultVoiceMessageComposerPresenter(
             }
         }
 
-        val onVoiceMessageRecorderEvent = { event: VoiceMessageComposerEvents.RecorderEvent ->
-            val permissionGranted = permissionState.permissionGranted
-            when (event.recorderEvent) {
+        fun handleVoiceMessageRecorderEvent(event: VoiceMessageRecorderEvent) {
+            when (event) {
                 VoiceMessageRecorderEvent.Start -> {
                     Timber.v("Voice message record button pressed")
                     when {
-                        permissionGranted -> {
+                        permissionState.permissionGranted -> {
                             localCoroutineScope.startRecording()
                         }
                         else -> {
@@ -126,7 +124,8 @@ class DefaultVoiceMessageComposerPresenter(
                 }
             }
         }
-        val onPlayerEvent = { event: VoiceMessagePlayerEvent ->
+
+        fun handleVoiceMessagePlayerEvent(event: VoiceMessagePlayerEvent) {
             localCoroutineScope.launch {
                 when (event) {
                     VoiceMessagePlayerEvent.Play -> player.play()
@@ -136,28 +135,16 @@ class DefaultVoiceMessageComposerPresenter(
             }
         }
 
-        val onAcceptPermissionsRationale = {
-            permissionState.eventSink(PermissionsEvents.OpenSystemSettingAndCloseDialog)
-        }
-
-        val onDismissPermissionsRationale = {
-            permissionState.eventSink(PermissionsEvents.CloseDialog)
-        }
-
-        val onDismissSendFailureDialog = {
-            showSendFailureDialog = false
-        }
-
-        val onSendButtonPress = lambda@{
+        fun sendVoiceMessage() {
             val finishedState = recorderState as? VoiceRecorderState.Finished
             if (finishedState == null) {
                 val exception = VoiceMessageException.FileException("No file to send")
                 analyticsService.trackError(exception)
                 Timber.e(exception)
-                return@lambda
+                return
             }
             if (isSending) {
-                return@lambda
+                return
             }
             isSending = true
             player.pause()
@@ -176,21 +163,27 @@ class DefaultVoiceMessageComposerPresenter(
             }
         }
 
-        val handleEvents: (VoiceMessageComposerEvents) -> Unit = { event ->
+        fun handleEvent(event: VoiceMessageComposerEvents) {
             when (event) {
-                is VoiceMessageComposerEvents.RecorderEvent -> onVoiceMessageRecorderEvent(event)
-                is VoiceMessageComposerEvents.PlayerEvent -> onPlayerEvent(event.playerEvent)
+                is VoiceMessageComposerEvents.RecorderEvent -> handleVoiceMessageRecorderEvent(event.recorderEvent)
+                is VoiceMessageComposerEvents.PlayerEvent -> handleVoiceMessagePlayerEvent(event.playerEvent)
                 is VoiceMessageComposerEvents.SendVoiceMessage -> localCoroutineScope.launch {
-                    onSendButtonPress()
+                    sendVoiceMessage()
                 }
                 VoiceMessageComposerEvents.DeleteVoiceMessage -> {
                     player.pause()
                     localCoroutineScope.deleteRecording()
                 }
-                VoiceMessageComposerEvents.DismissPermissionsRationale -> onDismissPermissionsRationale()
-                VoiceMessageComposerEvents.AcceptPermissionRationale -> onAcceptPermissionsRationale()
-                is VoiceMessageComposerEvents.LifecycleEvent -> onLifecycleEvent(event.event)
-                VoiceMessageComposerEvents.DismissSendFailureDialog -> onDismissSendFailureDialog()
+                VoiceMessageComposerEvents.DismissPermissionsRationale -> {
+                    permissionState.eventSink(PermissionsEvents.CloseDialog)
+                }
+                VoiceMessageComposerEvents.AcceptPermissionRationale -> {
+                    permissionState.eventSink(PermissionsEvents.OpenSystemSettingAndCloseDialog)
+                }
+                is VoiceMessageComposerEvents.LifecycleEvent -> handleLifecycleEvent(event.event)
+                VoiceMessageComposerEvents.DismissSendFailureDialog -> {
+                    showSendFailureDialog = false
+                }
             }
         }
 
@@ -211,7 +204,7 @@ class DefaultVoiceMessageComposerPresenter(
             showPermissionRationaleDialog = permissionState.showDialog,
             showSendFailureDialog = showSendFailureDialog,
             keepScreenOn = keepScreenOn,
-            eventSink = handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

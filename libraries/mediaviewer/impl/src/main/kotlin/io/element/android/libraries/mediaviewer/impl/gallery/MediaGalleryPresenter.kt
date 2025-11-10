@@ -82,7 +82,7 @@ class MediaGalleryPresenter(
         val snackbarMessage by snackbarDispatcher.collectSnackbarMessageAsState()
         localMediaActions.Configure()
 
-        fun handleEvents(event: MediaGalleryEvents) {
+        fun handleEvent(event: MediaGalleryEvents) {
             when (event) {
                 is MediaGalleryEvents.ChangeMode -> {
                     mode = event.mode
@@ -150,7 +150,7 @@ class MediaGalleryPresenter(
             groupedMediaItems = groupedMediaItems,
             mediaBottomSheetState = mediaBottomSheetState,
             snackbarMessage = snackbarMessage,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

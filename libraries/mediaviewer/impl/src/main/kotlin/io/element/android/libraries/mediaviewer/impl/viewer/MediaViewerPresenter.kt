@@ -90,7 +90,7 @@ class MediaViewerPresenter(
         }
         localMediaActions.Configure()
 
-        fun handleEvents(event: MediaViewerEvents) {
+        fun handleEvent(event: MediaViewerEvents) {
             when (event) {
                 is MediaViewerEvents.LoadMedia -> {
                     coroutineScope.downloadMedia(data = event.data)
@@ -163,7 +163,7 @@ class MediaViewerPresenter(
             snackbarMessage = snackbarMessage,
             canShowInfo = inputs.canShowInfo,
             mediaBottomSheetState = mediaBottomSheetState,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

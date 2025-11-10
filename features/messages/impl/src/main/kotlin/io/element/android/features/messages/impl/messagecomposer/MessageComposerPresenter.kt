@@ -227,7 +227,7 @@ class MessageComposerPresenter(
             }
         }
 
-        fun handleEvents(event: MessageComposerEvents) {
+        fun handleEvent(event: MessageComposerEvents) {
             when (event) {
                 MessageComposerEvents.ToggleFullScreenState -> isFullScreen.value = !isFullScreen.value
                 MessageComposerEvents.CloseSpecialMode -> {
@@ -382,7 +382,7 @@ class MessageComposerPresenter(
             suggestions = suggestions.toImmutableList(),
             resolveMentionDisplay = resolveMentionDisplay,
             resolveAtRoomMentionDisplay = resolveAtRoomMentionDisplay,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

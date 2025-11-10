@@ -221,7 +221,7 @@ class MessagesPresenter(
             onPauseOrDispose {}
         }
 
-        fun handleEvents(event: MessagesEvents) {
+        fun handleEvent(event: MessagesEvents) {
             when (event) {
                 is MessagesEvents.HandleAction -> {
                     localCoroutineScope.handleTimelineAction(
@@ -291,8 +291,9 @@ class MessagesPresenter(
             pinnedMessagesBannerState = pinnedMessagesBannerState,
             dmUserVerificationState = dmUserVerificationState,
             roomMemberModerationState = roomMemberModerationState,
-            successorRoom = roomInfo.successorRoom
-        ) { handleEvents(it) }
+            successorRoom = roomInfo.successorRoom,
+            eventSink = ::handleEvent,
+        )
     }
 
     @Composable

@@ -47,7 +47,7 @@ class DefaultRageshakePreferencesPresenter(
             rageshakeDataStore.sensitivity()
         }.collectAsState(initial = 0f)
 
-        fun handleEvents(event: RageshakePreferencesEvents) {
+        fun handleEvent(event: RageshakePreferencesEvents) {
             when (event) {
                 is RageshakePreferencesEvents.SetIsEnabled -> localCoroutineScope.setIsEnabled(event.isEnabled)
                 is RageshakePreferencesEvents.SetSensitivity -> localCoroutineScope.setSensitivity(event.sensitivity)
@@ -59,7 +59,7 @@ class DefaultRageshakePreferencesPresenter(
             isEnabled = isEnabled,
             isSupported = isSupported.value,
             sensitivity = sensitivity,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

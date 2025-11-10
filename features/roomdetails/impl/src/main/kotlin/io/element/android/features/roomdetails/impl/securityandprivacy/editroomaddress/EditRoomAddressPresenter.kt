@@ -62,7 +62,7 @@ class EditRoomAddressPresenter(
             )
         }
 
-        fun handleEvents(event: EditRoomAddressEvents) {
+        fun handleEvent(event: EditRoomAddressEvents) {
             when (event) {
                 EditRoomAddressEvents.Save -> coroutineScope.save(
                     saveAction = saveAction,
@@ -92,7 +92,7 @@ class EditRoomAddressPresenter(
             roomAddressValidity = roomAddressValidity.value,
             roomAddress = newRoomAddress,
             saveAction = saveAction.value,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

@@ -39,7 +39,7 @@ class ResetIdentityPasswordPresenter(
 
         return ResetIdentityPasswordState(
             resetAction = resetAction.value,
-            eventSink = ::handleEvent
+            eventSink = ::handleEvent,
         )
     }
 

@@ -116,7 +116,7 @@ class ConfigureRoomPresenter(
             localCoroutineScope.createRoom(config, createRoomAction)
         }
 
-        fun handleEvents(event: ConfigureRoomEvents) {
+        fun handleEvent(event: ConfigureRoomEvents) {
             when (event) {
                 is ConfigureRoomEvents.RoomNameChanged -> dataStore.setRoomName(event.name)
                 is ConfigureRoomEvents.TopicChanged -> dataStore.setTopic(event.topic)
@@ -149,7 +149,7 @@ class ConfigureRoomPresenter(
             cameraPermissionState = cameraPermissionState,
             homeserverName = homeserverName,
             roomAddressValidity = roomAddressValidity.value,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

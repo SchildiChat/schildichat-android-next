@@ -75,6 +75,15 @@ class DefaultUserListPresenter(
             }.launchIn(this)
         }
 
+        fun handleEvent(event: UserListEvents) {
+            when (event) {
+                is UserListEvents.OnSearchActiveChanged -> isSearchActive = event.active
+                is UserListEvents.UpdateSearchQuery -> searchQuery = event.query
+                is UserListEvents.AddToSelection -> userListDataStore.selectUser(event.matrixUser)
+                is UserListEvents.RemoveFromSelection -> userListDataStore.removeUserFromSelection(event.matrixUser)
+            }
+        }
+
         return UserListState(
             searchQuery = searchQuery,
             searchResults = searchResults,
@@ -83,14 +92,7 @@ class DefaultUserListPresenter(
             showSearchLoader = showSearchLoader,
             selectionMode = args.selectionMode,
             recentDirectRooms = recentDirectRooms.toImmutableList(),
-            eventSink = { event ->
-                when (event) {
-                    is UserListEvents.OnSearchActiveChanged -> isSearchActive = event.active
-                    is UserListEvents.UpdateSearchQuery -> searchQuery = event.query
-                    is UserListEvents.AddToSelection -> userListDataStore.selectUser(event.matrixUser)
-                    is UserListEvents.RemoveFromSelection -> userListDataStore.removeUserFromSelection(event.matrixUser)
-                }
-            },
+            eventSink = ::handleEvent,
         )
     }
 }

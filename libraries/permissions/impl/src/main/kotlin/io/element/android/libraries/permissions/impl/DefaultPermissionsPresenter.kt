@@ -99,7 +99,7 @@ class DefaultPermissionsPresenter(
 
         val showDialog = rememberSaveable { mutableStateOf(false) }
 
-        fun handleEvents(event: PermissionsEvents) {
+        fun handleEvent(event: PermissionsEvents) {
             when (event) {
                 PermissionsEvents.CloseDialog -> {
                     showDialog.value = false
@@ -125,7 +125,7 @@ class DefaultPermissionsPresenter(
             showDialog = showDialog.value,
             permissionAlreadyAsked = isAlreadyAsked,
             permissionAlreadyDenied = isAlreadyDenied,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

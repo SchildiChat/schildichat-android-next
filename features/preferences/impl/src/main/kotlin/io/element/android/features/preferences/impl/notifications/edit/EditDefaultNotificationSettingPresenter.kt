@@ -70,7 +70,7 @@ class EditDefaultNotificationSettingPresenter(
             displayMentionsOnlyDisclaimer = !notificationSettingsService.canHomeServerPushEncryptedEventsToDevice().getOrDefault(true)
         }
 
-        fun handleEvents(event: EditDefaultNotificationSettingStateEvents) {
+        fun handleEvent(event: EditDefaultNotificationSettingStateEvents) {
             when (event) {
                 is EditDefaultNotificationSettingStateEvents.SetNotificationMode -> {
                     localCoroutineScope.setDefaultNotificationMode(event.mode, changeNotificationSettingAction)
@@ -85,7 +85,7 @@ class EditDefaultNotificationSettingPresenter(
             roomsWithUserDefinedMode = roomsWithUserDefinedMode.value.toImmutableList(),
             changeNotificationSettingAction = changeNotificationSettingAction.value,
             displayMentionsOnlyDisclaimer = displayMentionsOnlyDisclaimer,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

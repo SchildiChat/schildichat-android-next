@@ -78,7 +78,7 @@ class SendLocationPresenter(
             }
         }
 
-        fun handleEvents(event: SendLocationEvents) {
+        fun handleEvent(event: SendLocationEvents) {
             when (event) {
                 is SendLocationEvents.SendLocation -> scope.launch {
                     sendLocation(event, mode)
@@ -103,7 +103,7 @@ class SendLocationPresenter(
             mode = mode,
             hasLocationPermission = permissionsState.isAnyGranted,
             appName = appName,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

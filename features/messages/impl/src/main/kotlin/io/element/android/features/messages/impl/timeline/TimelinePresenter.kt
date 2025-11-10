@@ -140,7 +140,7 @@ class TimelinePresenter(
             value = featureFlagService.isFeatureEnabled(FeatureFlags.Threads)
         }
 
-        fun handleEvents(event: TimelineEvents) {
+        fun handleEvent(event: TimelineEvents) {
             when (event) {
                 is TimelineEvents.LoadMore -> {
                     if (event.direction == Timeline.PaginationDirection.FORWARDS && timelineMode is Timeline.Mode.Thread) {
@@ -289,7 +289,7 @@ class TimelinePresenter(
             messageShield = messageShield.value,
             resolveVerifiedUserSendFailureState = resolveVerifiedUserSendFailureState,
             displayThreadSummaries = displayThreadSummaries,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

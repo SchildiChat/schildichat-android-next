@@ -51,7 +51,7 @@ class NotificationsOptInPresenter(
     override fun present(): NotificationsOptInState {
         val notificationsPermissionsState = postNotificationPermissionsPresenter.present()
 
-        fun handleEvents(event: NotificationsOptInEvents) {
+        fun handleEvent(event: NotificationsOptInEvents) {
             when (event) {
                 NotificationsOptInEvents.ContinueClicked -> {
                     if (notificationsPermissionsState.permissionGranted) {
@@ -78,7 +78,7 @@ class NotificationsOptInPresenter(
 
         return NotificationsOptInState(
             notificationsPermissionState = notificationsPermissionsState,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

@@ -47,7 +47,7 @@ class DirectLogoutPresenter(
 
         val isLastDevice by encryptionService.isLastDevice.collectAsState()
 
-        fun handleEvents(event: DirectLogoutEvents) {
+        fun handleEvent(event: DirectLogoutEvents) {
             when (event) {
                 is DirectLogoutEvents.Logout -> {
                     if (logoutAction.value.isConfirming() || event.ignoreSdkError) {
@@ -66,7 +66,7 @@ class DirectLogoutPresenter(
             canDoDirectSignOut = !isLastDevice &&
                 !backupUploadState.isBackingUp(),
             logoutAction = logoutAction.value,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

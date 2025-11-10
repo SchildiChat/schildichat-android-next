@@ -111,7 +111,7 @@ class RoomMemberDetailsPresenter(
             }
         }
 
-        fun eventSink(event: UserProfileEvents) {
+        fun handleEvent(event: UserProfileEvents) {
             when (event) {
                 UserProfileEvents.WithdrawVerification -> coroutineScope.launch {
                     encryptionService.withdrawVerification(roomMemberId)
@@ -129,7 +129,7 @@ class RoomMemberDetailsPresenter(
             avatarUrl = roomUserAvatar ?: userProfileState.avatarUrl,
             verificationState = verificationState,
             snackbarMessage = snackbarMessage,
-            eventSink = ::eventSink
+            eventSink = ::handleEvent,
         )
     }
 }

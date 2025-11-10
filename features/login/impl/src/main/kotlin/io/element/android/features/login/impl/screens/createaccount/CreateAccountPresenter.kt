@@ -50,7 +50,7 @@ class CreateAccountPresenter(
         val pageProgress: MutableState<Int> = remember { mutableIntStateOf(0) }
         val createAction: MutableState<AsyncAction<SessionId>> = remember { mutableStateOf(AsyncAction.Uninitialized) }
 
-        fun handleEvents(event: CreateAccountEvents) {
+        fun handleEvent(event: CreateAccountEvents) {
             when (event) {
                 is CreateAccountEvents.SetPageProgress -> {
                     pageProgress.value = event.progress
@@ -68,7 +68,7 @@ class CreateAccountPresenter(
             pageProgress = pageProgress.value,
             isDebugBuild = buildMeta.isDebuggable,
             createAction = createAction.value,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

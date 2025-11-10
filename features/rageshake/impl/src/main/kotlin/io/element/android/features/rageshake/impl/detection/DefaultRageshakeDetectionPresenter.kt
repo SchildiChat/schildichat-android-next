@@ -48,7 +48,7 @@ class DefaultRageshakeDetectionPresenter(
             mutableStateOf(false)
         }
 
-        fun handleEvents(event: RageshakeDetectionEvents) {
+        fun handleEvent(event: RageshakeDetectionEvents) {
             when (event) {
                 RageshakeDetectionEvents.Disable -> {
                     preferencesState.eventSink(RageshakePreferencesEvents.SetIsEnabled(false))
@@ -67,7 +67,7 @@ class DefaultRageshakeDetectionPresenter(
                 takeScreenshot = takeScreenshot.value,
                 showDialog = showDialog.value,
                 preferenceState = preferencesState,
-                eventSink = ::handleEvents
+                eventSink = ::handleEvent,
             )
         }
 

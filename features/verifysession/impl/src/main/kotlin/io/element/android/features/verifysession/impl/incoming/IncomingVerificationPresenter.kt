@@ -107,7 +107,7 @@ class IncomingVerificationPresenter(
             }
         }
 
-        fun handleEvents(event: IncomingVerificationViewEvents) {
+        fun handleEvent(event: IncomingVerificationViewEvents) {
             Timber.d("Verification user action: ${event::class.simpleName}")
             when (event) {
                 IncomingVerificationViewEvents.StartVerification ->
@@ -141,7 +141,7 @@ class IncomingVerificationPresenter(
         return IncomingVerificationState(
             step = step,
             request = verificationRequest,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

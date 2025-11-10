@@ -41,7 +41,7 @@ class LoginPasswordPresenter(
         }
         val accountProvider by accountProviderDataSource.flow.collectAsState()
 
-        fun handleEvents(event: LoginPasswordEvents) {
+        fun handleEvent(event: LoginPasswordEvents) {
             when (event) {
                 is LoginPasswordEvents.SetLogin -> updateFormState(formState) {
                     copy(login = event.login)
@@ -60,7 +60,7 @@ class LoginPasswordPresenter(
             accountProvider = accountProvider,
             formState = formState.value,
             loginAction = loginAction.value,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

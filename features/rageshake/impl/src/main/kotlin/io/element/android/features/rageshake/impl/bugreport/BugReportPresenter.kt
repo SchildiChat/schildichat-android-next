@@ -82,7 +82,7 @@ class BugReportPresenter(
         }
         val uploadListener = BugReporterUploadListener(sendingProgress, sendingAction)
 
-        fun handleEvents(event: BugReportEvents) {
+        fun handleEvent(event: BugReportEvents) {
             when (event) {
                 BugReportEvents.SendBugReport -> {
                     if (formState.value.description.length < 10) {
@@ -121,7 +121,7 @@ class BugReportPresenter(
             sending = sendingAction.value,
             formState = formState.value,
             screenshotUri = screenshotUri.value,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

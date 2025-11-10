@@ -112,13 +112,13 @@ class DeveloperSettingsPresenter(
             computeCacheSize(cacheSize)
         }
 
-        fun handleEvents(event: DeveloperSettingsEvents) {
+        fun handleEvent(event: DeveloperSettingsEvents) {
             when (event) {
                 is DeveloperSettingsEvents.UpdateEnabledFeature -> coroutineScope.updateEnabledFeature(
                     enabledFeatures = enabledFeatures,
                     featureKey = event.feature.key,
                     enabled = event.isEnabled,
-                    triggerClearCache = { handleEvents(DeveloperSettingsEvents.ClearCache) }
+                    triggerClearCache = { handleEvent(DeveloperSettingsEvents.ClearCache) }
                 )
                 is DeveloperSettingsEvents.SetCustomElementCallBaseUrl -> coroutineScope.launch {
                     val urlToSave = event.baseUrl.takeIf { !it.isNullOrEmpty() }
@@ -161,7 +161,7 @@ class DeveloperSettingsPresenter(
             tracingLogPacks = tracingLogPacks,
             isEnterpriseBuild = enterpriseService.isEnterpriseBuild,
             showColorPicker = showColorPicker,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

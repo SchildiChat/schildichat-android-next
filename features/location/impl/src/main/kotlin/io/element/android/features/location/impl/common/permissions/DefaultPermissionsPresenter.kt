@@ -33,7 +33,7 @@ class DefaultPermissionsPresenter(
     override fun present(): PermissionsState {
         val multiplePermissionsState = rememberMultiplePermissionsState(permissions = permissions)
 
-        fun handleEvents(event: PermissionsEvents) {
+        fun handleEvent(event: PermissionsEvents) {
             when (event) {
                 PermissionsEvents.RequestPermissions -> multiplePermissionsState.launchMultiplePermissionRequest()
             }
@@ -46,7 +46,7 @@ class DefaultPermissionsPresenter(
                 else -> PermissionsState.Permissions.NoneGranted
             },
             shouldShowRationale = multiplePermissionsState.shouldShowRationale,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 }

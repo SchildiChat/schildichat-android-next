@@ -38,7 +38,7 @@ class HomeSpacesPresenter(
             seenInvitesStore.seenRoomIds().map { it.toImmutableSet() }
         }.collectAsState(persistentSetOf())
 
-        fun handleEvents(event: HomeSpacesEvents) {
+        fun handleEvent(event: HomeSpacesEvents) {
             // when (event) { }
         }
 
@@ -47,7 +47,7 @@ class HomeSpacesPresenter(
             spaceRooms = spaceRooms,
             seenSpaceInvites = seenSpaceInvites,
             hideInvitesAvatar = hideInvitesAvatar,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 }

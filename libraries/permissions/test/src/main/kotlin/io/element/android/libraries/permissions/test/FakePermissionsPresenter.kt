@@ -17,15 +17,15 @@ import io.element.android.libraries.permissions.api.aPermissionsState
 class FakePermissionsPresenter(
     private val initialState: PermissionsState = aPermissionsState(showDialog = false),
 ) : PermissionsPresenter {
-    private fun eventSink(events: PermissionsEvents) {
-        when (events) {
+    private fun handleEvent(event: PermissionsEvents) {
+        when (event) {
             PermissionsEvents.RequestPermissions -> state.value = state.value.copy(showDialog = true, permissionAlreadyAsked = true)
             PermissionsEvents.CloseDialog -> state.value = state.value.copy(showDialog = false)
             PermissionsEvents.OpenSystemSettingAndCloseDialog -> state.value = state.value.copy(showDialog = false)
         }
     }
 
-    private val state = mutableStateOf(initialState.copy(eventSink = ::eventSink))
+    private val state = mutableStateOf(initialState.copy(eventSink = ::handleEvent))
 
     fun setPermissionGranted() {
         state.value = state.value.copy(permissionGranted = true)

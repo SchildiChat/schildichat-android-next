@@ -57,7 +57,7 @@ class StartChatPresenter(
             featureFlagService.isFeatureEnabledFlow(FeatureFlags.RoomDirectorySearch)
         }.collectAsState(initial = false)
 
-        fun handleEvents(event: StartChatEvents) {
+        fun handleEvent(event: StartChatEvents) {
             when (event) {
                 is StartChatEvents.StartDM -> localCoroutineScope.launch {
                     startDMAction.execute(
@@ -75,7 +75,7 @@ class StartChatPresenter(
             userListState = userListState,
             startDmAction = startDmActionState.value,
             isRoomDirectorySearchEnabled = isRoomDirectorySearchEnabled,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 }

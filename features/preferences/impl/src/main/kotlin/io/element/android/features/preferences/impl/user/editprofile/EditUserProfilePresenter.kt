@@ -100,7 +100,7 @@ class EditUserProfilePresenter(
 
         val saveAction: MutableState<AsyncAction<Unit>> = remember { mutableStateOf(AsyncAction.Uninitialized) }
         val localCoroutineScope = rememberCoroutineScope()
-        fun handleEvents(event: EditUserProfileEvents) {
+        fun handleEvent(event: EditUserProfileEvents) {
             when (event) {
                 is EditUserProfileEvents.Save -> localCoroutineScope.saveChanges(
                     name = userDisplayName,
@@ -143,7 +143,7 @@ class EditUserProfilePresenter(
             saveButtonEnabled = canSave && saveAction.value !is AsyncAction.Loading,
             saveAction = saveAction.value,
             cameraPermissionState = cameraPermissionState,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

@@ -47,7 +47,7 @@ class ForwardMessagesPresenter(
 
     @Composable
     override fun present(): ForwardMessagesState {
-        fun handleEvents(event: ForwardMessagesEvents) {
+        fun handleEvent(event: ForwardMessagesEvents) {
             when (event) {
                 ForwardMessagesEvents.ClearError -> forwardingActionState.value = AsyncAction.Uninitialized
             }
@@ -55,7 +55,7 @@ class ForwardMessagesPresenter(
 
         return ForwardMessagesState(
             forwardAction = forwardingActionState.value,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

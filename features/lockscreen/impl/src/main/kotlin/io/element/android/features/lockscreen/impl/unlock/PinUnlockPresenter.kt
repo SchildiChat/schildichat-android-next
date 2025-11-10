@@ -94,7 +94,7 @@ class PinUnlockPresenter(
             isUnlocked.value = true
         }
 
-        fun handleEvents(event: PinUnlockEvents) {
+        fun handleEvent(event: PinUnlockEvents) {
             when (event) {
                 is PinUnlockEvents.OnPinKeypadPressed -> {
                     pinEntryState.value = pinEntry.process(event.pinKeypadModel)
@@ -129,7 +129,7 @@ class PinUnlockPresenter(
             showBiometricUnlock = biometricUnlock.isActive,
             biometricUnlockResult = biometricUnlockResult,
             isUnlocked = isUnlocked.value,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

@@ -62,7 +62,7 @@ class RoomDirectoryPresenter(
                 loadingMore = false
             }
         }
-        fun handleEvents(event: RoomDirectoryEvents) {
+        fun handleEvent(event: RoomDirectoryEvents) {
             when (event) {
                 RoomDirectoryEvents.LoadMore -> {
                     loadingMore = true
@@ -77,7 +77,7 @@ class RoomDirectoryPresenter(
             query = searchQuery.orEmpty(),
             roomDescriptions = listState.items,
             displayLoadMoreIndicator = listState.hasMoreToLoad,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

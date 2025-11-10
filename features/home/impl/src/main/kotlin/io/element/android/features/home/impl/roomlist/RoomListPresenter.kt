@@ -113,7 +113,7 @@ class RoomListPresenter(
         val contextMenu = remember { mutableStateOf<RoomListState.ContextMenu>(RoomListState.ContextMenu.Hidden) }
         val declineInviteMenu = remember { mutableStateOf<RoomListState.DeclineInviteMenu>(RoomListState.DeclineInviteMenu.Hidden) }
 
-        fun handleEvents(event: RoomListEvents) {
+        fun handleEvent(event: RoomListEvents) {
             when (event) {
                 is RoomListEvents.UpdateVisibleRange -> coroutineScope.launch {
                     updateVisibleRange(event.range)
@@ -169,7 +169,7 @@ class RoomListPresenter(
             acceptDeclineInviteState = acceptDeclineInviteState,
             hideInvitesAvatars = hideInvitesAvatar,
             canReportRoom = canReportRoom,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

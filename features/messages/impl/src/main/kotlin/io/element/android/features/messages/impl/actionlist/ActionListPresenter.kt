@@ -106,7 +106,7 @@ class DefaultActionListPresenter(
 
         val isThreadsEnabled = featureFlagService.isFeatureEnabledFlow(FeatureFlags.Threads).collectAsState(false)
 
-        fun handleEvents(event: ActionListEvents) {
+        fun handleEvent(event: ActionListEvents) {
             when (event) {
                 ActionListEvents.Clear -> target.value = ActionListState.Target.None
                 is ActionListEvents.ComputeForMessage -> localCoroutineScope.computeForMessage(
@@ -122,7 +122,7 @@ class DefaultActionListPresenter(
 
         return ActionListState(
             target = target.value,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

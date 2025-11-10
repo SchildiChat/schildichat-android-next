@@ -99,7 +99,7 @@ class RoomNotificationSettingsPresenter(
                 !notificationSettingsService.canHomeServerPushEncryptedEventsToDevice().getOrDefault(true)
         }
 
-        fun handleEvents(event: RoomNotificationSettingsEvents) {
+        fun handleEvent(event: RoomNotificationSettingsEvents) {
             when (event) {
                 is RoomNotificationSettingsEvents.ChangeRoomNotificationMode -> {
                     localCoroutineScope.setRoomNotificationMode(event.mode, pendingRoomNotificationMode, pendingSetDefault, setNotificationSettingAction)
@@ -135,7 +135,7 @@ class RoomNotificationSettingsPresenter(
             setNotificationSettingAction = setNotificationSettingAction.value,
             restoreDefaultAction = restoreDefaultAction.value,
             displayMentionsOnlyDisclaimer = shouldDisplayMentionsOnlyDisclaimer,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

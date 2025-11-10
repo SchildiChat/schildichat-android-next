@@ -62,7 +62,7 @@ class PollHistoryPresenter(
             }
         }
         val coroutineScope = rememberCoroutineScope()
-        fun handleEvents(event: PollHistoryEvents) {
+        fun handleEvent(event: PollHistoryEvents) {
             when (event) {
                 is PollHistoryEvents.LoadMore -> {
                     coroutineScope.loadMore(timeline)
@@ -88,7 +88,7 @@ class PollHistoryPresenter(
             hasMoreToLoad = paginationState.hasMoreToLoad,
             pollHistoryItems = pollHistoryItems,
             activeFilter = activeFilter,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

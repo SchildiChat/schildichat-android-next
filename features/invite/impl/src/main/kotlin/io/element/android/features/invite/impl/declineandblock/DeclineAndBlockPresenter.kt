@@ -48,7 +48,7 @@ class DeclineAndBlockPresenter(
 
         val coroutineScope = rememberCoroutineScope()
 
-        fun handleEvents(event: DeclineAndBlockEvents) {
+        fun handleEvent(event: DeclineAndBlockEvents) {
             when (event) {
                 DeclineAndBlockEvents.ClearDeclineAction -> declineAction.value = AsyncAction.Uninitialized
                 DeclineAndBlockEvents.Decline -> coroutineScope.decline(reportReason, blockUser, reportRoom, declineAction)
@@ -63,7 +63,7 @@ class DeclineAndBlockPresenter(
             reportReason = reportReason,
             blockUser = blockUser,
             declineAction = declineAction.value,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

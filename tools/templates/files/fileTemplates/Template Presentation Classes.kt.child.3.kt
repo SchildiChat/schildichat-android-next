@@ -2,5 +2,5 @@
 
 // TODO add your ui models. Remove the eventSink if you don't have events.
 data class ${NAME}State(
-    val eventSink: (${NAME}Events) -> Unit
+    val eventSink: (${NAME}Event) -> Unit
 )

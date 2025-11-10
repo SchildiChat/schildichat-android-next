@@ -82,7 +82,7 @@ class AdvancedSettingsPresenter(
             }.collect()
         }
 
-        fun handleEvents(event: AdvancedSettingsEvents) {
+        fun handleEvent(event: AdvancedSettingsEvents) {
             when (event) {
                 is AdvancedSettingsEvents.SetDeveloperModeEnabled -> sessionCoroutineScope.launch {
                     appPreferencesStore.setDeveloperModeEnabled(event.enabled)
@@ -117,7 +117,7 @@ class AdvancedSettingsPresenter(
             mediaOptimizationState = mediaOptimizationState,
             theme = themeOption,
             mediaPreviewConfigState = mediaPreviewConfigState,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 }

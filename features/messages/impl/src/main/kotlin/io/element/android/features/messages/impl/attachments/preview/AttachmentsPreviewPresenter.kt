@@ -141,8 +141,8 @@ class AttachmentsPreviewPresenter(
             }
         }
 
-        fun handleEvents(attachmentsPreviewEvents: AttachmentsPreviewEvents) {
-            when (attachmentsPreviewEvents) {
+        fun handleEvent(event: AttachmentsPreviewEvents) {
+            when (event) {
                 is AttachmentsPreviewEvents.SendAttachment -> {
                     ongoingSendAttachmentJob.value = coroutineScope.launch {
                         // If the media optimization selector is displayed, we need to wait for the user to select the options
@@ -230,7 +230,7 @@ class AttachmentsPreviewPresenter(
             textEditorState = textEditorState,
             mediaOptimizationSelectorState = mediaOptimizationSelectorState,
             displayFileTooLargeError = displayFileTooLargeError,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

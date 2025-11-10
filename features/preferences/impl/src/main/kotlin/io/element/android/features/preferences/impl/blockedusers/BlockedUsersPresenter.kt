@@ -64,7 +64,7 @@ class BlockedUsersPresenter(
             }
         }
 
-        fun handleEvents(event: BlockedUsersEvents) {
+        fun handleEvent(event: BlockedUsersEvents) {
             when (event) {
                 is BlockedUsersEvents.Unblock -> {
                     pendingUserToUnblock = event.userId
@@ -85,7 +85,7 @@ class BlockedUsersPresenter(
         return BlockedUsersState(
             blockedUsers = ignoredMatrixUser.toImmutableList(),
             unblockUserAction = unblockUserAction.value,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

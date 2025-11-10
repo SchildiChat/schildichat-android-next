@@ -38,7 +38,7 @@ class KnockRequestsListPresenter(
 
         val coroutineScope = rememberCoroutineScope()
 
-        fun handleEvents(event: KnockRequestsListEvents) {
+        fun handleEvent(event: KnockRequestsListEvents) {
             when (event) {
                 KnockRequestsListEvents.AcceptAll -> {
                     currentAction = KnockRequestsAction.AcceptAll
@@ -73,7 +73,7 @@ class KnockRequestsListPresenter(
             currentAction = currentAction,
             permissions = permissions,
             asyncAction = asyncAction.value,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

@@ -122,7 +122,7 @@ class LoggedInPresenter(
             ignoreRegistrationError = ignoreRegistrationError,
             forceNativeSlidingSyncMigration = forceNativeSlidingSyncMigration,
             appName = buildMeta.applicationName,
-            eventSink = ::handleEvent
+            eventSink = ::handleEvent,
         )
     }
 

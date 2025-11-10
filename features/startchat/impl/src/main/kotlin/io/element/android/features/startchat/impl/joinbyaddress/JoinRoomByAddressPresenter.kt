@@ -48,7 +48,7 @@ class JoinRoomByAddressPresenter(
         var internalAddressState by remember { mutableStateOf<RoomAddressState>(RoomAddressState.Unknown) }
         var validateAddress: Boolean by remember { mutableStateOf(false) }
 
-        fun handleEvents(event: JoinRoomByAddressEvents) {
+        fun handleEvent(event: JoinRoomByAddressEvents) {
             when (event) {
                 JoinRoomByAddressEvents.Continue -> {
                     when (val currentState = internalAddressState) {
@@ -88,7 +88,7 @@ class JoinRoomByAddressPresenter(
         return JoinRoomByAddressState(
             address = address,
             addressState = addressState,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

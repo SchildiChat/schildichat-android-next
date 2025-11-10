@@ -52,7 +52,7 @@ class KnockRequestsBannerPresenter(
             }
         }
 
-        fun handleEvents(event: KnockRequestsBannerEvents) {
+        fun handleEvent(event: KnockRequestsBannerEvents) {
             when (event) {
                 is KnockRequestsBannerEvents.AcceptSingleRequest -> {
                     sessionCoroutineScope.acceptSingleKnockRequest(
@@ -73,7 +73,7 @@ class KnockRequestsBannerPresenter(
             displayAcceptError = showAcceptError.value,
             canAccept = permissions.canAccept,
             isVisible = shouldShowBanner,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

@@ -38,7 +38,7 @@ class ChangeServerPresenter(
             mutableStateOf(AsyncData.Uninitialized)
         }
 
-        fun handleEvents(event: ChangeServerEvents) {
+        fun handleEvent(event: ChangeServerEvents) {
             when (event) {
                 is ChangeServerEvents.ChangeServer -> localCoroutineScope.changeServer(event.accountProvider, changeServerAction)
                 ChangeServerEvents.ClearError -> changeServerAction.value = AsyncData.Uninitialized
@@ -47,7 +47,7 @@ class ChangeServerPresenter(
 
         return ChangeServerState(
             changeServerAction = changeServerAction.value,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

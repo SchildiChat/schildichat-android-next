@@ -63,7 +63,7 @@ class FullScreenIntentPermissionsPresenter(
         val isGranted = notificationManagerCompat.canUseFullScreenIntent()
         val isBannerDismissed by isFullScreenIntentBannerDismissed.collectAsState(initial = true)
 
-        fun handleEvents(event: FullScreenIntentPermissionsEvents) {
+        fun handleEvent(event: FullScreenIntentPermissionsEvents) {
             when (event) {
                 FullScreenIntentPermissionsEvents.Dismiss -> coroutineScope.launch {
                     dismissFullScreenIntentBanner()
@@ -75,7 +75,7 @@ class FullScreenIntentPermissionsPresenter(
         return FullScreenIntentPermissionsState(
             permissionGranted = isGranted,
             shouldDisplayBanner = !isBannerDismissed && !isGranted,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

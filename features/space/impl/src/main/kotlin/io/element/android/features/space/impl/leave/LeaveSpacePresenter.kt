@@ -97,7 +97,7 @@ class LeaveSpacePresenter(
             }
         }
 
-        fun handleEvents(event: LeaveSpaceEvents) {
+        fun handleEvent(event: LeaveSpaceEvents) {
             when (event) {
                 LeaveSpaceEvents.Retry -> {
                     leaveSpaceRooms = AsyncData.Loading()
@@ -134,7 +134,7 @@ class LeaveSpacePresenter(
             isLastAdmin = leaveSpaceRooms.dataOrNull()?.current?.isLastAdmin == true,
             selectableSpaceRooms = selectableSpaceRooms,
             leaveSpaceAction = leaveSpaceAction.value,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

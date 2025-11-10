@@ -53,7 +53,7 @@ class CustomReactionPresenter(
             target.value = CustomReactionState.Target.None
         }
 
-        fun handleEvents(event: CustomReactionEvents) {
+        fun handleEvent(event: CustomReactionEvents) {
             when (event) {
                 is CustomReactionEvents.ShowCustomReactionSheet -> handleShowCustomReactionSheet(event.event)
                 is CustomReactionEvents.DismissCustomReactionSheet -> handleDismissCustomReactionSheet()
@@ -71,7 +71,7 @@ class CustomReactionPresenter(
             target = target.value,
             selectedEmoji = selectedEmoji,
             recentEmojis = recentEmojis,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 }

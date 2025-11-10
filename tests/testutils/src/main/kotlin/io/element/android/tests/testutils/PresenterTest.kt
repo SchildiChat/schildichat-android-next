@@ -29,7 +29,7 @@ suspend fun <State> Presenter<State>.test(
             // Give a more explicit error to the developer
             fail("""
                 It looks like you have an unconsumed event in your test.
-                    If you get this error, it means that your test is missing to consume one of several events.
+                    If you get this error, it means that your test is missing to consume one or several events.
                     You can fix by consuming and check the event with `awaitItem()`, or you can also invoke
                     `cancelAndIgnoreRemainingEvents()`.
                 """.trimIndent())

@@ -8,6 +8,8 @@
 package io.element.android.libraries.push.impl.workmanager
 
 import android.os.Build
+import androidx.work.Constraints
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkRequest
@@ -39,6 +41,7 @@ class SyncNotificationWorkManagerRequest(
         return Result.success(
             OneTimeWorkRequestBuilder<FetchNotificationsWorker>()
                 .setInputData(data)
+                .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
                 .apply {
                     // Expedited workers aren't needed on Android 12 or lower:
                     // They force displaying a foreground sync notification for no good reason, since they sync almost immediately anyway

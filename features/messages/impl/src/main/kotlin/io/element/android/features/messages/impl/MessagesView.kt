@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -278,14 +279,13 @@ fun MessagesView(
                 },
             )
         },
-        sheetDragHandle = if (state.composerState.showTextFormatting) {
-            @Composable { toggleAction ->
+        sheetDragHandle = @Composable { toggleAction ->
+            if (state.composerState.showTextFormatting) {
                 val expandA11yLabel = stringResource(CommonStrings.a11y_expand_message_text_field)
                 val collapseA11yLabel = stringResource(CommonStrings.a11y_collapse_message_text_field)
                 BottomSheetDragHandle(
                     modifier = Modifier.semantics {
                         role = Role.Button
-
                         // Accessibility action to toggle the bottom sheet state
                         val label = when (expandableState.position) {
                             ExpandableBottomSheetLayoutState.Position.COLLAPSED, ExpandableBottomSheetLayoutState.Position.DRAGGING -> expandA11yLabel
@@ -297,9 +297,14 @@ fun MessagesView(
                         }
                     }
                 )
+            } else {
+                LaunchedEffect(Unit) {
+                    // Ensure that the bottom sheet is collapsed
+                    if (expandableState.position == ExpandableBottomSheetLayoutState.Position.EXPANDED) {
+                        toggleAction()
+                    }
+                }
             }
-        } else {
-            @Composable {}
         },
         isSwipeGestureEnabled = state.composerState.showTextFormatting,
         state = expandableState,

@@ -102,9 +102,10 @@ If after your research you still have a question, ask at [#element-x-android:mat
 
 ## Copyright and License
 
-Copyright (c) 2022 - 2025 New Vector Ltd
+Copyright (c) 2025 Element Creations Ltd.
+Copyright (c) 2022 - 2025 New Vector Ltd.
 
-This software is dual licensed by New Vector Ltd (Element). It can be used either:
+This software is dual licensed by Element Creations Ltd (Element). It can be used either:
 
 (1) for free under the terms of the GNU Affero General Public License (as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version); OR
 

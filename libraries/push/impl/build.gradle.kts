@@ -89,6 +89,7 @@ dependencies {
     testImplementation(projects.features.enterprise.test)
     testImplementation(projects.features.lockscreen.test)
     testImplementation(projects.features.networkmonitor.test)
+    testImplementation(projects.services.appnavstate.impl)
     testImplementation(projects.services.appnavstate.test)
     testImplementation(projects.services.toolbox.impl)
     testImplementation(projects.services.toolbox.test)

@@ -17,6 +17,7 @@ android {
 dependencies {
     api(projects.libraries.push.api)
     api(projects.libraries.pushproviders.api)
+    implementation(projects.libraries.designsystem)
     implementation(projects.libraries.push.impl)
     implementation(projects.libraries.matrix.api)
     implementation(projects.libraries.matrixui)

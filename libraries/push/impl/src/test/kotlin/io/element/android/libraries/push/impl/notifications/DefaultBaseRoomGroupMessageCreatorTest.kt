@@ -20,6 +20,7 @@ import io.element.android.libraries.matrix.ui.components.aMatrixUser
 import io.element.android.libraries.matrix.ui.media.AVATAR_THUMBNAIL_SIZE_IN_PIXEL
 import io.element.android.libraries.matrix.ui.media.MediaRequestData
 import io.element.android.libraries.matrix.ui.test.media.FakeImageLoader
+import io.element.android.libraries.matrix.ui.test.media.FakeInitialsAvatarBitmapGenerator
 import io.element.android.libraries.push.impl.notifications.factories.MARK_AS_READ_ACTION_TITLE
 import io.element.android.libraries.push.impl.notifications.factories.QUICK_REPLY_ACTION_TITLE
 import io.element.android.libraries.push.impl.notifications.factories.aNotificationAccountParams
@@ -232,6 +233,7 @@ fun createRoomGroupMessageCreator(
     val bitmapLoader = DefaultNotificationBitmapLoader(
         context = RuntimeEnvironment.getApplication(),
         sdkIntProvider = sdkIntProvider,
+        initialsAvatarBitmapGenerator = FakeInitialsAvatarBitmapGenerator(),
     )
     return DefaultRoomGroupMessageCreator(
         notificationCreator = createNotificationCreator(bitmapLoader = bitmapLoader),

@@ -46,7 +46,7 @@ internal fun ImageAvatar(
             is AsyncImagePainter.State.Success -> SubcomposeAsyncImageContent()
             is AsyncImagePainter.State.Error -> {
                 SideEffect {
-                    Timber.Forest.e(
+                    Timber.e(
                         state.result.throwable,
                         "Error loading avatar $state\n${state.result}"
                     )

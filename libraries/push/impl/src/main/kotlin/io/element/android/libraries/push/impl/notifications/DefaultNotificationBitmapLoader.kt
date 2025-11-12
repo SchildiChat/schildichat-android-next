@@ -9,6 +9,7 @@
 package io.element.android.libraries.push.impl.notifications
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.os.Build
 import androidx.core.graphics.drawable.IconCompat
@@ -19,9 +20,11 @@ import coil3.toBitmap
 import coil3.transform.CircleCropTransformation
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
+import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.di.annotations.ApplicationContext
 import io.element.android.libraries.matrix.api.media.MediaSource
 import io.element.android.libraries.matrix.ui.media.AVATAR_THUMBNAIL_SIZE_IN_PIXEL
+import io.element.android.libraries.matrix.ui.media.InitialsAvatarBitmapGenerator
 import io.element.android.libraries.matrix.ui.media.MediaRequestData
 import io.element.android.libraries.push.api.notifications.NotificationBitmapLoader
 import io.element.android.services.toolbox.api.sdk.BuildVersionSdkIntProvider
@@ -31,48 +34,71 @@ import timber.log.Timber
 class DefaultNotificationBitmapLoader(
     @ApplicationContext private val context: Context,
     private val sdkIntProvider: BuildVersionSdkIntProvider,
+    private val initialsAvatarBitmapGenerator: InitialsAvatarBitmapGenerator,
 ) : NotificationBitmapLoader {
-    override suspend fun getRoomBitmap(path: String?, imageLoader: ImageLoader, targetSize: Long): Bitmap? {
-        if (path == null) {
-            return null
-        }
-        return loadRoomBitmap(path, imageLoader, targetSize)
-    }
-
-    private suspend fun loadRoomBitmap(path: String, imageLoader: ImageLoader, targetSize: Long): Bitmap? {
+    override suspend fun getRoomBitmap(
+        avatarData: AvatarData,
+        imageLoader: ImageLoader,
+        targetSize: Long,
+    ): Bitmap? {
         return try {
-            val imageRequest = ImageRequest.Builder(context)
-                .data(MediaRequestData(MediaSource(path), MediaRequestData.Kind.Thumbnail(targetSize)))
-                .transformations(CircleCropTransformation())
-                .build()
-            val result = imageLoader.execute(imageRequest)
-            result.image?.toBitmap()
+            loadBitmap(
+                avatarData = avatarData,
+                imageLoader = imageLoader,
+                targetSize = targetSize,
+            )
         } catch (e: Throwable) {
             Timber.e(e, "Unable to load room bitmap")
             null
         }
     }
 
-    override suspend fun getUserIcon(path: String?, imageLoader: ImageLoader): IconCompat? {
-        if (path == null || sdkIntProvider.get() < Build.VERSION_CODES.P) {
+    override suspend fun getUserIcon(
+        avatarData: AvatarData,
+        imageLoader: ImageLoader,
+    ): IconCompat? {
+        if (sdkIntProvider.get() < Build.VERSION_CODES.P) {
             return null
         }
-
-        return loadUserIcon(path, imageLoader)
-    }
-
-    private suspend fun loadUserIcon(path: String, imageLoader: ImageLoader): IconCompat? {
         return try {
-            val imageRequest = ImageRequest.Builder(context)
-                .data(MediaRequestData(MediaSource(path), MediaRequestData.Kind.Thumbnail(AVATAR_THUMBNAIL_SIZE_IN_PIXEL)))
-                .transformations(CircleCropTransformation())
-                .build()
-            val result = imageLoader.execute(imageRequest)
-            val bitmap = result.image?.toBitmap()
-            return bitmap?.let { IconCompat.createWithBitmap(it) }
+            loadBitmap(
+                avatarData = avatarData,
+                imageLoader = imageLoader,
+                targetSize = AVATAR_THUMBNAIL_SIZE_IN_PIXEL,
+            )
+                ?.let { IconCompat.createWithBitmap(it) }
         } catch (e: Throwable) {
             Timber.e(e, "Unable to load user bitmap")
             null
         }
+    }
+
+    private fun isDarkTheme(): Boolean {
+        return context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+    }
+
+    private suspend fun loadBitmap(
+        avatarData: AvatarData,
+        imageLoader: ImageLoader,
+        targetSize: Long
+    ): Bitmap? {
+        val path = avatarData.url
+        val data = if (path != null) {
+            MediaRequestData(
+                source = MediaSource(path),
+                kind = MediaRequestData.Kind.Thumbnail(targetSize),
+            )
+        } else {
+            initialsAvatarBitmapGenerator.generateBitmap(
+                size = targetSize.toInt(),
+                avatarData = avatarData,
+                useDarkTheme = isDarkTheme(),
+            )
+        }
+        val imageRequest = ImageRequest.Builder(context)
+            .data(data)
+            .transformations(CircleCropTransformation())
+            .build()
+        return imageLoader.execute(imageRequest).image?.toBitmap()
     }
 }

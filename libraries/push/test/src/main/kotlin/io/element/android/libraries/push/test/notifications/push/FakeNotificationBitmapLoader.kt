@@ -11,17 +11,18 @@ package io.element.android.libraries.push.test.notifications.push
 import android.graphics.Bitmap
 import androidx.core.graphics.drawable.IconCompat
 import coil3.ImageLoader
+import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.push.api.notifications.NotificationBitmapLoader
 
 class FakeNotificationBitmapLoader(
-    var getRoomBitmapResult: (String?, ImageLoader, Long) -> Bitmap? = { _, _, _ -> null },
-    var getUserIconResult: (String?, ImageLoader) -> IconCompat? = { _, _ -> null },
+    var getRoomBitmapResult: (AvatarData, ImageLoader, Long) -> Bitmap? = { _, _, _ -> null },
+    var getUserIconResult: (AvatarData, ImageLoader) -> IconCompat? = { _, _ -> null },
 ) : NotificationBitmapLoader {
-    override suspend fun getRoomBitmap(path: String?, imageLoader: ImageLoader, targetSize: Long): Bitmap? {
-        return getRoomBitmapResult(path, imageLoader, targetSize)
+    override suspend fun getRoomBitmap(avatarData: AvatarData, imageLoader: ImageLoader, targetSize: Long): Bitmap? {
+        return getRoomBitmapResult(avatarData, imageLoader, targetSize)
     }
 
-    override suspend fun getUserIcon(path: String?, imageLoader: ImageLoader): IconCompat? {
-        return getUserIconResult(path, imageLoader)
+    override suspend fun getUserIcon(avatarData: AvatarData, imageLoader: ImageLoader): IconCompat? {
+        return getUserIconResult(avatarData, imageLoader)
     }
 }

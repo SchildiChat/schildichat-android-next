@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -52,7 +53,7 @@ import io.element.android.features.messages.impl.link.LinkEvents
 import io.element.android.features.messages.impl.link.LinkView
 import io.element.android.features.messages.impl.messagecomposer.AttachmentsBottomSheet
 import io.element.android.features.messages.impl.messagecomposer.DisabledComposerView
-import io.element.android.features.messages.impl.messagecomposer.MessageComposerEvents
+import io.element.android.features.messages.impl.messagecomposer.MessageComposerEvent
 import io.element.android.features.messages.impl.messagecomposer.MessageComposerView
 import io.element.android.features.messages.impl.messagecomposer.suggestions.SuggestionsPickerView
 import io.element.android.features.messages.impl.pinned.banner.PinnedMessagesBannerState
@@ -183,27 +184,27 @@ fun MessagesView(
             Scaffold(
                 contentWindowInsets = WindowInsets.statusBars,
                 topBar = {
-                        if (state.timelineState.timelineMode is Timeline.Mode.Thread) {
-                            ThreadTopBar(
-                                roomName = state.roomName,
-                                roomAvatarData = state.roomAvatar,
-                                heroes = state.heroes,
-                                isTombstoned = state.isTombstoned,
-                                onBackClick = onBackClick,
-                            )
-                        } else {
-                            MessagesViewTopBar(
-                                roomName = state.roomName,
-                                roomAvatar = state.roomAvatar,
-                                isTombstoned = state.isTombstoned,
-                                heroes = state.heroes,
-                                roomCallState = state.roomCallState,
-                                dmUserIdentityState = state.dmUserVerificationState,
-                                onBackClick = { hidingKeyboard { onBackClick() } },
-                                onRoomDetailsClick = { hidingKeyboard { onRoomDetailsClick() } },
-                                onJoinCallClick = onJoinCallClick,
-                            )
-                        }
+                    if (state.timelineState.timelineMode is Timeline.Mode.Thread) {
+                        ThreadTopBar(
+                            roomName = state.roomName,
+                            roomAvatarData = state.roomAvatar,
+                            heroes = state.heroes,
+                            isTombstoned = state.isTombstoned,
+                            onBackClick = onBackClick,
+                        )
+                    } else {
+                        MessagesViewTopBar(
+                            roomName = state.roomName,
+                            roomAvatar = state.roomAvatar,
+                            isTombstoned = state.isTombstoned,
+                            heroes = state.heroes,
+                            roomCallState = state.roomCallState,
+                            dmUserIdentityState = state.dmUserVerificationState,
+                            onBackClick = { hidingKeyboard { onBackClick() } },
+                            onRoomDetailsClick = { hidingKeyboard { onRoomDetailsClick() } },
+                            onJoinCallClick = onJoinCallClick,
+                        )
+                    }
                 },
                 content = { padding ->
                     Box(
@@ -256,7 +257,7 @@ fun MessagesView(
                             roomAvatarData = state.roomAvatar,
                             suggestions = state.composerState.suggestions,
                             onSelectSuggestion = {
-                                state.composerState.eventSink(MessageComposerEvents.InsertSuggestion(it))
+                                state.composerState.eventSink(MessageComposerEvent.InsertSuggestion(it))
                             }
                         )
                     }
@@ -278,14 +279,13 @@ fun MessagesView(
                 },
             )
         },
-        sheetDragHandle = if (state.composerState.showTextFormatting) {
-            @Composable { toggleAction ->
+        sheetDragHandle = @Composable { toggleAction ->
+            if (state.composerState.showTextFormatting) {
                 val expandA11yLabel = stringResource(CommonStrings.a11y_expand_message_text_field)
                 val collapseA11yLabel = stringResource(CommonStrings.a11y_collapse_message_text_field)
                 BottomSheetDragHandle(
                     modifier = Modifier.semantics {
                         role = Role.Button
-
                         // Accessibility action to toggle the bottom sheet state
                         val label = when (expandableState.position) {
                             ExpandableBottomSheetLayoutState.Position.COLLAPSED, ExpandableBottomSheetLayoutState.Position.DRAGGING -> expandA11yLabel
@@ -297,9 +297,14 @@ fun MessagesView(
                         }
                     }
                 )
+            } else {
+                LaunchedEffect(Unit) {
+                    // Ensure that the bottom sheet is collapsed
+                    if (expandableState.position == ExpandableBottomSheetLayoutState.Position.EXPANDED) {
+                        toggleAction()
+                    }
+                }
             }
-        } else {
-            @Composable {}
         },
         isSwipeGestureEnabled = state.composerState.showTextFormatting,
         state = expandableState,

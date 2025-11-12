@@ -154,10 +154,10 @@ class MessageComposerPresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink.invoke(MessageComposerEvents.ToggleFullScreenState)
+            initialState.eventSink.invoke(MessageComposerEvent.ToggleFullScreenState)
             val fullscreenState = awaitItem()
             assertThat(fullscreenState.isFullScreen).isTrue()
-            fullscreenState.eventSink.invoke(MessageComposerEvents.ToggleFullScreenState)
+            fullscreenState.eventSink.invoke(MessageComposerEvent.ToggleFullScreenState)
             val notFullscreenState = awaitItem()
             assertThat(notFullscreenState.isFullScreen).isFalse()
         }
@@ -196,7 +196,7 @@ class MessageComposerPresenterTest {
         }.test {
             var state = awaitFirstItem()
             val mode = anEditMode(message = ANOTHER_MESSAGE)
-            state.eventSink.invoke(MessageComposerEvents.SetMode(mode))
+            state.eventSink.invoke(MessageComposerEvent.SetMode(mode))
             state = awaitItem()
             assertThat(state.mode).isEqualTo(mode)
             assertThat(state.textEditorState.messageHtml()).isEqualTo(ANOTHER_MESSAGE)
@@ -238,7 +238,7 @@ class MessageComposerPresenterTest {
         }.test {
             var state = awaitFirstItem()
             val mode = anEditCaptionMode(caption = A_CAPTION)
-            state.eventSink.invoke(MessageComposerEvents.SetMode(mode))
+            state.eventSink.invoke(MessageComposerEvent.SetMode(mode))
             state = awaitItem()
             assertThat(state.mode).isEqualTo(mode)
             assertThat(state.textEditorState.messageHtml()).isEqualTo(A_CAPTION)
@@ -280,11 +280,11 @@ class MessageComposerPresenterTest {
         presenter.test {
             var state = awaitFirstItem()
             val mode = anEditCaptionMode(caption = A_CAPTION)
-            state.eventSink.invoke(MessageComposerEvents.SetMode(mode))
+            state.eventSink.invoke(MessageComposerEvent.SetMode(mode))
             state = awaitItem()
             assertThat(state.mode).isEqualTo(mode)
             assertThat(state.textEditorState.messageMarkdown(permalinkBuilder)).isEqualTo(A_CAPTION)
-            state.eventSink.invoke(MessageComposerEvents.SendMessage)
+            state.eventSink.invoke(MessageComposerEvent.SendMessage)
             val messageSentState = awaitItem()
             assertThat(messageSentState.textEditorState.messageMarkdown(permalinkBuilder)).isEqualTo("")
             waitForPredicate { analyticsService.capturedEvents.size == 1 }
@@ -321,13 +321,13 @@ class MessageComposerPresenterTest {
         }.test {
             var state = awaitFirstItem()
             val editMode = anEditMode(message = ANOTHER_MESSAGE)
-            state.eventSink.invoke(MessageComposerEvents.SetMode(editMode))
+            state.eventSink.invoke(MessageComposerEvent.SetMode(editMode))
             state = awaitItem()
             assertThat(state.mode).isEqualTo(editMode)
             assertThat(state.textEditorState.messageHtml()).isEqualTo(ANOTHER_MESSAGE)
 
             val replyMode = aReplyMode()
-            state.eventSink.invoke(MessageComposerEvents.SetMode(replyMode))
+            state.eventSink.invoke(MessageComposerEvent.SetMode(replyMode))
             state = awaitItem()
             assertThat(state.mode).isEqualTo(replyMode)
             assertThat(state.textEditorState.messageHtml()).isEmpty()
@@ -350,7 +350,7 @@ class MessageComposerPresenterTest {
         }.test {
             var state = awaitFirstItem()
             val mode = aReplyMode()
-            state.eventSink.invoke(MessageComposerEvents.SetMode(mode))
+            state.eventSink.invoke(MessageComposerEvent.SetMode(mode))
             state = awaitItem()
             assertThat(state.mode).isEqualTo(mode)
             assertThat(state.textEditorState.messageHtml()).isEqualTo("")
@@ -366,7 +366,7 @@ class MessageComposerPresenterTest {
         }.test {
             var state = awaitFirstItem()
             val mode = aReplyMode()
-            state.eventSink.invoke(MessageComposerEvents.SetMode(mode))
+            state.eventSink.invoke(MessageComposerEvent.SetMode(mode))
             state = awaitItem()
             assertThat(state.mode).isEqualTo(mode)
             state.textEditorState.setHtml(A_REPLY)
@@ -395,7 +395,7 @@ class MessageComposerPresenterTest {
             initialState.textEditorState.setHtml(A_MESSAGE)
             val withMessageState = awaitItem()
             assertThat(withMessageState.textEditorState.messageHtml()).isEqualTo(A_MESSAGE)
-            withMessageState.eventSink.invoke(MessageComposerEvents.SendMessage)
+            withMessageState.eventSink.invoke(MessageComposerEvent.SendMessage)
             val messageSentState = awaitItem()
             assertThat(messageSentState.textEditorState.messageHtml()).isEqualTo("")
             waitForPredicate { analyticsService.capturedEvents.size == 1 }
@@ -432,7 +432,7 @@ class MessageComposerPresenterTest {
             val withMessageState = awaitItem()
             assertThat(withMessageState.textEditorState.messageMarkdown(permalinkBuilder)).isEqualTo(A_MESSAGE)
             assertThat(withMessageState.textEditorState.messageHtml()).isNull()
-            withMessageState.eventSink.invoke(MessageComposerEvents.SendMessage)
+            withMessageState.eventSink.invoke(MessageComposerEvent.SendMessage)
             val messageSentState = awaitItem()
             assertThat(messageSentState.textEditorState.messageMarkdown(permalinkBuilder)).isEqualTo("")
             waitForPredicate { analyticsService.capturedEvents.size == 1 }
@@ -469,14 +469,14 @@ class MessageComposerPresenterTest {
             val initialState = awaitFirstItem()
             assertThat(initialState.textEditorState.messageHtml()).isEqualTo("")
             val mode = anEditMode()
-            initialState.eventSink.invoke(MessageComposerEvents.SetMode(mode))
+            initialState.eventSink.invoke(MessageComposerEvent.SetMode(mode))
             val withMessageState = awaitItem()
             assertThat(withMessageState.mode).isEqualTo(mode)
             assertThat(withMessageState.textEditorState.messageHtml()).isEqualTo(A_MESSAGE)
             withMessageState.textEditorState.setHtml(ANOTHER_MESSAGE)
             val withEditedMessageState = awaitItem()
             assertThat(withEditedMessageState.textEditorState.messageHtml()).isEqualTo(ANOTHER_MESSAGE)
-            withEditedMessageState.eventSink.invoke(MessageComposerEvents.SendMessage)
+            withEditedMessageState.eventSink.invoke(MessageComposerEvent.SendMessage)
             skipItems(1)
             val messageSentState = awaitItem()
             assertThat(messageSentState.textEditorState.messageHtml()).isEqualTo("")
@@ -524,14 +524,14 @@ class MessageComposerPresenterTest {
             val initialState = awaitFirstItem()
             assertThat(initialState.textEditorState.messageHtml()).isEqualTo("")
             val mode = anEditMode()
-            initialState.eventSink.invoke(MessageComposerEvents.SetMode(mode))
+            initialState.eventSink.invoke(MessageComposerEvent.SetMode(mode))
             val withMessageState = awaitItem()
             assertThat(withMessageState.mode).isEqualTo(mode)
             assertThat(withMessageState.textEditorState.messageHtml()).isEqualTo(A_MESSAGE)
             withMessageState.textEditorState.setHtml(ANOTHER_MESSAGE)
             val withEditedMessageState = awaitItem()
             assertThat(withEditedMessageState.textEditorState.messageHtml()).isEqualTo(ANOTHER_MESSAGE)
-            withEditedMessageState.eventSink.invoke(MessageComposerEvents.SendMessage)
+            withEditedMessageState.eventSink.invoke(MessageComposerEvent.SendMessage)
             skipItems(1)
             val messageSentState = awaitItem()
             assertThat(messageSentState.textEditorState.messageHtml()).isEqualTo("")
@@ -579,14 +579,14 @@ class MessageComposerPresenterTest {
             val initialState = awaitFirstItem()
             assertThat(initialState.textEditorState.messageHtml()).isEqualTo("")
             val mode = anEditMode(eventOrTransactionId = A_TRANSACTION_ID.toEventOrTransactionId())
-            initialState.eventSink.invoke(MessageComposerEvents.SetMode(mode))
+            initialState.eventSink.invoke(MessageComposerEvent.SetMode(mode))
             val withMessageState = awaitItem()
             assertThat(withMessageState.mode).isEqualTo(mode)
             assertThat(withMessageState.textEditorState.messageHtml()).isEqualTo(A_MESSAGE)
             withMessageState.textEditorState.setHtml(ANOTHER_MESSAGE)
             val withEditedMessageState = awaitItem()
             assertThat(withEditedMessageState.textEditorState.messageHtml()).isEqualTo(ANOTHER_MESSAGE)
-            withEditedMessageState.eventSink.invoke(MessageComposerEvents.SendMessage)
+            withEditedMessageState.eventSink.invoke(MessageComposerEvent.SendMessage)
             skipItems(1)
             val messageSentState = awaitItem()
             assertThat(messageSentState.textEditorState.messageHtml()).isEqualTo("")
@@ -629,13 +629,13 @@ class MessageComposerPresenterTest {
             val initialState = awaitFirstItem()
             assertThat(initialState.textEditorState.messageHtml()).isEqualTo("")
             val mode = aReplyMode()
-            initialState.eventSink.invoke(MessageComposerEvents.SetMode(mode))
+            initialState.eventSink.invoke(MessageComposerEvent.SetMode(mode))
             val state = awaitItem()
             assertThat(state.mode).isEqualTo(mode)
             assertThat(state.textEditorState.messageHtml()).isEqualTo("")
             state.textEditorState.setHtml(A_REPLY)
             assertThat(state.textEditorState.messageHtml()).isEqualTo(A_REPLY)
-            state.eventSink.invoke(MessageComposerEvents.SendMessage)
+            state.eventSink.invoke(MessageComposerEvent.SendMessage)
             val messageSentState = awaitItem()
             assertThat(messageSentState.textEditorState.messageHtml()).isEqualTo("")
 
@@ -664,7 +664,7 @@ class MessageComposerPresenterTest {
         }.test {
             val initialState = awaitFirstItem()
             assertThat(initialState.showAttachmentSourcePicker).isFalse()
-            initialState.eventSink(MessageComposerEvents.AddAttachment)
+            initialState.eventSink(MessageComposerEvent.AddAttachment)
             assertThat(awaitItem().showAttachmentSourcePicker).isTrue()
         }
     }
@@ -676,10 +676,10 @@ class MessageComposerPresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink(MessageComposerEvents.AddAttachment)
+            initialState.eventSink(MessageComposerEvent.AddAttachment)
             skipItems(1)
 
-            initialState.eventSink(MessageComposerEvents.DismissAttachmentMenu)
+            initialState.eventSink(MessageComposerEvent.DismissAttachmentMenu)
             assertThat(awaitItem().showAttachmentSourcePicker).isFalse()
         }
     }
@@ -719,7 +719,7 @@ class MessageComposerPresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink(MessageComposerEvents.PickAttachmentSource.FromGallery)
+            initialState.eventSink(MessageComposerEvent.PickAttachmentSource.FromGallery)
             onPreviewAttachmentLambda.assertions().isCalledOnce()
         }
     }
@@ -760,7 +760,7 @@ class MessageComposerPresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink(MessageComposerEvents.PickAttachmentSource.FromGallery)
+            initialState.eventSink(MessageComposerEvent.PickAttachmentSource.FromGallery)
             onPreviewAttachmentLambda.assertions().isCalledOnce()
         }
     }
@@ -776,7 +776,7 @@ class MessageComposerPresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink(MessageComposerEvents.PickAttachmentSource.FromGallery)
+            initialState.eventSink(MessageComposerEvent.PickAttachmentSource.FromGallery)
             // No crashes here, otherwise it fails
         }
     }
@@ -798,7 +798,7 @@ class MessageComposerPresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink(MessageComposerEvents.PickAttachmentSource.FromFiles)
+            initialState.eventSink(MessageComposerEvent.PickAttachmentSource.FromFiles)
             onPreviewAttachmentLambda.assertions().isCalledOnce()
         }
     }
@@ -813,10 +813,10 @@ class MessageComposerPresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink(MessageComposerEvents.AddAttachment)
+            initialState.eventSink(MessageComposerEvent.AddAttachment)
             val attachmentOpenState = awaitItem()
             assertThat(attachmentOpenState.showAttachmentSourcePicker).isTrue()
-            initialState.eventSink(MessageComposerEvents.PickAttachmentSource.Poll)
+            initialState.eventSink(MessageComposerEvent.PickAttachmentSource.Poll)
             val finalState = awaitItem()
             assertThat(finalState.showAttachmentSourcePicker).isFalse()
         }
@@ -832,10 +832,10 @@ class MessageComposerPresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink(MessageComposerEvents.AddAttachment)
+            initialState.eventSink(MessageComposerEvent.AddAttachment)
             val attachmentOpenState = awaitItem()
             assertThat(attachmentOpenState.showAttachmentSourcePicker).isTrue()
-            initialState.eventSink(MessageComposerEvents.PickAttachmentSource.Location)
+            initialState.eventSink(MessageComposerEvent.PickAttachmentSource.Location)
             val finalState = awaitItem()
             assertThat(finalState.showAttachmentSourcePicker).isFalse()
         }
@@ -860,7 +860,7 @@ class MessageComposerPresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink(MessageComposerEvents.PickAttachmentSource.PhotoFromCamera)
+            initialState.eventSink(MessageComposerEvent.PickAttachmentSource.PhotoFromCamera)
             onPreviewAttachmentLambda.assertions().isCalledOnce()
         }
     }
@@ -884,7 +884,7 @@ class MessageComposerPresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink(MessageComposerEvents.PickAttachmentSource.PhotoFromCamera)
+            initialState.eventSink(MessageComposerEvent.PickAttachmentSource.PhotoFromCamera)
             permissionPresenter.setPermissionGranted()
             onPreviewAttachmentLambda.assertions().isCalledOnce()
             cancelAndIgnoreRemainingEvents()
@@ -910,7 +910,7 @@ class MessageComposerPresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink(MessageComposerEvents.PickAttachmentSource.VideoFromCamera)
+            initialState.eventSink(MessageComposerEvent.PickAttachmentSource.VideoFromCamera)
             onPreviewAttachmentLambda.assertions().isCalledOnce()
         }
     }
@@ -934,7 +934,7 @@ class MessageComposerPresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink(MessageComposerEvents.PickAttachmentSource.VideoFromCamera)
+            initialState.eventSink(MessageComposerEvent.PickAttachmentSource.VideoFromCamera)
             val permissionState = awaitItem()
             assertThat(permissionState.showAttachmentSourcePicker).isFalse()
             permissionPresenter.setPermissionGranted()
@@ -951,7 +951,7 @@ class MessageComposerPresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink(MessageComposerEvents.Error(testException))
+            initialState.eventSink(MessageComposerEvent.Error(testException))
             assertThat(analyticsService.trackedErrors).containsExactly(testException)
         }
     }
@@ -964,10 +964,10 @@ class MessageComposerPresenterTest {
         }.test {
             val initialState = awaitFirstItem()
             assertThat(initialState.showTextFormatting).isFalse()
-            initialState.eventSink(MessageComposerEvents.AddAttachment)
+            initialState.eventSink(MessageComposerEvent.AddAttachment)
             val composerOptions = awaitItem()
             assertThat(composerOptions.showAttachmentSourcePicker).isTrue()
-            composerOptions.eventSink(MessageComposerEvents.ToggleTextFormatting(true))
+            composerOptions.eventSink(MessageComposerEvent.ToggleTextFormatting(true))
             skipItems(2) // composer options closed
             val showTextFormatting = awaitItem()
             assertThat(showTextFormatting.showAttachmentSourcePicker).isFalse()
@@ -976,7 +976,7 @@ class MessageComposerPresenterTest {
                 Interaction(index = null, interactionType = null, name = Interaction.Name.MobileRoomComposerFormattingEnabled)
             )
             analyticsService.capturedEvents.clear()
-            showTextFormatting.eventSink(MessageComposerEvents.ToggleTextFormatting(false))
+            showTextFormatting.eventSink(MessageComposerEvent.ToggleTextFormatting(false))
             skipItems(1)
             val finished = awaitItem()
             assertThat(finished.showTextFormatting).isFalse()
@@ -1009,33 +1009,33 @@ class MessageComposerPresenterTest {
             val initialState = awaitItem()
 
             // A null suggestion (no suggestion was received) returns nothing
-            initialState.eventSink(MessageComposerEvents.SuggestionReceived(null))
+            initialState.eventSink(MessageComposerEvent.SuggestionReceived(null))
             assertThat(awaitItem().suggestions).isEmpty()
 
             // An empty suggestion returns the room and joined members that are not the current user
-            initialState.eventSink(MessageComposerEvents.SuggestionReceived(Suggestion(0, 0, SuggestionType.Mention, "")))
+            initialState.eventSink(MessageComposerEvent.SuggestionReceived(Suggestion(0, 0, SuggestionType.Mention, "")))
             assertThat(awaitItem().suggestions)
                 .containsExactly(ResolvedSuggestion.AtRoom, ResolvedSuggestion.Member(bob), ResolvedSuggestion.Member(david))
 
             // A suggestion containing a part of "room" will also return the room mention
-            initialState.eventSink(MessageComposerEvents.SuggestionReceived(Suggestion(0, 0, SuggestionType.Mention, "roo")))
+            initialState.eventSink(MessageComposerEvent.SuggestionReceived(Suggestion(0, 0, SuggestionType.Mention, "roo")))
             assertThat(awaitItem().suggestions).containsExactly(ResolvedSuggestion.AtRoom)
 
             // A non-empty suggestion will return those joined members whose user id matches it
-            initialState.eventSink(MessageComposerEvents.SuggestionReceived(Suggestion(0, 0, SuggestionType.Mention, "bob")))
+            initialState.eventSink(MessageComposerEvent.SuggestionReceived(Suggestion(0, 0, SuggestionType.Mention, "bob")))
             assertThat(awaitItem().suggestions).containsExactly(ResolvedSuggestion.Member(bob))
 
             // A non-empty suggestion will return those joined members whose display name matches it
-            initialState.eventSink(MessageComposerEvents.SuggestionReceived(Suggestion(0, 0, SuggestionType.Mention, "dave")))
+            initialState.eventSink(MessageComposerEvent.SuggestionReceived(Suggestion(0, 0, SuggestionType.Mention, "dave")))
             assertThat(awaitItem().suggestions).containsExactly(ResolvedSuggestion.Member(david))
 
             // If the suggestion isn't a mention, no suggestions are returned
-            initialState.eventSink(MessageComposerEvents.SuggestionReceived(Suggestion(0, 0, SuggestionType.Command, "")))
+            initialState.eventSink(MessageComposerEvent.SuggestionReceived(Suggestion(0, 0, SuggestionType.Command, "")))
             assertThat(awaitItem().suggestions).isEmpty()
 
             // If user has no permission to send `@room` mentions, `RoomMemberSuggestion.Room` is not returned
             canUserTriggerRoomNotificationResult = false
-            initialState.eventSink(MessageComposerEvents.SuggestionReceived(Suggestion(0, 0, SuggestionType.Mention, "")))
+            initialState.eventSink(MessageComposerEvent.SuggestionReceived(Suggestion(0, 0, SuggestionType.Mention, "")))
             assertThat(awaitItem().suggestions)
                 .containsExactly(ResolvedSuggestion.Member(bob), ResolvedSuggestion.Member(david))
         }
@@ -1070,7 +1070,7 @@ class MessageComposerPresenterTest {
             val initialState = awaitItem()
 
             // An empty suggestion returns the joined members that are not the current user, but not the room
-            initialState.eventSink(MessageComposerEvents.SuggestionReceived(Suggestion(0, 0, SuggestionType.Mention, "")))
+            initialState.eventSink(MessageComposerEvent.SuggestionReceived(Suggestion(0, 0, SuggestionType.Mention, "")))
             skipItems(1)
             assertThat(awaitItem().suggestions)
                 .containsExactly(ResolvedSuggestion.Member(bob), ResolvedSuggestion.Member(david))
@@ -1090,7 +1090,7 @@ class MessageComposerPresenterTest {
         }.test {
             val initialState = awaitFirstItem()
             initialState.textEditorState.setHtml("Hey @bo")
-            initialState.eventSink(MessageComposerEvents.InsertSuggestion(ResolvedSuggestion.Member(aRoomMember(userId = A_USER_ID_2))))
+            initialState.eventSink(MessageComposerEvent.InsertSuggestion(ResolvedSuggestion.Member(aRoomMember(userId = A_USER_ID_2))))
 
             assertThat(initialState.textEditorState.messageHtml())
                 .isEqualTo("Hey <a href='https://matrix.to/#/${A_USER_ID_2.value}'>${A_USER_ID_2.value}</a>")
@@ -1133,7 +1133,7 @@ class MessageComposerPresenterTest {
                 hasAtRoomMention = false
             )
             initialState.textEditorState.setHtml(A_MESSAGE)
-            initialState.eventSink(MessageComposerEvents.SendMessage)
+            initialState.eventSink(MessageComposerEvent.SendMessage)
 
             advanceUntilIdle()
 
@@ -1141,7 +1141,7 @@ class MessageComposerPresenterTest {
                 .with(value(A_MESSAGE), any(), value(listOf(IntentionalMention.User(A_USER_ID))))
 
             // Check intentional mentions on reply sent
-            initialState.eventSink(MessageComposerEvents.SetMode(aReplyMode()))
+            initialState.eventSink(MessageComposerEvent.SetMode(aReplyMode()))
             val mentionUser2 = listOf(A_USER_ID_2.value)
             (awaitItem().textEditorState as? TextEditorState.Rich)?.richTextEditorState?.mentionsState = MentionsState(
                 userIds = mentionUser2,
@@ -1150,7 +1150,7 @@ class MessageComposerPresenterTest {
                 hasAtRoomMention = false
             )
 
-            initialState.eventSink(MessageComposerEvents.SendMessage)
+            initialState.eventSink(MessageComposerEvent.SendMessage)
             advanceUntilIdle()
 
             assert(replyMessageLambda)
@@ -1159,7 +1159,7 @@ class MessageComposerPresenterTest {
 
             // Check intentional mentions on edit message
             skipItems(1)
-            initialState.eventSink(MessageComposerEvents.SetMode(anEditMode()))
+            initialState.eventSink(MessageComposerEvent.SetMode(anEditMode()))
             val mentionUser3 = listOf(A_USER_ID_3.value)
             (awaitItem().textEditorState as? TextEditorState.Rich)?.richTextEditorState?.mentionsState = MentionsState(
                 userIds = mentionUser3,
@@ -1168,7 +1168,7 @@ class MessageComposerPresenterTest {
                 hasAtRoomMention = false
             )
 
-            initialState.eventSink(MessageComposerEvents.SendMessage)
+            initialState.eventSink(MessageComposerEvent.SendMessage)
             advanceUntilIdle()
 
             assert(editMessageLambda)
@@ -1196,7 +1196,7 @@ class MessageComposerPresenterTest {
             remember(state, state.textEditorState.messageHtml()) { state }
         }.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink.invoke(MessageComposerEvents.SendUri(Uri.parse("content://uri")))
+            initialState.eventSink.invoke(MessageComposerEvent.SendUri(Uri.parse("content://uri")))
             waitForPredicate { mediaPreProcessor.processCallCount == 1 }
         }
     }
@@ -1213,8 +1213,8 @@ class MessageComposerPresenterTest {
         }.test {
             val initialState = awaitFirstItem()
             typingNoticeResult.assertions().isNeverCalled()
-            initialState.eventSink.invoke(MessageComposerEvents.TypingNotice(true))
-            initialState.eventSink.invoke(MessageComposerEvents.TypingNotice(false))
+            initialState.eventSink.invoke(MessageComposerEvent.TypingNotice(true))
+            initialState.eventSink.invoke(MessageComposerEvent.TypingNotice(false))
             advanceUntilIdle()
             typingNoticeResult.assertions().isCalledExactly(2)
                 .withSequence(
@@ -1239,8 +1239,8 @@ class MessageComposerPresenterTest {
         }.test {
             val initialState = awaitFirstItem()
             typingNoticeResult.assertions().isNeverCalled()
-            initialState.eventSink.invoke(MessageComposerEvents.TypingNotice(true))
-            initialState.eventSink.invoke(MessageComposerEvents.TypingNotice(false))
+            initialState.eventSink.invoke(MessageComposerEvent.TypingNotice(true))
+            initialState.eventSink.invoke(MessageComposerEvent.TypingNotice(false))
             typingNoticeResult.assertions().isNeverCalled()
         }
     }
@@ -1422,7 +1422,7 @@ class MessageComposerPresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink.invoke(MessageComposerEvents.SaveDraft)
+            initialState.eventSink.invoke(MessageComposerEvent.SaveDraft)
             advanceUntilIdle()
             assert(saveDraftLambda)
                 .isCalledOnce()
@@ -1452,26 +1452,26 @@ class MessageComposerPresenterTest {
 
             val withMessageState = awaitItem()
             assertThat(withMessageState.textEditorState.messageMarkdown(permalinkBuilder)).isEqualTo(A_MESSAGE)
-            withMessageState.eventSink(MessageComposerEvents.SaveDraft)
+            withMessageState.eventSink(MessageComposerEvent.SaveDraft)
             advanceUntilIdle()
 
-            withMessageState.eventSink(MessageComposerEvents.ToggleTextFormatting(true))
+            withMessageState.eventSink(MessageComposerEvent.ToggleTextFormatting(true))
             skipItems(1)
             val withFormattingState = awaitItem()
             assertThat(withFormattingState.showTextFormatting).isTrue()
-            withFormattingState.eventSink(MessageComposerEvents.SaveDraft)
+            withFormattingState.eventSink(MessageComposerEvent.SaveDraft)
             advanceUntilIdle()
 
-            withFormattingState.eventSink(MessageComposerEvents.SetMode(anEditMode()))
+            withFormattingState.eventSink(MessageComposerEvent.SetMode(anEditMode()))
             val withEditModeState = awaitItem()
             assertThat(withEditModeState.mode).isEqualTo(anEditMode())
-            withEditModeState.eventSink(MessageComposerEvents.SaveDraft)
+            withEditModeState.eventSink(MessageComposerEvent.SaveDraft)
             advanceUntilIdle()
 
-            withEditModeState.eventSink(MessageComposerEvents.SetMode(aReplyMode()))
+            withEditModeState.eventSink(MessageComposerEvent.SetMode(aReplyMode()))
             val withReplyModeState = awaitItem()
             assertThat(withReplyModeState.mode).isEqualTo(aReplyMode())
-            withReplyModeState.eventSink(MessageComposerEvents.SaveDraft)
+            withReplyModeState.eventSink(MessageComposerEvent.SaveDraft)
             advanceUntilIdle()
 
             assert(saveDraftLambda)
@@ -1514,7 +1514,7 @@ class MessageComposerPresenterTest {
     }
 
     private suspend fun ReceiveTurbine<MessageComposerState>.backToNormalMode(state: MessageComposerState, skipCount: Int = 0): MessageComposerState {
-        state.eventSink.invoke(MessageComposerEvents.CloseSpecialMode)
+        state.eventSink.invoke(MessageComposerEvent.CloseSpecialMode)
         skipItems(skipCount)
         val normalState = awaitItem()
         assertThat(normalState.mode).isEqualTo(MessageComposerMode.Normal)

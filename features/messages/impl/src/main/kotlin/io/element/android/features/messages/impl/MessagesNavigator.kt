@@ -16,7 +16,6 @@ import io.element.android.libraries.matrix.api.timeline.item.TimelineItemDebugIn
 import kotlinx.collections.immutable.ImmutableList
 
 interface MessagesNavigator {
-    fun onBackPressed() // SC
     fun navigateToEventDebugInfo(eventId: EventId?, debugInfo: TimelineItemDebugInfo)
     fun forwardEvent(eventId: EventId)
     fun navigateToReportMessage(eventId: EventId, senderId: UserId)

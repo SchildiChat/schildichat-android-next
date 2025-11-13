@@ -46,8 +46,6 @@ class FakeMessagesNavigator(
         onPreviewAttachmentLambda(attachments, inReplyToEventId)
     }
 
-    override fun onBackPressed() {} // SC
-
     override fun navigateToRoom(roomId: RoomId, eventId: EventId?, serverNames: List<String>) {
         onNavigateToRoomLambda(roomId, eventId, serverNames)
     }

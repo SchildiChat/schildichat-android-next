@@ -223,8 +223,6 @@ class ThreadedMessagesNode(
 
     override fun close() = navigateUp()
 
-    override fun onBackPressed() = navigateUp() // SC
-
     @Composable
     override fun View(modifier: Modifier) {
         val activity = requireNotNull(LocalActivity.current)

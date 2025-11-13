@@ -211,8 +211,6 @@ class MessagesNode(
         callback.navigateToEditPoll(eventId)
     }
 
-    override fun onBackPressed() = navigateUp() // SC
-
     override fun navigateToPreviewAttachments(attachments: ImmutableList<Attachment>, inReplyToEventId: EventId?) {
         callback.navigateToPreviewAttachments(attachments, inReplyToEventId)
     }

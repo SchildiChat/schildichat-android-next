@@ -20,12 +20,15 @@ import coil3.ImageLoader
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import io.element.android.libraries.core.meta.BuildMeta
+import io.element.android.libraries.designsystem.components.avatar.AvatarData
+import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.utils.CommonDrawables
 import io.element.android.libraries.di.annotations.ApplicationContext
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.ThreadId
 import io.element.android.libraries.matrix.api.timeline.item.event.EventType
 import io.element.android.libraries.matrix.api.user.MatrixUser
+import io.element.android.libraries.matrix.ui.model.getAvatarData
 import io.element.android.libraries.matrix.ui.model.getBestName
 import io.element.android.libraries.push.api.notifications.NotificationBitmapLoader
 import io.element.android.libraries.push.impl.R
@@ -401,7 +404,17 @@ class DefaultNotificationCreator(
                 }
                 Person.Builder()
                     .setName(displayName.annotateForDebug(70))
-                    .setIcon(bitmapLoader.getUserIcon(event.senderAvatarPath, imageLoader))
+                    .setIcon(
+                        bitmapLoader.getUserIcon(
+                            avatarData = AvatarData(
+                                id = event.senderId.value,
+                                name = senderName,
+                                url = event.senderAvatarPath,
+                                size = AvatarSize.UserHeader,
+                            ),
+                            imageLoader = imageLoader,
+                        )
+                    )
                     .setKey(key)
                     .build()
             }
@@ -460,7 +473,12 @@ class DefaultNotificationCreator(
             Person.Builder()
                 // Note: name cannot be empty else NotificationCompat.MessagingStyle() will crash
                 .setName(user.getBestName().annotateForDebug(50))
-                .setIcon(bitmapLoader.getUserIcon(user.avatarUrl, imageLoader))
+                .setIcon(
+                    bitmapLoader.getUserIcon(
+                        avatarData = user.getAvatarData(AvatarSize.UserHeader),
+                        imageLoader = imageLoader,
+                    )
+                )
                 .setKey(user.userId.value)
                 .build()
         ).also {

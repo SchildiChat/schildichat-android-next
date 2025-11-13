@@ -21,7 +21,7 @@ import io.element.android.libraries.matrix.test.A_ROOM_ID_2
 import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.matrix.test.A_SESSION_ID_2
 import io.element.android.libraries.matrix.test.FakeMatrixClientProvider
-import io.element.android.libraries.matrix.ui.test.media.FakeImageLoaderHolder
+import io.element.android.libraries.matrix.ui.media.test.FakeImageLoaderHolder
 import io.element.android.libraries.push.impl.notifications.factories.FakeIntentProvider
 import io.element.android.libraries.push.impl.notifications.shortcut.createShortcutId
 import io.element.android.libraries.push.test.notifications.push.FakeNotificationBitmapLoader

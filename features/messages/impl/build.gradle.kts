@@ -39,6 +39,7 @@ dependencies {
     implementation(projects.libraries.architecture)
     implementation(projects.libraries.matrix.api)
     implementation(projects.libraries.matrixui)
+    implementation(projects.libraries.matrixmedia.api)
     implementation(projects.libraries.designsystem)
     implementation(projects.libraries.textcomposer.impl)
     implementation(projects.libraries.uiStrings)

@@ -13,13 +13,14 @@ import androidx.test.platform.app.InstrumentationRegistry
 import coil3.ImageLoader
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.call.impl.notifications.RingingCallNotificationCreator
+import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.matrix.test.A_USER_ID_2
 import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.matrix.test.FakeMatrixClientProvider
-import io.element.android.libraries.matrix.ui.test.media.FakeImageLoaderHolder
+import io.element.android.libraries.matrix.ui.media.test.FakeImageLoaderHolder
 import io.element.android.libraries.push.test.notifications.push.FakeNotificationBitmapLoader
 import io.element.android.tests.testutils.lambda.lambdaRecorder
 import kotlinx.coroutines.test.runTest
@@ -53,7 +54,7 @@ class RingingCallNotificationCreatorTest {
 
     @Test
     fun `createNotification - tries to load the avatar URL`() = runTest {
-        val getUserIconLambda = lambdaRecorder<String?, ImageLoader, IconCompat?> { _, _ -> null }
+        val getUserIconLambda = lambdaRecorder<AvatarData, ImageLoader, IconCompat?> { _, _ -> null }
         val notificationCreator = createRingingCallNotificationCreator(
             matrixClientProvider = FakeMatrixClientProvider(getClient = { Result.success(FakeMatrixClient()) }),
             notificationBitmapLoader = FakeNotificationBitmapLoader(getUserIconResult = getUserIconLambda)

@@ -42,6 +42,6 @@ class DefaultServiceUnregisteredHandler(
                 showSessionId = hasMultipleAccounts,
             )
         )
-        notificationDisplayer.displayDiagnosticNotification(notification)
+        notificationDisplayer.displayUnregistrationNotification(notification)
     }
 }

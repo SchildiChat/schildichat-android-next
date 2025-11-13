@@ -153,7 +153,7 @@ class DefaultBugReporter(
                     append(problemDescription)
                     if (crashCallStack.isNotEmpty() && withCrashLogs) {
                         append("\n\n\n\n--------------------------------- crash call stack ---------------------------------\n")
-                        append(crashCallStack)
+                        append(crashCallStack.take(5000))
                     }
                 }
                 val gzippedFiles = mutableListOf<File>()

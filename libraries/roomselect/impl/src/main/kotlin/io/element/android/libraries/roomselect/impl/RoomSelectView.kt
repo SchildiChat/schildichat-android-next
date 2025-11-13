@@ -88,7 +88,7 @@ fun RoomSelectView(
         }
     }
 
-    BackHandler(onBack = { onBackButton(state) })
+    BackHandler(enabled = state.isSearchActive, onBack = { onBackButton(state) })
 
     Scaffold(
         modifier = modifier,

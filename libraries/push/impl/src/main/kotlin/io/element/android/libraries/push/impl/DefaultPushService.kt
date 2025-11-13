@@ -14,12 +14,14 @@ import dev.zacsweers.metro.SingleIn
 import dev.zacsweers.metro.binding
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.SessionId
+import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.push.api.GetCurrentPushProvider
 import io.element.android.libraries.push.api.PushService
 import io.element.android.libraries.push.api.history.PushHistoryItem
 import io.element.android.libraries.push.impl.push.MutableBatteryOptimizationStore
 import io.element.android.libraries.push.impl.store.PushDataStore
 import io.element.android.libraries.push.impl.test.TestPush
+import io.element.android.libraries.push.impl.unregistration.ServiceUnregisteredHandler
 import io.element.android.libraries.pushproviders.api.Distributor
 import io.element.android.libraries.pushproviders.api.PushProvider
 import io.element.android.libraries.pushstore.api.UserPushStoreFactory
@@ -40,6 +42,7 @@ class DefaultPushService(
     private val pushClientSecretStore: PushClientSecretStore,
     private val pushDataStore: PushDataStore,
     private val mutableBatteryOptimizationStore: MutableBatteryOptimizationStore,
+    private val serviceUnregisteredHandler: ServiceUnregisteredHandler,
 ) : PushService, SessionListener {
     init {
         observeSessions()
@@ -140,5 +143,9 @@ class DefaultPushService(
 
     override suspend fun resetBatteryOptimizationState() {
         mutableBatteryOptimizationStore.reset()
+    }
+
+    override suspend fun onServiceUnregistered(userId: UserId) {
+        serviceUnregisteredHandler.handle(userId)
     }
 }

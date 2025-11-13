@@ -106,12 +106,14 @@ class VectorUnifiedPushMessagingReceiver : MessagingReceiver() {
      */
     override fun onRegistrationFailed(context: Context, reason: FailedReason, instance: String) {
         Timber.tag(loggerTag.value).e("onRegistrationFailed for $instance, reason: $reason")
-        /*
-        Toast.makeText(context, "Push service registration failed", Toast.LENGTH_SHORT).show()
-        val mode = BackgroundSyncMode.FDROID_BACKGROUND_SYNC_MODE_FOR_REALTIME
-        pushDataStore.setFdroidSyncBackgroundMode(mode)
-        guardServiceStarter.start()
-         */
+        coroutineScope.launch {
+            endpointRegistrationHandler.registrationDone(
+                RegistrationResult(
+                    clientSecret = instance,
+                    result = Result.failure(Exception("Registration failed. Reason: $reason")),
+                )
+            )
+        }
     }
 
     /**

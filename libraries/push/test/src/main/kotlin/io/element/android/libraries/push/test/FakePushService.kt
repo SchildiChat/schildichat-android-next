@@ -10,6 +10,7 @@ package io.element.android.libraries.push.test
 
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.SessionId
+import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.push.api.PushService
 import io.element.android.libraries.push.api.history.PushHistoryItem
 import io.element.android.libraries.pushproviders.api.Distributor
@@ -30,6 +31,7 @@ class FakePushService(
     private val setIgnoreRegistrationErrorLambda: (SessionId, Boolean) -> Unit = { _, _ -> lambdaError() },
     private val resetPushHistoryResult: () -> Unit = { lambdaError() },
     private val resetBatteryOptimizationStateResult: () -> Unit = { lambdaError() },
+    private val onServiceUnregisteredResult: (UserId) -> Unit = { lambdaError() },
 ) : PushService {
     override suspend fun getCurrentPushProvider(sessionId: SessionId): PushProvider? {
         return registeredPushProvider ?: currentPushProvider(sessionId)
@@ -97,5 +99,9 @@ class FakePushService(
 
     override suspend fun resetBatteryOptimizationState() {
         resetBatteryOptimizationStateResult()
+    }
+
+    override suspend fun onServiceUnregistered(userId: UserId) {
+        onServiceUnregisteredResult(userId)
     }
 }

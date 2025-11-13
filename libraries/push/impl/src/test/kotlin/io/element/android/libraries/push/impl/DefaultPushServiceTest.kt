@@ -25,6 +25,8 @@ import io.element.android.libraries.push.impl.store.InMemoryPushDataStore
 import io.element.android.libraries.push.impl.store.PushDataStore
 import io.element.android.libraries.push.impl.test.FakeTestPush
 import io.element.android.libraries.push.impl.test.TestPush
+import io.element.android.libraries.push.impl.unregistration.FakeServiceUnregisteredHandler
+import io.element.android.libraries.push.impl.unregistration.ServiceUnregisteredHandler
 import io.element.android.libraries.push.test.FakeGetCurrentPushProvider
 import io.element.android.libraries.pushproviders.api.Config
 import io.element.android.libraries.pushproviders.api.Distributor
@@ -346,6 +348,7 @@ class DefaultPushServiceTest {
         pushClientSecretStore: PushClientSecretStore = InMemoryPushClientSecretStore(),
         pushDataStore: PushDataStore = InMemoryPushDataStore(),
         mutableBatteryOptimizationStore: MutableBatteryOptimizationStore = FakeMutableBatteryOptimizationStore(),
+        serviceUnregisteredHandler: ServiceUnregisteredHandler = FakeServiceUnregisteredHandler(),
     ): DefaultPushService {
         return DefaultPushService(
             testPush = testPush,
@@ -356,6 +359,7 @@ class DefaultPushServiceTest {
             pushClientSecretStore = pushClientSecretStore,
             pushDataStore = pushDataStore,
             mutableBatteryOptimizationStore = mutableBatteryOptimizationStore,
+            serviceUnregisteredHandler = serviceUnregisteredHandler,
         )
     }
 }

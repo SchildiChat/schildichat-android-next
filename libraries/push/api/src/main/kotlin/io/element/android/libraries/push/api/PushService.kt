@@ -10,6 +10,7 @@ package io.element.android.libraries.push.api
 
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.SessionId
+import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.push.api.history.PushHistoryItem
 import io.element.android.libraries.pushproviders.api.Distributor
 import io.element.android.libraries.pushproviders.api.PushProvider
@@ -73,4 +74,9 @@ interface PushService {
      * Reset the battery optimization state.
      */
     suspend fun resetBatteryOptimizationState()
+
+    /**
+     * Notify the user that the service is un-registered.
+     */
+    suspend fun onServiceUnregistered(userId: UserId)
 }

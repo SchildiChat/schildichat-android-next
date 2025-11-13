@@ -91,6 +91,10 @@ interface NotificationCreator {
         @ColorInt color: Int,
     ): Notification
 
+    fun createUnregistrationNotification(
+        notificationAccountParams: NotificationAccountParams,
+    ): Notification
+
     companion object {
         /**
          * Creates a tag for a message notification given its [roomId] and optional [threadId].
@@ -349,6 +353,28 @@ class DefaultNotificationCreator(
             .setAutoCancel(true)
             .setContentIntent(intent)
             .setDeleteIntent(intent)
+            .build()
+    }
+
+    override fun createUnregistrationNotification(
+        notificationAccountParams: NotificationAccountParams,
+    ): Notification {
+        val userId = notificationAccountParams.user.userId
+        val text = if (notificationAccountParams.showSessionId) {
+            // TODO i18n
+            "$userId will not receive notifications anymore."
+        } else {
+            // TODO i18n
+            "You will not receive notifications anymore."
+        }
+        return NotificationCompat.Builder(context, notificationChannels.getChannelIdForTest())
+            .setContentTitle(stringProvider.getString(CommonStrings.dialog_title_warning))
+            .setContentText(text)
+            .configureWith(notificationAccountParams)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setCategory(NotificationCompat.CATEGORY_ERROR)
+            .setAutoCancel(true)
+            .setContentIntent(pendingIntentFactory.createOpenSessionPendingIntent(userId))
             .build()
     }
 

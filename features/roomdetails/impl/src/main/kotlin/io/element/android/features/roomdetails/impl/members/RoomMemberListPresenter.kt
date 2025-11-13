@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -158,7 +159,7 @@ class RoomMemberListPresenter(
             }
         }
 
-        fun handleEvents(event: RoomMemberListEvents) {
+        fun handleEvent(event: RoomMemberListEvents) {
             when (event) {
                 is RoomMemberListEvents.OnSearchActiveChanged -> isSearchActive = event.active
                 is RoomMemberListEvents.UpdateSearchQuery -> searchQuery = event.query
@@ -174,7 +175,7 @@ class RoomMemberListPresenter(
             isSearchActive = isSearchActive,
             canInvite = canInvite,
             moderationState = roomModerationState,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

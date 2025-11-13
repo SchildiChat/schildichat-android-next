@@ -1,7 +1,8 @@
 /*
- * Copyright 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2024, 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 package io.element.android.features.call.impl.notifications
@@ -21,6 +22,8 @@ import io.element.android.features.call.api.CallType
 import io.element.android.features.call.impl.receivers.DeclineCallBroadcastReceiver
 import io.element.android.features.call.impl.ui.IncomingCallActivity
 import io.element.android.features.call.impl.utils.IntentProvider
+import io.element.android.libraries.designsystem.components.avatar.AvatarData
+import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.utils.CommonDrawables
 import io.element.android.libraries.di.annotations.ApplicationContext
 import io.element.android.libraries.matrix.api.MatrixClientProvider
@@ -69,7 +72,15 @@ class RingingCallNotificationCreator(
     ): Notification? {
         val matrixClient = matrixClientProvider.getOrRestore(sessionId).getOrNull() ?: return null
         val imageLoader = imageLoaderHolder.get(matrixClient)
-        val largeIcon = notificationBitmapLoader.getUserIcon(roomAvatarUrl, imageLoader)
+        val largeIcon = notificationBitmapLoader.getUserIcon(
+            avatarData = AvatarData(
+                id = roomId.value,
+                name = roomName,
+                url = roomAvatarUrl,
+                size = AvatarSize.RoomDetailsHeader,
+            ),
+            imageLoader = imageLoader,
+        )
 
         val caller = Person.Builder()
             .setName(senderDisplayName)

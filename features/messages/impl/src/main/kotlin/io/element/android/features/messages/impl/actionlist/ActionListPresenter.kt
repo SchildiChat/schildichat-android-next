@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -106,7 +107,7 @@ class DefaultActionListPresenter(
 
         val isThreadsEnabled = featureFlagService.isFeatureEnabledFlow(FeatureFlags.Threads).collectAsState(false)
 
-        fun handleEvents(event: ActionListEvents) {
+        fun handleEvent(event: ActionListEvents) {
             when (event) {
                 ActionListEvents.Clear -> target.value = ActionListState.Target.None
                 is ActionListEvents.ComputeForMessage -> localCoroutineScope.computeForMessage(
@@ -122,7 +123,7 @@ class DefaultActionListPresenter(
 
         return ActionListState(
             target = target.value,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

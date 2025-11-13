@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -93,7 +94,7 @@ class SpacePresenter(
 
         val acceptDeclineInviteState = acceptDeclineInvitePresenter.present()
 
-        fun handleEvents(event: SpaceEvents) {
+        fun handleEvent(event: SpaceEvents) {
             when (event) {
                 SpaceEvents.LoadMore -> localCoroutineScope.paginate()
                 is SpaceEvents.Join -> {
@@ -128,7 +129,7 @@ class SpacePresenter(
             joinActions = joinActions.toImmutableMap(),
             acceptDeclineInviteState = acceptDeclineInviteState,
             topicViewerState = topicViewerState,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

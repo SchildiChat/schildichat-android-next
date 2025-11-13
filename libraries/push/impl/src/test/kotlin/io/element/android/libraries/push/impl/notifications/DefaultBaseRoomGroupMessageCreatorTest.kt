@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -18,7 +19,8 @@ import io.element.android.libraries.matrix.test.A_TIMESTAMP
 import io.element.android.libraries.matrix.ui.components.aMatrixUser
 import io.element.android.libraries.matrix.ui.media.AVATAR_THUMBNAIL_SIZE_IN_PIXEL
 import io.element.android.libraries.matrix.ui.media.MediaRequestData
-import io.element.android.libraries.matrix.ui.test.media.FakeImageLoader
+import io.element.android.libraries.matrix.ui.media.test.FakeImageLoader
+import io.element.android.libraries.matrix.ui.media.test.FakeInitialsAvatarBitmapGenerator
 import io.element.android.libraries.push.impl.notifications.factories.MARK_AS_READ_ACTION_TITLE
 import io.element.android.libraries.push.impl.notifications.factories.QUICK_REPLY_ACTION_TITLE
 import io.element.android.libraries.push.impl.notifications.factories.aNotificationAccountParams
@@ -231,6 +233,7 @@ fun createRoomGroupMessageCreator(
     val bitmapLoader = DefaultNotificationBitmapLoader(
         context = RuntimeEnvironment.getApplication(),
         sdkIntProvider = sdkIntProvider,
+        initialsAvatarBitmapGenerator = FakeInitialsAvatarBitmapGenerator(),
     )
     return DefaultRoomGroupMessageCreator(
         notificationCreator = createNotificationCreator(bitmapLoader = bitmapLoader),

@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -112,13 +113,13 @@ class DeveloperSettingsPresenter(
             computeCacheSize(cacheSize)
         }
 
-        fun handleEvents(event: DeveloperSettingsEvents) {
+        fun handleEvent(event: DeveloperSettingsEvents) {
             when (event) {
                 is DeveloperSettingsEvents.UpdateEnabledFeature -> coroutineScope.updateEnabledFeature(
                     enabledFeatures = enabledFeatures,
                     featureKey = event.feature.key,
                     enabled = event.isEnabled,
-                    triggerClearCache = { handleEvents(DeveloperSettingsEvents.ClearCache) }
+                    triggerClearCache = { handleEvent(DeveloperSettingsEvents.ClearCache) }
                 )
                 is DeveloperSettingsEvents.SetCustomElementCallBaseUrl -> coroutineScope.launch {
                     val urlToSave = event.baseUrl.takeIf { !it.isNullOrEmpty() }
@@ -161,7 +162,7 @@ class DeveloperSettingsPresenter(
             tracingLogPacks = tracingLogPacks,
             isEnterpriseBuild = enterpriseService.isEnterpriseBuild,
             showColorPicker = showColorPicker,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

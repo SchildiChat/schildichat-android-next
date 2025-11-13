@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -90,7 +91,7 @@ class MediaViewerPresenter(
         }
         localMediaActions.Configure()
 
-        fun handleEvents(event: MediaViewerEvents) {
+        fun handleEvent(event: MediaViewerEvents) {
             when (event) {
                 is MediaViewerEvents.LoadMedia -> {
                     coroutineScope.downloadMedia(data = event.data)
@@ -163,7 +164,7 @@ class MediaViewerPresenter(
             snackbarMessage = snackbarMessage,
             canShowInfo = inputs.canShowInfo,
             mediaBottomSheetState = mediaBottomSheetState,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

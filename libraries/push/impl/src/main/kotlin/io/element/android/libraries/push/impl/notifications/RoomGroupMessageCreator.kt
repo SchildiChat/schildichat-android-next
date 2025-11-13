@@ -1,7 +1,8 @@
 /*
- * Copyright 2021-2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2021-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -12,6 +13,8 @@ import android.graphics.Bitmap
 import coil3.ImageLoader
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
+import io.element.android.libraries.designsystem.components.avatar.AvatarData
+import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.ThreadId
 import io.element.android.libraries.push.api.notifications.NotificationBitmapLoader
@@ -89,7 +92,18 @@ class DefaultRoomGroupMessageCreator(
         imageLoader: ImageLoader,
     ): Bitmap? {
         // Use the last event (most recent?)
-        return events.reversed().firstNotNullOfOrNull { it.roomAvatarPath }
-            ?.let { bitmapLoader.getRoomBitmap(it, imageLoader) }
+        val event = events.reversed().firstOrNull { it.roomAvatarPath != null }
+            ?: events.reversed().firstOrNull()
+        return event?.let { event ->
+            bitmapLoader.getRoomBitmap(
+                avatarData = AvatarData(
+                    id = event.roomId.value,
+                    name = event.roomName,
+                    url = event.roomAvatarPath,
+                    size = AvatarSize.RoomDetailsHeader,
+                ),
+                imageLoader = imageLoader,
+            )
+        }
     }
 }

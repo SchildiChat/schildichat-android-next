@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -95,7 +96,11 @@ class ChooseAccountProviderPresenterTest {
 
     @Test
     fun `present - select account provider and continue - error then clear error`() = runTest {
-        val authenticationService = FakeMatrixAuthenticationService()
+        val authenticationService = FakeMatrixAuthenticationService(
+            setHomeserverResult = {
+                Result.failure(AN_EXCEPTION)
+            },
+        )
         val presenter = createPresenter(
             enterpriseService = FakeEnterpriseService(
                 defaultHomeserverListResult = { listOf(ACCOUNT_PROVIDER_FROM_CONFIG_1, ACCOUNT_PROVIDER_FROM_CONFIG_2) },
@@ -111,7 +116,6 @@ class ChooseAccountProviderPresenterTest {
             }
             awaitItem().also {
                 assertThat(it.selectedAccountProvider).isEqualTo(accountProvider1)
-                authenticationService.givenChangeServerError(AN_EXCEPTION)
                 it.eventSink(ChooseAccountProviderEvents.Continue)
                 skipItems(1) // Loading
 

@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -22,7 +23,8 @@ import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.matrix.test.A_THREAD_ID
 import io.element.android.libraries.matrix.test.core.aBuildMeta
 import io.element.android.libraries.matrix.ui.components.aMatrixUser
-import io.element.android.libraries.matrix.ui.test.media.FakeImageLoader
+import io.element.android.libraries.matrix.ui.media.test.FakeImageLoader
+import io.element.android.libraries.matrix.ui.media.test.FakeInitialsAvatarBitmapGenerator
 import io.element.android.libraries.push.api.notifications.NotificationBitmapLoader
 import io.element.android.libraries.push.impl.notifications.DefaultNotificationBitmapLoader
 import io.element.android.libraries.push.impl.notifications.NotificationActionIds
@@ -296,7 +298,11 @@ fun createNotificationCreator(
     context: Context = RuntimeEnvironment.getApplication(),
     buildMeta: BuildMeta = aBuildMeta(),
     notificationChannels: NotificationChannels = createNotificationChannels(),
-    bitmapLoader: NotificationBitmapLoader = DefaultNotificationBitmapLoader(context, FakeBuildVersionSdkIntProvider(Build.VERSION_CODES.R)),
+    bitmapLoader: NotificationBitmapLoader = DefaultNotificationBitmapLoader(
+        context = context,
+        sdkIntProvider = FakeBuildVersionSdkIntProvider(Build.VERSION_CODES.R),
+        initialsAvatarBitmapGenerator = FakeInitialsAvatarBitmapGenerator(),
+    ),
 ): NotificationCreator {
     return DefaultNotificationCreator(
         context = context,

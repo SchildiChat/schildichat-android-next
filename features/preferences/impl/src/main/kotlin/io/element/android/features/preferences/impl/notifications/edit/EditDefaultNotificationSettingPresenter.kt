@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -70,7 +71,7 @@ class EditDefaultNotificationSettingPresenter(
             displayMentionsOnlyDisclaimer = !notificationSettingsService.canHomeServerPushEncryptedEventsToDevice().getOrDefault(true)
         }
 
-        fun handleEvents(event: EditDefaultNotificationSettingStateEvents) {
+        fun handleEvent(event: EditDefaultNotificationSettingStateEvents) {
             when (event) {
                 is EditDefaultNotificationSettingStateEvents.SetNotificationMode -> {
                     localCoroutineScope.setDefaultNotificationMode(event.mode, changeNotificationSettingAction)
@@ -85,7 +86,7 @@ class EditDefaultNotificationSettingPresenter(
             roomsWithUserDefinedMode = roomsWithUserDefinedMode.value.toImmutableList(),
             changeNotificationSettingAction = changeNotificationSettingAction.value,
             displayMentionsOnlyDisclaimer = displayMentionsOnlyDisclaimer,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

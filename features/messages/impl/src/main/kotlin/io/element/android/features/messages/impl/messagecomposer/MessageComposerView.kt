@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -37,36 +38,36 @@ internal fun MessageComposerView(
 ) {
     val view = LocalView.current
     fun sendMessage() {
-        state.eventSink(MessageComposerEvents.SendMessage)
+        state.eventSink(MessageComposerEvent.SendMessage)
     }
 
     fun sendUri(uri: Uri) {
-        state.eventSink(MessageComposerEvents.SendUri(uri))
+        state.eventSink(MessageComposerEvent.SendUri(uri))
     }
 
     fun onAddAttachment() {
-        state.eventSink(MessageComposerEvents.AddAttachment)
+        state.eventSink(MessageComposerEvent.AddAttachment)
     }
 
     fun onCloseSpecialMode() {
-        state.eventSink(MessageComposerEvents.CloseSpecialMode)
+        state.eventSink(MessageComposerEvent.CloseSpecialMode)
     }
 
     fun onDismissTextFormatting() {
         view.clearFocus()
-        state.eventSink(MessageComposerEvents.ToggleTextFormatting(enabled = false))
+        state.eventSink(MessageComposerEvent.ToggleTextFormatting(enabled = false))
     }
 
     fun onSuggestionReceived(suggestion: Suggestion?) {
-        state.eventSink(MessageComposerEvents.SuggestionReceived(suggestion))
+        state.eventSink(MessageComposerEvent.SuggestionReceived(suggestion))
     }
 
     fun onError(error: Throwable) {
-        state.eventSink(MessageComposerEvents.Error(error))
+        state.eventSink(MessageComposerEvent.Error(error))
     }
 
     fun onTyping(typing: Boolean) {
-        state.eventSink(MessageComposerEvents.TypingNotice(typing))
+        state.eventSink(MessageComposerEvent.TypingNotice(typing))
     }
 
     val coroutineScope = rememberCoroutineScope()

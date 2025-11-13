@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -129,7 +130,7 @@ class NotificationSettingsPresenter(
                 )
         }
 
-        fun handleEvents(event: NotificationSettingsEvents) {
+        fun handleEvent(event: NotificationSettingsEvents) {
             when (event) {
                 is NotificationSettingsEvents.SetAtRoomNotificationsEnabled -> {
                     localCoroutineScope.setAtRoomNotificationsEnabled(event.enabled, changeNotificationSettingAction)
@@ -167,7 +168,7 @@ class NotificationSettingsPresenter(
             availablePushDistributors = availableDistributors,
             showChangePushProviderDialog = showChangePushProviderDialog,
             fullScreenIntentPermissionsState = key(refreshFullScreenIntentSettings) { fullScreenIntentPermissionsPresenter.present() },
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

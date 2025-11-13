@@ -39,11 +39,8 @@ import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableMap
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 
@@ -55,9 +52,10 @@ class RoomMemberListPresenter(
     private val roomMembersModerationPresenter: Presenter<RoomMemberModerationState>,
     private val encryptionService: EncryptionService,
 ) : Presenter<RoomMemberListState> {
+    var roomMembers: AsyncData<RoomMembers> by mutableStateOf(AsyncData.Loading())
+
     @Composable
     override fun present(): RoomMemberListState {
-        var roomMembers: AsyncData<RoomMembers> by remember { mutableStateOf(AsyncData.Loading()) }
         var searchQuery by rememberSaveable { mutableStateOf("") }
         var searchResults by remember {
             mutableStateOf<SearchBarResultState<AsyncData<RoomMembers>>>(SearchBarResultState.Initial())
@@ -77,13 +75,9 @@ class RoomMemberListPresenter(
                 .launchIn(this)
         }
 
-        // Update the room members when the screen is loaded or the active member count changes
+        // Update the room members when the screen is loaded
         LaunchedEffect(Unit) {
-            room.roomInfoFlow.map { it.activeMembersCount }
-                .distinctUntilChanged()
-                .collectLatest {
-                    room.updateMembers()
-                }
+            room.updateMembers()
         }
 
         LaunchedEffect(membersState, roomMemberIdentityStates) {

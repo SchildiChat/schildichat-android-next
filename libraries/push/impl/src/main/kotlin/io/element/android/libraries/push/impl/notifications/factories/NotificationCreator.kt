@@ -11,7 +11,6 @@ package io.element.android.libraries.push.impl.notifications.factories
 import android.app.Notification
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.Icon
 import androidx.annotation.ColorInt
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.MessagingStyle
@@ -215,9 +214,7 @@ class DefaultNotificationCreator(
                 if (openIntent != null) {
                     setContentIntent(openIntent)
                 }
-                if (largeIcon != null) {
-                    setLargeIcon(Icon.createWithBitmap(largeIcon))
-                }
+                setLargeIcon(largeIcon)
                 setDeleteIntent(pendingIntentFactory.createDismissRoomPendingIntent(roomInfo.sessionId, roomInfo.roomId))
 
                 // If any of the events are of rtc notification type it means a missed call, set the category to the right value

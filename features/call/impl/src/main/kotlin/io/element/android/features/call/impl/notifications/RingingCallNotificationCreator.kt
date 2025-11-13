@@ -72,7 +72,7 @@ class RingingCallNotificationCreator(
     ): Notification? {
         val matrixClient = matrixClientProvider.getOrRestore(sessionId).getOrNull() ?: return null
         val imageLoader = imageLoaderHolder.get(matrixClient)
-        val largeIcon = notificationBitmapLoader.getUserIcon(
+        val userIcon = notificationBitmapLoader.getUserIcon(
             avatarData = AvatarData(
                 id = roomId.value,
                 name = roomName,
@@ -84,7 +84,7 @@ class RingingCallNotificationCreator(
 
         val caller = Person.Builder()
             .setName(senderDisplayName)
-            .setIcon(largeIcon)
+            .setIcon(userIcon)
             .setImportant(true)
             .build()
 

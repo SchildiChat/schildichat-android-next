@@ -319,6 +319,8 @@ class NotificationSettingsPresenterTest {
             ),
         )
         presenter.test {
+            val initialState = awaitLastSequentialItem()
+            initialState.eventSink.invoke(NotificationSettingsEvents.ChangePushProvider)
             val withDialog = awaitItem()
             assertThat(withDialog.showChangePushProviderDialog).isTrue()
             withDialog.eventSink(NotificationSettingsEvents.SetPushProvider(1))

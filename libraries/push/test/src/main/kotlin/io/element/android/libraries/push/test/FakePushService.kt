@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class FakePushService(
     private val testPushBlock: suspend (SessionId) -> Boolean = { true },
     private val availablePushProviders: List<PushProvider> = emptyList(),
-    private val registerWithLambda: suspend (MatrixClient, PushProvider, Distributor) -> Result<Unit> = { _, _, _ ->
+    private val registerWithLambda: (MatrixClient, PushProvider, Distributor) -> Result<Unit> = { _, _, _ ->
         Result.success(Unit)
     },
     private val currentPushProvider: (SessionId) -> PushProvider? = { availablePushProviders.firstOrNull() },

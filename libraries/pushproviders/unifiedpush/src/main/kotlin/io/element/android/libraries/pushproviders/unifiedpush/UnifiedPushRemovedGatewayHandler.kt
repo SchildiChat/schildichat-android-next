@@ -9,11 +9,16 @@ package io.element.android.libraries.pushproviders.unifiedpush
 
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
+import io.element.android.libraries.androidutils.throttler.FirstThrottler
 import io.element.android.libraries.core.extensions.flatMap
 import io.element.android.libraries.core.log.logger.LoggerTag
+import io.element.android.libraries.di.annotations.AppCoroutineScope
 import io.element.android.libraries.matrix.api.MatrixClientProvider
 import io.element.android.libraries.push.api.PushService
 import io.element.android.libraries.pushstore.api.clientsecret.PushClientSecret
+import kotlinx.coroutines.CoroutineScope
 import timber.log.Timber
 
 private val loggerTag = LoggerTag("UnifiedPushRemovedGatewayHandler", LoggerTag.PushLoggerTag)
@@ -25,12 +30,29 @@ fun interface UnifiedPushRemovedGatewayHandler {
     suspend fun handle(clientSecret: String): Result<Unit>
 }
 
+@Inject
+@SingleIn(AppScope::class)
+class UnifiedPushRemovedGatewayThrottler(
+    @AppCoroutineScope
+    private val appCoroutineScope: CoroutineScope,
+) {
+    private val firstThrottler = FirstThrottler(
+        minimumInterval = 60_000,
+        coroutineScope = appCoroutineScope,
+    )
+
+    fun canRegisterAgain(): Boolean {
+        return firstThrottler.canHandle()
+    }
+}
+
 @ContributesBinding(AppScope::class)
 class DefaultUnifiedPushRemovedGatewayHandler(
     private val unregisterUnifiedPushUseCase: UnregisterUnifiedPushUseCase,
     private val pushClientSecret: PushClientSecret,
     private val matrixClientProvider: MatrixClientProvider,
     private val pushService: PushService,
+    private val unifiedPushRemovedGatewayThrottler: UnifiedPushRemovedGatewayThrottler,
 ) : UnifiedPushRemovedGatewayHandler {
     override suspend fun handle(clientSecret: String): Result<Unit> {
         // Unregister the pusher for the session with this client secret.
@@ -58,14 +80,21 @@ class DefaultUnifiedPushRemovedGatewayHandler(
                         val distributor = pushProvider?.getCurrentDistributor(userId)
                         // Attempt to register again
                         if (pushProvider != null && distributor != null) {
-                            pushService.registerWith(
-                                client,
-                                pushProvider,
-                                distributor,
-                            )
-                                .onFailure {
-                                    Timber.tag(loggerTag.value).w(it, "Unable to register with current data")
-                                }
+                            if (unifiedPushRemovedGatewayThrottler.canRegisterAgain()) {
+                                pushService.registerWith(
+                                    client,
+                                    pushProvider,
+                                    distributor,
+                                )
+                                    .onFailure {
+                                        Timber.tag(loggerTag.value).w(it, "Unable to register with current data")
+                                    }
+                            } else {
+                                // Let the user know
+                                Timber.tag(loggerTag.value).w("Second removal in less than 1 minute, do not register again")
+                                pushService.onServiceUnregistered(userId)
+                                Result.success(Unit)
+                            }
                         } else {
                             Result.failure(IllegalStateException("Unable to register again"))
                         }

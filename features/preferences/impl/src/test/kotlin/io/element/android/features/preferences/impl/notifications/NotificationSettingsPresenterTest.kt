@@ -333,7 +333,7 @@ class NotificationSettingsPresenterTest {
     }
 
     private fun createFakePushService(
-        registerWithLambda: suspend (MatrixClient, PushProvider, Distributor) -> Result<Unit> = { _, _, _ ->
+        registerWithLambda: (MatrixClient, PushProvider, Distributor) -> Result<Unit> = { _, _, _ ->
             Result.success(Unit)
         }
     ): PushService {

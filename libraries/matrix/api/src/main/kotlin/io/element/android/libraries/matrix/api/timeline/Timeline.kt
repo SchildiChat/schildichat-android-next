@@ -235,5 +235,4 @@ interface Timeline : AutoCloseable {
      * Get the latest event id of the timeline.
      */
     suspend fun getLatestEventId(): Result<EventId?>
-
 }

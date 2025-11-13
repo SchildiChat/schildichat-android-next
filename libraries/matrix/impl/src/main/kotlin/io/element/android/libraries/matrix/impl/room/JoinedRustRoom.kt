@@ -138,8 +138,8 @@ class JoinedRustRoom(
 
     override val liveTimeline = liveInnerTimeline.map(mode = Timeline.Mode.Live)
 
-    override val syncUpdateFlow = liveTimeline
-        .onSyncedEventReceived.map { systemClock.epochMillis() }
+    override val syncUpdateFlow = liveTimeline.onSyncedEventReceived
+        .map { systemClock.epochMillis() }
         .stateIn(
             scope = roomCoroutineScope,
             started = WhileSubscribed(),

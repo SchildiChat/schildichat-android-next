@@ -112,7 +112,6 @@ private class DiffingResult(
     private var hasNewEventsFromSync: Boolean = false,
     private var hasMembershipChangeEventFromSync: Boolean = false,
 ) {
-
     fun items(): List<MatrixTimelineItem> = items
     fun hasNewEventsFromSync(): Boolean = hasNewEventsFromSync
     fun hasMembershipChangeEventFromSync(): Boolean = hasMembershipChangeEventFromSync

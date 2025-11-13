@@ -19,7 +19,7 @@ import timber.log.Timber
 private val loggerTag = LoggerTag("UnifiedPushRemovedGatewayHandler", LoggerTag.PushLoggerTag)
 
 /**
- * Handle new endpoint received from UnifiedPush. Will update the session matching the client secret.
+ * Handle endpoint removal received from UnifiedPush. Will try to register again.
  */
 fun interface UnifiedPushRemovedGatewayHandler {
     suspend fun handle(clientSecret: String): Result<Unit>

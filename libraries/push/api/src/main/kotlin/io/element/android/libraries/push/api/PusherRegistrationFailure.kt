@@ -6,7 +6,7 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.appnav.loggedin
+package io.element.android.libraries.push.api
 
 import io.element.android.libraries.matrix.api.exception.ClientException
 

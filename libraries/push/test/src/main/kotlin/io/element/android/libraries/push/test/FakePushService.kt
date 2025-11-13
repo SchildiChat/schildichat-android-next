@@ -32,6 +32,7 @@ class FakePushService(
     private val resetPushHistoryResult: () -> Unit = { lambdaError() },
     private val resetBatteryOptimizationStateResult: () -> Unit = { lambdaError() },
     private val onServiceUnregisteredResult: (UserId) -> Unit = { lambdaError() },
+    private val ensurePusherIsRegisteredResult: () -> Result<Unit> = { lambdaError() },
 ) : PushService {
     override suspend fun getCurrentPushProvider(sessionId: SessionId): PushProvider? {
         return registeredPushProvider ?: currentPushProvider(sessionId)
@@ -54,6 +55,10 @@ class FakePushService(
                     registeredPushProvider = pushProvider
                 }
             }
+    }
+
+    override suspend fun ensurePusherIsRegistered(matrixClient: MatrixClient): Result<Unit> {
+        return ensurePusherIsRegisteredResult()
     }
 
     override suspend fun selectPushProvider(sessionId: SessionId, pushProvider: PushProvider) {

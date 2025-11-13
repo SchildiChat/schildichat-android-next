@@ -39,6 +39,15 @@ interface PushService {
     ): Result<Unit>
 
     /**
+     * Ensure that the pusher with the current push provider and distributor is registered.
+     * If there is no current config, the default push provider with the default distributor will be used.
+     * Error can be [PusherRegistrationFailure].
+     */
+    suspend fun ensurePusherIsRegistered(
+        matrixClient: MatrixClient,
+    ): Result<Unit>
+
+    /**
      * Store the given push provider as the current one, but do not register.
      * To be used when there is no distributor available.
      */

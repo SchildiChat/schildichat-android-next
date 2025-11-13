@@ -92,12 +92,13 @@ private fun RoomMemberAsyncActions(
                 TextFieldDialog(
                     title = stringResource(R.string.screen_bottom_sheet_manage_room_member_kick_member_confirmation_title),
                     submitText = stringResource(R.string.screen_bottom_sheet_manage_room_member_kick_member_confirmation_action),
+                    destructiveSubmit = true,
+                    minLines = 2,
                     onSubmit = { reason ->
                         state.eventSink(InternalRoomMemberModerationEvents.DoKickUser(reason = reason))
                     },
                     onDismissRequest = { state.eventSink(InternalRoomMemberModerationEvents.Reset) },
                     placeholder = stringResource(id = CommonStrings.common_reason),
-                    label = stringResource(id = CommonStrings.common_reason),
                     content = stringResource(R.string.screen_bottom_sheet_manage_room_member_kick_member_confirmation_description),
                     value = "",
                 )
@@ -131,12 +132,13 @@ private fun RoomMemberAsyncActions(
                 TextFieldDialog(
                     title = stringResource(R.string.screen_bottom_sheet_manage_room_member_ban_member_confirmation_title),
                     submitText = stringResource(R.string.screen_bottom_sheet_manage_room_member_ban_member_confirmation_action),
+                    destructiveSubmit = true,
+                    minLines = 2,
                     onSubmit = { reason ->
                         state.eventSink(InternalRoomMemberModerationEvents.DoBanUser(reason = reason))
                     },
                     onDismissRequest = { state.eventSink(InternalRoomMemberModerationEvents.Reset) },
                     placeholder = stringResource(id = CommonStrings.common_reason),
-                    label = stringResource(id = CommonStrings.common_reason),
                     content = stringResource(R.string.screen_bottom_sheet_manage_room_member_ban_member_confirmation_description),
                     value = "",
                 )
@@ -169,6 +171,8 @@ private fun RoomMemberAsyncActions(
                 TextFieldDialog(
                     title = stringResource(R.string.screen_bottom_sheet_manage_room_member_unban_member_confirmation_title),
                     submitText = stringResource(R.string.screen_bottom_sheet_manage_room_member_unban_member_confirmation_action),
+                    destructiveSubmit = true,
+                    minLines = 2,
                     onSubmit = { reason ->
                         val userDisplayName = selectedUser?.getBestName().orEmpty()
                         asyncIndicatorState.enqueue {
@@ -178,7 +182,6 @@ private fun RoomMemberAsyncActions(
                     },
                     onDismissRequest = { state.eventSink(InternalRoomMemberModerationEvents.Reset) },
                     placeholder = stringResource(id = CommonStrings.common_reason),
-                    label = stringResource(id = CommonStrings.common_reason),
                     content = stringResource(R.string.screen_bottom_sheet_manage_room_member_unban_member_confirmation_description),
                     value = "",
                 )

@@ -35,7 +35,9 @@ class VectorUnifiedPushMessagingReceiver : MessagingReceiver() {
     @Inject lateinit var unifiedPushGatewayResolver: UnifiedPushGatewayResolver
     @Inject lateinit var unifiedPushGatewayUrlResolver: UnifiedPushGatewayUrlResolver
     @Inject lateinit var newGatewayHandler: UnifiedPushNewGatewayHandler
+    @Inject lateinit var removedGatewayHandler: UnifiedPushRemovedGatewayHandler
     @Inject lateinit var endpointRegistrationHandler: EndpointRegistrationHandler
+
     @AppCoroutineScope
     @Inject lateinit var coroutineScope: CoroutineScope
 
@@ -116,18 +118,9 @@ class VectorUnifiedPushMessagingReceiver : MessagingReceiver() {
      * Called when this application is unregistered from receiving push messages.
      */
     override fun onUnregistered(context: Context, instance: String) {
-        Timber.tag(loggerTag.value).w("UnifiedPush: Unregistered")
-        /*
-        val mode = BackgroundSyncMode.FDROID_BACKGROUND_SYNC_MODE_FOR_REALTIME
-        pushDataStore.setFdroidSyncBackgroundMode(mode)
-        guardServiceStarter.start()
-        runBlocking {
-            try {
-                pushersManager.unregisterPusher(unifiedPushHelper.getEndpointOrToken().orEmpty())
-            } catch (e: Exception) {
-                Timber.tag(loggerTag.value).d("Probably unregistering a non existing pusher")
-            }
+        Timber.tag(loggerTag.value).w("onUnregistered $instance")
+        coroutineScope.launch {
+            removedGatewayHandler.handle(instance)
         }
-         */
     }
 }

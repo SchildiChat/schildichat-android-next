@@ -360,14 +360,11 @@ class DefaultNotificationCreator(
         notificationAccountParams: NotificationAccountParams,
     ): Notification {
         val userId = notificationAccountParams.user.userId
-        val text = if (notificationAccountParams.showSessionId) {
-            // TODO i18n
-            "$userId will not receive notifications anymore."
-        } else {
-            // TODO i18n
-            "You will not receive notifications anymore."
-        }
+        val text = stringProvider.getString(R.string.notification_error_unified_push_unregistered_android)
         return NotificationCompat.Builder(context, notificationChannels.getChannelIdForTest())
+            .setSubText(userId.value)
+            // The text is long and can be truncated so use BigTextStyle.
+            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
             .setContentTitle(stringProvider.getString(CommonStrings.dialog_title_warning))
             .setContentText(text)
             .configureWith(notificationAccountParams)
@@ -479,7 +476,7 @@ class DefaultNotificationCreator(
                 .build()
         ).also {
             it.conversationTitle = if (isThread) {
-                stringProvider.getString(CommonStrings.notification_thread_in_room, roomName)
+                stringProvider.getString(R.string.notification_thread_in_room, roomName)
             } else {
                 roomName
             }

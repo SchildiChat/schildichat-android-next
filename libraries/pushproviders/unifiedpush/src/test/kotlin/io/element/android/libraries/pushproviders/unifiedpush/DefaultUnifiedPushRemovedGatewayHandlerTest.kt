@@ -229,7 +229,7 @@ class DefaultUnifiedPushRemovedGatewayHandlerTest {
         onServiceUnregisteredResult.assertions().isNeverCalled()
         // Second attempt in less than 1 minute
         val result2 = sut.handle(A_SECRET)
-        assertThat(result2.isSuccess).isTrue()
+        assertThat(result2.isFailure).isTrue()
         unregisterLambda.assertions().isCalledExactly(2)
         // Registration is not called twice
         registerWithLambda.assertions().isCalledOnce()

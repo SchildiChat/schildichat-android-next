@@ -19,7 +19,7 @@ import timber.log.Timber
 
 interface UnregisterUnifiedPushUseCase {
     /**
-     * Unregister the app from the homeserver, then from UnifiedPush.
+     * Unregister the app from the homeserver, then from UnifiedPush if [unregisterUnifiedPush] is true.
      */
     suspend fun unregister(
         matrixClient: MatrixClient,

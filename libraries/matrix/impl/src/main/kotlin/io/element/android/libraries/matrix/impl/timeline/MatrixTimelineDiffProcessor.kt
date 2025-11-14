@@ -33,22 +33,22 @@ internal class MatrixTimelineDiffProcessor(
             Timber.v("Update timeline items from postDiffs (with ${diffs.size} items) on ${Thread.currentThread()}")
             val result = processDiffs(diffs)
             timelineItems.emit(result.items())
-            if (result.hasNewEventsFromSync()) {
+            if (result.hasNewEventsFromSync) {
                 syncedEventReceivedFlow.emit(Unit)
             }
-            if (result.hasMembershipChangeEventFromSync()) {
+            if (result.hasMembershipChangeEventFromSync) {
                 membershipChangeEventReceivedFlow.emit(Unit)
             }
         }
     }
 
     private suspend fun processDiffs(diffs: List<TimelineDiff>): DiffingResult {
-        val mutableTimelineItems = if (timelineItems.replayCache.isNotEmpty()) {
-            timelineItems.first().toMutableList()
+        val timelineItems = if (timelineItems.replayCache.isNotEmpty()) {
+            timelineItems.first()
         } else {
-            mutableListOf()
+            emptyList()
         }
-        val result = DiffingResult(items = mutableTimelineItems)
+        val result = DiffingResult(timelineItems)
         diffs.forEach { diff ->
             result.applyDiff(diff)
         }
@@ -107,14 +107,14 @@ internal class MatrixTimelineDiffProcessor(
     }
 }
 
-private class DiffingResult(
-    private val items: MutableList<MatrixTimelineItem>,
-    private var hasNewEventsFromSync: Boolean = false,
-    private var hasMembershipChangeEventFromSync: Boolean = false,
-) {
+private class DiffingResult(initialItems: List<MatrixTimelineItem>) {
+    private val items = initialItems.toMutableList()
+    var hasNewEventsFromSync: Boolean = false
+        private set
+    var hasMembershipChangeEventFromSync: Boolean = false
+        private set
+
     fun items(): List<MatrixTimelineItem> = items
-    fun hasNewEventsFromSync(): Boolean = hasNewEventsFromSync
-    fun hasMembershipChangeEventFromSync(): Boolean = hasMembershipChangeEventFromSync
 
     fun add(item: MatrixTimelineItem) {
         processItem(item)

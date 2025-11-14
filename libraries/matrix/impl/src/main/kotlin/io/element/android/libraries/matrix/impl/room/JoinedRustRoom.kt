@@ -55,6 +55,7 @@ import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -138,13 +139,16 @@ class JoinedRustRoom(
 
     override val liveTimeline = liveInnerTimeline.map(mode = Timeline.Mode.Live)
 
-    override val syncUpdateFlow = liveTimeline.onSyncedEventReceived
-        .map { systemClock.epochMillis() }
-        .stateIn(
-            scope = roomCoroutineScope,
-            started = WhileSubscribed(),
-            initialValue = systemClock.epochMillis(),
-        )
+    override val syncUpdateFlow = flow {
+        var counter = 0L
+        liveTimeline.onSyncedEventReceived.collect {
+            emit(++counter)
+        }
+    }.stateIn(
+        scope = roomCoroutineScope,
+        started = WhileSubscribed(),
+        initialValue = 0L,
+    )
 
     init {
         subscribeToRoomMembersChange()

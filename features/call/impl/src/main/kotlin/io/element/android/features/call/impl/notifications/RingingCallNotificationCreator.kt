@@ -133,12 +133,8 @@ class RingingCallNotificationCreator(
             .setWhen(timestamp)
             .setOngoing(true)
             .setShowWhen(false)
-            .apply {
-                if (textContent != null) {
-                    setContentText(textContent)
-                    // Else the content text is set by the style (will be "Incoming call")
-                }
-            }
+            // If textContent is null, the content text is set by the style (will be "Incoming call")
+            .setContentText(textContent)
             .setSound(Settings.System.DEFAULT_RINGTONE_URI, AudioManager.STREAM_RING)
             .setTimeoutAfter(ElementCallConfig.RINGING_CALL_DURATION_SECONDS.seconds.inWholeMilliseconds)
             .setContentIntent(answerIntent)

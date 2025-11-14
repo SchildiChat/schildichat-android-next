@@ -126,8 +126,6 @@ internal fun aChangeRolesStateWithOwners() = aChangeRolesState(
         }
     },
     selectedUsers = persistentListOf(
-        aMatrixUser(id = "@alice:server.org", displayName = "Alice"),
-        aMatrixUser(id = "@bob:server.org", displayName = "Bob"),
         aMatrixUser(id = "@carol:server.org", displayName = "Carol"),
     )
 )

@@ -32,9 +32,6 @@ import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.room.StateEventType
 import io.element.android.libraries.matrix.api.room.powerlevels.canSendState
 import io.element.android.libraries.matrix.ui.media.AvatarAction
-import io.element.android.libraries.matrix.ui.room.avatarUrl
-import io.element.android.libraries.matrix.ui.room.rawName
-import io.element.android.libraries.matrix.ui.room.topic
 import io.element.android.libraries.mediapickers.api.PickerProvider
 import io.element.android.libraries.mediaupload.api.MediaOptimizationConfigProvider
 import io.element.android.libraries.mediaupload.api.MediaPreProcessor
@@ -61,8 +58,8 @@ class RoomDetailsEditPresenter(
     override fun present(): RoomDetailsEditState {
         val cameraPermissionState = cameraPermissionPresenter.present()
         val roomSyncUpdateFlow = room.syncUpdateFlow.collectAsState()
-
-        val roomAvatarUri = room.avatarUrl()
+        val roomInfo by room.roomInfoFlow.collectAsState()
+        val roomAvatarUri = roomInfo.avatarUrl
         var roomAvatarUriEdited by rememberSaveable { mutableStateOf<String?>(null) }
         LaunchedEffect(roomAvatarUri) {
             // Every time the roomAvatar change (from sync), we can set the new avatar.
@@ -70,13 +67,13 @@ class RoomDetailsEditPresenter(
             roomAvatarUriEdited = roomAvatarUri
         }
 
-        val roomRawNameTrimmed = room.rawName().orEmpty().trim()
+        val roomRawNameTrimmed = roomInfo.rawName.orEmpty().trim()
         var roomRawNameEdited by rememberSaveable { mutableStateOf("") }
         LaunchedEffect(roomRawNameTrimmed) {
             // Every time the rawName change (from sync), we can set the new name.
             roomRawNameEdited = roomRawNameTrimmed
         }
-        val roomTopicTrimmed = room.topic().orEmpty().trim()
+        val roomTopicTrimmed = roomInfo.topic.orEmpty().trim()
         var roomTopicEdited by rememberSaveable { mutableStateOf("") }
         LaunchedEffect(roomTopicTrimmed) {
             // Every time the topic change (from sync), we can set the new topic.
@@ -192,6 +189,7 @@ class RoomDetailsEditPresenter(
             saveButtonEnabled = saveButtonEnabled,
             saveAction = saveAction.value,
             cameraPermissionState = cameraPermissionState,
+            isSpace = roomInfo.isSpace,
             eventSink = ::handleEvent,
         )
     }

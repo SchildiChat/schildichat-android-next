@@ -108,7 +108,11 @@ fun RoomDetailsEditView(
                 displayName = state.roomRawName,
                 avatarUrl = state.roomAvatarUrl,
                 avatarSize = AvatarSize.EditRoomDetails,
-                avatarType = AvatarType.Room(),
+                avatarType = if(state.isSpace){
+                    AvatarType.Space()
+                }else {
+                    AvatarType.Room()
+                },
                 onAvatarClick = ::onAvatarClick,
                 modifier = Modifier.fillMaxWidth(),
             )

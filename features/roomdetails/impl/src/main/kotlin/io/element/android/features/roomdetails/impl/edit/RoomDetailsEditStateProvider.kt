@@ -23,6 +23,7 @@ open class RoomDetailsEditStateProvider : PreviewParameterProvider<RoomDetailsEd
             aRoomDetailsEditState(roomTopic = ""),
             aRoomDetailsEditState(roomRawName = ""),
             aRoomDetailsEditState(roomAvatarUrl = "example://uri"),
+            aRoomDetailsEditState(roomAvatarUrl = "example://uri", isSpace = true),
             aRoomDetailsEditState(canChangeName = true, canChangeTopic = false, canChangeAvatar = true, saveButtonEnabled = false),
             aRoomDetailsEditState(canChangeName = false, canChangeTopic = true, canChangeAvatar = false, saveButtonEnabled = false),
             aRoomDetailsEditState(saveAction = AsyncAction.Loading),
@@ -43,6 +44,7 @@ fun aRoomDetailsEditState(
     saveButtonEnabled: Boolean = true,
     saveAction: AsyncAction<Unit> = AsyncAction.Uninitialized,
     cameraPermissionState: PermissionsState = aPermissionsState(showDialog = false),
+    isSpace: Boolean = false,
     eventSink: (RoomDetailsEditEvents) -> Unit = {},
 ) = RoomDetailsEditState(
     roomId = roomId,
@@ -56,5 +58,6 @@ fun aRoomDetailsEditState(
     saveButtonEnabled = saveButtonEnabled,
     saveAction = saveAction,
     cameraPermissionState = cameraPermissionState,
+    isSpace = isSpace,
     eventSink = eventSink,
 )

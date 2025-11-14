@@ -27,5 +27,6 @@ data class RoomDetailsEditState(
     val saveButtonEnabled: Boolean,
     val saveAction: AsyncAction<Unit>,
     val cameraPermissionState: PermissionsState,
+    val isSpace: Boolean,
     val eventSink: (RoomDetailsEditEvents) -> Unit
 )

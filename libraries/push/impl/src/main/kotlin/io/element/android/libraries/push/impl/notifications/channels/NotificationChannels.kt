@@ -72,10 +72,6 @@ class DefaultNotificationChannels(
         createNotificationChannels()
     }
 
-    /* ==========================================================================================
-     * Channel names
-     * ========================================================================================== */
-
     /**
      * Create notification channels.
      */

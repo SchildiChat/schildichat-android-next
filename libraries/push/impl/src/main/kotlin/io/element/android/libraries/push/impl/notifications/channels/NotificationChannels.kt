@@ -110,10 +110,7 @@ class DefaultNotificationChannels(
             }
         }
 
-        /**
-         * Default notification importance: shows everywhere, makes noise, but does not visually
-         * intrude.
-         */
+        // Default notification importance: shows everywhere, makes noise, but does not visually intrude.
         notificationManager.createNotificationChannel(
             NotificationChannelCompat.Builder(
                 NOISY_NOTIFICATION_CHANNEL_ID,
@@ -138,9 +135,7 @@ class DefaultNotificationChannels(
                 .build()
         )
 
-        /**
-         * Low notification importance: shows everywhere, but is not intrusive.
-         */
+        // Low notification importance: shows everywhere, but is not intrusive.
         notificationManager.createNotificationChannel(
             NotificationChannelCompat.Builder(
                 SILENT_NOTIFICATION_CHANNEL_ID,

@@ -22,12 +22,6 @@ android {
             isIncludeAndroidResources = true
         }
     }
-
-    buildTypes {
-        register("nightly") {
-            matchingFallbacks += listOf("release")
-        }
-    }
 }
 
 setupDependencyInjection()

@@ -230,20 +230,20 @@ private fun SearchResultsList(
         state = lazyListState,
     ) {
         item {
-            if (currentRole == RoomMember.Role.Admin) {
-                val ownersAndSelectedUsers by remember {
-                    derivedStateOf {
+            val usersInHorizontalRow by remember {
+                derivedStateOf {
+                    if (currentRole == RoomMember.Role.Admin) {
                         // Also include the owners in the horizontal list
                         val owners = searchResults.owners.map {
                             it.toMatrixUser()
                         }
                         (owners + selectedUsers).toImmutableList()
+                    } else {
+                        selectedUsers
                     }
                 }
-                selectedUsersList(ownersAndSelectedUsers)
-            } else {
-                selectedUsersList(selectedUsers)
             }
+            selectedUsersList(usersInHorizontalRow)
         }
         if (searchResults.owners.isNotEmpty()) {
             stickyHeader { ListSectionHeader(text = stringResource(R.string.screen_room_roles_and_permissions_owners)) }

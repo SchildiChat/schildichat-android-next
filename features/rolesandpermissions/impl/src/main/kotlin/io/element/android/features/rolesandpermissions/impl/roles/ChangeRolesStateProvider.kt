@@ -44,8 +44,14 @@ class ChangeRolesStateProvider : PreviewParameterProvider<ChangeRolesState> {
             aChangeRolesStateWithSelectedUsers().copy(savingState = AsyncAction.Loading),
             aChangeRolesStateWithSelectedUsers().copy(savingState = AsyncAction.Success(true)),
             aChangeRolesStateWithSelectedUsers().copy(savingState = AsyncAction.Failure(Exception("boom"))),
-            aChangeRolesStateWithOwners(),
-            aChangeRolesStateWithOwners().copy(role = RoomMember.Role.Owner(isCreator = false)),
+            aChangeRolesStateWithOwners(
+                role = RoomMember.Role.Admin,
+                // Do not include the owners in the selectedUsers (the presenter will not do it), the View will add them
+                selectedUsers = listOf(
+                    aMatrixUser(id = "@carol:server.org", displayName = "Carol"),
+                )
+            ),
+            aChangeRolesStateWithOwners(role = RoomMember.Role.Owner(isCreator = false)),
         )
 }
 
@@ -88,8 +94,15 @@ internal fun aChangeRolesStateWithSelectedUsers() = aChangeRolesState(
     canRemoveMember = { it != UserId("@alice:server.org") },
 )
 
-internal fun aChangeRolesStateWithOwners() = aChangeRolesState(
-    role = RoomMember.Role.Admin,
+internal fun aChangeRolesStateWithOwners(
+    role: RoomMember.Role = RoomMember.Role.Admin,
+    selectedUsers: List<MatrixUser> = listOf(
+        aMatrixUser(id = "@alice:server.org", displayName = "Alice"),
+        aMatrixUser(id = "@bob:server.org", displayName = "Bob"),
+        aMatrixUser(id = "@carol:server.org", displayName = "Carol"),
+    ),
+) = aChangeRolesState(
+    role = role,
     searchResults = SearchBarResultState.Results(
         MembersByRole(
             members = persistentListOf(
@@ -125,7 +138,5 @@ internal fun aChangeRolesStateWithOwners() = aChangeRolesState(
             else -> false
         }
     },
-    selectedUsers = persistentListOf(
-        aMatrixUser(id = "@carol:server.org", displayName = "Carol"),
-    )
+    selectedUsers = selectedUsers.toImmutableList(),
 )

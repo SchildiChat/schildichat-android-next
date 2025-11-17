@@ -30,8 +30,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -230,17 +228,15 @@ private fun SearchResultsList(
         state = lazyListState,
     ) {
         item {
-            val usersInHorizontalRow by remember {
-                derivedStateOf {
-                    if (currentRole == RoomMember.Role.Admin) {
-                        // Also include the owners in the horizontal list
-                        val owners = searchResults.owners.map {
-                            it.toMatrixUser()
-                        }
-                        (owners + selectedUsers).toImmutableList()
-                    } else {
-                        selectedUsers
+            val usersInHorizontalRow = remember(searchResults.owners, selectedUsers) {
+                if (currentRole == RoomMember.Role.Admin) {
+                    // Also include the owners in the horizontal list
+                    val owners = searchResults.owners.map {
+                        it.toMatrixUser()
                     }
+                    (owners + selectedUsers).toImmutableList()
+                } else {
+                    selectedUsers
                 }
             }
             selectedUsersList(usersInHorizontalRow)

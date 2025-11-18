@@ -49,6 +49,10 @@ class EditDefaultNotificationSettingPresenter(
         fun create(oneToOne: Boolean): EditDefaultNotificationSettingPresenter
     }
 
+    private val collator = Collator.getInstance().apply {
+        decomposition = Collator.CANONICAL_DECOMPOSITION
+    }
+
     @Composable
     override fun present(): EditDefaultNotificationSettingState {
         var displayMentionsOnlyDisclaimer by remember { mutableStateOf(false) }
@@ -139,7 +143,7 @@ class EditDefaultNotificationSettingPresenter(
             }
             // locale sensitive sorting
             .sortedWith(
-                compareBy(Collator.getInstance()) { roomSummary ->
+                compareBy(collator) { roomSummary ->
                     // Collator does not handle null values, so we provide a fallback
                     roomSummary.name ?: roomSummary.roomId.value
                 }

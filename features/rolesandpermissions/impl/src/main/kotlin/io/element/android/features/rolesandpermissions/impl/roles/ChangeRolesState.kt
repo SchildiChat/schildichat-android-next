@@ -43,15 +43,18 @@ data class MembersByRole(
     )
 
     constructor(members: List<RoomMember>, comparator: Comparator<RoomMember>) : this(
-        owners = members.filter { it.role is RoomMember.Role.Owner }.sorted(comparator),
-        admins = members.filter { it.role == RoomMember.Role.Admin }.sorted(comparator),
-        moderators = members.filter { it.role == RoomMember.Role.Moderator }.sorted(comparator),
-        members = members.filter { it.role == RoomMember.Role.User }.sorted(comparator),
+        owners = members.filterAndSort(comparator) { it.role is RoomMember.Role.Owner },
+        admins = members.filterAndSort(comparator) { it.role == RoomMember.Role.Admin },
+        moderators = members.filterAndSort(comparator) { it.role == RoomMember.Role.Moderator },
+        members = members.filterAndSort(comparator) { it.role == RoomMember.Role.User },
     )
 
     fun isEmpty() = owners.isEmpty() && admins.isEmpty() && moderators.isEmpty() && members.isEmpty()
 }
 
-private fun Iterable<RoomMember>.sorted(comparator: Comparator<RoomMember>): ImmutableList<RoomMember> {
-    return sortedWith(comparator).toImmutableList()
+private fun Iterable<RoomMember>.filterAndSort(
+    comparator: Comparator<RoomMember>,
+    predicate: (RoomMember) -> Boolean,
+): ImmutableList<RoomMember> {
+    return filter(predicate).sortedWith(comparator).toImmutableList()
 }

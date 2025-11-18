@@ -6,7 +6,7 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.features.roomdetails.impl.members
+package io.element.android.libraries.matrix.ui.room
 
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.test.A_USER_ID
@@ -14,6 +14,7 @@ import io.element.android.libraries.matrix.test.A_USER_ID_2
 import io.element.android.libraries.matrix.test.A_USER_ID_3
 import io.element.android.libraries.matrix.test.A_USER_ID_4
 import io.element.android.libraries.matrix.test.A_USER_ID_5
+import io.element.android.libraries.matrix.test.room.aRoomMember
 import org.junit.Test
 
 class PowerLevelBaseRoomMemberComparatorTest {

@@ -138,7 +138,12 @@ class EditDefaultNotificationSettingPresenter(
                 )
             }
             // locale sensitive sorting
-            .sortedWith(compareBy(Collator.getInstance()) { roomSummary -> roomSummary.name })
+            .sortedWith(
+                compareBy(Collator.getInstance()) { roomSummary ->
+                    // Collator does not handle null values, so we provide a fallback
+                    roomSummary.name ?: roomSummary.roomId.value
+                }
+            )
     }
 
     private fun CoroutineScope.setDefaultNotificationMode(mode: RoomNotificationMode, action: MutableState<AsyncAction<Unit>>) = launch {

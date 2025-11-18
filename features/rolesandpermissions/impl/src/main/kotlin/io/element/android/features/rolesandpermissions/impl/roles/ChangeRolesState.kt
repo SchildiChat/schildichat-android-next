@@ -30,18 +30,11 @@ data class ChangeRolesState(
 )
 
 data class MembersByRole(
-    val owners: ImmutableList<RoomMember>,
-    val admins: ImmutableList<RoomMember>,
-    val moderators: ImmutableList<RoomMember>,
-    val members: ImmutableList<RoomMember>,
+    val owners: ImmutableList<RoomMember> = persistentListOf(),
+    val admins: ImmutableList<RoomMember> = persistentListOf(),
+    val moderators: ImmutableList<RoomMember> = persistentListOf(),
+    val members: ImmutableList<RoomMember> = persistentListOf(),
 ) {
-    constructor() : this(
-        owners = persistentListOf(),
-        admins = persistentListOf(),
-        moderators = persistentListOf(),
-        members = persistentListOf(),
-    )
-
     constructor(members: List<RoomMember>, comparator: Comparator<RoomMember>) : this(
         owners = members.filterAndSort(comparator) { it.role is RoomMember.Role.Owner },
         admins = members.filterAndSort(comparator) { it.role == RoomMember.Role.Admin },

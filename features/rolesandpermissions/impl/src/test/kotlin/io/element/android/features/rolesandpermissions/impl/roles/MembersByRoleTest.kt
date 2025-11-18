@@ -58,32 +58,20 @@ class MembersByRoleTest {
 
         val membersByRoleWithOwners = MembersByRole(
             owners = persistentListOf(aRoomMember(A_USER_ID, role = RoomMember.Role.Admin)),
-            admins = persistentListOf(),
-            moderators = persistentListOf(),
-            members = persistentListOf(),
         )
         assertThat(membersByRoleWithOwners.isEmpty()).isFalse()
 
         val membersByRoleWithAdmins = MembersByRole(
-            owners = persistentListOf(),
             admins = persistentListOf(aRoomMember(A_USER_ID, role = RoomMember.Role.Admin)),
-            moderators = persistentListOf(),
-            members = persistentListOf(),
         )
         assertThat(membersByRoleWithAdmins.isEmpty()).isFalse()
 
         val membersByRoleWithModerators = MembersByRole(
-            owners = persistentListOf(),
-            admins = persistentListOf(),
             moderators = persistentListOf(aRoomMember(A_USER_ID, role = RoomMember.Role.Moderator)),
-            members = persistentListOf(),
         )
         assertThat(membersByRoleWithModerators.isEmpty()).isFalse()
 
         val membersByRoleWithMembers = MembersByRole(
-            owners = persistentListOf(),
-            admins = persistentListOf(),
-            moderators = persistentListOf(),
             members = persistentListOf(aRoomMember(A_USER_ID, role = RoomMember.Role.User)),
         )
         assertThat(membersByRoleWithMembers.isEmpty()).isFalse()

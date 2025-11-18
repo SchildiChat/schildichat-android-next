@@ -53,8 +53,7 @@ class RoomMemberListPresenter(
     private val roomMembersModerationPresenter: Presenter<RoomMemberModerationState>,
     private val encryptionService: EncryptionService,
 ) : Presenter<RoomMemberListState> {
-    var roomMembers: AsyncData<RoomMembers> by mutableStateOf(AsyncData.Loading())
-
+    private var roomMembers: AsyncData<RoomMembers> by mutableStateOf(AsyncData.Loading())
     private val powerLevelRoomMemberComparator = PowerLevelRoomMemberComparator()
 
     @Composable

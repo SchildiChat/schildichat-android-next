@@ -6,7 +6,7 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.libraries.mediaupload.api
+package io.element.android.libraries.mediaupload.impl
 
 import android.net.Uri
 import com.google.common.truth.Truth.assertThat
@@ -19,6 +19,9 @@ import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.matrix.test.media.FakeMediaUploadHandler
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
 import io.element.android.libraries.matrix.test.timeline.FakeTimeline
+import io.element.android.libraries.mediaupload.api.MediaOptimizationConfig
+import io.element.android.libraries.mediaupload.api.MediaOptimizationConfigProvider
+import io.element.android.libraries.mediaupload.api.MediaPreProcessor
 import io.element.android.libraries.mediaupload.test.FakeMediaPreProcessor
 import io.element.android.libraries.preferences.api.store.VideoCompressionPreset
 import io.element.android.tests.testutils.lambda.lambdaRecorder
@@ -33,7 +36,7 @@ import org.robolectric.RobolectricTestRunner
 import java.io.File
 
 @RunWith(RobolectricTestRunner::class)
-class MediaSenderTest {
+class DefaultMediaSenderTest {
     private val mediaOptimizationConfig = MediaOptimizationConfig(
         compressImages = true,
         videoCompressionPreset = VideoCompressionPreset.STANDARD,
@@ -42,7 +45,7 @@ class MediaSenderTest {
     @Test
     fun `given an attachment when sending it the preprocessor always runs`() = runTest {
         val preProcessor = FakeMediaPreProcessor()
-        val sender = createMediaSender(
+        val sender = createDefaultMediaSender(
             preProcessor = preProcessor,
             room = FakeJoinedRoom(
                 liveTimeline = FakeTimeline().apply {
@@ -77,7 +80,7 @@ class MediaSenderTest {
                 sendImageLambda = sendImageResult
             },
         )
-        val sender = createMediaSender(room = room)
+        val sender = createDefaultMediaSender(room = room)
 
         val uri = Uri.parse("content://image.jpg")
         sender.sendMedia(uri = uri, mimeType = MimeTypes.Jpeg, mediaOptimizationConfig = mediaOptimizationConfig)
@@ -88,7 +91,7 @@ class MediaSenderTest {
         val preProcessor = FakeMediaPreProcessor().apply {
             givenResult(Result.failure(Exception()))
         }
-        val sender = createMediaSender(preProcessor)
+        val sender = createDefaultMediaSender(preProcessor)
 
         val uri = Uri.parse("content://image.jpg")
         val result = sender.sendMedia(uri = uri, mimeType = MimeTypes.Jpeg, mediaOptimizationConfig = mediaOptimizationConfig)
@@ -110,7 +113,7 @@ class MediaSenderTest {
                 sendImageLambda = sendImageResult
             },
         )
-        val sender = createMediaSender(
+        val sender = createDefaultMediaSender(
             preProcessor = preProcessor,
             room = room,
         )
@@ -133,7 +136,7 @@ class MediaSenderTest {
                 sendFileLambda = sendFileResult
             },
         )
-        val sender = createMediaSender(room = room)
+        val sender = createDefaultMediaSender(room = room)
         val sendJob = launch {
             val uri = Uri.parse("content://image.jpg")
             sender.sendMedia(uri = uri, mimeType = MimeTypes.Jpeg, mediaOptimizationConfig = mediaOptimizationConfig)
@@ -155,11 +158,11 @@ class MediaSenderTest {
         sendFileResult.assertions().isCalledOnce()
     }
 
-    private fun createMediaSender(
+    private fun createDefaultMediaSender(
         preProcessor: MediaPreProcessor = FakeMediaPreProcessor(),
         room: JoinedRoom = FakeJoinedRoom(),
         mediaOptimizationConfigProvider: MediaOptimizationConfigProvider = MediaOptimizationConfigProvider { mediaOptimizationConfig },
-    ) = MediaSender(
+    ) = DefaultMediaSender(
         preProcessor = preProcessor,
         room = room,
         timelineMode = Timeline.Mode.Live,

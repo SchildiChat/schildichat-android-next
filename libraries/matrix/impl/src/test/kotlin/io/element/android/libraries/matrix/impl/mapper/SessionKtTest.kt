@@ -19,7 +19,6 @@ import io.element.android.libraries.matrix.test.A_SECRET
 import io.element.android.libraries.matrix.test.A_USER_ID
 import io.element.android.libraries.sessionstorage.api.LoginType
 import org.junit.Test
-import org.matrix.rustcomponents.sdk.SlidingSyncVersion
 import java.io.File
 
 class SessionKtTest {

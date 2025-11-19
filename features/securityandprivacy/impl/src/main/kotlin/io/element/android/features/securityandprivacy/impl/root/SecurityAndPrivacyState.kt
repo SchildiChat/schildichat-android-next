@@ -38,7 +38,10 @@ data class SecurityAndPrivacyState(
     }.toImmutableSet()
 
     val showRoomAccessSection = permissions.canChangeRoomAccess
-    val showRoomVisibilitySections = permissions.canChangeRoomVisibility && editedSettings.roomAccess != SecurityAndPrivacyRoomAccess.InviteOnly
+
+    val showRoomVisibilitySections = permissions.canChangeRoomVisibility &&
+        editedSettings.roomAccess.canConfigureRoomVisibility()
+
     val showHistoryVisibilitySection = permissions.canChangeHistoryVisibility && !isSpace
     val showEncryptionSection = permissions.canChangeEncryption && !isSpace
 }
@@ -72,7 +75,14 @@ enum class SecurityAndPrivacyRoomAccess {
     InviteOnly,
     AskToJoin,
     Anyone,
-    SpaceMember
+    SpaceMember;
+
+    fun canConfigureRoomVisibility(): Boolean {
+        return when (this) {
+            InviteOnly, SpaceMember -> false
+            AskToJoin, Anyone -> true
+        }
+    }
 }
 
 sealed class SecurityAndPrivacyFailures : Exception() {

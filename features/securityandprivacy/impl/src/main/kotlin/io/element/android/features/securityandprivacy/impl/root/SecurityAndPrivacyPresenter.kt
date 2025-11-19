@@ -75,12 +75,11 @@ class SecurityAndPrivacyPresenter(
 
         val savedSettings by remember {
             derivedStateOf {
-                val historyVisibility = roomInfo.historyVisibility.map()
                 SecurityAndPrivacySettings(
                     roomAccess = roomInfo.joinRule.map(),
                     isEncrypted = roomInfo.isEncrypted == true,
                     isVisibleInRoomDirectory = savedIsVisibleInRoomDirectory.value,
-                    historyVisibility = historyVisibility,
+                    historyVisibility = roomInfo.historyVisibility.map(),
                     address = roomInfo.firstDisplayableAlias(homeserverName)?.value,
                 )
             }

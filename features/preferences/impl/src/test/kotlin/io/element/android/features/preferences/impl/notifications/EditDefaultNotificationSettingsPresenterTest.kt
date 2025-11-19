@@ -13,6 +13,8 @@ import io.element.android.features.preferences.impl.notifications.edit.EditDefau
 import io.element.android.features.preferences.impl.notifications.edit.EditDefaultNotificationSettingStateEvents
 import io.element.android.libraries.matrix.api.room.RoomNotificationMode
 import io.element.android.libraries.matrix.test.AN_EXCEPTION
+import io.element.android.libraries.matrix.test.A_ROOM_ID
+import io.element.android.libraries.matrix.test.A_ROOM_ID_2
 import io.element.android.libraries.matrix.test.notificationsettings.FakeNotificationSettingsService
 import io.element.android.libraries.matrix.test.room.aRoomSummary
 import io.element.android.libraries.matrix.test.roomlist.FakeRoomListService
@@ -25,12 +27,15 @@ import org.junit.Test
 class EditDefaultNotificationSettingsPresenterTest {
     @Test
     fun `present - ensures initial state is correct`() = runTest {
-        val notificationSettingsService = FakeNotificationSettingsService()
+        val notificationSettingsService = FakeNotificationSettingsService(
+            getRoomsWithUserDefinedRulesResult = { Result.success(emptyList()) },
+        )
         val presenter = createEditDefaultNotificationSettingPresenter(notificationSettingsService)
         presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.mode).isNull()
             assertThat(initialState.isOneToOne).isFalse()
+            assertThat(initialState.roomsWithUserDefinedMode).isEmpty()
 
             val loadedState = consumeItemsUntilPredicate {
                 it.mode == RoomNotificationMode.MENTIONS_AND_KEYWORDS_ONLY
@@ -45,7 +50,8 @@ class EditDefaultNotificationSettingsPresenterTest {
     fun `present - ensure list of rooms with user defined mode`() = runTest {
         val notificationSettingsService = FakeNotificationSettingsService(
             initialRoomMode = RoomNotificationMode.ALL_MESSAGES,
-            initialRoomModeIsDefault = false
+            initialRoomModeIsDefault = false,
+            getRoomsWithUserDefinedRulesResult = { Result.success(listOf(A_ROOM_ID.value)) },
         )
         val roomListService = FakeRoomListService()
         val presenter = createEditDefaultNotificationSettingPresenter(notificationSettingsService, roomListService)
@@ -59,8 +65,76 @@ class EditDefaultNotificationSettingsPresenterTest {
     }
 
     @Test
+    fun `present - ensure list of rooms is sorted`() = runTest {
+        val notificationSettingsService = FakeNotificationSettingsService(
+            initialRoomMode = RoomNotificationMode.MENTIONS_AND_KEYWORDS_ONLY,
+            initialRoomModeIsDefault = false,
+            getRoomsWithUserDefinedRulesResult = { Result.success(listOf(A_ROOM_ID.value, A_ROOM_ID_2.value)) },
+        )
+        val roomListService = FakeRoomListService()
+        val presenter = createEditDefaultNotificationSettingPresenter(notificationSettingsService, roomListService)
+        presenter.test {
+            roomListService.postAllRooms(
+                listOf(
+                    aRoomSummary(
+                        roomId = A_ROOM_ID,
+                        name = "Z",
+                        userDefinedNotificationMode = RoomNotificationMode.MENTIONS_AND_KEYWORDS_ONLY,
+                    ),
+                    aRoomSummary(
+                        roomId = A_ROOM_ID_2,
+                        name = "A",
+                        userDefinedNotificationMode = RoomNotificationMode.MENTIONS_AND_KEYWORDS_ONLY,
+                    ),
+                ),
+            )
+            val loadedState = consumeItemsUntilPredicate { state ->
+                state.roomsWithUserDefinedMode.any { it.notificationMode == RoomNotificationMode.MENTIONS_AND_KEYWORDS_ONLY }
+            }.last()
+            assertThat(loadedState.roomsWithUserDefinedMode[0].name).isEqualTo("A")
+            assertThat(loadedState.roomsWithUserDefinedMode[1].name).isEqualTo("Z")
+        }
+    }
+
+    @Test
+    fun `present - ensure list of rooms is sorted, with name null`() = runTest {
+        val notificationSettingsService = FakeNotificationSettingsService(
+            initialRoomMode = RoomNotificationMode.MUTE,
+            initialRoomModeIsDefault = false,
+            getRoomsWithUserDefinedRulesResult = { Result.success(listOf(A_ROOM_ID.value, A_ROOM_ID_2.value)) },
+        )
+        val roomListService = FakeRoomListService()
+        val presenter = createEditDefaultNotificationSettingPresenter(notificationSettingsService, roomListService)
+        presenter.test {
+            roomListService.postAllRooms(
+                listOf(
+                    aRoomSummary(
+                        roomId = A_ROOM_ID,
+                        name = "Z",
+                        userDefinedNotificationMode = RoomNotificationMode.MUTE,
+                    ),
+                    aRoomSummary(
+                        roomId = A_ROOM_ID_2,
+                        name = null,
+                        userDefinedNotificationMode = RoomNotificationMode.MUTE,
+                    ),
+                ),
+            )
+            val loadedState = consumeItemsUntilPredicate { state ->
+                state.roomsWithUserDefinedMode.any { it.notificationMode == RoomNotificationMode.MUTE }
+            }.last()
+            assertThat(loadedState.roomsWithUserDefinedMode[0].name).isNull()
+            assertThat(loadedState.roomsWithUserDefinedMode[1].name).isEqualTo("Z")
+        }
+    }
+
+    @Test
     fun `present - edit default notification setting`() = runTest {
-        val presenter = createEditDefaultNotificationSettingPresenter()
+        val presenter = createEditDefaultNotificationSettingPresenter(
+            notificationSettingsService = FakeNotificationSettingsService(
+                getRoomsWithUserDefinedRulesResult = { Result.success(emptyList()) },
+            ),
+        )
         presenter.test {
             awaitItem().eventSink(EditDefaultNotificationSettingStateEvents.SetNotificationMode(RoomNotificationMode.ALL_MESSAGES))
             val loadedState = consumeItemsUntilPredicate {
@@ -72,7 +146,9 @@ class EditDefaultNotificationSettingsPresenterTest {
 
     @Test
     fun `present - edit default notification setting failed`() = runTest {
-        val notificationSettingsService = FakeNotificationSettingsService()
+        val notificationSettingsService = FakeNotificationSettingsService(
+            getRoomsWithUserDefinedRulesResult = { Result.success(emptyList()) },
+        )
         val presenter = createEditDefaultNotificationSettingPresenter(notificationSettingsService)
         notificationSettingsService.givenSetDefaultNotificationModeError(AN_EXCEPTION)
         presenter.test {
@@ -91,7 +167,9 @@ class EditDefaultNotificationSettingsPresenterTest {
 
     @Test
     fun `present - display mentions only warning if homeserver does not support it`() = runTest {
-        val notificationSettingsService = FakeNotificationSettingsService().apply {
+        val notificationSettingsService = FakeNotificationSettingsService(
+            getRoomsWithUserDefinedRulesResult = { Result.success(emptyList()) },
+        ).apply {
             givenCanHomeServerPushEncryptedEventsToDeviceResult(Result.success(false))
         }
         val presenter = createEditDefaultNotificationSettingPresenter(notificationSettingsService)

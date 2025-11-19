@@ -15,16 +15,42 @@ import io.element.android.libraries.architecture.AsyncData
 
 open class SecurityAndPrivacyStateProvider : PreviewParameterProvider<SecurityAndPrivacyState> {
     override val values: Sequence<SecurityAndPrivacyState>
-        get() = securityAndPrivacyStates(isSpace = false) + securityAndPrivacyStates(isSpace = true)
+        get() = commonSecurityAndPrivacyStates(isSpace = false) +
+            commonSecurityAndPrivacyStates(isSpace = true) +
+            sequenceOf(
+                aSecurityAndPrivacyState(
+                    saveAction = AsyncAction.Loading,
+                    isSpace = false,
+                ),
+                aSecurityAndPrivacyState(
+                    saveAction = AsyncAction.Failure(SecurityAndPrivacyFailures.SaveFailed),
+                    isSpace = false,
+                ),
+                aSecurityAndPrivacyState(
+                    confirmExitAction = AsyncAction.ConfirmingCancellation,
+                    isSpace = false,
+                ),
+                aSecurityAndPrivacyState(
+                    showEncryptionConfirmation = true,
+                    isSpace = false,
+                ),
+            )
 }
 
-private fun securityAndPrivacyStates(isSpace: Boolean): Sequence<SecurityAndPrivacyState> = sequenceOf(
+private fun commonSecurityAndPrivacyStates(isSpace: Boolean): Sequence<SecurityAndPrivacyState> = sequenceOf(
     aSecurityAndPrivacyState(isSpace = isSpace),
     aSecurityAndPrivacyState(
         editedSettings = aSecurityAndPrivacySettings(
             roomAccess = SecurityAndPrivacyRoomAccess.AskToJoin,
         ),
         isSpace = isSpace,
+    ),
+    aSecurityAndPrivacyState(
+        savedSettings = aSecurityAndPrivacySettings(
+            roomAccess = SecurityAndPrivacyRoomAccess.AskToJoin
+        ),
+        isSpace = isSpace,
+        isKnockEnabled = false,
     ),
     aSecurityAndPrivacyState(
         editedSettings = aSecurityAndPrivacySettings(
@@ -49,30 +75,17 @@ private fun securityAndPrivacyStates(isSpace: Boolean): Sequence<SecurityAndPriv
     ),
     aSecurityAndPrivacyState(
         editedSettings = aSecurityAndPrivacySettings(
+            roomAccess = SecurityAndPrivacyRoomAccess.Anyone,
             isVisibleInRoomDirectory = AsyncData.Loading()
         ),
         isSpace = isSpace,
     ),
     aSecurityAndPrivacyState(
         editedSettings = aSecurityAndPrivacySettings(
+            roomAccess = SecurityAndPrivacyRoomAccess.Anyone,
             isVisibleInRoomDirectory = AsyncData.Success(true)
         ),
         isSpace = isSpace,
-    ),
-    aSecurityAndPrivacyState(
-        showEncryptionConfirmation = true,
-        isSpace = isSpace,
-    ),
-    aSecurityAndPrivacyState(
-        saveAction = AsyncAction.Loading,
-        isSpace = isSpace,
-    ),
-    aSecurityAndPrivacyState(
-        savedSettings = aSecurityAndPrivacySettings(
-            roomAccess = SecurityAndPrivacyRoomAccess.AskToJoin
-        ),
-        isSpace = isSpace,
-        isKnockEnabled = false,
     ),
 )
 
@@ -96,6 +109,7 @@ fun aSecurityAndPrivacyState(
     homeserverName: String = "myserver.xyz",
     showEncryptionConfirmation: Boolean = false,
     saveAction: AsyncAction<Unit> = AsyncAction.Uninitialized,
+    confirmExitAction: AsyncAction<Unit> = AsyncAction.Uninitialized,
     permissions: SecurityAndPrivacyPermissions = SecurityAndPrivacyPermissions(
         canChangeRoomAccess = true,
         canChangeHistoryVisibility = true,
@@ -103,7 +117,7 @@ fun aSecurityAndPrivacyState(
         canChangeRoomVisibility = true
     ),
     isKnockEnabled: Boolean = true,
-    isSpace: Boolean = false,
+    isSpace: Boolean,
     eventSink: (SecurityAndPrivacyEvents) -> Unit = {}
 ) = SecurityAndPrivacyState(
     editedSettings = editedSettings,
@@ -111,8 +125,9 @@ fun aSecurityAndPrivacyState(
     homeserverName = homeserverName,
     showEnableEncryptionConfirmation = showEncryptionConfirmation,
     saveAction = saveAction,
+    confirmExitAction = confirmExitAction,
     isKnockEnabled = isKnockEnabled,
     permissions = permissions,
     isSpace = isSpace,
-    eventSink = eventSink
+    eventSink = eventSink,
 )

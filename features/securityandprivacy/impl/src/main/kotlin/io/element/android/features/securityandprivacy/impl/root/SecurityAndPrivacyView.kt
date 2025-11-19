@@ -8,6 +8,7 @@
 
 package io.element.android.features.securityandprivacy.impl.root
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -31,12 +32,14 @@ import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.securityandprivacy.impl.R
+import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.coverage.ExcludeFromCoverage
 import io.element.android.libraries.designsystem.components.async.AsyncActionView
 import io.element.android.libraries.designsystem.components.async.AsyncActionViewDefaults
 import io.element.android.libraries.designsystem.components.button.BackButton
 import io.element.android.libraries.designsystem.components.dialogs.ConfirmationDialog
+import io.element.android.libraries.designsystem.components.dialogs.SaveChangesDialog
 import io.element.android.libraries.designsystem.components.list.ListItemContent
 import io.element.android.libraries.designsystem.preview.ElementPreviewDark
 import io.element.android.libraries.designsystem.preview.ElementPreviewLight
@@ -50,6 +53,7 @@ import io.element.android.libraries.designsystem.theme.components.TextButton
 import io.element.android.libraries.designsystem.theme.components.TopAppBar
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.ImmutableSet
+import java.security.Security
 
 @Composable
 fun SecurityAndPrivacyView(
@@ -57,12 +61,17 @@ fun SecurityAndPrivacyView(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    BackHandler {
+        state.eventSink(SecurityAndPrivacyEvents.Exit)
+    }
     Scaffold(
         modifier = modifier,
         topBar = {
             SecurityAndPrivacyToolbar(
                 isSaveActionEnabled = state.canBeSaved,
-                onBackClick = onBackClick,
+                onBackClick = {
+                    state.eventSink(SecurityAndPrivacyEvents.Exit)
+                },
                 onSaveClick = {
                     state.eventSink(SecurityAndPrivacyEvents.Save)
                 },
@@ -130,6 +139,17 @@ fun SecurityAndPrivacyView(
             )
         },
         onRetry = { state.eventSink(SecurityAndPrivacyEvents.Save) },
+    )
+    AsyncActionView(
+        async = state.confirmExitAction,
+        onSuccess = { onBackClick() },
+        onErrorDismiss = { },
+        confirmationDialog = {
+            SaveChangesDialog(
+                onSubmitClick = { state.eventSink(SecurityAndPrivacyEvents.Exit) },
+                onDismiss = { state.eventSink(SecurityAndPrivacyEvents.DismissExitConfirmation) }
+            )
+        },
     )
 }
 

@@ -26,6 +26,7 @@ import io.element.android.features.securityandprivacy.impl.editroomaddress.match
 import io.element.android.features.securityandprivacy.api.securityAndPrivacyPermissionsAsState
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
+import io.element.android.libraries.architecture.AsyncData.*
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.architecture.runCatchingUpdatingState
 import io.element.android.libraries.architecture.runUpdatingState
@@ -64,6 +65,7 @@ class SecurityAndPrivacyPresenter(
             featureFlagService.isFeatureEnabledFlow(FeatureFlags.Knock)
         }.collectAsState(false)
         val saveAction = remember { mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized) }
+        var confirmExitAction by remember { mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized)}
         val homeserverName = remember { matrixClient.userIdServerName() }
         val syncUpdateFlow = room.syncUpdateFlow.collectAsState()
         val roomInfo by room.roomInfoFlow.collectAsState()
@@ -133,7 +135,7 @@ class SecurityAndPrivacyPresenter(
                 }
                 SecurityAndPrivacyEvents.ToggleRoomVisibility -> {
                     editedVisibleInRoomDirectory = when (val edited = editedVisibleInRoomDirectory) {
-                        is AsyncData.Success -> AsyncData.Success(!edited.data)
+                        is Success -> Success(!edited.data)
                         else -> edited
                     }
                 }
@@ -148,6 +150,16 @@ class SecurityAndPrivacyPresenter(
                 SecurityAndPrivacyEvents.DismissSaveError -> {
                     saveAction.value = AsyncAction.Uninitialized
                 }
+                SecurityAndPrivacyEvents.Exit -> {
+                    confirmExitAction = if (savedSettings == editedSettings || confirmExitAction.isConfirming()) {
+                        AsyncAction.Success(Unit)
+                    } else {
+                        AsyncAction.ConfirmingNoParams
+                    }
+                }
+                SecurityAndPrivacyEvents.DismissExitConfirmation -> {
+                    confirmExitAction = AsyncAction.Uninitialized
+                }
             }
         }
 
@@ -160,6 +172,7 @@ class SecurityAndPrivacyPresenter(
             saveAction = saveAction.value,
             permissions = permissions,
             isSpace = roomInfo.isSpace,
+            confirmExitAction = confirmExitAction,
             eventSink = ::handleEvent,
         )
 

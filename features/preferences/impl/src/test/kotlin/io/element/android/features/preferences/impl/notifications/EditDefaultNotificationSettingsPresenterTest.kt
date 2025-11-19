@@ -8,9 +8,6 @@
 
 package io.element.android.features.preferences.impl.notifications
 
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.moleculeFlow
-import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.preferences.impl.notifications.edit.EditDefaultNotificationSettingPresenter
 import io.element.android.features.preferences.impl.notifications.edit.EditDefaultNotificationSettingStateEvents
@@ -21,6 +18,7 @@ import io.element.android.libraries.matrix.test.room.aRoomSummary
 import io.element.android.libraries.matrix.test.roomlist.FakeRoomListService
 import io.element.android.tests.testutils.awaitLastSequentialItem
 import io.element.android.tests.testutils.consumeItemsUntilPredicate
+import io.element.android.tests.testutils.test
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -29,9 +27,7 @@ class EditDefaultNotificationSettingsPresenterTest {
     fun `present - ensures initial state is correct`() = runTest {
         val notificationSettingsService = FakeNotificationSettingsService()
         val presenter = createEditDefaultNotificationSettingPresenter(notificationSettingsService)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.mode).isNull()
             assertThat(initialState.isOneToOne).isFalse()
@@ -53,9 +49,7 @@ class EditDefaultNotificationSettingsPresenterTest {
         )
         val roomListService = FakeRoomListService()
         val presenter = createEditDefaultNotificationSettingPresenter(notificationSettingsService, roomListService)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             roomListService.postAllRooms(listOf(aRoomSummary(userDefinedNotificationMode = RoomNotificationMode.ALL_MESSAGES)))
             val loadedState = consumeItemsUntilPredicate { state ->
                 state.roomsWithUserDefinedMode.any { it.notificationMode == RoomNotificationMode.ALL_MESSAGES }
@@ -67,9 +61,7 @@ class EditDefaultNotificationSettingsPresenterTest {
     @Test
     fun `present - edit default notification setting`() = runTest {
         val presenter = createEditDefaultNotificationSettingPresenter()
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             awaitItem().eventSink(EditDefaultNotificationSettingStateEvents.SetNotificationMode(RoomNotificationMode.ALL_MESSAGES))
             val loadedState = consumeItemsUntilPredicate {
                 it.mode == RoomNotificationMode.ALL_MESSAGES
@@ -83,9 +75,7 @@ class EditDefaultNotificationSettingsPresenterTest {
         val notificationSettingsService = FakeNotificationSettingsService()
         val presenter = createEditDefaultNotificationSettingPresenter(notificationSettingsService)
         notificationSettingsService.givenSetDefaultNotificationModeError(AN_EXCEPTION)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             awaitItem().eventSink(EditDefaultNotificationSettingStateEvents.SetNotificationMode(RoomNotificationMode.ALL_MESSAGES))
             val errorState = consumeItemsUntilPredicate {
                 it.changeNotificationSettingAction.isFailure()
@@ -105,9 +95,7 @@ class EditDefaultNotificationSettingsPresenterTest {
             givenCanHomeServerPushEncryptedEventsToDeviceResult(Result.success(false))
         }
         val presenter = createEditDefaultNotificationSettingPresenter(notificationSettingsService)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             assertThat(awaitLastSequentialItem().displayMentionsOnlyDisclaimer).isTrue()
         }
     }

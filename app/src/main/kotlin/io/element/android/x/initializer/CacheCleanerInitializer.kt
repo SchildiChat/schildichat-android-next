@@ -6,10 +6,11 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.features.cachecleaner.api
+package io.element.android.x.initializer
 
 import android.content.Context
 import androidx.startup.Initializer
+import io.element.android.features.cachecleaner.impl.CacheCleanerBindings
 import io.element.android.libraries.architecture.bindings
 
 class CacheCleanerInitializer : Initializer<Unit> {

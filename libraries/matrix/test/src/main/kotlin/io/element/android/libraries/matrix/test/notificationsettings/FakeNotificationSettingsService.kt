@@ -25,7 +25,7 @@ class FakeNotificationSettingsService(
     initialOneToOneDefaultMode: RoomNotificationMode = RoomNotificationMode.ALL_MESSAGES,
     initialEncryptedOneToOneDefaultMode: RoomNotificationMode = RoomNotificationMode.ALL_MESSAGES,
     private val getRawPushRulesResult: () -> Result<String> = { lambdaError() },
-    private val getRoomsWithUserDefinedRulesResult: () -> Result<List<String>> = { lambdaError() },
+    private val getRoomsWithUserDefinedRulesResult: () -> Result<List<RoomId>> = { lambdaError() },
 ) : NotificationSettingsService {
     private val notificationSettingsStateFlow = MutableStateFlow(Unit)
     private var defaultGroupRoomNotificationMode: RoomNotificationMode = initialGroupDefaultMode
@@ -154,7 +154,7 @@ class FakeNotificationSettingsService(
         return Result.success(Unit)
     }
 
-    override suspend fun getRoomsWithUserDefinedRules(): Result<List<String>> {
+    override suspend fun getRoomsWithUserDefinedRules(): Result<List<RoomId>> {
         return getRoomsWithUserDefinedRulesResult()
     }
 

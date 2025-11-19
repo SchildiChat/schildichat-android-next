@@ -51,7 +51,7 @@ class EditDefaultNotificationSettingsPresenterTest {
         val notificationSettingsService = FakeNotificationSettingsService(
             initialRoomMode = RoomNotificationMode.ALL_MESSAGES,
             initialRoomModeIsDefault = false,
-            getRoomsWithUserDefinedRulesResult = { Result.success(listOf(A_ROOM_ID.value)) },
+            getRoomsWithUserDefinedRulesResult = { Result.success(listOf(A_ROOM_ID)) },
         )
         val roomListService = FakeRoomListService()
         val presenter = createEditDefaultNotificationSettingPresenter(notificationSettingsService, roomListService)
@@ -69,7 +69,7 @@ class EditDefaultNotificationSettingsPresenterTest {
         val notificationSettingsService = FakeNotificationSettingsService(
             initialRoomMode = RoomNotificationMode.MENTIONS_AND_KEYWORDS_ONLY,
             initialRoomModeIsDefault = false,
-            getRoomsWithUserDefinedRulesResult = { Result.success(listOf(A_ROOM_ID.value, A_ROOM_ID_2.value)) },
+            getRoomsWithUserDefinedRulesResult = { Result.success(listOf(A_ROOM_ID, A_ROOM_ID_2)) },
         )
         val roomListService = FakeRoomListService()
         val presenter = createEditDefaultNotificationSettingPresenter(notificationSettingsService, roomListService)
@@ -101,7 +101,7 @@ class EditDefaultNotificationSettingsPresenterTest {
         val notificationSettingsService = FakeNotificationSettingsService(
             initialRoomMode = RoomNotificationMode.MUTE,
             initialRoomModeIsDefault = false,
-            getRoomsWithUserDefinedRulesResult = { Result.success(listOf(A_ROOM_ID.value, A_ROOM_ID_2.value)) },
+            getRoomsWithUserDefinedRulesResult = { Result.success(listOf(A_ROOM_ID, A_ROOM_ID_2)) },
         )
         val roomListService = FakeRoomListService()
         val presenter = createEditDefaultNotificationSettingPresenter(notificationSettingsService, roomListService)

@@ -187,11 +187,22 @@ private fun RoomAccessSection(
         modifier = modifier,
     ) {
         ListItem(
-            headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_invite_only_option_title)) },
-            supportingContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_invite_only_option_description)) },
-            trailingContent = ListItemContent.RadioButton(selected = edited == SecurityAndPrivacyRoomAccess.InviteOnly),
-            onClick = { onSelectOption(SecurityAndPrivacyRoomAccess.InviteOnly) },
+            headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_anyone_option_title)) },
+            supportingContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_anyone_option_description)) },
+            trailingContent = ListItemContent.RadioButton(selected = edited == SecurityAndPrivacyRoomAccess.Anyone),
+            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Public())),
+            onClick = { onSelectOption(SecurityAndPrivacyRoomAccess.Anyone) },
         )
+        // Show space member option, but disabled as we don't support this option for now.
+        if (saved == SecurityAndPrivacyRoomAccess.SpaceMember) {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_title)) },
+                supportingContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_description)) },
+                trailingContent = ListItemContent.RadioButton(selected =  edited == SecurityAndPrivacyRoomAccess.SpaceMember, enabled = false),
+                leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Workspace())),
+                enabled = false,
+            )
+        }
         // Show Ask to join option in two cases:
         // - the Knock FF is enabled
         // - AskToJoin is the current saved value
@@ -201,24 +212,18 @@ private fun RoomAccessSection(
                 supportingContent = { Text(text = stringResource(R.string.screen_security_and_privacy_ask_to_join_option_description)) },
                 trailingContent = ListItemContent.RadioButton(selected = edited == SecurityAndPrivacyRoomAccess.AskToJoin),
                 onClick = { onSelectOption(SecurityAndPrivacyRoomAccess.AskToJoin) },
+                leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.UserAdd())),
                 enabled = isKnockEnabled,
             )
         }
         ListItem(
-            headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_anyone_option_title)) },
-            supportingContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_anyone_option_description)) },
-            trailingContent = ListItemContent.RadioButton(selected = edited == SecurityAndPrivacyRoomAccess.Anyone),
-            onClick = { onSelectOption(SecurityAndPrivacyRoomAccess.Anyone) },
+            headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_invite_only_option_title)) },
+            supportingContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_invite_only_option_description)) },
+            trailingContent = ListItemContent.RadioButton(selected = edited == SecurityAndPrivacyRoomAccess.InviteOnly),
+            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Lock())),
+            onClick = { onSelectOption(SecurityAndPrivacyRoomAccess.InviteOnly) },
         )
-        // Show space member option, but disabled as we don't support this option for now.
-        if (saved == SecurityAndPrivacyRoomAccess.SpaceMember) {
-            ListItem(
-                headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_title)) },
-                supportingContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_description)) },
-                trailingContent = ListItemContent.RadioButton(selected = true, enabled = false),
-                enabled = false,
-            )
-        }
+
     }
 }
 
@@ -259,7 +264,7 @@ private fun RoomAddressSection(
                 Text(text = roomAddress ?: stringResource(R.string.screen_security_and_privacy_add_room_address_action))
             },
             trailingContent = if (roomAddress.isNullOrEmpty()) ListItemContent.Icon(IconSource.Vector(CompoundIcons.Plus())) else null,
-            supportingContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_address_section_footer)) },
+            supportingContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_address_description)) },
             onClick = onRoomAddressClick,
             colors = ListItemDefaults.colors(trailingIconColor = ElementTheme.colors.iconAccentPrimary),
         )
@@ -267,7 +272,7 @@ private fun RoomAddressSection(
         ListItem(
             headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_directory_visibility_toggle_title)) },
             supportingContent = {
-                Text(text = stringResource(R.string.screen_security_and_privacy_room_directory_visibility_section_footer, homeserverName))
+                Text(text = stringResource(R.string.screen_security_and_privacy_room_directory_visibility_toggle_description, homeserverName))
             },
             onClick = if (isVisibleInRoomDirectory.isSuccess()) onVisibilityChange else null,
             trailingContent = when (isVisibleInRoomDirectory) {

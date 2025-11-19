@@ -15,55 +15,66 @@ import io.element.android.libraries.architecture.AsyncData
 
 open class SecurityAndPrivacyStateProvider : PreviewParameterProvider<SecurityAndPrivacyState> {
     override val values: Sequence<SecurityAndPrivacyState>
-        get() = sequenceOf(
-            aSecurityAndPrivacyState(),
-            aSecurityAndPrivacyState(
-                editedSettings = aSecurityAndPrivacySettings(
-                    roomAccess = SecurityAndPrivacyRoomAccess.AskToJoin
-                )
-            ),
-            aSecurityAndPrivacyState(
-                editedSettings = aSecurityAndPrivacySettings(
-                    roomAccess = SecurityAndPrivacyRoomAccess.Anyone,
-                    isEncrypted = false,
-                )
-            ),
-            aSecurityAndPrivacyState(
-                savedSettings = aSecurityAndPrivacySettings(
-                    roomAccess = SecurityAndPrivacyRoomAccess.SpaceMember
-                ),
-                isKnockEnabled = false,
-            ),
-            aSecurityAndPrivacyState(
-                editedSettings = aSecurityAndPrivacySettings(
-                    roomAccess = SecurityAndPrivacyRoomAccess.Anyone,
-                    address = "#therapy:myserver.xyz"
-                )
-            ),
-            aSecurityAndPrivacyState(
-                editedSettings = aSecurityAndPrivacySettings(
-                    isVisibleInRoomDirectory = AsyncData.Loading()
-                )
-            ),
-            aSecurityAndPrivacyState(
-                editedSettings = aSecurityAndPrivacySettings(
-                    isVisibleInRoomDirectory = AsyncData.Success(true)
-                )
-            ),
-            aSecurityAndPrivacyState(
-                showEncryptionConfirmation = true
-            ),
-            aSecurityAndPrivacyState(
-                saveAction = AsyncAction.Loading
-            ),
-            aSecurityAndPrivacyState(
-                savedSettings = aSecurityAndPrivacySettings(
-                    roomAccess = SecurityAndPrivacyRoomAccess.AskToJoin
-                ),
-                isKnockEnabled = false,
-            ),
-        )
+        get() = securityAndPrivacyStates(isSpace = false) + securityAndPrivacyStates(isSpace = true)
 }
+
+private fun securityAndPrivacyStates(isSpace: Boolean): Sequence<SecurityAndPrivacyState> = sequenceOf(
+    aSecurityAndPrivacyState(isSpace = isSpace),
+    aSecurityAndPrivacyState(
+        editedSettings = aSecurityAndPrivacySettings(
+            roomAccess = SecurityAndPrivacyRoomAccess.AskToJoin,
+        ),
+        isSpace = isSpace,
+    ),
+    aSecurityAndPrivacyState(
+        editedSettings = aSecurityAndPrivacySettings(
+            roomAccess = SecurityAndPrivacyRoomAccess.Anyone,
+            isEncrypted = false,
+        ),
+        isSpace = isSpace,
+    ),
+    aSecurityAndPrivacyState(
+        savedSettings = aSecurityAndPrivacySettings(
+            roomAccess = SecurityAndPrivacyRoomAccess.SpaceMember
+        ),
+        isSpace = isSpace,
+        isKnockEnabled = false,
+    ),
+    aSecurityAndPrivacyState(
+        editedSettings = aSecurityAndPrivacySettings(
+            roomAccess = SecurityAndPrivacyRoomAccess.Anyone,
+            address = "#therapy:myserver.xyz"
+        ),
+        isSpace = isSpace,
+    ),
+    aSecurityAndPrivacyState(
+        editedSettings = aSecurityAndPrivacySettings(
+            isVisibleInRoomDirectory = AsyncData.Loading()
+        ),
+        isSpace = isSpace,
+    ),
+    aSecurityAndPrivacyState(
+        editedSettings = aSecurityAndPrivacySettings(
+            isVisibleInRoomDirectory = AsyncData.Success(true)
+        ),
+        isSpace = isSpace,
+    ),
+    aSecurityAndPrivacyState(
+        showEncryptionConfirmation = true,
+        isSpace = isSpace,
+    ),
+    aSecurityAndPrivacyState(
+        saveAction = AsyncAction.Loading,
+        isSpace = isSpace,
+    ),
+    aSecurityAndPrivacyState(
+        savedSettings = aSecurityAndPrivacySettings(
+            roomAccess = SecurityAndPrivacyRoomAccess.AskToJoin
+        ),
+        isSpace = isSpace,
+        isKnockEnabled = false,
+    ),
+)
 
 fun aSecurityAndPrivacySettings(
     roomAccess: SecurityAndPrivacyRoomAccess = SecurityAndPrivacyRoomAccess.InviteOnly,
@@ -92,6 +103,7 @@ fun aSecurityAndPrivacyState(
         canChangeRoomVisibility = true
     ),
     isKnockEnabled: Boolean = true,
+    isSpace: Boolean = false,
     eventSink: (SecurityAndPrivacyEvents) -> Unit = {}
 ) = SecurityAndPrivacyState(
     editedSettings = editedSettings,
@@ -101,5 +113,6 @@ fun aSecurityAndPrivacyState(
     saveAction = saveAction,
     isKnockEnabled = isKnockEnabled,
     permissions = permissions,
+    isSpace = isSpace,
     eventSink = eventSink
 )

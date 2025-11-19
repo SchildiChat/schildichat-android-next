@@ -160,6 +160,7 @@ class SecurityAndPrivacyPresenter(
             isKnockEnabled = isKnockEnabled,
             saveAction = saveAction.value,
             permissions = permissions,
+            isSpace = roomInfo.isSpace,
             eventSink = ::handleEvent,
         )
 

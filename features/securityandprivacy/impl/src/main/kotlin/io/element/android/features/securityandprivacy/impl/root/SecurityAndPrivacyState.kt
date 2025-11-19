@@ -22,6 +22,7 @@ data class SecurityAndPrivacyState(
     val showEnableEncryptionConfirmation: Boolean,
     val isKnockEnabled: Boolean,
     val saveAction: AsyncAction<Unit>,
+    val isSpace: Boolean,
     private val permissions: SecurityAndPrivacyPermissions,
     val eventSink: (SecurityAndPrivacyEvents) -> Unit
 ) {
@@ -38,8 +39,8 @@ data class SecurityAndPrivacyState(
 
     val showRoomAccessSection = permissions.canChangeRoomAccess
     val showRoomVisibilitySections = permissions.canChangeRoomVisibility && editedSettings.roomAccess != SecurityAndPrivacyRoomAccess.InviteOnly
-    val showHistoryVisibilitySection = permissions.canChangeHistoryVisibility
-    val showEncryptionSection = permissions.canChangeEncryption
+    val showHistoryVisibilitySection = permissions.canChangeHistoryVisibility && !isSpace
+    val showEncryptionSection = permissions.canChangeEncryption && !isSpace
 }
 
 data class SecurityAndPrivacySettings(

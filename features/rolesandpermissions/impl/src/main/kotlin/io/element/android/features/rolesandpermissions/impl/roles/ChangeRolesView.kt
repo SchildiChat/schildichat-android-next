@@ -145,7 +145,7 @@ fun ChangeRolesView(
                         SearchResultsList(
                             currentRole = state.role,
                             lazyListState = lazyListState,
-                            searchResults = (state.searchResults as? SearchBarResultState.Results)?.results ?: MembersByRole(emptyList()),
+                            searchResults = (state.searchResults as? SearchBarResultState.Results)?.results ?: MembersByRole(),
                             selectedUsers = state.selectedUsers,
                             canRemoveMember = state.canChangeMemberRole,
                             onToggleSelection = { state.eventSink(ChangeRolesEvent.UserSelectionToggled(it.toMatrixUser())) },

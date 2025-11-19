@@ -33,6 +33,7 @@ import io.element.android.libraries.matrix.api.room.RoomMembersState
 import io.element.android.libraries.matrix.api.room.RoomMembershipState
 import io.element.android.libraries.matrix.api.room.roomMembers
 import io.element.android.libraries.matrix.api.room.toMatrixUser
+import io.element.android.libraries.matrix.ui.room.PowerLevelRoomMemberComparator
 import io.element.android.libraries.matrix.ui.room.canInviteAsState
 import io.element.android.libraries.matrix.ui.room.roomMemberIdentityStateChange
 import kotlinx.collections.immutable.ImmutableMap
@@ -52,7 +53,8 @@ class RoomMemberListPresenter(
     private val roomMembersModerationPresenter: Presenter<RoomMemberModerationState>,
     private val encryptionService: EncryptionService,
 ) : Presenter<RoomMemberListState> {
-    var roomMembers: AsyncData<RoomMembers> by mutableStateOf(AsyncData.Loading())
+    private var roomMembers: AsyncData<RoomMembers> by mutableStateOf(AsyncData.Loading())
+    private val powerLevelRoomMemberComparator = PowerLevelRoomMemberComparator()
 
     @Composable
     override fun present(): RoomMemberListState {
@@ -103,7 +105,7 @@ class RoomMemberListPresenter(
                         .map { it.withIdentityState(roomMemberIdentityStates) }
                         .toImmutableList(),
                     joined = members.getOrDefault(RoomMembershipState.JOIN, emptyList())
-                        .sortedWith(PowerLevelRoomMemberComparator())
+                        .sortedWith(powerLevelRoomMemberComparator)
                         .map { it.withIdentityState(roomMemberIdentityStates) }
                         .toImmutableList(),
                     banned = members.getOrDefault(RoomMembershipState.BAN, emptyList())
@@ -133,7 +135,7 @@ class RoomMemberListPresenter(
                                 .map { it.withIdentityState(roomMemberIdentityStates) }
                                 .toImmutableList(),
                             joined = results.getOrDefault(RoomMembershipState.JOIN, emptyList())
-                                .sortedWith(PowerLevelRoomMemberComparator())
+                                .sortedWith(powerLevelRoomMemberComparator)
                                 .map { it.withIdentityState(roomMemberIdentityStates) }
                                 .toImmutableList(),
                             banned = results.getOrDefault(RoomMembershipState.BAN, emptyList())

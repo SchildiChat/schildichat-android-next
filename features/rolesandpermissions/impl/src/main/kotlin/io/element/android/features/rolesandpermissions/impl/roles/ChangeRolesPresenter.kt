@@ -61,6 +61,8 @@ class ChangeRolesPresenter(
         fun create(role: RoomMember.Role): ChangeRolesPresenter
     }
 
+    private val powerLevelRoomMemberComparator = PowerLevelRoomMemberComparator()
+
     @Composable
     override fun present(): ChangeRolesState {
         val dataSource = remember { RoomMemberListDataSource(room, dispatchers) }
@@ -176,17 +178,7 @@ class ChangeRolesPresenter(
     }
 
     private fun List<RoomMember>.groupedByRole(): MembersByRole {
-        val groupedMembers = MembersByRole(this)
-        return MembersByRole(
-            owners = groupedMembers.owners.sorted(),
-            admins = groupedMembers.admins.sorted(),
-            moderators = groupedMembers.moderators.sorted(),
-            members = groupedMembers.members.sorted(),
-        )
-    }
-
-    private fun Iterable<RoomMember>.sorted(): ImmutableList<RoomMember> {
-        return sortedWith(PowerLevelRoomMemberComparator()).toImmutableList()
+        return MembersByRole(this, powerLevelRoomMemberComparator)
     }
 
     private fun CoroutineScope.save(

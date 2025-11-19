@@ -24,21 +24,22 @@ import timber.log.Timber
 class WorkerDataConverter(
     private val json: JsonProvider,
 ) {
-    fun serialize(notificationEventRequests: List<NotificationEventRequest>): List<Result<Data>> {
+    fun serialize(notificationEventRequests: List<NotificationEventRequest>): Result<List<Data>> {
         // First try to serialize all requests at once. In the vast majority of cases this will work.
         return serializeRequests(notificationEventRequests)
-            .fold(
-                onSuccess = {
-                    listOf(Result.success(it))
-                },
-                onFailure = {
-                    // Perform serialization on sublists, workDataOf may have failed because of size limit
+            .map { listOf(it) }
+            .recoverCatching {
+                if (it is DataForWorkManagerIsTooBig) {
+                    // Perform serialization on sublists, workDataOf have failed because of size limit
                     Timber.w(it, "Failed to serialize ${notificationEventRequests.size} notification requests, trying with chunks of $CHUNK_SIZE.")
-                    notificationEventRequests.chunked(CHUNK_SIZE).map { chunk ->
-                        serializeRequests(chunk)
+                    // TODO Do not split rooms
+                    notificationEventRequests.chunked(CHUNK_SIZE).mapNotNull { chunk ->
+                        serializeRequests(chunk).getOrNull()
                     }
-                },
-            )
+                } else {
+                    throw it
+                }
+            }
     }
 
     private fun serializeRequests(notificationEventRequests: List<NotificationEventRequest>): Result<Data> {
@@ -48,7 +49,11 @@ class WorkerDataConverter(
             }
             .mapCatchingExceptions { str ->
                 // Note: workDataOf can fail if the data is too large
-                workDataOf(REQUESTS_KEY to str)
+                try {
+                    workDataOf(REQUESTS_KEY to str)
+                } catch (_: IllegalStateException) {
+                    throw DataForWorkManagerIsTooBig()
+                }
             }
     }
 

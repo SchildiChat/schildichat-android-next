@@ -29,9 +29,9 @@ class SyncNotificationWorkManagerRequest(
     private val workerDataConverter: WorkerDataConverter,
     private val buildVersionSdkIntProvider: BuildVersionSdkIntProvider,
 ) : WorkManagerRequest {
-    override fun build(): List<Result<WorkRequest>> {
+    override fun build(): Result<List<WorkRequest>> {
         if (notificationEventRequests.isEmpty()) {
-            return listOf(Result.failure(InvalidParameterException("notificationEventRequests cannot be empty")))
+            return Result.failure(InvalidParameterException("notificationEventRequests cannot be empty"))
         }
         Timber.d("Scheduling ${notificationEventRequests.size} notification requests with WorkManager for $sessionId")
         return workerDataConverter.serialize(notificationEventRequests).map {

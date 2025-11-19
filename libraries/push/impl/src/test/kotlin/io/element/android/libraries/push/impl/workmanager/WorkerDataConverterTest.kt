@@ -58,14 +58,14 @@ class WorkerDataConverterTest {
         }
         val sut = WorkerDataConverter(DefaultJsonProvider())
         val serialized = sut.serialize(data)
-        assertThat(serialized.size).isGreaterThan(1)
-        assertThat(serialized.size).isEqualTo(100 / WorkerDataConverter.CHUNK_SIZE)
+        assertThat(serialized.getOrNull()?.size).isGreaterThan(1)
+        assertThat(serialized.getOrNull()?.size).isEqualTo(100 / WorkerDataConverter.CHUNK_SIZE)
     }
 
     private fun testIdentity(data: List<NotificationEventRequest>) {
         val sut = WorkerDataConverter(DefaultJsonProvider())
-        val serialized = sut.serialize(data).first().getOrThrow()
-        val result = sut.deserialize(serialized)
+        val serialized = sut.serialize(data).getOrThrow()
+        val result = sut.deserialize(serialized.first())
         assertThat(result).isEqualTo(data)
     }
 }

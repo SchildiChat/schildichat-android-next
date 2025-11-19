@@ -33,8 +33,8 @@ class SyncNotificationWorkManagerRequestTest {
         )
 
         val result = request.build()
-        assertThat(result.first().isSuccess).isTrue()
-        result.first().getOrNull()!!.run {
+        assertThat(result.isSuccess).isTrue()
+        result.getOrNull()!!.first().run {
             assertThat(this).isInstanceOf(OneTimeWorkRequest::class.java)
             assertThat(workSpec.input.hasKeyWithValueOfType<String>("requests")).isTrue()
             // True in API 33+
@@ -52,8 +52,8 @@ class SyncNotificationWorkManagerRequestTest {
         )
 
         val result = request.build()
-        assertThat(result.first().isSuccess).isTrue()
-        result.first().getOrNull()!!.run {
+        assertThat(result.isSuccess).isTrue()
+        result.getOrNull()!!.first().run {
             assertThat(this).isInstanceOf(OneTimeWorkRequest::class.java)
             assertThat(workSpec.input.hasKeyWithValueOfType<String>("requests")).isTrue()
             // False before API 33
@@ -70,7 +70,7 @@ class SyncNotificationWorkManagerRequestTest {
         )
 
         val result = request.build()
-        assertThat(result.first().isFailure).isTrue()
+        assertThat(result.isFailure).isTrue()
     }
 
     @Test
@@ -81,7 +81,7 @@ class SyncNotificationWorkManagerRequestTest {
             workerDataConverter = WorkerDataConverter({ error("error during serialization") })
         )
         val result = request.build()
-        assertThat(result.first().isFailure).isTrue()
+        assertThat(result.isFailure).isTrue()
     }
 }
 

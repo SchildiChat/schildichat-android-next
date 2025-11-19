@@ -17,7 +17,7 @@ import io.element.android.libraries.matrix.test.A_USER_ID_5
 import io.element.android.libraries.matrix.test.room.aRoomMember
 import org.junit.Test
 
-class PowerLevelBaseRoomMemberComparatorTest {
+class PowerLevelRoomMemberComparatorTest {
     @Test
     fun `order is Admin, then Moderator, then User`() {
         val memberList = listOf(

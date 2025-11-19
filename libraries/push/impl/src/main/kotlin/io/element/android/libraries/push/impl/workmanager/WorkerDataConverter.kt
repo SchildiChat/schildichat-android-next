@@ -28,16 +28,47 @@ class WorkerDataConverter(
         // First try to serialize all requests at once. In the vast majority of cases this will work.
         return serializeRequests(notificationEventRequests)
             .map { listOf(it) }
-            .recoverCatching {
-                if (it is DataForWorkManagerIsTooBig) {
+            .recoverCatching { t ->
+                if (t is DataForWorkManagerIsTooBig) {
                     // Perform serialization on sublists, workDataOf have failed because of size limit
-                    Timber.w(it, "Failed to serialize ${notificationEventRequests.size} notification requests, trying with chunks of $CHUNK_SIZE.")
-                    // TODO Do not split rooms
-                    notificationEventRequests.chunked(CHUNK_SIZE).mapNotNull { chunk ->
-                        serializeRequests(chunk).getOrNull()
+                    Timber.w(t, "Failed to serialize ${notificationEventRequests.size} notification requests, split the requests per room.")
+                    // Group the requests per rooms
+                    val requestsSortedPerRoom = notificationEventRequests.groupBy { it.roomId }.values
+                    // Build a list of sublist with size at most CHUNK_SIZE, and with all rooms kept together
+                    buildList {
+                        val currentChunk = mutableListOf<NotificationEventRequest>()
+                        for (requests in requestsSortedPerRoom) {
+                            if (currentChunk.size + requests.size <= CHUNK_SIZE) {
+                                // Can add the whole room requests to the current chunk
+                                currentChunk.addAll(requests)
+                            } else {
+                                // Add the current chunk
+                                add(currentChunk.toList())
+                                // Start a new chunk with the current room requests
+                                currentChunk.clear()
+                                // If a room has more requests than CHUNK_SIZE, we need to split them
+                                requests.chunked(CHUNK_SIZE) { chunk ->
+                                    if (chunk.size == CHUNK_SIZE) {
+                                        add(chunk.toList())
+                                    } else {
+                                        currentChunk.addAll(chunk)
+                                    }
+                                }
+                            }
+                        }
+                        // Add any remaining requests
+                        add(currentChunk.toList())
                     }
+                        .filter { it.isNotEmpty() }
+                        .also {
+                            Timber.d("Split notification requests into ${it.size} chunks for WorkManager serialization")
+                            it.forEach { requests ->
+                                Timber.d(" - Chunk with ${requests.size} requests")
+                            }
+                        }
+                        .mapNotNull { serializeRequests(it).getOrNull() }
                 } else {
-                    throw it
+                    throw t
                 }
             }
     }

@@ -15,6 +15,7 @@ import io.element.android.libraries.matrix.test.AN_EVENT_ID
 import io.element.android.libraries.matrix.test.AN_EVENT_ID_2
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_ROOM_ID_2
+import io.element.android.libraries.matrix.test.A_ROOM_ID_3
 import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.matrix.test.A_SESSION_ID_2
 import io.element.android.libraries.push.api.push.NotificationEventRequest
@@ -60,6 +61,63 @@ class WorkerDataConverterTest {
         val serialized = sut.serialize(data)
         assertThat(serialized.getOrNull()?.size).isGreaterThan(1)
         assertThat(serialized.getOrNull()?.size).isEqualTo(100 / WorkerDataConverter.CHUNK_SIZE)
+        // All the items are present
+        val deserialized = serialized.getOrNull()?.flatMap { sut.deserialize(it)!! }
+        assertThat(deserialized).containsExactlyElementsIn(data)
+    }
+
+    @Test
+    fun `serializing lots of data leads to several work data generated case 2`() {
+        val data = List(101) {
+            NotificationEventRequest(
+                sessionId = A_SESSION_ID,
+                roomId = A_ROOM_ID,
+                eventId = EventId(AN_EVENT_ID.value + it),
+                providerInfo = "info$it",
+            )
+        }
+        val sut = WorkerDataConverter(DefaultJsonProvider())
+        val serialized = sut.serialize(data)
+        assertThat(serialized.getOrNull()?.size).isGreaterThan(1)
+        assertThat(serialized.getOrNull()?.size).isEqualTo(100 / WorkerDataConverter.CHUNK_SIZE + 1)
+        // All the items are present
+        val deserialized = serialized.getOrNull()?.flatMap { sut.deserialize(it)!! }
+        assertThat(deserialized).containsExactlyElementsIn(data)
+    }
+
+    @Test
+    fun `serializing lots of data leads to several work data generated case 3`() {
+        val data1 = List(15) {
+            NotificationEventRequest(
+                sessionId = A_SESSION_ID,
+                roomId = A_ROOM_ID,
+                eventId = EventId(AN_EVENT_ID.value + it),
+                providerInfo = "info".repeat(100) + it,
+            )
+        }
+        val data2 = List(3) {
+            NotificationEventRequest(
+                sessionId = A_SESSION_ID,
+                roomId = A_ROOM_ID_2,
+                eventId = EventId(AN_EVENT_ID.value + it),
+                providerInfo = "info".repeat(100) + it,
+            )
+        }
+        val data3 = List(7) {
+            NotificationEventRequest(
+                sessionId = A_SESSION_ID,
+                roomId = A_ROOM_ID_3,
+                eventId = EventId(AN_EVENT_ID.value + it),
+                providerInfo = "info".repeat(100) + it,
+            )
+        }
+        val data = (data1 + data2 + data3).shuffled()
+        val sut = WorkerDataConverter(DefaultJsonProvider())
+        val serialized = sut.serialize(data)
+        assertThat(serialized.getOrNull()?.size).isEqualTo(2)
+        // All the items are present
+        val deserialized = serialized.getOrNull()?.flatMap { sut.deserialize(it)!! }
+        assertThat(deserialized).containsExactlyElementsIn(data)
     }
 
     private fun testIdentity(data: List<NotificationEventRequest>) {

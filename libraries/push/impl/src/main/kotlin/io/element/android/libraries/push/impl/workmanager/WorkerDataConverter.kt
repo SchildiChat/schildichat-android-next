@@ -12,6 +12,7 @@ import androidx.work.Data
 import androidx.work.workDataOf
 import dev.zacsweers.metro.Inject
 import io.element.android.libraries.androidutils.json.JsonProvider
+import io.element.android.libraries.core.extensions.mapCatchingExceptions
 import io.element.android.libraries.core.extensions.runCatchingExceptions
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
@@ -23,12 +24,29 @@ import timber.log.Timber
 class WorkerDataConverter(
     private val json: JsonProvider,
 ) {
-    fun serialize(notificationEventRequests: List<NotificationEventRequest>): Result<Data> {
+    fun serialize(notificationEventRequests: List<NotificationEventRequest>): List<Result<Data>> {
+        return serializeRequests(notificationEventRequests)
+            .fold(
+                onSuccess = {
+                    listOf(Result.success(it))
+                },
+                onFailure = {
+                    // Perform serialization on sublists, workDataOf may have failed because of size limit
+                    Timber.w(it, "Failed to serialize ${notificationEventRequests.size} notification requests, trying with chunks of $CHUNK_SIZE.")
+                    notificationEventRequests.chunked(CHUNK_SIZE).map { chunk ->
+                        serializeRequests(chunk)
+                    }
+                },
+            )
+    }
+
+    private fun serializeRequests(notificationEventRequests: List<NotificationEventRequest>): Result<Data> {
         return runCatchingExceptions { json().encodeToString(notificationEventRequests.map { it.toData() }) }
             .onFailure {
                 Timber.e(it, "Failed to serialize notification requests")
             }
-            .map { str ->
+            .mapCatchingExceptions { str ->
+                // Note: workDataOf can fail if the data is too large
                 workDataOf(REQUESTS_KEY to str)
             }
     }
@@ -51,6 +69,7 @@ class WorkerDataConverter(
 
     companion object {
         private const val REQUESTS_KEY = "requests"
+        private const val CHUNK_SIZE = 20
     }
 }
 

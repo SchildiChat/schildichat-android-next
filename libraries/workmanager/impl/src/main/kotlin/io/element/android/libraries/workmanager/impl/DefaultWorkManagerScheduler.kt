@@ -27,14 +27,16 @@ class DefaultWorkManagerScheduler(
     private val workManager by lazy { WorkManager.getInstance(context) }
 
     override fun submit(workManagerRequest: WorkManagerRequest) {
-        workManagerRequest.build().fold(
-            onSuccess = {
-                workManager.enqueue(it)
-            },
-            onFailure = {
-                Timber.e(it, "Failed to build WorkManager request $workManagerRequest")
-            }
-        )
+        workManagerRequest.build().forEach {
+            it.fold(
+                onSuccess = { workRequest ->
+                    workManager.enqueue(workRequest)
+                },
+                onFailure = {
+                    Timber.e(it, "Failed to build WorkManager request $workManagerRequest")
+                }
+            )
+        }
     }
 
     override fun cancel(sessionId: SessionId) {

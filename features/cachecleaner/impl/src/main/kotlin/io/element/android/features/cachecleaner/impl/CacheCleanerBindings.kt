@@ -6,10 +6,11 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.features.cachecleaner.api
+package io.element.android.features.cachecleaner.impl
 
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
+import io.element.android.features.cachecleaner.api.CacheCleaner
 
 @ContributesTo(AppScope::class)
 interface CacheCleanerBindings {

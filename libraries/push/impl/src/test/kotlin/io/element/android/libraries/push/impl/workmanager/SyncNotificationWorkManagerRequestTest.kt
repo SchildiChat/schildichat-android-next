@@ -21,6 +21,7 @@ import io.element.android.libraries.workmanager.api.workManagerTag
 import io.element.android.services.toolbox.test.sdk.FakeBuildVersionSdkIntProvider
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import kotlin.collections.first
 
 class SyncNotificationWorkManagerRequestTest {
     @Test
@@ -32,8 +33,8 @@ class SyncNotificationWorkManagerRequestTest {
         )
 
         val result = request.build()
-        assertThat(result.isSuccess).isTrue()
-        result.getOrNull()!!.run {
+        assertThat(result.first().isSuccess).isTrue()
+        result.first().getOrNull()!!.run {
             assertThat(this).isInstanceOf(OneTimeWorkRequest::class.java)
             assertThat(workSpec.input.hasKeyWithValueOfType<String>("requests")).isTrue()
             // True in API 33+
@@ -51,8 +52,8 @@ class SyncNotificationWorkManagerRequestTest {
         )
 
         val result = request.build()
-        assertThat(result.isSuccess).isTrue()
-        result.getOrNull()!!.run {
+        assertThat(result.first().isSuccess).isTrue()
+        result.first().getOrNull()!!.run {
             assertThat(this).isInstanceOf(OneTimeWorkRequest::class.java)
             assertThat(workSpec.input.hasKeyWithValueOfType<String>("requests")).isTrue()
             // False before API 33
@@ -69,7 +70,7 @@ class SyncNotificationWorkManagerRequestTest {
         )
 
         val result = request.build()
-        assertThat(result.isFailure).isTrue()
+        assertThat(result.first().isFailure).isTrue()
     }
 
     @Test
@@ -80,7 +81,7 @@ class SyncNotificationWorkManagerRequestTest {
             workerDataConverter = WorkerDataConverter({ error("error during serialization") })
         )
         val result = request.build()
-        assertThat(result.isFailure).isTrue()
+        assertThat(result.first().isFailure).isTrue()
     }
 }
 

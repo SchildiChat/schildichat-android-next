@@ -25,6 +25,7 @@ class WorkerDataConverter(
     private val json: JsonProvider,
 ) {
     fun serialize(notificationEventRequests: List<NotificationEventRequest>): List<Result<Data>> {
+        // First try to serialize all requests at once. In the vast majority of cases this will work.
         return serializeRequests(notificationEventRequests)
             .fold(
                 onSuccess = {
@@ -69,7 +70,7 @@ class WorkerDataConverter(
 
     companion object {
         private const val REQUESTS_KEY = "requests"
-        private const val CHUNK_SIZE = 20
+        internal const val CHUNK_SIZE = 20
     }
 }
 

@@ -10,6 +10,7 @@ package io.element.android.libraries.push.impl.workmanager
 
 import com.google.common.truth.Truth.assertThat
 import io.element.android.libraries.androidutils.json.DefaultJsonProvider
+import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
 import io.element.android.libraries.matrix.test.AN_EVENT_ID_2
 import io.element.android.libraries.matrix.test.A_ROOM_ID
@@ -45,9 +46,25 @@ class WorkerDataConverterTest {
         )
     }
 
+    @Test
+    fun `serializing lots of data leads to several work data generated`() {
+        val data = List(100) {
+            NotificationEventRequest(
+                sessionId = A_SESSION_ID,
+                roomId = A_ROOM_ID,
+                eventId = EventId(AN_EVENT_ID.value + it),
+                providerInfo = "info$it",
+            )
+        }
+        val sut = WorkerDataConverter(DefaultJsonProvider())
+        val serialized = sut.serialize(data)
+        assertThat(serialized.size).isGreaterThan(1)
+        assertThat(serialized.size).isEqualTo(100 / WorkerDataConverter.CHUNK_SIZE)
+    }
+
     private fun testIdentity(data: List<NotificationEventRequest>) {
         val sut = WorkerDataConverter(DefaultJsonProvider())
-        val serialized = sut.serialize(data).getOrThrow()
+        val serialized = sut.serialize(data).first().getOrThrow()
         val result = sut.deserialize(serialized)
         assertThat(result).isEqualTo(data)
     }

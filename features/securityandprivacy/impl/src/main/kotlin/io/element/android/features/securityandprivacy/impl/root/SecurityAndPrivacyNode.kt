@@ -9,6 +9,8 @@
 package io.element.android.features.securityandprivacy.impl.root
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
@@ -18,6 +20,7 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.features.securityandprivacy.impl.SecurityAndPrivacyNavigator
+import io.element.android.libraries.architecture.appyx.launchMolecule
 import io.element.android.libraries.di.RoomScope
 
 @ContributesNode(RoomScope::class)
@@ -30,9 +33,11 @@ class SecurityAndPrivacyNode(
     private val navigator = plugins<SecurityAndPrivacyNavigator>().first()
     private val presenter = presenterFactory.create(navigator)
 
+    private val stateFlow = launchMolecule { presenter.present() }
+
     @Composable
     override fun View(modifier: Modifier) {
-        val state = presenter.present()
+        val state by stateFlow.collectAsState()
         SecurityAndPrivacyView(
             state = state,
             onBackClick = this::navigateUp,

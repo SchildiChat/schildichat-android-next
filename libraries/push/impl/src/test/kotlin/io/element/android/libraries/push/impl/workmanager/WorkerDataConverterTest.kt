@@ -48,7 +48,7 @@ class WorkerDataConverterTest {
     }
 
     @Test
-    fun `serializing lots of data leads to several work data generated`() {
+    fun `serializing lots of data leads to several work data generated - one room - 100 events should be split in 5 chunks`() {
         val data = List(100) {
             NotificationEventRequest(
                 sessionId = A_SESSION_ID,
@@ -67,7 +67,7 @@ class WorkerDataConverterTest {
     }
 
     @Test
-    fun `serializing lots of data leads to several work data generated case 2`() {
+    fun `serializing lots of data leads to several work data generated - one room - 101 events should be split in 6 chunks`() {
         val data = List(101) {
             NotificationEventRequest(
                 sessionId = A_SESSION_ID,
@@ -86,7 +86,7 @@ class WorkerDataConverterTest {
     }
 
     @Test
-    fun `serializing lots of data leads to several work data generated case 3`() {
+    fun `serializing lots of data leads to several work data generated - 3 rooms - 25 events should be split in 2 chunks and room not mixed`() {
         val data1 = List(15) {
             NotificationEventRequest(
                 sessionId = A_SESSION_ID,
@@ -118,6 +118,18 @@ class WorkerDataConverterTest {
         // All the items are present
         val deserialized = serialized.getOrNull()?.flatMap { sut.deserialize(it)!! }
         assertThat(deserialized).containsExactlyElementsIn(data)
+        // Rooms are not mixed between the chunks
+        val setsOfRooms = serialized.getOrNull()!!
+            .map { workData -> sut.deserialize(workData)!! }
+            .map {
+                it.map { request -> request.roomId }.toSet()
+            }
+        // Ensure that all sets are distinct
+        assertThat(setsOfRooms.size).isEqualTo(2)
+        // 3 roomId are present
+        assertThat(setsOfRooms.flatten().toSet()).containsExactly(A_ROOM_ID, A_ROOM_ID_2, A_ROOM_ID_3)
+        // No intersection between sets
+        assertThat(setsOfRooms[0].intersect(setsOfRooms[1])).isEmpty()
     }
 
     private fun testIdentity(data: List<NotificationEventRequest>) {

@@ -104,7 +104,7 @@ class ChangeRolesPresenter(
             }
         }
 
-        val hasPendingChanges = usersWithRole.value != selectedUsers.value
+        val hasPendingChanges = usersWithRole.value.toSet() != selectedUsers.value.toSet()
 
         val roomInfo by room.roomInfoFlow.collectAsState()
         fun canChangeMemberRole(userId: UserId): Boolean {

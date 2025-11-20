@@ -358,7 +358,7 @@ class ChangeRolesPresenterTest {
             initialState.eventSink(ChangeRolesEvent.UserSelectionToggled(MatrixUser(A_USER_ID_2)))
             awaitItem().eventSink(ChangeRolesEvent.Save)
             val confirmingState = awaitItem()
-            assertThat(confirmingState.savingState).isEqualTo(AsyncAction.ConfirmingNoParams)
+            assertThat(confirmingState.savingState).isEqualTo(ConfirmingModifyingAdmins)
             confirmingState.eventSink(ChangeRolesEvent.Save)
             assertThat(awaitItem().savingState).isInstanceOf(AsyncAction.Loading::class.java)
             assertThat(awaitItem().savingState).isEqualTo(AsyncAction.Success(true))
@@ -383,7 +383,7 @@ class ChangeRolesPresenterTest {
 
             awaitItem().eventSink(ChangeRolesEvent.Save)
             val confirmingState = awaitItem()
-            assertThat(confirmingState.savingState).isEqualTo(AsyncAction.ConfirmingNoParams)
+            assertThat(confirmingState.savingState).isEqualTo(ConfirmingModifyingAdmins)
 
             confirmingState.eventSink(ChangeRolesEvent.CloseDialog)
             assertThat(awaitItem().savingState).isEqualTo(AsyncAction.Uninitialized)

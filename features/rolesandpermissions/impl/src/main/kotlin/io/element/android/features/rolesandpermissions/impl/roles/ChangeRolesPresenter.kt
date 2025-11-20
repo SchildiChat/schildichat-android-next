@@ -136,13 +136,18 @@ class ChangeRolesPresenter(
                     val isModifyingAdmins = role == RoomMember.Role.Admin
                     val isConfirming = saveState.value.isConfirming()
                     val modifyingOwners = role is RoomMember.Role.Owner
-
-                    val needsConfirmation = (modifyingOwners || currentUserIsAdmin && isModifyingAdmins) && hasPendingChanges && !isConfirming
-
+                    val confirmationValue = if (hasPendingChanges && !isConfirming) {
+                        when {
+                            modifyingOwners -> ConfirmingModifyingOwners
+                            currentUserIsAdmin && isModifyingAdmins -> ConfirmingModifyingAdmins
+                            else -> null
+                        }
+                    } else {
+                        null
+                    }
                     when {
-                        needsConfirmation -> {
-                            // Confirm modifying users
-                            saveState.value = AsyncAction.ConfirmingNoParams
+                        confirmationValue != null -> {
+                            saveState.value = confirmationValue
                         }
                         !saveState.value.isLoading() -> {
                             roomCoroutineScope.save(usersWithRole.value, selectedUsers, saveState)

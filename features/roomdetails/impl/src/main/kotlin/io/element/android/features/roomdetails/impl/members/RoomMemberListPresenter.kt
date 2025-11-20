@@ -130,7 +130,7 @@ class RoomMemberListPresenter(
                 searchResults = if (searchQuery.isEmpty() || !isSearchActive) {
                     SearchBarResultState.Initial()
                 } else {
-                    val results = roomMemberListDataSource.search(searchQuery).groupBy { it.membership }
+                    val results = roomMemberListDataSource.search(searchQuery, selectedSection).groupBy { it.membership }
                     if (results.isEmpty()) {
                         SearchBarResultState.NoResultsFound()
                     } else {

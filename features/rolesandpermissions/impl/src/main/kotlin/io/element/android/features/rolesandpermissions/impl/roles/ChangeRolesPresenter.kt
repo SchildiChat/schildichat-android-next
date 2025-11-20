@@ -134,11 +134,10 @@ class ChangeRolesPresenter(
                 is ChangeRolesEvent.Save -> {
                     val currentUserIsAdmin = roomInfo.roleOf(room.sessionId) == RoomMember.Role.Admin
                     val isModifyingAdmins = role == RoomMember.Role.Admin
-                    val hasChanges = selectedUsers != usersWithRole
                     val isConfirming = saveState.value.isConfirming()
                     val modifyingOwners = role is RoomMember.Role.Owner
 
-                    val needsConfirmation = (modifyingOwners || currentUserIsAdmin && isModifyingAdmins) && hasChanges && !isConfirming
+                    val needsConfirmation = (modifyingOwners || currentUserIsAdmin && isModifyingAdmins) && hasPendingChanges && !isConfirming
 
                     when {
                         needsConfirmation -> {

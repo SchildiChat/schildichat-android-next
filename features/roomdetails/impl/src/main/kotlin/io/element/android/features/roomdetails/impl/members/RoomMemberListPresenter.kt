@@ -10,6 +10,7 @@ package io.element.android.features.roomdetails.impl.members
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,7 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import dev.zacsweers.metro.Inject
-import io.element.android.features.roommembermoderation.api.RoomMemberModerationEvents
+import io.element.android.features.roommembermoderation.api.RoomMemberModerationEvents.ShowActionsForUser
 import io.element.android.features.roommembermoderation.api.RoomMemberModerationState
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.Presenter
@@ -53,7 +54,7 @@ class RoomMemberListPresenter(
     private val roomMembersModerationPresenter: Presenter<RoomMemberModerationState>,
     private val encryptionService: EncryptionService,
 ) : Presenter<RoomMemberListState> {
-    private var roomMembers: AsyncData<RoomMembers> by mutableStateOf(AsyncData.Loading())
+
     private val powerLevelRoomMemberComparator = PowerLevelRoomMemberComparator()
 
     @Composable
@@ -76,6 +77,9 @@ class RoomMemberListPresenter(
                 }
                 .launchIn(this)
         }
+
+        var roomMembers: AsyncData<RoomMembers> by remember { mutableStateOf(AsyncData.Loading())}
+        var selectedSection by remember {  mutableStateOf(SelectedSection.MEMBERS)}
 
         // Update the room members when the screen is loaded
         LaunchedEffect(Unit) {
@@ -160,7 +164,14 @@ class RoomMemberListPresenter(
                 is RoomMemberListEvents.OnSearchActiveChanged -> isSearchActive = event.active
                 is RoomMemberListEvents.UpdateSearchQuery -> searchQuery = event.query
                 is RoomMemberListEvents.RoomMemberSelected ->
-                    roomModerationState.eventSink(RoomMemberModerationEvents.ShowActionsForUser(event.roomMember.toMatrixUser()))
+                    roomModerationState.eventSink(ShowActionsForUser(event.roomMember.toMatrixUser()))
+                is RoomMemberListEvents.ChangeSelectedSection -> selectedSection = event.section
+            }
+        }
+
+        if (!roomModerationState.canBan && selectedSection == SelectedSection.BANNED) {
+            SideEffect {
+                selectedSection = SelectedSection.MEMBERS
             }
         }
 
@@ -171,6 +182,7 @@ class RoomMemberListPresenter(
             isSearchActive = isSearchActive,
             canInvite = canInvite,
             moderationState = roomModerationState,
+            selectedSection = selectedSection,
             eventSink = ::handleEvent,
         )
     }

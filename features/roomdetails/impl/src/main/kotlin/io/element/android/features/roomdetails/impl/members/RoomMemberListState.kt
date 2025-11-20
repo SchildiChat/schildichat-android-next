@@ -21,9 +21,15 @@ data class RoomMemberListState(
     val searchResults: SearchBarResultState<AsyncData<RoomMembers>>,
     val isSearchActive: Boolean,
     val canInvite: Boolean,
+    val selectedSection: SelectedSection,
     val moderationState: RoomMemberModerationState,
     val eventSink: (RoomMemberListEvents) -> Unit,
 )
+
+enum class SelectedSection {
+    MEMBERS,
+    BANNED
+}
 
 data class RoomMembers(
     val invited: ImmutableList<RoomMemberWithIdentityState>,

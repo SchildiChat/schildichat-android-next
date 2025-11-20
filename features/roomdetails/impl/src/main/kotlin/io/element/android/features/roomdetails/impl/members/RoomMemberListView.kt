@@ -30,10 +30,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +45,7 @@ import io.element.android.features.roomdetails.impl.R
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.components.button.BackButton
+import io.element.android.libraries.designsystem.components.form.textFieldState
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.Icon
@@ -68,17 +66,11 @@ import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
-private enum class SelectedSection {
-    MEMBERS,
-    BANNED
-}
-
 @Composable
 fun RoomMemberListView(
     state: RoomMemberListState,
     navigator: RoomMemberListNavigator,
     modifier: Modifier = Modifier,
-    initialSelectedSectionIndex: Int = 0,
 ) {
     fun onSelectUser(roomMember: RoomMember) {
         state.eventSink(RoomMemberListEvents.RoomMemberSelected(roomMember))
@@ -96,12 +88,6 @@ fun RoomMemberListView(
             }
         }
     ) { padding ->
-        var selectedSection by remember { mutableStateOf(SelectedSection.entries[initialSelectedSectionIndex]) }
-        if (!state.moderationState.canBan && selectedSection == SelectedSection.BANNED) {
-            SideEffect {
-                selectedSection = SelectedSection.MEMBERS
-            }
-        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -117,7 +103,7 @@ fun RoomMemberListView(
                 onActiveChange = { state.eventSink(RoomMemberListEvents.OnSearchActiveChanged(it)) },
                 onTextChange = { state.eventSink(RoomMemberListEvents.UpdateSearchQuery(it)) },
                 onSelectUser = ::onSelectUser,
-                selectedSection = selectedSection,
+                selectedSection = state.selectedSection,
                 modifier = Modifier.fillMaxWidth(),
             )
 
@@ -126,8 +112,8 @@ fun RoomMemberListView(
                     roomMembers = state.roomMembers,
                     showMembersCount = true,
                     canDisplayBannedUsersControls = state.moderationState.canBan,
-                    selectedSection = selectedSection,
-                    onSelectedSectionChange = { selectedSection = it },
+                    selectedSection = state.selectedSection,
+                    onSelectedSectionChange = { state.eventSink(RoomMemberListEvents.ChangeSelectedSection(it)) },
                     onSelectUser = ::onSelectUser,
                 )
             }
@@ -380,9 +366,13 @@ private fun RoomMemberSearchBar(
     selectedSection: SelectedSection,
     modifier: Modifier = Modifier,
 ) {
+    var queryFieldState by textFieldState(query)
     SearchBar(
-        query = query,
-        onQueryChange = onTextChange,
+        query = queryFieldState,
+        onQueryChange = { newQuery ->
+            queryFieldState = newQuery
+            onTextChange(newQuery)
+        },
         active = active,
         onActiveChange = onActiveChange,
         modifier = modifier,
@@ -405,16 +395,6 @@ private fun RoomMemberSearchBar(
 @Composable
 internal fun RoomMemberListViewPreview(@PreviewParameter(RoomMemberListStateProvider::class) state: RoomMemberListState) = ElementPreview {
     RoomMemberListView(
-        state = state,
-        navigator = object : RoomMemberListNavigator {},
-    )
-}
-
-@PreviewsDayNight
-@Composable
-internal fun RoomMemberListViewBannedPreview(@PreviewParameter(RoomMemberListStateBannedProvider::class) state: RoomMemberListState) = ElementPreview {
-    RoomMemberListView(
-        initialSelectedSectionIndex = 1,
         state = state,
         navigator = object : RoomMemberListNavigator {},
     )

@@ -21,107 +21,131 @@ import kotlinx.collections.immutable.persistentListOf
 
 internal class RoomMemberListStateProvider : PreviewParameterProvider<RoomMemberListState> {
     override val values: Sequence<RoomMemberListState>
-        get() = sequenceOf(
-            aRoomMemberListState(
-                roomMembers = AsyncData.Success(
-                    RoomMembers(
-                        invited = persistentListOf(aVictor().withIdentity(), aWalter().withIdentity()),
-                        joined = persistentListOf(anAlice().withIdentity(), aBob().withIdentity(), aWalter().withIdentity()),
-                        banned = persistentListOf(),
-                    )
-                )
-            ),
-            aRoomMemberListState(
-                roomMembers = AsyncData.Success(
-                    RoomMembers(
-                        invited = persistentListOf(aVictor().withIdentity(), aWalter().withIdentity()),
-                        joined = persistentListOf(
-                            anAlice().withIdentity(identityState = IdentityState.Verified),
-                            aBob().withIdentity(identityState = IdentityState.PinViolation),
-                            aWalter().withIdentity(identityState = IdentityState.VerificationViolation)
-                        ),
-                        banned = persistentListOf(),
-                    )
-                ),
-                moderationState = aRoomMemberModerationState(canBan = true)
-            ),
-            aRoomMemberListState(roomMembers = AsyncData.Loading()),
-            aRoomMemberListState().copy(canInvite = true),
-            aRoomMemberListState().copy(isSearchActive = false),
-            aRoomMemberListState().copy(isSearchActive = true),
-            aRoomMemberListState().copy(isSearchActive = true, searchQuery = "someone"),
-            aRoomMemberListState().copy(
-                isSearchActive = true,
-                searchQuery = "@someone:matrix.org",
-                searchResults = SearchBarResultState.Results(
-                    AsyncData.Success(
-                        RoomMembers(
-                            invited = persistentListOf(aVictor().withIdentity()),
-                            joined = persistentListOf(anAlice().withIdentity()),
-                            banned = persistentListOf(),
-                        )
-                    )
-                ),
-            ),
-            aRoomMemberListState().copy(
-                isSearchActive = true,
-                searchQuery = "something-with-no-results",
-                searchResults = SearchBarResultState.NoResultsFound()
-            ),
-            aRoomMemberListState(
-                roomMembers = AsyncData.Failure(Exception("Error details")),
-            ),
-        )
+        get() = roomMemberListStates() + bannedRoomMemberListStates()
 }
 
-internal class RoomMemberListStateBannedProvider : PreviewParameterProvider<RoomMemberListState> {
-    override val values: Sequence<RoomMemberListState>
-        get() = sequenceOf(
-            aRoomMemberListState(
-                roomMembers = AsyncData.Success(
-                    RoomMembers(
-                        invited = persistentListOf(),
-                        joined = persistentListOf(),
-                        banned = persistentListOf(
-                            aRoomMember(userId = UserId("@alice:example.com"), displayName = "Alice").withIdentity(),
-                            aRoomMember(userId = UserId("@bob:example.com"), displayName = "Bob").withIdentity(),
-                            aRoomMember(userId = UserId("@charlie:example.com"), displayName = "Charlie").withIdentity(),
-                        ),
-                    )
-                ),
-                moderationState = aRoomMemberModerationState(),
+private fun roomMemberListStates(): Sequence<RoomMemberListState> = sequenceOf(
+    aRoomMemberListState(
+        roomMembers = AsyncData.Success(
+            RoomMembers(
+                invited = persistentListOf(aVictor().withIdentity(), aWalter().withIdentity()),
+                joined = persistentListOf(anAlice().withIdentity(), aBob().withIdentity(), aWalter().withIdentity()),
+                banned = persistentListOf(),
             ),
-            aRoomMemberListState(
-                roomMembers = AsyncData.Loading(
-                    RoomMembers(
-                        invited = persistentListOf(),
-                        joined = persistentListOf(),
-                        banned = persistentListOf(
-                            aRoomMember(userId = UserId("@alice:example.com"), displayName = "Alice").withIdentity(),
-                            aRoomMember(userId = UserId("@bob:example.com"), displayName = "Bob").withIdentity(),
-                            aRoomMember(userId = UserId("@charlie:example.com"), displayName = "Charlie").withIdentity(),
-                        ),
-                    )
+        ),
+        selectedSection = SelectedSection.MEMBERS,
+    ),
+    aRoomMemberListState(
+        roomMembers = AsyncData.Success(
+            RoomMembers(
+                invited = persistentListOf(aVictor().withIdentity(), aWalter().withIdentity()),
+                joined = persistentListOf(
+                    anAlice().withIdentity(identityState = IdentityState.Verified),
+                    aBob().withIdentity(identityState = IdentityState.PinViolation),
+                    aWalter().withIdentity(identityState = IdentityState.VerificationViolation)
                 ),
-                moderationState = aRoomMemberModerationState(),
-            ),
-            aRoomMemberListState(
-                roomMembers = AsyncData.Success(
-                    RoomMembers(
-                        invited = persistentListOf(),
-                        joined = persistentListOf(),
-                        banned = persistentListOf(),
-                    )
-                ),
-                moderationState = aRoomMemberModerationState(),
+                banned = persistentListOf(),
             )
-        )
-}
+        ),
+        selectedSection = SelectedSection.MEMBERS,
+        moderationState = aRoomMemberModerationState(canBan = true)
+    ),
+    aRoomMemberListState(
+        roomMembers = AsyncData.Loading(),
+        selectedSection = SelectedSection.MEMBERS,
+    ),
+    aRoomMemberListState().copy(
+        canInvite = true,
+        selectedSection = SelectedSection.MEMBERS,
+    ),
+    aRoomMemberListState().copy(
+        isSearchActive = false,
+        selectedSection = SelectedSection.MEMBERS,
+    ),
+    aRoomMemberListState().copy(
+        isSearchActive = true,
+        selectedSection = SelectedSection.MEMBERS,
+    ),
+    aRoomMemberListState().copy(
+        isSearchActive = true,
+        searchQuery = "someone",
+        selectedSection = SelectedSection.MEMBERS,
+    ),
+    aRoomMemberListState().copy(
+        isSearchActive = true,
+        searchQuery = "@someone:matrix.org",
+        searchResults = SearchBarResultState.Results(
+            AsyncData.Success(
+                RoomMembers(
+                    invited = persistentListOf(aVictor().withIdentity()),
+                    joined = persistentListOf(anAlice().withIdentity()),
+                    banned = persistentListOf(),
+                )
+            )
+        ),
+        selectedSection = SelectedSection.MEMBERS,
+    ),
+    aRoomMemberListState().copy(
+        isSearchActive = true,
+        searchQuery = "something-with-no-results",
+        searchResults = SearchBarResultState.NoResultsFound(),
+        selectedSection = SelectedSection.MEMBERS,
+    ),
+    aRoomMemberListState(
+        roomMembers = AsyncData.Failure(Exception("Error details")),
+        selectedSection = SelectedSection.MEMBERS,
+    ),
+)
+
+private fun bannedRoomMemberListStates(): Sequence<RoomMemberListState> = sequenceOf(
+    aRoomMemberListState(
+        roomMembers = AsyncData.Success(
+            RoomMembers(
+                invited = persistentListOf(),
+                joined = persistentListOf(),
+                banned = persistentListOf(
+                    aRoomMember(userId = UserId("@alice:example.com"), displayName = "Alice").withIdentity(),
+                    aRoomMember(userId = UserId("@bob:example.com"), displayName = "Bob").withIdentity(),
+                    aRoomMember(userId = UserId("@charlie:example.com"), displayName = "Charlie").withIdentity(),
+                ),
+            )
+        ),
+        moderationState = aRoomMemberModerationState(),
+        selectedSection = SelectedSection.BANNED,
+    ),
+    aRoomMemberListState(
+        roomMembers = AsyncData.Loading(
+            RoomMembers(
+                invited = persistentListOf(),
+                joined = persistentListOf(),
+                banned = persistentListOf(
+                    aRoomMember(userId = UserId("@alice:example.com"), displayName = "Alice").withIdentity(),
+                    aRoomMember(userId = UserId("@bob:example.com"), displayName = "Bob").withIdentity(),
+                    aRoomMember(userId = UserId("@charlie:example.com"), displayName = "Charlie").withIdentity(),
+                ),
+            )
+        ),
+        moderationState = aRoomMemberModerationState(),
+        selectedSection = SelectedSection.BANNED,
+    ),
+    aRoomMemberListState(
+        roomMembers = AsyncData.Success(
+            RoomMembers(
+                invited = persistentListOf(),
+                joined = persistentListOf(),
+                banned = persistentListOf(),
+            )
+        ),
+        moderationState = aRoomMemberModerationState(),
+        selectedSection = SelectedSection.BANNED,
+    )
+)
 
 internal fun aRoomMemberListState(
     roomMembers: AsyncData<RoomMembers> = AsyncData.Loading(),
     searchResults: SearchBarResultState<AsyncData<RoomMembers>> = SearchBarResultState.Initial(),
     moderationState: RoomMemberModerationState = aRoomMemberModerationState(),
+    selectedSection: SelectedSection = SelectedSection.MEMBERS,
 ) = RoomMemberListState(
     roomMembers = roomMembers,
     searchQuery = "",
@@ -129,6 +153,7 @@ internal fun aRoomMemberListState(
     isSearchActive = false,
     canInvite = false,
     moderationState = moderationState,
+    selectedSection = SelectedSection.MEMBERS,
     eventSink = {}
 )
 

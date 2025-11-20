@@ -34,8 +34,8 @@ class SyncNotificationWorkManagerRequest(
             return Result.failure(InvalidParameterException("notificationEventRequests cannot be empty"))
         }
         Timber.d("Scheduling ${notificationEventRequests.size} notification requests with WorkManager for $sessionId")
-        return workerDataConverter.serialize(notificationEventRequests).map {
-            it.map { data ->
+        return workerDataConverter.serialize(notificationEventRequests).map { dataList ->
+            dataList.map { data ->
                 OneTimeWorkRequestBuilder<FetchNotificationsWorker>()
                     .setInputData(data)
                     .apply {

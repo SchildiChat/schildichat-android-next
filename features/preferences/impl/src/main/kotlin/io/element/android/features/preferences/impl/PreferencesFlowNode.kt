@@ -190,7 +190,12 @@ class PreferencesFlowNode(
                 createNode<DeveloperSettingsNode>(buildContext, listOf(developerSettingsCallback))
             }
             NavTarget.Labs -> {
-                createNode<LabsNode>(buildContext)
+                val callback = object : LabsNode.Callback {
+                    override fun onDone() {
+                        backstack.pop()
+                    }
+                }
+                createNode<LabsNode>(buildContext, listOf(callback))
             }
             NavTarget.About -> {
                 val callback = object : AboutNode.Callback {

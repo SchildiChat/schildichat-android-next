@@ -59,36 +59,21 @@ private fun roomMemberListStates(): Sequence<RoomMemberListState> = sequenceOf(
         selectedSection = SelectedSection.MEMBERS,
     ),
     aRoomMemberListState().copy(
-        isSearchActive = false,
         selectedSection = SelectedSection.MEMBERS,
     ),
     aRoomMemberListState().copy(
-        isSearchActive = true,
         selectedSection = SelectedSection.MEMBERS,
     ),
     aRoomMemberListState().copy(
-        isSearchActive = true,
         searchQuery = "someone",
         selectedSection = SelectedSection.MEMBERS,
     ),
     aRoomMemberListState().copy(
-        isSearchActive = true,
         searchQuery = "@someone:matrix.org",
-        searchResults = SearchBarResultState.Results(
-            AsyncData.Success(
-                RoomMembers(
-                    invited = persistentListOf(aVictor().withIdentity()),
-                    joined = persistentListOf(anAlice().withIdentity()),
-                    banned = persistentListOf(),
-                )
-            )
-        ),
         selectedSection = SelectedSection.MEMBERS,
     ),
     aRoomMemberListState().copy(
-        isSearchActive = true,
         searchQuery = "something-with-no-results",
-        searchResults = SearchBarResultState.NoResultsFound(),
         selectedSection = SelectedSection.MEMBERS,
     ),
     aRoomMemberListState(
@@ -143,17 +128,14 @@ private fun bannedRoomMemberListStates(): Sequence<RoomMemberListState> = sequen
 
 internal fun aRoomMemberListState(
     roomMembers: AsyncData<RoomMembers> = AsyncData.Loading(),
-    searchResults: SearchBarResultState<AsyncData<RoomMembers>> = SearchBarResultState.Initial(),
     moderationState: RoomMemberModerationState = aRoomMemberModerationState(),
     selectedSection: SelectedSection = SelectedSection.MEMBERS,
 ) = RoomMemberListState(
     roomMembers = roomMembers,
     searchQuery = "",
-    searchResults = searchResults,
-    isSearchActive = false,
     canInvite = false,
     moderationState = moderationState,
-    selectedSection = SelectedSection.MEMBERS,
+    selectedSection = selectedSection,
     eventSink = {}
 )
 

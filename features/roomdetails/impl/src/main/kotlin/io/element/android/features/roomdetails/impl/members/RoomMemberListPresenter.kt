@@ -23,6 +23,7 @@ import io.element.android.features.roommembermoderation.api.RoomMemberModeration
 import io.element.android.features.roommembermoderation.api.RoomMemberModerationState
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.Presenter
+import io.element.android.libraries.architecture.map
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.designsystem.theme.components.SearchBarResultState
 import io.element.android.libraries.matrix.api.core.UserId
@@ -41,7 +42,6 @@ import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableMap
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
@@ -63,8 +63,6 @@ class RoomMemberListPresenter(
         var searchResults by remember {
             mutableStateOf<SearchBarResultState<AsyncData<RoomMembers>>>(SearchBarResultState.Initial())
         }
-        var isSearchActive by rememberSaveable { mutableStateOf(false) }
-
         val membersState by room.membersStateFlow.collectAsState()
         val syncUpdateFlow = room.syncUpdateFlow.collectAsState()
         val canInvite by room.canInviteAsState(syncUpdateFlow.value)
@@ -78,8 +76,9 @@ class RoomMemberListPresenter(
                 .launchIn(this)
         }
 
-        var roomMembers: AsyncData<RoomMembers> by remember { mutableStateOf(AsyncData.Loading())}
-        var selectedSection by remember {  mutableStateOf(SelectedSection.MEMBERS)}
+        var roomMembers: AsyncData<RoomMembers> by remember { mutableStateOf(AsyncData.Loading()) }
+        var selectedSection by remember { mutableStateOf(SelectedSection.MEMBERS) }
+        var filteredRoomMembers: AsyncData<RoomMembers> by remember { mutableStateOf(AsyncData.Loading()) }
 
         // Update the room members when the screen is loaded
         LaunchedEffect(Unit) {
@@ -98,7 +97,7 @@ class RoomMemberListPresenter(
             }
             withContext(coroutineDispatchers.io) {
                 val members = membersState.roomMembers().orEmpty().groupBy { it.membership }
-                val info = room.roomInfoFlow.first()
+                val info = room.info()
                 if (members.getOrDefault(RoomMembershipState.JOIN, emptyList()).size < info.joinedMembersCount / 2) {
                     // Don't display initial room member list if we have less than half of the joined members:
                     // This result will come from the timeline loading membership events and it'll be wrong.
@@ -125,43 +124,16 @@ class RoomMemberListPresenter(
             }
         }
 
-        LaunchedEffect(membersState, searchQuery, isSearchActive) {
-            withContext(coroutineDispatchers.io) {
-                searchResults = if (searchQuery.isEmpty() || !isSearchActive) {
-                    SearchBarResultState.Initial()
-                } else {
-                    val results = roomMemberListDataSource.search(searchQuery, selectedSection).groupBy { it.membership }
-                    if (results.isEmpty()) {
-                        SearchBarResultState.NoResultsFound()
-                    } else {
-                        val result = RoomMembers(
-                            invited = results.getOrDefault(RoomMembershipState.INVITE, emptyList())
-                                .map { it.withIdentityState(roomMemberIdentityStates) }
-                                .toImmutableList(),
-                            joined = results.getOrDefault(RoomMembershipState.JOIN, emptyList())
-                                .sortedWith(powerLevelRoomMemberComparator)
-                                .map { it.withIdentityState(roomMemberIdentityStates) }
-                                .toImmutableList(),
-                            banned = results.getOrDefault(RoomMembershipState.BAN, emptyList())
-                                .sortedBy { it.userId.value }
-                                .map { it.withIdentityState(roomMemberIdentityStates) }
-                                .toImmutableList(),
-                        )
-                        SearchBarResultState.Results(
-                            if (membersState is RoomMembersState.Pending) {
-                                AsyncData.Loading(result)
-                            } else {
-                                AsyncData.Success(result)
-                            }
-                        )
-                    }
+        LaunchedEffect(searchQuery, roomMembers) {
+            filteredRoomMembers = roomMembers.map { members ->
+                withContext(coroutineDispatchers.io) {
+                    members.filter(searchQuery)
                 }
             }
         }
 
         fun handleEvent(event: RoomMemberListEvents) {
             when (event) {
-                is RoomMemberListEvents.OnSearchActiveChanged -> isSearchActive = event.active
                 is RoomMemberListEvents.UpdateSearchQuery -> searchQuery = event.query
                 is RoomMemberListEvents.RoomMemberSelected ->
                     roomModerationState.eventSink(ShowActionsForUser(event.roomMember.toMatrixUser()))
@@ -176,10 +148,8 @@ class RoomMemberListPresenter(
         }
 
         return RoomMemberListState(
-            roomMembers = roomMembers,
+            roomMembers = filteredRoomMembers,
             searchQuery = searchQuery,
-            searchResults = searchResults,
-            isSearchActive = isSearchActive,
             canInvite = canInvite,
             moderationState = roomModerationState,
             selectedSection = selectedSection,

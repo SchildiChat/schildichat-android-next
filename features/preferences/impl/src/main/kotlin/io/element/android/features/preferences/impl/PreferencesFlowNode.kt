@@ -186,6 +186,10 @@ class PreferencesFlowNode(
                     override fun navigateToPushHistory() {
                         backstack.push(NavTarget.PushHistory)
                     }
+
+                    override fun onDone() {
+                        backstack.pop()
+                    }
                 }
                 createNode<DeveloperSettingsNode>(buildContext, listOf(developerSettingsCallback))
             }

@@ -117,6 +117,53 @@ class EditUserProfilePresenterTest {
     }
 
     @Test
+    fun `present - exit invokes the expected callback`() = runTest {
+        val user = aMatrixUser(avatarUrl = AN_AVATAR_URL)
+        val closeLambda = lambdaRecorder<Unit> {}
+        val presenter = createEditUserProfilePresenter(
+            matrixUser = user,
+            navigator = BaseNavigator { closeLambda() },
+        )
+        presenter.test {
+            val initialState = awaitItem()
+            initialState.eventSink(EditUserProfileEvents.Exit)
+            closeLambda.assertions().isCalledOnce()
+        }
+    }
+
+    @Test
+    fun `present - exit without unsaved changes`() = runTest {
+        val user = aMatrixUser(avatarUrl = AN_AVATAR_URL)
+        val closeLambda = lambdaRecorder<Unit> {}
+        val presenter = createEditUserProfilePresenter(
+            matrixUser = user,
+            navigator = BaseNavigator { closeLambda() },
+        )
+        presenter.test {
+            val initialState = awaitItem()
+            initialState.eventSink(EditUserProfileEvents.UpdateDisplayName("New name"))
+            val withUpdatedName = awaitItem()
+            withUpdatedName.eventSink(EditUserProfileEvents.Exit)
+            val withConfirmation = awaitItem()
+            assertThat(withConfirmation.saveAction).isEqualTo(AsyncAction.ConfirmingCancellation)
+            // Cancel
+            withConfirmation.eventSink(EditUserProfileEvents.CloseDialog)
+            val afterCancel = awaitItem()
+            assertThat(afterCancel.saveAction).isEqualTo(AsyncAction.Uninitialized)
+            // Try again and confirm
+            afterCancel.eventSink(EditUserProfileEvents.Exit)
+            val withConfirmation2 = awaitItem()
+            assertThat(withConfirmation2.saveAction).isEqualTo(AsyncAction.ConfirmingCancellation)
+            closeLambda.assertions().isNeverCalled()
+            withConfirmation2.eventSink(EditUserProfileEvents.Exit)
+            // Dialog is closed
+            val finalState = awaitItem()
+            assertThat(finalState.saveAction).isEqualTo(AsyncAction.Uninitialized)
+            closeLambda.assertions().isCalledOnce()
+        }
+    }
+
+    @Test
     fun `present - updates state in response to changes`() = runTest {
         val user = aMatrixUser(id = A_USER_ID.value, displayName = "Name", avatarUrl = AN_AVATAR_URL)
         val presenter = createEditUserProfilePresenter(
@@ -421,7 +468,7 @@ class EditUserProfilePresenterTest {
     }
 
     @Test
-    fun `present - CancelSaveChanges resets save action state`() = runTest {
+    fun `present - CloseDialog resets save action state`() = runTest {
         givenPickerReturnsFile()
         val user = aMatrixUser(id = A_USER_ID.value, displayName = "Name", avatarUrl = AN_AVATAR_URL)
         val matrixClient = FakeMatrixClient().apply {

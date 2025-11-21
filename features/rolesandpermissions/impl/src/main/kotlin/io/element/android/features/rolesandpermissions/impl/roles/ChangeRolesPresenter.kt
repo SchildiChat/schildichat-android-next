@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -104,7 +105,11 @@ class ChangeRolesPresenter(
             }
         }
 
-        val hasPendingChanges = usersWithRole.value != selectedUsers.value
+        val hasPendingChanges by remember {
+            derivedStateOf {
+                usersWithRole.value.toSet() != selectedUsers.value.toSet()
+            }
+        }
 
         val roomInfo by room.roomInfoFlow.collectAsState()
         fun canChangeMemberRole(userId: UserId): Boolean {
@@ -134,16 +139,20 @@ class ChangeRolesPresenter(
                 is ChangeRolesEvent.Save -> {
                     val currentUserIsAdmin = roomInfo.roleOf(room.sessionId) == RoomMember.Role.Admin
                     val isModifyingAdmins = role == RoomMember.Role.Admin
-                    val hasChanges = selectedUsers != usersWithRole
                     val isConfirming = saveState.value.isConfirming()
                     val modifyingOwners = role is RoomMember.Role.Owner
-
-                    val needsConfirmation = (modifyingOwners || currentUserIsAdmin && isModifyingAdmins) && hasChanges && !isConfirming
-
+                    val confirmationValue = if (hasPendingChanges && !isConfirming) {
+                        when {
+                            modifyingOwners -> ConfirmingModifyingOwners
+                            currentUserIsAdmin && isModifyingAdmins -> ConfirmingModifyingAdmins
+                            else -> null
+                        }
+                    } else {
+                        null
+                    }
                     when {
-                        needsConfirmation -> {
-                            // Confirm modifying users
-                            saveState.value = AsyncAction.ConfirmingNoParams
+                        confirmationValue != null -> {
+                            saveState.value = confirmationValue
                         }
                         !saveState.value.isLoading() -> {
                             roomCoroutineScope.save(usersWithRole.value, selectedUsers, saveState)

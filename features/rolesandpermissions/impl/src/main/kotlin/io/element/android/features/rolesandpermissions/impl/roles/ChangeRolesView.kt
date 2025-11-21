@@ -178,29 +178,23 @@ fun ChangeRolesView(
                             onDismiss = { state.eventSink(ChangeRolesEvent.CloseDialog) }
                         )
                     }
-                    else -> {
-                        when (state.role) {
-                            is RoomMember.Role.Owner -> {
-                                ConfirmationDialog(
-                                    title = stringResource(R.string.screen_room_change_role_confirm_change_owners_title),
-                                    content = stringResource(R.string.screen_room_change_role_confirm_change_owners_description),
-                                    submitText = stringResource(CommonStrings.action_continue),
-                                    onSubmitClick = { state.eventSink(ChangeRolesEvent.Save) },
-                                    onDismiss = { state.eventSink(ChangeRolesEvent.CloseDialog) },
-                                    destructiveSubmit = true,
-                                )
-                            }
-                            is RoomMember.Role.Admin -> {
-                                ConfirmationDialog(
-                                    title = stringResource(R.string.screen_room_change_role_confirm_add_admin_title),
-                                    content = stringResource(R.string.screen_room_change_role_confirm_add_admin_description),
-                                    onSubmitClick = { state.eventSink(ChangeRolesEvent.Save) },
-                                    onDismiss = { state.eventSink(ChangeRolesEvent.CloseDialog) }
-                                )
-                            }
-                            // No confirmation needed for Moderator or User roles
-                            else -> Unit
-                        }
+                    is ConfirmingModifyingOwners -> {
+                        ConfirmationDialog(
+                            title = stringResource(R.string.screen_room_change_role_confirm_change_owners_title),
+                            content = stringResource(R.string.screen_room_change_role_confirm_change_owners_description),
+                            submitText = stringResource(CommonStrings.action_continue),
+                            onSubmitClick = { state.eventSink(ChangeRolesEvent.Save) },
+                            onDismiss = { state.eventSink(ChangeRolesEvent.CloseDialog) },
+                            destructiveSubmit = true,
+                        )
+                    }
+                    is ConfirmingModifyingAdmins -> {
+                        ConfirmationDialog(
+                            title = stringResource(R.string.screen_room_change_role_confirm_add_admin_title),
+                            content = stringResource(R.string.screen_room_change_role_confirm_add_admin_description),
+                            onSubmitClick = { state.eventSink(ChangeRolesEvent.Save) },
+                            onDismiss = { state.eventSink(ChangeRolesEvent.CloseDialog) }
+                        )
                     }
                 }
             },

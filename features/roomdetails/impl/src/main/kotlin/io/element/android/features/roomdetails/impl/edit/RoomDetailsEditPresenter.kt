@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -140,7 +141,7 @@ class RoomDetailsEditPresenter(
 
         val saveAction: MutableState<AsyncAction<Unit>> = remember { mutableStateOf(AsyncAction.Uninitialized) }
         val localCoroutineScope = rememberCoroutineScope()
-        fun handleEvents(event: RoomDetailsEditEvents) {
+        fun handleEvent(event: RoomDetailsEditEvents) {
             when (event) {
                 is RoomDetailsEditEvents.Save -> localCoroutineScope.saveChanges(
                     currentNameTrimmed = roomRawNameTrimmed,
@@ -191,7 +192,7 @@ class RoomDetailsEditPresenter(
             saveButtonEnabled = saveButtonEnabled,
             saveAction = saveAction.value,
             cameraPermissionState = cameraPermissionState,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

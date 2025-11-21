@@ -1,29 +1,28 @@
 /*
- * Copyright 2021-2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2021-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
 package io.element.android.libraries.push.impl.notifications
 
 import android.app.Notification
-import androidx.annotation.ColorInt
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.push.impl.R
+import io.element.android.libraries.push.impl.notifications.factories.NotificationAccountParams
 import io.element.android.libraries.push.impl.notifications.factories.NotificationCreator
 import io.element.android.services.toolbox.api.strings.StringProvider
 
 interface SummaryGroupMessageCreator {
     fun createSummaryNotification(
-        currentUser: MatrixUser,
+        notificationAccountParams: NotificationAccountParams,
         roomNotifications: List<RoomNotification>,
         invitationNotifications: List<OneShotNotification>,
         simpleNotifications: List<OneShotNotification>,
         fallbackNotifications: List<OneShotNotification>,
-        @ColorInt color: Int,
     ): Notification
 }
 
@@ -42,30 +41,25 @@ class DefaultSummaryGroupMessageCreator(
     private val notificationCreator: NotificationCreator,
 ) : SummaryGroupMessageCreator {
     override fun createSummaryNotification(
-        currentUser: MatrixUser,
+        notificationAccountParams: NotificationAccountParams,
         roomNotifications: List<RoomNotification>,
         invitationNotifications: List<OneShotNotification>,
         simpleNotifications: List<OneShotNotification>,
         fallbackNotifications: List<OneShotNotification>,
-        @ColorInt color: Int,
     ): Notification {
         val summaryIsNoisy = roomNotifications.any { it.shouldBing } ||
             invitationNotifications.any { it.isNoisy } ||
             simpleNotifications.any { it.isNoisy }
-
         val lastMessageTimestamp = roomNotifications.lastOrNull()?.latestTimestamp
             ?: invitationNotifications.lastOrNull()?.timestamp
             ?: simpleNotifications.last().timestamp
-
-        // FIXME roomIdToEventMap.size is not correct, this is the number of rooms
-        val nbEvents = roomNotifications.size + simpleNotifications.size
+        val nbEvents = roomNotifications.size + invitationNotifications.size + simpleNotifications.size
         val sumTitle = stringProvider.getQuantityString(R.plurals.notification_compat_summary_title, nbEvents, nbEvents)
         return notificationCreator.createSummaryListNotification(
-            currentUser,
+            notificationAccountParams = notificationAccountParams,
             sumTitle,
             noisy = summaryIsNoisy,
             lastMessageTimestamp = lastMessageTimestamp,
-            color = color,
         )
     }
 }

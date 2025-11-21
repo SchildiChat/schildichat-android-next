@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -15,7 +16,6 @@ import com.lemonappdev.konsist.api.verify.assertTrue
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
-import org.junit.Ignore
 import org.junit.Test
 
 class KonsistDiTest {
@@ -36,7 +36,6 @@ class KonsistDiTest {
             }
     }
 
-    @Ignore("Disabled to give time to branch and private module to remove the annotation")
     @Test
     fun `class annotated with @ContributesBinding does not need to be annotated with @Inject anymore`() {
         Konsist

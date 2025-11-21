@@ -366,7 +366,7 @@ Grund: %1$s."</string>
   <string name="common_voice_message">"Sprachnachricht"</string>
   <string name="common_waiting">"Warten…"</string>
   <string name="common_waiting_for_decryption_key">"Warte auf diese Nachricht"</string>
-  <string name="common_you">"Sie"</string>
+  <string name="common_you">"Du"</string>
   <string name="crypto_identity_change_pin_violation">"%1$s\'s Identität has sich geändert. %2$s"</string>
   <string name="crypto_identity_change_pin_violation_new">"%1$s\'s %2$s Identität hat sich geändert. %3$s"</string>
   <string name="crypto_identity_change_pin_violation_new_user_id">"(%1$s)"</string>
@@ -420,7 +420,6 @@ Möchtest du wirklich fortfahren?"</string>
   <string name="invite_friends_rich_title">"🔐️ Begleite mich auf %1$s"</string>
   <string name="invite_friends_text">"Hey, sprich mit mir auf %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>
-  <string name="notification_thread_in_room">"Thread in %1$s"</string>
   <string name="preference_rageshake">"Heftiges Schütteln um Fehler zu melden"</string>
   <string name="screen_bug_report_a11y_screenshot">"Bildschirmfoto"</string>
   <string name="screen_create_poll_option_accessibility_label">"%1$s: %2$s"</string>
@@ -468,8 +467,6 @@ Möchtest du wirklich fortfahren?"</string>
   <string name="screen_space_list_parent_space">"%1$s Space"</string>
   <string name="screen_space_list_title">"Spaces"</string>
   <string name="screen_space_menu_action_members">"Mitglieder anzeigen"</string>
-  <string name="screen_space_settings_leave_space">"Space verlassen"</string>
-  <string name="screen_space_settings_security_and_privacy">"Sicherheit &amp; Datenschutz"</string>
   <string name="screen_timeline_item_menu_send_failure_changed_identity">"Nachricht nicht gesendet, weil sich die verifizierte Identität von %1$s geändert hat."</string>
   <string name="screen_timeline_item_menu_send_failure_unsigned_device">"Die Nachricht wurde nicht gesendet, weil %1$s nicht alle Geräte verifiziert hat."</string>
   <string name="screen_timeline_item_menu_send_failure_you_unsigned_device">"Die Nachricht wurde nicht gesendet, weil du eines oder mehrere deiner Geräte nicht verifiziert hast."</string>

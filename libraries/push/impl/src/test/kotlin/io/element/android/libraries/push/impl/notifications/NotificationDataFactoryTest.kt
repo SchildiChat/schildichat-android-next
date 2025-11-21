@@ -1,7 +1,8 @@
 /*
- * Copyright 2021-2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2021-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -11,9 +12,10 @@ import com.google.common.truth.Truth.assertThat
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
-import io.element.android.libraries.matrix.test.A_COLOR_INT
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_SESSION_ID
+import io.element.android.libraries.matrix.ui.media.test.FakeImageLoader
+import io.element.android.libraries.push.impl.notifications.factories.aNotificationAccountParams
 import io.element.android.libraries.push.impl.notifications.fake.FakeActiveNotificationsProvider
 import io.element.android.libraries.push.impl.notifications.fake.FakeNotificationCreator
 import io.element.android.libraries.push.impl.notifications.fake.FakeRoomGroupMessageCreator
@@ -21,7 +23,6 @@ import io.element.android.libraries.push.impl.notifications.fake.FakeSummaryGrou
 import io.element.android.libraries.push.impl.notifications.fixtures.aNotifiableMessageEvent
 import io.element.android.libraries.push.impl.notifications.fixtures.aSimpleNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.fixtures.anInviteNotifiableEvent
-import io.element.android.libraries.push.test.notifications.FakeImageLoader
 import io.element.android.services.toolbox.test.strings.FakeStringProvider
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -51,16 +52,18 @@ class NotificationDataFactoryTest {
 
     @Test
     fun `given a room invitation when mapping to notification then it's added`() = testWith(notificationDataFactory) {
-        val expectedNotification = notificationCreator.createRoomInvitationNotificationResult(AN_INVITATION_EVENT)
+        val expectedNotification = notificationCreator.createRoomInvitationNotificationResult(
+            aNotificationAccountParams(),
+            AN_INVITATION_EVENT,
+        )
         val roomInvitation = listOf(AN_INVITATION_EVENT)
-
-        val result = toNotifications(roomInvitation, A_COLOR_INT)
+        val result = toNotifications(roomInvitation, aNotificationAccountParams())
 
         assertThat(result).isEqualTo(
             listOf(
                 OneShotNotification(
                     notification = expectedNotification,
-                    key = A_ROOM_ID.value,
+                    tag = A_ROOM_ID.value,
                     summaryLine = AN_INVITATION_EVENT.description,
                     isNoisy = AN_INVITATION_EVENT.noisy,
                     timestamp = AN_INVITATION_EVENT.timestamp
@@ -71,20 +74,18 @@ class NotificationDataFactoryTest {
 
     @Test
     fun `given a simple event when mapping to notification then it's added`() = testWith(notificationDataFactory) {
-        val expectedNotification = notificationCreator.createRoomInvitationNotificationResult(AN_INVITATION_EVENT)
-        val roomInvitation = listOf(A_SIMPLE_EVENT)
-
-        val result = toNotifications(roomInvitation, A_COLOR_INT)
-
-        assertThat(result).isEqualTo(
-            listOf(
-                OneShotNotification(
-                    notification = expectedNotification,
-                    key = AN_EVENT_ID.value,
-                    summaryLine = A_SIMPLE_EVENT.description,
-                    isNoisy = A_SIMPLE_EVENT.noisy,
-                    timestamp = AN_INVITATION_EVENT.timestamp
-                )
+        val expectedNotification = notificationCreator.createRoomInvitationNotificationResult(
+            aNotificationAccountParams(),
+            AN_INVITATION_EVENT,
+        )
+        val result = toNotifications(listOf(A_SIMPLE_EVENT), aNotificationAccountParams())
+        assertThat(result).containsExactly(
+            OneShotNotification(
+                notification = expectedNotification,
+                tag = AN_EVENT_ID.value,
+                summaryLine = A_SIMPLE_EVENT.description,
+                isNoisy = A_SIMPLE_EVENT.noisy,
+                timestamp = AN_INVITATION_EVENT.timestamp
             )
         )
     }
@@ -94,13 +95,14 @@ class NotificationDataFactoryTest {
         val events = listOf(A_MESSAGE_EVENT)
         val expectedNotification = RoomNotification(
             notification = fakeRoomGroupMessageCreator.createRoomMessage(
-                currentUser = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
+                notificationAccountParams = aNotificationAccountParams(
+                    user = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
+                ),
                 events = events,
                 roomId = A_ROOM_ID,
                 threadId = null,
-                imageLoader = FakeImageLoader().getImageLoader(),
+                imageLoader = FakeImageLoader(),
                 existingNotification = null,
-                color = A_COLOR_INT,
             ),
             roomId = A_ROOM_ID,
             summaryLine = "A room name: Bob Hello world!",
@@ -109,35 +111,33 @@ class NotificationDataFactoryTest {
             shouldBing = events.any { it.noisy },
             threadId = null,
         )
-        val roomWithMessage = listOf(A_MESSAGE_EVENT)
-
         val fakeImageLoader = FakeImageLoader()
         val result = toNotifications(
-            messages = roomWithMessage,
-            currentUser = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
-            imageLoader = fakeImageLoader.getImageLoader(),
-            color = A_COLOR_INT,
+            messages = listOf(A_MESSAGE_EVENT),
+            notificationAccountParams = aNotificationAccountParams(
+                user = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
+            ),
+            imageLoader = fakeImageLoader,
         )
 
         assertThat(result.size).isEqualTo(1)
         assertThat(result.first().isDataEqualTo(expectedNotification)).isTrue()
-        assertThat(fakeImageLoader.getCoilRequests().size).isEqualTo(0)
+        assertThat(fakeImageLoader.getExecutedRequestsData()).isEmpty()
     }
 
     @Test
     fun `given a room with only redacted events when mapping to notification then is Empty`() = testWith(notificationDataFactory) {
-        val redactedRoom = listOf(A_MESSAGE_EVENT.copy(isRedacted = true))
-
+        val redactedRoom = A_MESSAGE_EVENT.copy(isRedacted = true)
         val fakeImageLoader = FakeImageLoader()
         val result = toNotifications(
-            messages = redactedRoom,
-            currentUser = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
-            imageLoader = fakeImageLoader.getImageLoader(),
-            color = A_COLOR_INT,
+            messages = listOf(redactedRoom),
+            notificationAccountParams = aNotificationAccountParams(
+                user = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
+            ),
+            imageLoader = fakeImageLoader,
         )
-
         assertThat(result).isEmpty()
-        assertThat(fakeImageLoader.getCoilRequests().size).isEqualTo(0)
+        assertThat(fakeImageLoader.getExecutedRequestsData()).isEmpty()
     }
 
     @Test
@@ -151,13 +151,14 @@ class NotificationDataFactoryTest {
         val withRedactedRemoved = listOf(A_MESSAGE_EVENT.copy(eventId = EventId("\$not-redacted")))
         val expectedNotification = RoomNotification(
             notification = fakeRoomGroupMessageCreator.createRoomMessage(
-                currentUser = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
+                notificationAccountParams = aNotificationAccountParams(
+                    user = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
+                ),
                 events = withRedactedRemoved,
                 roomId = A_ROOM_ID,
                 threadId = null,
-                imageLoader = FakeImageLoader().getImageLoader(),
+                imageLoader = FakeImageLoader(),
                 existingNotification = null,
-                color = A_COLOR_INT,
             ),
             roomId = A_ROOM_ID,
             summaryLine = "A room name: Bob Hello world!",
@@ -170,14 +171,15 @@ class NotificationDataFactoryTest {
         val fakeImageLoader = FakeImageLoader()
         val result = toNotifications(
             messages = roomWithRedactedMessage,
-            currentUser = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
-            imageLoader = fakeImageLoader.getImageLoader(),
-            color = A_COLOR_INT,
+            notificationAccountParams = aNotificationAccountParams(
+                user = MatrixUser(A_SESSION_ID, A_SESSION_ID.value, MY_AVATAR_URL),
+            ),
+            imageLoader = fakeImageLoader,
         )
 
         assertThat(result.size).isEqualTo(1)
         assertThat(result.first().isDataEqualTo(expectedNotification)).isTrue()
-        assertThat(fakeImageLoader.getCoilRequests().size).isEqualTo(0)
+        assertThat(fakeImageLoader.getExecutedRequestsData()).isEmpty()
     }
 }
 

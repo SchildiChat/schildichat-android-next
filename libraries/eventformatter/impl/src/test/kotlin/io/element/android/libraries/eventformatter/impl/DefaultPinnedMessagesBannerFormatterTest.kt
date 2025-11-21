@@ -1,7 +1,8 @@
 /*
- * Copyright 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2024, 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -600,7 +601,7 @@ class DefaultPinnedMessagesBannerFormatterTest {
             OtherState.RoomCanonicalAlias,
             OtherState.RoomGuestAccess,
             OtherState.RoomHistoryVisibility,
-            OtherState.RoomJoinRules,
+            OtherState.RoomJoinRules(null),
             OtherState.RoomPinnedEvents(OtherState.RoomPinnedEvents.Change.CHANGED),
             OtherState.RoomUserPowerLevels(emptyMap()),
             OtherState.RoomServerAcl,

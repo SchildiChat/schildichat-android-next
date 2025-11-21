@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -34,6 +35,7 @@ import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
 import io.element.android.libraries.matrix.test.room.aRoomInfo
 import io.element.android.services.appnavstate.api.ActiveRoomsHolder
+import io.element.android.services.appnavstate.impl.DefaultActiveRoomsHolder
 import io.element.android.services.appnavstate.test.FakeAppNavigationStateService
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
@@ -107,7 +109,7 @@ class JoinedRoomLoadedFlowNodeTest {
         roomDetailsEntryPoint: RoomDetailsEntryPoint = FakeRoomDetailsEntryPoint(),
         spaceEntryPoint: SpaceEntryPoint = FakeSpaceEntryPoint(),
         forwardEntryPoint: ForwardEntryPoint = FakeForwardEntryPoint(),
-        activeRoomsHolder: ActiveRoomsHolder = ActiveRoomsHolder(),
+        activeRoomsHolder: ActiveRoomsHolder = DefaultActiveRoomsHolder(),
         matrixClient: FakeMatrixClient = FakeMatrixClient(),
     ) = JoinedRoomLoadedFlowNode(
         buildContext = BuildContext.root(savedStateMap = null),
@@ -191,7 +193,7 @@ class JoinedRoomLoadedFlowNodeTest {
         val fakeMessagesEntryPoint = FakeMessagesEntryPoint()
         val fakeRoomDetailsEntryPoint = FakeRoomDetailsEntryPoint()
         val inputs = JoinedRoomLoadedFlowNode.Inputs(room, RoomNavigationTarget.Root())
-        val activeRoomsHolder = ActiveRoomsHolder()
+        val activeRoomsHolder = DefaultActiveRoomsHolder()
         val roomFlowNode = createJoinedRoomLoadedFlowNode(
             plugins = listOf(inputs, FakeJoinedRoomLoadedFlowNodeCallback()),
             messagesEntryPoint = fakeMessagesEntryPoint,
@@ -214,7 +216,7 @@ class JoinedRoomLoadedFlowNodeTest {
         val fakeMessagesEntryPoint = FakeMessagesEntryPoint()
         val fakeRoomDetailsEntryPoint = FakeRoomDetailsEntryPoint()
         val inputs = JoinedRoomLoadedFlowNode.Inputs(room, RoomNavigationTarget.Root())
-        val activeRoomsHolder = ActiveRoomsHolder().apply {
+        val activeRoomsHolder = DefaultActiveRoomsHolder().apply {
             addRoom(room)
         }
         val roomFlowNode = createJoinedRoomLoadedFlowNode(

@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -140,7 +141,7 @@ class TimelinePresenter(
             value = featureFlagService.isFeatureEnabled(FeatureFlags.Threads)
         }
 
-        fun handleEvents(event: TimelineEvents) {
+        fun handleEvent(event: TimelineEvents) {
             when (event) {
                 is TimelineEvents.LoadMore -> {
                     if (event.direction == Timeline.PaginationDirection.FORWARDS && timelineMode is Timeline.Mode.Thread) {
@@ -289,7 +290,7 @@ class TimelinePresenter(
             messageShield = messageShield.value,
             resolveVerifiedUserSendFailureState = resolveVerifiedUserSendFailureState,
             displayThreadSummaries = displayThreadSummaries,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 
@@ -388,13 +389,17 @@ class TimelinePresenter(
     ) = launch(dispatchers.computation) {
         // If we are at the bottom of timeline, we mark the room as read.
         if (firstVisibleIndex == 0) {
-            room.liveTimeline.markAsRead(receiptType = readReceiptType)
+            timelineController.invokeOnCurrentTimeline {
+                markAsRead(receiptType = readReceiptType)
+            }
         } else {
             // Get last valid EventId seen by the user, as the first index might refer to a Virtual item
             val eventId = getLastEventIdBeforeOrAt(firstVisibleIndex, timelineItems)
             if (eventId != null && eventId != lastReadReceiptId.value) {
                 lastReadReceiptId.value = eventId
-                room.liveTimeline.sendReadReceipt(eventId = eventId, receiptType = readReceiptType)
+                timelineController.invokeOnCurrentTimeline {
+                    sendReadReceipt(eventId = eventId, receiptType = readReceiptType)
+                }
             }
         }
     }

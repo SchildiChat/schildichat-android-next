@@ -1,7 +1,8 @@
 /*
- * Copyright 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2024, 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -32,7 +33,7 @@ object NotificationIdProvider {
     }
 
     fun getForegroundServiceNotificationId(type: ForegroundServiceType): Int {
-        return type.id * 10 + FOREGROUND_SERVICE_NOTIFICATION_ID
+        return type.ordinal * 10 + FOREGROUND_SERVICE_NOTIFICATION_ID
     }
 
     private fun getOffset(sessionId: SessionId): Int {
@@ -49,7 +50,7 @@ object NotificationIdProvider {
     private const val FOREGROUND_SERVICE_NOTIFICATION_ID = 4
 }
 
-enum class ForegroundServiceType(val id: Int) {
-    INCOMING_CALL(1),
-    ONGOING_CALL(2),
+enum class ForegroundServiceType {
+    INCOMING_CALL,
+    ONGOING_CALL,
 }

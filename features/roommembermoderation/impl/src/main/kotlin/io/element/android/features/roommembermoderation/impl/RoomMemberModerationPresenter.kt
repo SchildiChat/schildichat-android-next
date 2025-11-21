@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -118,7 +119,7 @@ class RoomMemberModerationPresenter(
                 }
                 is InternalRoomMemberModerationEvents.DoUnbanUser -> {
                     selectedUser?.let {
-                        coroutineScope.unbanUser(it.userId, unbanUserAsyncAction)
+                        coroutineScope.unbanUser(it.userId, event.reason, unbanUserAsyncAction)
                     }
                     selectedUser = null
                 }
@@ -197,10 +198,14 @@ class RoomMemberModerationPresenter(
 
     private fun CoroutineScope.unbanUser(
         userId: UserId,
+        reason: String,
         unbanUserAction: MutableState<AsyncAction<Unit>>,
     ) = runActionAndWaitForMembershipChange(unbanUserAction) {
         analyticsService.capture(RoomModeration(RoomModeration.Action.UnbanMember))
-        room.unbanUser(userId = userId)
+        room.unbanUser(
+            userId = userId,
+            reason = reason.takeIf { it.isNotBlank() },
+        )
     }
 
     private fun <T> CoroutineScope.runActionAndWaitForMembershipChange(

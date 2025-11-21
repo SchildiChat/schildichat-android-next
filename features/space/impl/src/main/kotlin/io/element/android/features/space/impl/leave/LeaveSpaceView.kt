@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -69,6 +70,7 @@ import io.element.android.libraries.ui.strings.CommonStrings
 fun LeaveSpaceView(
     state: LeaveSpaceState,
     onCancel: () -> Unit,
+    onRolesAndPermissionsClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -130,6 +132,9 @@ fun LeaveSpaceView(
                     state.eventSink(LeaveSpaceEvents.LeaveSpace)
                 },
                 onCancel = onCancel,
+                // TODO enable when navigation is ready
+                showRolesAndPermissionsButton = false, // state.isLastAdmin,
+                onRolesAndPermissionsClick = onRolesAndPermissionsClick,
             )
         }
     }
@@ -210,6 +215,8 @@ private fun LeaveSpaceButtons(
     showLeaveButton: Boolean,
     selectedRoomsCount: Int,
     onLeaveSpace: () -> Unit,
+    showRolesAndPermissionsButton: Boolean,
+    onRolesAndPermissionsClick: () -> Unit,
     onCancel: () -> Unit,
 ) {
     ButtonColumnMolecule(
@@ -229,8 +236,14 @@ private fun LeaveSpaceButtons(
                 destructive = true,
             )
         }
-        // TODO For least admin space, add a button to open the settings.
-        // See https://www.figma.com/design/kcnHxunG1LDWXsJhaNuiHz/ER-145--Spaces-on-Element-X?node-id=4622-59600
+        if (showRolesAndPermissionsButton) {
+            Button(
+                text = stringResource(CommonStrings.action_go_to_roles_and_permissions),
+                onClick = onRolesAndPermissionsClick,
+                modifier = Modifier.fillMaxWidth(),
+                leadingIcon = IconSource.Vector(CompoundIcons.Settings()),
+            )
+        }
         TextButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(CommonStrings.action_cancel),
@@ -345,5 +358,6 @@ internal fun LeaveSpaceViewPreview(
     LeaveSpaceView(
         state = state,
         onCancel = {},
+        onRolesAndPermissionsClick = {},
     )
 }

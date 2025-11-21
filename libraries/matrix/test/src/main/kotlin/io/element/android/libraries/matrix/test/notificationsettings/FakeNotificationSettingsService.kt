@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -11,7 +12,6 @@ import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.notificationsettings.NotificationSettingsService
 import io.element.android.libraries.matrix.api.room.RoomNotificationMode
 import io.element.android.libraries.matrix.api.room.RoomNotificationSettings
-import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_ROOM_NOTIFICATION_MODE
 import io.element.android.tests.testutils.lambda.lambdaError
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,6 +25,7 @@ class FakeNotificationSettingsService(
     initialOneToOneDefaultMode: RoomNotificationMode = RoomNotificationMode.ALL_MESSAGES,
     initialEncryptedOneToOneDefaultMode: RoomNotificationMode = RoomNotificationMode.ALL_MESSAGES,
     private val getRawPushRulesResult: () -> Result<String> = { lambdaError() },
+    private val getRoomsWithUserDefinedRulesResult: () -> Result<List<RoomId>> = { lambdaError() },
 ) : NotificationSettingsService {
     private val notificationSettingsStateFlow = MutableStateFlow(Unit)
     private var defaultGroupRoomNotificationMode: RoomNotificationMode = initialGroupDefaultMode
@@ -153,8 +154,8 @@ class FakeNotificationSettingsService(
         return Result.success(Unit)
     }
 
-    override suspend fun getRoomsWithUserDefinedRules(): Result<List<String>> {
-        return Result.success(if (roomNotificationModeIsDefault) listOf() else listOf(A_ROOM_ID.value))
+    override suspend fun getRoomsWithUserDefinedRules(): Result<List<RoomId>> {
+        return getRoomsWithUserDefinedRulesResult()
     }
 
     override suspend fun canHomeServerPushEncryptedEventsToDevice(): Result<Boolean> {

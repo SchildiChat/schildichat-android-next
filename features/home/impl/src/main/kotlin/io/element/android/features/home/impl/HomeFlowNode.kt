@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -28,8 +29,6 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import im.vector.app.features.analytics.plan.MobileScreen
 import io.element.android.annotations.ContributesNode
-import io.element.android.features.changeroommemberroles.api.ChangeRoomMemberRolesEntryPoint
-import io.element.android.features.changeroommemberroles.api.ChangeRoomMemberRolesListType
 import io.element.android.features.home.api.HomeEntryPoint
 import io.element.android.features.home.impl.components.RoomListMenuAction
 import io.element.android.features.home.impl.model.RoomListRoomSummary
@@ -40,6 +39,8 @@ import io.element.android.features.invite.api.declineandblock.DeclineInviteAndBl
 import io.element.android.features.leaveroom.api.LeaveRoomRenderer
 import io.element.android.features.logout.api.direct.DirectLogoutView
 import io.element.android.features.reportroom.api.ReportRoomEntryPoint
+import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesEntryPoint
+import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesListType
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.appyx.launchMolecule
@@ -93,10 +94,12 @@ class HomeFlowNode(
             changeRoomMemberRolesNode: ChangeRoomMemberRolesEntryPoint.NodeProxy,
             ->
             commonLifecycle.coroutineScope.launch {
-                changeRoomMemberRolesNode.waitForRoleChanged()
+                val isNewOwnerSelected = changeRoomMemberRolesNode.waitForCompletion()
                 withContext(NonCancellable) {
                     backstack.pop()
-                    onNewOwnersSelected(changeRoomMemberRolesNode.roomId)
+                    if (isNewOwnerSelected) {
+                        onNewOwnersSelected(changeRoomMemberRolesNode.roomId)
+                    }
                 }
             }
         }

@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -9,7 +10,6 @@ package io.element.android.libraries.push.impl.notifications.conversations
 
 import android.content.Context
 import android.content.pm.ShortcutInfo
-import android.content.res.Configuration
 import android.os.Build
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -28,7 +28,6 @@ import io.element.android.libraries.matrix.api.MatrixClientProvider
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.ui.media.ImageLoaderHolder
-import io.element.android.libraries.matrix.ui.media.InitialsAvatarBitmapGenerator
 import io.element.android.libraries.push.api.notifications.NotificationBitmapLoader
 import io.element.android.libraries.push.api.notifications.conversations.NotificationConversationService
 import io.element.android.libraries.push.impl.intent.IntentProvider
@@ -94,15 +93,16 @@ class DefaultNotificationConversationService(
         val imageLoader = imageLoaderHolder.get(client)
 
         val defaultShortcutIconSize = ShortcutManagerCompat.getIconMaxWidth(context)
-        val useDarkTheme = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
         val icon = bitmapLoader.getRoomBitmap(
-            path = roomAvatarUrl,
+            avatarData = AvatarData(
+                id = roomId.value,
+                name = roomName,
+                url = roomAvatarUrl,
+                size = AvatarSize.RoomDetailsHeader,
+            ),
             imageLoader = imageLoader,
             targetSize = defaultShortcutIconSize.toLong()
         )?.let(IconCompat::createWithBitmap)
-            ?: InitialsAvatarBitmapGenerator(useDarkTheme = useDarkTheme)
-                .generateBitmap(defaultShortcutIconSize, AvatarData(id = roomId.value, name = roomName, size = AvatarSize.RoomDetailsHeader))
-                ?.let(IconCompat::createWithAdaptiveBitmap)
 
         val shortcutInfo = ShortcutInfoCompat.Builder(context, createShortcutId(sessionId, roomId))
             .setShortLabel(roomName)

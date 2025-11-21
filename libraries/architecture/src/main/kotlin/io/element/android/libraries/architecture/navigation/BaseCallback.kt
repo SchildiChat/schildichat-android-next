@@ -7,9 +7,11 @@
 
 package io.element.android.libraries.architecture.navigation
 
+import com.bumble.appyx.core.plugin.Plugin
+
 /**
- * Base navigator interface to be implemented by nodes to handle navigation actions from presenters.
+ * Base callback interface to be implemented by callers to handle results from nodes.
  */
-fun interface BaseNavigator {
-    fun close()
+fun interface BaseCallback : Plugin {
+    fun onDone()
 }

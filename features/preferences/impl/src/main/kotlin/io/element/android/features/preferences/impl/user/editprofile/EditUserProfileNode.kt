@@ -17,7 +17,9 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.libraries.architecture.NodeInputs
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.inputs
+import io.element.android.libraries.architecture.navigation.BaseCallback
 import io.element.android.libraries.architecture.navigation.BaseNavigator
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.user.MatrixUser
@@ -35,6 +37,7 @@ class EditUserProfileNode(
     ) : NodeInputs
 
     val matrixUser = inputs<Inputs>().matrixUser
+    val callback: BaseCallback = callback()
     val presenter = presenterFactory.create(
         matrixUser = matrixUser,
         navigator = this,
@@ -50,8 +53,5 @@ class EditUserProfileNode(
         )
     }
 
-    override fun close() {
-        // TODO Invoke callback
-        navigateUp()
-    }
+    override fun close() = callback.onDone()
 }

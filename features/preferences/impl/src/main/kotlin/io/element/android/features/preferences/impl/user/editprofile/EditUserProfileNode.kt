@@ -19,7 +19,6 @@ import io.element.android.annotations.ContributesNode
 import io.element.android.libraries.architecture.NodeInputs
 import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.inputs
-import io.element.android.libraries.architecture.navigation.BaseNavigator
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.user.MatrixUser
 
@@ -30,7 +29,7 @@ class EditUserProfileNode(
     @Assisted plugins: List<Plugin>,
     presenterFactory: EditUserProfilePresenter.Factory,
 ) : Node(buildContext, plugins = plugins),
-    BaseNavigator {
+    EditUserProfileNavigator {
     data class Inputs(
         val matrixUser: MatrixUser
     ) : NodeInputs

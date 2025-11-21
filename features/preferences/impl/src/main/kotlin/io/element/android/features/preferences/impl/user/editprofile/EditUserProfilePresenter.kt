@@ -26,7 +26,6 @@ import dev.zacsweers.metro.AssistedInject
 import io.element.android.libraries.androidutils.file.TemporaryUriDeleter
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
-import io.element.android.libraries.architecture.navigation.BaseNavigator
 import io.element.android.libraries.architecture.runCatchingUpdatingState
 import io.element.android.libraries.core.extensions.runCatchingExceptions
 import io.element.android.libraries.core.mimetype.MimeTypes
@@ -46,7 +45,7 @@ import timber.log.Timber
 @AssistedInject
 class EditUserProfilePresenter(
     @Assisted private val matrixUser: MatrixUser,
-    @Assisted private val navigator: BaseNavigator,
+    @Assisted private val navigator: EditUserProfileNavigator,
     private val matrixClient: MatrixClient,
     private val mediaPickerProvider: PickerProvider,
     private val mediaPreProcessor: MediaPreProcessor,
@@ -61,7 +60,7 @@ class EditUserProfilePresenter(
     interface Factory {
         fun create(
             matrixUser: MatrixUser,
-            navigator: BaseNavigator,
+            navigator: EditUserProfileNavigator,
         ): EditUserProfilePresenter
     }
 

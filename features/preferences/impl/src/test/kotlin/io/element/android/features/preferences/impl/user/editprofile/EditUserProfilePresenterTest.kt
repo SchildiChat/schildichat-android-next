@@ -12,7 +12,6 @@ import android.net.Uri
 import com.google.common.truth.Truth.assertThat
 import io.element.android.libraries.androidutils.file.TemporaryUriDeleter
 import io.element.android.libraries.architecture.AsyncAction
-import io.element.android.libraries.architecture.navigation.BaseNavigator
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.test.AN_AVATAR_URL
@@ -31,7 +30,6 @@ import io.element.android.tests.testutils.WarmUpRule
 import io.element.android.tests.testutils.consumeItemsUntilPredicate
 import io.element.android.tests.testutils.consumeItemsUntilTimeout
 import io.element.android.tests.testutils.fake.FakeTemporaryUriDeleter
-import io.element.android.tests.testutils.lambda.lambdaError
 import io.element.android.tests.testutils.lambda.lambdaRecorder
 import io.element.android.tests.testutils.lambda.value
 import io.element.android.tests.testutils.test
@@ -79,7 +77,7 @@ class EditUserProfilePresenterTest {
 
     private fun createEditUserProfilePresenter(
         matrixClient: MatrixClient = FakeMatrixClient(),
-        navigator: BaseNavigator = BaseNavigator { lambdaError() },
+        navigator: EditUserProfileNavigator = FakeEditUserProfileNavigator(),
         matrixUser: MatrixUser = aMatrixUser(),
         permissionsPresenter: PermissionsPresenter = FakePermissionsPresenter(),
         temporaryUriDeleter: TemporaryUriDeleter = FakeTemporaryUriDeleter(),
@@ -122,7 +120,7 @@ class EditUserProfilePresenterTest {
         val closeLambda = lambdaRecorder<Unit> {}
         val presenter = createEditUserProfilePresenter(
             matrixUser = user,
-            navigator = BaseNavigator { closeLambda() },
+            navigator = FakeEditUserProfileNavigator(closeLambda),
         )
         presenter.test {
             val initialState = awaitItem()
@@ -137,7 +135,7 @@ class EditUserProfilePresenterTest {
         val closeLambda = lambdaRecorder<Unit> {}
         val presenter = createEditUserProfilePresenter(
             matrixUser = user,
-            navigator = BaseNavigator { closeLambda() },
+            navigator = FakeEditUserProfileNavigator(closeLambda),
         )
         presenter.test {
             val initialState = awaitItem()

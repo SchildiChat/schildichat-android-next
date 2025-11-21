@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -104,7 +105,11 @@ class ChangeRolesPresenter(
             }
         }
 
-        val hasPendingChanges = usersWithRole.value.toSet() != selectedUsers.value.toSet()
+        val hasPendingChanges by remember {
+            derivedStateOf {
+                usersWithRole.value.toSet() != selectedUsers.value.toSet()
+            }
+        }
 
         val roomInfo by room.roomInfoFlow.collectAsState()
         fun canChangeMemberRole(userId: UserId): Boolean {

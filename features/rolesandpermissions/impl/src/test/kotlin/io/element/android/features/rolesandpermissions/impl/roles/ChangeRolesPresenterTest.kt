@@ -74,7 +74,7 @@ class ChangeRolesPresenterTest {
     }
 
     @Test
-    fun `present - canChangeRole of users with lower power level unless they are owners`() = runTest {
+    fun `present - canChangeRole of users with lower power level unless they are owners - privilegedCreatorRole is true`() = runTest {
         val creatorUserId = UserId("@creator:matrix.org")
         val superAdminUserId = UserId("@super_admin:matrix.org")
 
@@ -82,6 +82,7 @@ class ChangeRolesPresenterTest {
             // User is a creator, so they can change roles of other members. So is `creatorUserId`.
             givenRoomInfo(
                 aRoomInfo(
+                    privilegedCreatorRole = true,
                     roomCreators = listOf(sessionId, creatorUserId),
                     roomPowerLevels = RoomPowerLevels(
                         defaultRoomPowerLevelValues(),
@@ -99,7 +100,7 @@ class ChangeRolesPresenterTest {
 
             val roomMemberList = aRoomMemberList() + listOf(
                 // Owner - superadmin
-                aRoomMember(userId = superAdminUserId, role = RoomMember.Role.Owner(isCreator = true)),
+                aRoomMember(userId = superAdminUserId, role = RoomMember.Role.Owner(isCreator = false)),
                 // Owner - creator
                 aRoomMember(userId = creatorUserId, role = RoomMember.Role.Owner(isCreator = true))
             )
@@ -112,6 +113,55 @@ class ChangeRolesPresenterTest {
             skipItems(1)
             awaitItem().run {
                 assertThat(canChangeMemberRole(A_USER_ID_2)).isTrue() // Admin
+                assertThat(canChangeMemberRole(A_USER_ID_3)).isTrue() // Moderator
+                assertThat(canChangeMemberRole(creatorUserId)).isFalse() // Owner
+            }
+        }
+    }
+
+    @Test
+    fun `present - canChangeRole of users with lower power level unless they are owners - privilegedCreatorRole is false`() = runTest {
+        val creatorUserId = UserId("@creator:matrix.org")
+        val superAdminUserId = UserId("@super_admin:matrix.org")
+
+        val room = FakeJoinedRoom().apply {
+            // User is a creator, so they can change roles of other members. So is `creatorUserId`.
+            givenRoomInfo(
+                aRoomInfo(
+                    privilegedCreatorRole = false,
+                    roomCreators = listOf(sessionId, creatorUserId),
+                    roomPowerLevels = RoomPowerLevels(
+                        defaultRoomPowerLevelValues(),
+                        users = persistentMapOf(
+                            // Creator is an admin
+                            sessionId to RoomMember.Role.Admin.powerLevel,
+                            creatorUserId to RoomMember.Role.Admin.powerLevel,
+                            // bob is Admin
+                            A_USER_ID_2 to RoomMember.Role.Admin.powerLevel,
+                            // carol is Moderator
+                            A_USER_ID_3 to RoomMember.Role.Moderator.powerLevel,
+                            // super_admin is Owner - Superadmin
+                            superAdminUserId to RoomMember.Role.Owner(isCreator = false).powerLevel,
+                        )
+                    )
+                )
+            )
+
+            val roomMemberList = aRoomMemberList() + listOf(
+                // Owner - superadmin
+                aRoomMember(userId = superAdminUserId, role = RoomMember.Role.Owner(isCreator = false)),
+                // Owner - creator
+                aRoomMember(userId = creatorUserId, role = RoomMember.Role.Owner(isCreator = true))
+            )
+            givenRoomMembersState(RoomMembersState.Ready(roomMemberList.toImmutableList()))
+        }
+        val presenter = createChangeRolesPresenter(room = room)
+        moleculeFlow(RecompositionMode.Immediate) {
+            presenter.present()
+        }.test {
+            skipItems(1)
+            awaitItem().run {
+                assertThat(canChangeMemberRole(A_USER_ID_2)).isFalse() // Creator cannot update Admin in this case
                 assertThat(canChangeMemberRole(A_USER_ID_3)).isTrue() // Moderator
                 assertThat(canChangeMemberRole(creatorUserId)).isFalse() // Owner
             }

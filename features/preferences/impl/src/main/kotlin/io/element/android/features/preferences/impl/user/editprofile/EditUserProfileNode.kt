@@ -19,7 +19,6 @@ import io.element.android.annotations.ContributesNode
 import io.element.android.libraries.architecture.NodeInputs
 import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.inputs
-import io.element.android.libraries.architecture.navigation.BaseCallback
 import io.element.android.libraries.architecture.navigation.BaseNavigator
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.user.MatrixUser
@@ -36,8 +35,12 @@ class EditUserProfileNode(
         val matrixUser: MatrixUser
     ) : NodeInputs
 
+    interface Callback : Plugin {
+        fun onDone()
+    }
+
     val matrixUser = inputs<Inputs>().matrixUser
-    val callback: BaseCallback = callback()
+    val callback: Callback = callback()
     val presenter = presenterFactory.create(
         matrixUser = matrixUser,
         navigator = this,

@@ -40,7 +40,6 @@ import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.appyx.canPop
 import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
-import io.element.android.libraries.architecture.navigation.BaseCallback
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
@@ -268,7 +267,11 @@ class PreferencesFlowNode(
             }
             is NavTarget.UserProfile -> {
                 val inputs = EditUserProfileNode.Inputs(navTarget.matrixUser)
-                val callback = BaseCallback { backstack.pop() }
+                val callback = object : EditUserProfileNode.Callback {
+                    override fun onDone() {
+                        backstack.pop()
+                    }
+                }
                 createNode<EditUserProfileNode>(buildContext, listOf(inputs, callback))
             }
             NavTarget.LockScreenSettings -> {

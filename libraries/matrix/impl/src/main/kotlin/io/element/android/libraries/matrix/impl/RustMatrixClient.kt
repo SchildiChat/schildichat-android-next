@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -78,6 +79,7 @@ import io.element.android.libraries.matrix.impl.util.cancelAndDestroy
 import io.element.android.libraries.matrix.impl.util.mxCallbackFlow
 import io.element.android.libraries.matrix.impl.verification.RustSessionVerificationService
 import io.element.android.libraries.sessionstorage.api.SessionStore
+import io.element.android.services.analytics.api.AnalyticsService
 import io.element.android.services.toolbox.api.systemclock.SystemClock
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -134,6 +136,7 @@ class RustMatrixClient(
     clock: SystemClock,
     timelineEventTypeFilterFactory: TimelineEventTypeFilterFactory,
     private val featureFlagService: FeatureFlagService,
+    private val analyticsService: AnalyticsService,
 ) : MatrixClient {
     override val sessionId: UserId = UserId(innerClient.userId())
     override val deviceId: DeviceId = DeviceId(innerClient.deviceId())
@@ -182,6 +185,7 @@ class RustMatrixClient(
         roomListFactory = RoomListFactory(
             innerRoomListService = innerRoomListService,
             sessionCoroutineScope = sessionCoroutineScope,
+            analyticsService = analyticsService,
         ),
         roomSyncSubscriber = roomSyncSubscriber,
         scPreferencesStore = scPreferencesStore,
@@ -217,6 +221,7 @@ class RustMatrixClient(
         roomMembershipObserver = roomMembershipObserver,
         roomInfoMapper = roomInfoMapper,
         featureFlagService = featureFlagService,
+        analyticsService = analyticsService,
     )
 
     override val matrixMediaLoader: MatrixMediaLoader = RustMediaLoader(

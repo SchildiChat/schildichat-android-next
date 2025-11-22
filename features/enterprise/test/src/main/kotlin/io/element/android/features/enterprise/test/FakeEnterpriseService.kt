@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -24,11 +25,12 @@ class FakeEnterpriseService(
     private val defaultHomeserverListResult: () -> List<String> = { emptyList() },
     private val isAllowedToConnectToHomeserverResult: (String) -> Boolean = { lambdaError() },
     initialSemanticColors: SemanticColorsLightDark = SemanticColorsLightDark.default,
+    initialBrandColor: Color? = null,
     private val overrideBrandColorResult: (SessionId?, String?) -> Unit = { _, _ -> lambdaError() },
     private val firebasePushGatewayResult: () -> String? = { lambdaError() },
     private val unifiedPushDefaultPushGatewayResult: () -> String? = { lambdaError() },
 ) : EnterpriseService {
-    private val brandColorState = MutableStateFlow<Color?>(null)
+    private val brandColorState = MutableStateFlow(initialBrandColor)
     private val semanticColorsState = MutableStateFlow(initialSemanticColors)
 
     override suspend fun isEnterpriseUser(sessionId: SessionId): Boolean = simulateLongTask {

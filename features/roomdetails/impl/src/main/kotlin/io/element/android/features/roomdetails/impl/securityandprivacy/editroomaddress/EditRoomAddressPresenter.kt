@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -62,7 +63,7 @@ class EditRoomAddressPresenter(
             )
         }
 
-        fun handleEvents(event: EditRoomAddressEvents) {
+        fun handleEvent(event: EditRoomAddressEvents) {
             when (event) {
                 EditRoomAddressEvents.Save -> coroutineScope.save(
                     saveAction = saveAction,
@@ -92,7 +93,7 @@ class EditRoomAddressPresenter(
             roomAddressValidity = roomAddressValidity.value,
             roomAddress = newRoomAddress,
             saveAction = saveAction.value,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

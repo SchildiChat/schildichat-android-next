@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -99,7 +100,7 @@ class DefaultPermissionsPresenter(
 
         val showDialog = rememberSaveable { mutableStateOf(false) }
 
-        fun handleEvents(event: PermissionsEvents) {
+        fun handleEvent(event: PermissionsEvents) {
             when (event) {
                 PermissionsEvents.CloseDialog -> {
                     showDialog.value = false
@@ -125,7 +126,7 @@ class DefaultPermissionsPresenter(
             showDialog = showDialog.value,
             permissionAlreadyAsked = isAlreadyAsked,
             permissionAlreadyDenied = isAlreadyDenied,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

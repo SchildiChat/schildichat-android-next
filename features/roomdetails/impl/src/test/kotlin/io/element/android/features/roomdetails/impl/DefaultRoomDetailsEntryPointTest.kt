@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -13,6 +14,7 @@ import com.bumble.appyx.testing.junit4.util.MainDispatcherRule
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.call.test.FakeElementCallEntryPoint
 import io.element.android.features.changeroommemberroles.test.FakeChangeRoomMemberRolesEntryPoint
+import io.element.android.features.changeroommemberroles.test.FakeRolesAndPermissionsEntryPoint
 import io.element.android.features.knockrequests.test.FakeKnockRequestsListEntryPoint
 import io.element.android.features.messages.test.FakeMessagesEntryPoint
 import io.element.android.features.poll.test.history.FakePollHistoryEntryPoint
@@ -58,6 +60,7 @@ class DefaultRoomDetailsEntryPointTest {
                 outgoingVerificationEntryPoint = FakeOutgoingVerificationEntryPoint(),
                 reportRoomEntryPoint = FakeReportRoomEntryPoint(),
                 changeRoomMemberRolesEntryPoint = FakeChangeRoomMemberRolesEntryPoint(),
+                rolesAndPermissionsEntryPoint = FakeRolesAndPermissionsEntryPoint(),
             )
         }
         val callback = object : RoomDetailsEntryPoint.Callback {

@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -89,6 +90,8 @@ import io.element.android.libraries.matrix.api.verification.VerificationRequest
 import io.element.android.libraries.preferences.api.store.AppPreferencesStore
 import io.element.android.libraries.push.api.notifications.conversations.NotificationConversationService
 import io.element.android.libraries.ui.common.nodes.emptyNode
+import io.element.android.services.analytics.api.AnalyticsLongRunningTransaction
+import io.element.android.services.analytics.api.AnalyticsService
 import io.element.android.services.appnavstate.api.AppNavigationStateService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
@@ -135,6 +138,7 @@ class LoggedInFlowNode(
     private val appPreferencesStore: AppPreferencesStore,
     private val buildMeta: BuildMeta,
     snackbarDispatcher: SnackbarDispatcher,
+    private val analyticsService: AnalyticsService,
 ) : BaseFlowNode<LoggedInFlowNode.NavTarget>(
     backstack = BackStack(
         initialElement = NavTarget.Placeholder,
@@ -210,6 +214,8 @@ class LoggedInFlowNode(
                     networkMonitor.connectivity.first { networkStatus -> networkStatus == NetworkStatus.Connected }
                     matrixClient.getMaxFileUploadSize()
                 }
+
+                analyticsService.startLongRunningTransaction(AnalyticsLongRunningTransaction.FirstRoomsDisplayed)
 
                 ftueService.state
                     .onEach { ftueState ->
@@ -483,7 +489,7 @@ class LoggedInFlowNode(
                     params = ShareEntryPoint.Params(intent = navTarget.intent),
                     callback = object : ShareEntryPoint.Callback {
                         override fun onDone(roomIds: List<RoomId>) {
-                            navigateUp()
+                            backstack.pop()
                             roomIds.singleOrNull()?.let { roomId ->
                                 backstack.push(NavTarget.Room(roomId.toRoomIdOrAlias()))
                             }

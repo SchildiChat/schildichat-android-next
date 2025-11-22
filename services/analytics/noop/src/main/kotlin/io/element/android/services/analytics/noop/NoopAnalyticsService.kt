@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -14,8 +15,11 @@ import im.vector.app.features.analytics.itf.VectorAnalyticsEvent
 import im.vector.app.features.analytics.itf.VectorAnalyticsScreen
 import im.vector.app.features.analytics.plan.SuperProperties
 import im.vector.app.features.analytics.plan.UserProperties
+import io.element.android.services.analytics.api.AnalyticsLongRunningTransaction
 import io.element.android.services.analytics.api.AnalyticsService
+import io.element.android.services.analytics.api.NoopAnalyticsTransaction
 import io.element.android.services.analyticsproviders.api.AnalyticsProvider
+import io.element.android.services.analyticsproviders.api.AnalyticsTransaction
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -34,4 +38,7 @@ class NoopAnalyticsService : AnalyticsService {
     override fun updateUserProperties(userProperties: UserProperties) = Unit
     override fun trackError(throwable: Throwable) = Unit
     override fun updateSuperProperties(updatedProperties: SuperProperties) = Unit
+    override fun startTransaction(name: String, operation: String?): AnalyticsTransaction = NoopAnalyticsTransaction
+    override fun startLongRunningTransaction(longRunningTransaction: AnalyticsLongRunningTransaction) {}
+    override fun stopLongRunningTransaction(longRunningTransaction: AnalyticsLongRunningTransaction) {}
 }

@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -219,7 +220,6 @@ class DatabaseSessionStoreTest {
             accessToken = "accessToken",
             refreshToken = "refreshToken",
             homeserverUrl = "homeserverUrl",
-            slidingSyncProxy = "slidingSyncProxy",
             loginTimestamp = 1,
             oidcData = "aOidcData",
             isTokenValid = 1,
@@ -238,7 +238,6 @@ class DatabaseSessionStoreTest {
             accessToken = "accessTokenAltered",
             refreshToken = "refreshTokenAltered",
             homeserverUrl = "homeserverUrlAltered",
-            slidingSyncProxy = "slidingSyncProxyAltered",
             loginTimestamp = 2,
             oidcData = "aOidcDataAltered",
             isTokenValid = 1,
@@ -265,7 +264,6 @@ class DatabaseSessionStoreTest {
         assertThat(alteredSession.accessToken).isEqualTo(secondSessionData.accessToken)
         assertThat(alteredSession.refreshToken).isEqualTo(secondSessionData.refreshToken)
         assertThat(alteredSession.homeserverUrl).isEqualTo(secondSessionData.homeserverUrl)
-        assertThat(alteredSession.slidingSyncProxy).isEqualTo(secondSessionData.slidingSyncProxy)
         // Check that alteredSession.loginTimestamp is not altered, so equal to firstSessionData.loginTimestamp
         assertThat(alteredSession.loginTimestamp).isEqualTo(firstSessionData.loginTimestamp)
         assertThat(alteredSession.oidcData).isEqualTo(secondSessionData.oidcData)
@@ -285,7 +283,6 @@ class DatabaseSessionStoreTest {
             accessToken = "accessToken",
             refreshToken = "refreshToken",
             homeserverUrl = "homeserverUrl",
-            slidingSyncProxy = "slidingSyncProxy",
             loginTimestamp = 1,
             oidcData = "aOidcData",
             isTokenValid = 1,
@@ -304,7 +301,6 @@ class DatabaseSessionStoreTest {
             accessToken = "accessTokenAltered",
             refreshToken = "refreshTokenAltered",
             homeserverUrl = "homeserverUrlAltered",
-            slidingSyncProxy = "slidingSyncProxyAltered",
             loginTimestamp = 2,
             oidcData = "aOidcDataAltered",
             isTokenValid = 1,

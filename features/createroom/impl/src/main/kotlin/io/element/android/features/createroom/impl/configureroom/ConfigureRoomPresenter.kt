@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -116,7 +117,7 @@ class ConfigureRoomPresenter(
             localCoroutineScope.createRoom(config, createRoomAction)
         }
 
-        fun handleEvents(event: ConfigureRoomEvents) {
+        fun handleEvent(event: ConfigureRoomEvents) {
             when (event) {
                 is ConfigureRoomEvents.RoomNameChanged -> dataStore.setRoomName(event.name)
                 is ConfigureRoomEvents.TopicChanged -> dataStore.setTopic(event.topic)
@@ -149,7 +150,7 @@ class ConfigureRoomPresenter(
             cameraPermissionState = cameraPermissionState,
             homeserverName = homeserverName,
             roomAddressValidity = roomAddressValidity.value,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -23,6 +24,7 @@ import io.element.android.appconfig.OnBoardingConfig
 import io.element.android.features.enterprise.api.EnterpriseService
 import io.element.android.features.enterprise.api.canConnectToAnyHomeserver
 import io.element.android.features.login.impl.accesscontrol.DefaultAccountProviderAccessControl
+import io.element.android.features.login.impl.accountprovider.AccountProviderDataSource
 import io.element.android.features.login.impl.login.LoginHelper
 import io.element.android.features.rageshake.api.RageshakeFeatureAvailability
 import io.element.android.libraries.architecture.Presenter
@@ -30,6 +32,7 @@ import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.core.meta.isGplayBuild
 import io.element.android.libraries.sessionstorage.api.SessionStore
 import io.element.android.libraries.ui.utils.MultipleTapToUnlock
+import kotlinx.coroutines.launch
 
 @AssistedInject
 class OnBoardingPresenter(
@@ -41,6 +44,7 @@ class OnBoardingPresenter(
     private val loginHelper: LoginHelper,
     private val onBoardingLogoResIdProvider: OnBoardingLogoResIdProvider,
     private val sessionStore: SessionStore,
+    private val accountProviderDataSource: AccountProviderDataSource,
 ) : Presenter<OnBoardingState> {
     @AssistedFactory
     interface Factory {
@@ -98,12 +102,15 @@ class OnBoardingPresenter(
 
         fun handleEvent(event: OnBoardingEvents) {
             when (event) {
-                is OnBoardingEvents.OnSignIn -> loginHelper.submit(
-                    coroutineScope = localCoroutineScope,
-                    isAccountCreation = false,
-                    homeserverUrl = event.defaultAccountProvider,
-                    loginHint = params.loginHint?.takeIf { forcedAccountProvider == null },
-                )
+                is OnBoardingEvents.OnSignIn -> localCoroutineScope.launch {
+                    // Ensure that the current account provider is set
+                    accountProviderDataSource.setUrl(event.defaultAccountProvider)
+                    loginHelper.submit(
+                        isAccountCreation = false,
+                        homeserverUrl = event.defaultAccountProvider,
+                        loginHint = params.loginHint?.takeIf { forcedAccountProvider == null },
+                    )
+                }
                 OnBoardingEvents.ClearError -> loginHelper.clearError()
                 OnBoardingEvents.OnVersionClick -> {
                     if (canReportBug) {

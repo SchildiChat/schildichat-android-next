@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -32,7 +33,7 @@ import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.designsystem.utils.ForceOrientationInMobileDevices
 import io.element.android.libraries.designsystem.utils.ScreenOrientation
-import io.element.android.libraries.matrix.ui.media.NotLoggedInImageLoaderFactory
+import io.element.android.libraries.matrix.ui.media.ImageLoaderHolder
 import kotlinx.parcelize.Parcelize
 
 @ContributesNode(AppScope::class)
@@ -41,7 +42,7 @@ class NotLoggedInFlowNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
     private val loginEntryPoint: LoginEntryPoint,
-    private val notLoggedInImageLoaderFactory: NotLoggedInImageLoaderFactory,
+    private val imageLoaderHolder: ImageLoaderHolder,
 ) : BaseFlowNode<NotLoggedInFlowNode.NavTarget>(
     backstack = BackStack(
         initialElement = NavTarget.Root,
@@ -65,7 +66,7 @@ class NotLoggedInFlowNode(
         super.onBuilt()
         lifecycle.subscribe(
             onResume = {
-                SingletonImageLoader.setUnsafe(notLoggedInImageLoaderFactory.newImageLoader())
+                SingletonImageLoader.setUnsafe(imageLoaderHolder.get())
             },
         )
     }

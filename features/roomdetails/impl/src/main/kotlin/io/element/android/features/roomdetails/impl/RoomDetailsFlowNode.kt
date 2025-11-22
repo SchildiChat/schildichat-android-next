@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -26,19 +27,19 @@ import io.element.android.annotations.ContributesNode
 import io.element.android.appconfig.LearnMoreConfig
 import io.element.android.features.call.api.CallType
 import io.element.android.features.call.api.ElementCallEntryPoint
-import io.element.android.features.changeroommemberroles.api.ChangeRoomMemberRolesEntryPoint
-import io.element.android.features.changeroommemberroles.api.ChangeRoomMemberRolesListType
 import io.element.android.features.knockrequests.api.list.KnockRequestsListEntryPoint
 import io.element.android.features.messages.api.MessagesEntryPoint
 import io.element.android.features.poll.api.history.PollHistoryEntryPoint
 import io.element.android.features.reportroom.api.ReportRoomEntryPoint
+import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesEntryPoint
+import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesListType
+import io.element.android.features.rolesandpermissions.api.RolesAndPermissionsEntryPoint
 import io.element.android.features.roomdetails.api.RoomDetailsEntryPoint
 import io.element.android.features.roomdetails.impl.edit.RoomDetailsEditNode
 import io.element.android.features.roomdetails.impl.invite.RoomInviteMembersNode
 import io.element.android.features.roomdetails.impl.members.RoomMemberListNode
 import io.element.android.features.roomdetails.impl.members.details.RoomMemberDetailsNode
 import io.element.android.features.roomdetails.impl.notificationsettings.RoomNotificationSettingsNode
-import io.element.android.features.roomdetails.impl.rolesandpermissions.RolesAndPermissionsFlowNode
 import io.element.android.features.roomdetails.impl.securityandprivacy.SecurityAndPrivacyFlowNode
 import io.element.android.features.userprofile.shared.UserProfileNodeHelper
 import io.element.android.features.verifysession.api.OutgoingVerificationEntryPoint
@@ -82,6 +83,7 @@ class RoomDetailsFlowNode(
     private val outgoingVerificationEntryPoint: OutgoingVerificationEntryPoint,
     private val reportRoomEntryPoint: ReportRoomEntryPoint,
     private val changeRoomMemberRolesEntryPoint: ChangeRoomMemberRolesEntryPoint,
+    private val rolesAndPermissionsEntryPoint: RolesAndPermissionsEntryPoint,
 ) : BaseFlowNode<RoomDetailsFlowNode.NavTarget>(
     backstack = BackStack(
         initialElement = plugins.filterIsInstance<RoomDetailsEntryPoint.Params>().first().initialElement.toNavTarget(),
@@ -156,10 +158,12 @@ class RoomDetailsFlowNode(
             changeRoomMemberRolesNode: ChangeRoomMemberRolesEntryPoint.NodeProxy,
             ->
             commonLifecycle.coroutineScope.launch {
-                changeRoomMemberRolesNode.waitForRoleChanged()
+                val isNewOwnerSelected = changeRoomMemberRolesNode.waitForCompletion()
                 withContext(NonCancellable) {
                     backstack.pop()
-                    roomDetailsNode.onNewOwnersSelected()
+                    if (isNewOwnerSelected) {
+                        roomDetailsNode.onNewOwnersSelected()
+                    }
                 }
             }
         }
@@ -343,7 +347,7 @@ class RoomDetailsFlowNode(
             }
 
             is NavTarget.AdminSettings -> {
-                createNode<RolesAndPermissionsFlowNode>(buildContext)
+                rolesAndPermissionsEntryPoint.createNode(this, buildContext)
             }
             NavTarget.PinnedMessagesList -> {
                 val params = MessagesEntryPoint.Params(

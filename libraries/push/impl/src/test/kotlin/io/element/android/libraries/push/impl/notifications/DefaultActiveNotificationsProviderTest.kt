@@ -1,7 +1,8 @@
 /*
- * Copyright 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2024, 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -44,7 +45,7 @@ class DefaultActiveNotificationsProviderTest {
     @Test
     fun `getMembershipNotificationsForSession returns only membership notifications for that session id`() {
         val activeNotifications = listOf(
-            aStatusBarNotification(id = notificationIdProvider.getRoomMessagesNotificationId(A_SESSION_ID), groupId = A_SESSION_ID.value,),
+            aStatusBarNotification(id = notificationIdProvider.getRoomMessagesNotificationId(A_SESSION_ID), groupId = A_SESSION_ID.value),
             aStatusBarNotification(id = notificationIdProvider.getSummaryNotificationId(A_SESSION_ID_2), groupId = A_SESSION_ID_2.value),
             aStatusBarNotification(
                 id = notificationIdProvider.getRoomInvitationNotificationId(A_SESSION_ID_2),

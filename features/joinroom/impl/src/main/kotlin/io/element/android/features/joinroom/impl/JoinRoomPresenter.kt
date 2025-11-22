@@ -1,7 +1,8 @@
 /*
- * Copyright 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2024, 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -151,7 +152,7 @@ class JoinRoomPresenter(
             contentState.markRoomInviteAsSeen()
         }
 
-        fun handleEvents(event: JoinRoomEvents) {
+        fun handleEvent(event: JoinRoomEvents) {
             when (event) {
                 JoinRoomEvents.JoinRoom -> coroutineScope.joinRoom(joinAction)
                 is JoinRoomEvents.KnockRoom -> coroutineScope.knockRoom(knockAction, knockMessage)
@@ -197,7 +198,7 @@ class JoinRoomPresenter(
             knockMessage = knockMessage,
             hideInviteAvatars = hideInviteAvatars,
             canReportRoom = canReportRoom,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

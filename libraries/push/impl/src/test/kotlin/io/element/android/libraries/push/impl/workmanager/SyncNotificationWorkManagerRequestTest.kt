@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -20,6 +21,7 @@ import io.element.android.libraries.workmanager.api.workManagerTag
 import io.element.android.services.toolbox.test.sdk.FakeBuildVersionSdkIntProvider
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import kotlin.collections.first
 
 class SyncNotificationWorkManagerRequestTest {
     @Test
@@ -32,7 +34,7 @@ class SyncNotificationWorkManagerRequestTest {
 
         val result = request.build()
         assertThat(result.isSuccess).isTrue()
-        result.getOrNull()!!.run {
+        result.getOrNull()!!.first().run {
             assertThat(this).isInstanceOf(OneTimeWorkRequest::class.java)
             assertThat(workSpec.input.hasKeyWithValueOfType<String>("requests")).isTrue()
             // True in API 33+
@@ -51,7 +53,7 @@ class SyncNotificationWorkManagerRequestTest {
 
         val result = request.build()
         assertThat(result.isSuccess).isTrue()
-        result.getOrNull()!!.run {
+        result.getOrNull()!!.first().run {
             assertThat(this).isInstanceOf(OneTimeWorkRequest::class.java)
             assertThat(workSpec.input.hasKeyWithValueOfType<String>("requests")).isTrue()
             // False before API 33

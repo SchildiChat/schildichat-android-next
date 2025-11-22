@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -24,7 +25,7 @@ class SpaceAnnouncementPresenter(
     override fun present(): SpaceAnnouncementState {
         val localCoroutineScope = rememberCoroutineScope()
 
-        fun handleEvents(event: SpaceAnnouncementEvents) {
+        fun handleEvent(event: SpaceAnnouncementEvents) {
             when (event) {
                 SpaceAnnouncementEvents.Continue -> localCoroutineScope.launch {
                     announcementStore.setAnnouncementStatus(Announcement.Space, AnnouncementStatus.Shown)
@@ -33,7 +34,7 @@ class SpaceAnnouncementPresenter(
         }
 
         return SpaceAnnouncementState(
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 }

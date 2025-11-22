@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -80,12 +81,12 @@ class BugReportPresenter(
         val sendingAction: MutableState<AsyncAction<Unit>> = remember {
             mutableStateOf(AsyncAction.Uninitialized)
         }
-        val formState: MutableState<BugReportFormState> = remember {
+        val formState: MutableState<BugReportFormState> = rememberSaveable {
             mutableStateOf(BugReportFormState.Default)
         }
         val uploadListener = BugReporterUploadListener(sendingProgress, sendingAction)
 
-        fun handleEvents(event: BugReportEvents) {
+        fun handleEvent(event: BugReportEvents) {
             when (event) {
                 BugReportEvents.SendBugReport -> {
                     if (formState.value.description.length < buildMeta.minBugReportLength) {
@@ -124,7 +125,7 @@ class BugReportPresenter(
             sending = sendingAction.value,
             formState = formState.value,
             screenshotUri = screenshotUri.value,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
     }
 

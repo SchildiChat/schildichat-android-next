@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -107,7 +108,7 @@ class SecurityAndPrivacyPresenter(
         var showEnableEncryptionConfirmation by remember(savedSettings.isEncrypted) { mutableStateOf(false) }
         val permissions by room.securityAndPrivacyPermissionsAsState(syncUpdateFlow.value)
 
-        fun handleEvents(event: SecurityAndPrivacyEvents) {
+        fun handleEvent(event: SecurityAndPrivacyEvents) {
             when (event) {
                 SecurityAndPrivacyEvents.Save -> {
                     coroutineScope.save(
@@ -158,7 +159,7 @@ class SecurityAndPrivacyPresenter(
             isKnockEnabled = isKnockEnabled,
             saveAction = saveAction.value,
             permissions = permissions,
-            eventSink = ::handleEvents
+            eventSink = ::handleEvent,
         )
 
         // If the history visibility is not available for the current access, use the fallback.

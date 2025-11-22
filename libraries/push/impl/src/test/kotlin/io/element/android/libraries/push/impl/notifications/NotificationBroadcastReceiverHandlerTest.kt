@@ -1,7 +1,8 @@
 /*
- * Copyright 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2024, 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -39,6 +40,7 @@ import io.element.android.libraries.push.impl.push.FakeOnNotifiableEventReceived
 import io.element.android.libraries.push.impl.push.OnNotifiableEventReceived
 import io.element.android.libraries.push.test.notifications.FakeNotificationCleaner
 import io.element.android.services.appnavstate.api.ActiveRoomsHolder
+import io.element.android.services.appnavstate.impl.DefaultActiveRoomsHolder
 import io.element.android.services.toolbox.api.strings.StringProvider
 import io.element.android.services.toolbox.api.systemclock.SystemClock
 import io.element.android.services.toolbox.test.strings.FakeStringProvider
@@ -481,7 +483,7 @@ class NotificationBroadcastReceiverHandlerTest {
         onNotifiableEventReceived: OnNotifiableEventReceived = FakeOnNotifiableEventReceived(),
         stringProvider: StringProvider = FakeStringProvider(),
         replyMessageExtractor: ReplyMessageExtractor = FakeReplyMessageExtractor(),
-        activeRoomsHolder: ActiveRoomsHolder = ActiveRoomsHolder(),
+        activeRoomsHolder: ActiveRoomsHolder = DefaultActiveRoomsHolder(),
     ): NotificationBroadcastReceiverHandler {
         return NotificationBroadcastReceiverHandler(
             appCoroutineScope = this,

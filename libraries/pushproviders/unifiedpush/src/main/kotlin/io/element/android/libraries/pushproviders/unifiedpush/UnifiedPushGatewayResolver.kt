@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -63,8 +64,9 @@ class DefaultUnifiedPushGatewayResolver(
                         UnifiedPushGatewayResolverResult.NoMatrixGateway
                     }
                 } catch (throwable: Throwable) {
-                    if ((throwable as? HttpException)?.code() == HttpURLConnection.HTTP_NOT_FOUND) {
-                        Timber.tag(loggerTag.value).i("Checking for UnifiedPush endpoint yielded 404, using fallback")
+                    val code = (throwable as? HttpException)?.code()
+                    if (code in NoMatrixGatewayResp) {
+                        Timber.tag(loggerTag.value).i("Checking for UnifiedPush endpoint yielded $code, using fallback")
                         UnifiedPushGatewayResolverResult.NoMatrixGateway
                     } else {
                         Timber.tag(loggerTag.value).e(throwable, "Error checking for UnifiedPush endpoint")
@@ -73,5 +75,15 @@ class DefaultUnifiedPushGatewayResolver(
                 }
             }
         }
+    }
+
+    companion object {
+        private val NoMatrixGatewayResp = listOf<Int>(
+            HttpURLConnection.HTTP_UNAUTHORIZED,
+            HttpURLConnection.HTTP_FORBIDDEN,
+            HttpURLConnection.HTTP_NOT_FOUND,
+            HttpURLConnection.HTTP_BAD_METHOD,
+            HttpURLConnection.HTTP_NOT_ACCEPTABLE
+        )
     }
 }

@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -87,7 +88,7 @@ class HomePresenter(
         val showAvatarIndicator by indicatorService.showRoomListTopBarIndicator()
         val directLogoutState = logoutPresenter.present()
 
-        fun handleEvents(event: HomeEvents) {
+        fun handleEvent(event: HomeEvents) {
             when (event) {
                 is HomeEvents.SelectHomeNavigationBarItem -> coroutineState.launch {
                     if (event.item == HomeNavigationBarItem.Spaces) {
@@ -119,7 +120,7 @@ class HomePresenter(
             canReportBug = canReportBug,
             directLogoutState = directLogoutState,
             isSpaceFeatureEnabled = isSpaceFeatureEnabled,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 }

@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -29,7 +30,7 @@ import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
 import io.element.android.libraries.matrix.test.timeline.FakeTimeline
 import io.element.android.libraries.mediaplayer.test.FakeMediaPlayer
 import io.element.android.libraries.mediaupload.api.MediaOptimizationConfig
-import io.element.android.libraries.mediaupload.api.MediaSender
+import io.element.android.libraries.mediaupload.impl.DefaultMediaSender
 import io.element.android.libraries.mediaupload.test.FakeMediaPreProcessor
 import io.element.android.libraries.permissions.api.PermissionsPresenter
 import io.element.android.libraries.permissions.api.aPermissionsState
@@ -74,7 +75,7 @@ class VoiceMessageComposerPresenterTest {
         },
     )
     private val mediaPreProcessor = FakeMediaPreProcessor().apply { givenAudioResult() }
-    private val mediaSender = MediaSender(
+    private val mediaSender = DefaultMediaSender(
         preProcessor = mediaPreProcessor,
         room = joinedRoom,
         timelineMode = Timeline.Mode.Live,
@@ -667,11 +668,7 @@ class VoiceMessageComposerPresenterTest {
             timelineMode = Timeline.Mode.Live,
             voiceRecorder = voiceRecorder,
             analyticsService = analyticsService,
-            mediaSenderFactory = object : MediaSender.Factory {
-                override fun create(timelineMode: Timeline.Mode): MediaSender {
-                    return mediaSender
-                }
-            },
+            mediaSenderFactory = { mediaSender },
             player = VoiceMessageComposerPlayer(FakeMediaPlayer(), this),
             messageComposerContext = messageComposerContext,
             permissionsPresenterFactory = FakePermissionsPresenterFactory(permissionsPresenter),

@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -58,7 +59,7 @@ class StartChatPresenter(
             featureFlagService.isFeatureEnabledFlow(FeatureFlags.RoomDirectorySearch)
         }.collectAsState(initial = false)
 
-        fun handleEvents(event: StartChatEvents) {
+        fun handleEvent(event: StartChatEvents) {
             when (event) {
                 is StartChatEvents.StartDM -> localCoroutineScope.launch {
                     startDMAction.execute(
@@ -76,7 +77,7 @@ class StartChatPresenter(
             userListState = userListState,
             startDmAction = startDmActionState.value,
             isRoomDirectorySearchEnabled = isRoomDirectorySearchEnabled && !buildMeta.isGplayBuild,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 }

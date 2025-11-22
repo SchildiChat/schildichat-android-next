@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -59,7 +60,7 @@ class ChooseSelfVerificationModePresenter(
 
         val directLogoutState = directLogoutPresenter.present()
 
-        fun eventHandler(event: ChooseSelfVerificationModeEvent) {
+        fun handleEvent(event: ChooseSelfVerificationModeEvent) {
             when (event) {
                 ChooseSelfVerificationModeEvent.SignOut -> directLogoutState.eventSink(DirectLogoutEvents.Logout(ignoreSdkError = false))
             }
@@ -68,7 +69,7 @@ class ChooseSelfVerificationModePresenter(
         return ChooseSelfVerificationModeState(
             buttonsState = buttonsState,
             directLogoutState = directLogoutState,
-            eventSink = ::eventHandler,
+            eventSink = ::handleEvent,
         )
     }
 }

@@ -1,7 +1,8 @@
 /*
- * Copyright 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2024, 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -13,8 +14,6 @@ import io.element.android.libraries.matrix.api.timeline.MatrixTimelineItem
 import io.element.android.libraries.matrix.impl.fixtures.factories.aRustEventTimelineItem
 import io.element.android.libraries.matrix.impl.fixtures.fakes.FakeFfiTimeline
 import io.element.android.libraries.matrix.impl.fixtures.fakes.FakeFfiTimelineItem
-import io.element.android.tests.testutils.lambda.lambdaError
-import io.element.android.tests.testutils.lambda.lambdaRecorder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -35,9 +34,12 @@ class TimelineItemsSubscriberTest {
         val timelineItems: MutableSharedFlow<List<MatrixTimelineItem>> =
             MutableSharedFlow(replay = 1, extraBufferCapacity = Int.MAX_VALUE)
         val timeline = FakeFfiTimeline()
+        val diffProcessor = createMatrixTimelineDiffProcessor(
+            timelineItems = timelineItems,
+        )
         val timelineItemsSubscriber = createTimelineItemsSubscriber(
             timeline = timeline,
-            timelineItems = timelineItems,
+            timelineDiffProcessor = diffProcessor,
         )
         timelineItems.test {
             timelineItemsSubscriber.subscribeIfNeeded()
@@ -56,9 +58,12 @@ class TimelineItemsSubscriberTest {
         val timelineItems: MutableSharedFlow<List<MatrixTimelineItem>> =
             MutableSharedFlow(replay = 1, extraBufferCapacity = Int.MAX_VALUE)
         val timeline = FakeFfiTimeline()
+        val diffProcessor = createMatrixTimelineDiffProcessor(
+            timelineItems = timelineItems,
+        )
         val timelineItemsSubscriber = createTimelineItemsSubscriber(
             timeline = timeline,
-            timelineItems = timelineItems,
+            timelineDiffProcessor = diffProcessor,
         )
         timelineItems.test {
             timelineItemsSubscriber.subscribeIfNeeded()
@@ -73,15 +78,16 @@ class TimelineItemsSubscriberTest {
 
     @Ignore("JNA direct mapping has broken unit tests with FFI fakes")
     @Test
-    fun `when timeline emits an item with SYNC origin, the callback onNewSyncedEvent is invoked`() = runTest {
+    fun `when timeline emits an item with SYNC origin`() = runTest {
         val timelineItems: MutableSharedFlow<List<MatrixTimelineItem>> =
             MutableSharedFlow(replay = 1, extraBufferCapacity = Int.MAX_VALUE)
         val timeline = FakeFfiTimeline()
-        val onNewSyncedEventRecorder = lambdaRecorder<Unit> { }
+        val diffProcessor = createMatrixTimelineDiffProcessor(
+            timelineItems = timelineItems,
+        )
         val timelineItemsSubscriber = createTimelineItemsSubscriber(
             timeline = timeline,
-            timelineItems = timelineItems,
-            onNewSyncedEvent = onNewSyncedEventRecorder,
+            timelineDiffProcessor = diffProcessor,
         )
         timelineItems.test {
             timelineItemsSubscriber.subscribeIfNeeded()
@@ -100,7 +106,6 @@ class TimelineItemsSubscriberTest {
             assertThat(final).isNotEmpty()
             timelineItemsSubscriber.unsubscribeIfNeeded()
         }
-        onNewSyncedEventRecorder.assertions().isCalledOnce()
     }
 
     @Ignore("JNA direct mapping has broken unit tests with FFI fakes")
@@ -116,14 +121,12 @@ class TimelineItemsSubscriberTest {
 
 private fun TestScope.createTimelineItemsSubscriber(
     timeline: Timeline = FakeFfiTimeline(),
-    timelineItems: MutableSharedFlow<List<MatrixTimelineItem>> = MutableSharedFlow(replay = 1, extraBufferCapacity = Int.MAX_VALUE),
-    onNewSyncedEvent: () -> Unit = { lambdaError() },
+    timelineDiffProcessor: MatrixTimelineDiffProcessor = createMatrixTimelineDiffProcessor(),
 ): TimelineItemsSubscriber {
     return TimelineItemsSubscriber(
         timelineCoroutineScope = backgroundScope,
         dispatcher = StandardTestDispatcher(testScheduler),
         timeline = timeline,
-        timelineDiffProcessor = createMatrixTimelineDiffProcessor(timelineItems),
-        onNewSyncedEvent = onNewSyncedEvent,
+        timelineDiffProcessor = timelineDiffProcessor,
     )
 }

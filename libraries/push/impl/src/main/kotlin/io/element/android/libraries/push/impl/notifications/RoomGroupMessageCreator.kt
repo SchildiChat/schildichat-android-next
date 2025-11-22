@@ -1,7 +1,8 @@
 /*
- * Copyright 2021-2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2021-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -9,17 +10,18 @@ package io.element.android.libraries.push.impl.notifications
 
 import android.app.Notification
 import android.graphics.Bitmap
-import androidx.annotation.ColorInt
 import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
 import coil3.ImageLoader
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
+import io.element.android.libraries.designsystem.components.avatar.AvatarData
+import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.ThreadId
-import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.push.api.notifications.NotificationBitmapLoader
 import io.element.android.libraries.push.impl.R
+import io.element.android.libraries.push.impl.notifications.factories.NotificationAccountParams
 import io.element.android.libraries.push.impl.notifications.factories.NotificationCreator
 import io.element.android.libraries.push.impl.notifications.factories.isSmartReplyError
 import io.element.android.libraries.push.impl.notifications.model.NotifiableMessageEvent
@@ -28,13 +30,12 @@ import kotlinx.coroutines.flow.first
 
 interface RoomGroupMessageCreator {
     suspend fun createRoomMessage(
-        currentUser: MatrixUser,
+        notificationAccountParams: NotificationAccountParams,
         events: List<NotifiableMessageEvent>,
         roomId: RoomId,
         threadId: ThreadId?,
         imageLoader: ImageLoader,
         existingNotification: Notification?,
-        @ColorInt color: Int,
     ): Notification
 }
 
@@ -46,13 +47,12 @@ class DefaultRoomGroupMessageCreator(
     private val notificationCreator: NotificationCreator,
 ) : RoomGroupMessageCreator {
     override suspend fun createRoomMessage(
-        currentUser: MatrixUser,
+        notificationAccountParams: NotificationAccountParams,
         events: List<NotifiableMessageEvent>,
         roomId: RoomId,
         threadId: ThreadId?,
         imageLoader: ImageLoader,
         existingNotification: Notification?,
-        @ColorInt color: Int,
     ): Notification {
         val lastKnownRoomEvent = events.last()
         val roomName = lastKnownRoomEvent.roomName ?: lastKnownRoomEvent.senderDisambiguatedDisplayName ?: "Room name (${roomId.value.take(8)}…)"
@@ -70,8 +70,9 @@ class DefaultRoomGroupMessageCreator(
         val smartReplyErrors = events.filter { it.isSmartReplyError() }
         val roomIsDm = !roomIsGroup
         return notificationCreator.createMessagesListNotification(
+            notificationAccountParams = notificationAccountParams,
             RoomEventGroupInfo(
-                sessionId = currentUser.userId,
+                sessionId = notificationAccountParams.user.userId,
                 roomId = roomId,
                 roomDisplayName = roomName,
                 isDm = roomIsDm,
@@ -85,11 +86,9 @@ class DefaultRoomGroupMessageCreator(
             lastMessageTimestamp = lastMessageTimestamp,
             tickerText = tickerText,
             forceOnlyAlertOnce = scPreferencesStore.settingFlow(ScPrefs.NOTIFICATION_ONLY_ALERT_ONCE).first(),
-            currentUser = currentUser,
             existingNotification = existingNotification,
             imageLoader = imageLoader,
             events = events,
-            color = color,
         )
     }
 
@@ -98,7 +97,18 @@ class DefaultRoomGroupMessageCreator(
         imageLoader: ImageLoader,
     ): Bitmap? {
         // Use the last event (most recent?)
-        return events.reversed().firstNotNullOfOrNull { it.roomAvatarPath }
-            ?.let { bitmapLoader.getRoomBitmap(it, imageLoader) }
+        val event = events.reversed().firstOrNull { it.roomAvatarPath != null }
+            ?: events.reversed().firstOrNull()
+        return event?.let { event ->
+            bitmapLoader.getRoomBitmap(
+                avatarData = AvatarData(
+                    id = event.roomId.value,
+                    name = event.roomName,
+                    url = event.roomAvatarPath,
+                    size = AvatarSize.RoomDetailsHeader,
+                ),
+                imageLoader = imageLoader,
+            )
+        }
     }
 }

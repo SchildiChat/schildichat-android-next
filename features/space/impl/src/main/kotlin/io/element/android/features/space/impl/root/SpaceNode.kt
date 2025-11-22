@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -42,7 +43,7 @@ class SpaceNode(
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
         fun navigateToRoom(roomId: RoomId, viaParameters: List<String>)
-        fun navigateToRoomDetails()
+        fun navigateToSpaceSettings()
         fun navigateToRoomMemberList()
         fun startLeaveSpaceFlow()
     }
@@ -80,7 +81,7 @@ class SpaceNode(
                 callback.navigateToRoom(spaceRoom.roomId, spaceRoom.via)
             },
             onDetailsClick = {
-                callback.navigateToRoomDetails()
+                callback.navigateToSpaceSettings()
             },
             onShareSpace = {
                 onShareRoom(context)

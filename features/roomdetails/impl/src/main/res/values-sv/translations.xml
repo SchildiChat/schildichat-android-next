@@ -78,7 +78,6 @@
   <string name="screen_room_member_list_manage_member_unban_title">"Avbanna från rummet"</string>
   <string name="screen_room_member_list_mode_banned">"Bannade"</string>
   <string name="screen_room_member_list_mode_members">"Medlemmar"</string>
-  <string name="screen_room_member_list_pending_header_title">"Väntar"</string>
   <string name="screen_room_member_list_role_administrator">"Endast administratörer"</string>
   <string name="screen_room_member_list_role_moderator">"Administratörer och moderatorer"</string>
   <string name="screen_room_member_list_role_owner">"Ägare"</string>
@@ -141,6 +140,5 @@ Vi rekommenderar inte att aktivera kryptering för rum som vem som helst kan hit
   <string name="screen_security_and_privacy_room_publishing_section_footer">"Rumsadresser är sätt att hitta och komma åt rum. Detta säkerställer också att du enkelt kan dela ditt rum med andra.
 Du kan välja att publicera ditt rum i din hemservers offentliga rumskatalog."</string>
   <string name="screen_security_and_privacy_room_publishing_section_header">"Rumspublicering"</string>
-  <string name="screen_security_and_privacy_room_visibility_section_footer">"Rumsadresser är sätt att hitta och komma åt rum. Detta säkerställer också att du enkelt kan dela ditt rum med andra."</string>
   <string name="screen_security_and_privacy_title">"Säkerhet och sekretess"</string>
 </resources>

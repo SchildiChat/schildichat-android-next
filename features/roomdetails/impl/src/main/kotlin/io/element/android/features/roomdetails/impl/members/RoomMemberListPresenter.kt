@@ -49,7 +49,6 @@ import kotlinx.coroutines.withContext
 @Inject
 class RoomMemberListPresenter(
     private val room: JoinedRoom,
-    private val roomMemberListDataSource: RoomMemberListDataSource,
     private val coroutineDispatchers: CoroutineDispatchers,
     private val roomMembersModerationPresenter: Presenter<RoomMemberModerationState>,
     private val encryptionService: EncryptionService,
@@ -141,20 +140,21 @@ class RoomMemberListPresenter(
             }
         }
 
-        if (!roomModerationState.canBan && selectedSection == SelectedSection.BANNED) {
-            SideEffect {
-                selectedSection = SelectedSection.MEMBERS
-            }
-        }
-
-        return RoomMemberListState(
-            roomMembers = filteredRoomMembers,
+        val state = RoomMemberListState(
+            roomMembers = roomMembers,
+            filteredRoomMembers = filteredRoomMembers,
             searchQuery = searchQuery,
             canInvite = canInvite,
             moderationState = roomModerationState,
             selectedSection = selectedSection,
             eventSink = ::handleEvent,
         )
+        if (!state.showBannedSection && selectedSection == SelectedSection.BANNED) {
+            SideEffect {
+                selectedSection = SelectedSection.MEMBERS
+            }
+        }
+        return state
     }
 
     private suspend fun RoomMember.withIdentityState(identityStates: ImmutableMap<UserId, IdentityState>): RoomMemberWithIdentityState {

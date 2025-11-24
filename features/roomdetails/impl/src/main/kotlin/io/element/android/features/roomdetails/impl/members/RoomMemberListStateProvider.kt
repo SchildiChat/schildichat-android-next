@@ -132,6 +132,7 @@ internal fun aRoomMemberListState(
     selectedSection: SelectedSection = SelectedSection.MEMBERS,
 ) = RoomMemberListState(
     roomMembers = roomMembers,
+    filteredRoomMembers = roomMembers,
     searchQuery = "",
     canInvite = false,
     moderationState = moderationState,

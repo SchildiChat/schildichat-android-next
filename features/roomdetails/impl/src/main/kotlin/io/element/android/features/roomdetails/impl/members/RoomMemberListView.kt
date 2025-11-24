@@ -9,14 +9,15 @@
 package io.element.android.features.roomdetails.impl.members
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -43,6 +44,8 @@ import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.roomdetails.impl.R
 import io.element.android.libraries.architecture.AsyncData
+import io.element.android.libraries.designsystem.atomic.molecules.IconTitleSubtitleMolecule
+import io.element.android.libraries.designsystem.components.BigIcon
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.components.button.BackButton
 import io.element.android.libraries.designsystem.components.form.textFieldState
@@ -87,9 +90,9 @@ fun RoomMemberListView(
     ) { padding ->
         Column(
             modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(padding)
-                    .consumeWindowInsets(padding),
+                .fillMaxWidth()
+                .padding(padding)
+                .consumeWindowInsets(padding),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             var searchQuery by textFieldState(state.searchQuery)
@@ -100,15 +103,16 @@ fun RoomMemberListView(
                     state.eventSink(RoomMemberListEvents.UpdateSearchQuery(newQuery))
                 },
                 modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                 placeholder = stringResource(CommonStrings.common_search_for_someone),
             )
             RoomMemberList(
-                roomMembers = state.roomMembers,
+                roomMembersData = state.filteredRoomMembers,
                 selectedSection = state.selectedSection,
+                showBannedSection = state.showBannedSection,
+                searchQuery = state.searchQuery,
                 onSelectedSectionChange = { state.eventSink(RoomMemberListEvents.ChangeSelectedSection(it)) },
-                showSections = state.moderationState.canBan,
                 onSelectUser = ::onSelectUser,
             )
         }
@@ -117,25 +121,26 @@ fun RoomMemberListView(
 
 @Composable
 private fun RoomMemberList(
-    roomMembers: AsyncData<RoomMembers>,
+    roomMembersData: AsyncData<RoomMembers>,
     selectedSection: SelectedSection,
-    showSections: Boolean = true,
+    showBannedSection: Boolean,
+    searchQuery: String,
     onSelectedSectionChange: (SelectedSection) -> Unit,
     onSelectUser: (RoomMember) -> Unit,
 ) {
     LazyColumn(modifier = Modifier.fillMaxWidth(), state = rememberLazyListState()) {
         stickyHeader {
             Column {
-                if (showSections) {
+                AnimatedVisibility(visible = showBannedSection) {
                     val segmentedButtonTitles = persistentListOf(
                         stringResource(id = R.string.screen_room_member_list_mode_members),
                         stringResource(id = R.string.screen_room_member_list_mode_banned),
                     )
                     SingleChoiceSegmentedButtonRow(
                         modifier = Modifier
-                                .background(ElementTheme.colors.bgCanvasDefault)
-                                .fillMaxWidth()
-                                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                            .background(ElementTheme.colors.bgCanvasDefault)
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                     ) {
                         for ((index, title) in segmentedButtonTitles.withIndex()) {
                             SegmentedButton(
@@ -148,23 +153,26 @@ private fun RoomMemberList(
                         }
                     }
                 }
-                AnimatedVisibility(
-                    visible = roomMembers.isLoading(),
-                    enter = fadeIn() + expandVertically(),
-                    exit = fadeOut() + shrinkVertically(),
-                ) {
+                AnimatedVisibility(visible = roomMembersData.isLoading()) {
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                 }
             }
         }
-        when (roomMembers) {
-            is AsyncData.Failure -> failureItem(roomMembers.error)
+        when (roomMembersData) {
+            is AsyncData.Failure -> failureItem(roomMembersData.error)
             is AsyncData.Loading,
-            is AsyncData.Success -> memberItems(
-                roomMembers = roomMembers.dataOrNull() ?: return@LazyColumn,
-                selectedSection = selectedSection,
-                onSelectUser = onSelectUser,
-            )
+            is AsyncData.Success -> {
+                val roomMembers = roomMembersData.dataOrNull() ?: return@LazyColumn
+                if (roomMembers.isEmpty(selectedSection)) {
+                    emptySearchItem(searchQuery)
+                } else {
+                    memberItems(
+                        roomMembers = roomMembers,
+                        selectedSection = selectedSection,
+                        onSelectUser = onSelectUser,
+                    )
+                }
+            }
             AsyncData.Uninitialized -> Unit
         }
     }
@@ -202,7 +210,7 @@ private fun LazyListScope.memberItems(
                 )
             }
         }
-        SelectedSection.BANNED -> { // Banned users
+        SelectedSection.BANNED -> {
             if (roomMembers.banned.isNotEmpty()) {
                 roomMemberListSectionHeader(
                     text = {
@@ -215,23 +223,6 @@ private fun LazyListScope.memberItems(
                     members = roomMembers.banned,
                     onMemberSelected = { onSelectUser(it) }
                 )
-            } else {
-                item {
-                    Box(
-                        Modifier
-                                .fillParentMaxSize()
-                                .padding(horizontal = 16.dp)
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                    .padding(bottom = 56.dp)
-                                    .align(Alignment.Center),
-                            text = stringResource(id = R.string.screen_room_member_list_banned_empty),
-                            color = ElementTheme.colors.textSecondary,
-                            textAlign = TextAlign.Center,
-                        )
-                    }
-                }
             }
         }
     }
@@ -241,8 +232,8 @@ private fun LazyListScope.failureItem(failure: Throwable) {
     item {
         Text(
             modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 32.dp),
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 32.dp),
             text = stringResource(id = CommonStrings.error_unknown) + "\n\n" + failure.localizedMessage,
             color = ElementTheme.colors.textCriticalPrimary,
             textAlign = TextAlign.Center,
@@ -274,6 +265,22 @@ private fun LazyListScope.roomMemberListSectionItems(
             modifier = Modifier.fillMaxWidth(),
             roomMemberWithIdentity = matrixUser,
             onClick = { onMemberSelected(matrixUser.roomMember) }
+        )
+    }
+}
+
+private fun LazyListScope.emptySearchItem(searchQuery: String) {
+    item {
+        IconTitleSubtitleMolecule(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 32.dp),
+            iconStyle = BigIcon.Style.Default(
+                vectorIcon = CompoundIcons.Search(),
+                contentDescription = null,
+            ),
+            title = stringResource(R.string.screen_room_member_list_empty_search_title, searchQuery),
+            subTitle = stringResource(R.string.screen_room_member_list_empty_search_subtitle),
         )
     }
 }

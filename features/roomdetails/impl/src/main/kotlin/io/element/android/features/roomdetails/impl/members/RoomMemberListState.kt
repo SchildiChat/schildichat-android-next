@@ -17,13 +17,17 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
 data class RoomMemberListState(
-    val roomMembers: AsyncData<RoomMembers>,
+    // Only used to know if we can show the banned section
+    private val roomMembers: AsyncData<RoomMembers>,
+    val filteredRoomMembers: AsyncData<RoomMembers>,
     val searchQuery: String,
     val canInvite: Boolean,
     val selectedSection: SelectedSection,
     val moderationState: RoomMemberModerationState,
     val eventSink: (RoomMemberListEvents) -> Unit,
-)
+) {
+    val showBannedSection: Boolean = moderationState.canBan && roomMembers.dataOrNull()?.banned?.isNotEmpty() == true
+}
 
 enum class SelectedSection {
     MEMBERS,
@@ -34,7 +38,14 @@ data class RoomMembers(
     val invited: ImmutableList<RoomMemberWithIdentityState>,
     val joined: ImmutableList<RoomMemberWithIdentityState>,
     val banned: ImmutableList<RoomMemberWithIdentityState>,
-){
+) {
+    fun isEmpty(section: SelectedSection): Boolean {
+        return when (section) {
+            SelectedSection.MEMBERS -> invited.isEmpty() && joined.isEmpty()
+            SelectedSection.BANNED -> banned.isEmpty()
+        }
+    }
+
     fun filter(query: String): RoomMembers {
         if (query.isBlank()) {
             return this

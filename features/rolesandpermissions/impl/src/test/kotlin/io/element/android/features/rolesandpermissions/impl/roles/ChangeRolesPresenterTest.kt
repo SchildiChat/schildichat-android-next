@@ -534,6 +534,18 @@ class ChangeRolesPresenterTest {
         }
     }
 
+    @Test
+    fun `test analytics mapping`()= runTest {
+        val presenter = createChangeRolesPresenter()
+        with(presenter) {
+            assertThat(RoomMember.Role.User.toAnalyticsMemberRole()).isEqualTo(RoomModeration.Role.User)
+            assertThat(RoomMember.Role.Moderator.toAnalyticsMemberRole()).isEqualTo(RoomModeration.Role.Moderator)
+            assertThat(RoomMember.Role.Admin.toAnalyticsMemberRole()).isEqualTo(RoomModeration.Role.Administrator)
+            assertThat(RoomMember.Role.Owner(isCreator = false).toAnalyticsMemberRole()).isEqualTo(RoomModeration.Role.Administrator)
+            assertThat(RoomMember.Role.Owner(isCreator = true).toAnalyticsMemberRole()).isEqualTo(RoomModeration.Role.Administrator)
+        }
+    }
+
     private fun roomPowerLevelsWithRole(
         role: RoomMember.Role,
         userId: UserId = A_USER_ID,

@@ -52,7 +52,6 @@ class RoomMemberListPresenter(
     private val roomMembersModerationPresenter: Presenter<RoomMemberModerationState>,
     private val encryptionService: EncryptionService,
 ) : Presenter<RoomMemberListState> {
-
     private val powerLevelRoomMemberComparator = PowerLevelRoomMemberComparator()
 
     @Composable

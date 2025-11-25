@@ -77,7 +77,6 @@ class RoomMemberListPresenterTest {
             val finalState = awaitItem()
             assertThat(finalState.selectedSection).isEqualTo(SelectedSection.MEMBERS)
         }
-
     }
 
     @Test

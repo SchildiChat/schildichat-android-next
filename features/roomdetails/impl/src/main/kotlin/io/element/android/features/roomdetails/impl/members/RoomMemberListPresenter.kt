@@ -179,7 +179,7 @@ class RoomMemberListPresenter(
         return if (room.info().isEncrypted != true) {
             RoomMemberWithIdentityState(this, null)
         } else {
-            val identityState = identityStates[userId] ?: encryptionService.getUserIdentity(userId).getOrNull()
+            val identityState = identityStates[userId] ?: encryptionService.getUserIdentity(userId, fallbackToServer = false).getOrNull()
             RoomMemberWithIdentityState(this, identityState)
         }
     }

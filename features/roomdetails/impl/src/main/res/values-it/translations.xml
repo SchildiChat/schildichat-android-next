@@ -78,7 +78,6 @@
   <string name="screen_room_member_list_manage_member_unban_title">"Riammetti nella stanza"</string>
   <string name="screen_room_member_list_mode_banned">"Esclusi"</string>
   <string name="screen_room_member_list_mode_members">"Membri"</string>
-  <string name="screen_room_member_list_pending_header_title">"In attesa"</string>
   <string name="screen_room_member_list_role_administrator">"Solo amministratori"</string>
   <string name="screen_room_member_list_role_moderator">"Amministratori e moderatori"</string>
   <string name="screen_room_member_list_role_owner">"Proprietario"</string>
@@ -142,7 +141,6 @@ Non consigliamo di attivare la crittografia per le stanze che chiunque può trov
   <string name="screen_security_and_privacy_room_publishing_section_footer">"Gli indirizzi delle stanze sono modi per trovare e accedervi. In questo modo puoi anche condividere facilmente la tua stanze con altri.
 Puoi scegliere di pubblicare la tua stanza nell\'elenco delle stanza pubbliche dell\'homeserver."</string>
   <string name="screen_security_and_privacy_room_publishing_section_header">"Pubblicazione della stanza"</string>
-  <string name="screen_security_and_privacy_room_visibility_section_footer">"Gli indirizzi delle stanze sono modi per trovare e accedere a queste ultime. Questo assicura anche che tu possa condividere facilmente la tua stanza con altri."</string>
   <string name="screen_security_and_privacy_room_visibility_section_header">"Visibilità della stanza"</string>
   <string name="screen_security_and_privacy_title">"Sicurezza e privacy"</string>
 </resources>

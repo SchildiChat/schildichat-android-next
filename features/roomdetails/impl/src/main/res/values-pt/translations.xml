@@ -80,7 +80,6 @@
   <string name="screen_room_member_list_manage_member_unban_title">"Desbanir da sala"</string>
   <string name="screen_room_member_list_mode_banned">"Banidos"</string>
   <string name="screen_room_member_list_mode_members">"Participantes"</string>
-  <string name="screen_room_member_list_pending_header_title">"Pendente"</string>
   <string name="screen_room_member_list_role_administrator">"Apenas administradores"</string>
   <string name="screen_room_member_list_role_moderator">"Administradores e moderadores"</string>
   <string name="screen_room_member_list_role_owner">"Dono / Dona"</string>
@@ -144,7 +143,6 @@ Não recomendamos ativar a cifragem em salas que qualquer pessoa possa encontrar
   <string name="screen_security_and_privacy_room_publishing_section_footer">"Estes endereços permitem encontrar e aceder a sala, bem como a sua fácil partilha com outros.
 Podes escolher publicar a sala no diretório público do teu servidor."</string>
   <string name="screen_security_and_privacy_room_publishing_section_header">"Publicar sala"</string>
-  <string name="screen_security_and_privacy_room_visibility_section_footer">"Estes endereços permitem encontrar e aceder a sala, bem como a sua fácil partilha com outros."</string>
   <string name="screen_security_and_privacy_room_visibility_section_header">"Visibilidade da sala"</string>
   <string name="screen_security_and_privacy_title">"Segurança e privacidade"</string>
 </resources>

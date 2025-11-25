@@ -189,7 +189,7 @@ private fun LazyListScope.memberItems(
                 roomMemberListSectionHeader(
                     text = {
                         val memberCount = roomMembers.invited.count()
-                        stringResource(id = R.string.screen_room_member_list_pending_header_title, memberCount)
+                        pluralStringResource(id = R.plurals.screen_room_member_list_pending_header_title, memberCount, memberCount)
                     },
                 )
                 roomMemberListSectionItems(
@@ -215,7 +215,7 @@ private fun LazyListScope.memberItems(
                 roomMemberListSectionHeader(
                     text = {
                         val memberCount = roomMembers.banned.count()
-                        stringResource(id = R.string.screen_room_member_list_banned_header_title, memberCount)
+                        pluralStringResource(id = R.plurals.screen_room_member_list_banned_header_title, memberCount, memberCount)
                     },
                     isCritical = true,
                 )

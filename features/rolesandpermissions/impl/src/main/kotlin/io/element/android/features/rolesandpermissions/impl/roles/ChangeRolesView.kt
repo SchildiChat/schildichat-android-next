@@ -30,7 +30,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -72,7 +71,6 @@ import io.element.android.libraries.matrix.ui.components.SelectedUsersRowList
 import io.element.android.libraries.matrix.ui.model.getAvatarData
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -222,18 +220,7 @@ private fun SearchResultsList(
         state = lazyListState,
     ) {
         item {
-            val usersInHorizontalRow = remember(searchResults.owners, selectedUsers) {
-                if (currentRole == RoomMember.Role.Admin) {
-                    // Also include the owners in the horizontal list
-                    val owners = searchResults.owners.map {
-                        it.toMatrixUser()
-                    }
-                    (owners + selectedUsers).toImmutableList()
-                } else {
-                    selectedUsers
-                }
-            }
-            selectedUsersList(usersInHorizontalRow)
+            selectedUsersList(selectedUsers)
         }
         if (searchResults.owners.isNotEmpty()) {
             stickyHeader { ListSectionHeader(text = stringResource(R.string.screen_room_roles_and_permissions_owners)) }

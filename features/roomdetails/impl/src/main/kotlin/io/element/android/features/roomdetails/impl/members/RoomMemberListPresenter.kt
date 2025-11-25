@@ -25,7 +25,6 @@ import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.architecture.map
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
-import io.element.android.libraries.designsystem.theme.components.SearchBarResultState
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.encryption.EncryptionService
 import io.element.android.libraries.matrix.api.encryption.identity.IdentityState
@@ -59,9 +58,6 @@ class RoomMemberListPresenter(
     @Composable
     override fun present(): RoomMemberListState {
         var searchQuery by rememberSaveable { mutableStateOf("") }
-        var searchResults by remember {
-            mutableStateOf<SearchBarResultState<AsyncData<RoomMembers>>>(SearchBarResultState.Initial())
-        }
         val membersState by room.membersStateFlow.collectAsState()
         val syncUpdateFlow = room.syncUpdateFlow.collectAsState()
         val canInvite by room.canInviteAsState(syncUpdateFlow.value)
@@ -75,8 +71,8 @@ class RoomMemberListPresenter(
                 .launchIn(this)
         }
 
-        var roomMembers: AsyncData<RoomMembers> by remember { mutableStateOf(AsyncData.Loading()) }
         var selectedSection by remember { mutableStateOf(SelectedSection.MEMBERS) }
+        var roomMembers: AsyncData<RoomMembers> by remember { mutableStateOf(AsyncData.Loading()) }
         var filteredRoomMembers: AsyncData<RoomMembers> by remember { mutableStateOf(AsyncData.Loading()) }
 
         // Update the room members when the screen is loaded

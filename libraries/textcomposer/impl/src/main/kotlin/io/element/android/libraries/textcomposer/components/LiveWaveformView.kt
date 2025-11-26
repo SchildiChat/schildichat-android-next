@@ -54,7 +54,7 @@ fun LiveWaveformView(
 
     var parentWidth by remember { mutableIntStateOf(0) }
 
-    val waveformWidth by remember(levels, lineWidth, linePadding) {
+    val waveformWidth by remember(levels.size, lineWidth, linePadding) {
         derivedStateOf {
             levels.size * (lineWidth.value + linePadding.value)
         }

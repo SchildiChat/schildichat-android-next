@@ -192,7 +192,10 @@ class DefaultVoiceMessageComposerPresenter(
             voiceMessageState = when (val state = recorderState) {
                 is VoiceRecorderState.Recording -> VoiceMessageState.Recording(
                     duration = state.elapsedTime,
-                    levels = state.levels.toImmutableList(),
+                    levels = state.levels
+                        // Keep only the last 128 samples for display, else we can have a crash
+                        .takeLast(128)
+                        .toImmutableList(),
                 )
                 is VoiceRecorderState.Finished ->
                     previewState(

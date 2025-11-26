@@ -163,14 +163,14 @@ suspend inline fun <T> runUpdatingState(
 }
 
 inline fun <T, R> AsyncData<T>.map(
-    transform: (T?) -> R,
+    transform: (T) -> R,
 ): AsyncData<R> {
     return when (this) {
         is AsyncData.Failure -> AsyncData.Failure(
             error = error,
-            prevData = transform(prevData)
+            prevData = prevData?.let { transform(prevData) }
         )
-        is AsyncData.Loading -> AsyncData.Loading(transform(prevData))
+        is AsyncData.Loading -> AsyncData.Loading(prevData?.let { transform(prevData) })
         is AsyncData.Success -> AsyncData.Success(transform(data))
         AsyncData.Uninitialized -> AsyncData.Uninitialized
     }

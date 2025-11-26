@@ -185,4 +185,5 @@
     <string name="sc_push_handler_notification_title">Configurando push</string>
     <string name="sc_pref_notification_worker_title">Worker de notificação</string>
     <string name="sc_pref_always_show_reaction_search_bar_title">Busca fixa de reações</string>
+    <string name="sc_pref_notification_worker_summary">Confiabilidade de notificação aprimorada com tentativas cientes de conexão</string>
 </resources>

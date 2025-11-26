@@ -180,4 +180,9 @@
     <string name="sc_pref_always_show_reaction_search_bar_summary">Sempre mostrar a barra de pesquisa de reações acima do seletor de reações</string>
     <string name="sc_pseudo_space_invites">Convites</string>
     <string name="sc_pseudo_space_list">Lista de espaços</string>
+    <string name="sc_pref_debounce_offline_state_summary">Ignorar as chances rápidas para o estado offline</string>
+    <string name="sc_pref_debounce_offline_state_title">Estado do debounce offline</string>
+    <string name="sc_push_handler_notification_title">Configurando push</string>
+    <string name="sc_pref_notification_worker_title">Worker de notificação</string>
+    <string name="sc_pref_always_show_reaction_search_bar_title">Busca fixa de reações</string>
 </resources>

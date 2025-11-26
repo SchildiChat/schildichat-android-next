@@ -218,7 +218,7 @@ private fun RoomAccessSection(
             ListItem(
                 headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_title)) },
                 supportingContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_description)) },
-                trailingContent = ListItemContent.RadioButton(selected =  edited == SecurityAndPrivacyRoomAccess.SpaceMember, enabled = false),
+                trailingContent = ListItemContent.RadioButton(selected = edited == SecurityAndPrivacyRoomAccess.SpaceMember, enabled = false),
                 leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Workspace())),
                 enabled = false,
             )
@@ -243,7 +243,6 @@ private fun RoomAccessSection(
             leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Lock())),
             onClick = { onSelectOption(SecurityAndPrivacyRoomAccess.InviteOnly) },
         )
-
     }
 }
 

@@ -117,7 +117,7 @@ fun aSecurityAndPrivacyState(
         canChangeRoomVisibility = true
     ),
     isKnockEnabled: Boolean = true,
-    isSpace: Boolean,
+    isSpace: Boolean = false,
     eventSink: (SecurityAndPrivacyEvents) -> Unit = {}
 ) = SecurityAndPrivacyState(
     editedSettings = editedSettings,

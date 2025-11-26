@@ -21,9 +21,9 @@ import androidx.compose.runtime.setValue
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import io.element.android.features.securityandprivacy.api.securityAndPrivacyPermissionsAsState
 import io.element.android.features.securityandprivacy.impl.SecurityAndPrivacyNavigator
 import io.element.android.features.securityandprivacy.impl.editroomaddress.matchesServer
-import io.element.android.features.securityandprivacy.api.securityAndPrivacyPermissionsAsState
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.AsyncData.*
@@ -65,7 +65,7 @@ class SecurityAndPrivacyPresenter(
             featureFlagService.isFeatureEnabledFlow(FeatureFlags.Knock)
         }.collectAsState(false)
         val saveAction = remember { mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized) }
-        var confirmExitAction by remember { mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized)}
+        var confirmExitAction by remember { mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized) }
         val homeserverName = remember { matrixClient.userIdServerName() }
         val syncUpdateFlow = room.syncUpdateFlow.collectAsState()
         val roomInfo by room.roomInfoFlow.collectAsState()

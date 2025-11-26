@@ -21,12 +21,12 @@ import io.element.android.features.securityandprivacy.impl.root.SecurityAndPriva
 import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyView
 import io.element.android.features.securityandprivacy.impl.root.aSecurityAndPrivacySettings
 import io.element.android.features.securityandprivacy.impl.root.aSecurityAndPrivacyState
+import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.ui.strings.CommonStrings
 import io.element.android.tests.testutils.EnsureNeverCalled
 import io.element.android.tests.testutils.EventsRecorder
 import io.element.android.tests.testutils.clickOn
-import io.element.android.tests.testutils.ensureCalledOnce
 import io.element.android.tests.testutils.pressBack
 import org.junit.Rule
 import org.junit.Test
@@ -39,14 +39,40 @@ class SecurityAndPrivacyViewTest {
     @get:Rule val rule = createAndroidComposeRule<ComponentActivity>()
 
     @Test
-    fun `click on back invokes expected callback`() {
-        ensureCalledOnce { callback ->
-            rule.setSecurityAndPrivacyView(
-                onBackClick = callback,
-            )
-            rule.pressBack()
-        }
+    fun `click on back invokes emits the expected event`() {
+        val recorder = EventsRecorder<SecurityAndPrivacyEvents>()
+        val state = aSecurityAndPrivacyState(
+            eventSink = recorder,
+        )
+        rule.setSecurityAndPrivacyView(state)
+        rule.pressBack()
+        recorder.assertSingle(SecurityAndPrivacyEvents.Exit)
     }
+
+    @Test
+    fun `confirm cancellation emits the expected event`() {
+        val recorder = EventsRecorder<SecurityAndPrivacyEvents>()
+        val state = aSecurityAndPrivacyState(
+            confirmExitAction = AsyncAction.ConfirmingCancellation,
+            eventSink = recorder,
+        )
+        rule.setSecurityAndPrivacyView(state)
+        rule.clickOn(CommonStrings.action_ok)
+        recorder.assertSingle(SecurityAndPrivacyEvents.Exit)
+    }
+
+    @Test
+    fun `dismiss cancellation confirmation emits the expected event`() {
+        val recorder = EventsRecorder<SecurityAndPrivacyEvents>()
+        val state = aSecurityAndPrivacyState(
+            confirmExitAction = AsyncAction.ConfirmingCancellation,
+            eventSink = recorder,
+        )
+        rule.setSecurityAndPrivacyView(state)
+        rule.clickOn(CommonStrings.action_cancel)
+        recorder.assertSingle(SecurityAndPrivacyEvents.DismissExitConfirmation)
+    }
+
 
     @Test
     fun `click on room access item emits the expected event`() {

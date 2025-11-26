@@ -11,7 +11,7 @@ package io.element.android.features.securityandprivacy.impl.root
 sealed interface SecurityAndPrivacyEvents {
     data object EditRoomAddress : SecurityAndPrivacyEvents
     data object Save : SecurityAndPrivacyEvents
-    data object Exit: SecurityAndPrivacyEvents
+    data object Exit : SecurityAndPrivacyEvents
     data object DismissExitConfirmation : SecurityAndPrivacyEvents
     data class ChangeRoomAccess(val roomAccess: SecurityAndPrivacyRoomAccess) : SecurityAndPrivacyEvents
     data object ToggleEncryptionState : SecurityAndPrivacyEvents

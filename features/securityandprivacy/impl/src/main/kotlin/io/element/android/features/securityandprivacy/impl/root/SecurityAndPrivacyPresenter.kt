@@ -26,7 +26,6 @@ import io.element.android.features.securityandprivacy.impl.SecurityAndPrivacyNav
 import io.element.android.features.securityandprivacy.impl.editroomaddress.matchesServer
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
-import io.element.android.libraries.architecture.AsyncData.*
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.architecture.runCatchingUpdatingState
 import io.element.android.libraries.architecture.runUpdatingState
@@ -135,7 +134,7 @@ class SecurityAndPrivacyPresenter(
                 }
                 SecurityAndPrivacyEvents.ToggleRoomVisibility -> {
                     editedVisibleInRoomDirectory = when (val edited = editedVisibleInRoomDirectory) {
-                        is Success -> Success(!edited.data)
+                        is AsyncData.Success -> AsyncData.Success(!edited.data)
                         else -> edited
                     }
                 }

@@ -73,7 +73,6 @@ class SecurityAndPrivacyViewTest {
         recorder.assertSingle(SecurityAndPrivacyEvents.DismissExitConfirmation)
     }
 
-
     @Test
     fun `click on room access item emits the expected event`() {
         val recorder = EventsRecorder<SecurityAndPrivacyEvents>()

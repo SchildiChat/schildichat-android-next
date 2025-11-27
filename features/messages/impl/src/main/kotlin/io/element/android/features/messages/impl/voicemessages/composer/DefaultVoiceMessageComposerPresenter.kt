@@ -26,7 +26,7 @@ import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesBinding
 import im.vector.app.features.analytics.plan.Composer
 import io.element.android.features.messages.api.MessageComposerContext
-import io.element.android.features.messages.api.timeline.voicemessages.composer.VoiceMessageComposerEvents
+import io.element.android.features.messages.api.timeline.voicemessages.composer.VoiceMessageComposerEvent
 import io.element.android.features.messages.api.timeline.voicemessages.composer.VoiceMessageComposerPresenter
 import io.element.android.features.messages.api.timeline.voicemessages.composer.VoiceMessageComposerState
 import io.element.android.libraries.di.RoomScope
@@ -164,25 +164,25 @@ class DefaultVoiceMessageComposerPresenter(
             }
         }
 
-        fun handleEvent(event: VoiceMessageComposerEvents) {
+        fun handleEvent(event: VoiceMessageComposerEvent) {
             when (event) {
-                is VoiceMessageComposerEvents.RecorderEvent -> handleVoiceMessageRecorderEvent(event.recorderEvent)
-                is VoiceMessageComposerEvents.PlayerEvent -> handleVoiceMessagePlayerEvent(event.playerEvent)
-                is VoiceMessageComposerEvents.SendVoiceMessage -> localCoroutineScope.launch {
+                is VoiceMessageComposerEvent.RecorderEvent -> handleVoiceMessageRecorderEvent(event.recorderEvent)
+                is VoiceMessageComposerEvent.PlayerEvent -> handleVoiceMessagePlayerEvent(event.playerEvent)
+                is VoiceMessageComposerEvent.SendVoiceMessage -> localCoroutineScope.launch {
                     sendVoiceMessage()
                 }
-                VoiceMessageComposerEvents.DeleteVoiceMessage -> {
+                VoiceMessageComposerEvent.DeleteVoiceMessage -> {
                     player.pause()
                     localCoroutineScope.deleteRecording()
                 }
-                VoiceMessageComposerEvents.DismissPermissionsRationale -> {
+                VoiceMessageComposerEvent.DismissPermissionsRationale -> {
                     permissionState.eventSink(PermissionsEvents.CloseDialog)
                 }
-                VoiceMessageComposerEvents.AcceptPermissionRationale -> {
+                VoiceMessageComposerEvent.AcceptPermissionRationale -> {
                     permissionState.eventSink(PermissionsEvents.OpenSystemSettingAndCloseDialog)
                 }
-                is VoiceMessageComposerEvents.LifecycleEvent -> handleLifecycleEvent(event.event)
-                VoiceMessageComposerEvents.DismissSendFailureDialog -> {
+                is VoiceMessageComposerEvent.LifecycleEvent -> handleLifecycleEvent(event.event)
+                VoiceMessageComposerEvent.DismissSendFailureDialog -> {
                     showSendFailureDialog = false
                 }
             }

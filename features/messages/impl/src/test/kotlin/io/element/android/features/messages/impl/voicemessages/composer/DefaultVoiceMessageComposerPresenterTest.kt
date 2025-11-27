@@ -39,6 +39,7 @@ import io.element.android.libraries.textcomposer.model.VoiceMessagePlayerEvent
 import io.element.android.libraries.textcomposer.model.VoiceMessageRecorderEvent
 import io.element.android.libraries.textcomposer.model.VoiceMessageState
 import io.element.android.libraries.voiceplayer.api.VoiceMessageException
+import io.element.android.libraries.voicerecorder.api.VoiceRecorder
 import io.element.android.libraries.voicerecorder.test.FakeVoiceRecorder
 import io.element.android.services.analytics.test.FakeAnalyticsService
 import io.element.android.tests.testutils.WarmUpRule
@@ -108,6 +109,30 @@ class DefaultVoiceMessageComposerPresenterTest {
             assertThat(finalState.voiceMessageState).isEqualTo(RECORDING_STATE)
             voiceRecorder.assertCalls(started = 1)
 
+            testPauseAndDestroy(finalState)
+        }
+    }
+
+    @Test
+    fun `present - recording state - number of levels is limited`() = runTest {
+        val numberOfLevels = 200
+        val levels = List(numberOfLevels) { it / numberOfLevels.toFloat() }
+        val voiceRecorder = FakeVoiceRecorder(
+            levels = levels,
+            recordingDuration = RECORDING_DURATION,
+        )
+        val presenter = createDefaultVoiceMessageComposerPresenter(
+            voiceRecorder = voiceRecorder,
+        )
+        presenter.test {
+            awaitItem().eventSink(VoiceMessageComposerEvents.RecorderEvent(VoiceMessageRecorderEvent.Start))
+            skipItems(numberOfLevels / 2 - 1)
+            val finalState = awaitItem()
+            assertThat(finalState.voiceMessageState).isInstanceOf(VoiceMessageState.Recording::class.java)
+            val recordingState = finalState.voiceMessageState as VoiceMessageState.Recording
+            // The number of levels should be limited to 128 items
+            assertThat(recordingState.levels.size).isEqualTo(128)
+            assertThat(recordingState.levels).isEqualTo(levels.takeLast(128))
             testPauseAndDestroy(finalState)
         }
     }
@@ -614,6 +639,7 @@ class DefaultVoiceMessageComposerPresenterTest {
 
     private fun TestScope.createDefaultVoiceMessageComposerPresenter(
         permissionsPresenter: PermissionsPresenter = createFakePermissionsPresenter(),
+        voiceRecorder: VoiceRecorder = this@DefaultVoiceMessageComposerPresenterTest.voiceRecorder,
     ): DefaultVoiceMessageComposerPresenter {
         return DefaultVoiceMessageComposerPresenter(
             sessionCoroutineScope = backgroundScope,

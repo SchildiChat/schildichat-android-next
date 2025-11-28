@@ -74,6 +74,7 @@ enum class FeatureFlags(
         key = "feature.space",
         title = "Spaces",
         defaultValue = { true },
+        isFinished = true,
         isFinished = false,
     ),
     PrintLogsToLogcat(

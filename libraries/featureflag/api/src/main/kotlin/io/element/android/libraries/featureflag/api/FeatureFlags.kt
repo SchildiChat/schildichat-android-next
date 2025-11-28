@@ -75,6 +75,12 @@ enum class FeatureFlags(
         title = "Spaces",
         defaultValue = { true },
         isFinished = true,
+    ),
+    SpaceSettings(
+        key = "feature.spaceSettings",
+        title = "Space settings",
+        description = "Allow managing space settings such details, permissions and privacy.",
+        defaultValue = { true },
         isFinished = false,
     ),
     PrintLogsToLogcat(

@@ -377,6 +377,13 @@
         "screen_room_member_list.*",
         "screen\\.room_member_list\\..*"
       ]
+    },
+    {
+      "name" : ":features:securityandprivacy:impl",
+      "includeRegex" : [
+        "screen\\.edit_room_address\\..*",
+        "screen\\.security_and_privacy\\..*"
+      ]
     }
   ]
 }

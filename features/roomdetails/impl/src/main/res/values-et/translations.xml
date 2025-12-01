@@ -136,8 +136,8 @@ Me ei soovita krüptimise kasutamist selliste avalike jututubade puhul, millega 
   <string name="screen_security_and_privacy_room_access_invite_only_option_description">"Liituda saab vaid kutse olemasolul"</string>
   <string name="screen_security_and_privacy_room_access_invite_only_option_title">"Vaid kutsega"</string>
   <string name="screen_security_and_privacy_room_access_section_header">"Ligipääs"</string>
-  <string name="screen_security_and_privacy_room_access_space_members_option_description">"Kogukondade tugi veel puudub"</string>
   <string name="screen_security_and_privacy_room_access_space_members_option_title">"Kogukonna liikmed"</string>
+  <string name="screen_security_and_privacy_room_access_space_members_option_unavailable_description">"Kogukondade tugi veel puudub"</string>
   <string name="screen_security_and_privacy_room_address_section_footer">"Selleks, et jututuba oleks nähtav jututubade avalikus kataloogis, vajab ta aadressi."</string>
   <string name="screen_security_and_privacy_room_address_section_header">"Aadress"</string>
   <string name="screen_security_and_privacy_room_directory_visibility_section_footer">"Võimalda leida seda jututuba avalikust kataloogist otsides „%1$s“"</string>

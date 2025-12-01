@@ -15,17 +15,16 @@ import io.element.android.libraries.matrix.api.room.activeRoomMembers
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 
 /**
- * Return a flow of the list of active room members who have the given role.
+ * Return a flow of the list of active room members who match the predicate.
  */
-fun BaseRoom.usersWithRole(role: RoomMember.Role): Flow<ImmutableList<RoomMember>> {
-    // Ensure the room members flow is ready
+fun BaseRoom.usersWithRole(predicate: (RoomMember.Role) -> Boolean): Flow<ImmutableList<RoomMember>> {
+    // Wait until members are ready to avoid returning empty lists initially
     val readyMembersFlow = membersStateFlow
         .onStart {
             if (membersStateFlow.value is RoomMembersState.Unknown) {
@@ -34,12 +33,17 @@ fun BaseRoom.usersWithRole(role: RoomMember.Role): Flow<ImmutableList<RoomMember
         }
         .filter { it is RoomMembersState.Ready }
 
-    return roomInfoFlow
-        .map { roomInfo -> roomInfo.usersWithRole(role) }
-        .combine(readyMembersFlow) { powerLevels, membersState ->
-            membersState.activeRoomMembers()
-                .filter { powerLevels.contains(it.userId) }
-                .toImmutableList()
-        }
-        .distinctUntilChanged()
+    return readyMembersFlow.map { membersState ->
+        membersState
+            .activeRoomMembers()
+            .filter({ predicate(it.role) })
+            .toImmutableList()
+    }.distinctUntilChanged()
+}
+
+/**
+ * Return the number of active room members who match the predicate.
+ */
+fun BaseRoom.userCountWithRole(predicate: (RoomMember.Role) -> Boolean): Flow<Int> {
+    return usersWithRole(predicate).map { it.size }
 }

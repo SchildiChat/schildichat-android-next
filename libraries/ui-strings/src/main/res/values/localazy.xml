@@ -246,6 +246,7 @@ Reason: %1$s."</string>
   </plurals>
   <string name="common_message">"Message"</string>
   <string name="common_message_actions">"Message actions"</string>
+  <string name="common_message_failed_to_send">"Message failed to send"</string>
   <string name="common_message_layout">"Message layout"</string>
   <string name="common_message_removed">"Message removed"</string>
   <string name="common_modern">"Modern"</string>

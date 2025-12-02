@@ -52,6 +52,7 @@ import io.element.android.libraries.designsystem.theme.components.TextButton
 import io.element.android.libraries.designsystem.theme.components.TopAppBar
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.ImmutableSet
+
 @Composable
 fun SecurityAndPrivacyView(
     state: SecurityAndPrivacyState,
@@ -214,7 +215,9 @@ private fun RoomAccessSection(
         if (saved == SecurityAndPrivacyRoomAccess.SpaceMember) {
             ListItem(
                 headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_title)) },
-                supportingContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_unavailable_description)) },
+                supportingContent = {
+                    Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_unavailable_description))
+                },
                 trailingContent = ListItemContent.RadioButton(selected = edited == SecurityAndPrivacyRoomAccess.SpaceMember, enabled = false),
                 leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Workspace())),
                 enabled = false,

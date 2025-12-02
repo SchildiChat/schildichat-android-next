@@ -91,7 +91,7 @@ class RoomListRoomSummaryFactory(
             }
             is LatestEventValue.Remote -> {
                 val content = roomLatestEventFormatter.format(latestEvent, dm).orEmpty()
-                LatestEvent.Regular(
+                LatestEvent.Synced(
                     content = content,
                 )
             }

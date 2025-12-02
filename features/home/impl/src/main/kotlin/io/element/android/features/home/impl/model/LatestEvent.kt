@@ -13,7 +13,7 @@ import androidx.compose.runtime.Immutable
 sealed interface LatestEvent {
     data object None : LatestEvent
 
-    data class Regular(
+    data class Synced(
         val content: CharSequence?,
     ) : LatestEvent
 
@@ -26,7 +26,7 @@ sealed interface LatestEvent {
     fun content(): CharSequence? {
         return when (this) {
             is None -> null
-            is Regular -> content
+            is Synced -> content
             is Sending -> content
             is Error -> null
         }

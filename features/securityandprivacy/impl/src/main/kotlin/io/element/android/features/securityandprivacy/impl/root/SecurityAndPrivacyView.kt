@@ -214,7 +214,7 @@ private fun RoomAccessSection(
         if (saved == SecurityAndPrivacyRoomAccess.SpaceMember) {
             ListItem(
                 headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_title)) },
-                supportingContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_description)) },
+                supportingContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_unavailable_description)) },
                 trailingContent = ListItemContent.RadioButton(selected = edited == SecurityAndPrivacyRoomAccess.SpaceMember, enabled = false),
                 leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Workspace())),
                 enabled = false,
@@ -280,7 +280,7 @@ private fun RoomAddressSection(
                 Text(text = roomAddress ?: stringResource(R.string.screen_security_and_privacy_add_room_address_action))
             },
             trailingContent = if (roomAddress.isNullOrEmpty()) ListItemContent.Icon(IconSource.Vector(CompoundIcons.Plus())) else null,
-            supportingContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_address_description)) },
+            supportingContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_address_section_footer)) },
             onClick = onRoomAddressClick,
             colors = ListItemDefaults.colors(trailingIconColor = ElementTheme.colors.iconAccentPrimary),
         )

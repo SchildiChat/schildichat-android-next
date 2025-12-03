@@ -36,7 +36,7 @@ fun BaseRoom.usersWithRole(predicate: (RoomMember.Role) -> Boolean): Flow<Immuta
     return readyMembersFlow.map { membersState ->
         membersState
             .activeRoomMembers()
-            .filter({ predicate(it.role) })
+            .filter { predicate(it.role) }
             .toImmutableList()
     }.distinctUntilChanged()
 }

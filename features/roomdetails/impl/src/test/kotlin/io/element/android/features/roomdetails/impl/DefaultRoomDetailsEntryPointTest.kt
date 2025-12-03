@@ -20,6 +20,7 @@ import io.element.android.features.messages.test.FakeMessagesEntryPoint
 import io.element.android.features.poll.test.history.FakePollHistoryEntryPoint
 import io.element.android.features.reportroom.test.FakeReportRoomEntryPoint
 import io.element.android.features.roomdetails.api.RoomDetailsEntryPoint
+import io.element.android.features.roomdetailsedit.test.FakeRoomDetailsEditEntryPoint
 import io.element.android.features.securityandprivacy.test.FakeSecurityAndPrivacyEntryPoint
 import io.element.android.features.verifysession.test.FakeOutgoingVerificationEntryPoint
 import io.element.android.libraries.matrix.api.core.EventId
@@ -63,6 +64,7 @@ class DefaultRoomDetailsEntryPointTest {
                 changeRoomMemberRolesEntryPoint = FakeChangeRoomMemberRolesEntryPoint(),
                 rolesAndPermissionsEntryPoint = FakeRolesAndPermissionsEntryPoint(),
                 securityAndPrivacyEntryPoint = FakeSecurityAndPrivacyEntryPoint(),
+                roomDetailsEditEntryPoint = FakeRoomDetailsEditEntryPoint(),
             )
         }
         val callback = object : RoomDetailsEntryPoint.Callback {

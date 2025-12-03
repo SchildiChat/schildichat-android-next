@@ -251,6 +251,7 @@ Reason: %1$s."</string>
   <string name="common_message_removed">"Message removed"</string>
   <string name="common_modern">"Modern"</string>
   <string name="common_mute">"Mute"</string>
+  <string name="common_name">"Name"</string>
   <string name="common_name_and_id">"%1$s (%2$s)"</string>
   <string name="common_no_results">"No results"</string>
   <string name="common_no_room_name">"No room name"</string>
@@ -325,6 +326,7 @@ Reason: %1$s."</string>
   <string name="common_something_went_wrong">"Something went wrong"</string>
   <string name="common_something_went_wrong_message">"We encountered an issue. Please try again."</string>
   <string name="common_space">"Space"</string>
+  <string name="common_space_topic_placeholder">"What is this space about?"</string>
   <plurals name="common_spaces">
     <item quantity="one">"%1$d Space"</item>
     <item quantity="other">"%1$d Spaces"</item>

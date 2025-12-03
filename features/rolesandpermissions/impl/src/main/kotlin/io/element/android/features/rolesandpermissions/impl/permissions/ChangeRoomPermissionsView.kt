@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import io.element.android.features.rolesandpermissions.impl.R
+import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.designsystem.components.async.AsyncActionView
 import io.element.android.libraries.designsystem.components.button.BackButton
 import io.element.android.libraries.designsystem.components.dialogs.SaveChangesDialog
@@ -91,21 +92,19 @@ fun ChangeRoomPermissionsView(
 
     AsyncActionView(
         async = state.saveAction,
-        onSuccess = { onComplete(true) },
-        onErrorDismiss = { state.eventSink(ChangeRoomPermissionsEvent.ResetPendingActions) }
-    )
-
-    AsyncActionView(
-        async = state.confirmExitAction,
-        onSuccess = { onComplete(false) },
-        confirmationDialog = {
-            SaveChangesDialog(
-                onSaveClick = { state.eventSink(ChangeRoomPermissionsEvent.Save) },
-                onDiscardClick = { state.eventSink(ChangeRoomPermissionsEvent.Exit) },
-                onDismiss = { state.eventSink(ChangeRoomPermissionsEvent.ResetPendingActions) },
-            )
+        onSuccess = { onComplete(it) },
+        confirmationDialog = { confirming ->
+            when (confirming) {
+                is AsyncAction.ConfirmingCancellation -> {
+                    SaveChangesDialog(
+                        onSaveClick = { state.eventSink(ChangeRoomPermissionsEvent.Save) },
+                        onDiscardClick = { state.eventSink(ChangeRoomPermissionsEvent.Exit) },
+                        onDismiss = { state.eventSink(ChangeRoomPermissionsEvent.ResetPendingActions) },
+                    )
+                }
+            }
         },
-        onErrorDismiss = {},
+        onErrorDismiss = { state.eventSink(ChangeRoomPermissionsEvent.ResetPendingActions) }
     )
 }
 

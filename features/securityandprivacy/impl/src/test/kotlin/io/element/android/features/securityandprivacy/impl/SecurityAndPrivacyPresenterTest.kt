@@ -9,7 +9,7 @@
 package io.element.android.features.securityandprivacy.impl
 
 import com.google.common.truth.Truth.assertThat
-import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyEvents
+import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyEvent
 import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyHistoryVisibility
 import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyPresenter
 import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyRoomAccess
@@ -96,13 +96,13 @@ class SecurityAndPrivacyPresenterTest {
             with(awaitItem()) {
                 assertThat(editedSettings.roomAccess).isEqualTo(SecurityAndPrivacyRoomAccess.InviteOnly)
                 assertThat(showRoomVisibilitySections).isFalse()
-                eventSink(SecurityAndPrivacyEvents.ChangeRoomAccess(SecurityAndPrivacyRoomAccess.Anyone))
+                eventSink(SecurityAndPrivacyEvent.ChangeRoomAccess(SecurityAndPrivacyRoomAccess.Anyone))
             }
             with(awaitItem()) {
                 assertThat(editedSettings.roomAccess).isEqualTo(SecurityAndPrivacyRoomAccess.Anyone)
                 assertThat(showRoomVisibilitySections).isTrue()
                 assertThat(canBeSaved).isTrue()
-                eventSink(SecurityAndPrivacyEvents.ChangeRoomAccess(SecurityAndPrivacyRoomAccess.InviteOnly))
+                eventSink(SecurityAndPrivacyEvent.ChangeRoomAccess(SecurityAndPrivacyRoomAccess.InviteOnly))
             }
             with(awaitItem()) {
                 assertThat(editedSettings.roomAccess).isEqualTo(SecurityAndPrivacyRoomAccess.InviteOnly)
@@ -119,12 +119,12 @@ class SecurityAndPrivacyPresenterTest {
             skipItems(1)
             with(awaitItem()) {
                 assertThat(editedSettings.historyVisibility).isEqualTo(SecurityAndPrivacyHistoryVisibility.SinceSelection)
-                eventSink(SecurityAndPrivacyEvents.ChangeHistoryVisibility(SecurityAndPrivacyHistoryVisibility.SinceInvite))
+                eventSink(SecurityAndPrivacyEvent.ChangeHistoryVisibility(SecurityAndPrivacyHistoryVisibility.SinceInvite))
             }
             with(awaitItem()) {
                 assertThat(editedSettings.historyVisibility).isEqualTo(SecurityAndPrivacyHistoryVisibility.SinceInvite)
                 assertThat(canBeSaved).isTrue()
-                eventSink(SecurityAndPrivacyEvents.ChangeHistoryVisibility(SecurityAndPrivacyHistoryVisibility.SinceSelection))
+                eventSink(SecurityAndPrivacyEvent.ChangeHistoryVisibility(SecurityAndPrivacyHistoryVisibility.SinceSelection))
             }
             with(awaitItem()) {
                 assertThat(editedSettings.historyVisibility).isEqualTo(SecurityAndPrivacyHistoryVisibility.SinceSelection)
@@ -140,26 +140,26 @@ class SecurityAndPrivacyPresenterTest {
             skipItems(1)
             with(awaitItem()) {
                 assertThat(editedSettings.isEncrypted).isFalse()
-                eventSink(SecurityAndPrivacyEvents.ToggleEncryptionState)
+                eventSink(SecurityAndPrivacyEvent.ToggleEncryptionState)
             }
             with(awaitItem()) {
                 assertThat(showEnableEncryptionConfirmation).isTrue()
-                eventSink(SecurityAndPrivacyEvents.CancelEnableEncryption)
+                eventSink(SecurityAndPrivacyEvent.CancelEnableEncryption)
             }
             with(awaitItem()) {
                 assertThat(showEnableEncryptionConfirmation).isFalse()
-                eventSink(SecurityAndPrivacyEvents.ToggleEncryptionState)
+                eventSink(SecurityAndPrivacyEvent.ToggleEncryptionState)
             }
             with(awaitItem()) {
                 assertThat(showEnableEncryptionConfirmation).isTrue()
-                eventSink(SecurityAndPrivacyEvents.ConfirmEnableEncryption)
+                eventSink(SecurityAndPrivacyEvent.ConfirmEnableEncryption)
             }
             skipItems(1)
             with(awaitItem()) {
                 assertThat(editedSettings.isEncrypted).isTrue()
                 assertThat(showEnableEncryptionConfirmation).isFalse()
                 assertThat(canBeSaved).isTrue()
-                eventSink(SecurityAndPrivacyEvents.ToggleEncryptionState)
+                eventSink(SecurityAndPrivacyEvent.ToggleEncryptionState)
             }
             skipItems(1)
             with(awaitItem()) {
@@ -186,12 +186,12 @@ class SecurityAndPrivacyPresenterTest {
             }
             with(awaitItem()) {
                 assertThat(editedSettings.isVisibleInRoomDirectory).isEqualTo(AsyncData.Success(false))
-                eventSink(SecurityAndPrivacyEvents.ToggleRoomVisibility)
+                eventSink(SecurityAndPrivacyEvent.ToggleRoomVisibility)
             }
             with(awaitItem()) {
                 assertThat(editedSettings.isVisibleInRoomDirectory).isEqualTo(AsyncData.Success(true))
                 assertThat(canBeSaved).isTrue()
-                eventSink(SecurityAndPrivacyEvents.ToggleRoomVisibility)
+                eventSink(SecurityAndPrivacyEvent.ToggleRoomVisibility)
             }
             with(awaitItem()) {
                 assertThat(editedSettings.isVisibleInRoomDirectory).isEqualTo(AsyncData.Success(false))
@@ -208,7 +208,7 @@ class SecurityAndPrivacyPresenterTest {
         presenter.test {
             skipItems(1)
             with(awaitItem()) {
-                eventSink(SecurityAndPrivacyEvents.EditRoomAddress)
+                eventSink(SecurityAndPrivacyEvent.EditRoomAddress)
             }
             assert(openEditRoomAddressLambda).isCalledOnce()
         }
@@ -243,23 +243,23 @@ class SecurityAndPrivacyPresenterTest {
             skipItems(2)
             with(awaitItem()) {
                 assertThat(editedSettings.roomAccess).isEqualTo(SecurityAndPrivacyRoomAccess.InviteOnly)
-                eventSink(SecurityAndPrivacyEvents.ChangeRoomAccess(SecurityAndPrivacyRoomAccess.Anyone))
+                eventSink(SecurityAndPrivacyEvent.ChangeRoomAccess(SecurityAndPrivacyRoomAccess.Anyone))
             }
             with(awaitItem()) {
-                eventSink(SecurityAndPrivacyEvents.ChangeHistoryVisibility(SecurityAndPrivacyHistoryVisibility.Anyone))
+                eventSink(SecurityAndPrivacyEvent.ChangeHistoryVisibility(SecurityAndPrivacyHistoryVisibility.Anyone))
             }
             with(awaitItem()) {
                 assertThat(editedSettings.historyVisibility).isEqualTo(SecurityAndPrivacyHistoryVisibility.Anyone)
-                eventSink(SecurityAndPrivacyEvents.ConfirmEnableEncryption)
+                eventSink(SecurityAndPrivacyEvent.ConfirmEnableEncryption)
             }
             skipItems(1)
             with(awaitItem()) {
                 assertThat(editedSettings.isEncrypted).isTrue()
-                eventSink(SecurityAndPrivacyEvents.ToggleRoomVisibility)
+                eventSink(SecurityAndPrivacyEvent.ToggleRoomVisibility)
             }
             with(awaitItem()) {
                 assertThat(editedSettings.isVisibleInRoomDirectory).isEqualTo(AsyncData.Success(true))
-                eventSink(SecurityAndPrivacyEvents.Save)
+                eventSink(SecurityAndPrivacyEvent.Save)
             }
             with(awaitItem()) {
                 assertThat(saveAction).isEqualTo(AsyncAction.Loading)
@@ -311,23 +311,23 @@ class SecurityAndPrivacyPresenterTest {
             skipItems(2)
             with(awaitItem()) {
                 assertThat(editedSettings.roomAccess).isEqualTo(SecurityAndPrivacyRoomAccess.InviteOnly)
-                eventSink(SecurityAndPrivacyEvents.ChangeRoomAccess(SecurityAndPrivacyRoomAccess.Anyone))
+                eventSink(SecurityAndPrivacyEvent.ChangeRoomAccess(SecurityAndPrivacyRoomAccess.Anyone))
             }
             with(awaitItem()) {
-                eventSink(SecurityAndPrivacyEvents.ChangeHistoryVisibility(SecurityAndPrivacyHistoryVisibility.Anyone))
+                eventSink(SecurityAndPrivacyEvent.ChangeHistoryVisibility(SecurityAndPrivacyHistoryVisibility.Anyone))
             }
             with(awaitItem()) {
                 assertThat(editedSettings.historyVisibility).isEqualTo(SecurityAndPrivacyHistoryVisibility.Anyone)
-                eventSink(SecurityAndPrivacyEvents.ConfirmEnableEncryption)
+                eventSink(SecurityAndPrivacyEvent.ConfirmEnableEncryption)
             }
             skipItems(1)
             with(awaitItem()) {
                 assertThat(editedSettings.isEncrypted).isTrue()
-                eventSink(SecurityAndPrivacyEvents.ToggleRoomVisibility)
+                eventSink(SecurityAndPrivacyEvent.ToggleRoomVisibility)
             }
             with(awaitItem()) {
                 assertThat(editedSettings.isVisibleInRoomDirectory).isEqualTo(AsyncData.Success(true))
-                eventSink(SecurityAndPrivacyEvents.Save)
+                eventSink(SecurityAndPrivacyEvent.Save)
             }
             with(awaitItem()) {
                 assertThat(saveAction).isEqualTo(AsyncAction.Loading)
@@ -352,7 +352,7 @@ class SecurityAndPrivacyPresenterTest {
             assert(updateRoomVisibilityLambda).isCalledOnce()
             assert(updateRoomHistoryVisibilityLambda).isCalledOnce()
             // Clear error
-            state.eventSink(SecurityAndPrivacyEvents.DismissSaveError)
+            state.eventSink(SecurityAndPrivacyEvent.DismissSaveError)
             with(awaitItem()) {
                 assertThat(saveAction).isEqualTo(AsyncAction.Uninitialized)
             }

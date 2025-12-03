@@ -24,7 +24,7 @@ data class SecurityAndPrivacyState(
     val saveAction: AsyncAction<Unit>,
     val isSpace: Boolean,
     private val permissions: SecurityAndPrivacyPermissions,
-    val eventSink: (SecurityAndPrivacyEvents) -> Unit
+    val eventSink: (SecurityAndPrivacyEvent) -> Unit
 ) {
     val canBeSaved = savedSettings != editedSettings
 

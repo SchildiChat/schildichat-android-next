@@ -108,9 +108,9 @@ class SecurityAndPrivacyPresenter(
         var showEnableEncryptionConfirmation by remember(savedSettings.isEncrypted) { mutableStateOf(false) }
         val permissions by room.securityAndPrivacyPermissionsAsState(syncUpdateFlow.value)
 
-        fun handleEvent(event: SecurityAndPrivacyEvents) {
+        fun handleEvent(event: SecurityAndPrivacyEvent) {
             when (event) {
-                SecurityAndPrivacyEvents.Save -> {
+                SecurityAndPrivacyEvent.Save -> {
                     coroutineScope.save(
                         saveAction = saveAction,
                         isVisibleInRoomDirectory = savedIsVisibleInRoomDirectory,
@@ -118,44 +118,44 @@ class SecurityAndPrivacyPresenter(
                         editedSettings = editedSettings
                     )
                 }
-                is SecurityAndPrivacyEvents.ChangeRoomAccess -> {
+                is SecurityAndPrivacyEvent.ChangeRoomAccess -> {
                     editedRoomAccess = event.roomAccess
                 }
-                is SecurityAndPrivacyEvents.ToggleEncryptionState -> {
+                is SecurityAndPrivacyEvent.ToggleEncryptionState -> {
                     if (editedIsEncrypted) {
                         editedIsEncrypted = false
                     } else {
                         showEnableEncryptionConfirmation = true
                     }
                 }
-                is SecurityAndPrivacyEvents.ChangeHistoryVisibility -> {
+                is SecurityAndPrivacyEvent.ChangeHistoryVisibility -> {
                     editedHistoryVisibility = event.historyVisibility
                 }
-                SecurityAndPrivacyEvents.ToggleRoomVisibility -> {
+                SecurityAndPrivacyEvent.ToggleRoomVisibility -> {
                     editedVisibleInRoomDirectory = when (val edited = editedVisibleInRoomDirectory) {
                         is AsyncData.Success -> AsyncData.Success(!edited.data)
                         else -> edited
                     }
                 }
-                SecurityAndPrivacyEvents.EditRoomAddress -> navigator.openEditRoomAddress()
-                SecurityAndPrivacyEvents.CancelEnableEncryption -> {
+                SecurityAndPrivacyEvent.EditRoomAddress -> navigator.openEditRoomAddress()
+                SecurityAndPrivacyEvent.CancelEnableEncryption -> {
                     showEnableEncryptionConfirmation = false
                 }
-                SecurityAndPrivacyEvents.ConfirmEnableEncryption -> {
+                SecurityAndPrivacyEvent.ConfirmEnableEncryption -> {
                     showEnableEncryptionConfirmation = false
                     editedIsEncrypted = true
                 }
-                SecurityAndPrivacyEvents.DismissSaveError -> {
+                SecurityAndPrivacyEvent.DismissSaveError -> {
                     saveAction.value = AsyncAction.Uninitialized
                 }
-                SecurityAndPrivacyEvents.Exit -> {
+                SecurityAndPrivacyEvent.Exit -> {
                     saveAction.value = if (savedSettings == editedSettings || saveAction.value == AsyncAction.ConfirmingCancellation) {
                         AsyncAction.Success(Unit)
                     } else {
                         AsyncAction.ConfirmingCancellation
                     }
                 }
-                SecurityAndPrivacyEvents.DismissExitConfirmation -> {
+                SecurityAndPrivacyEvent.DismissExitConfirmation -> {
                     saveAction.value = AsyncAction.Uninitialized
                 }
             }

@@ -60,7 +60,7 @@ fun SecurityAndPrivacyView(
     modifier: Modifier = Modifier,
 ) {
     BackHandler {
-        state.eventSink(SecurityAndPrivacyEvents.Exit)
+        state.eventSink(SecurityAndPrivacyEvent.Exit)
     }
     Scaffold(
         modifier = modifier,
@@ -68,10 +68,10 @@ fun SecurityAndPrivacyView(
             SecurityAndPrivacyToolbar(
                 isSaveActionEnabled = state.canBeSaved,
                 onBackClick = {
-                    state.eventSink(SecurityAndPrivacyEvents.Exit)
+                    state.eventSink(SecurityAndPrivacyEvent.Exit)
                 },
                 onSaveClick = {
-                    state.eventSink(SecurityAndPrivacyEvents.Save)
+                    state.eventSink(SecurityAndPrivacyEvent.Save)
                 },
             )
         }
@@ -90,7 +90,7 @@ fun SecurityAndPrivacyView(
                     edited = state.editedSettings.roomAccess,
                     saved = state.savedSettings.roomAccess,
                     isKnockEnabled = state.isKnockEnabled,
-                    onSelectOption = { state.eventSink(SecurityAndPrivacyEvents.ChangeRoomAccess(it)) },
+                    onSelectOption = { state.eventSink(SecurityAndPrivacyEvent.ChangeRoomAccess(it)) },
                 )
             }
             if (state.showRoomVisibilitySections) {
@@ -98,10 +98,10 @@ fun SecurityAndPrivacyView(
                 RoomAddressSection(
                     roomAddress = state.editedSettings.address,
                     homeserverName = state.homeserverName,
-                    onRoomAddressClick = { state.eventSink(SecurityAndPrivacyEvents.EditRoomAddress) },
+                    onRoomAddressClick = { state.eventSink(SecurityAndPrivacyEvent.EditRoomAddress) },
                     isVisibleInRoomDirectory = state.editedSettings.isVisibleInRoomDirectory,
                     onVisibilityChange = {
-                        state.eventSink(SecurityAndPrivacyEvents.ToggleRoomVisibility)
+                        state.eventSink(SecurityAndPrivacyEvent.ToggleRoomVisibility)
                     },
                 )
             }
@@ -110,10 +110,10 @@ fun SecurityAndPrivacyView(
                     isRoomEncrypted = state.editedSettings.isEncrypted,
                     // encryption can't be disabled once enabled
                     canToggleEncryption = !state.savedSettings.isEncrypted,
-                    onToggleEncryption = { state.eventSink(SecurityAndPrivacyEvents.ToggleEncryptionState) },
+                    onToggleEncryption = { state.eventSink(SecurityAndPrivacyEvent.ToggleEncryptionState) },
                     showConfirmation = state.showEnableEncryptionConfirmation,
-                    onDismissConfirmation = { state.eventSink(SecurityAndPrivacyEvents.CancelEnableEncryption) },
-                    onConfirmEncryption = { state.eventSink(SecurityAndPrivacyEvents.ConfirmEnableEncryption) },
+                    onDismissConfirmation = { state.eventSink(SecurityAndPrivacyEvent.CancelEnableEncryption) },
+                    onConfirmEncryption = { state.eventSink(SecurityAndPrivacyEvent.ConfirmEnableEncryption) },
                 )
             }
             if (state.showHistoryVisibilitySection) {
@@ -121,7 +121,7 @@ fun SecurityAndPrivacyView(
                     editedOption = state.editedSettings.historyVisibility,
                     savedOptions = state.savedSettings.historyVisibility,
                     availableOptions = state.availableHistoryVisibilities,
-                    onSelectOption = { state.eventSink(SecurityAndPrivacyEvents.ChangeHistoryVisibility(it)) },
+                    onSelectOption = { state.eventSink(SecurityAndPrivacyEvent.ChangeHistoryVisibility(it)) },
                 )
             }
         }
@@ -129,14 +129,14 @@ fun SecurityAndPrivacyView(
     AsyncActionView(
         async = state.saveAction,
         onSuccess = { },
-        onErrorDismiss = { state.eventSink(SecurityAndPrivacyEvents.DismissSaveError) },
+        onErrorDismiss = { state.eventSink(SecurityAndPrivacyEvent.DismissSaveError) },
         confirmationDialog = { confirming ->
             when (confirming) {
                 is AsyncAction.ConfirmingCancellation ->
                     SaveChangesDialog(
-                        onSaveClick = { state.eventSink(SecurityAndPrivacyEvents.Save) },
-                        onDiscardClick = { state.eventSink(SecurityAndPrivacyEvents.Exit) },
-                        onDismiss = { state.eventSink(SecurityAndPrivacyEvents.DismissExitConfirmation) }
+                        onSaveClick = { state.eventSink(SecurityAndPrivacyEvent.Save) },
+                        onDiscardClick = { state.eventSink(SecurityAndPrivacyEvent.Exit) },
+                        onDismiss = { state.eventSink(SecurityAndPrivacyEvent.DismissExitConfirmation) }
                     )
             }
         },
@@ -146,7 +146,7 @@ fun SecurityAndPrivacyView(
                 progressText = stringResource(CommonStrings.common_saving),
             )
         },
-        onRetry = { state.eventSink(SecurityAndPrivacyEvents.Save) },
+        onRetry = { state.eventSink(SecurityAndPrivacyEvent.Save) },
     )
 }
 

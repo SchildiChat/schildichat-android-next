@@ -117,7 +117,7 @@ fun aSecurityAndPrivacyState(
     ),
     isKnockEnabled: Boolean = true,
     isSpace: Boolean = false,
-    eventSink: (SecurityAndPrivacyEvents) -> Unit = {}
+    eventSink: (SecurityAndPrivacyEvent) -> Unit = {}
 ) = SecurityAndPrivacyState(
     editedSettings = editedSettings,
     savedSettings = savedSettings,

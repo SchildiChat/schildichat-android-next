@@ -45,7 +45,7 @@ fun aRoomDetailsEditState(
     saveAction: AsyncAction<Unit> = AsyncAction.Uninitialized,
     cameraPermissionState: PermissionsState = aPermissionsState(showDialog = false),
     isSpace: Boolean = false,
-    eventSink: (RoomDetailsEditEvents) -> Unit = {},
+    eventSink: (RoomDetailsEditEvent) -> Unit = {},
 ) = RoomDetailsEditState(
     roomId = roomId,
     roomRawName = roomRawName,

@@ -39,19 +39,19 @@ class RoomDetailsEditViewTest {
 
     @Test
     fun `clicking on back emits the expected Event`() {
-        val eventsRecorder = EventsRecorder<RoomDetailsEditEvents>()
+        val eventsRecorder = EventsRecorder<RoomDetailsEditEvent>()
         rule.setRoomDetailsEditView(
             aRoomDetailsEditState(
                 eventSink = eventsRecorder
             ),
         )
         rule.pressBack()
-        eventsRecorder.assertSingle(RoomDetailsEditEvents.OnBackPress)
+        eventsRecorder.assertSingle(RoomDetailsEditEvent.OnBackPress)
     }
 
     @Test
     fun `clicking on discard when confirming exit emits the expected Event`() {
-        val eventsRecorder = EventsRecorder<RoomDetailsEditEvents>()
+        val eventsRecorder = EventsRecorder<RoomDetailsEditEvent>()
         rule.setRoomDetailsEditView(
             aRoomDetailsEditState(
                 saveAction = AsyncAction.ConfirmingCancellation,
@@ -59,12 +59,12 @@ class RoomDetailsEditViewTest {
             ),
         )
         rule.clickOn(CommonStrings.action_discard)
-        eventsRecorder.assertSingle(RoomDetailsEditEvents.OnBackPress)
+        eventsRecorder.assertSingle(RoomDetailsEditEvent.OnBackPress)
     }
 
     @Test
     fun `clicking on save when confirming exit emits the expected Event`() {
-        val eventsRecorder = EventsRecorder<RoomDetailsEditEvents>()
+        val eventsRecorder = EventsRecorder<RoomDetailsEditEvent>()
         rule.setRoomDetailsEditView(
             aRoomDetailsEditState(
                 saveAction = AsyncAction.ConfirmingCancellation,
@@ -72,12 +72,12 @@ class RoomDetailsEditViewTest {
             ),
         )
         rule.clickOn(CommonStrings.action_save, inDialog = true)
-        eventsRecorder.assertSingle(RoomDetailsEditEvents.Save)
+        eventsRecorder.assertSingle(RoomDetailsEditEvent.Save)
     }
 
     @Test
     fun `when edition is successful, the expected callback is invoked`() {
-        val eventsRecorder = EventsRecorder<RoomDetailsEditEvents>(expectEvents = false)
+        val eventsRecorder = EventsRecorder<RoomDetailsEditEvent>(expectEvents = false)
         ensureCalledOnce { callback ->
             rule.setRoomDetailsEditView(
                 aRoomDetailsEditState(
@@ -91,7 +91,7 @@ class RoomDetailsEditViewTest {
 
     @Test
     fun `when name is changed, the expected Event is emitted`() {
-        val eventsRecorder = EventsRecorder<RoomDetailsEditEvents>()
+        val eventsRecorder = EventsRecorder<RoomDetailsEditEvent>()
         rule.setRoomDetailsEditView(
             aRoomDetailsEditState(
                 eventSink = eventsRecorder,
@@ -99,12 +99,12 @@ class RoomDetailsEditViewTest {
             ),
         )
         rule.onNodeWithText("Marketing").performTextInput("A")
-        eventsRecorder.assertSingle(RoomDetailsEditEvents.UpdateRoomName("AMarketing"))
+        eventsRecorder.assertSingle(RoomDetailsEditEvent.UpdateRoomName("AMarketing"))
     }
 
     @Test
     fun `when user cannot change name, nothing happen`() {
-        val eventsRecorder = EventsRecorder<RoomDetailsEditEvents>(expectEvents = false)
+        val eventsRecorder = EventsRecorder<RoomDetailsEditEvent>(expectEvents = false)
         rule.setRoomDetailsEditView(
             aRoomDetailsEditState(
                 eventSink = eventsRecorder,
@@ -117,7 +117,7 @@ class RoomDetailsEditViewTest {
 
     @Test
     fun `when topic is changed, the expected Event is emitted`() {
-        val eventsRecorder = EventsRecorder<RoomDetailsEditEvents>()
+        val eventsRecorder = EventsRecorder<RoomDetailsEditEvent>()
         rule.setRoomDetailsEditView(
             aRoomDetailsEditState(
                 eventSink = eventsRecorder,
@@ -125,12 +125,12 @@ class RoomDetailsEditViewTest {
             ),
         )
         rule.onNodeWithText("My Topic").performTextInput("A")
-        eventsRecorder.assertSingle(RoomDetailsEditEvents.UpdateRoomTopic("AMy Topic"))
+        eventsRecorder.assertSingle(RoomDetailsEditEvent.UpdateRoomTopic("AMy Topic"))
     }
 
     @Test
     fun `when user cannot change topic, nothing happen`() {
-        val eventsRecorder = EventsRecorder<RoomDetailsEditEvents>(expectEvents = false)
+        val eventsRecorder = EventsRecorder<RoomDetailsEditEvent>(expectEvents = false)
         rule.setRoomDetailsEditView(
             aRoomDetailsEditState(
                 eventSink = eventsRecorder,
@@ -146,7 +146,7 @@ class RoomDetailsEditViewTest {
     fun `when avatar is changed with action to take photo, the expected Event is emitted`() {
         testAvatarChange(
             stringActionRes = CommonStrings.action_take_photo,
-            expectedEvent = RoomDetailsEditEvents.HandleAvatarAction(AvatarAction.TakePhoto),
+            expectedEvent = RoomDetailsEditEvent.HandleAvatarAction(AvatarAction.TakePhoto),
         )
     }
 
@@ -155,7 +155,7 @@ class RoomDetailsEditViewTest {
     fun `when avatar is changed with action to choose photo, the expected Event is emitted`() {
         testAvatarChange(
             stringActionRes = CommonStrings.action_choose_photo,
-            expectedEvent = RoomDetailsEditEvents.HandleAvatarAction(AvatarAction.ChoosePhoto),
+            expectedEvent = RoomDetailsEditEvent.HandleAvatarAction(AvatarAction.ChoosePhoto),
         )
     }
 
@@ -164,15 +164,15 @@ class RoomDetailsEditViewTest {
     fun `when avatar is changed with action to remove photo, the expected Event is emitted`() {
         testAvatarChange(
             stringActionRes = CommonStrings.action_remove,
-            expectedEvent = RoomDetailsEditEvents.HandleAvatarAction(AvatarAction.Remove),
+            expectedEvent = RoomDetailsEditEvent.HandleAvatarAction(AvatarAction.Remove),
         )
     }
 
     private fun testAvatarChange(
         @StringRes stringActionRes: Int,
-        expectedEvent: RoomDetailsEditEvents.HandleAvatarAction,
+        expectedEvent: RoomDetailsEditEvent.HandleAvatarAction,
     ) {
-        val eventsRecorder = EventsRecorder<RoomDetailsEditEvents>()
+        val eventsRecorder = EventsRecorder<RoomDetailsEditEvent>()
         rule.setRoomDetailsEditView(
             aRoomDetailsEditState(
                 eventSink = eventsRecorder,
@@ -187,7 +187,7 @@ class RoomDetailsEditViewTest {
 
     @Test
     fun `when user cannot change avatar, nothing happen`() {
-        val eventsRecorder = EventsRecorder<RoomDetailsEditEvents>(expectEvents = false)
+        val eventsRecorder = EventsRecorder<RoomDetailsEditEvent>(expectEvents = false)
         rule.setRoomDetailsEditView(
             aRoomDetailsEditState(
                 eventSink = eventsRecorder,
@@ -200,7 +200,7 @@ class RoomDetailsEditViewTest {
 
     @Test
     fun `when save is clicked, the expected Event is emitted`() {
-        val eventsRecorder = EventsRecorder<RoomDetailsEditEvents>()
+        val eventsRecorder = EventsRecorder<RoomDetailsEditEvent>()
         rule.setRoomDetailsEditView(
             aRoomDetailsEditState(
                 eventSink = eventsRecorder,
@@ -208,12 +208,12 @@ class RoomDetailsEditViewTest {
             ),
         )
         rule.clickOn(CommonStrings.action_save)
-        eventsRecorder.assertSingle(RoomDetailsEditEvents.Save)
+        eventsRecorder.assertSingle(RoomDetailsEditEvent.Save)
     }
 
     @Test
     fun `when save is clicked, but nothing need to be saved, nothing happens`() {
-        val eventsRecorder = EventsRecorder<RoomDetailsEditEvents>(expectEvents = false)
+        val eventsRecorder = EventsRecorder<RoomDetailsEditEvent>(expectEvents = false)
         rule.setRoomDetailsEditView(
             aRoomDetailsEditState(
                 eventSink = eventsRecorder,
@@ -225,7 +225,7 @@ class RoomDetailsEditViewTest {
 
     @Test
     fun `when error is shown, closing the dialog emit the expected Event`() {
-        val eventsRecorder = EventsRecorder<RoomDetailsEditEvents>()
+        val eventsRecorder = EventsRecorder<RoomDetailsEditEvent>()
         rule.setRoomDetailsEditView(
             aRoomDetailsEditState(
                 eventSink = eventsRecorder,
@@ -233,7 +233,7 @@ class RoomDetailsEditViewTest {
             ),
         )
         rule.clickOn(CommonStrings.action_ok)
-        eventsRecorder.assertSingle(RoomDetailsEditEvents.CloseDialog)
+        eventsRecorder.assertSingle(RoomDetailsEditEvent.CloseDialog)
     }
 }
 

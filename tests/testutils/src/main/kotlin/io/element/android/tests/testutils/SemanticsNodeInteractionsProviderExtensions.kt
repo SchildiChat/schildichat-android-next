@@ -19,7 +19,6 @@ import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDialog
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
-import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import io.element.android.libraries.ui.strings.CommonStrings
@@ -36,16 +35,6 @@ fun <R : TestRule> AndroidComposeTestRule<R, ComponentActivity>.clickOn(
         hasText(text) and hasClickAction() and if (inDialog) hasAnyAncestor(isDialog()) else trueMatcher
     )
         .performClick()
-}
-
-fun <R : TestRule> AndroidComposeTestRule<R, ComponentActivity>.clickOnFirst(@StringRes res: Int) {
-    val text = activity.getString(res)
-    onAllNodes(hasText(text) and hasClickAction()).onFirst().performClick()
-}
-
-fun <R : TestRule> AndroidComposeTestRule<R, ComponentActivity>.clickOnLast(@StringRes res: Int) {
-    val text = activity.getString(res)
-    onAllNodes(hasText(text) and hasClickAction()).onFirst().performClick()
 }
 
 /**

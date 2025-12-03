@@ -23,7 +23,7 @@ open class RoomDetailsEditStateProvider : PreviewParameterProvider<RoomDetailsEd
             aRoomDetailsEditState(roomTopic = ""),
             aRoomDetailsEditState(roomRawName = ""),
             aRoomDetailsEditState(roomAvatarUrl = "example://uri"),
-            aRoomDetailsEditState(roomAvatarUrl = "example://uri", isSpace = true),
+            aRoomDetailsEditState(roomAvatarUrl = "example://uri", isSpace = true, roomTopic = ""),
             aRoomDetailsEditState(canChangeName = true, canChangeTopic = false, canChangeAvatar = true, saveButtonEnabled = false),
             aRoomDetailsEditState(canChangeName = false, canChangeTopic = true, canChangeAvatar = false, saveButtonEnabled = false),
             aRoomDetailsEditState(saveAction = AsyncAction.Loading),

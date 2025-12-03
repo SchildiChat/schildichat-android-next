@@ -147,8 +147,9 @@ fun EditUserProfileView(
                 when (confirming) {
                     is AsyncAction.ConfirmingCancellation -> {
                         SaveChangesDialog(
-                            onSubmitClick = { state.eventSink(EditUserProfileEvents.Exit) },
-                            onDismiss = { state.eventSink(EditUserProfileEvents.CloseDialog) }
+                            onSaveClick = { state.eventSink(EditUserProfileEvents.Save) },
+                            onDiscardClick = { state.eventSink(EditUserProfileEvents.Exit) },
+                            onDismiss = { state.eventSink(EditUserProfileEvents.CloseDialog) },
                         )
                     }
                 }

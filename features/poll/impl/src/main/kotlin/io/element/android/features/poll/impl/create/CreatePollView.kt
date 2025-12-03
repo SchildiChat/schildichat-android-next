@@ -66,8 +66,9 @@ fun CreatePollView(
     BackHandler(onBack = navBack)
     if (state.showBackConfirmation) {
         SaveChangesDialog(
-            onSubmitClick = { state.eventSink(CreatePollEvents.NavBack) },
-            onDismiss = { state.eventSink(CreatePollEvents.HideConfirmation) }
+            onSaveClick = { state.eventSink(CreatePollEvents.Save) },
+            onDiscardClick = { state.eventSink(CreatePollEvents.NavBack) },
+            onDismiss = { state.eventSink(CreatePollEvents.HideConfirmation) },
         )
     }
     if (state.showDeleteConfirmation) {

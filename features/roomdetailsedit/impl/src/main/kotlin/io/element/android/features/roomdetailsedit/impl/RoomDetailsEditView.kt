@@ -159,7 +159,8 @@ fun RoomDetailsEditView(
         confirmationDialog = {
             if (state.saveAction == AsyncAction.ConfirmingCancellation) {
                 SaveChangesDialog(
-                    onSubmitClick = { state.eventSink(RoomDetailsEditEvents.OnBackPress) },
+                    onSaveClick = { state.eventSink(RoomDetailsEditEvents.Save) },
+                    onDiscardClick = { state.eventSink(RoomDetailsEditEvents.OnBackPress) },
                     onDismiss = { state.eventSink(RoomDetailsEditEvents.CloseDialog) }
                 )
             }

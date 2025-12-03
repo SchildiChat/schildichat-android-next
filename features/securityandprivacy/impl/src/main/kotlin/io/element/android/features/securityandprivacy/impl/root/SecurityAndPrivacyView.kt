@@ -144,7 +144,8 @@ fun SecurityAndPrivacyView(
         onErrorDismiss = { },
         confirmationDialog = {
             SaveChangesDialog(
-                onSubmitClick = { state.eventSink(SecurityAndPrivacyEvents.Exit) },
+                onSaveClick = { state.eventSink(SecurityAndPrivacyEvents.Save) },
+                onDiscardClick = { state.eventSink(SecurityAndPrivacyEvents.Exit) },
                 onDismiss = { state.eventSink(SecurityAndPrivacyEvents.DismissExitConfirmation) }
             )
         },

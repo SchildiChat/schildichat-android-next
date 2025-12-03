@@ -241,7 +241,7 @@ androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version
 
 # SC additions
 colorpicker = "com.godaddy.android.colorpicker:compose-color-picker:0.7.0"
-unifiedpush_fcm = "com.github.UnifiedPush:android-foss_embedded_fcm_distributor:1.0.0"
+unifiedpush_fcm = "org.unifiedpush.android:embedded-fcm-distributor:3.0.0"
 androidx_emoji2 = "androidx.emoji2:emoji2:1.4.0"
 androidx_emoji2_bundled = "androidx.emoji2:emoji2-bundled:1.4.0"
 

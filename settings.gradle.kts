@@ -22,7 +22,6 @@ dependencyResolutionManagement {
             content {
                 includeModule("com.github.matrix-org", "matrix-analytics-events")
                 includeModule("com.github.SchildiChat", "element-compound-android")
-                includeModule("com.github.UnifiedPush", "android-foss_embedded_fcm_distributor")
             }
         }
         // SC forks of upstream Rust projects

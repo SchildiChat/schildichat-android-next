@@ -74,7 +74,7 @@ dependencies {
     testImplementation(projects.features.call.test)
     testImplementation(projects.features.rolesandpermissions.test)
     testImplementation(projects.features.securityandprivacy.test)
-    implementation(projects.features.roomdetailsedit.test)
+    testImplementation(projects.features.roomdetailsedit.test)
     testImplementation(projects.features.knockrequests.test)
     testImplementation(projects.features.messages.test)
     testImplementation(projects.features.poll.test)

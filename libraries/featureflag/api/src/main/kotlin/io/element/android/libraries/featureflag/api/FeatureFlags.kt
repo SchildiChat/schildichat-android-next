@@ -79,7 +79,7 @@ enum class FeatureFlags(
     SpaceSettings(
         key = "feature.spaceSettings",
         title = "Space settings",
-        description = "Allow managing space settings such details, permissions and privacy.",
+        description = "Allow managing space settings such as details, permissions and privacy.",
         defaultValue = { false },
         isFinished = false,
     ),

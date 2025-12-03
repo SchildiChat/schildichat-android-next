@@ -1,14 +1,16 @@
 package chat.schildi.unifiedpush
 
-import android.content.Context
-import org.unifiedpush.android.foss_embedded_fcm_distributor.EmbeddedDistributorReceiver
+import org.unifiedpush.android.embedded_fcm_distributor.EmbeddedDistributorReceiver
+import org.unifiedpush.android.embedded_fcm_distributor.Gateway
 
 class FossFcmDistributor: EmbeddedDistributorReceiver() {
 
-    override val googleProjectNumber = "326900467720" // This value comes from the google-services.json
+    override val gateway = object : Gateway {
+        override val vapid = "BHX_kWKtwJNHO0oQrbyvyDpB0_FIs5ZnzlOZ5lwBtocEE55GJkcBfuPJfkEt1zjBseFdG_eGJrrmiwSm8N_vIUA"
 
-    override fun getEndpoint(context: Context, token: String, instance: String): String {
-        // This returns the endpoint of your FCM Rewrite-Proxy
-        return "https://up.schildi.chat/FCM?v2&instance=$instance&token=$token"
+        override fun getEndpoint(token: String): String {
+            return "https://up.spiritcroc.de/wpfcm?v3&token=$token"
+        }
     }
+
 }

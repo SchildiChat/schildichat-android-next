@@ -50,7 +50,7 @@ class RoomDetailsEditViewTest {
     }
 
     @Test
-    fun `clicking on OK when confirming exit emits the expected Event`() {
+    fun `clicking on discard when confirming exit emits the expected Event`() {
         val eventsRecorder = EventsRecorder<RoomDetailsEditEvents>()
         rule.setRoomDetailsEditView(
             aRoomDetailsEditState(
@@ -58,12 +58,12 @@ class RoomDetailsEditViewTest {
                 eventSink = eventsRecorder,
             ),
         )
-        rule.clickOn(CommonStrings.action_ok)
+        rule.clickOn(CommonStrings.action_discard)
         eventsRecorder.assertSingle(RoomDetailsEditEvents.OnBackPress)
     }
 
     @Test
-    fun `clicking on cancel when confirming exit emits the expected Event`() {
+    fun `clicking on save when confirming exit emits the expected Event`() {
         val eventsRecorder = EventsRecorder<RoomDetailsEditEvents>()
         rule.setRoomDetailsEditView(
             aRoomDetailsEditState(
@@ -71,8 +71,8 @@ class RoomDetailsEditViewTest {
                 eventSink = eventsRecorder,
             ),
         )
-        rule.clickOn(CommonStrings.action_cancel)
-        eventsRecorder.assertSingle(RoomDetailsEditEvents.CloseDialog)
+        rule.clickOn(CommonStrings.action_save, inDialog = true)
+        eventsRecorder.assertSingle(RoomDetailsEditEvents.Save)
     }
 
     @Test

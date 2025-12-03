@@ -15,7 +15,7 @@ plugins {
 }
 
 android {
-    namespace = "io.element.android.features.roomdetails.impl"
+    namespace = "io.element.android.features.roomdetailsedit.impl"
     testOptions {
         unitTests {
             isIncludeAndroidResources = true
@@ -26,7 +26,6 @@ android {
 setupDependencyInjection()
 
 dependencies {
-    implementation(projects.appconfig)
     implementation(projects.libraries.core)
     implementation(projects.libraries.architecture)
     implementation(projects.libraries.matrix.api)
@@ -40,27 +39,11 @@ dependencies {
     implementation(projects.libraries.featureflag.api)
     implementation(projects.libraries.permissions.api)
     implementation(projects.libraries.preferences.api)
+    implementation(projects.services.analytics.api)
     implementation(projects.libraries.testtags)
-    api(projects.features.roomdetails.api)
-    api(projects.libraries.usersearch.api)
+    api(projects.features.roomdetailsedit.api)
     api(projects.services.apperror.api)
     implementation(libs.coil.compose)
-    implementation(projects.features.call.api)
-    implementation(projects.features.startchat.api)
-    implementation(projects.features.leaveroom.api)
-    implementation(projects.features.userprofile.shared)
-    implementation(projects.services.analytics.compose)
-    implementation(projects.features.poll.api)
-    implementation(projects.features.messages.api)
-    implementation(projects.features.roomcall.api)
-    implementation(projects.features.knockrequests.api)
-    implementation(projects.features.verifysession.api)
-    implementation(projects.features.reportroom.api)
-    implementation(projects.features.roommembermoderation.api)
-    implementation(projects.features.rolesandpermissions.api)
-    implementation(projects.features.securityandprivacy.api)
-    implementation(projects.features.roomdetailsedit.api)
-    implementation(projects.features.invitepeople.api)
 
     testCommonDependencies(libs, true)
     testImplementation(projects.libraries.matrix.test)
@@ -69,17 +52,6 @@ dependencies {
     testImplementation(projects.libraries.mediaviewer.test)
     testImplementation(projects.libraries.permissions.test)
     testImplementation(projects.libraries.preferences.test)
-    testImplementation(projects.libraries.usersearch.test)
     testImplementation(projects.libraries.featureflag.test)
-    testImplementation(projects.features.call.test)
-    testImplementation(projects.features.rolesandpermissions.test)
-    testImplementation(projects.features.securityandprivacy.test)
-    implementation(projects.features.roomdetailsedit.test)
-    testImplementation(projects.features.knockrequests.test)
-    testImplementation(projects.features.messages.test)
-    testImplementation(projects.features.poll.test)
-    testImplementation(projects.features.reportroom.test)
-    testImplementation(projects.features.startchat.test)
-    testImplementation(projects.features.verifysession.test)
     testImplementation(projects.services.analytics.test)
 }

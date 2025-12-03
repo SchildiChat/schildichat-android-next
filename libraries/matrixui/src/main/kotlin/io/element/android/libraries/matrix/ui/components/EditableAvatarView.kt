@@ -92,7 +92,8 @@ fun EditableAvatarView(
                         radius = (editIconRadius + 4.dp).toPx(),
                         blendMode = BlendMode.Clear,
                     )
-                }) {
+                }
+        ) {
             when {
                 avatarUrl == null || avatarUrl.startsWith("mxc://") -> {
                     Avatar(

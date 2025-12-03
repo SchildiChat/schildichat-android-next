@@ -24,7 +24,6 @@ import io.element.android.features.securityandprivacy.impl.root.aSecurityAndPriv
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.ui.strings.CommonStrings
-import io.element.android.tests.testutils.EnsureNeverCalled
 import io.element.android.tests.testutils.EventsRecorder
 import io.element.android.tests.testutils.clickOn
 import io.element.android.tests.testutils.pressBack
@@ -50,27 +49,27 @@ class SecurityAndPrivacyViewTest {
     }
 
     @Test
-    fun `confirm cancellation emits the expected event`() {
+    fun `discard cancellation emits the expected event`() {
         val recorder = EventsRecorder<SecurityAndPrivacyEvents>()
         val state = aSecurityAndPrivacyState(
-            confirmExitAction = AsyncAction.ConfirmingCancellation,
+            saveAction = AsyncAction.ConfirmingCancellation,
             eventSink = recorder,
         )
         rule.setSecurityAndPrivacyView(state)
-        rule.clickOn(CommonStrings.action_ok)
+        rule.clickOn(CommonStrings.action_discard)
         recorder.assertSingle(SecurityAndPrivacyEvents.Exit)
     }
 
     @Test
-    fun `dismiss cancellation confirmation emits the expected event`() {
+    fun `save cancellation confirmation emits the expected event`() {
         val recorder = EventsRecorder<SecurityAndPrivacyEvents>()
         val state = aSecurityAndPrivacyState(
-            confirmExitAction = AsyncAction.ConfirmingCancellation,
+            saveAction = AsyncAction.ConfirmingCancellation,
             eventSink = recorder,
         )
         rule.setSecurityAndPrivacyView(state)
-        rule.clickOn(CommonStrings.action_cancel)
-        recorder.assertSingle(SecurityAndPrivacyEvents.DismissExitConfirmation)
+        rule.clickOn(CommonStrings.action_save, inDialog = true)
+        recorder.assertSingle(SecurityAndPrivacyEvents.Save)
     }
 
     @Test
@@ -185,12 +184,10 @@ private fun <R : TestRule> AndroidComposeTestRule<R, ComponentActivity>.setSecur
     state: SecurityAndPrivacyState = aSecurityAndPrivacyState(
         eventSink = EventsRecorder(expectEvents = false),
     ),
-    onBackClick: () -> Unit = EnsureNeverCalled(),
 ) {
     setContent {
         SecurityAndPrivacyView(
             state = state,
-            onBackClick = onBackClick,
         )
     }
 }

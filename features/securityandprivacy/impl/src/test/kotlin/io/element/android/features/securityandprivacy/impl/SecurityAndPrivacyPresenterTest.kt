@@ -203,7 +203,7 @@ class SecurityAndPrivacyPresenterTest {
     @Test
     fun `present - edit room address`() = runTest {
         val openEditRoomAddressLambda = lambdaRecorder<Unit> { }
-        val navigator = FakeSecurityAndPrivacyNavigator(openEditRoomAddressLambda)
+        val navigator = FakeSecurityAndPrivacyNavigator(openEditRoomAddressLambda = openEditRoomAddressLambda)
         val presenter = createSecurityAndPrivacyPresenter(navigator = navigator)
         presenter.test {
             skipItems(1)
@@ -231,7 +231,14 @@ class SecurityAndPrivacyPresenterTest {
             updateRoomVisibilityResult = updateRoomVisibilityLambda,
             updateRoomHistoryVisibilityResult = updateRoomHistoryVisibilityLambda,
         )
-        val presenter = createSecurityAndPrivacyPresenter(room = room)
+        val onDoneLambda = lambdaRecorder<Unit> { }
+        val navigator = FakeSecurityAndPrivacyNavigator(
+            onDoneLambda = onDoneLambda,
+        )
+        val presenter = createSecurityAndPrivacyPresenter(
+            room = room,
+            navigator = navigator,
+        )
         presenter.test {
             skipItems(2)
             with(awaitItem()) {
@@ -276,6 +283,7 @@ class SecurityAndPrivacyPresenterTest {
             assert(updateJoinRuleLambda).isCalledOnce()
             assert(updateRoomVisibilityLambda).isCalledOnce()
             assert(updateRoomHistoryVisibilityLambda).isCalledOnce()
+            onDoneLambda.assertions().isCalledOnce()
         }
     }
 

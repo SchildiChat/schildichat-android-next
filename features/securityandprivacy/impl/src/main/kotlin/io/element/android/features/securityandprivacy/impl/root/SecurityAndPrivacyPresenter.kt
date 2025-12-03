@@ -64,7 +64,6 @@ class SecurityAndPrivacyPresenter(
             featureFlagService.isFeatureEnabledFlow(FeatureFlags.Knock)
         }.collectAsState(false)
         val saveAction = remember { mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized) }
-        var confirmExitAction by remember { mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized) }
         val homeserverName = remember { matrixClient.userIdServerName() }
         val syncUpdateFlow = room.syncUpdateFlow.collectAsState()
         val roomInfo by room.roomInfoFlow.collectAsState()
@@ -150,15 +149,21 @@ class SecurityAndPrivacyPresenter(
                     saveAction.value = AsyncAction.Uninitialized
                 }
                 SecurityAndPrivacyEvents.Exit -> {
-                    confirmExitAction = if (savedSettings == editedSettings || confirmExitAction.isConfirming()) {
+                    saveAction.value = if (savedSettings == editedSettings || saveAction.value == AsyncAction.ConfirmingCancellation) {
                         AsyncAction.Success(Unit)
                     } else {
-                        AsyncAction.ConfirmingNoParams
+                        AsyncAction.ConfirmingCancellation
                     }
                 }
                 SecurityAndPrivacyEvents.DismissExitConfirmation -> {
-                    confirmExitAction = AsyncAction.Uninitialized
+                    saveAction.value = AsyncAction.Uninitialized
                 }
+            }
+        }
+
+        LaunchedEffect(saveAction.value.isSuccess()) {
+            if (saveAction.value.isSuccess()) {
+                navigator.onDone()
             }
         }
 
@@ -171,7 +176,6 @@ class SecurityAndPrivacyPresenter(
             saveAction = saveAction.value,
             permissions = permissions,
             isSpace = roomInfo.isSpace,
-            confirmExitAction = confirmExitAction,
             eventSink = ::handleEvent,
         )
 

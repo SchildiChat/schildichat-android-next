@@ -10,11 +10,14 @@ package io.element.android.tests.testutils
 
 import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
+import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isDialog
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithText
@@ -22,9 +25,16 @@ import androidx.compose.ui.test.performClick
 import io.element.android.libraries.ui.strings.CommonStrings
 import org.junit.rules.TestRule
 
-fun <R : TestRule> AndroidComposeTestRule<R, ComponentActivity>.clickOn(@StringRes res: Int) {
+val trueMatcher = SemanticsMatcher("true matcher") { true }
+
+fun <R : TestRule> AndroidComposeTestRule<R, ComponentActivity>.clickOn(
+    @StringRes res: Int,
+    inDialog: Boolean = false,
+) {
     val text = activity.getString(res)
-    onNode(hasText(text) and hasClickAction())
+    onNode(
+        hasText(text) and hasClickAction() and if (inDialog) hasAnyAncestor(isDialog()) else trueMatcher
+    )
         .performClick()
 }
 

@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.securityandprivacy.impl.R
+import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.coverage.ExcludeFromCoverage
 import io.element.android.libraries.designsystem.components.async.AsyncActionView
@@ -56,7 +57,6 @@ import kotlinx.collections.immutable.ImmutableSet
 @Composable
 fun SecurityAndPrivacyView(
     state: SecurityAndPrivacyState,
-    onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     BackHandler {
@@ -130,6 +130,16 @@ fun SecurityAndPrivacyView(
         async = state.saveAction,
         onSuccess = { },
         onErrorDismiss = { state.eventSink(SecurityAndPrivacyEvents.DismissSaveError) },
+        confirmationDialog = { confirming ->
+            when (confirming) {
+                is AsyncAction.ConfirmingCancellation ->
+                    SaveChangesDialog(
+                        onSaveClick = { state.eventSink(SecurityAndPrivacyEvents.Save) },
+                        onDiscardClick = { state.eventSink(SecurityAndPrivacyEvents.Exit) },
+                        onDismiss = { state.eventSink(SecurityAndPrivacyEvents.DismissExitConfirmation) }
+                    )
+            }
+        },
         errorMessage = { stringResource(CommonStrings.error_unknown) },
         progressDialog = {
             AsyncActionViewDefaults.ProgressDialog(
@@ -137,18 +147,6 @@ fun SecurityAndPrivacyView(
             )
         },
         onRetry = { state.eventSink(SecurityAndPrivacyEvents.Save) },
-    )
-    AsyncActionView(
-        async = state.confirmExitAction,
-        onSuccess = { onBackClick() },
-        onErrorDismiss = { },
-        confirmationDialog = {
-            SaveChangesDialog(
-                onSaveClick = { state.eventSink(SecurityAndPrivacyEvents.Save) },
-                onDiscardClick = { state.eventSink(SecurityAndPrivacyEvents.Exit) },
-                onDismiss = { state.eventSink(SecurityAndPrivacyEvents.DismissExitConfirmation) }
-            )
-        },
     )
 }
 
@@ -426,6 +424,5 @@ internal fun SecurityAndPrivacyViewDarkPreview(@PreviewParameter(SecurityAndPriv
 private fun ContentToPreview(state: SecurityAndPrivacyState) {
     SecurityAndPrivacyView(
         state = state,
-        onBackClick = {},
     )
 }

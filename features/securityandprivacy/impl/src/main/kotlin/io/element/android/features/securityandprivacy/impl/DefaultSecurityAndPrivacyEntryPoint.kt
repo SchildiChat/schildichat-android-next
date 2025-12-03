@@ -17,7 +17,11 @@ import io.element.android.libraries.di.RoomScope
 
 @ContributesBinding(RoomScope::class)
 class DefaultSecurityAndPrivacyEntryPoint : SecurityAndPrivacyEntryPoint {
-    override fun createNode(parentNode: Node, buildContext: BuildContext): Node {
-        return parentNode.createNode<SecurityAndPrivacyFlowNode>(buildContext)
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        callback: SecurityAndPrivacyEntryPoint.Callback,
+    ): Node {
+        return parentNode.createNode<SecurityAndPrivacyFlowNode>(buildContext, listOf(callback))
     }
 }

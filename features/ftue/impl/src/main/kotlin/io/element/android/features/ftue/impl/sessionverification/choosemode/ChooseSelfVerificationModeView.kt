@@ -25,6 +25,7 @@ import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.ftue.impl.R
 import io.element.android.libraries.architecture.AsyncData
+import io.element.android.libraries.designsystem.atomic.atoms.LoadingButtonAtom
 import io.element.android.libraries.designsystem.atomic.molecules.ButtonColumnMolecule
 import io.element.android.libraries.designsystem.atomic.molecules.IconTitleSubtitleMolecule
 import io.element.android.libraries.designsystem.atomic.pages.HeaderFooterPage
@@ -88,8 +89,8 @@ fun ChooseSelfVerificationModeView(
         ) {
             Text(
                 modifier = Modifier
-                    .clickable(onClick = onLearnMore)
-                    .padding(vertical = 4.dp, horizontal = 16.dp),
+                        .clickable(onClick = onLearnMore)
+                        .padding(vertical = 4.dp, horizontal = 16.dp),
                 text = stringResource(CommonStrings.action_learn_more),
                 style = ElementTheme.typography.fontBodyLgMedium
             )
@@ -111,13 +112,7 @@ private fun ChooseSelfVerificationModeButtons(
             AsyncData.Uninitialized,
             is AsyncData.Failure,
             is AsyncData.Loading -> {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = false,
-                    showProgress = true,
-                    text = stringResource(CommonStrings.common_loading),
-                    onClick = {},
-                )
+                LoadingButtonAtom()
             }
             is AsyncData.Success -> {
                 if (state.buttonsState.data.canUseAnotherDevice) {

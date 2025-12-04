@@ -125,4 +125,11 @@ enum class FeatureFlags(
         defaultValue = { true },
         isFinished = false,
     ),
+    QrCodeLogin(
+        key = "feature.qr_code_login",
+        title = "QR Code Login",
+        description = "Allow logging in on other devices using a QR code.",
+        defaultValue = { false },
+        isFinished = false,
+    ),
 }

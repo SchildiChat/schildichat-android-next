@@ -53,6 +53,7 @@ import io.element.android.features.ftue.api.FtueEntryPoint
 import io.element.android.features.ftue.api.state.FtueService
 import io.element.android.features.ftue.api.state.FtueState
 import io.element.android.features.home.api.HomeEntryPoint
+import io.element.android.features.linknewdevice.api.LinkNewDeviceEntryPoint
 import io.element.android.features.networkmonitor.api.NetworkMonitor
 import io.element.android.features.networkmonitor.api.NetworkStatus
 import io.element.android.features.networkmonitor.api.ui.ConnectivityIndicatorContainer
@@ -123,6 +124,7 @@ class LoggedInFlowNode(
     private val secureBackupEntryPoint: SecureBackupEntryPoint,
     private val userProfileEntryPoint: UserProfileEntryPoint,
     private val ftueEntryPoint: FtueEntryPoint,
+    private val linkNewDeviceEntryPoint: LinkNewDeviceEntryPoint,
     @SessionCoroutineScope
     private val sessionCoroutineScope: CoroutineScope,
     private val ftueService: FtueService,
@@ -294,6 +296,9 @@ class LoggedInFlowNode(
         data object Ftue : NavTarget
 
         @Parcelize
+        data object LinkNewDevice : NavTarget
+
+        @Parcelize
         data object RoomDirectory : NavTarget
 
         @Parcelize
@@ -419,6 +424,10 @@ class LoggedInFlowNode(
                         callback.navigateToAddAccount()
                     }
 
+                    override fun navigateToLinkNewDevice() {
+                        backstack.push(NavTarget.LinkNewDevice)
+                    }
+
                     override fun navigateToBugReport() {
                         callback.navigateToBugReport()
                     }
@@ -474,6 +483,14 @@ class LoggedInFlowNode(
             }
             NavTarget.Ftue -> {
                 ftueEntryPoint.createNode(this, buildContext)
+            }
+            NavTarget.LinkNewDevice -> {
+                val callback = object : LinkNewDeviceEntryPoint.Callback {
+                    override fun onDone() {
+                        backstack.pop()
+                    }
+                }
+                linkNewDeviceEntryPoint.createNode(this, buildContext, callback)
             }
             NavTarget.RoomDirectory -> {
                 roomDirectoryEntryPoint.createNode(

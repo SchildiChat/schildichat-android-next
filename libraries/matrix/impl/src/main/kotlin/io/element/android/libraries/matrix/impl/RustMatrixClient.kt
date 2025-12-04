@@ -25,6 +25,8 @@ import io.element.android.libraries.matrix.api.core.RoomIdOrAlias
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.createroom.CreateRoomParameters
 import io.element.android.libraries.matrix.api.createroom.RoomPreset
+import io.element.android.libraries.matrix.api.linknewdevice.LinkDesktopHandler
+import io.element.android.libraries.matrix.api.linknewdevice.LinkMobileHandler
 import io.element.android.libraries.matrix.api.media.MatrixMediaLoader
 import io.element.android.libraries.matrix.api.oidc.AccountManagementAction
 import io.element.android.libraries.matrix.api.room.BaseRoom
@@ -45,6 +47,8 @@ import io.element.android.libraries.matrix.api.user.MatrixSearchUserResults
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.impl.encryption.RustEncryptionService
 import io.element.android.libraries.matrix.impl.exception.mapClientException
+import io.element.android.libraries.matrix.impl.linknewdevice.RustLinkDesktopHandler
+import io.element.android.libraries.matrix.impl.linknewdevice.RustLinkMobileHandler
 import io.element.android.libraries.matrix.impl.mapper.map
 import io.element.android.libraries.matrix.impl.media.RustMediaLoader
 import io.element.android.libraries.matrix.impl.media.RustMediaPreviewService
@@ -723,6 +727,34 @@ class RustMatrixClient(
     override suspend fun getRecentEmojis(): Result<List<String>> = withContext(sessionDispatcher) {
         runCatchingExceptions {
             innerClient.getRecentEmojis().map { it.emoji }
+        }
+    }
+
+    override suspend fun canLinkNewDevice(): Result<Boolean> = withContext(sessionDispatcher) {
+        runCatchingExceptions {
+            innerClient.isLoginWithQrCodeSupported()
+        }
+    }
+
+    override fun createLinkMobileHandler(): Result<LinkMobileHandler> {
+        return runCatchingExceptions {
+            val handler = innerClient.newGrantLoginWithQrCodeHandler()
+            RustLinkMobileHandler(
+                inner = handler,
+                sessionCoroutineScope = sessionCoroutineScope,
+                sessionDispatcher = sessionDispatcher,
+            )
+        }
+    }
+
+    override fun createLinkDesktopHandler(): Result<LinkDesktopHandler> {
+        return runCatchingExceptions {
+            val handler = innerClient.newGrantLoginWithQrCodeHandler()
+            RustLinkDesktopHandler(
+                inner = handler,
+                sessionCoroutineScope = sessionCoroutineScope,
+                sessionDispatcher = sessionDispatcher,
+            )
         }
     }
 

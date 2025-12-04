@@ -18,6 +18,8 @@ import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.createroom.CreateRoomParameters
 import io.element.android.libraries.matrix.api.encryption.EncryptionService
+import io.element.android.libraries.matrix.api.linknewdevice.LinkDesktopHandler
+import io.element.android.libraries.matrix.api.linknewdevice.LinkMobileHandler
 import io.element.android.libraries.matrix.api.media.MatrixMediaLoader
 import io.element.android.libraries.matrix.api.media.MediaPreviewService
 import io.element.android.libraries.matrix.api.notification.NotificationService
@@ -95,6 +97,9 @@ class FakeMatrixClient(
     private val deactivateAccountResult: (String, Boolean) -> Result<Unit> = { _, _ -> lambdaError() },
     private val currentSlidingSyncVersionLambda: () -> Result<SlidingSyncVersion> = { lambdaError() },
     private val ignoreUserResult: (UserId) -> Result<Unit> = { lambdaError() },
+    private val canLinkNewDeviceResult: () -> Result<Boolean> = { lambdaError() },
+    private val createLinkMobileHandlerResult: () -> Result<LinkMobileHandler> = { lambdaError() },
+    private val createLinkDesktopHandlerResult: () -> Result<LinkDesktopHandler> = { lambdaError() },
     private var unIgnoreUserResult: (UserId) -> Result<Unit> = { Result.success(Unit) },
     private val canReportRoomLambda: () -> Boolean = { false },
     private val isLivekitRtcSupportedLambda: () -> Boolean = { false },
@@ -355,5 +360,17 @@ class FakeMatrixClient(
 
     override suspend fun performDatabaseVacuum(): Result<Unit> {
         return performDatabaseVacuumLambda()
+    }
+
+    override suspend fun canLinkNewDevice(): Result<Boolean> = simulateLongTask {
+        return canLinkNewDeviceResult()
+    }
+
+    override fun createLinkDesktopHandler(): Result<LinkDesktopHandler> {
+        return createLinkDesktopHandlerResult()
+    }
+
+    override fun createLinkMobileHandler(): Result<LinkMobileHandler> {
+        return createLinkMobileHandlerResult()
     }
 }

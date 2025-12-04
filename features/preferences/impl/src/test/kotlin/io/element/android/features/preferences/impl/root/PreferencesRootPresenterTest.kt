@@ -87,6 +87,7 @@ class PreferencesRootPresenterTest {
             assertThat(loadedState.accountManagementUrl).isNull()
             assertThat(loadedState.devicesManagementUrl).isNull()
             assertThat(loadedState.showAnalyticsSettings).isFalse()
+            assertThat(loadedState.showLinkNewDevice).isFalse()
             assertThat(loadedState.showDeveloperSettings).isTrue()
             assertThat(loadedState.canDeactivateAccount).isTrue()
             assertThat(loadedState.canReportBug).isTrue()
@@ -255,6 +256,22 @@ class PreferencesRootPresenterTest {
             assertThat(state.isMultiAccountEnabled).isTrue()
             assertThat(state.otherSessions).hasSize(1)
             assertThat(state.otherSessions[0]).isEqualTo(MatrixUser(userId = A_SESSION_ID_2, displayName = "Bob", avatarUrl = "avatarUrl"))
+        }
+    }
+
+    @Test
+    fun `present - link new device`() = runTest {
+        createPresenter(
+            matrixClient = FakeMatrixClient(
+                sessionId = A_SESSION_ID,
+                canDeactivateAccountResult = { true },
+            ),
+            featureFlagService = FakeFeatureFlagService(
+                initialState = mapOf(FeatureFlags.QrCodeLogin.key to true)
+            ),
+        ).test {
+            val state = awaitFirstItem()
+            assertThat(state.showLinkNewDevice).isTrue()
         }
     }
 

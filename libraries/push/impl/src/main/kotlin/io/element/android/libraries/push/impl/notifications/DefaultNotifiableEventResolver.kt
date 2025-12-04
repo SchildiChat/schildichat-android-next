@@ -183,7 +183,11 @@ class DefaultNotifiableEventResolver(
                     soundName = null,
                     isRedacted = false,
                     isUpdated = false,
-                    description = descriptionFromRoomMembershipInvite(senderDisambiguatedDisplayName, isDirect),
+                    description = descriptionFromRoomMembershipInvite(
+                        senderDisambiguatedDisplayName = senderDisambiguatedDisplayName,
+                        isDirectRoom = isDirect,
+                        isSpace = isSpace
+                    ),
                     // TODO check if type is needed anymore
                     type = null,
                     // TODO check if title is needed anymore
@@ -332,12 +336,19 @@ class DefaultNotifiableEventResolver(
 
     private fun descriptionFromRoomMembershipInvite(
         senderDisambiguatedDisplayName: String,
-        isDirectRoom: Boolean
+        isDirectRoom: Boolean,
+        isSpace: Boolean,
     ): String {
-        return if (isDirectRoom) {
-            stringProvider.getString(R.string.notification_invite_body_with_sender, senderDisambiguatedDisplayName)
-        } else {
-            stringProvider.getString(R.string.notification_room_invite_body_with_sender, senderDisambiguatedDisplayName)
+        return when {
+            isDirectRoom -> {
+                stringProvider.getString(R.string.notification_invite_body_with_sender, senderDisambiguatedDisplayName)
+            }
+            isSpace -> {
+                stringProvider.getString(R.string.notification_space_invite_body_with_sender, senderDisambiguatedDisplayName)
+            }
+            else -> {
+                stringProvider.getString(R.string.notification_room_invite_body_with_sender, senderDisambiguatedDisplayName)
+            }
         }
     }
 

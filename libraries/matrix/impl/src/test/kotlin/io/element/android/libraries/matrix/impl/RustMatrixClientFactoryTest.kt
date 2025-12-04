@@ -14,6 +14,7 @@ import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.impl.auth.FakeProxyProvider
 import io.element.android.libraries.matrix.impl.auth.FakeUserCertificatesProvider
 import io.element.android.libraries.matrix.impl.room.FakeTimelineEventTypeFilterFactory
+import io.element.android.libraries.matrix.impl.storage.FakeSqliteStoreBuilderProvider
 import io.element.android.libraries.network.useragent.SimpleUserAgentProvider
 import io.element.android.libraries.sessionstorage.api.SessionStore
 import io.element.android.libraries.sessionstorage.test.InMemorySessionStore
@@ -55,4 +56,5 @@ fun TestScope.createRustMatrixClientFactory(
     featureFlagService = FakeFeatureFlagService(),
     timelineEventTypeFilterFactory = FakeTimelineEventTypeFilterFactory(),
     clientBuilderProvider = clientBuilderProvider,
+    sqliteStoreBuilderProvider = FakeSqliteStoreBuilderProvider(),
 )

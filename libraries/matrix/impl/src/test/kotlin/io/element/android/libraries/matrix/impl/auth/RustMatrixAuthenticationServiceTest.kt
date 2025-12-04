@@ -27,7 +27,7 @@ import org.junit.Test
 import java.io.File
 
 class RustMatrixAuthenticationServiceTest {
-        @Test
+    @Test
     fun `setHomeserver is successful`() = runTest {
         val sut = createRustMatrixAuthenticationService(
             clientBuilderProvider = FakeClientBuilderProvider(

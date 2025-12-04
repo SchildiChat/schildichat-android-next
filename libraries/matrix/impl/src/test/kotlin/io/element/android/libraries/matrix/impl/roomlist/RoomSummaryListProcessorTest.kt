@@ -22,6 +22,7 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import org.matrix.rustcomponents.sdk.LatestEventValue
 import org.matrix.rustcomponents.sdk.RoomListEntriesUpdate
 
 class RoomSummaryListProcessorTest {
@@ -174,6 +175,7 @@ class RoomSummaryListProcessorTest {
     private fun aRustRoom(roomId: RoomId = A_ROOM_ID) = FakeFfiRoom(
         roomId = roomId,
         latestEventLambda = { null },
+        newLatestEventLambda = { LatestEventValue.None }
     )
 
     private fun TestScope.createProcessor() = RoomSummaryListProcessor(

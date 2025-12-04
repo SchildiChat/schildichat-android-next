@@ -23,6 +23,7 @@ import io.element.android.libraries.matrix.api.roomlist.RoomListService
 import io.element.android.libraries.matrix.api.roomlist.awaitLoaded
 import io.element.android.libraries.matrix.impl.room.preview.RoomPreviewInfoMapper
 import io.element.android.libraries.matrix.impl.roomlist.roomOrNull
+import io.element.android.services.analytics.api.AnalyticsLongRunningTransaction
 import io.element.android.services.analytics.api.AnalyticsService
 import io.element.android.services.analytics.api.recordTransaction
 import io.element.android.services.analyticsproviders.api.recordChildTransaction
@@ -35,10 +36,12 @@ import kotlinx.coroutines.withContext
 import org.matrix.rustcomponents.sdk.DateDividerMode
 import org.matrix.rustcomponents.sdk.Membership
 import org.matrix.rustcomponents.sdk.Room
+import org.matrix.rustcomponents.sdk.RoomInfo
 import org.matrix.rustcomponents.sdk.TimelineConfiguration
 import org.matrix.rustcomponents.sdk.TimelineFilter
 import org.matrix.rustcomponents.sdk.TimelineFocus
 import timber.log.Timber
+import uniffi.matrix_sdk_ui.TimelineReadReceiptTracking
 import java.util.concurrent.atomic.AtomicBoolean
 import org.matrix.rustcomponents.sdk.RoomListService as InnerRoomListService
 
@@ -59,7 +62,7 @@ class RustRoomFactory(
     private val roomInfoMapper: RoomInfoMapper,
     private val analyticsService: AnalyticsService,
 ) {
-    private val dispatcher = dispatchers.io.limitedParallelism(1)
+    private val dispatcher = dispatchers.computation.limitedParallelism(1)
     private val mutex = Mutex()
     private val isDestroyed: AtomicBoolean = AtomicBoolean(false)
 
@@ -85,24 +88,21 @@ class RustRoomFactory(
                 return@withContext null
             }
             val room = awaitRoomInRoomList(roomId) ?: return@withContext null
-            getBaseRoom(room)
+            getBaseRoom(sdkRoom = room, roomInfo = room.roomInfo())
         }
     }
 
-    private suspend fun getBaseRoom(sdkRoom: Room): RustBaseRoom {
-        val initialRoomInfo = sdkRoom.roomInfo()
-        return RustBaseRoom(
-            sessionId = sessionId,
-            deviceId = deviceId,
-            innerRoom = sdkRoom,
-            coroutineDispatchers = dispatchers,
-            roomSyncSubscriber = roomSyncSubscriber,
-            roomMembershipObserver = roomMembershipObserver,
-            roomInfoMapper = roomInfoMapper,
-            initialRoomInfo = roomInfoMapper.map(initialRoomInfo),
-            sessionCoroutineScope = sessionCoroutineScope,
-        )
-    }
+    private fun getBaseRoom(sdkRoom: Room, roomInfo: RoomInfo) = RustBaseRoom(
+        sessionId = sessionId,
+        deviceId = deviceId,
+        innerRoom = sdkRoom,
+        coroutineDispatchers = dispatchers,
+        roomSyncSubscriber = roomSyncSubscriber,
+        roomMembershipObserver = roomMembershipObserver,
+        roomInfoMapper = roomInfoMapper,
+        initialRoomInfo = roomInfoMapper.map(roomInfo),
+        sessionCoroutineScope = sessionCoroutineScope,
+    )
 
     suspend fun getJoinedRoomOrPreview(roomId: RoomId, serverNames: List<String>): GetRoomResult? = withContext(dispatcher) {
         mutex.withLock {
@@ -112,11 +112,15 @@ class RustRoomFactory(
             }
 
             val sdkRoom = awaitRoomInRoomList(roomId) ?: return@withLock null
+            val roomInfo = sdkRoom.roomInfo()
 
-            if (sdkRoom.membership() == Membership.JOINED) {
+            val parentTransaction = analyticsService.getLongRunningTransaction(AnalyticsLongRunningTransaction.OpenRoom)
+
+            if (roomInfo.membership == Membership.JOINED) {
                 analyticsService.recordTransaction(
                     name = "Get joined room",
                     operation = "RustRoomFactory.getJoinedRoomOrPreview",
+                    parentTransaction = parentTransaction,
                 ) { transaction ->
                     val hideThreadedEvents = featureFlagService.isFeatureEnabled(FeatureFlags.Threads)
                     // Init the live timeline in the SDK from the Room
@@ -130,7 +134,7 @@ class RustRoomFactory(
                                 filter = eventFilters?.let(TimelineFilter::EventTypeFilter) ?: TimelineFilter.All,
                                 internalIdPrefix = "live",
                                 dateDividerMode = DateDividerMode.DAILY,
-                                trackReadReceipts = true,
+                                trackReadReceipts = TimelineReadReceiptTracking.ALL_EVENTS,
                                 reportUtds = true,
                             )
                         )
@@ -138,7 +142,7 @@ class RustRoomFactory(
 
                     GetRoomResult.Joined(
                         JoinedRustRoom(
-                            baseRoom = getBaseRoom(sdkRoom),
+                            baseRoom = getBaseRoom(sdkRoom, roomInfo),
                             notificationSettingsService = notificationSettingsService,
                             roomContentForwarder = roomContentForwarder,
                             liveInnerTimeline = timeline,
@@ -152,6 +156,7 @@ class RustRoomFactory(
                 analyticsService.recordTransaction(
                     name = "Get preview of room",
                     operation = "RustRoomFactory.getJoinedRoomOrPreview",
+                    parentTransaction = parentTransaction,
                 ) {
                     val preview = try {
                         sdkRoom.previewRoom(via = serverNames)
@@ -163,7 +168,7 @@ class RustRoomFactory(
                     GetRoomResult.NotJoined(
                         NotJoinedRustRoom(
                             sessionId = sessionId,
-                            localRoom = getBaseRoom(sdkRoom),
+                            localRoom = getBaseRoom(sdkRoom, roomInfo),
                             previewInfo = RoomPreviewInfoMapper.map(preview.info()),
                         )
                     )

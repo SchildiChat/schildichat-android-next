@@ -34,6 +34,7 @@ import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.designsystem.utils.ForceOrientationInMobileDevices
 import io.element.android.libraries.designsystem.utils.ScreenOrientation
 import io.element.android.libraries.matrix.ui.media.ImageLoaderHolder
+import io.element.android.services.analytics.api.watchers.AnalyticsColdStartWatcher
 import kotlinx.parcelize.Parcelize
 
 @ContributesNode(AppScope::class)
@@ -43,6 +44,7 @@ class NotLoggedInFlowNode(
     @Assisted plugins: List<Plugin>,
     private val loginEntryPoint: LoginEntryPoint,
     private val imageLoaderHolder: ImageLoaderHolder,
+    private val analyticsColdStartWatcher: AnalyticsColdStartWatcher,
 ) : BaseFlowNode<NotLoggedInFlowNode.NavTarget>(
     backstack = BackStack(
         initialElement = NavTarget.Root,
@@ -57,6 +59,7 @@ class NotLoggedInFlowNode(
 
     interface Callback : Plugin {
         fun navigateToBugReport()
+        fun onDone()
     }
 
     private val callback: Callback = callback()
@@ -64,6 +67,7 @@ class NotLoggedInFlowNode(
 
     override fun onBuilt() {
         super.onBuilt()
+        analyticsColdStartWatcher.whenLoggingIn()
         lifecycle.subscribe(
             onResume = {
                 SingletonImageLoader.setUnsafe(imageLoaderHolder.get())
@@ -82,6 +86,10 @@ class NotLoggedInFlowNode(
                 val callback = object : LoginEntryPoint.Callback {
                     override fun navigateToBugReport() {
                         callback.navigateToBugReport()
+                    }
+
+                    override fun onDone() {
+                        callback.onDone()
                     }
                 }
                 loginEntryPoint.createNode(

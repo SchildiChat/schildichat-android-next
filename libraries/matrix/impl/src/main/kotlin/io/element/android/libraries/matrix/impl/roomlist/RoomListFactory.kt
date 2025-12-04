@@ -15,6 +15,7 @@ import io.element.android.libraries.matrix.api.roomlist.RoomSummary
 import io.element.android.libraries.matrix.api.roomlist.ScSdkInboxSettings
 import io.element.android.services.analytics.api.AnalyticsLongRunningTransaction
 import io.element.android.services.analytics.api.AnalyticsService
+import io.element.android.services.analytics.api.finishLongRunningTransaction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,7 +42,7 @@ internal class RoomListFactory(
     private val sessionCoroutineScope: CoroutineScope,
     private val analyticsService: AnalyticsService,
 ) {
-    private val roomSummaryDetailsFactory: RoomSummaryFactory = RoomSummaryFactory()
+    private val roomSummaryFactory: RoomSummaryFactory = RoomSummaryFactory()
 
     /**
      * Creates a room list that can be used to load more rooms and filter them dynamically.
@@ -58,7 +59,7 @@ internal class RoomListFactory(
         val loadingStateFlow: MutableStateFlow<RoomList.LoadingState> = MutableStateFlow(RoomList.LoadingState.NotLoaded)
         val filteredSummariesFlow = MutableSharedFlow<List<RoomSummary>>(replay = 1, extraBufferCapacity = 1)
         val summariesFlow = MutableSharedFlow<List<RoomSummary>>(replay = 1, extraBufferCapacity = 1)
-        val processor = RoomSummaryListProcessor(summariesFlow, innerRoomListService, coroutineContext, roomSummaryDetailsFactory)
+        val processor = RoomSummaryListProcessor(summariesFlow, innerRoomListService, coroutineContext, roomSummaryFactory)
         // Makes sure we don't miss any events
         val dynamicEvents = MutableSharedFlow<RoomListDynamicEvents>(replay = 100)
         val currentFilter = MutableStateFlow(initialFilter)
@@ -77,7 +78,7 @@ internal class RoomListFactory(
                     initialFilterKind = RoomListEntriesDynamicFilterKind.All(ROOM_LIST_RUST_FILTERS.initialFilterForSpaces(isSpaceList)),
                 ).onEach { update ->
                     if (!firstRoomsTransaction.isFinished()) {
-                        analyticsService.stopLongRunningTransaction(AnalyticsLongRunningTransaction.FirstRoomsDisplayed)
+                        analyticsService.finishLongRunningTransaction(AnalyticsLongRunningTransaction.FirstRoomsDisplayed)
                         firstRoomsTransaction.finish()
                     }
                     processor.postUpdate(update)

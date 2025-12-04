@@ -63,6 +63,7 @@ import io.element.android.libraries.preferences.api.store.SessionPreferencesStor
 import io.element.android.libraries.push.api.battery.BatteryOptimizationState
 import io.element.android.libraries.push.api.notifications.NotificationCleaner
 import io.element.android.services.analytics.api.AnalyticsService
+import io.element.android.services.analytics.api.watchers.AnalyticsColdStartWatcher
 import io.element.android.services.analyticsproviders.api.trackers.captureInteraction
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
@@ -107,6 +108,7 @@ class RoomListPresenter(
     private val appPreferencesStore: AppPreferencesStore,
     private val seenInvitesStore: SeenInvitesStore,
     private val announcementService: AnnouncementService,
+    private val coldStartWatcher: AnalyticsColdStartWatcher,
 ) : Presenter<RoomListState> {
     private val encryptionService = client.encryptionService
 
@@ -273,6 +275,8 @@ class RoomListPresenter(
             )
             showSkeleton -> RoomListContentState.Skeleton(count = 16)
             else -> {
+                coldStartWatcher.onRoomListVisible()
+
                 RoomListContentState.Rooms(
                     // SC start
                     spacesList = spacesList.orEmpty().toImmutableList(),

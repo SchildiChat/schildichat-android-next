@@ -107,7 +107,7 @@ import io.element.android.libraries.matrix.api.timeline.item.EmbeddedEventInfo
 import io.element.android.libraries.matrix.api.timeline.item.ThreadSummary
 import io.element.android.libraries.matrix.api.timeline.item.event.EventOrTransactionId
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageContent
-import io.element.android.libraries.matrix.api.timeline.item.event.ProfileTimelineDetails
+import io.element.android.libraries.matrix.api.timeline.item.event.ProfileDetails
 import io.element.android.libraries.matrix.api.timeline.item.event.TextMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.getAvatarUrl
 import io.element.android.libraries.matrix.api.timeline.item.event.getDisambiguatedDisplayName
@@ -550,7 +550,7 @@ private fun TimelineItemEventRowContent(
 @Composable
 private fun MessageSenderInformation(
     senderId: UserId,
-    senderProfile: ProfileTimelineDetails,
+    senderProfile: ProfileDetails,
     senderAvatar: AvatarData,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -860,7 +860,7 @@ internal fun TimelineItemEventRowWithThreadSummaryPreview() = ElementPreview {
                                     type = TextMessageType("This is the latest message in the thread", null)
                                 ),
                                 senderId = UserId("@user:id"),
-                                senderProfile = ProfileTimelineDetails.Ready(
+                                senderProfile = ProfileDetails.Ready(
                                     displayName = "Alice",
                                     avatarUrl = null,
                                     displayNameAmbiguous = false,
@@ -893,7 +893,7 @@ internal fun ThreadSummaryViewPreview() {
                         type = TextMessageType(body, null)
                     ),
                     senderId = UserId("@user:id"),
-                    senderProfile = ProfileTimelineDetails.Ready(
+                    senderProfile = ProfileDetails.Ready(
                         displayName = "Alice",
                         avatarUrl = null,
                         displayNameAmbiguous = true,

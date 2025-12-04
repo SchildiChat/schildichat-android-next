@@ -41,7 +41,7 @@ data class RoomListRoomSummary(
     // SC end
     val isMarkedUnread: Boolean,
     val timestamp: String?,
-    val lastMessage: CharSequence?,
+    val latestEvent: LatestEvent,
     val avatarData: AvatarData,
     val userDefinedNotificationMode: RoomNotificationMode?,
     val hasRoomCall: Boolean,

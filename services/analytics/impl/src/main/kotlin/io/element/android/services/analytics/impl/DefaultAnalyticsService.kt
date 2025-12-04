@@ -153,11 +153,22 @@ class DefaultAnalyticsService(
         } ?: NoopAnalyticsTransaction
     }
 
-    override fun startLongRunningTransaction(longRunningTransaction: AnalyticsLongRunningTransaction) {
-        pendingLongRunningTransactions[longRunningTransaction] = startTransaction(longRunningTransaction.name, longRunningTransaction.operation)
+    override fun startLongRunningTransaction(
+        longRunningTransaction: AnalyticsLongRunningTransaction,
+        parentTransaction: AnalyticsTransaction?,
+    ): AnalyticsTransaction {
+        val transaction = parentTransaction?.startChild(longRunningTransaction.name, longRunningTransaction.operation)
+            ?: startTransaction(longRunningTransaction.name, longRunningTransaction.operation)
+
+        pendingLongRunningTransactions[longRunningTransaction] = transaction
+        return transaction
     }
 
-    override fun stopLongRunningTransaction(longRunningTransaction: AnalyticsLongRunningTransaction) {
-        pendingLongRunningTransactions.remove(longRunningTransaction)?.finish()
+    override fun getLongRunningTransaction(longRunningTransaction: AnalyticsLongRunningTransaction): AnalyticsTransaction? {
+        return pendingLongRunningTransactions[longRunningTransaction]
+    }
+
+    override fun removeLongRunningTransaction(longRunningTransaction: AnalyticsLongRunningTransaction): AnalyticsTransaction? {
+        return pendingLongRunningTransactions.remove(longRunningTransaction)
     }
 }

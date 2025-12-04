@@ -267,6 +267,7 @@ fun RoomDetailsView(
             if (state.showDebugInfo) {
                 DebugInfoSection(
                     roomId = state.roomId,
+                    roomVersion = state.roomVersion,
                 )
             }
         }
@@ -717,7 +718,10 @@ private fun OtherActionsSection(
 }
 
 @Composable
-private fun DebugInfoSection(roomId: RoomId) {
+private fun DebugInfoSection(
+    roomId: RoomId,
+    roomVersion: String?,
+) {
     val context = LocalContext.current
     PreferenceCategory(showTopDivider = true) {
         ListItem(
@@ -739,6 +743,19 @@ private fun DebugInfoSection(roomId: RoomId) {
                     context.getString(CommonStrings.common_copied_to_clipboard)
                 )
             },
+        )
+        ListItem(
+            headlineContent = {
+                Text("Room version")
+            },
+            supportingContent = {
+                Text(
+                    text = roomVersion ?: "Unknown",
+                    style = ElementTheme.typography.fontBodySmRegular,
+                    color = ElementTheme.colors.textSecondary,
+                )
+            },
+            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Info())),
         )
     }
 }

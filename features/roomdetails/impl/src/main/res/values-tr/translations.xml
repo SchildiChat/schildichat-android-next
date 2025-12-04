@@ -73,7 +73,6 @@
   <string name="screen_room_member_list_manage_member_unban_message">"Davet edildikleri takdirde bu odaya tekrar katılabileceklerdir."</string>
   <string name="screen_room_member_list_mode_banned">"Yasaklandı"</string>
   <string name="screen_room_member_list_mode_members">"Üyeler"</string>
-  <string name="screen_room_member_list_pending_header_title">"Beklemede"</string>
   <string name="screen_room_member_list_role_administrator">"Yalnızca yöneticiler"</string>
   <string name="screen_room_member_list_role_moderator">"Yöneticiler ve moderatörler"</string>
   <string name="screen_room_member_list_room_members_header_title">"Oda üyeleri"</string>
@@ -121,8 +120,8 @@ Herkesin bulabileceği ve katılabileceği odalar için şifrelemenin etkinleşt
   <string name="screen_security_and_privacy_room_access_invite_only_option_description">"İnsanlar yalnızca davet edildiklerinde katılabilirler"</string>
   <string name="screen_security_and_privacy_room_access_invite_only_option_title">"Yalnızca davet"</string>
   <string name="screen_security_and_privacy_room_access_section_header">"Oda Erişimi"</string>
-  <string name="screen_security_and_privacy_room_access_space_members_option_description">"Alanlar şu anda desteklenmiyor"</string>
   <string name="screen_security_and_privacy_room_access_space_members_option_title">"Alan üyeleri"</string>
+  <string name="screen_security_and_privacy_room_access_space_members_option_unavailable_description">"Alanlar şu anda desteklenmiyor"</string>
   <string name="screen_security_and_privacy_room_address_section_footer">"Dizinde görünür hale getirmek için bir oda adresine ihtiyacınız olacak."</string>
   <string name="screen_security_and_privacy_room_address_section_header">"Oda adresi"</string>
   <string name="screen_security_and_privacy_room_directory_visibility_section_footer">"Bu odanın %1$s genel oda dizininde arama yapılarak bulunmasına izin verin"</string>
@@ -134,7 +133,6 @@ Herkesin bulabileceği ve katılabileceği odalar için şifrelemenin etkinleşt
   <string name="screen_security_and_privacy_room_publishing_section_footer">"Oda adresleri, odaları bulmanın ve odalara erişmenin yoludur. Bu aynı zamanda odanızı başkalarıyla kolayca paylaşabilmenizi sağlar.
 Odanızı ana sunucunuzun genel oda dizininde yayınlamayı seçebilirsiniz."</string>
   <string name="screen_security_and_privacy_room_publishing_section_header">"Oda yayınlama"</string>
-  <string name="screen_security_and_privacy_room_visibility_section_footer">"Oda adresleri, odaları bulmanın ve odalara erişmenin yollarıdır. Bu aynı zamanda odanızı başkalarıyla kolayca paylaşabilmenizi sağlar."</string>
   <string name="screen_security_and_privacy_room_visibility_section_header">"Oda görünürlüğü"</string>
   <string name="screen_security_and_privacy_title">"Güvenlik ve gizlilik"</string>
 </resources>

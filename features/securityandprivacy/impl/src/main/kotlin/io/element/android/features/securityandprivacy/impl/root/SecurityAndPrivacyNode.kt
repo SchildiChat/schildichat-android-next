@@ -40,7 +40,6 @@ class SecurityAndPrivacyNode(
         val state by stateFlow.collectAsState()
         SecurityAndPrivacyView(
             state = state,
-            onBackClick = this::navigateUp,
             modifier = modifier
         )
     }

@@ -14,6 +14,7 @@ import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
 import com.bumble.appyx.navmodel.backstack.BackStack
+import com.bumble.appyx.navmodel.backstack.operation.pop
 import com.bumble.appyx.navmodel.backstack.operation.push
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
@@ -95,9 +96,15 @@ class SpaceSettingsFlowNode(
                 )
             }
             is NavTarget.SecurityAndPrivacy -> {
+                val callback = object : SecurityAndPrivacyEntryPoint.Callback {
+                    override fun onDone() {
+                        backstack.pop()
+                    }
+                }
                 securityAndPrivacyEntryPoint.createNode(
                     parentNode = this,
                     buildContext = buildContext,
+                    callback = callback,
                 )
             }
             is NavTarget.RolesAndPermissions -> {

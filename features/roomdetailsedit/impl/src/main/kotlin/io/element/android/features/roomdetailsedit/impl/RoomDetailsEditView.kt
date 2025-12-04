@@ -64,7 +64,7 @@ fun RoomDetailsEditView(
     }
 
     BackHandler {
-        state.eventSink(RoomDetailsEditEvents.OnBackPress)
+        state.eventSink(RoomDetailsEditEvent.OnBackPress)
     }
     Scaffold(
         modifier = modifier.clearFocusOnTap(focusManager),
@@ -74,7 +74,7 @@ fun RoomDetailsEditView(
                 navigationIcon = {
                     BackButton(
                         onClick = {
-                            state.eventSink(RoomDetailsEditEvents.OnBackPress)
+                            state.eventSink(RoomDetailsEditEvent.OnBackPress)
                         }
                     )
                 },
@@ -84,7 +84,7 @@ fun RoomDetailsEditView(
                         enabled = state.saveButtonEnabled,
                         onClick = {
                             focusManager.clearFocus()
-                            state.eventSink(RoomDetailsEditEvents.Save)
+                            state.eventSink(RoomDetailsEditEvent.Save)
                         },
                     )
                 }
@@ -121,7 +121,7 @@ fun RoomDetailsEditView(
                 placeholder = stringResource(CommonStrings.common_room_name_placeholder),
                 singleLine = true,
                 readOnly = !state.canChangeName,
-                onValueChange = { state.eventSink(RoomDetailsEditEvents.UpdateRoomName(it)) },
+                onValueChange = { state.eventSink(RoomDetailsEditEvent.UpdateRoomName(it)) },
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -136,7 +136,7 @@ fun RoomDetailsEditView(
                 },
                 maxLines = 10,
                 readOnly = !state.canChangeTopic,
-                onValueChange = { state.eventSink(RoomDetailsEditEvents.UpdateRoomTopic(it)) },
+                onValueChange = { state.eventSink(RoomDetailsEditEvent.UpdateRoomTopic(it)) },
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.Sentences,
                 ),
@@ -147,7 +147,7 @@ fun RoomDetailsEditView(
         actions = state.avatarActions,
         isVisible = isAvatarActionsSheetVisible.value,
         onDismiss = { isAvatarActionsSheetVisible.value = false },
-        onSelectAction = { state.eventSink(RoomDetailsEditEvents.HandleAvatarAction(it)) }
+        onSelectAction = { state.eventSink(RoomDetailsEditEvent.HandleAvatarAction(it)) }
     )
     AsyncActionView(
         async = state.saveAction,
@@ -159,14 +159,15 @@ fun RoomDetailsEditView(
         confirmationDialog = {
             if (state.saveAction == AsyncAction.ConfirmingCancellation) {
                 SaveChangesDialog(
-                    onSubmitClick = { state.eventSink(RoomDetailsEditEvents.OnBackPress) },
-                    onDismiss = { state.eventSink(RoomDetailsEditEvents.CloseDialog) }
+                    onSaveClick = { state.eventSink(RoomDetailsEditEvent.Save) },
+                    onDiscardClick = { state.eventSink(RoomDetailsEditEvent.OnBackPress) },
+                    onDismiss = { state.eventSink(RoomDetailsEditEvent.CloseDialog) }
                 )
             }
         },
         onSuccess = { onDone() },
         errorMessage = { stringResource(R.string.screen_room_details_edition_error) },
-        onErrorDismiss = { state.eventSink(RoomDetailsEditEvents.CloseDialog) }
+        onErrorDismiss = { state.eventSink(RoomDetailsEditEvent.CloseDialog) }
     )
 
     PermissionsView(

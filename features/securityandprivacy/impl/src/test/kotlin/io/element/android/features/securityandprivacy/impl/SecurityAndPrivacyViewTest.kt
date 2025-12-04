@@ -14,7 +14,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyEvents
+import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyEvent
 import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyHistoryVisibility
 import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyRoomAccess
 import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyState
@@ -24,7 +24,6 @@ import io.element.android.features.securityandprivacy.impl.root.aSecurityAndPriv
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.ui.strings.CommonStrings
-import io.element.android.tests.testutils.EnsureNeverCalled
 import io.element.android.tests.testutils.EventsRecorder
 import io.element.android.tests.testutils.clickOn
 import io.element.android.tests.testutils.pressBack
@@ -40,53 +39,53 @@ class SecurityAndPrivacyViewTest {
 
     @Test
     fun `click on back invokes emits the expected event`() {
-        val recorder = EventsRecorder<SecurityAndPrivacyEvents>()
+        val recorder = EventsRecorder<SecurityAndPrivacyEvent>()
         val state = aSecurityAndPrivacyState(
             eventSink = recorder,
         )
         rule.setSecurityAndPrivacyView(state)
         rule.pressBack()
-        recorder.assertSingle(SecurityAndPrivacyEvents.Exit)
+        recorder.assertSingle(SecurityAndPrivacyEvent.Exit)
     }
 
     @Test
-    fun `confirm cancellation emits the expected event`() {
-        val recorder = EventsRecorder<SecurityAndPrivacyEvents>()
+    fun `discard cancellation emits the expected event`() {
+        val recorder = EventsRecorder<SecurityAndPrivacyEvent>()
         val state = aSecurityAndPrivacyState(
-            confirmExitAction = AsyncAction.ConfirmingCancellation,
+            saveAction = AsyncAction.ConfirmingCancellation,
             eventSink = recorder,
         )
         rule.setSecurityAndPrivacyView(state)
-        rule.clickOn(CommonStrings.action_ok)
-        recorder.assertSingle(SecurityAndPrivacyEvents.Exit)
+        rule.clickOn(CommonStrings.action_discard)
+        recorder.assertSingle(SecurityAndPrivacyEvent.Exit)
     }
 
     @Test
-    fun `dismiss cancellation confirmation emits the expected event`() {
-        val recorder = EventsRecorder<SecurityAndPrivacyEvents>()
+    fun `save cancellation confirmation emits the expected event`() {
+        val recorder = EventsRecorder<SecurityAndPrivacyEvent>()
         val state = aSecurityAndPrivacyState(
-            confirmExitAction = AsyncAction.ConfirmingCancellation,
+            saveAction = AsyncAction.ConfirmingCancellation,
             eventSink = recorder,
         )
         rule.setSecurityAndPrivacyView(state)
-        rule.clickOn(CommonStrings.action_cancel)
-        recorder.assertSingle(SecurityAndPrivacyEvents.DismissExitConfirmation)
+        rule.clickOn(CommonStrings.action_save, inDialog = true)
+        recorder.assertSingle(SecurityAndPrivacyEvent.Save)
     }
 
     @Test
     fun `click on room access item emits the expected event`() {
-        val recorder = EventsRecorder<SecurityAndPrivacyEvents>()
+        val recorder = EventsRecorder<SecurityAndPrivacyEvent>()
         val state = aSecurityAndPrivacyState(
             eventSink = recorder,
         )
         rule.setSecurityAndPrivacyView(state)
         rule.clickOn(R.string.screen_security_and_privacy_room_access_invite_only_option_title)
-        recorder.assertSingle(SecurityAndPrivacyEvents.ChangeRoomAccess(SecurityAndPrivacyRoomAccess.InviteOnly))
+        recorder.assertSingle(SecurityAndPrivacyEvent.ChangeRoomAccess(SecurityAndPrivacyRoomAccess.InviteOnly))
     }
 
     @Test
     fun `click on disabled save doesn't emit event`() {
-        val recorder = EventsRecorder<SecurityAndPrivacyEvents>(expectEvents = false)
+        val recorder = EventsRecorder<SecurityAndPrivacyEvent>(expectEvents = false)
         val state = aSecurityAndPrivacyState(eventSink = recorder)
         rule.setSecurityAndPrivacyView(state)
         rule.clickOn(CommonStrings.action_save)
@@ -95,7 +94,7 @@ class SecurityAndPrivacyViewTest {
 
     @Test
     fun `click on enabled save emits the expected event`() {
-        val recorder = EventsRecorder<SecurityAndPrivacyEvents>()
+        val recorder = EventsRecorder<SecurityAndPrivacyEvent>()
         val state = aSecurityAndPrivacyState(
             eventSink = recorder,
             editedSettings = aSecurityAndPrivacySettings(
@@ -104,14 +103,14 @@ class SecurityAndPrivacyViewTest {
         )
         rule.setSecurityAndPrivacyView(state)
         rule.clickOn(CommonStrings.action_save)
-        recorder.assertSingle(SecurityAndPrivacyEvents.Save)
+        recorder.assertSingle(SecurityAndPrivacyEvent.Save)
     }
 
     @Test
     @Config(qualifiers = "h640dp")
     fun `click on room address item emits the expected event`() {
         val address = "@alias:matrix.org"
-        val recorder = EventsRecorder<SecurityAndPrivacyEvents>()
+        val recorder = EventsRecorder<SecurityAndPrivacyEvent>()
         val state = aSecurityAndPrivacyState(
             eventSink = recorder,
             editedSettings = aSecurityAndPrivacySettings(
@@ -121,13 +120,13 @@ class SecurityAndPrivacyViewTest {
         )
         rule.setSecurityAndPrivacyView(state)
         rule.onNodeWithText(address).performClick()
-        recorder.assertSingle(SecurityAndPrivacyEvents.EditRoomAddress)
+        recorder.assertSingle(SecurityAndPrivacyEvent.EditRoomAddress)
     }
 
     @Test
     @Config(qualifiers = "h1024dp")
     fun `click on room visibility item emits the expected event`() {
-        val recorder = EventsRecorder<SecurityAndPrivacyEvents>()
+        val recorder = EventsRecorder<SecurityAndPrivacyEvent>()
         val state = aSecurityAndPrivacyState(
             eventSink = recorder,
             editedSettings = aSecurityAndPrivacySettings(
@@ -137,13 +136,13 @@ class SecurityAndPrivacyViewTest {
         )
         rule.setSecurityAndPrivacyView(state)
         rule.clickOn(R.string.screen_security_and_privacy_room_directory_visibility_toggle_title)
-        recorder.assertSingle(SecurityAndPrivacyEvents.ToggleRoomVisibility)
+        recorder.assertSingle(SecurityAndPrivacyEvent.ToggleRoomVisibility)
     }
 
     @Test
     @Config(qualifiers = "h640dp")
     fun `click on history visibility item emits the expected event`() {
-        val recorder = EventsRecorder<SecurityAndPrivacyEvents>()
+        val recorder = EventsRecorder<SecurityAndPrivacyEvent>()
         val state = aSecurityAndPrivacyState(
             eventSink = recorder,
             editedSettings = aSecurityAndPrivacySettings(
@@ -152,32 +151,32 @@ class SecurityAndPrivacyViewTest {
         )
         rule.setSecurityAndPrivacyView(state)
         rule.clickOn(R.string.screen_security_and_privacy_room_history_since_selecting_option_title)
-        recorder.assertSingle(SecurityAndPrivacyEvents.ChangeHistoryVisibility(SecurityAndPrivacyHistoryVisibility.SinceSelection))
+        recorder.assertSingle(SecurityAndPrivacyEvent.ChangeHistoryVisibility(SecurityAndPrivacyHistoryVisibility.SinceSelection))
     }
 
     @Test
     @Config(qualifiers = "h640dp")
     fun `click on encryption item emits the expected event`() {
-        val recorder = EventsRecorder<SecurityAndPrivacyEvents>()
+        val recorder = EventsRecorder<SecurityAndPrivacyEvent>()
         val state = aSecurityAndPrivacyState(
             eventSink = recorder,
             savedSettings = aSecurityAndPrivacySettings(isEncrypted = false),
         )
         rule.setSecurityAndPrivacyView(state)
         rule.clickOn(R.string.screen_security_and_privacy_encryption_toggle_title)
-        recorder.assertSingle(SecurityAndPrivacyEvents.ToggleEncryptionState)
+        recorder.assertSingle(SecurityAndPrivacyEvent.ToggleEncryptionState)
     }
 
     @Test
     fun `click on encryption confirm emits the expected event`() {
-        val recorder = EventsRecorder<SecurityAndPrivacyEvents>()
+        val recorder = EventsRecorder<SecurityAndPrivacyEvent>()
         val state = aSecurityAndPrivacyState(
             eventSink = recorder,
             showEncryptionConfirmation = true,
         )
         rule.setSecurityAndPrivacyView(state)
         rule.clickOn(R.string.screen_security_and_privacy_enable_encryption_alert_confirm_button_title)
-        recorder.assertSingle(SecurityAndPrivacyEvents.ConfirmEnableEncryption)
+        recorder.assertSingle(SecurityAndPrivacyEvent.ConfirmEnableEncryption)
     }
 }
 
@@ -185,12 +184,10 @@ private fun <R : TestRule> AndroidComposeTestRule<R, ComponentActivity>.setSecur
     state: SecurityAndPrivacyState = aSecurityAndPrivacyState(
         eventSink = EventsRecorder(expectEvents = false),
     ),
-    onBackClick: () -> Unit = EnsureNeverCalled(),
 ) {
     setContent {
         SecurityAndPrivacyView(
             state = state,
-            onBackClick = onBackClick,
         )
     }
 }

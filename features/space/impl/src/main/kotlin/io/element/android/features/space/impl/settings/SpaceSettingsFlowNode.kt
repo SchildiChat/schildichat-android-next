@@ -20,6 +20,7 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.features.rolesandpermissions.api.RolesAndPermissionsEntryPoint
+import io.element.android.features.roomdetailsedit.api.RoomDetailsEditEntryPoint
 import io.element.android.features.securityandprivacy.api.SecurityAndPrivacyEntryPoint
 import io.element.android.features.space.impl.di.SpaceFlowScope
 import io.element.android.libraries.architecture.BackstackView
@@ -35,6 +36,7 @@ class SpaceSettingsFlowNode(
     @Assisted plugins: List<Plugin>,
     private val securityAndPrivacyEntryPoint: SecurityAndPrivacyEntryPoint,
     private val rolesAndPermissionsEntryPoint: RolesAndPermissionsEntryPoint,
+    private val roomDetailsEditEntryPoint: RoomDetailsEditEntryPoint
 ) : BaseFlowNode<SpaceSettingsFlowNode.NavTarget>(
     backstack = BackStack(
         initialElement = NavTarget.Root,
@@ -54,6 +56,9 @@ class SpaceSettingsFlowNode(
         data object Root : NavTarget
 
         @Parcelize
+        data object EditDetails: NavTarget
+
+        @Parcelize
         data object SecurityAndPrivacy : NavTarget
 
         @Parcelize
@@ -71,7 +76,7 @@ class SpaceSettingsFlowNode(
                     }
 
                     override fun navigateToEditDetails() {
-                        // TODO
+                        backstack.push(NavTarget.EditDetails)
                     }
 
                     override fun navigateToSpaceMembers() {
@@ -109,6 +114,12 @@ class SpaceSettingsFlowNode(
             }
             is NavTarget.RolesAndPermissions -> {
                 rolesAndPermissionsEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                )
+            }
+            NavTarget.EditDetails -> {
+                roomDetailsEditEntryPoint.createNode(
                     parentNode = this,
                     buildContext = buildContext,
                 )

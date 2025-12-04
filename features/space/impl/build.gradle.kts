@@ -42,6 +42,7 @@ dependencies {
     implementation(projects.libraries.previewutils)
     implementation(projects.features.securityandprivacy.api)
     implementation(projects.features.rolesandpermissions.api)
+    implementation(projects.features.roomdetailsedit.api)
     api(projects.features.space.api)
 
     testCommonDependencies(libs, true)

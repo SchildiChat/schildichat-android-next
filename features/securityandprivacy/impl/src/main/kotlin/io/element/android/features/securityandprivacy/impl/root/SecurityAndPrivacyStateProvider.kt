@@ -27,7 +27,7 @@ open class SecurityAndPrivacyStateProvider : PreviewParameterProvider<SecurityAn
                     isSpace = false,
                 ),
                 aSecurityAndPrivacyState(
-                    confirmExitAction = AsyncAction.ConfirmingCancellation,
+                    saveAction = AsyncAction.ConfirmingCancellation,
                     isSpace = false,
                 ),
                 aSecurityAndPrivacyState(
@@ -109,7 +109,6 @@ fun aSecurityAndPrivacyState(
     homeserverName: String = "myserver.xyz",
     showEncryptionConfirmation: Boolean = false,
     saveAction: AsyncAction<Unit> = AsyncAction.Uninitialized,
-    confirmExitAction: AsyncAction<Unit> = AsyncAction.Uninitialized,
     permissions: SecurityAndPrivacyPermissions = SecurityAndPrivacyPermissions(
         canChangeRoomAccess = true,
         canChangeHistoryVisibility = true,
@@ -118,14 +117,13 @@ fun aSecurityAndPrivacyState(
     ),
     isKnockEnabled: Boolean = true,
     isSpace: Boolean = false,
-    eventSink: (SecurityAndPrivacyEvents) -> Unit = {}
+    eventSink: (SecurityAndPrivacyEvent) -> Unit = {}
 ) = SecurityAndPrivacyState(
     editedSettings = editedSettings,
     savedSettings = savedSettings,
     homeserverName = homeserverName,
     showEnableEncryptionConfirmation = showEncryptionConfirmation,
     saveAction = saveAction,
-    confirmExitAction = confirmExitAction,
     isKnockEnabled = isKnockEnabled,
     permissions = permissions,
     isSpace = isSpace,

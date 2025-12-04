@@ -18,10 +18,12 @@ import com.bumble.appyx.navmodel.backstack.BackStack
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
+import io.element.android.features.securityandprivacy.api.SecurityAndPrivacyEntryPoint
 import io.element.android.features.securityandprivacy.impl.editroomaddress.EditRoomAddressNode
 import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyNode
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.di.RoomScope
 import kotlinx.parcelize.Parcelize
@@ -47,7 +49,8 @@ class SecurityAndPrivacyFlowNode(
         data object EditRoomAddress : NavTarget
     }
 
-    private val navigator = BackstackSecurityAndPrivacyNavigator(backstack)
+    private val callback: SecurityAndPrivacyEntryPoint.Callback = callback()
+    private val navigator = BackstackSecurityAndPrivacyNavigator(callback, backstack)
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         return when (navTarget) {

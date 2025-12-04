@@ -139,9 +139,9 @@ class RoomDetailsEditPresenter(
 
         val saveAction: MutableState<AsyncAction<Unit>> = remember { mutableStateOf(AsyncAction.Uninitialized) }
         val localCoroutineScope = rememberCoroutineScope()
-        fun handleEvent(event: RoomDetailsEditEvents) {
+        fun handleEvent(event: RoomDetailsEditEvent) {
             when (event) {
-                is RoomDetailsEditEvents.Save -> localCoroutineScope.saveChanges(
+                is RoomDetailsEditEvent.Save -> localCoroutineScope.saveChanges(
                     currentNameTrimmed = roomRawNameTrimmed,
                     newNameTrimmed = roomRawNameEdited.trim(),
                     currentTopicTrimmed = roomTopicTrimmed,
@@ -150,7 +150,7 @@ class RoomDetailsEditPresenter(
                     newAvatarUri = roomAvatarUriEdited?.toUri(),
                     action = saveAction,
                 )
-                is RoomDetailsEditEvents.HandleAvatarAction -> {
+                is RoomDetailsEditEvent.HandleAvatarAction -> {
                     when (event.action) {
                         AvatarAction.ChoosePhoto -> galleryImagePicker.launch()
                         AvatarAction.TakePhoto -> if (cameraPermissionState.permissionGranted) {
@@ -166,10 +166,10 @@ class RoomDetailsEditPresenter(
                     }
                 }
 
-                is RoomDetailsEditEvents.UpdateRoomName -> roomRawNameEdited = event.name
-                is RoomDetailsEditEvents.UpdateRoomTopic -> roomTopicEdited = event.topic
-                RoomDetailsEditEvents.CloseDialog -> saveAction.value = AsyncAction.Uninitialized
-                RoomDetailsEditEvents.OnBackPress -> if (saveButtonEnabled.not() || saveAction.value == AsyncAction.ConfirmingCancellation) {
+                is RoomDetailsEditEvent.UpdateRoomName -> roomRawNameEdited = event.name
+                is RoomDetailsEditEvent.UpdateRoomTopic -> roomTopicEdited = event.topic
+                RoomDetailsEditEvent.CloseDialog -> saveAction.value = AsyncAction.Uninitialized
+                RoomDetailsEditEvent.OnBackPress -> if (saveButtonEnabled.not() || saveAction.value == AsyncAction.ConfirmingCancellation) {
                     // No changes to save or already confirming exit without saving
                     saveAction.value = AsyncAction.Success(Unit)
                 } else {

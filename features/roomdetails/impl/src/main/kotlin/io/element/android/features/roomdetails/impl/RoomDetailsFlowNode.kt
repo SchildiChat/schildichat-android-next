@@ -383,7 +383,16 @@ class RoomDetailsFlowNode(
                 knockRequestsListEntryPoint.createNode(this, buildContext)
             }
             NavTarget.SecurityAndPrivacy -> {
-                securityAndPrivacyEntryPoint.createNode(this, buildContext)
+                val callback = object : SecurityAndPrivacyEntryPoint.Callback {
+                    override fun onDone() {
+                        backstack.pop()
+                    }
+                }
+                securityAndPrivacyEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    callback = callback,
+                )
             }
             is NavTarget.VerifyUser -> {
                 val params = OutgoingVerificationEntryPoint.Params(

@@ -46,7 +46,7 @@ class RoomListRoomSummaryFactory(
             notificationCount = roomInfo.notificationCount,
             highlightCount = roomInfo.highlightCount,
             unreadCount = roomInfo.unreadCount,
-            lastMessageTimestamp = roomSummary.lastMessageTimestamp,
+            lastMessageTimestamp = roomSummary.latestEventTimestamp,
             isLowPriority = roomInfo.isLowPriority,
             // SC end
             isMarkedUnread = roomInfo.isMarkedUnread,

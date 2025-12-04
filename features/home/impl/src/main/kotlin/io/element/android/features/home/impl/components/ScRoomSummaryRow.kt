@@ -58,11 +58,11 @@ import chat.schildi.lib.util.formatUnreadCount
 import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
+import io.element.android.features.home.impl.model.LatestEvent
 import io.element.android.features.home.impl.model.RoomListRoomSummary
 import io.element.android.features.home.impl.model.RoomListRoomSummaryProvider
 import io.element.android.features.home.impl.model.RoomSummaryDisplayType
 import io.element.android.features.home.impl.roomlist.RoomListEvents
-import io.element.android.libraries.core.extensions.orEmpty
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.preview.ElementPreview
@@ -179,6 +179,26 @@ private fun RowScope.ScNameAndTimestampRow(room: RoomListRoomSummary) {
         overflow = TextOverflow.Ellipsis
     )
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        // Message send status
+        when (room.latestEvent) {
+            is LatestEvent.Sending -> {
+                Icon(
+                    modifier = Modifier.size(16.dp),
+                    imageVector = CompoundIcons.Time(),
+                    contentDescription = null,
+                    tint = ElementTheme.colors.iconTertiary,
+                )
+            }
+            is LatestEvent.Error -> {
+                Icon(
+                    modifier = Modifier.size(16.dp),
+                    imageVector = CompoundIcons.ErrorSolid(),
+                    contentDescription = null,
+                    tint = ElementTheme.colors.iconCriticalPrimary,
+                )
+            }
+            else -> Unit
+        }
         // Favorite
         if (room.isFavorite && ScPrefs.PIN_FAVORITES.value()) {
             Icon(
@@ -211,12 +231,14 @@ private fun RowScope.ScNameAndTimestampRow(room: RoomListRoomSummary) {
 @Composable
 private fun RowScope.ScLastMessageAndIndicatorRow(room: RoomListRoomSummary, isInviteSeen: Boolean) {
     // Last Message
-    val messagePreview = if (room.isTombstoned) {
-        stringResource(io.element.android.features.home.impl.R.string.screen_roomlist_tombstoned_room_description)
+    val annotatedMessagePreview = if (room.isTombstoned) {
+        AnnotatedString(stringResource(io.element.android.features.home.impl.R.string.screen_roomlist_tombstoned_room_description))
+    } else if (room.latestEvent is LatestEvent.Error) {
+        AnnotatedString(stringResource(CommonStrings.common_message_failed_to_send))
     } else {
-        room.lastMessage.orEmpty()
+        val messagePreview = room.latestEvent.content()
+        messagePreview as? AnnotatedString ?: AnnotatedString(text = messagePreview.toString())
     }
-    val annotatedMessagePreview = messagePreview as? AnnotatedString ?: AnnotatedString(text = messagePreview.toString())
     Text(
         modifier = Modifier
             .weight(1f)

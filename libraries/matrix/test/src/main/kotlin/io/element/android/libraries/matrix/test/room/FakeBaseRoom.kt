@@ -21,12 +21,14 @@ import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.matrix.api.room.RoomMembersState
 import io.element.android.libraries.matrix.api.room.StateEventType
 import io.element.android.libraries.matrix.api.room.draft.ComposerDraft
+import io.element.android.libraries.matrix.api.room.powerlevels.RoomPermissions
 import io.element.android.libraries.matrix.api.room.powerlevels.RoomPowerLevelsValues
 import io.element.android.libraries.matrix.api.room.tombstone.PredecessorRoom
 import io.element.android.libraries.matrix.api.roomdirectory.RoomVisibility
 import io.element.android.libraries.matrix.api.timeline.ReceiptType
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_SESSION_ID
+import io.element.android.libraries.matrix.test.room.powerlevels.FakeRoomPermissions
 import io.element.android.tests.testutils.lambda.lambdaError
 import io.element.android.tests.testutils.simulateLongTask
 import kotlinx.coroutines.CoroutineScope
@@ -48,6 +50,7 @@ class FakeBaseRoom(
     private val userRoleResult: () -> Result<RoomMember.Role> = { lambdaError() },
     private val getUpdatedMemberResult: (UserId) -> Result<RoomMember> = { lambdaError() },
     private val joinRoomResult: () -> Result<Unit> = { lambdaError() },
+    private val roomPermissionsResult: () -> Result<RoomPermissions> = { Result.success(FakeRoomPermissions()) },
     private val canInviteResult: (UserId) -> Result<Boolean> = { lambdaError() },
     private val canKickResult: (UserId) -> Result<Boolean> = { lambdaError() },
     private val canBanResult: (UserId) -> Result<Boolean> = { lambdaError() },
@@ -127,6 +130,10 @@ class FakeBaseRoom(
 
     override suspend fun userRole(userId: UserId): Result<RoomMember.Role> {
         return userRoleResult()
+    }
+
+    override suspend fun roomPermissions(): Result<RoomPermissions> {
+        return roomPermissionsResult()
     }
 
     override suspend fun getPermalink(): Result<String> {

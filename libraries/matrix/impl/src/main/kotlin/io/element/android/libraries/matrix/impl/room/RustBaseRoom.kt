@@ -25,6 +25,7 @@ import io.element.android.libraries.matrix.api.room.RoomMembersState
 import io.element.android.libraries.matrix.api.room.RoomMembershipObserver
 import io.element.android.libraries.matrix.api.room.StateEventType
 import io.element.android.libraries.matrix.api.room.draft.ComposerDraft
+import io.element.android.libraries.matrix.api.room.powerlevels.RoomPermissions
 import io.element.android.libraries.matrix.api.room.powerlevels.RoomPowerLevelsValues
 import io.element.android.libraries.matrix.api.room.tombstone.PredecessorRoom
 import io.element.android.libraries.matrix.api.roomdirectory.RoomVisibility
@@ -33,6 +34,7 @@ import io.element.android.libraries.matrix.impl.room.draft.into
 import io.element.android.libraries.matrix.impl.room.member.RoomMemberListFetcher
 import io.element.android.libraries.matrix.impl.room.member.RoomMemberMapper
 import io.element.android.libraries.matrix.impl.room.powerlevels.RoomPowerLevelsValuesMapper
+import io.element.android.libraries.matrix.impl.room.powerlevels.RustRoomPermissions
 import io.element.android.libraries.matrix.impl.room.tombstone.map
 import io.element.android.libraries.matrix.impl.roomdirectory.map
 import io.element.android.libraries.matrix.impl.timeline.toRustReceiptType
@@ -175,6 +177,12 @@ class RustBaseRoom(
     override suspend fun forget(): Result<Unit> = withContext(roomDispatcher) {
         runCatchingExceptions {
             innerRoom.forget()
+        }
+    }
+
+    override suspend fun roomPermissions(): Result<RoomPermissions> = withContext(roomDispatcher) {
+        runCatchingExceptions {
+            RustRoomPermissions(innerRoom.getPowerLevels())
         }
     }
 

@@ -14,6 +14,7 @@ import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.core.ThreadId
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.room.draft.ComposerDraft
+import io.element.android.libraries.matrix.api.room.powerlevels.RoomPermissions
 import io.element.android.libraries.matrix.api.room.powerlevels.RoomPowerLevelsValues
 import io.element.android.libraries.matrix.api.room.tombstone.PredecessorRoom
 import io.element.android.libraries.matrix.api.roomdirectory.RoomVisibility
@@ -98,6 +99,11 @@ interface BaseRoom : Closeable {
      * Gets the role of the user with the provided [userId] in the room.
      */
     suspend fun userRole(userId: UserId): Result<RoomMember.Role>
+
+    /**
+     * Gets the permissions of the room.
+     */
+    suspend fun roomPermissions(): Result<RoomPermissions>
 
     /**
      * Gets the display name of the user with the provided [userId] in the room.

@@ -237,7 +237,7 @@ private fun RowScope.ScLastMessageAndIndicatorRow(room: RoomListRoomSummary, isI
         AnnotatedString(stringResource(CommonStrings.common_message_failed_to_send))
     } else {
         val messagePreview = room.latestEvent.content()
-        messagePreview as? AnnotatedString ?: AnnotatedString(text = messagePreview.toString())
+        messagePreview as? AnnotatedString ?: AnnotatedString(text = messagePreview?.toString() ?: "")
     }
     Text(
         modifier = Modifier

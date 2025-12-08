@@ -388,6 +388,7 @@ Haluatko varmasti jatkaa?"</string>
   <string name="dialog_title_error">"Virhe"</string>
   <string name="dialog_title_success">"Onnistui"</string>
   <string name="dialog_title_warning">"Varoitus"</string>
+  <string name="dialog_unsaved_changes_description">"Sinulla on tallentamattomia muutoksia"</string>
   <string name="dialog_unsaved_changes_description_android">"Muutoksiasi ei ole tallennettu. Haluatko varmasti palata takaisin?"</string>
   <string name="dialog_unsaved_changes_title">"Tallennetaanko muutokset?"</string>
   <string name="dialog_video_quality_selector_subtitle_file_size">"Suurin sallittu tiedostokoko on: %1$s"</string>

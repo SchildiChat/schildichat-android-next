@@ -345,6 +345,7 @@
   <string name="dialog_title_error">"خطا"</string>
   <string name="dialog_title_success">"موفّقیت"</string>
   <string name="dialog_title_warning">"هشدار"</string>
+  <string name="dialog_unsaved_changes_description">"تغییراتی ذخیره نشده دارید."</string>
   <string name="dialog_unsaved_changes_description_android">"تغییراتتان ذخیره نشده‌اند. مطمئنید که می‌خواهید برگردید؟"</string>
   <string name="dialog_unsaved_changes_title">"ذخیرهٔ تغییرات؟"</string>
   <string name="emoji_picker_search_placeholder">"حست‌وجوی شکلک‌ها"</string>

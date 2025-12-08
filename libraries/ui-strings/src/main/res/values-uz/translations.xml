@@ -376,6 +376,7 @@ Davom etasizmi?"</string>
   <string name="dialog_title_error">"Xato"</string>
   <string name="dialog_title_success">"Muvaffaqiyat"</string>
   <string name="dialog_title_warning">"Ogohlantirish"</string>
+  <string name="dialog_unsaved_changes_description">"Sizda saqlanmagan oʻzgarishlar bor"</string>
   <string name="dialog_unsaved_changes_description_android">"Oʻzgarishlar saqlanmadi. Haqiqatan ham orqaga qaytmoqchimisiz?"</string>
   <string name="dialog_unsaved_changes_title">"O‘zgartirishlarni saqlaysizmi?"</string>
   <string name="dialog_video_quality_selector_subtitle_file_size">"Ruxsat etilgan maksimal fayl hajmi: %1$s"</string>

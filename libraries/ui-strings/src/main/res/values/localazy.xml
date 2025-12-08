@@ -234,6 +234,7 @@ Reason: %1$s."</string>
   <string name="common_light">"Light"</string>
   <string name="common_line_copied_to_clipboard">"Line copied to clipboard"</string>
   <string name="common_link_copied_to_clipboard">"Link copied to clipboard"</string>
+  <string name="common_link_new_device">"Link new device"</string>
   <string name="common_loading">"Loading…"</string>
   <string name="common_loading_more">"Loading more…"</string>
   <plurals name="common_many_members">
@@ -432,6 +433,9 @@ Are you sure you want to continue?"</string>
   <string name="screen_create_poll_options_section_title">"Options"</string>
   <string name="screen_create_poll_remove_accessibility_label">"Remove %1$s"</string>
   <string name="screen_create_poll_settings_section_title">"Settings"</string>
+  <string name="screen_link_new_device_desktop_computer">"Desktop computer"</string>
+  <string name="screen_link_new_device_mobile_device">"Mobile device"</string>
+  <string name="screen_link_new_device_title">"What type of device do you want to link?"</string>
   <string name="screen_manage_authorized_spaces_header">"Spaces where members can join the room without an invitation."</string>
   <string name="screen_manage_authorized_spaces_title">"Manage spaces"</string>
   <string name="screen_manage_authorized_spaces_unknown_space">"(Unknown space)"</string>

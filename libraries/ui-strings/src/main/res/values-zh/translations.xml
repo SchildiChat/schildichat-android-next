@@ -380,6 +380,7 @@
   <string name="dialog_title_error">"错误"</string>
   <string name="dialog_title_success">"成功"</string>
   <string name="dialog_title_warning">"警告"</string>
+  <string name="dialog_unsaved_changes_description">"您有未保存的更改。"</string>
   <string name="dialog_unsaved_changes_description_android">"更改尚未保存，确定要返回吗？"</string>
   <string name="dialog_unsaved_changes_title">"保存更改？"</string>
   <string name="dialog_video_quality_selector_subtitle_file_size">"允许的最大文件大小为：%1$s"</string>

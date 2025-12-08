@@ -30,8 +30,7 @@ import io.element.android.libraries.designsystem.utils.snackbar.collectSnackbarM
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.media.MatrixMediaLoader
 import io.element.android.libraries.matrix.api.room.BaseRoom
-import io.element.android.libraries.matrix.api.room.powerlevels.canRedactOther
-import io.element.android.libraries.matrix.api.room.powerlevels.canRedactOwn
+import io.element.android.libraries.matrix.api.room.powerlevels.permissionsAsState
 import io.element.android.libraries.mediaviewer.api.local.LocalMedia
 import io.element.android.libraries.mediaviewer.api.local.LocalMediaFactory
 import io.element.android.libraries.mediaviewer.impl.datasource.MediaGalleryDataSource
@@ -39,8 +38,10 @@ import io.element.android.libraries.mediaviewer.impl.details.MediaBottomSheetSta
 import io.element.android.libraries.mediaviewer.impl.local.LocalMediaActions
 import io.element.android.libraries.mediaviewer.impl.model.GroupedMediaItems
 import io.element.android.libraries.mediaviewer.impl.model.MediaItem
+import io.element.android.libraries.mediaviewer.impl.model.MediaPermissions
 import io.element.android.libraries.mediaviewer.impl.model.eventId
 import io.element.android.libraries.mediaviewer.impl.model.mediaInfo
+import io.element.android.libraries.mediaviewer.impl.model.mediaPermissions
 import io.element.android.libraries.mediaviewer.impl.model.mediaSource
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.coroutines.launch
@@ -78,6 +79,10 @@ class MediaGalleryPresenter(
 
         LaunchedEffect(Unit) {
             mediaGalleryDataSource.start()
+        }
+
+        val permissions by room.permissionsAsState(MediaPermissions.DEFAULT) { perms ->
+            perms.mediaPermissions()
         }
 
         val snackbarMessage by snackbarDispatcher.collectSnackbarMessageAsState()
@@ -119,8 +124,8 @@ class MediaGalleryPresenter(
                         eventId = event.mediaItem.eventId(),
                         canDelete = when (event.mediaItem.mediaInfo().senderId) {
                             null -> false
-                            room.sessionId -> room.canRedactOwn().getOrElse { false } && event.mediaItem.eventId() != null
-                            else -> room.canRedactOther().getOrElse { false } && event.mediaItem.eventId() != null
+                            room.sessionId -> permissions.canRedactOwn && event.mediaItem.eventId() != null
+                            else -> permissions.canRedactOther && event.mediaItem.eventId() != null
                         },
                         mediaInfo = event.mediaItem.mediaInfo(),
                         thumbnailSource = when (event.mediaItem) {
@@ -202,6 +207,7 @@ class MediaGalleryPresenter(
             CommonStrings.error_unknown
         }
     }
+
 }
 
 private fun GroupedMediaItems?.find(eventId: EventId?): MediaItem.Event? {

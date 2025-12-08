@@ -32,8 +32,7 @@ import io.element.android.libraries.designsystem.utils.snackbar.SnackbarMessage
 import io.element.android.libraries.designsystem.utils.snackbar.collectSnackbarMessageAsState
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.room.JoinedRoom
-import io.element.android.libraries.matrix.api.room.powerlevels.canRedactOther
-import io.element.android.libraries.matrix.api.room.powerlevels.canRedactOwn
+import io.element.android.libraries.matrix.api.room.powerlevels.permissionsAsState
 import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.matrix.api.timeline.item.event.toEventOrTransactionId
 import io.element.android.libraries.mediaviewer.api.MediaViewerEntryPoint
@@ -41,6 +40,8 @@ import io.element.android.libraries.mediaviewer.api.local.LocalMedia
 import io.element.android.libraries.mediaviewer.impl.R
 import io.element.android.libraries.mediaviewer.impl.details.MediaBottomSheetState
 import io.element.android.libraries.mediaviewer.impl.local.LocalMediaActions
+import io.element.android.libraries.mediaviewer.impl.model.MediaPermissions
+import io.element.android.libraries.mediaviewer.impl.model.mediaPermissions
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.CoroutineScope
@@ -81,6 +82,9 @@ class MediaViewerPresenter(
         NoMoreItemsBackwardSnackBarDisplayer(currentIndex, data)
         NoMoreItemsForwardSnackBarDisplayer(currentIndex, data)
 
+        val permissions by room.permissionsAsState(MediaPermissions.DEFAULT) { perms ->
+            perms.mediaPermissions()
+        }
         var mediaBottomSheetState by remember { mutableStateOf<MediaBottomSheetState>(MediaBottomSheetState.Hidden) }
 
         DisposableEffect(Unit) {
@@ -131,8 +135,8 @@ class MediaViewerPresenter(
                         eventId = event.data.eventId,
                         canDelete = when (event.data.mediaInfo.senderId) {
                             null -> false
-                            room.sessionId -> room.canRedactOwn().getOrElse { false } && event.data.eventId != null
-                            else -> room.canRedactOther().getOrElse { false } && event.data.eventId != null
+                            room.sessionId -> permissions.canRedactOwn && event.data.eventId != null
+                            else -> permissions.canRedactOther && event.data.eventId != null
                         },
                         mediaInfo = event.data.mediaInfo,
                         thumbnailSource = event.data.thumbnailSource,

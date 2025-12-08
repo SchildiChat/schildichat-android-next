@@ -24,6 +24,7 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.features.messages.impl.MessagesNavigator
+import io.element.android.features.messages.impl.UserEventPermissions
 import io.element.android.features.messages.impl.crypto.sendfailure.resolve.ResolveVerifiedUserSendFailureEvents
 import io.element.android.features.messages.impl.crypto.sendfailure.resolve.ResolveVerifiedUserSendFailureState
 import io.element.android.features.messages.impl.timeline.factories.TimelineItemsFactory
@@ -32,6 +33,7 @@ import io.element.android.features.messages.impl.timeline.model.NewEventState
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.features.messages.impl.timeline.model.virtual.TimelineItemTypingNotificationModel
 import io.element.android.features.messages.impl.typing.TypingNotificationState
+import io.element.android.features.messages.impl.userEventPermissions
 import io.element.android.features.messages.impl.voicemessages.timeline.RedactedVoiceMessageManager
 import io.element.android.features.poll.api.actions.EndPollAction
 import io.element.android.features.poll.api.actions.SendPollResponseAction
@@ -46,14 +48,13 @@ import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.UniqueId
 import io.element.android.libraries.matrix.api.core.asEventId
 import io.element.android.libraries.matrix.api.room.JoinedRoom
-import io.element.android.libraries.matrix.api.room.MessageEventType
 import io.element.android.libraries.matrix.api.room.isDm
+import io.element.android.libraries.matrix.api.room.powerlevels.permissionsAsState
 import io.element.android.libraries.matrix.api.room.roomMembers
 import io.element.android.libraries.matrix.api.timeline.ReceiptType
 import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageShield
 import io.element.android.libraries.matrix.api.timeline.item.event.TimelineItemEventOrigin
-import io.element.android.libraries.matrix.ui.room.canSendMessageAsState
 import io.element.android.libraries.preferences.api.store.SessionPreferencesStore
 import io.element.android.services.analytics.api.AnalyticsLongRunningTransaction.DisplayFirstTimelineItems
 import io.element.android.services.analytics.api.AnalyticsLongRunningTransaction.NotificationTapOpensTimeline
@@ -127,11 +128,6 @@ class TimelinePresenter(
         val lastReadReceiptId = rememberSaveable { mutableStateOf<EventId?>(null) }
 
         val roomInfo by room.roomInfoFlow.collectAsState()
-
-        val syncUpdateFlow = room.syncUpdateFlow.collectAsState()
-
-        val userHasPermissionToSendMessage by room.canSendMessageAsState(type = MessageEventType.RoomMessage, updateKey = syncUpdateFlow.value)
-        val userHasPermissionToSendReaction by room.canSendMessageAsState(type = MessageEventType.Reaction, updateKey = syncUpdateFlow.value)
 
         val prevMostRecentItemId = rememberSaveable { mutableStateOf<UniqueId?>(null) }
 
@@ -285,13 +281,16 @@ class TimelinePresenter(
 
         val typingNotificationState = typingNotificationPresenter.present()
         val roomCallState = roomCallStatePresenter.present()
+        val userEventPermissions by room.permissionsAsState(UserEventPermissions.DEFAULT) { perms ->
+            perms.userEventPermissions()
+        }
         val timelineRoomInfo by remember(typingNotificationState, roomCallState, roomInfo) {
             derivedStateOf {
                 TimelineRoomInfo(
                     name = roomInfo.name,
-                    isDm = roomInfo.isDm.orFalse(),
-                    userHasPermissionToSendMessage = userHasPermissionToSendMessage,
-                    userHasPermissionToSendReaction = userHasPermissionToSendReaction,
+                    isDm = roomInfo.isDm,
+                    userHasPermissionToSendMessage = userEventPermissions.canSendMessage,
+                    userHasPermissionToSendReaction = userEventPermissions.canSendReaction,
                     roomCallState = roomCallState,
                     pinnedEventIds = roomInfo.pinnedEventIds,
                     typingNotificationState = typingNotificationState,

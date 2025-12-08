@@ -10,11 +10,10 @@ package io.element.android.features.messages.impl.pinned.list
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
@@ -35,6 +34,7 @@ import io.element.android.features.messages.impl.timeline.factories.TimelineItem
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.features.messages.impl.timeline.protection.TimelineProtectionState
 import io.element.android.features.messages.impl.typing.TypingNotificationState
+import io.element.android.features.messages.impl.userEventPermissions
 import io.element.android.features.roomcall.api.aStandByCallState
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.Presenter
@@ -44,11 +44,9 @@ import io.element.android.libraries.di.annotations.SessionCoroutineScope
 import io.element.android.libraries.featureflag.api.FeatureFlagService
 import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.matrix.api.room.JoinedRoom
-import io.element.android.libraries.matrix.api.room.powerlevels.canPinUnpin
-import io.element.android.libraries.matrix.api.room.powerlevels.canRedactOther
-import io.element.android.libraries.matrix.api.room.powerlevels.canRedactOwn
+import io.element.android.libraries.matrix.api.room.isDm
+import io.element.android.libraries.matrix.api.room.powerlevels.permissionsAsState
 import io.element.android.libraries.matrix.api.room.roomMembers
-import io.element.android.libraries.matrix.ui.room.isDmAsState
 import io.element.android.libraries.ui.strings.CommonStrings
 import io.element.android.services.analytics.api.AnalyticsService
 import io.element.android.services.analyticsproviders.api.trackers.captureInteraction
@@ -97,31 +95,33 @@ class PinnedMessagesListPresenter(
     @Composable
     override fun present(): PinnedMessagesListState {
         htmlConverterProvider.Update()
-        val isDm by room.isDmAsState()
-
-        val timelineRoomInfo = remember(isDm) {
-            TimelineRoomInfo(
-                isDm = isDm,
-                name = room.info().name,
-                // We don't need to compute those values
-                userHasPermissionToSendMessage = false,
-                userHasPermissionToSendReaction = false,
-                // We do not care about the call state here.
-                roomCallState = aStandByCallState(),
-                // don't compute this value or the pin icon will be shown
-                pinnedEventIds = persistentListOf(),
-                typingNotificationState = TypingNotificationState(
-                    renderTypingNotifications = false,
-                    typingMembers = persistentListOf(),
-                    reserveSpace = false,
-                ),
-                predecessorRoom = room.predecessorRoom(),
-            )
+        val roomInfo by room.roomInfoFlow.collectAsState()
+        val timelineRoomInfo by remember {
+            derivedStateOf {
+                TimelineRoomInfo(
+                    isDm = roomInfo.isDm,
+                    name = roomInfo.name,
+                    // We don't need to compute those values
+                    userHasPermissionToSendMessage = false,
+                    userHasPermissionToSendReaction = false,
+                    // We do not care about the call state here.
+                    roomCallState = aStandByCallState(),
+                    // don't compute this value or the pin icon will be shown
+                    pinnedEventIds = persistentListOf(),
+                    typingNotificationState = TypingNotificationState(
+                        renderTypingNotifications = false,
+                        typingMembers = persistentListOf(),
+                        reserveSpace = false,
+                    ),
+                    predecessorRoom = room.predecessorRoom(),
+                )
+            }
         }
         val timelineProtectionState = timelineProtectionPresenter.present()
         val linkState = linkPresenter.present()
-        val syncUpdateFlow = room.syncUpdateFlow.collectAsState()
-        val userEventPermissions by userEventPermissions(syncUpdateFlow.value)
+        val userEventPermissions by room.permissionsAsState(UserEventPermissions.DEFAULT) { perms ->
+            perms.userEventPermissions()
+        }
 
         val displayThreadSummaries by featureFlagService.isFeatureEnabledFlow(FeatureFlags.Threads).collectAsState(false)
 
@@ -189,19 +189,6 @@ class PinnedMessagesListPresenter(
                     Timber.e(it, "Failed to unpin event ${targetEvent.eventId}")
                     snackbarDispatcher.post(SnackbarMessage(CommonStrings.common_error))
                 }
-        }
-    }
-
-    @Composable
-    private fun userEventPermissions(updateKey: Long): State<UserEventPermissions> {
-        return produceState(UserEventPermissions.DEFAULT, key1 = updateKey) {
-            value = UserEventPermissions(
-                canSendMessage = false,
-                canSendReaction = false,
-                canRedactOwn = room.canRedactOwn().getOrElse { false },
-                canRedactOther = room.canRedactOther().getOrElse { false },
-                canPinUnpin = room.canPinUnpin().getOrElse { false },
-            )
         }
     }
 

@@ -9,7 +9,7 @@
 package io.element.android.features.knockrequests.impl.banner
 
 import com.google.common.truth.Truth.assertThat
-import io.element.android.features.knockrequests.impl.data.KnockRequestPermissions
+import io.element.android.features.knockrequests.api.KnockRequestPermissions
 import io.element.android.features.knockrequests.impl.data.KnockRequestsService
 import io.element.android.libraries.matrix.api.room.knock.KnockRequest
 import io.element.android.libraries.matrix.test.A_USER_ID

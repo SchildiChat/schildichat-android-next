@@ -49,7 +49,7 @@ class KnockRequestsBannerPresenter(
 
         val shouldShowBanner by remember {
             derivedStateOf {
-                permissions.canHandle && knockRequests.isNotEmpty()
+                permissions.hasAny && knockRequests.isNotEmpty()
             }
         }
 

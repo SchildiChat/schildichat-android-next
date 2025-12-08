@@ -7,9 +7,18 @@
 
 package io.element.android.libraries.matrix.api.room.powerlevels
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import io.element.android.libraries.matrix.api.core.UserId
+import io.element.android.libraries.matrix.api.room.BaseRoom
 import io.element.android.libraries.matrix.api.room.MessageEventType
 import io.element.android.libraries.matrix.api.room.StateEventType
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import timber.log.Timber
 
 /**
  * Provides information about the permissions of users in a room.
@@ -120,23 +129,38 @@ interface RoomPermissions : AutoCloseable {
     fun canUserTriggerRoomNotification(userId: UserId): Boolean
 }
 
-fun RoomPermissions.canEditRoomDetails(): Boolean {
-    return canOwnUserSendState(StateEventType.ROOM_NAME) ||
-        canOwnUserSendState(StateEventType.ROOM_TOPIC) ||
-        canOwnUserSendState(StateEventType.ROOM_AVATAR)
-}
-
-fun RoomPermissions.canManageKnockRequests(): Boolean {
-    return canOwnUserInvite() || canOwnUserBan() || canOwnUserKick()
-}
-
-fun RoomPermissions.canEditSecurityAndPrivacy(): Boolean {
-    return canOwnUserSendState(StateEventType.ROOM_JOIN_RULES) ||
-        canOwnUserSendState(StateEventType.ROOM_HISTORY_VISIBILITY) ||
-        canOwnUserSendState(StateEventType.ROOM_CANONICAL_ALIAS) ||
-        canOwnUserSendState(StateEventType.ROOM_ENCRYPTION)
-}
-
 fun RoomPermissions.canEditRolesAndPermissions(): Boolean {
     return canOwnUserSendState(StateEventType.ROOM_POWER_LEVELS)
+}
+
+fun RoomPermissions.canCall(): Boolean {
+    return canOwnUserSendState(StateEventType.CALL_MEMBER)
+}
+
+fun <T> Result<RoomPermissions>.use(default: T, block: (RoomPermissions) -> T): T {
+    return fold(
+        onSuccess = { perms ->
+            perms.use(block)
+        },
+        onFailure = {
+            default
+        }
+    )
+}
+
+fun <T> BaseRoom.permissionsFlow(default: T, block: (RoomPermissions) -> T): Flow<T> {
+    return roomInfoFlow
+        .map { info -> info.roomPowerLevels }
+        .distinctUntilChanged()
+        .map {
+            roomPermissions().use(default, block)
+        }
+}
+
+@Composable
+fun <T> BaseRoom.permissionsAsState(default: T, block: (RoomPermissions) -> T): State<T> {
+    return remember(this, default, block) {
+        Timber.d("Computing permissionsAsState for room $roomId with default=$default")
+        permissionsFlow(default, block)
+    }.collectAsState(default)
 }

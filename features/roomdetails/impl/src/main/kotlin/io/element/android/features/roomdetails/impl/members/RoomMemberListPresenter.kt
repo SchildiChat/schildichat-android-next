@@ -32,10 +32,10 @@ import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.matrix.api.room.RoomMembersState
 import io.element.android.libraries.matrix.api.room.RoomMembershipState
+import io.element.android.libraries.matrix.api.room.powerlevels.permissionsAsState
 import io.element.android.libraries.matrix.api.room.roomMembers
 import io.element.android.libraries.matrix.api.room.toMatrixUser
 import io.element.android.libraries.matrix.ui.room.PowerLevelRoomMemberComparator
-import io.element.android.libraries.matrix.ui.room.canInviteAsState
 import io.element.android.libraries.matrix.ui.room.roomMemberIdentityStateChange
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentMapOf
@@ -58,8 +58,7 @@ class RoomMemberListPresenter(
     override fun present(): RoomMemberListState {
         var searchQuery by rememberSaveable { mutableStateOf("") }
         val membersState by room.membersStateFlow.collectAsState()
-        val syncUpdateFlow = room.syncUpdateFlow.collectAsState()
-        val canInvite by room.canInviteAsState(syncUpdateFlow.value)
+        val canInvite by room.permissionsAsState(false) { perms -> perms.canOwnUserInvite() }
         val roomModerationState = roomMembersModerationPresenter.present()
 
         val roomMemberIdentityStates by produceState(persistentMapOf()) {

@@ -23,6 +23,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.core.net.toUri
 import dev.zacsweers.metro.Inject
+import io.element.android.features.roomdetailsedit.api.RoomDetailsEditPermissions
+import io.element.android.features.roomdetailsedit.api.roomDetailsEditPermissions
 import io.element.android.libraries.androidutils.file.TemporaryUriDeleter
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
@@ -30,8 +32,7 @@ import io.element.android.libraries.architecture.runCatchingUpdatingState
 import io.element.android.libraries.core.extensions.runCatchingExceptions
 import io.element.android.libraries.core.mimetype.MimeTypes
 import io.element.android.libraries.matrix.api.room.JoinedRoom
-import io.element.android.libraries.matrix.api.room.StateEventType
-import io.element.android.libraries.matrix.api.room.powerlevels.canSendState
+import io.element.android.libraries.matrix.api.room.powerlevels.permissionsAsState
 import io.element.android.libraries.matrix.ui.media.AvatarAction
 import io.element.android.libraries.mediapickers.api.PickerProvider
 import io.element.android.libraries.mediaupload.api.MediaOptimizationConfigProvider
@@ -93,14 +94,8 @@ class RoomDetailsEditPresenter(
             }
         }
 
-        var canChangeName by remember { mutableStateOf(false) }
-        var canChangeTopic by remember { mutableStateOf(false) }
-        var canChangeAvatar by remember { mutableStateOf(false) }
-
-        LaunchedEffect(roomSyncUpdateFlow.value) {
-            canChangeName = room.canSendState(StateEventType.ROOM_NAME).getOrElse { false }
-            canChangeTopic = room.canSendState(StateEventType.ROOM_TOPIC).getOrElse { false }
-            canChangeAvatar = room.canSendState(StateEventType.ROOM_AVATAR).getOrElse { false }
+        val permissions by room.permissionsAsState(RoomDetailsEditPermissions.DEFAULT){perms ->
+            perms.roomDetailsEditPermissions()
         }
 
         val cameraPhotoPicker = mediaPickerProvider.registerCameraPhotoPicker(
@@ -181,11 +176,11 @@ class RoomDetailsEditPresenter(
         return RoomDetailsEditState(
             roomId = room.roomId,
             roomRawName = roomRawNameEdited,
-            canChangeName = canChangeName,
+            canChangeName = permissions.canEditName,
             roomTopic = roomTopicEdited,
-            canChangeTopic = canChangeTopic,
+            canChangeTopic = permissions.canEditTopic,
             roomAvatarUrl = roomAvatarUriEdited,
-            canChangeAvatar = canChangeAvatar,
+            canChangeAvatar = permissions.canEditAvatar,
             avatarActions = avatarActions,
             saveButtonEnabled = saveButtonEnabled,
             saveAction = saveAction.value,

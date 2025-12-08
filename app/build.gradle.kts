@@ -199,6 +199,10 @@ android {
         resources.pickFirsts += setOf(
             "META-INF/versions/9/OSGI-INF/MANIFEST.MF",
         )
+
+        jniLibs {
+            useLegacyPackaging = project.findProperty("useLegacyPackaging")?.toString()?.toBoolean()
+        }
     }
 }
 

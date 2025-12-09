@@ -20,6 +20,7 @@ import io.element.android.libraries.matrix.test.encryption.FakeEncryptionService
 import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
 import io.element.android.libraries.matrix.test.room.aRoomInfo
+import io.element.android.libraries.matrix.test.room.powerlevels.FakeRoomPermissions
 import io.element.android.tests.testutils.WarmUpRule
 import io.element.android.tests.testutils.test
 import io.element.android.tests.testutils.testCoroutineDispatchers
@@ -171,7 +172,7 @@ class RoomMemberListPresenterTest {
     fun `present - asynchronously sets canInvite when user does not have correct power level`() = runTest {
         val presenter = createPresenter(
             joinedRoom = createFakeJoinedRoom(
-                canInviteResult = { Result.success(false) },
+                canInvite = false,
             )
         )
         presenter.test {
@@ -180,18 +181,6 @@ class RoomMemberListPresenterTest {
         }
     }
 
-    @Test
-    fun `present - asynchronously sets canInvite when power level check fails`() = runTest {
-        val presenter = createPresenter(
-            joinedRoom = createFakeJoinedRoom(
-                canInviteResult = { Result.failure(RuntimeException("Eek")) },
-            )
-        )
-        presenter.test {
-            val loadedState = awaitItem()
-            assertThat(loadedState.canInvite).isFalse()
-        }
-    }
 
     @Test
     fun `present - RoomMemberSelected will open the moderation options`() = runTest {
@@ -207,12 +196,14 @@ class RoomMemberListPresenterTest {
 
 private fun createFakeJoinedRoom(
     updateMembersResult: () -> Unit = { },
-    canInviteResult: (UserId) -> Result<Boolean> = { Result.success(true) },
+    canInvite: Boolean = true,
 ): FakeJoinedRoom {
     return FakeJoinedRoom(
         baseRoom = FakeBaseRoom(
             updateMembersResult = updateMembersResult,
-            canInviteResult = canInviteResult,
+            roomPermissions = FakeRoomPermissions(
+                canInvite = canInvite,
+            ),
         ).apply {
             // Needed to avoid discarding the loaded members as a partial and invalid result
             givenRoomInfo(aRoomInfo(joinedMembersCount = 2))

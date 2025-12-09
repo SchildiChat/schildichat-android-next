@@ -13,46 +13,48 @@ import io.element.android.libraries.matrix.api.room.StateEventType
 import io.element.android.libraries.matrix.api.room.powerlevels.RoomPermissions
 
 data class FakeRoomPermissions(
-    val ownerCanBan: Boolean = false,
-    val ownerCanInvite: Boolean = false,
-    val ownerCanKick: Boolean = false,
-    val ownerCanPinUnpin: Boolean = false,
-    val ownerCanRedactOther: Boolean = false,
-    val ownerCanRedactOwn: Boolean = false,
-    val ownerCanTriggerRoomNotification: Boolean = false,
-    val ownerCanSendMessage: (MessageEventType) -> Boolean = { false },
-    val ownerCanSendState: (StateEventType) -> Boolean = { false },
-    val userCanBan: (UserId) -> Boolean = { false },
-    val userCanInvite: (UserId) -> Boolean = { false },
-    val userCanKick: (UserId) -> Boolean = { false },
-    val userCanPinUnpin: (UserId) -> Boolean = { false },
-    val userCanRedactOther: (UserId) -> Boolean = { false },
-    val userCanRedactOwn: (UserId) -> Boolean = { false },
-    val userCanTriggerRoomNotification: (UserId) -> Boolean = { false },
-    val userCanSendMessage: (UserId, MessageEventType) -> Boolean = { _, _ -> false },
-    val userCanSendState: (UserId, StateEventType) -> Boolean = { _, _ -> false },
+    private val canBan: Boolean = false,
+    private val canInvite: Boolean = false,
+    private val canKick: Boolean = false,
+    private val canPinUnpin: Boolean = false,
+    private val canRedactOther: Boolean = false,
+    private val canRedactOwn: Boolean = false,
+    private val canTriggerRoomNotification: Boolean = false,
+    private val canSendMessage: (MessageEventType) -> Boolean = { false },
+    private val canSendState: (StateEventType) -> Boolean = { false },
+    private val canUserBan: (UserId) -> Boolean = { false },
+    private val canUserInvite: (UserId) -> Boolean = { false },
+    private val canUserKick: (UserId) -> Boolean = { false },
+    private val canUserPinUnpin: (UserId) -> Boolean = { false },
+    private val canUserRedactOther: (UserId) -> Boolean = { false },
+    private val canUserRedactOwn: (UserId) -> Boolean = { false },
+    private val canUserTriggerRoomNotification: (UserId) -> Boolean = { false },
+    private val canUserSendMessage: (UserId, MessageEventType) -> Boolean = { _, _ -> false },
+    private val canUserSendState: (UserId, StateEventType) -> Boolean = { _, _ -> false },
 ) : RoomPermissions {
 
-    override fun canOwnUserBan(): Boolean = ownerCanBan
-    override fun canOwnUserInvite(): Boolean = ownerCanInvite
-    override fun canOwnUserKick(): Boolean = ownerCanKick
-    override fun canOwnUserPinUnpin(): Boolean = ownerCanPinUnpin
-    override fun canOwnUserRedactOther(): Boolean = ownerCanRedactOther
-    override fun canOwnUserRedactOwn(): Boolean = ownerCanRedactOwn
-    override fun canOwnUserSendMessage(message: MessageEventType): Boolean = ownerCanSendMessage(message)
-    override fun canOwnUserSendState(stateEvent: StateEventType): Boolean = ownerCanSendState(stateEvent)
-    override fun canOwnUserTriggerRoomNotification(): Boolean = ownerCanTriggerRoomNotification
-    override fun canUserBan(userId: UserId): Boolean = userCanBan(userId)
-    override fun canUserInvite(userId: UserId): Boolean = userCanInvite(userId)
-    override fun canUserKick(userId: UserId): Boolean = userCanKick(userId)
-    override fun canUserPinUnpin(userId: UserId): Boolean = userCanPinUnpin(userId)
-    override fun canUserRedactOther(userId: UserId): Boolean = userCanRedactOther(userId)
-    override fun canUserRedactOwn(userId: UserId): Boolean = userCanRedactOwn(userId)
-    override fun canUserSendMessage(userId: UserId, message: MessageEventType): Boolean = userCanSendMessage(userId, message)
-    override fun canUserSendState(userId: UserId, stateEvent: StateEventType): Boolean = userCanSendState(userId, stateEvent)
-    override fun canUserTriggerRoomNotification(userId: UserId): Boolean = userCanTriggerRoomNotification(userId)
+    override fun canOwnUserBan(): Boolean = canBan
+    override fun canOwnUserInvite(): Boolean = canInvite
+    override fun canOwnUserKick(): Boolean = canKick
+    override fun canOwnUserPinUnpin(): Boolean = canPinUnpin
+    override fun canOwnUserRedactOther(): Boolean = canRedactOther
+    override fun canOwnUserRedactOwn(): Boolean = canRedactOwn
+    override fun canOwnUserSendMessage(message: MessageEventType): Boolean = canSendMessage(message)
+    override fun canOwnUserSendState(stateEvent: StateEventType): Boolean = canSendState(stateEvent)
+
+    override fun canOwnUserTriggerRoomNotification(): Boolean = canTriggerRoomNotification
+    override fun canUserBan(userId: UserId): Boolean = canUserBan(userId)
+    override fun canUserInvite(userId: UserId): Boolean = canUserInvite(userId)
+    override fun canUserKick(userId: UserId): Boolean = canUserKick(userId)
+    override fun canUserPinUnpin(userId: UserId): Boolean = canUserPinUnpin(userId)
+    override fun canUserRedactOther(userId: UserId): Boolean = canUserRedactOther(userId)
+    override fun canUserRedactOwn(userId: UserId): Boolean = canUserRedactOwn(userId)
+    override fun canUserSendMessage(userId: UserId, message: MessageEventType): Boolean = canUserSendMessage(userId, message)
+    override fun canUserSendState(userId: UserId, stateEvent: StateEventType): Boolean = canUserSendState(userId, stateEvent)
+    override fun canUserTriggerRoomNotification(userId: UserId): Boolean = canUserTriggerRoomNotification(userId)
 
     override fun close() {
         // no-op for the fake
     }
 }
+

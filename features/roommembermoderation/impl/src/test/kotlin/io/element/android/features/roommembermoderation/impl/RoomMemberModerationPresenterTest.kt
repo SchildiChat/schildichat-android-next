@@ -25,6 +25,7 @@ import io.element.android.libraries.matrix.test.A_USER_ID
 import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
 import io.element.android.libraries.matrix.test.room.aRoomMember
+import io.element.android.libraries.matrix.test.room.powerlevels.FakeRoomPermissions
 import io.element.android.services.analytics.api.AnalyticsService
 import io.element.android.services.analytics.test.FakeAnalyticsService
 import io.element.android.tests.testutils.WarmUpRule
@@ -355,8 +356,10 @@ class RoomMemberModerationPresenterTest {
             banUserResult = { _, _ -> banUserResult },
             unBanUserResult = { _, _ -> unBanUserResult },
             baseRoom = FakeBaseRoom(
-                canBanResult = { _ -> Result.success(canBan) },
-                canKickResult = { _ -> Result.success(canKick) },
+                roomPermissions = FakeRoomPermissions(
+                    canBan = canBan,
+                    canKick = canKick
+                ),
                 userRoleResult = { Result.success(myUserRole) },
                 updateMembersResult = { Result.success(Unit) }
             ),

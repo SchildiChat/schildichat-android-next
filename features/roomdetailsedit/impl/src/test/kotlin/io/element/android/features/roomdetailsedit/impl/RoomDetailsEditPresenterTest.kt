@@ -13,7 +13,6 @@ import com.google.common.truth.Truth.assertThat
 import io.element.android.libraries.androidutils.file.TemporaryUriDeleter
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.core.mimetype.MimeTypes
-import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.room.StateEventType
 import io.element.android.libraries.matrix.test.AN_AVATAR_URL
@@ -23,6 +22,7 @@ import io.element.android.libraries.matrix.test.A_ROOM_TOPIC
 import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
 import io.element.android.libraries.matrix.test.room.aRoomInfo
+import io.element.android.libraries.matrix.test.room.powerlevels.FakeRoomPermissions
 import io.element.android.libraries.matrix.ui.media.AvatarAction
 import io.element.android.libraries.mediapickers.test.FakePickerProvider
 import io.element.android.libraries.mediaupload.api.MediaUploadInfo
@@ -102,7 +102,6 @@ class RoomDetailsEditPresenterTest {
             avatarUrl = AN_AVATAR_URL,
             displayName = A_ROOM_NAME,
             rawName = A_ROOM_RAW_NAME,
-            canSendStateResult = { _, _ -> Result.success(true) }
         )
         val deleteCallback = lambdaRecorder<Uri?, Unit> {}
         val presenter = createRoomDetailsEditPresenter(
@@ -127,17 +126,15 @@ class RoomDetailsEditPresenterTest {
 
     @Test
     fun `present - sets canChangeName if user has permission`() = runTest {
-        val room = FakeJoinedRoom(
-            FakeBaseRoom(
-                canSendStateResult = { _, stateEventType ->
-                    when (stateEventType) {
-                        StateEventType.ROOM_NAME -> Result.success(true)
-                        StateEventType.ROOM_AVATAR -> Result.success(false)
-                        StateEventType.ROOM_TOPIC -> Result.failure(RuntimeException("Oops"))
-                        else -> lambdaError()
-                    }
-                },
-            )
+        val room = aJoinedRoom(
+            canSendState = { stateEventType ->
+                when (stateEventType) {
+                    StateEventType.ROOM_NAME -> true
+                    StateEventType.ROOM_AVATAR -> false
+                    StateEventType.ROOM_TOPIC -> false
+                    else -> lambdaError()
+                }
+            }
         )
         val deleteCallback = lambdaRecorder<Uri?, Unit> {}
         val presenter = createRoomDetailsEditPresenter(
@@ -163,11 +160,11 @@ class RoomDetailsEditPresenterTest {
     fun `present - sets canChangeAvatar if user has permission`() = runTest {
         val room = aJoinedRoom(
             avatarUrl = AN_AVATAR_URL,
-            canSendStateResult = { _, stateEventType ->
+            canSendState = { stateEventType ->
                 when (stateEventType) {
-                    StateEventType.ROOM_NAME -> Result.success(false)
-                    StateEventType.ROOM_AVATAR -> Result.success(true)
-                    StateEventType.ROOM_TOPIC -> Result.failure(RuntimeException("Oops"))
+                    StateEventType.ROOM_NAME -> false
+                    StateEventType.ROOM_AVATAR -> true
+                    StateEventType.ROOM_TOPIC -> false
                     else -> lambdaError()
                 }
             }
@@ -195,11 +192,11 @@ class RoomDetailsEditPresenterTest {
     fun `present - sets canChangeTopic if user has permission`() = runTest {
         val room = aJoinedRoom(
             avatarUrl = AN_AVATAR_URL,
-            canSendStateResult = { _, stateEventType ->
+            canSendState = { stateEventType ->
                 when (stateEventType) {
-                    StateEventType.ROOM_NAME -> Result.success(false)
-                    StateEventType.ROOM_AVATAR -> Result.failure(RuntimeException("Oops"))
-                    StateEventType.ROOM_TOPIC -> Result.success(true)
+                    StateEventType.ROOM_NAME -> false
+                    StateEventType.ROOM_AVATAR -> false
+                    StateEventType.ROOM_TOPIC -> true
                     else -> lambdaError()
                 }
             }
@@ -229,7 +226,6 @@ class RoomDetailsEditPresenterTest {
             topic = "My topic",
             displayName = "Name",
             avatarUrl = AN_AVATAR_URL,
-            canSendStateResult = { _, _ -> Result.success(true) }
         )
         val deleteCallback = lambdaRecorder<Uri?, Unit> {}
         val presenter = createRoomDetailsEditPresenter(
@@ -274,7 +270,6 @@ class RoomDetailsEditPresenterTest {
             topic = "My topic",
             displayName = "Name",
             avatarUrl = AN_AVATAR_URL,
-            canSendStateResult = { _, _ -> Result.success(true) }
         )
         fakePickerProvider.givenResult(anotherAvatarUri)
         val deleteCallback = lambdaRecorder<Uri?, Unit> {}
@@ -298,7 +293,6 @@ class RoomDetailsEditPresenterTest {
             topic = "My topic",
             displayName = "Name",
             avatarUrl = AN_AVATAR_URL,
-            canSendStateResult = { _, _ -> Result.success(true) }
         )
         fakePickerProvider.givenResult(anotherAvatarUri)
         val fakePermissionsPresenter = FakePermissionsPresenter()
@@ -339,7 +333,6 @@ class RoomDetailsEditPresenterTest {
             topic = "My topic",
             displayName = "Name",
             avatarUrl = AN_AVATAR_URL,
-            canSendStateResult = { _, _ -> Result.success(true) }
         )
         fakePickerProvider.givenResult(roomAvatarUri)
         val deleteCallback = lambdaRecorder<Uri?, Unit> {}
@@ -389,7 +382,6 @@ class RoomDetailsEditPresenterTest {
             topic = null,
             displayName = "fallback",
             avatarUrl = null,
-            canSendStateResult = { _, _ -> Result.success(true) }
         )
         fakePickerProvider.givenResult(roomAvatarUri)
         val deleteCallback = lambdaRecorder<Uri?, Unit> {}
@@ -445,7 +437,6 @@ class RoomDetailsEditPresenterTest {
             setNameResult = setNameResult,
             setTopicResult = setTopicResult,
             removeAvatarResult = removeAvatarResult,
-            canSendStateResult = { _, _ -> Result.success(true) }
         )
         val deleteCallback = lambdaRecorder<Uri?, Unit> {}
         val presenter = createRoomDetailsEditPresenter(
@@ -471,7 +462,6 @@ class RoomDetailsEditPresenterTest {
             topic = "My topic",
             displayName = "Name",
             avatarUrl = AN_AVATAR_URL,
-            canSendStateResult = { _, _ -> Result.success(true) }
         )
         val deleteCallback = lambdaRecorder<Uri?, Unit> {}
         val presenter = createRoomDetailsEditPresenter(
@@ -493,7 +483,6 @@ class RoomDetailsEditPresenterTest {
             topic = null,
             displayName = "Name",
             avatarUrl = AN_AVATAR_URL,
-            canSendStateResult = { _, _ -> Result.success(true) }
         )
         val deleteCallback = lambdaRecorder<Uri?, Unit> {}
         val presenter = createRoomDetailsEditPresenter(
@@ -515,7 +504,6 @@ class RoomDetailsEditPresenterTest {
             topic = "My topic",
             displayName = "Name",
             avatarUrl = AN_AVATAR_URL,
-            canSendStateResult = { _, _ -> Result.success(true) }
         )
         val deleteCallback = lambdaRecorder<Uri?, Unit> {}
         val presenter = createRoomDetailsEditPresenter(
@@ -539,7 +527,6 @@ class RoomDetailsEditPresenterTest {
             displayName = "Name",
             avatarUrl = AN_AVATAR_URL,
             updateAvatarResult = updateAvatarResult,
-            canSendStateResult = { _, _ -> Result.success(true) }
         )
         givenPickerReturnsFile()
         val deleteCallback = lambdaRecorder<Uri?, Unit> {}
@@ -566,7 +553,6 @@ class RoomDetailsEditPresenterTest {
             topic = "My topic",
             displayName = "Name",
             avatarUrl = AN_AVATAR_URL,
-            canSendStateResult = { _, _ -> Result.success(true) }
         )
         fakePickerProvider.givenResult(anotherAvatarUri)
         fakeMediaPreProcessor.givenResult(Result.failure(RuntimeException("Oh no")))
@@ -591,7 +577,6 @@ class RoomDetailsEditPresenterTest {
             displayName = "Name",
             avatarUrl = AN_AVATAR_URL,
             setNameResult = { Result.failure(RuntimeException("!")) },
-            canSendStateResult = { _, _ -> Result.success(true) }
         )
         saveAndAssertFailure(room, RoomDetailsEditEvent.UpdateRoomName("New name"), deleteCallbackNumberOfInvocation = 1)
     }
@@ -603,7 +588,6 @@ class RoomDetailsEditPresenterTest {
             displayName = "Name",
             avatarUrl = AN_AVATAR_URL,
             setTopicResult = { Result.failure(RuntimeException("!")) },
-            canSendStateResult = { _, _ -> Result.success(true) }
         )
         saveAndAssertFailure(room, RoomDetailsEditEvent.UpdateRoomTopic("New topic"), deleteCallbackNumberOfInvocation = 1)
     }
@@ -615,7 +599,6 @@ class RoomDetailsEditPresenterTest {
             displayName = "Name",
             avatarUrl = AN_AVATAR_URL,
             removeAvatarResult = { Result.failure(RuntimeException("!")) },
-            canSendStateResult = { _, _ -> Result.success(true) }
         )
         saveAndAssertFailure(room, RoomDetailsEditEvent.HandleAvatarAction(AvatarAction.Remove), deleteCallbackNumberOfInvocation = 2)
     }
@@ -628,7 +611,6 @@ class RoomDetailsEditPresenterTest {
             displayName = "Name",
             avatarUrl = AN_AVATAR_URL,
             updateAvatarResult = { _, _ -> Result.failure(RuntimeException("!")) },
-            canSendStateResult = { _, _ -> Result.success(true) }
         )
         saveAndAssertFailure(room, RoomDetailsEditEvent.HandleAvatarAction(AvatarAction.ChoosePhoto), deleteCallbackNumberOfInvocation = 2)
     }
@@ -641,7 +623,6 @@ class RoomDetailsEditPresenterTest {
             displayName = "Name",
             avatarUrl = AN_AVATAR_URL,
             setTopicResult = { Result.failure(RuntimeException("!")) },
-            canSendStateResult = { _, _ -> Result.success(true) }
         )
         val deleteCallback = lambdaRecorder<Uri?, Unit> {}
         val presenter = createRoomDetailsEditPresenter(
@@ -663,7 +644,6 @@ class RoomDetailsEditPresenterTest {
     fun `present - leave without saving - cancel`() = runTest {
         val room = aJoinedRoom(
             displayName = "Name",
-            canSendStateResult = { _, _ -> Result.success(true) }
         )
         val deleteCallback = lambdaRecorder<Uri?, Unit> {}
         val presenter = createRoomDetailsEditPresenter(
@@ -693,7 +673,6 @@ class RoomDetailsEditPresenterTest {
     fun `present - leave no changes, no confirmation`() = runTest {
         val room = aJoinedRoom(
             displayName = "Name",
-            canSendStateResult = { _, _ -> Result.success(true) }
         )
         val presenter = createRoomDetailsEditPresenter(
             room = room,
@@ -711,7 +690,7 @@ class RoomDetailsEditPresenterTest {
     fun `present - leave without saving - confirm`() = runTest {
         val room = aJoinedRoom(
             displayName = "Name",
-            canSendStateResult = { _, _ -> Result.success(true) }
+            canSendState = { _ -> true }
         )
         val presenter = createRoomDetailsEditPresenter(
             room = room,
@@ -782,11 +761,13 @@ class RoomDetailsEditPresenterTest {
         setTopicResult: (String) -> Result<Unit> = { Result.success(Unit) },
         updateAvatarResult: (String, ByteArray) -> Result<Unit> = { _, _ -> Result.success(Unit) },
         removeAvatarResult: () -> Result<Unit> = { Result.success(Unit) },
-        canSendStateResult: (UserId, StateEventType) -> Result<Boolean>,
+        canSendState: (StateEventType) -> Boolean = { true },
     ): JoinedRoom {
         return FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canSendStateResult = canSendStateResult,
+                roomPermissions = FakeRoomPermissions(
+                    canSendState = canSendState,
+                ),
                 initialRoomInfo = aRoomInfo(
                     name = displayName,
                     topic = topic,

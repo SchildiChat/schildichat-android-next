@@ -13,8 +13,8 @@ import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.room.RoomMember
-import io.element.android.libraries.matrix.api.room.StateEventType
 import io.element.android.libraries.matrix.api.room.join.JoinRule
+import io.element.android.libraries.matrix.api.room.powerlevels.RoomPermissions
 import io.element.android.libraries.matrix.test.AN_AVATAR_URL
 import io.element.android.libraries.matrix.test.A_ROOM_ALIAS
 import io.element.android.libraries.matrix.test.A_ROOM_ID
@@ -25,6 +25,7 @@ import io.element.android.libraries.matrix.test.notificationsettings.FakeNotific
 import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
 import io.element.android.libraries.matrix.test.room.aRoomInfo
+import io.element.android.libraries.matrix.test.room.powerlevels.FakeRoomPermissions
 import io.element.android.tests.testutils.lambda.lambdaError
 
 fun aRoom(
@@ -35,6 +36,7 @@ fun aRoom(
     topic: String? = A_ROOM_TOPIC,
     avatarUrl: String? = AN_AVATAR_URL,
     canonicalAlias: RoomAlias? = A_ROOM_ALIAS,
+    roomPermissions: RoomPermissions = FakeRoomPermissions(),
     isEncrypted: Boolean = true,
     isPublic: Boolean = true,
     isDirect: Boolean = false,
@@ -42,29 +44,20 @@ fun aRoom(
     activeMemberCount: Long = 1,
     joinedMemberCount: Long = 1,
     invitedMemberCount: Long = 0,
-    canInviteResult: (UserId) -> Result<Boolean> = { lambdaError() },
-    canBanResult: (UserId) -> Result<Boolean> = { lambdaError() },
-    canKickResult: (UserId) -> Result<Boolean> = { lambdaError() },
-    canSendStateResult: (UserId, StateEventType) -> Result<Boolean> = { _, _ -> lambdaError() },
     userDisplayNameResult: (UserId) -> Result<String?> = { lambdaError() },
     userAvatarUrlResult: () -> Result<String?> = { lambdaError() },
-    canUserJoinCallResult: (UserId) -> Result<Boolean> = { lambdaError() },
     getUpdatedMemberResult: (UserId) -> Result<RoomMember> = { lambdaError() },
     userRoleResult: () -> Result<RoomMember.Role> = { lambdaError() },
     setIsFavoriteResult: (Boolean) -> Result<Unit> = { lambdaError() },
 ) = FakeBaseRoom(
     sessionId = sessionId,
     roomId = roomId,
-    canInviteResult = canInviteResult,
-    canBanResult = canBanResult,
-    canKickResult = canKickResult,
-    canSendStateResult = canSendStateResult,
     userDisplayNameResult = userDisplayNameResult,
     userAvatarUrlResult = userAvatarUrlResult,
-    canUserJoinCallResult = canUserJoinCallResult,
     getUpdatedMemberResult = getUpdatedMemberResult,
     userRoleResult = userRoleResult,
     setIsFavoriteResult = setIsFavoriteResult,
+    roomPermissions = roomPermissions,
     initialRoomInfo = aRoomInfo(
         name = displayName,
         rawName = rawName,
@@ -89,6 +82,7 @@ fun aJoinedRoom(
     topic: String? = A_ROOM_TOPIC,
     avatarUrl: String? = AN_AVATAR_URL,
     canonicalAlias: RoomAlias? = A_ROOM_ALIAS,
+    roomPermissions: RoomPermissions = FakeRoomPermissions(),
     isEncrypted: Boolean = true,
     isPublic: Boolean = true,
     isDirect: Boolean = false,
@@ -97,17 +91,12 @@ fun aJoinedRoom(
     joinedMemberCount: Long = 1,
     invitedMemberCount: Long = 0,
     notificationSettingsService: FakeNotificationSettingsService = FakeNotificationSettingsService(),
-    canInviteResult: (UserId) -> Result<Boolean> = { lambdaError() },
-    canBanResult: (UserId) -> Result<Boolean> = { lambdaError() },
-    canKickResult: (UserId) -> Result<Boolean> = { lambdaError() },
-    canSendStateResult: (UserId, StateEventType) -> Result<Boolean> = { _, _ -> lambdaError() },
     userDisplayNameResult: (UserId) -> Result<String?> = { lambdaError() },
     userAvatarUrlResult: () -> Result<String?> = { lambdaError() },
     setNameResult: (String) -> Result<Unit> = { lambdaError() },
     setTopicResult: (String) -> Result<Unit> = { lambdaError() },
     updateAvatarResult: (String, ByteArray) -> Result<Unit> = { _, _ -> lambdaError() },
     removeAvatarResult: () -> Result<Unit> = { lambdaError() },
-    canUserJoinCallResult: (UserId) -> Result<Boolean> = { lambdaError() },
     getUpdatedMemberResult: (UserId) -> Result<RoomMember> = { lambdaError() },
     userRoleResult: () -> Result<RoomMember.Role> = { lambdaError() },
     kickUserResult: (UserId, String?) -> Result<Unit> = { _, _ -> lambdaError() },
@@ -132,13 +121,9 @@ fun aJoinedRoom(
     baseRoom = aRoom(
         sessionId = sessionId,
         roomId = roomId,
-        canInviteResult = canInviteResult,
-        canBanResult = canBanResult,
-        canKickResult = canKickResult,
-        canSendStateResult = canSendStateResult,
+        roomPermissions = roomPermissions,
         userDisplayNameResult = userDisplayNameResult,
         userAvatarUrlResult = userAvatarUrlResult,
-        canUserJoinCallResult = canUserJoinCallResult,
         getUpdatedMemberResult = getUpdatedMemberResult,
         userRoleResult = userRoleResult,
         setIsFavoriteResult = setIsFavoriteResult,

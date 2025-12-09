@@ -67,7 +67,6 @@ class SecurityAndPrivacyPresenter(
         }.collectAsState(false)
         val saveAction = remember { mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized) }
         val homeserverName = remember { matrixClient.userIdServerName() }
-        val syncUpdateFlow = room.syncUpdateFlow.collectAsState()
         val roomInfo by room.roomInfoFlow.collectAsState()
 
         val savedIsVisibleInRoomDirectory = remember { mutableStateOf<AsyncData<Boolean>>(AsyncData.Uninitialized) }

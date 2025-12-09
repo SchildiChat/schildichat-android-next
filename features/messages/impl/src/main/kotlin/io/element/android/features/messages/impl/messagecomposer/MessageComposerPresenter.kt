@@ -99,6 +99,7 @@ import timber.log.Timber
 import kotlin.time.Duration.Companion.seconds
 import io.element.android.libraries.core.mimetype.MimeTypes.Any as AnyMimeTypes
 
+@Suppress("LargeClass")
 @AssistedInject
 class MessageComposerPresenter(
     @Assisted private val navigator: MessagesNavigator,
@@ -397,7 +398,7 @@ class MessageComposerPresenter(
             val currentUserId = room.sessionId
 
             suspend fun canSendRoomMention(): Boolean {
-                val userCanSendAtRoom = room.roomPermissions().use(false){ perms ->
+                val userCanSendAtRoom = room.roomPermissions().use(false) { perms ->
                     perms.canOwnUserTriggerRoomNotification()
                 }
                 return !room.isDm() && userCanSendAtRoom

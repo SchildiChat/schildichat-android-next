@@ -18,7 +18,6 @@ import io.element.android.libraries.matrix.api.room.StateEventType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import timber.log.Timber
 
 /**
  * Provides information about the permissions of users in a room.
@@ -150,7 +149,15 @@ fun <T> Result<RoomPermissions>.use(default: T, block: (RoomPermissions) -> T): 
 
 fun <T> BaseRoom.permissionsFlow(default: T, block: (RoomPermissions) -> T): Flow<T> {
     return roomInfoFlow
-        .map { info -> info.roomPowerLevels }
+        .map { info ->
+            // If the user is a privileged creator, we return a constant hashcode to avoid recomputing permissions
+            // each time the power levels change (as they have all permissions).
+            if (info.privilegedCreatorRole && info.creators.contains(sessionId)) {
+                Long.MAX_VALUE
+            } else {
+                info.roomPowerLevels?.hashCode() ?: 0L
+            }
+        }
         .distinctUntilChanged()
         .map {
             roomPermissions().use(default, block)
@@ -160,7 +167,6 @@ fun <T> BaseRoom.permissionsFlow(default: T, block: (RoomPermissions) -> T): Flo
 @Composable
 fun <T> BaseRoom.permissionsAsState(default: T, block: (RoomPermissions) -> T): State<T> {
     return remember(this, default, block) {
-        Timber.d("Computing permissionsAsState for room $roomId with default=$default")
         permissionsFlow(default, block)
     }.collectAsState(default)
 }

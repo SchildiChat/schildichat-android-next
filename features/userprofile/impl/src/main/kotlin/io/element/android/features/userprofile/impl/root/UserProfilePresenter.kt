@@ -76,7 +76,7 @@ class UserProfilePresenter(
                     roomId
                         ?.let { client.getRoom(it) }
                         ?.use { room ->
-                            room.roomPermissions().use(false){ perms -> perms.canCall()}
+                            room.roomPermissions().use(false) { perms -> perms.canCall() }
                         }
                         .orFalse()
             }

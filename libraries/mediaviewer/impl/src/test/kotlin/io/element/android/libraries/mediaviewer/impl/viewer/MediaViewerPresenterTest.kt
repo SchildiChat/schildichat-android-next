@@ -27,6 +27,7 @@ import io.element.android.libraries.matrix.test.media.FakeMatrixMediaLoader
 import io.element.android.libraries.matrix.test.media.aMediaSource
 import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
+import io.element.android.libraries.matrix.test.room.powerlevels.FakeRoomPermissions
 import io.element.android.libraries.matrix.test.timeline.FakeTimeline
 import io.element.android.libraries.mediaviewer.api.MediaViewerEntryPoint
 import io.element.android.libraries.mediaviewer.api.anApkMediaInfo
@@ -83,7 +84,9 @@ class MediaViewerPresenterTest {
             localMediaFactory = localMediaFactory,
             room = FakeJoinedRoom(
                 baseRoom = FakeBaseRoom(
-                    canRedactOwnResult = { Result.success(true) },
+                    roomPermissions = FakeRoomPermissions(
+                        canRedactOwn = true
+                    ),
                 )
             )
         )
@@ -104,7 +107,9 @@ class MediaViewerPresenterTest {
             canShowInfo = false,
             room = FakeJoinedRoom(
                 baseRoom = FakeBaseRoom(
-                    canRedactOwnResult = { Result.success(true) },
+                    roomPermissions = FakeRoomPermissions(
+                        canRedactOwn = true
+                    ),
                 )
             )
         )
@@ -125,7 +130,9 @@ class MediaViewerPresenterTest {
             eventId = AN_EVENT_ID,
             room = FakeJoinedRoom(
                 baseRoom = FakeBaseRoom(
-                    canRedactOwnResult = { Result.success(true) },
+                    roomPermissions = FakeRoomPermissions(
+                        canRedactOwn = true
+                    ),
                 )
             )
         )
@@ -147,7 +154,9 @@ class MediaViewerPresenterTest {
             room = FakeJoinedRoom(
                 baseRoom = FakeBaseRoom(
                     sessionId = A_SESSION_ID_2,
-                    canRedactOtherResult = { Result.success(false) },
+                    roomPermissions = FakeRoomPermissions(
+                        canRedactOther = false
+                    ),
                 )
             )
         )
@@ -236,7 +245,9 @@ class MediaViewerPresenterTest {
             mediaGalleryDataSource = mediaGalleryDataSource,
             room = FakeJoinedRoom(
                 baseRoom = FakeBaseRoom(
-                    canRedactOwnResult = { Result.success(true) },
+                    roomPermissions = FakeRoomPermissions(
+                        canRedactOwn = true
+                    ),
                 )
             )
         )
@@ -460,7 +471,11 @@ class MediaViewerPresenterTest {
             localMediaFactory = localMediaFactory,
             room = FakeJoinedRoom(
                 liveTimeline = timeline,
-                baseRoom = FakeBaseRoom(canRedactOwnResult = { Result.success(true) }),
+                baseRoom = FakeBaseRoom(
+                    roomPermissions = FakeRoomPermissions(
+                        canRedactOwn = true
+                    ),
+                ),
             ),
             mediaGalleryDataSource = mediaGalleryDataSource,
             mediaViewerNavigator = FakeMediaViewerNavigator(
@@ -769,7 +784,11 @@ class MediaViewerPresenterTest {
             localMediaFactory = localMediaFactory,
             mediaViewerNavigator = navigator,
             room = FakeJoinedRoom(
-                baseRoom = FakeBaseRoom(canRedactOwnResult = { Result.success(true) }),
+                baseRoom = FakeBaseRoom(
+                    roomPermissions = FakeRoomPermissions(
+                        canRedactOwn = true
+                    ),
+                ),
             )
         )
         presenter.test {
@@ -794,7 +813,11 @@ class MediaViewerPresenterTest {
             localMediaFactory = localMediaFactory,
             mediaViewerNavigator = navigator,
             room = FakeJoinedRoom(
-                baseRoom = FakeBaseRoom(canRedactOwnResult = { Result.success(true) }),
+                baseRoom = FakeBaseRoom(
+                    roomPermissions = FakeRoomPermissions(
+                        canRedactOwn = true
+                    ),
+                ),
             ),
         )
         presenter.test {
@@ -821,7 +844,11 @@ class MediaViewerPresenterTest {
             localMediaFactory = localMediaFactory,
             mediaViewerNavigator = navigator,
             room = FakeJoinedRoom(
-                baseRoom = FakeBaseRoom(canRedactOwnResult = { Result.success(true) }),
+                baseRoom = FakeBaseRoom(
+                    roomPermissions = FakeRoomPermissions(
+                        canRedactOwn = true
+                    ),
+                ),
             ),
         )
         presenter.test {

@@ -243,7 +243,7 @@ private fun NameAndTimestampRow(
                     Icon(
                         modifier = Modifier.size(16.dp),
                         imageVector = CompoundIcons.Time(),
-                        contentDescription = null,
+                        contentDescription = stringResource(CommonStrings.common_sending),
                         tint = ElementTheme.colors.iconTertiary,
                     )
                 }
@@ -252,6 +252,7 @@ private fun NameAndTimestampRow(
                     Icon(
                         modifier = Modifier.size(16.dp),
                         imageVector = CompoundIcons.ErrorSolid(),
+                        // The last message contains the error.
                         contentDescription = null,
                         tint = ElementTheme.colors.iconCriticalPrimary,
                     )

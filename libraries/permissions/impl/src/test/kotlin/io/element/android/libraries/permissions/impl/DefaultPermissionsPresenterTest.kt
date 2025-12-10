@@ -20,6 +20,8 @@ import io.element.android.libraries.permissions.api.PermissionsEvents
 import io.element.android.libraries.permissions.impl.action.FakePermissionActions
 import io.element.android.libraries.permissions.test.InMemoryPermissionsStore
 import io.element.android.tests.testutils.WarmUpRule
+import io.element.android.tests.testutils.lambda.lambdaRecorder
+import io.element.android.tests.testutils.lambda.value
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -107,7 +109,10 @@ class DefaultPermissionsPresenterTest {
             FakeComposablePermissionStateProvider(
                 permissionState
             )
-        val permissionActions = FakePermissionActions()
+        val openSettingsAction = lambdaRecorder<String, Unit> { }
+        val permissionActions = FakePermissionActions(
+            openSettingsAction = openSettingsAction,
+        )
         val presenter = DefaultPermissionsPresenter(
             A_PERMISSION,
             permissionsStore,
@@ -122,10 +127,10 @@ class DefaultPermissionsPresenterTest {
             initialState.eventSink.invoke(PermissionsEvents.RequestPermissions)
             val withDialogState = awaitItem()
             assertThat(withDialogState.showDialog).isTrue()
-            assertThat(permissionActions.openSettingsCalled).isFalse()
+            openSettingsAction.assertions().isNeverCalled()
             withDialogState.eventSink.invoke(PermissionsEvents.OpenSystemSettingAndCloseDialog)
             assertThat(awaitItem().showDialog).isFalse()
-            assertThat(permissionActions.openSettingsCalled).isTrue()
+            openSettingsAction.assertions().isCalledOnce().with(value(A_PERMISSION))
         }
     }
 

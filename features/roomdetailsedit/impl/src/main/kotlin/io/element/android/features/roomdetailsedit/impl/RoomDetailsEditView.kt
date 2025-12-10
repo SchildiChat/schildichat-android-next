@@ -110,6 +110,7 @@ fun RoomDetailsEditView(
                 } else {
                     AvatarType.Room()
                 },
+                enabled = state.canChangeAvatar,
                 onAvatarClick = ::onAvatarClick,
                 modifier = Modifier.fillMaxWidth(),
             )

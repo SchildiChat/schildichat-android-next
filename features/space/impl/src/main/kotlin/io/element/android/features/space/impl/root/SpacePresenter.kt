@@ -17,11 +17,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import dev.zacsweers.metro.Inject
-import im.vector.app.features.analytics.plan.JoinedRoom
+import im.vector.app.features.analytics.plan.JoinedRoom.Trigger
+import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.features.invite.api.SeenInvitesStore
 import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteEvents
 import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteState
 import io.element.android.features.invite.api.toInviteData
+import io.element.android.features.space.impl.settings.SpaceSettingsPermissions
+import io.element.android.features.space.impl.settings.spaceSettingsPermissions
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.coroutine.mapState
@@ -33,6 +36,7 @@ import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.toRoomIdOrAlias
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
 import io.element.android.libraries.matrix.api.room.join.JoinRoom
+import io.element.android.libraries.matrix.api.room.powerlevels.permissionsAsState
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
 import io.element.android.libraries.matrix.ui.safety.rememberHideInvitesAvatar
@@ -50,6 +54,7 @@ import kotlin.jvm.optionals.getOrNull
 @Inject
 class SpacePresenter(
     private val spaceRoomList: SpaceRoomList,
+    private val room: JoinedRoom,
     private val client: MatrixClient,
     private val seenInvitesStore: SeenInvitesStore,
     private val joinRoom: JoinRoom,
@@ -82,6 +87,9 @@ class SpacePresenter(
             }
         }.collectAsState()
 
+        val permissions by room.permissionsAsState(SpaceSettingsPermissions.DEFAULT) { perms ->
+            perms.spaceSettingsPermissions()
+        }
         val isSpaceSettingsEnabled by remember {
             featureFlagService.isFeatureEnabledFlow(FeatureFlags.SpaceSettings)
         }.collectAsState(false)
@@ -136,7 +144,7 @@ class SpacePresenter(
             joinActions = joinActions.toImmutableMap(),
             acceptDeclineInviteState = acceptDeclineInviteState,
             topicViewerState = topicViewerState,
-            canAccessSpaceSettings = isSpaceSettingsEnabled,
+            canAccessSpaceSettings = isSpaceSettingsEnabled && permissions.hasAny,
             eventSink = ::handleEvent,
         )
     }
@@ -150,7 +158,7 @@ class SpacePresenter(
         joinRoom.invoke(
             roomIdOrAlias = spaceRoom.roomId.toRoomIdOrAlias(),
             serverNames = spaceRoom.via,
-            trigger = JoinedRoom.Trigger.SpaceHierarchy,
+            trigger = Trigger.SpaceHierarchy,
         ).onFailure {
             setJoinActions(joinActions + mapOf(spaceRoom.roomId to AsyncAction.Failure(it)))
         }

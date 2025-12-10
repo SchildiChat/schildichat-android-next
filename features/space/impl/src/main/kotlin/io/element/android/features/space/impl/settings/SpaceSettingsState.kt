@@ -17,6 +17,7 @@ data class SpaceSettingsState(
     val canonicalAlias: RoomAlias?,
     val avatarUrl: String?,
     val memberCount: Long,
+    val canEditDetails: Boolean,
     val showRolesAndPermissions: Boolean,
     val showSecurityAndPrivacy: Boolean,
     val eventSink: (SpaceSettingsEvents) -> Unit

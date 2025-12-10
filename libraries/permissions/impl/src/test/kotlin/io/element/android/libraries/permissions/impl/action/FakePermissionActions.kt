@@ -9,13 +9,13 @@
 package io.element.android.libraries.permissions.impl.action
 
 class FakePermissionActions(
-    val openSettingsAction: () -> Unit = {}
+    val openSettingsAction: (String) -> Unit = {}
 ) : PermissionActions {
     var openSettingsCalled = false
         private set
 
-    override fun openSettings() {
-        openSettingsAction()
+    override fun openSettings(permission: String) {
+        openSettingsAction(permission)
         openSettingsCalled = true
     }
 }

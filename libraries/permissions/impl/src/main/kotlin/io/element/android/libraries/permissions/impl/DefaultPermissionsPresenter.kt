@@ -113,7 +113,7 @@ class DefaultPermissionsPresenter(
                     }
                 }
                 PermissionsEvents.OpenSystemSettingAndCloseDialog -> {
-                    permissionActions.openSettings()
+                    permissionActions.openSettings(permission)
                     showDialog.value = false
                 }
             }

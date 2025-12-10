@@ -35,9 +35,9 @@ fun PermissionsView(
         content = content ?: state.permission.toDialogContent(),
         submitText = stringResource(id = CommonStrings.action_open_settings),
         onSubmitClick = {
-            state.eventSink.invoke(PermissionsEvents.OpenSystemSettingAndCloseDialog)
+            state.eventSink.invoke(PermissionsEvent.OpenSystemSettingAndCloseDialog)
         },
-        onDismiss = { state.eventSink.invoke(PermissionsEvents.CloseDialog) },
+        onDismiss = { state.eventSink.invoke(PermissionsEvent.CloseDialog) },
         icon = icon,
     )
 }

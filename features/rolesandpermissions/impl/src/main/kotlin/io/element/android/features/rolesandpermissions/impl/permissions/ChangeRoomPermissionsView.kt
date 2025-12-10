@@ -110,10 +110,10 @@ fun ChangeRoomPermissionsView(
 
 @Composable
 private fun titleForSection(section: RoomPermissionsSection): String = when (section) {
-    RoomPermissionsSection.SpaceDetails -> stringResource(R.string.screen_room_roles_and_permissions_space_details)
-    RoomPermissionsSection.RoomDetails -> stringResource(R.string.screen_room_roles_and_permissions_room_details)
-    RoomPermissionsSection.MessagesAndContent -> stringResource(R.string.screen_room_roles_and_permissions_messages_and_content)
-    RoomPermissionsSection.MembershipModeration -> stringResource(R.string.screen_room_roles_and_permissions_member_moderation)
+    RoomPermissionsSection.EditDetails -> stringResource(R.string.screen_room_change_permissions_room_details)
+    RoomPermissionsSection.MessagesAndContent -> stringResource(R.string.screen_room_change_permissions_messages_and_content)
+    RoomPermissionsSection.MembershipModeration -> stringResource(R.string.screen_room_change_permissions_member_moderation)
+    RoomPermissionsSection.ManageSpace -> stringResource(R.string.screen_room_change_permissions_manage_space)
 }
 
 @Composable
@@ -126,6 +126,8 @@ private fun titleForType(type: RoomPermissionType): String = when (type) {
     RoomPermissionType.ROOM_NAME -> stringResource(R.string.screen_room_change_permissions_room_name)
     RoomPermissionType.ROOM_AVATAR -> stringResource(R.string.screen_room_change_permissions_room_avatar)
     RoomPermissionType.ROOM_TOPIC -> stringResource(R.string.screen_room_change_permissions_room_topic)
+    RoomPermissionType.SPACE_MANAGE_ROOMS -> stringResource(R.string.screen_room_change_permissions_manage_space_rooms)
+    RoomPermissionType.CHANGE_SETTINGS -> stringResource(R.string.screen_room_change_permissions_change_settings)
 }
 
 @PreviewsDayNight

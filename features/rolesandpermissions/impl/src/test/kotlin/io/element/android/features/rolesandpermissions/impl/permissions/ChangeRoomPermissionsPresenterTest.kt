@@ -53,7 +53,7 @@ class ChangeRoomPermissionsPresenterTest {
             presenter.present()
         }.test {
             val itemsBySection = awaitUpdatedItem().itemsBySection
-            assertThat(itemsBySection[RoomPermissionsSection.RoomDetails]).containsExactly(
+            assertThat(itemsBySection[RoomPermissionsSection.EditDetails]).containsExactly(
                 RoomPermissionType.ROOM_NAME,
                 RoomPermissionType.ROOM_AVATAR,
                 RoomPermissionType.ROOM_TOPIC,
@@ -115,8 +115,9 @@ class ChangeRoomPermissionsPresenterTest {
                         invite = Moderator.powerLevel,
                         kick = Moderator.powerLevel,
                         ban = Moderator.powerLevel,
+                        stateDefault = Moderator.powerLevel,
                         redactEvents = Moderator.powerLevel,
-                        sendEvents = Moderator.powerLevel,
+                        eventsDefault = Moderator.powerLevel,
                         roomName = Moderator.powerLevel,
                         roomAvatar = Moderator.powerLevel,
                         roomTopic = Moderator.powerLevel,

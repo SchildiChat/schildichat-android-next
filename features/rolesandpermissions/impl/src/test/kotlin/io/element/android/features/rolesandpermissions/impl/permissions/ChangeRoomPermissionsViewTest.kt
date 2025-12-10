@@ -104,7 +104,7 @@ class ChangeRoomPermissionsViewTest {
             state = aChangeRoomPermissionsState(
                 itemsBySection = persistentMapOf(
                     // Makes sure there is only one item to click on
-                    RoomPermissionsSection.RoomDetails to persistentListOf(RoomPermissionType.ROOM_NAME)
+                    RoomPermissionsSection.EditDetails to persistentListOf(RoomPermissionType.ROOM_NAME)
                 ),
                 eventSink = recorder,
             )

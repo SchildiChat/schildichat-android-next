@@ -397,10 +397,12 @@ class JoinedRustRoom(
                 invite = roomPowerLevelsValues.invite,
                 kick = roomPowerLevelsValues.kick,
                 redact = roomPowerLevelsValues.redactEvents,
-                eventsDefault = roomPowerLevelsValues.sendEvents,
+                stateDefault = roomPowerLevelsValues.stateDefault,
+                eventsDefault = roomPowerLevelsValues.eventsDefault,
                 roomName = roomPowerLevelsValues.roomName,
                 roomAvatar = roomPowerLevelsValues.roomAvatar,
                 roomTopic = roomPowerLevelsValues.roomTopic,
+                spaceChild = roomPowerLevelsValues.spaceChild,
             )
             innerRoom.applyPowerLevelChanges(changes)
         }

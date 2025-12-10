@@ -2,9 +2,12 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="screen_room_change_permissions_administrators">"Správce"</string>
   <string name="screen_room_change_permissions_ban_people">"Vykázat lidi"</string>
+  <string name="screen_room_change_permissions_change_settings">"Změnit nastavení"</string>
   <string name="screen_room_change_permissions_delete_messages">"Odstranit zprávy"</string>
   <string name="screen_room_change_permissions_everyone">"Člen"</string>
   <string name="screen_room_change_permissions_invite_people">"Pozvat přátele"</string>
+  <string name="screen_room_change_permissions_manage_space">"Správa prostoru"</string>
+  <string name="screen_room_change_permissions_manage_space_rooms">"Spravovat místnosti"</string>
   <string name="screen_room_change_permissions_member_moderation">"Spravovat členy"</string>
   <string name="screen_room_change_permissions_messages_and_content">"Zprávy a obsah"</string>
   <string name="screen_room_change_permissions_moderators">"Moderátor"</string>
@@ -14,6 +17,7 @@
   <string name="screen_room_change_permissions_room_name">"Změnit název místnosti"</string>
   <string name="screen_room_change_permissions_room_topic">"Změnit téma místnosti"</string>
   <string name="screen_room_change_permissions_send_messages">"Odeslat zprávy"</string>
+  <string name="screen_room_change_permissions_title">"Oprávnění"</string>
   <string name="screen_room_change_role_administrators_title">"Upravit správce"</string>
   <string name="screen_room_change_role_confirm_add_admin_description">"Tuto akci nebudete moci vrátit zpět. Upravujete oprávnění uživatele, tak aby měl stejnou úroveň jako vy."</string>
   <string name="screen_room_change_role_confirm_add_admin_title">"Přidat správce?"</string>

@@ -454,10 +454,6 @@
   <string name="screen_resolve_send_failure_unsigned_device_title">"Ваше сообщение не было отправлено, потому что %1$s не проверил одно или несколько устройств"</string>
   <string name="screen_resolve_send_failure_you_unsigned_device_subtitle">"Одно или несколько ваших устройств не проверены. Вы можете отправить сообщение в любом случае или отменить его пока и повторить попытку позже, проверив все свои устройства."</string>
   <string name="screen_resolve_send_failure_you_unsigned_device_title">"Ваше сообщение не было отправлено, поскольку вы не подтвердили одно или несколько своих устройств."</string>
-  <string name="screen_room_change_permissions_change_settings">"Изменить настройки"</string>
-  <string name="screen_room_change_permissions_manage_space">"Управление пространством"</string>
-  <string name="screen_room_change_permissions_manage_space_rooms">"Управление комнатами"</string>
-  <string name="screen_room_change_permissions_title">"Разрешения"</string>
   <string name="screen_room_change_role_administrators_or_owners_title">"Редактировать роль владельца и администратора"</string>
   <string name="screen_room_error_failed_processing_media">"Не удалось обработать медиафайл для загрузки, попробуйте еще раз."</string>
   <string name="screen_room_error_failed_retrieving_user_details">"Не удалось получить данные о пользователе"</string>

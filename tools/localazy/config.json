@@ -381,6 +381,7 @@
       "name" : ":features:rolesandpermissions:impl",
       "includeRegex" : [
         "screen_room_change_.*",
+        "screen\\.room_change_permissions\\..*",
         "screen_room_roles_.*",
         "screen\\.room_roles_and_permissions\\..*",
         "screen_room_member_list.*",

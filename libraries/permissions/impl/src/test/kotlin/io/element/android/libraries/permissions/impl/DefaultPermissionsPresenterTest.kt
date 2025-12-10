@@ -236,4 +236,3 @@ private fun aFakePermissionState(
     permission = permission,
     initialStatus = initialStatus,
 )
-

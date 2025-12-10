@@ -39,7 +39,6 @@ import io.element.android.features.poll.api.actions.EndPollAction
 import io.element.android.features.poll.api.actions.SendPollResponseAction
 import io.element.android.features.roomcall.api.RoomCallState
 import io.element.android.libraries.architecture.Presenter
-import io.element.android.libraries.core.bool.orFalse
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.di.annotations.SessionCoroutineScope
 import io.element.android.libraries.featureflag.api.FeatureFlagService
@@ -96,6 +95,7 @@ class TimelinePresenter(
     private val analyticsService: AnalyticsService,
 ) : Presenter<TimelineState> {
     private val tag = "TimelinePresenter"
+
     @AssistedFactory
     interface Factory {
         fun create(

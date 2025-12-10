@@ -59,7 +59,6 @@ class RoomDetailsEditPresenter(
     @Composable
     override fun present(): RoomDetailsEditState {
         val cameraPermissionState = cameraPermissionPresenter.present()
-        val roomSyncUpdateFlow = room.syncUpdateFlow.collectAsState()
         val roomInfo by room.roomInfoFlow.collectAsState()
         val roomAvatarUri = roomInfo.avatarUrl
         var roomAvatarUriEdited by rememberSaveable { mutableStateOf<String?>(null) }
@@ -94,7 +93,7 @@ class RoomDetailsEditPresenter(
             }
         }
 
-        val permissions by room.permissionsAsState(RoomDetailsEditPermissions.DEFAULT){perms ->
+        val permissions by room.permissionsAsState(RoomDetailsEditPermissions.DEFAULT) { perms ->
             perms.roomDetailsEditPermissions()
         }
 

@@ -207,7 +207,6 @@ class MediaGalleryPresenter(
             CommonStrings.error_unknown
         }
     }
-
 }
 
 private fun GroupedMediaItems?.find(eventId: EventId?): MediaItem.Event? {

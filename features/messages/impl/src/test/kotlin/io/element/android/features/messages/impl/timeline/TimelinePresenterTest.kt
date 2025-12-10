@@ -8,8 +8,6 @@
 
 package io.element.android.features.messages.impl.timeline
 
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.moleculeFlow
 import app.cash.turbine.ReceiveTurbine
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
@@ -37,7 +35,6 @@ import io.element.android.libraries.matrix.api.core.UniqueId
 import io.element.android.libraries.matrix.api.core.asEventId
 import io.element.android.libraries.matrix.api.room.MessageEventType
 import io.element.android.libraries.matrix.api.room.RoomMembersState
-import io.element.android.libraries.matrix.api.room.StateEventType
 import io.element.android.libraries.matrix.api.room.tombstone.PredecessorRoom
 import io.element.android.libraries.matrix.api.timeline.MatrixTimelineItem
 import io.element.android.libraries.matrix.api.timeline.ReceiptType
@@ -988,7 +985,7 @@ class TimelinePresenterTest {
         canPinUnpin: Boolean = false,
     ) = FakeRoomPermissions(
         canSendMessage = { type ->
-            when(type){
+            when (type) {
                 MessageEventType.RoomMessage -> canSendMessage
                 MessageEventType.Reaction -> canSendReaction
                 else -> lambdaError()

@@ -634,7 +634,7 @@ class RoomDetailsPresenterTest {
         canChangeTopic: Boolean = true,
         canChangeAvatar: Boolean = true,
         canChangePowerLevels: Boolean = true,
-    ) : RoomPermissions{
+    ): RoomPermissions {
         return FakeRoomPermissions(
             canInvite = canInvite,
             canKick = canKick,
@@ -656,5 +656,4 @@ class RoomDetailsPresenterTest {
             }
         )
     }
-
 }

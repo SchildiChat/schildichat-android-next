@@ -32,7 +32,6 @@ data class FakeRoomPermissions(
     private val canUserSendMessage: (UserId, MessageEventType) -> Boolean = { _, _ -> false },
     private val canUserSendState: (UserId, StateEventType) -> Boolean = { _, _ -> false },
 ) : RoomPermissions {
-
     override fun canOwnUserBan(): Boolean = canBan
     override fun canOwnUserInvite(): Boolean = canInvite
     override fun canOwnUserKick(): Boolean = canKick
@@ -57,4 +56,3 @@ data class FakeRoomPermissions(
         // no-op for the fake
     }
 }
-

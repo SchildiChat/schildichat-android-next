@@ -14,7 +14,7 @@ data class RoomDetailsEditPermissions(
     val canEditName: Boolean,
     val canEditTopic: Boolean,
     val canEditAvatar: Boolean,
-){
+) {
     val hasAny = canEditName ||
         canEditTopic ||
         canEditAvatar

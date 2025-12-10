@@ -1234,13 +1234,13 @@ class MessagesPresenterTest {
         canPinUnpin: Boolean = true,
     ) = FakeRoomPermissions(
         canSendState = { type ->
-            when(type){
+            when (type) {
                 StateEventType.CALL_MEMBER -> canStartCall
                 else -> lambdaError()
             }
         },
         canSendMessage = { type ->
-            when(type){
+            when (type) {
                 MessageEventType.RoomMessage -> canSendMessage
                 MessageEventType.Reaction -> canSendReaction
                 else -> lambdaError()

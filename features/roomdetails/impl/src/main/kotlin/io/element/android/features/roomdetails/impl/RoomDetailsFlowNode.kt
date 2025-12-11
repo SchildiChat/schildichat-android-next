@@ -349,7 +349,16 @@ class RoomDetailsFlowNode(
             }
 
             is NavTarget.AdminSettings -> {
-                rolesAndPermissionsEntryPoint.createNode(this, buildContext)
+                val callback = object : RolesAndPermissionsEntryPoint.Callback {
+                    override fun onDone() {
+                        backstack.pop()
+                    }
+                }
+                rolesAndPermissionsEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    callback = callback,
+                )
             }
             NavTarget.PinnedMessagesList -> {
                 val params = MessagesEntryPoint.Params(

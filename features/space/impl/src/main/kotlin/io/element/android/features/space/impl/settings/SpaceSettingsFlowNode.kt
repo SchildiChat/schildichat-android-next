@@ -113,9 +113,15 @@ class SpaceSettingsFlowNode(
                 )
             }
             is NavTarget.RolesAndPermissions -> {
+                val callback = object : RolesAndPermissionsEntryPoint.Callback {
+                    override fun onDone() {
+                        backstack.pop()
+                    }
+                }
                 rolesAndPermissionsEntryPoint.createNode(
                     parentNode = this,
                     buildContext = buildContext,
+                    callback = callback,
                 )
             }
             NavTarget.EditDetails -> {

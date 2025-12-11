@@ -45,7 +45,7 @@ import kotlin.coroutines.suspendCoroutine
 @Composable
 fun QrCodeCameraView(
     onScanQrCode: (ByteArray) -> Unit,
-    renderPreview: Boolean,
+    isScanning: Boolean,
     modifier: Modifier = Modifier,
 ) {
     if (LocalInspectionMode.current) {
@@ -73,13 +73,13 @@ fun QrCodeCameraView(
             cameraProvider = localContext.getCameraProvider()
         }
 
-        suspend fun startQRCodeAnalysis(cameraProvider: ProcessCameraProvider, previewView: PreviewView, attempt: Int = 1) {
+        suspend fun startQRCodeAnalysis(cameraProvider: ProcessCameraProvider, attempt: Int = 1) {
             lastFrame = null
             val cameraSelector = CameraSelector.Builder()
                 .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                 .build()
             imageAnalysis.setAnalyzer(
-                ContextCompat.getMainExecutor(previewView.context),
+                ContextCompat.getMainExecutor(localContext),
                 QRCodeAnalyzer(onScanQrCode)
             )
             try {
@@ -100,7 +100,7 @@ fun QrCodeCameraView(
                 } else {
                     Timber.e(e, "Use case binding failed (attempt #$attempt). Retrying after a delay...")
                     delay(100)
-                    startQRCodeAnalysis(cameraProvider, previewView, attempt + 1)
+                    startQRCodeAnalysis(cameraProvider, attempt + 1)
                 }
             }
         }
@@ -123,16 +123,18 @@ fun QrCodeCameraView(
             AndroidView(
                 factory = { context ->
                     val previewView = PreviewView(context)
-                    previewUseCase.setSurfaceProvider(previewView.surfaceProvider)
+                    previewUseCase.surfaceProvider = previewView.surfaceProvider
                     previewView.previewStreamState.observe(lifecycleOwner) { state ->
                         previewView.alpha = if (state == PreviewView.StreamState.STREAMING) 1f else 0f
                     }
                     previewView
                 },
                 update = { previewView ->
-                    if (renderPreview) {
+                    if (isScanning) {
                         cameraProvider?.let { provider ->
-                            coroutineScope.launch { startQRCodeAnalysis(provider, previewView) }
+                            coroutineScope.launch {
+                                startQRCodeAnalysis(provider)
+                            }
                         }
                     } else {
                         stopQRCodeAnalysis(previewView)
@@ -150,12 +152,14 @@ fun QrCodeCameraView(
     }
 }
 
-@Suppress("BlockingMethodInNonBlockingContext")
 private suspend fun Context.getCameraProvider(): ProcessCameraProvider =
     suspendCoroutine { continuation ->
         ProcessCameraProvider.getInstance(this).also { cameraProvider ->
-            cameraProvider.addListener({
-                continuation.resume(cameraProvider.get())
-            }, ContextCompat.getMainExecutor(this))
+            cameraProvider.addListener(
+                {
+                    continuation.resume(cameraProvider.get())
+                },
+                ContextCompat.getMainExecutor(this)
+            )
         }
     }

@@ -80,12 +80,7 @@ fun QrCodeCameraView(
                 .build()
             imageAnalysis.setAnalyzer(
                 ContextCompat.getMainExecutor(previewView.context),
-                QRCodeAnalyzer { result ->
-                    result?.let {
-                        Timber.d("QR code scanned!")
-                        onScanQrCode(it)
-                    }
-                }
+                QRCodeAnalyzer(onScanQrCode)
             )
             try {
                 // Make sure we unbind all use cases before binding them again

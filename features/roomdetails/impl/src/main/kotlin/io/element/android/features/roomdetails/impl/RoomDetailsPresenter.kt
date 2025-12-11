@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import dev.zacsweers.metro.Inject
 import im.vector.app.features.analytics.plan.Interaction
+import io.element.android.features.knockrequests.api.KnockRequestPermissions
 import io.element.android.features.knockrequests.api.knockRequestPermissions
 import io.element.android.features.leaveroom.api.LeaveRoomEvent
 import io.element.android.features.leaveroom.api.LeaveRoomState
@@ -26,6 +27,7 @@ import io.element.android.features.roomcall.api.RoomCallState
 import io.element.android.features.roomdetails.impl.members.details.RoomMemberDetailsPresenter
 import io.element.android.features.roomdetailsedit.api.RoomDetailsEditPermissions
 import io.element.android.features.roomdetailsedit.api.roomDetailsEditPermissions
+import io.element.android.features.securityandprivacy.api.SecurityAndPrivacyPermissions
 import io.element.android.features.securityandprivacy.api.securityAndPrivacyPermissions
 import io.element.android.libraries.androidutils.clipboard.ClipboardHelper
 import io.element.android.libraries.architecture.Presenter
@@ -119,7 +121,10 @@ class RoomDetailsPresenter(
             room.knockRequestsFlow.collect { value = it.size }
         }
         val canShowKnockRequests by remember {
-            derivedStateOf { isKnockRequestsEnabled && permissions.canManageKnockRequests && joinRule == JoinRule.Knock }
+            derivedStateOf { isKnockRequestsEnabled && permissions.knockRequestsPermissions.hasAny && joinRule == JoinRule.Knock }
+        }
+        val canShowSecurityAndPrivacy by remember {
+            derivedStateOf { !isDm && permissions.securityAndPrivacyPermissions.hasAny(isSpace = false, joinRule = joinRule) }
         }
         val isDeveloperModeEnabled by remember {
             appPreferencesStore.isDeveloperModeEnabledFlow()
@@ -186,7 +191,7 @@ class RoomDetailsPresenter(
             snackbarMessage = snackbarMessage,
             canShowKnockRequests = canShowKnockRequests,
             knockRequestsCount = knockRequestsCount,
-            canShowSecurityAndPrivacy = !isDm && permissions.canEditSecurityAndPrivacy,
+            canShowSecurityAndPrivacy = canShowSecurityAndPrivacy,
             hasMemberVerificationViolations = hasMemberVerificationViolations,
             canReportRoom = canReportRoom,
             isTombstoned = roomInfo.successorRoom != null,
@@ -221,9 +226,9 @@ class RoomDetailsPresenter(
     private data class Permissions(
         val canInvite: Boolean = false,
         val editDetailsPermissions: RoomDetailsEditPermissions = RoomDetailsEditPermissions.DEFAULT,
-        val canManageKnockRequests: Boolean = false,
+        val knockRequestsPermissions: KnockRequestPermissions = KnockRequestPermissions.DEFAULT,
+        val securityAndPrivacyPermissions: SecurityAndPrivacyPermissions = SecurityAndPrivacyPermissions.DEFAULT,
         val canEditRolesAndPermissions: Boolean = false,
-        val canEditSecurityAndPrivacy: Boolean = false,
     )
 
     @Composable
@@ -232,9 +237,9 @@ class RoomDetailsPresenter(
             Permissions(
                 canInvite = perms.canOwnUserInvite(),
                 editDetailsPermissions = perms.roomDetailsEditPermissions(),
-                canManageKnockRequests = perms.knockRequestPermissions().hasAny,
+                knockRequestsPermissions = perms.knockRequestPermissions(),
                 canEditRolesAndPermissions = perms.canEditRolesAndPermissions(),
-                canEditSecurityAndPrivacy = perms.securityAndPrivacyPermissions().hasAny,
+                securityAndPrivacyPermissions = perms.securityAndPrivacyPermissions(),
             )
         }
     }

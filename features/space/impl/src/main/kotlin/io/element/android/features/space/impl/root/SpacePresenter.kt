@@ -11,6 +11,7 @@ package io.element.android.features.space.impl.root
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -94,6 +95,10 @@ class SpacePresenter(
             featureFlagService.isFeatureEnabledFlow(FeatureFlags.SpaceSettings)
         }.collectAsState(false)
 
+        val roomInfo by room.roomInfoFlow.collectAsState()
+        val canAccessSpaceSettings by remember {
+            derivedStateOf { isSpaceSettingsEnabled && permissions.hasAny(roomInfo.joinRule) }
+        }
         val currentSpace by spaceRoomList.currentSpaceFlow.collectAsState()
         val (joinActions, setJoinActions) = remember { mutableStateOf(emptyMap<RoomId, AsyncAction<Unit>>()) }
 
@@ -144,7 +149,7 @@ class SpacePresenter(
             joinActions = joinActions.toImmutableMap(),
             acceptDeclineInviteState = acceptDeclineInviteState,
             topicViewerState = topicViewerState,
-            canAccessSpaceSettings = isSpaceSettingsEnabled && permissions.hasAny,
+            canAccessSpaceSettings = canAccessSpaceSettings,
             eventSink = ::handleEvent,
         )
     }

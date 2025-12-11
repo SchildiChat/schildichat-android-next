@@ -7,32 +7,41 @@
 
 package io.element.android.features.space.impl.settings
 
+import io.element.android.features.roomdetailsedit.api.RoomDetailsEditPermissions
 import io.element.android.features.roomdetailsedit.api.roomDetailsEditPermissions
+import io.element.android.features.securityandprivacy.api.SecurityAndPrivacyPermissions
 import io.element.android.features.securityandprivacy.api.securityAndPrivacyPermissions
-import io.element.android.libraries.matrix.api.room.StateEventType
+import io.element.android.libraries.matrix.api.room.join.JoinRule
 import io.element.android.libraries.matrix.api.room.powerlevels.RoomPermissions
+import io.element.android.libraries.matrix.api.room.powerlevels.canEditRolesAndPermissions
 
 data class SpaceSettingsPermissions(
-    val canEditDetails: Boolean,
-    val canManageRolesAndPermissions: Boolean,
-    val canManageSecurityAndPrivacy: Boolean,
-){
+    val editDetailsPermissions: RoomDetailsEditPermissions,
+    val canEditRolesAndPermissions: Boolean,
+    val securityAndPrivacyPermissions: SecurityAndPrivacyPermissions,
+) {
 
-    val hasAny = canEditDetails || canManageRolesAndPermissions || canManageSecurityAndPrivacy
+    fun hasAny(joinRule: JoinRule?): Boolean {
+        return editDetailsPermissions.hasAny ||
+            canEditRolesAndPermissions ||
+            securityAndPrivacyPermissions.hasAny(isSpace = true, joinRule = joinRule)
+    }
+
+
 
     companion object {
         val DEFAULT = SpaceSettingsPermissions(
-            canEditDetails = false,
-            canManageRolesAndPermissions = false,
-            canManageSecurityAndPrivacy = false,
+            editDetailsPermissions = RoomDetailsEditPermissions.DEFAULT,
+            canEditRolesAndPermissions = false,
+            securityAndPrivacyPermissions = SecurityAndPrivacyPermissions.DEFAULT,
         )
     }
 }
 
-fun  RoomPermissions.spaceSettingsPermissions(): SpaceSettingsPermissions {
+fun RoomPermissions.spaceSettingsPermissions(): SpaceSettingsPermissions {
     return SpaceSettingsPermissions(
-        canEditDetails = roomDetailsEditPermissions().hasAny,
-        canManageRolesAndPermissions = canOwnUserSendState(StateEventType.ROOM_POWER_LEVELS),
-        canManageSecurityAndPrivacy = securityAndPrivacyPermissions().hasAny,
+        editDetailsPermissions = roomDetailsEditPermissions(),
+        canEditRolesAndPermissions = canEditRolesAndPermissions(),
+        securityAndPrivacyPermissions = securityAndPrivacyPermissions(),
     )
 }

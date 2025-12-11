@@ -10,7 +10,9 @@ package io.element.android.features.space.impl.settings
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import dev.zacsweers.metro.Inject
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.matrix.api.room.JoinedRoom
@@ -26,15 +28,19 @@ class SpaceSettingsPresenter(
         val permissions by room.permissionsAsState(SpaceSettingsPermissions.DEFAULT) { perms ->
             perms.spaceSettingsPermissions()
         }
+        val showSecurityAndPrivacy by remember {
+            derivedStateOf { permissions.securityAndPrivacyPermissions.hasAny(isSpace = false, joinRule = roomInfo.joinRule) }
+        }
+
         return SpaceSettingsState(
             roomId = room.roomId,
             name = roomInfo.name.orEmpty(),
             canonicalAlias = roomInfo.canonicalAlias,
             avatarUrl = roomInfo.avatarUrl,
             memberCount = roomInfo.activeMembersCount,
-            canEditDetails = permissions.canEditDetails,
-            showRolesAndPermissions = permissions.canManageRolesAndPermissions,
-            showSecurityAndPrivacy = permissions.canManageSecurityAndPrivacy,
+            canEditDetails = permissions.editDetailsPermissions.hasAny,
+            showRolesAndPermissions = permissions.canEditRolesAndPermissions,
+            showSecurityAndPrivacy = showSecurityAndPrivacy,
             eventSink = {},
         )
     }

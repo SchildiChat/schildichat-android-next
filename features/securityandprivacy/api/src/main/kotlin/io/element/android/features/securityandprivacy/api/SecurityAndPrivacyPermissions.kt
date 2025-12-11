@@ -9,6 +9,7 @@
 package io.element.android.features.securityandprivacy.api
 
 import io.element.android.libraries.matrix.api.room.StateEventType
+import io.element.android.libraries.matrix.api.room.join.JoinRule
 import io.element.android.libraries.matrix.api.room.powerlevels.RoomPermissions
 
 data class SecurityAndPrivacyPermissions(
@@ -17,10 +18,19 @@ data class SecurityAndPrivacyPermissions(
     val canChangeEncryption: Boolean,
     val canChangeRoomVisibility: Boolean,
 ) {
-    val hasAny = canChangeRoomAccess ||
-        canChangeHistoryVisibility ||
-        canChangeEncryption ||
-        canChangeRoomVisibility
+    fun hasAny(isSpace: Boolean, joinRule: JoinRule?): Boolean {
+        val canChangeRoomVisibility = when (joinRule) {
+            is JoinRule.Public,
+            is JoinRule.Knock,
+            is JoinRule.KnockRestricted -> canChangeRoomVisibility
+            else -> false
+        }
+        return if (isSpace) {
+            canChangeRoomAccess || canChangeRoomVisibility
+        } else {
+            canChangeRoomAccess || canChangeRoomVisibility || canChangeHistoryVisibility || canChangeEncryption
+        }
+    }
 
     companion object {
         val DEFAULT = SecurityAndPrivacyPermissions(

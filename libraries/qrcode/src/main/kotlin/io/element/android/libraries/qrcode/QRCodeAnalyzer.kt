@@ -20,17 +20,19 @@ internal class QRCodeAnalyzer(
     private val reader by lazy { BarcodeReader() }
 
     override fun analyze(image: ImageProxy) {
-        if (image.format in SUPPORTED_IMAGE_FORMATS) {
-            try {
-                val bytes = reader.read(image).firstNotNullOfOrNull { it.bytes }
-                if (bytes != null) {
-                    Timber.d("QR code scanned!")
-                    onScanQrCode(bytes)
+        image.use {
+            if (image.format in SUPPORTED_IMAGE_FORMATS) {
+                try {
+                    val bytes = reader.read(image).firstNotNullOfOrNull { it.bytes }
+                    if (bytes != null) {
+                        Timber.d("QR code scanned!")
+                        onScanQrCode(bytes)
+                    }
+                } catch (e: Exception) {
+                    Timber.w(e, "Error decoding QR code")
                 }
-            } catch (e: Exception) {
-                Timber.w(e, "Error decoding QR code")
-            } finally {
-                image.close()
+            } else {
+                Timber.w("Unsupported image format: ${image.format}")
             }
         }
     }

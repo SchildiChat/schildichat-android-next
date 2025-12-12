@@ -182,9 +182,20 @@ class SecurityAndPrivacyPresenter(
             eventSink = ::handleEvent,
         )
 
-        // If the history visibility is not available for the current access, use the fallback.
-        LaunchedEffect(state.availableHistoryVisibilities) {
-            if (editedSettings.historyVisibility !in state.availableHistoryVisibilities) {
+        // Revert changes that the user is not allowed to make anymore
+        LaunchedEffect(permissions, state.editedSettings.roomAccess) {
+            if (!state.showRoomAccessSection) {
+                editedRoomAccess = savedSettings.roomAccess
+            }
+            if (!state.showEncryptionSection) {
+                editedIsEncrypted = savedSettings.isEncrypted
+            }
+            if (!state.showRoomVisibilitySections) {
+                editedVisibleInRoomDirectory = savedSettings.isVisibleInRoomDirectory
+            }
+            if (!state.showHistoryVisibilitySection) {
+                editedHistoryVisibility = savedSettings.historyVisibility
+            } else if (editedSettings.historyVisibility !in state.availableHistoryVisibilities) {
                 editedHistoryVisibility = editedSettings.historyVisibility.fallback()
             }
         }

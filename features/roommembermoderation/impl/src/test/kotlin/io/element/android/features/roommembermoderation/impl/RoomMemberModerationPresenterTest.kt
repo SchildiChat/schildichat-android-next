@@ -13,6 +13,7 @@ import com.google.common.truth.Truth.assertThat
 import io.element.android.features.roommembermoderation.api.ModerationAction
 import io.element.android.features.roommembermoderation.api.ModerationActionState
 import io.element.android.features.roommembermoderation.api.RoomMemberModerationEvents
+import io.element.android.features.roommembermoderation.api.RoomMemberModerationPermissions
 import io.element.android.features.roommembermoderation.api.RoomMemberModerationState
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
@@ -49,8 +50,7 @@ class RoomMemberModerationPresenterTest {
         val room = aJoinedRoom()
         createRoomMemberModerationPresenter(room = room).test {
             val initialState = awaitState()
-            assertThat(initialState.canKick).isFalse()
-            assertThat(initialState.canBan).isFalse()
+            assertThat(initialState.permissions).isEqualTo(RoomMemberModerationPermissions.DEFAULT)
             assertThat(initialState.selectedUser).isNull()
             assertThat(initialState.banUserAsyncAction).isEqualTo(AsyncAction.Uninitialized)
             assertThat(initialState.kickUserAsyncAction).isEqualTo(AsyncAction.Uninitialized)

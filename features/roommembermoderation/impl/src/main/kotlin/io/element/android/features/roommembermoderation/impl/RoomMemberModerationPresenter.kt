@@ -21,7 +21,9 @@ import im.vector.app.features.analytics.plan.RoomModeration
 import io.element.android.features.roommembermoderation.api.ModerationAction
 import io.element.android.features.roommembermoderation.api.ModerationActionState
 import io.element.android.features.roommembermoderation.api.RoomMemberModerationEvents
+import io.element.android.features.roommembermoderation.api.RoomMemberModerationPermissions
 import io.element.android.features.roommembermoderation.api.RoomMemberModerationState
+import io.element.android.features.roommembermoderation.api.roomMemberModerationPermissions
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.architecture.runUpdatingState
@@ -55,11 +57,8 @@ class RoomMemberModerationPresenter(
     override fun present(): RoomMemberModerationState {
         val coroutineScope = rememberCoroutineScope()
         val syncUpdateFlow = room.syncUpdateFlow.collectAsState()
-        val permissions by room.permissionsAsState(Permissions()) { perms ->
-            Permissions(
-                canKick = perms.canOwnUserKick(),
-                canBan = perms.canOwnUserBan(),
-            )
+        val permissions by room.permissionsAsState(RoomMemberModerationPermissions.DEFAULT) { perms ->
+            perms.roomMemberModerationPermissions()
         }
         val currentUserMemberPowerLevel = room.userPowerLevelAsState(syncUpdateFlow.value)
 
@@ -136,8 +135,7 @@ class RoomMemberModerationPresenter(
         }
 
         return InternalRoomMemberModerationState(
-            canKick = permissions.canKick,
-            canBan = permissions.canBan,
+            permissions = permissions,
             selectedUser = selectedUser,
             actions = moderationActions.value,
             kickUserAsyncAction = kickUserAsyncAction.value,
@@ -149,7 +147,7 @@ class RoomMemberModerationPresenter(
 
     private fun computeModerationActions(
         member: RoomMember?,
-        permissions: Permissions,
+        permissions: RoomMemberModerationPermissions,
         currentUserMemberPowerLevel: Long,
     ): ImmutableList<ModerationActionState> {
         return buildList {
@@ -208,11 +206,6 @@ class RoomMemberModerationPresenter(
             reason = reason.takeIf { it.isNotBlank() },
         )
     }
-
-    private data class Permissions(
-        val canKick: Boolean = false,
-        val canBan: Boolean = false,
-    )
 
     private fun <T> CoroutineScope.runActionAndWaitForMembershipChange(
         action: MutableState<AsyncAction<T>>,

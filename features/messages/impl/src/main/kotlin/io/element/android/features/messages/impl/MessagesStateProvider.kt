@@ -41,6 +41,7 @@ import io.element.android.features.messages.impl.timeline.protection.aTimelinePr
 import io.element.android.features.roomcall.api.RoomCallState
 import io.element.android.features.roomcall.api.aStandByCallState
 import io.element.android.features.roommembermoderation.api.RoomMemberModerationEvents
+import io.element.android.features.roommembermoderation.api.RoomMemberModerationPermissions
 import io.element.android.features.roommembermoderation.api.RoomMemberModerationState
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
@@ -164,11 +165,9 @@ fun aMessagesState(
 )
 
 fun aRoomMemberModerationState(
-    canKick: Boolean = false,
-    canBan: Boolean = false,
+    permissions: RoomMemberModerationPermissions = RoomMemberModerationPermissions.DEFAULT,
 ) = object : RoomMemberModerationState {
-    override val canKick: Boolean = canKick
-    override val canBan: Boolean = canBan
+    override val permissions: RoomMemberModerationPermissions = permissions
     override val eventSink: (RoomMemberModerationEvents) -> Unit = {}
 }
 

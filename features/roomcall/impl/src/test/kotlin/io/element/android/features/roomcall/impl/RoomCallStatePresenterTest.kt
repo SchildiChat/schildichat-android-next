@@ -15,9 +15,12 @@ import io.element.android.features.call.test.FakeCurrentCallService
 import io.element.android.features.enterprise.test.FakeSessionEnterpriseService
 import io.element.android.features.roomcall.api.RoomCallState
 import io.element.android.libraries.matrix.api.room.JoinedRoom
+import io.element.android.libraries.matrix.api.room.StateEventType
 import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
 import io.element.android.libraries.matrix.test.room.aRoomInfo
+import io.element.android.libraries.matrix.test.room.powerlevels.FakeRoomPermissions
+import io.element.android.tests.testutils.lambda.lambdaError
 import io.element.android.tests.testutils.test
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
@@ -28,7 +31,7 @@ class RoomCallStatePresenterTest {
     fun `present - initial state`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserJoinCallResult = { Result.success(false) },
+                roomPermissions = roomPermissions(false),
             )
         )
         val presenter = createRoomCallStatePresenter(joinedRoom = room)
@@ -47,7 +50,7 @@ class RoomCallStatePresenterTest {
     fun `present - element call not available`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserJoinCallResult = { Result.success(false) },
+                roomPermissions = roomPermissions(false),
             )
         )
         val presenter = createRoomCallStatePresenter(
@@ -66,7 +69,7 @@ class RoomCallStatePresenterTest {
     fun `present - initial state - user can join call`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserJoinCallResult = { Result.success(true) },
+                roomPermissions = roomPermissions(true),
             )
         )
         val presenter = createRoomCallStatePresenter(joinedRoom = room)
@@ -85,7 +88,7 @@ class RoomCallStatePresenterTest {
     fun `present - call is disabled if user cannot join it even if there is an ongoing call`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserJoinCallResult = { Result.success(false) },
+                roomPermissions = roomPermissions(false),
                 initialRoomInfo = aRoomInfo(hasRoomCall = true),
             )
         )
@@ -106,7 +109,7 @@ class RoomCallStatePresenterTest {
     fun `present - user has joined the call on another session`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserJoinCallResult = { Result.success(true) },
+                roomPermissions = roomPermissions(true),
             ).apply {
                 givenRoomInfo(
                     aRoomInfo(
@@ -133,7 +136,7 @@ class RoomCallStatePresenterTest {
     fun `present - user has joined the call locally`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserJoinCallResult = { Result.success(true) },
+                roomPermissions = roomPermissions(true),
             ).apply {
                 givenRoomInfo(
                     aRoomInfo(
@@ -163,7 +166,7 @@ class RoomCallStatePresenterTest {
     fun `present - user leaves the call`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserJoinCallResult = { Result.success(true) },
+                roomPermissions = roomPermissions(true),
             ).apply {
                 givenRoomInfo(
                     aRoomInfo(
@@ -221,6 +224,17 @@ class RoomCallStatePresenterTest {
                 )
             )
         }
+    }
+
+    private fun roomPermissions(canJoinCall: Boolean): FakeRoomPermissions {
+        return FakeRoomPermissions(
+            canSendState = { stateEvent ->
+                when (stateEvent) {
+                    StateEventType.CALL_MEMBER -> canJoinCall
+                    else -> lambdaError()
+                }
+            }
+        )
     }
 
     private fun createRoomCallStatePresenter(

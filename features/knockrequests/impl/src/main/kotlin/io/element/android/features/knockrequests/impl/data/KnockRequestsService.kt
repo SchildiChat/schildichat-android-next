@@ -8,6 +8,7 @@
 
 package io.element.android.features.knockrequests.impl.data
 
+import io.element.android.features.knockrequests.api.KnockRequestPermissions
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.room.knock.KnockRequest

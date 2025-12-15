@@ -69,6 +69,7 @@ import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
 import io.element.android.libraries.matrix.test.room.aRoomInfo
 import io.element.android.libraries.matrix.test.room.aRoomMember
+import io.element.android.libraries.matrix.test.room.powerlevels.FakeRoomPermissions
 import io.element.android.libraries.matrix.test.timeline.FakeTimeline
 import io.element.android.libraries.matrix.ui.messages.reply.InReplyToDetails
 import io.element.android.libraries.mediapickers.api.PickerProvider
@@ -991,9 +992,12 @@ class MessageComposerPresenterTest {
         val invitedUser = aRoomMember(userId = A_USER_ID_3, membership = RoomMembershipState.INVITE)
         val bob = aRoomMember(userId = A_USER_ID_2, membership = RoomMembershipState.JOIN)
         val david = aRoomMember(userId = A_USER_ID_4, displayName = "Dave", membership = RoomMembershipState.JOIN)
-        var canUserTriggerRoomNotificationResult = true
         val room = FakeJoinedRoom(
-            baseRoom = FakeBaseRoom(canUserTriggerRoomNotificationResult = { Result.success(canUserTriggerRoomNotificationResult) }),
+            baseRoom = FakeBaseRoom(
+                roomPermissions = FakeRoomPermissions(
+                    canTriggerRoomNotification = true,
+                )
+            ),
             typingNoticeResult = { Result.success(Unit) }
         ).apply {
             givenRoomMembersState(
@@ -1033,10 +1037,38 @@ class MessageComposerPresenterTest {
             // If the suggestion isn't a mention, no suggestions are returned
             initialState.eventSink(MessageComposerEvent.SuggestionReceived(Suggestion(0, 0, SuggestionType.Command, "")))
             assertThat(awaitItem().suggestions).isEmpty()
+        }
+    }
 
-            // If user has no permission to send `@room` mentions, `RoomMemberSuggestion.Room` is not returned
-            canUserTriggerRoomNotificationResult = false
+    @Test
+    fun `present - room mention suggestions no permission`() = runTest {
+        val currentUser = aRoomMember(userId = A_USER_ID, membership = RoomMembershipState.JOIN)
+        val invitedUser = aRoomMember(userId = A_USER_ID_3, membership = RoomMembershipState.INVITE)
+        val bob = aRoomMember(userId = A_USER_ID_2, membership = RoomMembershipState.JOIN)
+        val david = aRoomMember(userId = A_USER_ID_4, displayName = "Dave", membership = RoomMembershipState.JOIN)
+        val room = FakeJoinedRoom(
+            baseRoom = FakeBaseRoom(
+                roomPermissions = FakeRoomPermissions(
+                    canTriggerRoomNotification = false,
+                )
+            ),
+            typingNoticeResult = { Result.success(Unit) }
+        ).apply {
+            givenRoomMembersState(
+                RoomMembersState.Ready(
+                    persistentListOf(currentUser, invitedUser, bob, david),
+                )
+            )
+            givenRoomInfo(aRoomInfo(isDirect = false))
+        }
+        val presenter = createPresenter(room)
+        moleculeFlow(RecompositionMode.Immediate) {
+            presenter.present()
+        }.test {
+            val initialState = awaitItem()
+            // An empty suggestion returns the joined members that are not the current user, but not the room
             initialState.eventSink(MessageComposerEvent.SuggestionReceived(Suggestion(0, 0, SuggestionType.Mention, "")))
+            skipItems(1)
             assertThat(awaitItem().suggestions)
                 .containsExactly(ResolvedSuggestion.Member(bob), ResolvedSuggestion.Member(david))
         }
@@ -1049,7 +1081,9 @@ class MessageComposerPresenterTest {
         val bob = aRoomMember(userId = A_USER_ID_2, membership = RoomMembershipState.JOIN)
         val david = aRoomMember(userId = A_USER_ID_4, displayName = "Dave", membership = RoomMembershipState.JOIN)
         val room = FakeJoinedRoom(
-            baseRoom = FakeBaseRoom(canUserTriggerRoomNotificationResult = { Result.success(true) }),
+            baseRoom = FakeBaseRoom(
+                roomPermissions = FakeRoomPermissions(canTriggerRoomNotification = true),
+            ),
             typingNoticeResult = { Result.success(Unit) }
         ).apply {
             givenRoomMembersState(
@@ -1069,7 +1103,6 @@ class MessageComposerPresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitItem()
-
             // An empty suggestion returns the joined members that are not the current user, but not the room
             initialState.eventSink(MessageComposerEvent.SuggestionReceived(Suggestion(0, 0, SuggestionType.Mention, "")))
             skipItems(1)

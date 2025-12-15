@@ -10,6 +10,7 @@ package io.element.android.features.roomdetails.impl.members
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.element.android.features.roommembermoderation.api.RoomMemberModerationEvents
+import io.element.android.features.roommembermoderation.api.RoomMemberModerationPermissions
 import io.element.android.features.roommembermoderation.api.RoomMemberModerationState
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.map
@@ -99,8 +100,10 @@ fun aRoomMemberModerationState(
     canKick: Boolean = false,
 ): RoomMemberModerationState {
     return object : RoomMemberModerationState {
-        override val canKick: Boolean = canKick
-        override val canBan: Boolean = canBan
+        override val permissions: RoomMemberModerationPermissions = RoomMemberModerationPermissions(
+            canBan = canBan,
+            canKick = canKick,
+        )
         override val eventSink: (RoomMemberModerationEvents) -> Unit = {}
     }
 }

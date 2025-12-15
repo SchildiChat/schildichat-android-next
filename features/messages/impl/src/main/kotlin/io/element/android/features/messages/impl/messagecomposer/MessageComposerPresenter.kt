@@ -55,6 +55,7 @@ import io.element.android.libraries.matrix.api.room.draft.ComposerDraft
 import io.element.android.libraries.matrix.api.room.draft.ComposerDraftType
 import io.element.android.libraries.matrix.api.room.getDirectRoomMember
 import io.element.android.libraries.matrix.api.room.isDm
+import io.element.android.libraries.matrix.api.room.powerlevels.use
 import io.element.android.libraries.matrix.api.timeline.TimelineException
 import io.element.android.libraries.matrix.api.timeline.item.event.toEventOrTransactionId
 import io.element.android.libraries.matrix.ui.messages.reply.InReplyToDetails
@@ -98,6 +99,7 @@ import timber.log.Timber
 import kotlin.time.Duration.Companion.seconds
 import io.element.android.libraries.core.mimetype.MimeTypes.Any as AnyMimeTypes
 
+@Suppress("LargeClass")
 @AssistedInject
 class MessageComposerPresenter(
     @Assisted private val navigator: MessagesNavigator,
@@ -396,7 +398,9 @@ class MessageComposerPresenter(
             val currentUserId = room.sessionId
 
             suspend fun canSendRoomMention(): Boolean {
-                val userCanSendAtRoom = room.canUserTriggerRoomNotification(currentUserId).getOrDefault(false)
+                val userCanSendAtRoom = room.roomPermissions().use(false) { perms ->
+                    perms.canOwnUserTriggerRoomNotification()
+                }
                 return !room.isDm() && userCanSendAtRoom
             }
 

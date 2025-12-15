@@ -64,6 +64,7 @@ import io.element.android.libraries.matrix.api.permalink.PermalinkParser
 import io.element.android.libraries.matrix.api.room.MessageEventType
 import io.element.android.libraries.matrix.api.room.RoomMembersState
 import io.element.android.libraries.matrix.api.room.RoomMembershipState
+import io.element.android.libraries.matrix.api.room.StateEventType
 import io.element.android.libraries.matrix.api.room.tombstone.SuccessorRoom
 import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.matrix.api.timeline.item.TimelineItemDebugInfo
@@ -86,6 +87,7 @@ import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
 import io.element.android.libraries.matrix.test.room.aRoomInfo
 import io.element.android.libraries.matrix.test.room.aRoomMember
+import io.element.android.libraries.matrix.test.room.powerlevels.FakeRoomPermissions
 import io.element.android.libraries.matrix.test.timeline.FakeTimeline
 import io.element.android.libraries.matrix.test.timeline.aTimelineItemDebugInfo
 import io.element.android.libraries.matrix.ui.messages.reply.InReplyToDetails
@@ -143,11 +145,7 @@ class MessagesPresenterTest {
     fun `present - check that the room's unread flag is removed`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
                 markAsReadResult = { lambdaError() }
             ),
             typingNoticeResult = { Result.success(Unit) },
@@ -173,11 +171,7 @@ class MessagesPresenterTest {
         }
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ),
             liveTimeline = timeline,
             typingNoticeResult = { Result.success(Unit) },
@@ -223,11 +217,7 @@ class MessagesPresenterTest {
         }
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ),
             liveTimeline = timeline,
             typingNoticeResult = { Result.success(Unit) },
@@ -288,11 +278,7 @@ class MessagesPresenterTest {
         val event = aMessageEvent()
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
                 eventPermalinkResult = { Result.success("a link") },
             ),
             typingNoticeResult = { Result.success(Unit) },
@@ -514,11 +500,7 @@ class MessagesPresenterTest {
         val liveTimeline = FakeTimeline()
         val joinedRoom = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ),
             liveTimeline = liveTimeline,
             typingNoticeResult = { Result.success(Unit) },
@@ -586,11 +568,7 @@ class MessagesPresenterTest {
     fun `present - shows prompt to reinvite users in DM`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ).apply {
                 givenRoomInfo(aRoomInfo(isDirect = true, joinedMembersCount = 1, activeMembersCount = 1))
             },
@@ -619,11 +597,7 @@ class MessagesPresenterTest {
     fun `present - doesn't show reinvite prompt in non-direct room`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ).apply {
                 givenRoomInfo(aRoomInfo(isDirect = false, joinedMembersCount = 1, activeMembersCount = 1))
             },
@@ -645,11 +619,7 @@ class MessagesPresenterTest {
     fun `present - doesn't show reinvite prompt if other party is present`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ).apply {
                 givenRoomInfo(aRoomInfo(isDirect = true, joinedMembersCount = 2, activeMembersCount = 2))
             },
@@ -672,11 +642,7 @@ class MessagesPresenterTest {
         val inviteUserResult = lambdaRecorder { _: UserId -> Result.success(Unit) }
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ),
             typingNoticeResult = { Result.success(Unit) },
             inviteUserResult = inviteUserResult,
@@ -707,11 +673,7 @@ class MessagesPresenterTest {
         val inviteUserResult = lambdaRecorder { _: UserId -> Result.success(Unit) }
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ),
             typingNoticeResult = { Result.success(Unit) },
             inviteUserResult = inviteUserResult,
@@ -744,11 +706,7 @@ class MessagesPresenterTest {
     fun `present - handle reinviting other user when memberlist is not ready`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ),
             typingNoticeResult = { Result.success(Unit) },
         )
@@ -769,11 +727,7 @@ class MessagesPresenterTest {
     fun `present - handle reinviting other user when inviting fails`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ),
             typingNoticeResult = { Result.success(Unit) },
             inviteUserResult = { Result.failure(RuntimeException("Oops!")) },
@@ -807,17 +761,7 @@ class MessagesPresenterTest {
     fun `present - permission to post`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
-                canUserSendMessageResult = { _, messageEventType ->
-                    when (messageEventType) {
-                        MessageEventType.RoomMessage -> Result.success(true)
-                        MessageEventType.Reaction -> Result.success(true)
-                        else -> lambdaError()
-                    }
-                },
+                roomPermissions = roomPermissions(),
             ),
             typingNoticeResult = { Result.success(Unit) },
         )
@@ -833,17 +777,9 @@ class MessagesPresenterTest {
     fun `present - no permission to post`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
-                canUserSendMessageResult = { _, messageEventType ->
-                    when (messageEventType) {
-                        MessageEventType.RoomMessage -> Result.success(false)
-                        MessageEventType.Reaction -> Result.success(false)
-                        else -> lambdaError()
-                    }
-                },
+                roomPermissions = roomPermissions(
+                    canSendMessage = false
+                ),
             ),
             typingNoticeResult = { Result.success(Unit) },
         )
@@ -859,11 +795,9 @@ class MessagesPresenterTest {
     fun `present - permission to redact own`() = runTest {
         val joinedRoom = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canRedactOwnResult = { Result.success(true) },
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOtherResult = { Result.success(false) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(
+                    canRedactOther = false
+                ),
             ),
             typingNoticeResult = { Result.success(Unit) },
         )
@@ -880,11 +814,9 @@ class MessagesPresenterTest {
     fun `present - permission to redact other`() = runTest {
         val joinedRoom = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canRedactOtherResult = { Result.success(true) },
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOwnResult = { Result.success(false) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(
+                    canRedactOwn = false
+                ),
             ),
             typingNoticeResult = { Result.success(Unit) },
         )
@@ -929,11 +861,7 @@ class MessagesPresenterTest {
         val timeline = FakeTimeline()
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ),
             liveTimeline = timeline,
             typingNoticeResult = { Result.success(Unit) },
@@ -973,11 +901,7 @@ class MessagesPresenterTest {
         val analyticsService = FakeAnalyticsService()
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ),
             liveTimeline = timeline,
             typingNoticeResult = { Result.success(Unit) },
@@ -1074,11 +998,7 @@ class MessagesPresenterTest {
         }
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ),
             liveTimeline = timeline,
             typingNoticeResult = { Result.success(Unit) },
@@ -1115,11 +1035,7 @@ class MessagesPresenterTest {
         val successorReason = "This room has been moved to a new location"
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
                 initialRoomInfo = aRoomInfo(
                     successorRoom = SuccessorRoom(
                         roomId = successorRoomId,
@@ -1143,11 +1059,7 @@ class MessagesPresenterTest {
     fun `present - room without successor room has null successor info in state`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
                 initialRoomInfo = aRoomInfo(successorRoom = null)
             ),
             typingNoticeResult = { Result.success(Unit) },
@@ -1165,11 +1077,13 @@ class MessagesPresenterTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
                 sessionId = A_SESSION_ID,
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = FakeRoomPermissions(
+                    canSendState = { true },
+                    canSendMessage = { true },
+                    canRedactOther = true,
+                    canRedactOwn = true,
+                    canPinUnpin = true,
+                ),
                 initialRoomInfo = aRoomInfo(isDirect = true, isEncrypted = true)
             ).apply {
                 givenRoomMembersState(RoomMembersState.Ready(persistentListOf(aRoomMember(userId = A_SESSION_ID), aRoomMember(userId = A_USER_ID_2))))
@@ -1312,16 +1226,44 @@ class MessagesPresenterTest {
         }
     }
 
+    private fun roomPermissions(
+        canStartCall: Boolean = true,
+        canRedactOther: Boolean = true,
+        canRedactOwn: Boolean = true,
+        canSendMessage: Boolean = true,
+        canSendReaction: Boolean = true,
+        canPinUnpin: Boolean = true,
+    ) = FakeRoomPermissions(
+        canSendState = { type ->
+            when (type) {
+                StateEventType.CALL_MEMBER -> canStartCall
+                else -> lambdaError()
+            }
+        },
+        canSendMessage = { type ->
+            when (type) {
+                MessageEventType.RoomMessage -> canSendMessage
+                MessageEventType.Reaction -> canSendReaction
+                else -> lambdaError()
+            }
+        },
+        canRedactOther = canRedactOther,
+        canRedactOwn = canRedactOwn,
+        canPinUnpin = canPinUnpin,
+    )
+
     private fun TestScope.createMessagesPresenter(
         coroutineDispatchers: CoroutineDispatchers = testCoroutineDispatchers(),
         timeline: Timeline = FakeTimeline(),
         joinedRoom: FakeJoinedRoom = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canUserSendMessageResult = { _, _ -> Result.success(true) },
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserJoinCallResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = FakeRoomPermissions(
+                    canSendState = { true },
+                    canSendMessage = { true },
+                    canRedactOther = true,
+                    canRedactOwn = true,
+                    canPinUnpin = true,
+                ),
             ).apply {
                 givenRoomInfo(aRoomInfo(id = roomId, name = ""))
             },

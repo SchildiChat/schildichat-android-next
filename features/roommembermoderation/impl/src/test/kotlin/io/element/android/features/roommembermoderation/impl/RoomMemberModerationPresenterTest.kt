@@ -13,6 +13,7 @@ import com.google.common.truth.Truth.assertThat
 import io.element.android.features.roommembermoderation.api.ModerationAction
 import io.element.android.features.roommembermoderation.api.ModerationActionState
 import io.element.android.features.roommembermoderation.api.RoomMemberModerationEvents
+import io.element.android.features.roommembermoderation.api.RoomMemberModerationPermissions
 import io.element.android.features.roommembermoderation.api.RoomMemberModerationState
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
@@ -25,6 +26,7 @@ import io.element.android.libraries.matrix.test.A_USER_ID
 import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
 import io.element.android.libraries.matrix.test.room.aRoomMember
+import io.element.android.libraries.matrix.test.room.powerlevels.FakeRoomPermissions
 import io.element.android.services.analytics.api.AnalyticsService
 import io.element.android.services.analytics.test.FakeAnalyticsService
 import io.element.android.tests.testutils.WarmUpRule
@@ -48,8 +50,7 @@ class RoomMemberModerationPresenterTest {
         val room = aJoinedRoom()
         createRoomMemberModerationPresenter(room = room).test {
             val initialState = awaitState()
-            assertThat(initialState.canKick).isFalse()
-            assertThat(initialState.canBan).isFalse()
+            assertThat(initialState.permissions).isEqualTo(RoomMemberModerationPermissions.DEFAULT)
             assertThat(initialState.selectedUser).isNull()
             assertThat(initialState.banUserAsyncAction).isEqualTo(AsyncAction.Uninitialized)
             assertThat(initialState.kickUserAsyncAction).isEqualTo(AsyncAction.Uninitialized)
@@ -355,8 +356,10 @@ class RoomMemberModerationPresenterTest {
             banUserResult = { _, _ -> banUserResult },
             unBanUserResult = { _, _ -> unBanUserResult },
             baseRoom = FakeBaseRoom(
-                canBanResult = { _ -> Result.success(canBan) },
-                canKickResult = { _ -> Result.success(canKick) },
+                roomPermissions = FakeRoomPermissions(
+                    canBan = canBan,
+                    canKick = canKick
+                ),
                 userRoleResult = { Result.success(myUserRole) },
                 updateMembersResult = { Result.success(Unit) }
             ),

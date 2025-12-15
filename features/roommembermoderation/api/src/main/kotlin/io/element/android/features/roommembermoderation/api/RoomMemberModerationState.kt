@@ -12,8 +12,7 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 interface RoomMemberModerationState {
-    val canKick: Boolean
-    val canBan: Boolean
+    val permissions: RoomMemberModerationPermissions
     val eventSink: (RoomMemberModerationEvents) -> Unit
 }
 

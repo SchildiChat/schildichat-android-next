@@ -64,7 +64,7 @@ import io.element.android.libraries.mediapickers.api.PickerProvider
 import io.element.android.libraries.mediaupload.api.MediaOptimizationConfigProvider
 import io.element.android.libraries.mediaupload.api.MediaSenderFactory
 import io.element.android.libraries.mediaviewer.api.local.LocalMediaFactory
-import io.element.android.libraries.permissions.api.PermissionsEvents
+import io.element.android.libraries.permissions.api.PermissionsEvent
 import io.element.android.libraries.permissions.api.PermissionsPresenter
 import io.element.android.libraries.preferences.api.store.SessionPreferencesStore
 import io.element.android.libraries.push.api.notifications.conversations.NotificationConversationService
@@ -286,7 +286,7 @@ class MessageComposerPresenter(
                         cameraPhotoPicker.launch()
                     } else {
                         pendingEvent = event
-                        cameraPermissionState.eventSink(PermissionsEvents.RequestPermissions)
+                        cameraPermissionState.eventSink(PermissionsEvent.RequestPermissions)
                     }
                 }
                 MessageComposerEvent.PickAttachmentSource.VideoFromCamera -> localCoroutineScope.launch {
@@ -295,7 +295,7 @@ class MessageComposerPresenter(
                         cameraVideoPicker.launch()
                     } else {
                         pendingEvent = event
-                        cameraPermissionState.eventSink(PermissionsEvents.RequestPermissions)
+                        cameraPermissionState.eventSink(PermissionsEvent.RequestPermissions)
                     }
                 }
                 MessageComposerEvent.PickAttachmentSource.Location -> {

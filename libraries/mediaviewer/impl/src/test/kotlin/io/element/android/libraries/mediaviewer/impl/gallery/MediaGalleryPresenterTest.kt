@@ -25,6 +25,7 @@ import io.element.android.libraries.matrix.test.media.FakeMatrixMediaLoader
 import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
 import io.element.android.libraries.matrix.test.room.aRoomInfo
+import io.element.android.libraries.matrix.test.room.powerlevels.FakeRoomPermissions
 import io.element.android.libraries.matrix.test.timeline.FakeTimeline
 import io.element.android.libraries.mediaviewer.impl.datasource.FakeMediaGalleryDataSource
 import io.element.android.libraries.mediaviewer.impl.datasource.MediaGalleryDataSource
@@ -109,7 +110,9 @@ class MediaGalleryPresenterTest {
                 baseRoom = FakeBaseRoom(
                     sessionId = A_USER_ID,
                     initialRoomInfo = aRoomInfo(name = A_ROOM_NAME),
-                    canRedactOwnResult = { Result.success(canDeleteOwn) }
+                    roomPermissions = FakeRoomPermissions(
+                        canRedactOwn = canDeleteOwn
+                    ),
                 ),
             )
         )
@@ -153,7 +156,9 @@ class MediaGalleryPresenterTest {
                 baseRoom = FakeBaseRoom(
                     sessionId = A_USER_ID,
                     initialRoomInfo = aRoomInfo(name = A_ROOM_NAME),
-                    canRedactOtherResult = { Result.success(canDeleteOther) },
+                    roomPermissions = FakeRoomPermissions(
+                        canRedactOther = canDeleteOther
+                    ),
                 ),
                 createTimelineResult = { Result.success(FakeTimeline()) }
             )
@@ -355,7 +360,9 @@ class MediaGalleryPresenterTest {
             room = FakeJoinedRoom(
                 createTimelineResult = { Result.success(FakeTimeline()) },
                 baseRoom = FakeBaseRoom(
-                    canRedactOwnResult = { Result.success(true) },
+                    roomPermissions = FakeRoomPermissions(
+                        canRedactOwn = true
+                    ),
                 ),
             ),
             navigator = navigator,
@@ -386,7 +393,9 @@ class MediaGalleryPresenterTest {
             room = FakeJoinedRoom(
                 createTimelineResult = { Result.success(FakeTimeline()) },
                 baseRoom = FakeBaseRoom(
-                    canRedactOwnResult = { Result.success(true) },
+                    roomPermissions = FakeRoomPermissions(
+                        canRedactOwn = true
+                    ),
                 ),
             ),
             navigator = navigator,

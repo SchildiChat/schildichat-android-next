@@ -394,6 +394,7 @@ Opravdu chcete pokračovat?"</string>
   <string name="dialog_title_error">"Chyba"</string>
   <string name="dialog_title_success">"Úspěch"</string>
   <string name="dialog_title_warning">"Upozornění"</string>
+  <string name="dialog_unsaved_changes_description">"Máte neuložené změny."</string>
   <string name="dialog_unsaved_changes_description_android">"Vaše změny nebyly uloženy. Opravdu se chcete vrátit?"</string>
   <string name="dialog_unsaved_changes_title">"Uložit změny?"</string>
   <string name="dialog_video_quality_selector_subtitle_file_size">"Maximální povolená velikost souboru je: %1$s"</string>

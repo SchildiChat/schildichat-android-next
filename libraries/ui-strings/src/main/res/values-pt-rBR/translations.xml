@@ -388,6 +388,7 @@ Você tem certeza de que deseja continuar?"</string>
   <string name="dialog_title_error">"Erro"</string>
   <string name="dialog_title_success">"Sucesso"</string>
   <string name="dialog_title_warning">"Alerta"</string>
+  <string name="dialog_unsaved_changes_description">"Você tem alterações não salvas."</string>
   <string name="dialog_unsaved_changes_description_android">"Suas alterações não foram salvas. Tem certeza de que você quer voltar?"</string>
   <string name="dialog_unsaved_changes_title">"Salvar alterações?"</string>
   <string name="dialog_video_quality_selector_subtitle_file_size">"O tamanho máximo permitido de arquivos é: %1$s"</string>

@@ -18,7 +18,7 @@ import androidx.compose.runtime.setValue
 import dev.zacsweers.metro.Inject
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.meta.BuildMeta
-import io.element.android.libraries.permissions.api.PermissionsEvents
+import io.element.android.libraries.permissions.api.PermissionsEvent
 import io.element.android.libraries.permissions.api.PermissionsPresenter
 
 @Inject
@@ -46,7 +46,7 @@ class QrCodeIntroPresenter(
                     canContinue = true
                 } else {
                     pendingPermissionRequest = true
-                    cameraPermissionState.eventSink(PermissionsEvents.RequestPermissions)
+                    cameraPermissionState.eventSink(PermissionsEvent.RequestPermissions)
                 }
             }
         }

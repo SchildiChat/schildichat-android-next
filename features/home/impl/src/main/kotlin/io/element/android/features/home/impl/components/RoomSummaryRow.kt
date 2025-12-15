@@ -121,7 +121,6 @@ internal fun RoomSummaryRow(
                 ) {
                     NameAndTimestampRow(
                         name = room.name,
-                        latestEvent = room.latestEvent,
                         timestamp = room.timestamp,
                         isHighlighted = room.isHighlighted
                     )
@@ -138,7 +137,6 @@ internal fun RoomSummaryRow(
                 ) {
                     NameAndTimestampRow(
                         name = room.name,
-                        latestEvent = room.latestEvent,
                         timestamp = null,
                         isHighlighted = room.isHighlighted
                     )
@@ -214,7 +212,6 @@ private fun RoomSummaryScaffoldRow(
 @Composable
 private fun NameAndTimestampRow(
     name: String?,
-    latestEvent: LatestEvent,
     timestamp: String?,
     isHighlighted: Boolean,
     modifier: Modifier = Modifier
@@ -236,28 +233,6 @@ private fun NameAndTimestampRow(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            // Picto
-            when (latestEvent) {
-                is LatestEvent.Sending -> {
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Icon(
-                        modifier = Modifier.size(16.dp),
-                        imageVector = CompoundIcons.Time(),
-                        contentDescription = null,
-                        tint = ElementTheme.colors.iconTertiary,
-                    )
-                }
-                is LatestEvent.Error -> {
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Icon(
-                        modifier = Modifier.size(16.dp),
-                        imageVector = CompoundIcons.ErrorSolid(),
-                        contentDescription = null,
-                        tint = ElementTheme.colors.iconCriticalPrimary,
-                    )
-                }
-                else -> Unit
-            }
         }
         // Timestamp
         Text(
@@ -302,7 +277,6 @@ private fun MessagePreviewAndIndicatorRow(
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = spacedBy(28.dp)
     ) {
         if (room.isTombstoned) {
             Text(
@@ -316,6 +290,16 @@ private fun MessagePreviewAndIndicatorRow(
             )
         } else {
             if (room.latestEvent is LatestEvent.Error) {
+                Icon(
+                    modifier = Modifier
+                        .padding(top = 2.dp)
+                        .size(16.dp),
+                    imageVector = CompoundIcons.ErrorSolid(),
+                    // The last message contains the error.
+                    contentDescription = null,
+                    tint = ElementTheme.colors.iconCriticalPrimary,
+                )
+                Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     modifier = Modifier.weight(1f),
                     text = stringResource(CommonStrings.common_message_failed_to_send),
@@ -326,6 +310,17 @@ private fun MessagePreviewAndIndicatorRow(
                     overflow = TextOverflow.Ellipsis,
                 )
             } else {
+                if (room.latestEvent is LatestEvent.Sending) {
+                    Icon(
+                        modifier = Modifier
+                            .padding(top = 2.dp)
+                            .size(16.dp),
+                        imageVector = CompoundIcons.Time(),
+                        contentDescription = stringResource(CommonStrings.common_sending),
+                        tint = ElementTheme.colors.iconTertiary,
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                }
                 val messagePreview = room.latestEvent.content()
                 val annotatedMessagePreview = messagePreview as? AnnotatedString ?: AnnotatedString(text = messagePreview.orEmpty().toString())
                 Text(
@@ -339,7 +334,7 @@ private fun MessagePreviewAndIndicatorRow(
                 )
             }
         }
-
+        Spacer(modifier = Modifier.width(16.dp))
         // Call and unread
         Row(
             modifier = Modifier

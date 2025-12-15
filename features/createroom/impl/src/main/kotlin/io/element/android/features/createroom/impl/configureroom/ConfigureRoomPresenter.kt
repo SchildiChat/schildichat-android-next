@@ -40,7 +40,7 @@ import io.element.android.libraries.matrix.ui.room.address.RoomAddressValidityEf
 import io.element.android.libraries.mediapickers.api.PickerProvider
 import io.element.android.libraries.mediaupload.api.MediaOptimizationConfigProvider
 import io.element.android.libraries.mediaupload.api.MediaPreProcessor
-import io.element.android.libraries.permissions.api.PermissionsEvents
+import io.element.android.libraries.permissions.api.PermissionsEvent
 import io.element.android.libraries.permissions.api.PermissionsPresenter
 import io.element.android.services.analytics.api.AnalyticsService
 import kotlinx.collections.immutable.toImmutableList
@@ -132,7 +132,7 @@ class ConfigureRoomPresenter(
                             cameraPhotoPicker.launch()
                         } else {
                             pendingPermissionRequest = true
-                            cameraPermissionState.eventSink(PermissionsEvents.RequestPermissions)
+                            cameraPermissionState.eventSink(PermissionsEvent.RequestPermissions)
                         }
                         AvatarAction.Remove -> dataStore.setAvatarUri(uri = null)
                     }

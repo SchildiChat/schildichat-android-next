@@ -218,7 +218,7 @@ private fun RoomAccessSection(
                     Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_unavailable_description))
                 },
                 trailingContent = ListItemContent.RadioButton(selected = edited == SecurityAndPrivacyRoomAccess.SpaceMember, enabled = false),
-                leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Workspace())),
+                leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Space())),
                 enabled = false,
             )
         }

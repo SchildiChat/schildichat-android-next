@@ -2,12 +2,9 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="screen_room_change_permissions_administrators">"Správca"</string>
   <string name="screen_room_change_permissions_ban_people">"Zakázať ľudí"</string>
-  <string name="screen_room_change_permissions_change_settings">"Zmeniť nastavenia"</string>
   <string name="screen_room_change_permissions_delete_messages">"Odstrániť správy"</string>
   <string name="screen_room_change_permissions_everyone">"Člen"</string>
   <string name="screen_room_change_permissions_invite_people">"Pozvať ľudí"</string>
-  <string name="screen_room_change_permissions_manage_space">"Spravovať priestor"</string>
-  <string name="screen_room_change_permissions_manage_space_rooms">"Spravovať miestnosti"</string>
   <string name="screen_room_change_permissions_member_moderation">"Spravovať členov"</string>
   <string name="screen_room_change_permissions_messages_and_content">"Správy a obsah"</string>
   <string name="screen_room_change_permissions_moderators">"Moderátor"</string>
@@ -17,7 +14,6 @@
   <string name="screen_room_change_permissions_room_name">"Zmeniť názov miestnosti"</string>
   <string name="screen_room_change_permissions_room_topic">"Zmeniť tému miestnosti"</string>
   <string name="screen_room_change_permissions_send_messages">"Odoslať správy"</string>
-  <string name="screen_room_change_permissions_title">"Povolenia"</string>
   <string name="screen_room_change_role_administrators_title">"Upraviť správcov"</string>
   <string name="screen_room_change_role_confirm_add_admin_description">"Túto akciu nebudete môcť vrátiť späť. Zvyšujete úroveň používateľa na rovnakú úroveň výkonu ako máte vy."</string>
   <string name="screen_room_change_role_confirm_add_admin_title">"Pridať správcu?"</string>

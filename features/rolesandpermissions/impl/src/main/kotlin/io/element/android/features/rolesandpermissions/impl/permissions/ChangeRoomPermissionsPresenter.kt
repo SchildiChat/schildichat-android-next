@@ -54,7 +54,6 @@ class ChangeRoomPermissionsPresenter(
                 RoomPermissionType.SPACE_MANAGE_ROOMS,
                 RoomPermissionType.CHANGE_SETTINGS,
             )
-
         }
 
         private fun RoomPermissionsSection.shouldShow(isSpace: Boolean): Boolean {

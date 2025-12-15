@@ -20,14 +20,11 @@ data class SpaceSettingsPermissions(
     val canEditRolesAndPermissions: Boolean,
     val securityAndPrivacyPermissions: SecurityAndPrivacyPermissions,
 ) {
-
     fun hasAny(joinRule: JoinRule?): Boolean {
         return editDetailsPermissions.hasAny ||
             canEditRolesAndPermissions ||
             securityAndPrivacyPermissions.hasAny(isSpace = true, joinRule = joinRule)
     }
-
-
 
     companion object {
         val DEFAULT = SpaceSettingsPermissions(

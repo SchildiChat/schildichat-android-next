@@ -27,7 +27,6 @@ class RolesAndPermissionsNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
     private val presenter: RolesAndPermissionsPresenter,
-    private val room: BaseRoom,
 ) : Node(buildContext, plugins = plugins), RolesAndPermissionsNavigator {
     interface Callback : Plugin, RolesAndPermissionsNavigator {
         override fun openAdminList()

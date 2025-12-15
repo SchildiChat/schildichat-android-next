@@ -207,11 +207,6 @@ class RoomMemberModerationPresenter(
         )
     }
 
-    private data class Permissions(
-        val canKick: Boolean = false,
-        val canBan: Boolean = false,
-    )
-
     private fun <T> CoroutineScope.runActionAndWaitForMembershipChange(
         action: MutableState<AsyncAction<T>>,
         block: suspend () -> Result<T>

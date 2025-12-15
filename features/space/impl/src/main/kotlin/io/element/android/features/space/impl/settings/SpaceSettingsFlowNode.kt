@@ -39,13 +39,14 @@ class SpaceSettingsFlowNode(
     private val roomDetailsEditEntryPoint: RoomDetailsEditEntryPoint
 ) : BaseFlowNode<SpaceSettingsFlowNode.NavTarget>(
     backstack = BackStack(
-        initialElement = NavTarget.Root,
+        initialElement = initialElement(plugins),
         savedStateMap = buildContext.savedStateMap,
     ),
     buildContext = buildContext,
     plugins = plugins,
 ) {
     interface Callback : Plugin {
+        fun initialTarget(): NavTarget = NavTarget.Root
         fun navigateToSpaceMembers()
         fun startLeaveSpaceFlow()
         fun closeSettings()
@@ -56,7 +57,7 @@ class SpaceSettingsFlowNode(
         data object Root : NavTarget
 
         @Parcelize
-        data object EditDetails: NavTarget
+        data object EditDetails : NavTarget
 
         @Parcelize
         data object SecurityAndPrivacy : NavTarget
@@ -137,4 +138,8 @@ class SpaceSettingsFlowNode(
     override fun View(modifier: Modifier) {
         BackstackView(modifier)
     }
+}
+
+fun initialElement(plugins: List<Plugin>): SpaceSettingsFlowNode.NavTarget {
+    return plugins.callback<SpaceSettingsFlowNode.Callback>().initialTarget()
 }

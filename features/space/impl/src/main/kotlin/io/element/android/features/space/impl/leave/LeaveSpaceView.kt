@@ -132,8 +132,7 @@ fun LeaveSpaceView(
                     state.eventSink(LeaveSpaceEvents.LeaveSpace)
                 },
                 onCancel = onCancel,
-                // TODO enable when navigation is ready
-                showRolesAndPermissionsButton = false, // state.isLastAdmin,
+                showRolesAndPermissionsButton = state.isLastAdmin,
                 onRolesAndPermissionsClick = onRolesAndPermissionsClick,
             )
         }

@@ -45,7 +45,7 @@ class ChangeRoomPermissionsPresenter(
                 RoomPermissionType.SEND_EVENTS,
                 RoomPermissionType.REDACT_EVENTS,
             )
-            RoomPermissionsSection.MembershipModeration -> persistentListOf(
+            RoomPermissionsSection.ManageMembers -> persistentListOf(
                 RoomPermissionType.INVITE,
                 RoomPermissionType.KICK,
                 RoomPermissionType.BAN,
@@ -59,7 +59,7 @@ class ChangeRoomPermissionsPresenter(
         private fun RoomPermissionsSection.shouldShow(isSpace: Boolean): Boolean {
             return when (this) {
                 RoomPermissionsSection.EditDetails -> true
-                RoomPermissionsSection.MembershipModeration -> true
+                RoomPermissionsSection.ManageMembers -> true
                 RoomPermissionsSection.MessagesAndContent -> !isSpace
                 RoomPermissionsSection.ManageSpace -> isSpace
             }

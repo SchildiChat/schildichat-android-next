@@ -26,6 +26,7 @@ class ChangeRoomPermissionsStateProvider : PreviewParameterProvider<ChangeRoomPe
                 saveAction = AsyncAction.Failure(IllegalStateException("Failed to save changes"))
             ),
             aChangeRoomPermissionsState(hasChanges = true, saveAction = AsyncAction.ConfirmingCancellation),
+            aChangeRoomPermissionsState(itemsBySection = ChangeRoomPermissionsPresenter.buildItems(isSpace = true)),
         )
 }
 

@@ -112,7 +112,7 @@ fun ChangeRoomPermissionsView(
 private fun titleForSection(section: RoomPermissionsSection): String = when (section) {
     RoomPermissionsSection.EditDetails -> stringResource(R.string.screen_room_change_permissions_room_details)
     RoomPermissionsSection.MessagesAndContent -> stringResource(R.string.screen_room_change_permissions_messages_and_content)
-    RoomPermissionsSection.MembershipModeration -> stringResource(R.string.screen_room_change_permissions_member_moderation)
+    RoomPermissionsSection.ManageMembers -> stringResource(R.string.screen_room_change_permissions_member_moderation)
     RoomPermissionsSection.ManageSpace -> stringResource(R.string.screen_room_change_permissions_manage_space)
 }
 

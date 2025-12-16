@@ -62,7 +62,7 @@ class ChangeRoomPermissionsPresenterTest {
                 RoomPermissionType.SEND_EVENTS,
                 RoomPermissionType.REDACT_EVENTS,
             )
-            assertThat(itemsBySection[RoomPermissionsSection.MembershipModeration]).containsExactly(
+            assertThat(itemsBySection[RoomPermissionsSection.ManageMembers]).containsExactly(
                 RoomPermissionType.INVITE,
                 RoomPermissionType.KICK,
                 RoomPermissionType.BAN,

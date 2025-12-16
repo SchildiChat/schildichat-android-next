@@ -462,10 +462,6 @@ Naozaj chcete pokračovať?"</string>
   <string name="screen_resolve_send_failure_unsigned_device_title">"Vaša správa nebola odoslaná, pretože %1$s neoveril/a všetky zariadenia."</string>
   <string name="screen_resolve_send_failure_you_unsigned_device_subtitle">"Jedno alebo viac vašich zariadení nie je overených. Správu môžete odoslať aj tak, alebo môžete zatiaľ zrušiť a skúsiť to znova neskôr po overení všetkých svojich zariadení."</string>
   <string name="screen_resolve_send_failure_you_unsigned_device_title">"Vaša správa nebola odoslaná, pretože ste neoverili jedno alebo viac svojich zariadení"</string>
-  <string name="screen_room_change_permissions_change_settings">"Zmeniť nastavenia"</string>
-  <string name="screen_room_change_permissions_manage_space">"Spravovať priestor"</string>
-  <string name="screen_room_change_permissions_manage_space_rooms">"Spravovať miestnosti"</string>
-  <string name="screen_room_change_permissions_title">"Povolenia"</string>
   <string name="screen_room_change_role_administrators_or_owners_title">"Upraviť správcov alebo vlastníkov"</string>
   <string name="screen_room_error_failed_processing_media">"Nepodarilo sa spracovať médiá na odoslanie, skúste to prosím znova."</string>
   <string name="screen_room_error_failed_retrieving_user_details">"Nepodarilo sa získať údaje o používateľovi"</string>

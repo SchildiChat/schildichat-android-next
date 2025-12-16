@@ -23,7 +23,6 @@ import org.matrix.rustcomponents.sdk.GrantLoginWithQrCodeHandler
 import org.matrix.rustcomponents.sdk.GrantQrLoginProgress
 import org.matrix.rustcomponents.sdk.GrantQrLoginProgressListener
 import org.matrix.rustcomponents.sdk.HumanQrGrantLoginException
-import org.matrix.rustcomponents.sdk.QrCodeData
 import org.matrix.rustcomponents.sdk.QrCodeDecodeException
 import timber.log.Timber
 
@@ -33,6 +32,7 @@ class RustLinkDesktopHandler(
     private val inner: GrantLoginWithQrCodeHandler,
     private val sessionCoroutineScope: CoroutineScope,
     private val sessionDispatcher: CoroutineDispatcher,
+    private val qrCodeDataParser: QrCodeDataParser,
 ) : LinkDesktopHandler {
     private val _linkDesktopStep = MutableStateFlow<LinkDesktopStep>(LinkDesktopStep.Uninitialized)
     override val linkDesktopStep: StateFlow<LinkDesktopStep> = _linkDesktopStep.asStateFlow()
@@ -41,7 +41,7 @@ class RustLinkDesktopHandler(
         Timber.tag(tag.value).d("Emit Uninitialized")
         _linkDesktopStep.emit(LinkDesktopStep.Uninitialized)
         try {
-            val qrCodeData = QrCodeData.fromBytes(data)
+            val qrCodeData = qrCodeDataParser.parse(data)
             inner.scan(
                 qrCodeData = qrCodeData,
                 progressListener = object : GrantQrLoginProgressListener {

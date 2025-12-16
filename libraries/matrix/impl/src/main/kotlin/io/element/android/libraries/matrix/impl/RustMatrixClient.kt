@@ -49,6 +49,7 @@ import io.element.android.libraries.matrix.impl.encryption.RustEncryptionService
 import io.element.android.libraries.matrix.impl.exception.mapClientException
 import io.element.android.libraries.matrix.impl.linknewdevice.RustLinkDesktopHandler
 import io.element.android.libraries.matrix.impl.linknewdevice.RustLinkMobileHandler
+import io.element.android.libraries.matrix.impl.linknewdevice.RustQrCodeDataParser
 import io.element.android.libraries.matrix.impl.mapper.map
 import io.element.android.libraries.matrix.impl.media.RustMediaLoader
 import io.element.android.libraries.matrix.impl.media.RustMediaPreviewService
@@ -754,6 +755,7 @@ class RustMatrixClient(
                 inner = handler,
                 sessionCoroutineScope = sessionCoroutineScope,
                 sessionDispatcher = sessionDispatcher,
+                qrCodeDataParser = RustQrCodeDataParser(),
             )
         }
     }

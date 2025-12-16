@@ -7,7 +7,14 @@
 
 package io.element.android.libraries.matrix.impl.fixtures.fakes
 
+import io.element.android.tests.testutils.lambda.lambdaError
 import org.matrix.rustcomponents.sdk.CheckCodeSender
 import org.matrix.rustcomponents.sdk.NoHandle
 
-class FakeFfiCheckCodeSender : CheckCodeSender(NoHandle)
+class FakeFfiCheckCodeSender(
+    private val sendResult: (UByte) -> Unit = { _ -> lambdaError() }
+) : CheckCodeSender(NoHandle) {
+    override suspend fun send(code: UByte) {
+        sendResult(code)
+    }
+}

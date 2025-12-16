@@ -89,8 +89,8 @@ fun ChooseSelfVerificationModeView(
         ) {
             Text(
                 modifier = Modifier
-                        .clickable(onClick = onLearnMore)
-                        .padding(vertical = 4.dp, horizontal = 16.dp),
+                    .clickable(onClick = onLearnMore)
+                    .padding(vertical = 4.dp, horizontal = 16.dp),
                 text = stringResource(CommonStrings.action_learn_more),
                 style = ElementTheme.typography.fontBodyLgMedium
             )

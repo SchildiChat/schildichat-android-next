@@ -44,7 +44,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -81,7 +81,7 @@ class ChangeRolesPresenter(
             val owners = if (role == RoomMember.Role.Admin) {
                 room.usersWithRole { role -> role is RoomMember.Role.Owner }
             } else {
-                emptyFlow()
+                flowOf(persistentListOf())
             }
             combine(
                 owners,

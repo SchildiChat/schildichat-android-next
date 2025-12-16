@@ -64,7 +64,7 @@ class LinkNewDeviceRootPresenter(
 
         fun handleEvent(event: LinkNewDeviceRootEvent) {
             when (event) {
-                is LinkNewDeviceRootEvent.LinkMobileDevice -> coroutineScope.launch {
+                LinkNewDeviceRootEvent.LinkMobileDevice -> coroutineScope.launch {
                     qrCodeData = AsyncData.Loading()
                     // Wait for the QrCode to be ready
                     linkNewMobileHandler.reset()

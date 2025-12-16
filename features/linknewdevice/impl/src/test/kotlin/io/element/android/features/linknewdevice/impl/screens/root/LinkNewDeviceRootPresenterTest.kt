@@ -12,6 +12,7 @@ import io.element.android.features.linknewdevice.impl.LinkNewMobileHandler
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.test.AN_EXCEPTION
 import io.element.android.libraries.matrix.test.FakeMatrixClient
+import io.element.android.libraries.matrix.test.linknewdevice.FakeLinkMobileHandler
 import io.element.android.tests.testutils.WarmUpRule
 import io.element.android.tests.testutils.test
 import kotlinx.coroutines.test.runTest
@@ -25,7 +26,7 @@ class LinkNewDeviceRootPresenterTest {
     @Test
     fun `present - initial state`() = runTest {
         val matrixClient = FakeMatrixClient(
-            canLinkNewDeviceResult = { Result.success(true) }
+            canLinkNewDeviceResult = { Result.success(true) },
         )
         createPresenter(
             matrixClient = matrixClient,
@@ -39,7 +40,7 @@ class LinkNewDeviceRootPresenterTest {
     @Test
     fun `present - new login device not supported`() = runTest {
         val matrixClient = FakeMatrixClient(
-            canLinkNewDeviceResult = { Result.success(false) }
+            canLinkNewDeviceResult = { Result.success(false) },
         )
         createPresenter(
             matrixClient = matrixClient,
@@ -53,7 +54,7 @@ class LinkNewDeviceRootPresenterTest {
     @Test
     fun `present - error`() = runTest {
         val matrixClient = FakeMatrixClient(
-            canLinkNewDeviceResult = { Result.failure(AN_EXCEPTION) }
+            canLinkNewDeviceResult = { Result.failure(AN_EXCEPTION) },
         )
         createPresenter(
             matrixClient = matrixClient,
@@ -61,6 +62,28 @@ class LinkNewDeviceRootPresenterTest {
             val initialState = awaitItem()
             assertThat(initialState.isSupported.isUninitialized()).isTrue()
             assertThat(awaitItem().isSupported.isFailure()).isTrue()
+        }
+    }
+
+    @Test
+    fun `present - link new mobile device`() = runTest {
+        val linkMobileHandler = FakeLinkMobileHandler(
+            startResult = {},
+        )
+        val matrixClient = FakeMatrixClient(
+            canLinkNewDeviceResult = { Result.success(true) },
+            sessionCoroutineScope = backgroundScope,
+            createLinkMobileHandlerResult = { Result.success(linkMobileHandler) }
+        )
+        createPresenter(
+            matrixClient = matrixClient,
+        ).test {
+            skipItems(1)
+            val initialState = awaitItem()
+            assertThat(initialState.isSupported.dataOrNull()).isTrue()
+            initialState.eventSink(LinkNewDeviceRootEvent.LinkMobileDevice)
+            val loadingState = awaitItem()
+            assertThat(loadingState.qrCodeData.isLoading()).isTrue()
         }
     }
 

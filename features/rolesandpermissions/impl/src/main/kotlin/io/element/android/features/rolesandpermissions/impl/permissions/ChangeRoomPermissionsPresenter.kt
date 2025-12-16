@@ -36,8 +36,7 @@ class ChangeRoomPermissionsPresenter(
 ) : Presenter<ChangeRoomPermissionsState> {
     companion object {
         private fun itemsForSection(section: RoomPermissionsSection) = when (section) {
-            RoomPermissionsSection.SpaceDetails,
-            RoomPermissionsSection.RoomDetails -> persistentListOf(
+            RoomPermissionsSection.EditDetails -> persistentListOf(
                 RoomPermissionType.ROOM_NAME,
                 RoomPermissionType.ROOM_AVATAR,
                 RoomPermissionType.ROOM_TOPIC,
@@ -46,19 +45,23 @@ class ChangeRoomPermissionsPresenter(
                 RoomPermissionType.SEND_EVENTS,
                 RoomPermissionType.REDACT_EVENTS,
             )
-            RoomPermissionsSection.MembershipModeration -> persistentListOf(
+            RoomPermissionsSection.ManageMembers -> persistentListOf(
                 RoomPermissionType.INVITE,
                 RoomPermissionType.KICK,
                 RoomPermissionType.BAN,
+            )
+            RoomPermissionsSection.ManageSpace -> persistentListOf(
+                RoomPermissionType.SPACE_MANAGE_ROOMS,
+                RoomPermissionType.CHANGE_SETTINGS,
             )
         }
 
         private fun RoomPermissionsSection.shouldShow(isSpace: Boolean): Boolean {
             return when (this) {
-                RoomPermissionsSection.RoomDetails -> !isSpace
-                RoomPermissionsSection.MembershipModeration -> true
+                RoomPermissionsSection.EditDetails -> true
+                RoomPermissionsSection.ManageMembers -> true
                 RoomPermissionsSection.MessagesAndContent -> !isSpace
-                RoomPermissionsSection.SpaceDetails -> isSpace
+                RoomPermissionsSection.ManageSpace -> isSpace
             }
         }
 
@@ -99,11 +102,13 @@ class ChangeRoomPermissionsPresenter(
                         RoomPermissionType.BAN -> currentPermissions?.copy(ban = powerLevel)
                         RoomPermissionType.INVITE -> currentPermissions?.copy(invite = powerLevel)
                         RoomPermissionType.KICK -> currentPermissions?.copy(kick = powerLevel)
-                        RoomPermissionType.SEND_EVENTS -> currentPermissions?.copy(sendEvents = powerLevel)
+                        RoomPermissionType.SEND_EVENTS -> currentPermissions?.copy(eventsDefault = powerLevel)
                         RoomPermissionType.REDACT_EVENTS -> currentPermissions?.copy(redactEvents = powerLevel)
                         RoomPermissionType.ROOM_NAME -> currentPermissions?.copy(roomName = powerLevel)
                         RoomPermissionType.ROOM_AVATAR -> currentPermissions?.copy(roomAvatar = powerLevel)
                         RoomPermissionType.ROOM_TOPIC -> currentPermissions?.copy(roomTopic = powerLevel)
+                        RoomPermissionType.SPACE_MANAGE_ROOMS -> currentPermissions?.copy(spaceChild = powerLevel)
+                        RoomPermissionType.CHANGE_SETTINGS -> currentPermissions?.copy(stateDefault = powerLevel)
                     }
                 }
                 is ChangeRoomPermissionsEvent.Save -> coroutineScope.save()

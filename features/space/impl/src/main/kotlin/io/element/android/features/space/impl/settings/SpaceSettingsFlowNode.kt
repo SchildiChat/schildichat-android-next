@@ -20,6 +20,7 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.features.rolesandpermissions.api.RolesAndPermissionsEntryPoint
+import io.element.android.features.roomdetailsedit.api.RoomDetailsEditEntryPoint
 import io.element.android.features.securityandprivacy.api.SecurityAndPrivacyEntryPoint
 import io.element.android.features.space.impl.di.SpaceFlowScope
 import io.element.android.libraries.architecture.BackstackView
@@ -35,15 +36,17 @@ class SpaceSettingsFlowNode(
     @Assisted plugins: List<Plugin>,
     private val securityAndPrivacyEntryPoint: SecurityAndPrivacyEntryPoint,
     private val rolesAndPermissionsEntryPoint: RolesAndPermissionsEntryPoint,
+    private val roomDetailsEditEntryPoint: RoomDetailsEditEntryPoint
 ) : BaseFlowNode<SpaceSettingsFlowNode.NavTarget>(
     backstack = BackStack(
-        initialElement = NavTarget.Root,
+        initialElement = initialElement(plugins),
         savedStateMap = buildContext.savedStateMap,
     ),
     buildContext = buildContext,
     plugins = plugins,
 ) {
     interface Callback : Plugin {
+        fun initialTarget(): NavTarget = NavTarget.Root
         fun navigateToSpaceMembers()
         fun startLeaveSpaceFlow()
         fun closeSettings()
@@ -52,6 +55,9 @@ class SpaceSettingsFlowNode(
     sealed interface NavTarget : Parcelable {
         @Parcelize
         data object Root : NavTarget
+
+        @Parcelize
+        data object EditDetails : NavTarget
 
         @Parcelize
         data object SecurityAndPrivacy : NavTarget
@@ -71,7 +77,7 @@ class SpaceSettingsFlowNode(
                     }
 
                     override fun navigateToEditDetails() {
-                        // TODO
+                        backstack.push(NavTarget.EditDetails)
                     }
 
                     override fun navigateToSpaceMembers() {
@@ -108,7 +114,19 @@ class SpaceSettingsFlowNode(
                 )
             }
             is NavTarget.RolesAndPermissions -> {
+                val callback = object : RolesAndPermissionsEntryPoint.Callback {
+                    override fun onDone() {
+                        backstack.pop()
+                    }
+                }
                 rolesAndPermissionsEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    callback = callback,
+                )
+            }
+            NavTarget.EditDetails -> {
+                roomDetailsEditEntryPoint.createNode(
                     parentNode = this,
                     buildContext = buildContext,
                 )
@@ -120,4 +138,8 @@ class SpaceSettingsFlowNode(
     override fun View(modifier: Modifier) {
         BackstackView(modifier)
     }
+}
+
+fun initialElement(plugins: List<Plugin>): SpaceSettingsFlowNode.NavTarget {
+    return plugins.callback<SpaceSettingsFlowNode.Callback>().initialTarget()
 }

@@ -32,11 +32,13 @@ data class ChangeRoomPermissionsState(
             RoomPermissionType.BAN -> RoomMember.Role.forPowerLevel(currentPermissions.ban)
             RoomPermissionType.INVITE -> RoomMember.Role.forPowerLevel(currentPermissions.invite)
             RoomPermissionType.KICK -> RoomMember.Role.forPowerLevel(currentPermissions.kick)
-            RoomPermissionType.SEND_EVENTS -> RoomMember.Role.forPowerLevel(currentPermissions.sendEvents)
+            RoomPermissionType.SEND_EVENTS -> RoomMember.Role.forPowerLevel(currentPermissions.eventsDefault)
             RoomPermissionType.REDACT_EVENTS -> RoomMember.Role.forPowerLevel(currentPermissions.redactEvents)
             RoomPermissionType.ROOM_NAME -> RoomMember.Role.forPowerLevel(currentPermissions.roomName)
             RoomPermissionType.ROOM_AVATAR -> RoomMember.Role.forPowerLevel(currentPermissions.roomAvatar)
             RoomPermissionType.ROOM_TOPIC -> RoomMember.Role.forPowerLevel(currentPermissions.roomTopic)
+            RoomPermissionType.SPACE_MANAGE_ROOMS -> RoomMember.Role.forPowerLevel(currentPermissions.spaceChild)
+            RoomPermissionType.CHANGE_SETTINGS -> RoomMember.Role.forPowerLevel(currentPermissions.stateDefault)
         }
         return when (role) {
             is RoomMember.Role.Owner,
@@ -48,10 +50,10 @@ data class ChangeRoomPermissionsState(
 }
 
 enum class RoomPermissionsSection {
-    SpaceDetails,
-    RoomDetails,
+    ManageMembers,
+    EditDetails,
     MessagesAndContent,
-    MembershipModeration,
+    ManageSpace
 }
 
 enum class SelectableRole : DropdownOption {
@@ -80,5 +82,7 @@ enum class RoomPermissionType {
     REDACT_EVENTS,
     ROOM_NAME,
     ROOM_AVATAR,
-    ROOM_TOPIC
+    ROOM_TOPIC,
+    SPACE_MANAGE_ROOMS,
+    CHANGE_SETTINGS,
 }

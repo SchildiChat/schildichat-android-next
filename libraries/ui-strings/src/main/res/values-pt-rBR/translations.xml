@@ -446,10 +446,6 @@ Você tem certeza de que deseja continuar?"</string>
   <string name="screen_resolve_send_failure_unsigned_device_title">"Sua mensagem não foi enviada porque %1$s não verificou todos os dispositivos"</string>
   <string name="screen_resolve_send_failure_you_unsigned_device_subtitle">"Um ou mais de seus dispositivos não foram verificados. Você pode enviar a mensagem mesmo assim ou pode cancelar por enquanto e tentar novamente mais tarde, depois de ter verificado todos os seus dispositivos."</string>
   <string name="screen_resolve_send_failure_you_unsigned_device_title">"Sua mensagem não foi enviada porque você não verificou um ou mais de seus dispositivos"</string>
-  <string name="screen_room_change_permissions_change_settings">"Alterar configurações"</string>
-  <string name="screen_room_change_permissions_manage_space">"Gerenciar espaço"</string>
-  <string name="screen_room_change_permissions_manage_space_rooms">"Gerenciar salas"</string>
-  <string name="screen_room_change_permissions_title">"Permissões"</string>
   <string name="screen_room_change_role_administrators_or_owners_title">"Editar administradores ou proprietários"</string>
   <string name="screen_room_error_failed_processing_media">"Falha ao processar a mídia para o envio. Tente novamente."</string>
   <string name="screen_room_error_failed_retrieving_user_details">"Não foi possível buscar os detalhes do usuário"</string>

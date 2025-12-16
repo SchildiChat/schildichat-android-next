@@ -65,7 +65,7 @@ class SpaceFlowNode(
         data object Root : NavTarget
 
         @Parcelize
-        data object Settings : NavTarget
+        data class Settings(val initialTarget: SpaceSettingsFlowNode.NavTarget = SpaceSettingsFlowNode.NavTarget.Root) : NavTarget
 
         @Parcelize
         data object Leave : NavTarget
@@ -89,7 +89,7 @@ class SpaceFlowNode(
                     }
 
                     override fun navigateToRolesAndPermissions() {
-                        // TODO
+                        backstack.push(NavTarget.Settings(SpaceSettingsFlowNode.NavTarget.RolesAndPermissions))
                     }
                 }
                 createNode<LeaveSpaceNode>(buildContext, listOf(callback))
@@ -101,7 +101,7 @@ class SpaceFlowNode(
                     }
 
                     override fun navigateToSpaceSettings() {
-                        backstack.push(NavTarget.Settings)
+                        backstack.push(NavTarget.Settings())
                     }
 
                     override fun navigateToRoomMemberList() {
@@ -114,8 +114,10 @@ class SpaceFlowNode(
                 }
                 createNode<SpaceNode>(buildContext, listOf(callback))
             }
-            NavTarget.Settings -> {
+            is NavTarget.Settings -> {
                 val callback = object : SpaceSettingsFlowNode.Callback {
+                    override fun initialTarget() = navTarget.initialTarget
+
                     override fun navigateToSpaceMembers() {
                         callback.navigateToRoomMemberList()
                     }

@@ -244,7 +244,7 @@ class SecurityAndPrivacyPresenterTest {
             navigator = navigator,
         )
         presenter.test {
-            skipItems(2)
+            skipItems(1)
             with(awaitItem()) {
                 assertThat(editedSettings.roomAccess).isEqualTo(SecurityAndPrivacyRoomAccess.InviteOnly)
                 eventSink(SecurityAndPrivacyEvent.ChangeRoomAccess(SecurityAndPrivacyRoomAccess.Anyone))
@@ -312,7 +312,7 @@ class SecurityAndPrivacyPresenterTest {
         )
         val presenter = createSecurityAndPrivacyPresenter(room = room)
         presenter.test {
-            skipItems(2)
+            skipItems(1)
             with(awaitItem()) {
                 assertThat(editedSettings.roomAccess).isEqualTo(SecurityAndPrivacyRoomAccess.InviteOnly)
                 eventSink(SecurityAndPrivacyEvent.ChangeRoomAccess(SecurityAndPrivacyRoomAccess.Anyone))

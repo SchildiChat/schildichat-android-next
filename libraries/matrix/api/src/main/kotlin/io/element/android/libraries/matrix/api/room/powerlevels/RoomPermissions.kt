@@ -23,6 +23,9 @@ import kotlinx.coroutines.flow.map
  * Provides information about the permissions of users in a room.
  */
 interface RoomPermissions : AutoCloseable {
+    /**
+     * Returns true if the current user is able to ban from the room.
+     */
     fun canOwnUserBan(): Boolean
 
     /**
@@ -31,7 +34,7 @@ interface RoomPermissions : AutoCloseable {
     fun canOwnUserInvite(): Boolean
 
     /**
-     * Returns true if the current user is able to kick in the room.
+     * Returns true if the current user is able to kick from the room.
      */
     fun canOwnUserKick(): Boolean
 
@@ -128,10 +131,18 @@ interface RoomPermissions : AutoCloseable {
     fun canUserTriggerRoomNotification(userId: UserId): Boolean
 }
 
+/**
+ * Returns true if the current user can edit roles and permissions in the room ie. can send
+ * a power levels state event.
+ */
 fun RoomPermissions.canEditRolesAndPermissions(): Boolean {
     return canOwnUserSendState(StateEventType.ROOM_POWER_LEVELS)
 }
 
+/**
+ * Returns true if the current user can start a call in the room ie. can send
+ * a call member state event.
+ */
 fun RoomPermissions.canCall(): Boolean {
     return canOwnUserSendState(StateEventType.CALL_MEMBER)
 }

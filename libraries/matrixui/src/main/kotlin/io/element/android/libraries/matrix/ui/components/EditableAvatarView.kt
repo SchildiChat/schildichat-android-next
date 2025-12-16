@@ -56,6 +56,7 @@ fun EditableAvatarView(
     avatarType: AvatarType,
     onAvatarClick: () -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
     val a11yAvatar = stringResource(CommonStrings.a11y_avatar)
     val editIconRadius = 15.dp
@@ -66,6 +67,7 @@ fun EditableAvatarView(
             .wrapContentSize()
             .size(height = parentHeight, width = parentWidth)
             .clickable(
+                enabled = enabled,
                 interactionSource = remember { MutableInteractionSource() },
                 onClickLabel = stringResource(CommonStrings.a11y_edit_avatar),
                 onClick = onAvatarClick,

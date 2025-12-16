@@ -26,6 +26,7 @@ class ChangeRoomPermissionsStateProvider : PreviewParameterProvider<ChangeRoomPe
                 saveAction = AsyncAction.Failure(IllegalStateException("Failed to save changes"))
             ),
             aChangeRoomPermissionsState(hasChanges = true, saveAction = AsyncAction.ConfirmingCancellation),
+            aChangeRoomPermissionsState(itemsBySection = ChangeRoomPermissionsPresenter.buildItems(isSpace = true)),
         )
 }
 
@@ -51,12 +52,13 @@ private fun previewPermissions(): RoomPowerLevelsValues {
         ban = RoomMember.Role.User.powerLevel,
         // MessagesAndContent section
         redactEvents = RoomMember.Role.Moderator.powerLevel,
-        sendEvents = RoomMember.Role.Admin.powerLevel,
+        eventsDefault = RoomMember.Role.Admin.powerLevel,
         // RoomDetails section
         roomName = RoomMember.Role.Admin.powerLevel,
         roomAvatar = RoomMember.Role.Moderator.powerLevel,
         roomTopic = RoomMember.Role.User.powerLevel,
         // SpaceManagement section
         spaceChild = RoomMember.Role.Moderator.powerLevel,
+        stateDefault = RoomMember.Role.Moderator.powerLevel,
     )
 }

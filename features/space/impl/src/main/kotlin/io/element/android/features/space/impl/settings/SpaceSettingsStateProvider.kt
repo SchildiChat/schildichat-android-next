@@ -30,6 +30,7 @@ fun aSpaceSettingsState(
     memberCount: Long = 100,
     showRolesAndPermissions: Boolean = false,
     showSecurityAndPrivacy: Boolean = false,
+    canEditDetails: Boolean = false,
     eventSink: (SpaceSettingsEvents) -> Unit = {},
 ) = SpaceSettingsState(
     roomId = roomId,
@@ -37,6 +38,7 @@ fun aSpaceSettingsState(
     canonicalAlias = alias,
     avatarUrl = avatarUrl,
     memberCount = memberCount,
+    canEditDetails = canEditDetails,
     showRolesAndPermissions = showRolesAndPermissions,
     showSecurityAndPrivacy = showSecurityAndPrivacy,
     eventSink = eventSink,

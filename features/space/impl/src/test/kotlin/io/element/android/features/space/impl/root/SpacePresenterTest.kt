@@ -24,6 +24,7 @@ import io.element.android.libraries.featureflag.test.FakeFeatureFlagService
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomIdOrAlias
 import io.element.android.libraries.matrix.api.core.toRoomIdOrAlias
+import io.element.android.libraries.matrix.api.room.BaseRoom
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
 import io.element.android.libraries.matrix.api.room.join.JoinRoom
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
@@ -31,7 +32,9 @@ import io.element.android.libraries.matrix.test.AN_EXCEPTION
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_ROOM_ID_2
 import io.element.android.libraries.matrix.test.FakeMatrixClient
+import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.join.FakeJoinRoom
+import io.element.android.libraries.matrix.test.room.powerlevels.FakeRoomPermissions
 import io.element.android.libraries.matrix.test.spaces.FakeSpaceRoomList
 import io.element.android.libraries.previewutils.room.aSpaceRoom
 import io.element.android.tests.testutils.EventsRecorder
@@ -71,8 +74,25 @@ class SpacePresenterTest {
     }
 
     @Test
-    fun `present - canAccessSpaceSettings when space settings ff is enabled`() = runTest {
+    fun `present - canAccessSpaceSettings false when space settings ff is enabled but no permissions`() = runTest {
         val presenter = createSpacePresenter(spaceSettingsEnabled = true)
+        presenter.test {
+            val state = awaitItem()
+            assertThat(state.canAccessSpaceSettings).isFalse()
+        }
+    }
+
+    @Test
+    fun `present - canAccessSpaceSettings true when space settings ff is enabled and has permissions`() = runTest {
+        val room = FakeBaseRoom(
+            roomPermissions = FakeRoomPermissions(
+                canSendState = { true }
+            )
+        )
+        val presenter = createSpacePresenter(
+            room = room,
+            spaceSettingsEnabled = true,
+        )
         presenter.test {
             skipItems(1)
             val state = awaitItem()
@@ -335,7 +355,10 @@ class SpacePresenterTest {
 
     private fun TestScope.createSpacePresenter(
         client: MatrixClient = FakeMatrixClient(),
-        spaceRoomList: SpaceRoomList = FakeSpaceRoomList(),
+        room: BaseRoom = FakeBaseRoom(),
+        spaceRoomList: SpaceRoomList = FakeSpaceRoomList(
+            paginateResult = { Result.success(Unit) }
+        ),
         seenInvitesStore: SeenInvitesStore = InMemorySeenInvitesStore(),
         joinRoom: JoinRoom = FakeJoinRoom(
             lambda = { _, _, _ -> Result.success(Unit) },
@@ -345,6 +368,7 @@ class SpacePresenterTest {
     ): SpacePresenter {
         return SpacePresenter(
             client = client,
+            room = room,
             spaceRoomList = spaceRoomList,
             seenInvitesStore = seenInvitesStore,
             joinRoom = joinRoom,

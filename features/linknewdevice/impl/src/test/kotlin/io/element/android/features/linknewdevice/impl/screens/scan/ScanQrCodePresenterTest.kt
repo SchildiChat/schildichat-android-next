@@ -105,8 +105,6 @@ class ScanQrCodePresenterTest {
 
 private fun createPresenter(
     matrixClient: MatrixClient,
-): ScanQrCodePresenter {
-    return ScanQrCodePresenter(
-        linkNewDesktopHandler = LinkNewDesktopHandler(matrixClient),
-    )
-}
+) = ScanQrCodePresenter(
+    linkNewDesktopHandler = LinkNewDesktopHandler(matrixClient),
+)

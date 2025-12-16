@@ -47,12 +47,10 @@ class DesktopNoticePresenterTest {
             assertThat(awaitItem().cameraPermissionState.showDialog).isTrue()
         }
     }
-
-    private fun createPresenter(
-        permissionsPresenterFactory: FakePermissionsPresenterFactory = FakePermissionsPresenterFactory(),
-    ): DesktopNoticePresenter {
-        return DesktopNoticePresenter(
-            permissionsPresenterFactory = permissionsPresenterFactory,
-        )
-    }
 }
+
+private fun createPresenter(
+    permissionsPresenterFactory: FakePermissionsPresenterFactory = FakePermissionsPresenterFactory(),
+) = DesktopNoticePresenter(
+    permissionsPresenterFactory = permissionsPresenterFactory,
+)

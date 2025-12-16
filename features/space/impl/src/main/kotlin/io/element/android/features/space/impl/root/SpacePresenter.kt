@@ -34,8 +34,8 @@ import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.toRoomIdOrAlias
+import io.element.android.libraries.matrix.api.room.BaseRoom
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
-import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.room.join.JoinRoom
 import io.element.android.libraries.matrix.api.room.powerlevels.permissionsAsState
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
@@ -55,7 +55,7 @@ import kotlin.jvm.optionals.getOrNull
 @Inject
 class SpacePresenter(
     private val spaceRoomList: SpaceRoomList,
-    private val room: JoinedRoom,
+    private val room: BaseRoom,
     private val client: MatrixClient,
     private val seenInvitesStore: SeenInvitesStore,
     private val joinRoom: JoinRoom,

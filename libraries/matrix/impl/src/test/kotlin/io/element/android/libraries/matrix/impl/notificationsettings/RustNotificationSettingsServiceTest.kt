@@ -20,7 +20,7 @@ import org.junit.Test
 import org.matrix.rustcomponents.sdk.NotificationSettings
 
 class RustNotificationSettingsServiceTest {
-        @Test
+    @Test
     fun test() = runTest {
         val sut = createRustNotificationSettingsService()
         val result = sut.getRoomNotificationSettings(

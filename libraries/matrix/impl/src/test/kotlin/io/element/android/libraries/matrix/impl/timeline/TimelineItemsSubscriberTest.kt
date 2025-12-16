@@ -27,7 +27,7 @@ import uniffi.matrix_sdk_ui.EventItemOrigin
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class TimelineItemsSubscriberTest {
-        @Test
+    @Test
     fun `when timeline emits an empty list of items, the flow must emits an empty list`() = runTest {
         val timelineItems: MutableSharedFlow<List<MatrixTimelineItem>> =
             MutableSharedFlow(replay = 1, extraBufferCapacity = Int.MAX_VALUE)
@@ -50,7 +50,7 @@ class TimelineItemsSubscriberTest {
         }
     }
 
-        @Test
+    @Test
     fun `when timeline emits a non empty list of items, the flow must emits a non empty list`() = runTest {
         val timelineItems: MutableSharedFlow<List<MatrixTimelineItem>> =
             MutableSharedFlow(replay = 1, extraBufferCapacity = Int.MAX_VALUE)
@@ -73,7 +73,7 @@ class TimelineItemsSubscriberTest {
         }
     }
 
-        @Test
+    @Test
     fun `when timeline emits an item with SYNC origin`() = runTest {
         val timelineItems: MutableSharedFlow<List<MatrixTimelineItem>> =
             MutableSharedFlow(replay = 1, extraBufferCapacity = Int.MAX_VALUE)
@@ -104,7 +104,7 @@ class TimelineItemsSubscriberTest {
         }
     }
 
-        @Test
+    @Test
     fun `multiple subscriptions does not have side effect`() = runTest {
         val timelineItemsSubscriber = createTimelineItemsSubscriber()
         timelineItemsSubscriber.subscribeIfNeeded()

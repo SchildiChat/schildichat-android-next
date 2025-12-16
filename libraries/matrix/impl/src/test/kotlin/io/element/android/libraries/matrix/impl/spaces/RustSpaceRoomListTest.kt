@@ -29,7 +29,7 @@ import uniffi.matrix_sdk_ui.SpaceRoomListPaginationState
 import org.matrix.rustcomponents.sdk.SpaceRoomList as InnerSpaceRoomList
 
 class RustSpaceRoomListTest {
-        @Test
+    @Test
     fun `paginationStatusFlow emits values`() = runTest {
         val innerSpaceRoomList = FakeFfiSpaceRoomList(
             paginationStateResult = { SpaceRoomListPaginationState.Idle(false) }
@@ -51,7 +51,7 @@ class RustSpaceRoomListTest {
         }
     }
 
-        @Test
+    @Test
     fun `spaceRoomsFlow emits values`() = runTest {
         val innerSpaceRoomList = FakeFfiSpaceRoomList(
             paginationStateResult = { SpaceRoomListPaginationState.Idle(false) }
@@ -73,7 +73,7 @@ class RustSpaceRoomListTest {
         }
     }
 
-        @Test
+    @Test
     fun `paginate invokes paginate on the inner class`() = runTest {
         val paginateResult = lambdaRecorder<Unit> { }
         val innerSpaceRoomList = FakeFfiSpaceRoomList(

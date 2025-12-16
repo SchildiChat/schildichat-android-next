@@ -35,7 +35,7 @@ import org.matrix.rustcomponents.sdk.NotificationStatus
 import org.matrix.rustcomponents.sdk.TimelineEventType
 
 class RustNotificationServiceTest {
-        @Test
+    @Test
     fun test() = runTest {
         val notificationClient = FakeFfiNotificationClient(
             notificationItemResult = mapOf(AN_EVENT_ID.value to aRustBatchNotificationResult()),
@@ -56,7 +56,7 @@ class RustNotificationServiceTest {
         )
     }
 
-        @Test
+    @Test
     fun `test mapping invalid item only drops that item`() = runTest {
         val error = IllegalStateException("This event type is not supported")
         val faultyEvent = object : FakeFfiTimelineEvent() {
@@ -83,7 +83,7 @@ class RustNotificationServiceTest {
         assertThat(successfulResult?.isSuccess).isTrue()
     }
 
-        @Test
+    @Test
     fun `test unable to resolve event`() = runTest {
         val notificationClient = FakeFfiNotificationClient(
             notificationItemResult = emptyMap(),
@@ -95,7 +95,7 @@ class RustNotificationServiceTest {
         assertThat(exception).isInstanceOf(NotificationResolverException::class.java)
     }
 
-        @Test
+    @Test
     fun `close should invoke the close method of the service`() = runTest {
         val closeResult = lambdaRecorder<Unit> { }
         val notificationClient = FakeFfiNotificationClient(

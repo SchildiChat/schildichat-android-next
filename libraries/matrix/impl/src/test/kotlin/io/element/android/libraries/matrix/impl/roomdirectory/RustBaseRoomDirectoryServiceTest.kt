@@ -14,7 +14,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class RustBaseRoomDirectoryServiceTest {
-        @Test
+    @Test
     fun test() = runTest {
         val client = FakeFfiClient()
         val sut = RustRoomDirectoryService(

@@ -28,7 +28,7 @@ import org.matrix.rustcomponents.sdk.RoomListEntriesUpdate
 class RoomSummaryListProcessorTest {
     private val summaries = MutableStateFlow<List<RoomSummary>>(emptyList())
 
-        @Test
+    @Test
     fun `Append adds new entries at the end of the list`() = runTest {
         summaries.value = listOf(aRoomSummary())
         val processor = createProcessor()
@@ -40,7 +40,7 @@ class RoomSummaryListProcessorTest {
         assertThat(summaries.value.subList(1, 4).all { it.roomId == A_ROOM_ID_2 }).isTrue()
     }
 
-        @Test
+    @Test
     fun `PushBack adds a new entry at the end of the list`() = runTest {
         summaries.value = listOf(aRoomSummary())
         val processor = createProcessor()
@@ -50,7 +50,7 @@ class RoomSummaryListProcessorTest {
         assertThat(summaries.value.last().roomId).isEqualTo(A_ROOM_ID_2)
     }
 
-        @Test
+    @Test
     fun `PushFront inserts a new entry at the start of the list`() = runTest {
         summaries.value = listOf(aRoomSummary())
         val processor = createProcessor()
@@ -60,7 +60,7 @@ class RoomSummaryListProcessorTest {
         assertThat(summaries.value.first().roomId).isEqualTo(A_ROOM_ID_2)
     }
 
-        @Test
+    @Test
     fun `Set replaces an entry at some index`() = runTest {
         summaries.value = listOf(aRoomSummary())
         val processor = createProcessor()
@@ -72,7 +72,7 @@ class RoomSummaryListProcessorTest {
         assertThat(summaries.value[index].roomId).isEqualTo(A_ROOM_ID_2)
     }
 
-        @Test
+    @Test
     fun `Insert inserts a new entry at the provided index`() = runTest {
         summaries.value = listOf(aRoomSummary())
         val processor = createProcessor()
@@ -84,7 +84,7 @@ class RoomSummaryListProcessorTest {
         assertThat(summaries.value[index].roomId).isEqualTo(A_ROOM_ID_2)
     }
 
-        @Test
+    @Test
     fun `Remove removes an entry at some index`() = runTest {
         summaries.value = listOf(
             aRoomSummary(roomId = A_ROOM_ID),
@@ -99,7 +99,7 @@ class RoomSummaryListProcessorTest {
         assertThat(summaries.value[index].roomId).isEqualTo(A_ROOM_ID_2)
     }
 
-        @Test
+    @Test
     fun `PopBack removes an entry at the end of the list`() = runTest {
         summaries.value = listOf(
             aRoomSummary(roomId = A_ROOM_ID),
@@ -114,7 +114,7 @@ class RoomSummaryListProcessorTest {
         assertThat(summaries.value[index].roomId).isEqualTo(A_ROOM_ID)
     }
 
-        @Test
+    @Test
     fun `PopFront removes an entry at the start of the list`() = runTest {
         summaries.value = listOf(
             aRoomSummary(roomId = A_ROOM_ID),
@@ -129,7 +129,7 @@ class RoomSummaryListProcessorTest {
         assertThat(summaries.value[index].roomId).isEqualTo(A_ROOM_ID_2)
     }
 
-        @Test
+    @Test
     fun `Clear removes all the entries`() = runTest {
         summaries.value = listOf(
             aRoomSummary(roomId = A_ROOM_ID),
@@ -142,7 +142,7 @@ class RoomSummaryListProcessorTest {
         assertThat(summaries.value).isEmpty()
     }
 
-        @Test
+    @Test
     fun `Truncate removes all entries after the provided length`() = runTest {
         summaries.value = listOf(
             aRoomSummary(roomId = A_ROOM_ID),
@@ -157,7 +157,7 @@ class RoomSummaryListProcessorTest {
         assertThat(summaries.value[index].roomId).isEqualTo(A_ROOM_ID)
     }
 
-        @Test
+    @Test
     fun `Reset removes all entries and add the provided ones`() = runTest {
         summaries.value = listOf(
             aRoomSummary(roomId = A_ROOM_ID),

@@ -24,7 +24,7 @@ import org.matrix.rustcomponents.sdk.SpaceListUpdate
 class RoomSummaryListProcessorTest {
     private val spaceRoomsFlow = MutableStateFlow<List<SpaceRoom>>(emptyList())
 
-        @Test
+    @Test
     fun `Append adds new entries at the end of the list`() = runTest {
         spaceRoomsFlow.value = listOf(aSpaceRoom())
         val processor = createProcessor()
@@ -36,7 +36,7 @@ class RoomSummaryListProcessorTest {
         assertThat(spaceRoomsFlow.value.subList(1, 4).all { it.roomId == A_ROOM_ID_2 }).isTrue()
     }
 
-        @Test
+    @Test
     fun `PushBack adds a new entry at the end of the list`() = runTest {
         spaceRoomsFlow.value = listOf(aSpaceRoom())
         val processor = createProcessor()
@@ -46,7 +46,7 @@ class RoomSummaryListProcessorTest {
         assertThat(spaceRoomsFlow.value.last().roomId).isEqualTo(A_ROOM_ID_2)
     }
 
-        @Test
+    @Test
     fun `PushFront inserts a new entry at the start of the list`() = runTest {
         spaceRoomsFlow.value = listOf(aSpaceRoom())
         val processor = createProcessor()
@@ -56,7 +56,7 @@ class RoomSummaryListProcessorTest {
         assertThat(spaceRoomsFlow.value.first().roomId).isEqualTo(A_ROOM_ID_2)
     }
 
-        @Test
+    @Test
     fun `Set replaces an entry at some index`() = runTest {
         spaceRoomsFlow.value = listOf(aSpaceRoom())
         val processor = createProcessor()
@@ -68,7 +68,7 @@ class RoomSummaryListProcessorTest {
         assertThat(spaceRoomsFlow.value[index].roomId).isEqualTo(A_ROOM_ID_2)
     }
 
-        @Test
+    @Test
     fun `Insert inserts a new entry at the provided index`() = runTest {
         spaceRoomsFlow.value = listOf(aSpaceRoom())
         val processor = createProcessor()
@@ -80,7 +80,7 @@ class RoomSummaryListProcessorTest {
         assertThat(spaceRoomsFlow.value[index].roomId).isEqualTo(A_ROOM_ID_2)
     }
 
-        @Test
+    @Test
     fun `Remove removes an entry at some index`() = runTest {
         spaceRoomsFlow.value = listOf(
             aSpaceRoom(roomId = A_ROOM_ID),
@@ -95,7 +95,7 @@ class RoomSummaryListProcessorTest {
         assertThat(spaceRoomsFlow.value[index].roomId).isEqualTo(A_ROOM_ID_2)
     }
 
-        @Test
+    @Test
     fun `PopBack removes an entry at the end of the list`() = runTest {
         spaceRoomsFlow.value = listOf(
             aSpaceRoom(roomId = A_ROOM_ID),
@@ -110,7 +110,7 @@ class RoomSummaryListProcessorTest {
         assertThat(spaceRoomsFlow.value[index].roomId).isEqualTo(A_ROOM_ID)
     }
 
-        @Test
+    @Test
     fun `PopFront removes an entry at the start of the list`() = runTest {
         spaceRoomsFlow.value = listOf(
             aSpaceRoom(roomId = A_ROOM_ID),
@@ -125,7 +125,7 @@ class RoomSummaryListProcessorTest {
         assertThat(spaceRoomsFlow.value[index].roomId).isEqualTo(A_ROOM_ID_2)
     }
 
-        @Test
+    @Test
     fun `Clear removes all the entries`() = runTest {
         spaceRoomsFlow.value = listOf(
             aSpaceRoom(roomId = A_ROOM_ID),
@@ -138,7 +138,7 @@ class RoomSummaryListProcessorTest {
         assertThat(spaceRoomsFlow.value).isEmpty()
     }
 
-        @Test
+    @Test
     fun `Truncate removes all entries after the provided length`() = runTest {
         spaceRoomsFlow.value = listOf(
             aSpaceRoom(roomId = A_ROOM_ID),
@@ -153,7 +153,7 @@ class RoomSummaryListProcessorTest {
         assertThat(spaceRoomsFlow.value[index].roomId).isEqualTo(A_ROOM_ID)
     }
 
-        @Test
+    @Test
     fun `Reset removes all entries and add the provided ones`() = runTest {
         spaceRoomsFlow.value = listOf(
             aSpaceRoom(roomId = A_ROOM_ID),
@@ -168,7 +168,7 @@ class RoomSummaryListProcessorTest {
         assertThat(spaceRoomsFlow.value[index].roomId).isEqualTo(A_ROOM_ID_3)
     }
 
-        @Test
+    @Test
     fun `When there is no replay cache SpaceListUpdateProcessor starts with an empty list`() = runTest {
         val spaceRoomsSharedFlow = MutableSharedFlow<List<SpaceRoom>>(replay = 1)
         val processor = createProcessor(

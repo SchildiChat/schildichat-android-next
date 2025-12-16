@@ -16,7 +16,7 @@ import org.junit.Test
 import kotlin.coroutines.EmptyCoroutineContext
 
 class RoomListFactoryTest {
-        @Test
+    @Test
     fun `createRoomList should work`() = runTest {
         val sut = RoomListFactory(
             innerRoomListService = FakeFfiRoomListService(),

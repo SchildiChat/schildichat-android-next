@@ -123,6 +123,7 @@ fun TimelineView(
     }
 
     val context = LocalContext.current
+    val toastMessage = stringResource(CommonStrings.common_copied_to_clipboard)
     val view = LocalView.current
     // Disable reverse layout when TalkBack is enabled to avoid incorrect ordering issues seen in the current Compose UI version
     val useReverseLayout = !isTalkbackActive()
@@ -136,8 +137,8 @@ fun TimelineView(
             HapticFeedbackConstants.LONG_PRESS
         )
         context.copyToClipboard(
-            link.url,
-            context.getString(CommonStrings.common_copied_to_clipboard)
+            text = link.url,
+            toastMessage = toastMessage,
         )
     }
 

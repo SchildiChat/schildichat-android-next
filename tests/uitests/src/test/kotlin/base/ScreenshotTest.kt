@@ -83,7 +83,7 @@ private fun Paparazzi.fixScreenshotName(preview: ComposablePreview<AndroidPrevie
         .joinToString(".")
     val testName = TestName(
         packageName = packageName,
-        className = preview.methodName.replace("Preview", ""),
+        className = preview.methodName.removeSuffix("Preview"),
         methodName = id
     )
     testNameField.set(this, testName)

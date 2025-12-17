@@ -52,6 +52,12 @@ object CompoundIcons {
     @Composable fun Audio(): ImageVector {
         return ImageVector.vectorResource(R.drawable.ic_compound_audio)
     }
+    @Composable fun Backspace(): ImageVector {
+        return ImageVector.vectorResource(R.drawable.ic_compound_backspace)
+    }
+    @Composable fun BackspaceSolid(): ImageVector {
+        return ImageVector.vectorResource(R.drawable.ic_compound_backspace_solid)
+    }
     @Composable fun Block(): ImageVector {
         return ImageVector.vectorResource(R.drawable.ic_compound_block)
     }
@@ -301,6 +307,9 @@ object CompoundIcons {
     @Composable fun LeftPanelClose(): ImageVector {
         return ImageVector.vectorResource(R.drawable.ic_compound_left_panel_close)
     }
+    @Composable fun LeftPanelOpen(): ImageVector {
+        return ImageVector.vectorResource(R.drawable.ic_compound_left_panel_open)
+    }
     @Composable fun Link(): ImageVector {
         return ImageVector.vectorResource(R.drawable.ic_compound_link)
     }
@@ -523,6 +532,9 @@ object CompoundIcons {
     @Composable fun SpotlightView(): ImageVector {
         return ImageVector.vectorResource(R.drawable.ic_compound_spotlight_view)
     }
+    @Composable fun Sticker(): ImageVector {
+        return ImageVector.vectorResource(R.drawable.ic_compound_sticker)
+    }
     @Composable fun Strikethrough(): ImageVector {
         return ImageVector.vectorResource(R.drawable.ic_compound_strikethrough)
     }
@@ -643,6 +655,8 @@ object CompoundIcons {
         AskToJoinSolid(),
         Attachment(),
         Audio(),
+        Backspace(),
+        BackspaceSolid(),
         Block(),
         Bold(),
         Calendar(),
@@ -726,6 +740,7 @@ object CompoundIcons {
         Labs(),
         Leave(),
         LeftPanelClose(),
+        LeftPanelOpen(),
         Link(),
         Linux(),
         ListBulleted(),
@@ -800,6 +815,7 @@ object CompoundIcons {
         Spinner(),
         Spotlight(),
         SpotlightView(),
+        Sticker(),
         Strikethrough(),
         SwitchCameraSolid(),
         TakePhoto(),
@@ -849,6 +865,8 @@ object CompoundIcons {
         R.drawable.ic_compound_ask_to_join_solid,
         R.drawable.ic_compound_attachment,
         R.drawable.ic_compound_audio,
+        R.drawable.ic_compound_backspace,
+        R.drawable.ic_compound_backspace_solid,
         R.drawable.ic_compound_block,
         R.drawable.ic_compound_bold,
         R.drawable.ic_compound_calendar,
@@ -932,6 +950,7 @@ object CompoundIcons {
         R.drawable.ic_compound_labs,
         R.drawable.ic_compound_leave,
         R.drawable.ic_compound_left_panel_close,
+        R.drawable.ic_compound_left_panel_open,
         R.drawable.ic_compound_link,
         R.drawable.ic_compound_linux,
         R.drawable.ic_compound_list_bulleted,
@@ -1006,6 +1025,7 @@ object CompoundIcons {
         R.drawable.ic_compound_spinner,
         R.drawable.ic_compound_spotlight,
         R.drawable.ic_compound_spotlight_view,
+        R.drawable.ic_compound_sticker,
         R.drawable.ic_compound_strikethrough,
         R.drawable.ic_compound_switch_camera_solid,
         R.drawable.ic_compound_take_photo,

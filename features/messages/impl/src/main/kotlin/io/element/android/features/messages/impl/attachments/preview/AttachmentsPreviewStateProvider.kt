@@ -95,7 +95,7 @@ fun aMediaUploadInfo(
 )
 
 fun aMediaOptimisationSelectorState(
-    maxUploadSize: Long = 100,
+    maxUploadSize: Long = 100 * 1024 * 1024,
     videoSizeEstimations: AsyncData<ImmutableList<VideoUploadEstimation>> = AsyncData.Success(persistentListOf()),
     isImageOptimizationEnabled: Boolean = true,
     selectedVideoPreset: VideoCompressionPreset = VideoCompressionPreset.STANDARD,

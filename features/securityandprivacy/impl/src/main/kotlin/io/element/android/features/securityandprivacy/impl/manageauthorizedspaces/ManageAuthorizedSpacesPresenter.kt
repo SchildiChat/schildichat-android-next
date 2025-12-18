@@ -18,6 +18,7 @@ import io.element.android.features.securityandprivacy.impl.SecurityAndPrivacyNav
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.room.JoinedRoom
+import kotlinx.collections.immutable.persistentListOf
 
 @AssistedInject
 class EditRoomAddressPresenter(
@@ -33,7 +34,6 @@ class EditRoomAddressPresenter(
     @Composable
     override fun present(): ManageAuthorizedSpacesState {
         val roomInfo by room.roomInfoFlow.collectAsState()
-
         fun handleEvent(event: ManageAuthorizedSpacesEvent) {
             when (event) {
                 ManageAuthorizedSpacesEvent.Done -> TODO()
@@ -42,6 +42,10 @@ class EditRoomAddressPresenter(
         }
 
         return ManageAuthorizedSpacesState(
+            joinedSpaces = persistentListOf(),
+            unknownSpaceIds = persistentListOf(),
+            currentSelection = persistentListOf(),
+            initialSelection = persistentListOf(),
             eventSink = ::handleEvent,
         )
     }

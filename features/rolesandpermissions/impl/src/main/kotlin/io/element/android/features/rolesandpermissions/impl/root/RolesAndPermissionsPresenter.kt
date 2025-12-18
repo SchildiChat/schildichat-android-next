@@ -28,6 +28,7 @@ import io.element.android.libraries.matrix.api.room.powerlevels.UserRoleChange
 import io.element.android.libraries.matrix.api.room.powerlevels.userCountWithRole
 import io.element.android.libraries.matrix.ui.model.roleOf
 import io.element.android.services.analytics.api.AnalyticsService
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -49,7 +50,16 @@ class RolesAndPermissionsPresenter(
             room.userCountWithRole { role -> role is RoomMember.Role.Admin || role is RoomMember.Role.Owner }
         }.collectAsState(null)
 
-        val canDemoteSelf = remember { derivedStateOf { roomInfo.roleOf(room.sessionId) !is RoomMember.Role.Owner } }
+        val availableDemoteActions by remember {
+            derivedStateOf {
+                val currentRole = roomInfo.roleOf(room.sessionId)
+                when (currentRole) {
+                    is RoomMember.Role.Admin -> persistentListOf(DemoteActions.ToModerator, DemoteActions.ToMember)
+                    is RoomMember.Role.Moderator -> persistentListOf(DemoteActions.ToMember)
+                    else -> persistentListOf()
+                }
+            }
+        }
         val changeOwnRoleAction = remember { mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized) }
         val resetPermissionsAction = remember { mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized) }
 
@@ -78,7 +88,7 @@ class RolesAndPermissionsPresenter(
             roomSupportsOwnerRole = roomInfo.privilegedCreatorRole,
             adminCount = adminCount,
             moderatorCount = moderatorCount,
-            canDemoteSelf = canDemoteSelf.value,
+            availableDemoteActions = availableDemoteActions,
             changeOwnRoleAction = changeOwnRoleAction.value,
             resetPermissionsAction = resetPermissionsAction.value,
             eventSink = ::handleEvent,

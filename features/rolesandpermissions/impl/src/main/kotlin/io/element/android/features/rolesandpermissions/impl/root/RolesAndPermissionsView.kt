@@ -39,8 +39,8 @@ import io.element.android.libraries.designsystem.theme.components.ListSectionHea
 import io.element.android.libraries.designsystem.theme.components.ModalBottomSheet
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.hide
-import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.ui.strings.CommonStrings
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun RolesAndPermissionsView(
@@ -117,6 +117,7 @@ fun RolesAndPermissionsView(
     when (state.changeOwnRoleAction) {
         is AsyncAction.Confirming -> {
             ChangeOwnRoleBottomSheet(
+                availableDemoteActions = state.availableDemoteActions,
                 eventSink = state.eventSink,
             )
         }
@@ -136,6 +137,7 @@ fun RolesAndPermissionsView(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ChangeOwnRoleBottomSheet(
+    availableDemoteActions: ImmutableList<DemoteActions>,
     eventSink: (RolesAndPermissionsEvents) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -164,24 +166,17 @@ private fun ChangeOwnRoleBottomSheet(
             style = ElementTheme.typography.fontBodyLgRegular,
             color = ElementTheme.colors.textPrimary,
         )
-        ListItem(
-            headlineContent = { Text(stringResource(R.string.screen_room_roles_and_permissions_change_role_demote_to_moderator)) },
-            onClick = {
-                sheetState.hide(coroutineScope) {
-                    eventSink(RolesAndPermissionsEvents.DemoteSelfTo(RoomMember.Role.Moderator))
-                }
-            },
-            style = ListItemStyle.Destructive,
-        )
-        ListItem(
-            headlineContent = { Text(stringResource(R.string.screen_room_roles_and_permissions_change_role_demote_to_member)) },
-            onClick = {
-                sheetState.hide(coroutineScope) {
-                    eventSink(RolesAndPermissionsEvents.DemoteSelfTo(RoomMember.Role.User))
-                }
-            },
-            style = ListItemStyle.Destructive,
-        )
+        for (demoteAction in availableDemoteActions) {
+            ListItem(
+                headlineContent = { Text(stringResource(demoteAction.titleRes)) },
+                onClick = {
+                    sheetState.hide(coroutineScope) {
+                        eventSink(RolesAndPermissionsEvents.DemoteSelfTo(demoteAction.role))
+                    }
+                },
+                style = ListItemStyle.Destructive,
+            )
+        }
         ListItem(
             headlineContent = { Text(stringResource(CommonStrings.action_cancel)) },
             onClick = ::dismiss,

@@ -20,7 +20,6 @@ import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.room.history.RoomHistoryVisibility
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @Inject
@@ -35,11 +34,12 @@ class HistoryVisibleStatePresenter(
         val roomInfo by room.roomInfoFlow.collectAsState()
         // Implicitly assume the alert is initially acknowledged to avoid flashes in UI.
         val acknowledged by repository.hasAcknowledged(room.roomId).collectAsState(initial = true)
+        val isHistoryVisible = roomInfo.historyVisibility == RoomHistoryVisibility.Shared || roomInfo.historyVisibility == RoomHistoryVisibility.WorldReadable
 
         val coroutineScope = rememberCoroutineScope()
 
-        LaunchedEffect(roomInfo.historyVisibility, acknowledged) {
-            if (roomInfo.historyVisibility == RoomHistoryVisibility.Joined && acknowledged) {
+        LaunchedEffect(isHistoryVisible, acknowledged) {
+            if (!isHistoryVisible && acknowledged) {
                 repository.setAcknowledged(room.roomId, false)
             }
         }
@@ -51,7 +51,7 @@ class HistoryVisibleStatePresenter(
         }
 
         return HistoryVisibleState(
-            showAlert = isFeatureEnabled && roomInfo.historyVisibility != RoomHistoryVisibility.Joined && roomInfo.isEncrypted == true && !acknowledged,
+            showAlert = isFeatureEnabled && isHistoryVisible && roomInfo.isEncrypted == true && !acknowledged,
             eventSink = ::handleEvent,
         )
     }

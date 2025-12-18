@@ -163,6 +163,10 @@ class PreferencesFlowNode(
                         backstack.push(NavTarget.Labs)
                     }
 
+                    override fun navigateToLinkNewDevice() {
+                        callback.navigateToLinkNewDevice()
+                    }
+
                     override fun navigateToUserProfile(matrixUser: MatrixUser) {
                         backstack.push(NavTarget.UserProfile(matrixUser))
                     }

@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -117,7 +118,13 @@ fun QrCodeCameraView(
                     .background(color = ElementTheme.colors.bgSubtlePrimary),
                 contentAlignment = Alignment.Center,
             ) {
-                Text("CameraView")
+                Text(
+                    text = buildString {
+                        append("CameraView\n")
+                        append(if (isScanning) "scanning" else "frozen")
+                    },
+                    textAlign = TextAlign.Center,
+                )
             }
         } else {
             AndroidView(

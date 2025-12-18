@@ -48,6 +48,7 @@ dependencies {
 
     implementation(projects.features.announcement.api)
     implementation(projects.features.ftue.api)
+    implementation(projects.features.linknewdevice.api)
     implementation(projects.features.share.api)
 
     implementation(projects.services.apperror.impl)

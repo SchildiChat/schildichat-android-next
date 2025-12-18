@@ -156,6 +156,17 @@
       ]
     },
     {
+      "name" : ":features:linknewdevice:impl",
+      "includeRegex" : [
+        "screen\\.link_new_device\\..*",
+        "screen_qr_code_login_error_.*",
+        "screen_qr_code_login_connection_note_secure_state.*",
+        "screen_qr_code_login_unknown_error_description",
+        "screen_qr_code_login_invalid_scan_state_.*",
+        "screen_qr_code_login_no_camera_permission_state_.*"
+      ]
+    },
+    {
       "name" : ":features:login:impl",
       "includeRegex" : [
         "screen_onboarding_.*",

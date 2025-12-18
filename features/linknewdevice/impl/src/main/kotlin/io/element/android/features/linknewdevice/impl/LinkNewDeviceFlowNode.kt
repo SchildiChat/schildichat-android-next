@@ -247,6 +247,7 @@ class LinkNewDeviceFlowNode(
             is NavTarget.MobileShowQrCode -> {
                 val callback = object : ShowQrCodeNode.Callback {
                     override fun navigateBack() {
+                        linkNewMobileHandler.reset()
                         backstack.pop()
                     }
                 }

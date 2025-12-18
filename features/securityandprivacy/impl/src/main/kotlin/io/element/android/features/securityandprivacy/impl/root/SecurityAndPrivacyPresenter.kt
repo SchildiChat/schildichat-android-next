@@ -301,21 +301,21 @@ private fun SecurityAndPrivacyRoomAccess.map(): JoinRule? {
 
 private fun RoomHistoryVisibility?.map(): SecurityAndPrivacyHistoryVisibility {
     return when (this) {
-        RoomHistoryVisibility.WorldReadable -> SecurityAndPrivacyHistoryVisibility.Anyone
         RoomHistoryVisibility.Joined,
-        RoomHistoryVisibility.Invited -> SecurityAndPrivacyHistoryVisibility.SinceInvite
-        RoomHistoryVisibility.Shared -> SecurityAndPrivacyHistoryVisibility.SinceSelection
-        // All other cases are not supported so we default to SinceSelection
+        RoomHistoryVisibility.Invited -> SecurityAndPrivacyHistoryVisibility.Invited
+        RoomHistoryVisibility.Shared -> SecurityAndPrivacyHistoryVisibility.Shared
+        RoomHistoryVisibility.WorldReadable -> SecurityAndPrivacyHistoryVisibility.WorldReadable
+        // All other cases are not supported so we default to Shared
         is RoomHistoryVisibility.Custom,
-        null -> SecurityAndPrivacyHistoryVisibility.SinceSelection
+        null -> SecurityAndPrivacyHistoryVisibility.Shared
     }
 }
 
 private fun SecurityAndPrivacyHistoryVisibility.map(): RoomHistoryVisibility {
     return when (this) {
-        SecurityAndPrivacyHistoryVisibility.SinceSelection -> RoomHistoryVisibility.Shared
-        SecurityAndPrivacyHistoryVisibility.SinceInvite -> RoomHistoryVisibility.Invited
-        SecurityAndPrivacyHistoryVisibility.Anyone -> RoomHistoryVisibility.WorldReadable
+        SecurityAndPrivacyHistoryVisibility.Invited -> RoomHistoryVisibility.Invited
+        SecurityAndPrivacyHistoryVisibility.Shared -> RoomHistoryVisibility.Shared
+        SecurityAndPrivacyHistoryVisibility.WorldReadable -> RoomHistoryVisibility.WorldReadable
     }
 }
 

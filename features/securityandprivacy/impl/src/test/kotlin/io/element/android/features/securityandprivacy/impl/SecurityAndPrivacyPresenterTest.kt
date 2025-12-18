@@ -84,7 +84,7 @@ class SecurityAndPrivacyPresenterTest {
             with(awaitItem()) {
                 assertThat(editedSettings).isEqualTo(savedSettings)
                 assertThat(editedSettings.roomAccess).isEqualTo(SecurityAndPrivacyRoomAccess.Anyone)
-                assertThat(editedSettings.historyVisibility).isEqualTo(SecurityAndPrivacyHistoryVisibility.Anyone)
+                assertThat(editedSettings.historyVisibility).isEqualTo(SecurityAndPrivacyHistoryVisibility.Shared)
                 assertThat(editedSettings.address).isEqualTo(A_ROOM_ALIAS.value)
                 assertThat(canBeSaved).isFalse()
             }
@@ -122,16 +122,16 @@ class SecurityAndPrivacyPresenterTest {
         presenter.test {
             skipItems(1)
             with(awaitItem()) {
-                assertThat(editedSettings.historyVisibility).isEqualTo(SecurityAndPrivacyHistoryVisibility.SinceSelection)
-                eventSink(SecurityAndPrivacyEvent.ChangeHistoryVisibility(SecurityAndPrivacyHistoryVisibility.SinceInvite))
+                assertThat(editedSettings.historyVisibility).isEqualTo(SecurityAndPrivacyHistoryVisibility.Shared)
+                eventSink(SecurityAndPrivacyEvent.ChangeHistoryVisibility(SecurityAndPrivacyHistoryVisibility.Invited))
             }
             with(awaitItem()) {
-                assertThat(editedSettings.historyVisibility).isEqualTo(SecurityAndPrivacyHistoryVisibility.SinceInvite)
+                assertThat(editedSettings.historyVisibility).isEqualTo(SecurityAndPrivacyHistoryVisibility.Invited)
                 assertThat(canBeSaved).isTrue()
-                eventSink(SecurityAndPrivacyEvent.ChangeHistoryVisibility(SecurityAndPrivacyHistoryVisibility.SinceSelection))
+                eventSink(SecurityAndPrivacyEvent.ChangeHistoryVisibility(SecurityAndPrivacyHistoryVisibility.WorldReadable))
             }
             with(awaitItem()) {
-                assertThat(editedSettings.historyVisibility).isEqualTo(SecurityAndPrivacyHistoryVisibility.SinceSelection)
+                assertThat(editedSettings.historyVisibility).isEqualTo(SecurityAndPrivacyHistoryVisibility.WorldReadable)
                 assertThat(canBeSaved).isFalse()
             }
         }
@@ -250,10 +250,10 @@ class SecurityAndPrivacyPresenterTest {
                 eventSink(SecurityAndPrivacyEvent.ChangeRoomAccess(SecurityAndPrivacyRoomAccess.Anyone))
             }
             with(awaitItem()) {
-                eventSink(SecurityAndPrivacyEvent.ChangeHistoryVisibility(SecurityAndPrivacyHistoryVisibility.Anyone))
+                eventSink(SecurityAndPrivacyEvent.ChangeHistoryVisibility(SecurityAndPrivacyHistoryVisibility.WorldReadable))
             }
             with(awaitItem()) {
-                assertThat(editedSettings.historyVisibility).isEqualTo(SecurityAndPrivacyHistoryVisibility.Anyone)
+                assertThat(editedSettings.historyVisibility).isEqualTo(SecurityAndPrivacyHistoryVisibility.WorldReadable)
                 eventSink(SecurityAndPrivacyEvent.ConfirmEnableEncryption)
             }
             skipItems(1)
@@ -318,10 +318,10 @@ class SecurityAndPrivacyPresenterTest {
                 eventSink(SecurityAndPrivacyEvent.ChangeRoomAccess(SecurityAndPrivacyRoomAccess.Anyone))
             }
             with(awaitItem()) {
-                eventSink(SecurityAndPrivacyEvent.ChangeHistoryVisibility(SecurityAndPrivacyHistoryVisibility.Anyone))
+                eventSink(SecurityAndPrivacyEvent.ChangeHistoryVisibility(SecurityAndPrivacyHistoryVisibility.WorldReadable))
             }
             with(awaitItem()) {
-                assertThat(editedSettings.historyVisibility).isEqualTo(SecurityAndPrivacyHistoryVisibility.Anyone)
+                assertThat(editedSettings.historyVisibility).isEqualTo(SecurityAndPrivacyHistoryVisibility.WorldReadable)
                 eventSink(SecurityAndPrivacyEvent.ConfirmEnableEncryption)
             }
             skipItems(1)

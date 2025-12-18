@@ -27,8 +27,10 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import io.element.android.appconfig.LearnMoreConfig
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.securityandprivacy.impl.R
@@ -44,6 +46,7 @@ import io.element.android.libraries.designsystem.components.list.ListItemContent
 import io.element.android.libraries.designsystem.preview.ElementPreviewDark
 import io.element.android.libraries.designsystem.preview.ElementPreviewLight
 import io.element.android.libraries.designsystem.preview.PreviewWithLargeHeight
+import io.element.android.libraries.designsystem.text.stringWithLink
 import io.element.android.libraries.designsystem.theme.components.CircularProgressIndicator
 import io.element.android.libraries.designsystem.theme.components.IconSource
 import io.element.android.libraries.designsystem.theme.components.ListItem
@@ -52,11 +55,12 @@ import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TextButton
 import io.element.android.libraries.designsystem.theme.components.TopAppBar
 import io.element.android.libraries.ui.strings.CommonStrings
-import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun SecurityAndPrivacyView(
     state: SecurityAndPrivacyState,
+    onLinkClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     BackHandler {
@@ -122,6 +126,7 @@ fun SecurityAndPrivacyView(
                     savedOptions = state.savedSettings.historyVisibility,
                     availableOptions = state.availableHistoryVisibilities,
                     onSelectOption = { state.eventSink(SecurityAndPrivacyEvent.ChangeHistoryVisibility(it)) },
+                    onLinkClick = onLinkClick,
                 )
             }
         }
@@ -176,6 +181,7 @@ private fun SecurityAndPrivacyToolbar(
 private fun SecurityAndPrivacySection(
     title: String,
     modifier: Modifier = Modifier,
+    subtitle: AnnotatedString? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
@@ -187,6 +193,15 @@ private fun SecurityAndPrivacySection(
             color = ElementTheme.colors.textPrimary,
             modifier = Modifier.padding(horizontal = 16.dp),
         )
+        if (subtitle != null) {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = subtitle,
+                style = ElementTheme.typography.fontBodyMdRegular,
+                color = ElementTheme.colors.textSecondary,
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+        }
         content()
     }
 }
@@ -359,12 +374,18 @@ private fun EncryptionSection(
 private fun HistoryVisibilitySection(
     editedOption: SecurityAndPrivacyHistoryVisibility?,
     savedOptions: SecurityAndPrivacyHistoryVisibility?,
-    availableOptions: ImmutableSet<SecurityAndPrivacyHistoryVisibility>,
+    availableOptions: ImmutableList<SecurityAndPrivacyHistoryVisibility>,
     onSelectOption: (SecurityAndPrivacyHistoryVisibility) -> Unit,
+    onLinkClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     SecurityAndPrivacySection(
         title = stringResource(R.string.screen_security_and_privacy_room_history_section_header),
+        subtitle = stringWithLink(
+            textRes = R.string.screen_security_and_privacy_room_history_section_footer,
+            url = LearnMoreConfig.HISTORY_VISIBLE_URL,
+            onLinkClick = onLinkClick,
+        ),
         modifier = modifier,
     ) {
         for (availableOption in availableOptions) {
@@ -396,9 +417,9 @@ private fun HistoryVisibilityItem(
     isEnabled: Boolean = true,
 ) {
     val headlineText = when (option) {
-        SecurityAndPrivacyHistoryVisibility.SinceSelection -> stringResource(R.string.screen_security_and_privacy_room_history_since_selecting_option_title)
-        SecurityAndPrivacyHistoryVisibility.SinceInvite -> stringResource(R.string.screen_security_and_privacy_room_history_since_invite_option_title)
-        SecurityAndPrivacyHistoryVisibility.Anyone -> stringResource(R.string.screen_security_and_privacy_room_history_anyone_option_title)
+        SecurityAndPrivacyHistoryVisibility.Invited -> stringResource(R.string.screen_security_and_privacy_room_history_since_invite_option_title)
+        SecurityAndPrivacyHistoryVisibility.Shared -> stringResource(R.string.screen_security_and_privacy_room_history_since_selecting_option_title)
+        SecurityAndPrivacyHistoryVisibility.WorldReadable -> stringResource(R.string.screen_security_and_privacy_room_history_anyone_option_title)
     }
     ListItem(
         headlineContent = { Text(text = headlineText) },
@@ -424,5 +445,6 @@ internal fun SecurityAndPrivacyViewDarkPreview(@PreviewParameter(SecurityAndPriv
 private fun ContentToPreview(state: SecurityAndPrivacyState) {
     SecurityAndPrivacyView(
         state = state,
+        onLinkClick = {},
     )
 }

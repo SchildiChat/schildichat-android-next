@@ -38,7 +38,6 @@ data class ChangeRoomPermissionsState(
             RoomPermissionType.ROOM_AVATAR -> RoomMember.Role.forPowerLevel(currentPermissions.roomAvatar)
             RoomPermissionType.ROOM_TOPIC -> RoomMember.Role.forPowerLevel(currentPermissions.roomTopic)
             RoomPermissionType.SPACE_MANAGE_ROOMS -> RoomMember.Role.forPowerLevel(currentPermissions.spaceChild)
-            RoomPermissionType.CHANGE_SETTINGS -> RoomMember.Role.forPowerLevel(currentPermissions.stateDefault)
         }
         return when (role) {
             is RoomMember.Role.Owner,
@@ -84,5 +83,4 @@ enum class RoomPermissionType {
     ROOM_AVATAR,
     ROOM_TOPIC,
     SPACE_MANAGE_ROOMS,
-    CHANGE_SETTINGS,
 }

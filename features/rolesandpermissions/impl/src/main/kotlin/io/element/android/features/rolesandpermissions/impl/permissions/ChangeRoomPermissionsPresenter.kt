@@ -52,7 +52,6 @@ class ChangeRoomPermissionsPresenter(
             )
             RoomPermissionsSection.ManageSpace -> persistentListOf(
                 RoomPermissionType.SPACE_MANAGE_ROOMS,
-                RoomPermissionType.CHANGE_SETTINGS,
             )
         }
 
@@ -108,7 +107,6 @@ class ChangeRoomPermissionsPresenter(
                         RoomPermissionType.ROOM_AVATAR -> currentPermissions?.copy(roomAvatar = powerLevel)
                         RoomPermissionType.ROOM_TOPIC -> currentPermissions?.copy(roomTopic = powerLevel)
                         RoomPermissionType.SPACE_MANAGE_ROOMS -> currentPermissions?.copy(spaceChild = powerLevel)
-                        RoomPermissionType.CHANGE_SETTINGS -> currentPermissions?.copy(stateDefault = powerLevel)
                     }
                 }
                 is ChangeRoomPermissionsEvent.Save -> coroutineScope.save()

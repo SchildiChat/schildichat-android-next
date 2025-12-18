@@ -78,21 +78,21 @@ class LinkNewDeviceFlowNode(
 
     override fun onBuilt() {
         super.onBuilt()
-        var job1: Job? = null
-        var job2: Job? = null
+        var linkMobileHandlerJob: Job? = null
+        var linkDesktopHandlerJob: Job? = null
 
         lifecycle.subscribe(
             onCreate = {
                 linkNewMobileHandler.reset()
                 linkNewDesktopHandler.reset()
                 @Suppress("AssignedValueIsNeverRead")
-                job1 = observeLinkNewMobileHandler()
+                linkMobileHandlerJob = observeLinkNewMobileHandler()
                 @Suppress("AssignedValueIsNeverRead")
-                job2 = observeLinkNewDesktopHandler()
+                linkDesktopHandlerJob = observeLinkNewDesktopHandler()
             },
             onDestroy = {
-                job1?.cancel()
-                job2?.cancel()
+                linkMobileHandlerJob?.cancel()
+                linkDesktopHandlerJob?.cancel()
             }
         )
     }

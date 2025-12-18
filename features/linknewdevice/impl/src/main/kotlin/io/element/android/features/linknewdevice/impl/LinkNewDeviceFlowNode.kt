@@ -258,6 +258,8 @@ class LinkNewDeviceFlowNode(
             is NavTarget.Error -> {
                 val callback = object : ErrorNode.Callback {
                     override fun onRetry() {
+                        linkNewMobileHandler.reset()
+                        linkNewDesktopHandler.reset()
                         backstack.newRoot(NavTarget.Root)
                     }
                 }

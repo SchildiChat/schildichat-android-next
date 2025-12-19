@@ -15,16 +15,23 @@ import io.element.android.libraries.matrix.test.A_SECRET
 import io.element.android.libraries.pushproviders.api.Distributor
 import io.element.android.libraries.pushproviders.unifiedpush.registration.EndpointRegistrationHandler
 import io.element.android.libraries.pushproviders.unifiedpush.registration.RegistrationResult
+import io.element.android.tests.testutils.fake.FakeAndroidKeyStore
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class DefaultRegisterUnifiedPushUseCaseTest {
+    @Before
+    fun setup() {
+        FakeAndroidKeyStore.setup
+    }
+
     @Test
     fun `test registration successful`() = runTest {
         val endpointRegistrationHandler = EndpointRegistrationHandler()

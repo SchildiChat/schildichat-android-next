@@ -23,7 +23,6 @@ data class SecurityAndPrivacyState(
     val isKnockEnabled: Boolean,
     val saveAction: AsyncAction<Unit>,
     val isSpace: Boolean,
-
     private val permissions: SecurityAndPrivacyPermissions,
     val eventSink: (SecurityAndPrivacyEvent) -> Unit
 ) {

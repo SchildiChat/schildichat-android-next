@@ -28,7 +28,7 @@ class HistoryVisibleStatePresenterTest {
     @Test
     fun `present - not visible if feature disabled`() = runTest {
         val room = FakeJoinedRoom()
-        room.givenRoomInfo(aRoomInfo(historyVisibility = RoomHistoryVisibility.Joined, isEncrypted = true))
+        room.givenRoomInfo(aRoomInfo(historyVisibility = RoomHistoryVisibility.Shared, isEncrypted = true))
         val presenter = createHistoryVisibleStatePresenter(room, enabled = false, acknowledged = false)
         presenter.test {
             assertThat(awaitLastSequentialItem().showAlert).isFalse()
@@ -48,7 +48,17 @@ class HistoryVisibleStatePresenterTest {
     @Test
     fun `present - initial with room joined, encrypted`() = runTest {
         val room = FakeJoinedRoom()
-        room.givenRoomInfo(aRoomInfo(historyVisibility = RoomHistoryVisibility.Joined, isEncrypted = false))
+        room.givenRoomInfo(aRoomInfo(historyVisibility = RoomHistoryVisibility.Joined, isEncrypted = true))
+        val presenter = createHistoryVisibleStatePresenter(room)
+        presenter.test {
+            assertThat(awaitLastSequentialItem().showAlert).isFalse()
+        }
+    }
+
+    @Test
+    fun `present - initial with room invited, encrypted`() = runTest {
+        val room = FakeJoinedRoom()
+        room.givenRoomInfo(aRoomInfo(historyVisibility = RoomHistoryVisibility.Invited, isEncrypted = true))
         val presenter = createHistoryVisibleStatePresenter(room)
         presenter.test {
             assertThat(awaitLastSequentialItem().showAlert).isFalse()

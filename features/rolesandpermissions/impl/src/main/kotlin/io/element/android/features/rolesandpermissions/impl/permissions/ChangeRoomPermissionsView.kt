@@ -74,7 +74,8 @@ fun ChangeRoomPermissionsView(
                         PreferenceDropdown(
                             title = titleForType(permissionType),
                             selectedOption = state.selectedRoleForType(permissionType),
-                            options = SelectableRole.entries.toImmutableList(),
+                            options = state.selectableRoles,
+                            enabled = state.canChangePermission(permissionType),
                             onSelectOption = { role ->
                                 state.eventSink(
                                     ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(

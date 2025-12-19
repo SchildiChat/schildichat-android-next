@@ -19,6 +19,7 @@ class ChangeRoomPermissionsStateProvider : PreviewParameterProvider<ChangeRoomPe
     override val values: Sequence<ChangeRoomPermissionsState>
         get() = sequenceOf(
             aChangeRoomPermissionsState(),
+            aChangeRoomPermissionsState(ownPowerLevel = RoomMember.Role.Moderator.powerLevel),
             aChangeRoomPermissionsState(hasChanges = true),
             aChangeRoomPermissionsState(hasChanges = true, saveAction = AsyncAction.Loading),
             aChangeRoomPermissionsState(
@@ -31,12 +32,14 @@ class ChangeRoomPermissionsStateProvider : PreviewParameterProvider<ChangeRoomPe
 }
 
 internal fun aChangeRoomPermissionsState(
+    ownPowerLevel: Long = RoomMember.Role.Admin.powerLevel,
     currentPermissions: RoomPowerLevelsValues = previewPermissions(),
     itemsBySection: Map<RoomPermissionsSection, ImmutableList<RoomPermissionType>> = ChangeRoomPermissionsPresenter.buildItems(false),
     hasChanges: Boolean = false,
     saveAction: AsyncAction<Boolean> = AsyncAction.Uninitialized,
     eventSink: (ChangeRoomPermissionsEvent) -> Unit = {},
 ) = ChangeRoomPermissionsState(
+    ownPowerLevel = ownPowerLevel,
     currentPermissions = currentPermissions,
     itemsBySection = itemsBySection.toImmutableMap(),
     hasChanges = hasChanges,

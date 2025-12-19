@@ -10,6 +10,7 @@ package io.element.android.features.rolesandpermissions.impl.permissions
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,9 +21,11 @@ import dev.zacsweers.metro.Inject
 import io.element.android.features.rolesandpermissions.impl.analytics.trackPermissionChangeAnalytics
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
+import io.element.android.libraries.core.coroutine.mapState
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.matrix.api.room.powerlevels.RoomPowerLevelsValues
+import io.element.android.libraries.matrix.ui.model.powerLevelOf
 import io.element.android.services.analytics.api.AnalyticsService
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableMap
@@ -89,6 +92,10 @@ class ChangeRoomPermissionsPresenter(
             derivedStateOf { initialPermissions != currentPermissions }
         }
 
+        val ownPowerLevel by remember {
+            room.roomInfoFlow.mapState { it.powerLevelOf(room.sessionId) }
+        }.collectAsState()
+
         fun handleEvent(event: ChangeRoomPermissionsEvent) {
             when (event) {
                 is ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction -> {
@@ -123,6 +130,7 @@ class ChangeRoomPermissionsPresenter(
             }
         }
         return ChangeRoomPermissionsState(
+            ownPowerLevel = ownPowerLevel,
             currentPermissions = currentPermissions,
             itemsBySection = itemsBySection,
             hasChanges = hasChanges,

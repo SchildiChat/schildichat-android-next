@@ -40,6 +40,8 @@ class HistoryVisibleStatePresenter(
 
         LaunchedEffect(isHistoryVisible, acknowledged) {
             if (!isHistoryVisible && acknowledged) {
+                // Clear the dismissed flag, if it is set to ensure that if a room is changed public -> private -> public,
+                // we show the banner again when it is set back to public.
                 repository.setAcknowledged(room.roomId, false)
             }
         }

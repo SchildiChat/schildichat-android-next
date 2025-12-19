@@ -99,8 +99,10 @@ class KonsistClassNameTest {
             .classes()
             .withNameContaining("Fake")
             .withoutName(
+                "FakeAesKeyGenerator",
                 "FakeFileSystem",
                 "FakeImageLoader",
+                "FakeKeyStore",
                 "FakeListenableFuture",
             )
             .assertTrue {

@@ -114,7 +114,7 @@ fun ListItem(
 
     val decoratedHeadlineContent: @Composable () -> Unit = {
         CompositionLocalProvider(
-            LocalTextStyle provides ElementTheme.materialTypography.bodyLarge,
+            LocalTextStyle provides ElementTheme.typography.fontBodyLgRegular,
             LocalContentColor provides headlineColor,
         ) {
             headlineContent()
@@ -123,7 +123,7 @@ fun ListItem(
     val decoratedSupportingContent: (@Composable () -> Unit)? = supportingContent?.let { content ->
         {
             CompositionLocalProvider(
-                LocalTextStyle provides ElementTheme.materialTypography.bodyMedium,
+                LocalTextStyle provides ElementTheme.typography.fontBodyMdRegular,
                 LocalContentColor provides supportingColor,
             ) {
                 content()

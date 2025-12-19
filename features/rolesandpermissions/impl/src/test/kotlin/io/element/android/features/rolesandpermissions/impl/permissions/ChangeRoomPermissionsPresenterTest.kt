@@ -295,7 +295,8 @@ class ChangeRoomPermissionsPresenterTest {
         room: FakeJoinedRoom = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
                 initialRoomInfo = initialRoomInfo(),
-                powerLevelsResult = { Result.success(defaultPermissions()) }),
+                powerLevelsResult = { Result.success(defaultPermissions()) }
+            ),
         ),
         analyticsService: FakeAnalyticsService = FakeAnalyticsService(),
     ) = ChangeRoomPermissionsPresenter(

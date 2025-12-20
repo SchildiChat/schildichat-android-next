@@ -93,7 +93,7 @@ fun aSecurityAndPrivacySettings(
     roomAccess: SecurityAndPrivacyRoomAccess = SecurityAndPrivacyRoomAccess.InviteOnly,
     isEncrypted: Boolean = true,
     address: String? = null,
-    historyVisibility: SecurityAndPrivacyHistoryVisibility = SecurityAndPrivacyHistoryVisibility.SinceSelection,
+    historyVisibility: SecurityAndPrivacyHistoryVisibility = SecurityAndPrivacyHistoryVisibility.Shared,
     isVisibleInRoomDirectory: AsyncData<Boolean> = AsyncData.Uninitialized,
 ) = SecurityAndPrivacySettings(
     roomAccess = roomAccess,

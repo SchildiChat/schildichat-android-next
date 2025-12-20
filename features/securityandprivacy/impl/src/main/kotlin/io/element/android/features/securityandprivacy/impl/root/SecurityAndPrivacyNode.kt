@@ -8,6 +8,8 @@
 
 package io.element.android.features.securityandprivacy.impl.root
 
+import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,7 +21,9 @@ import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
+import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.securityandprivacy.impl.SecurityAndPrivacyNavigator
+import io.element.android.libraries.androidutils.browser.openUrlInChromeCustomTab
 import io.element.android.libraries.architecture.appyx.launchMolecule
 import io.element.android.libraries.di.RoomScope
 
@@ -35,11 +39,20 @@ class SecurityAndPrivacyNode(
 
     private val stateFlow = launchMolecule { presenter.present() }
 
+    private fun onOpenExternalUrl(activity: Activity, darkTheme: Boolean, url: String) {
+        activity.openUrlInChromeCustomTab(null, darkTheme, url)
+    }
+
     @Composable
     override fun View(modifier: Modifier) {
+        val activity = requireNotNull(LocalActivity.current)
+        val isDark = ElementTheme.isLightTheme.not()
         val state by stateFlow.collectAsState()
         SecurityAndPrivacyView(
             state = state,
+            onLinkClick = { url ->
+                onOpenExternalUrl(activity, isDark, url)
+            },
             modifier = modifier
         )
     }

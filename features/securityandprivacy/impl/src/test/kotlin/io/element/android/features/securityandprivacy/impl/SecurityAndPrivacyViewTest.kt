@@ -24,6 +24,7 @@ import io.element.android.features.securityandprivacy.impl.root.aSecurityAndPriv
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.ui.strings.CommonStrings
+import io.element.android.tests.testutils.EnsureNeverCalledWithParam
 import io.element.android.tests.testutils.EventsRecorder
 import io.element.android.tests.testutils.clickOn
 import io.element.android.tests.testutils.pressBack
@@ -140,22 +141,22 @@ class SecurityAndPrivacyViewTest {
     }
 
     @Test
-    @Config(qualifiers = "h640dp")
+    @Config(qualifiers = "h1024dp")
     fun `click on history visibility item emits the expected event`() {
         val recorder = EventsRecorder<SecurityAndPrivacyEvent>()
         val state = aSecurityAndPrivacyState(
             eventSink = recorder,
             editedSettings = aSecurityAndPrivacySettings(
-                historyVisibility = SecurityAndPrivacyHistoryVisibility.SinceSelection,
+                historyVisibility = SecurityAndPrivacyHistoryVisibility.Invited,
             ),
         )
         rule.setSecurityAndPrivacyView(state)
-        rule.clickOn(R.string.screen_security_and_privacy_room_history_since_selecting_option_title)
-        recorder.assertSingle(SecurityAndPrivacyEvent.ChangeHistoryVisibility(SecurityAndPrivacyHistoryVisibility.SinceSelection))
+        rule.clickOn(R.string.screen_security_and_privacy_room_history_since_invite_option_title)
+        recorder.assertSingle(SecurityAndPrivacyEvent.ChangeHistoryVisibility(SecurityAndPrivacyHistoryVisibility.Invited))
     }
 
     @Test
-    @Config(qualifiers = "h640dp")
+    @Config(qualifiers = "h1024dp")
     fun `click on encryption item emits the expected event`() {
         val recorder = EventsRecorder<SecurityAndPrivacyEvent>()
         val state = aSecurityAndPrivacyState(
@@ -184,10 +185,12 @@ private fun <R : TestRule> AndroidComposeTestRule<R, ComponentActivity>.setSecur
     state: SecurityAndPrivacyState = aSecurityAndPrivacyState(
         eventSink = EventsRecorder(expectEvents = false),
     ),
+    onLinkClick: (String) -> Unit = EnsureNeverCalledWithParam(),
 ) {
     setContent {
         SecurityAndPrivacyView(
             state = state,
+            onLinkClick = onLinkClick,
         )
     }
 }

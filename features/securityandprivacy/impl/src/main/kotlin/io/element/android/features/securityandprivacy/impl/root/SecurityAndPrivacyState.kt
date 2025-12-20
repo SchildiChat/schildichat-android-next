@@ -11,7 +11,7 @@ package io.element.android.features.securityandprivacy.impl.root
 import io.element.android.features.securityandprivacy.api.SecurityAndPrivacyPermissions
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
-import kotlinx.collections.immutable.toImmutableSet
+import kotlinx.collections.immutable.toImmutableList
 
 data class SecurityAndPrivacyState(
     // the settings that are currently applied on the room.
@@ -28,14 +28,18 @@ data class SecurityAndPrivacyState(
 ) {
     val canBeSaved = savedSettings != editedSettings
 
-    val availableHistoryVisibilities = buildSet {
-        add(SecurityAndPrivacyHistoryVisibility.SinceSelection)
+    // Logic is in https://github.com/element-hq/element-meta/issues/3029
+    val availableHistoryVisibilities = buildList {
+        // Shared is always available
+        add(SecurityAndPrivacyHistoryVisibility.Shared)
         if (editedSettings.roomAccess == SecurityAndPrivacyRoomAccess.Anyone && !editedSettings.isEncrypted) {
-            add(SecurityAndPrivacyHistoryVisibility.Anyone)
+            add(SecurityAndPrivacyHistoryVisibility.WorldReadable)
         } else {
-            add(SecurityAndPrivacyHistoryVisibility.SinceInvite)
+            add(SecurityAndPrivacyHistoryVisibility.Invited)
         }
-    }.toImmutableSet()
+    }
+        .sorted()
+        .toImmutableList()
 
     val showRoomAccessSection = permissions.canChangeRoomAccess
 
@@ -55,18 +59,19 @@ data class SecurityAndPrivacySettings(
 )
 
 enum class SecurityAndPrivacyHistoryVisibility {
-    SinceSelection,
-    SinceInvite,
-    Anyone;
+    // Order matters, and is from the most to the least restrictive
+    Invited,
+    Shared,
+    WorldReadable;
 
     /**
      * Returns the fallback visibility when the current visibility is not available.
      */
     fun fallback(): SecurityAndPrivacyHistoryVisibility {
         return when (this) {
-            SinceSelection,
-            SinceInvite -> SinceSelection
-            Anyone -> SinceInvite
+            Invited,
+            Shared -> Shared
+            WorldReadable -> Invited
         }
     }
 }

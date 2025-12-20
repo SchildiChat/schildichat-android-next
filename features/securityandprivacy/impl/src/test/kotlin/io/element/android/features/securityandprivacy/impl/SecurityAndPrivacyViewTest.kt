@@ -141,7 +141,7 @@ class SecurityAndPrivacyViewTest {
     }
 
     @Test
-    @Config(qualifiers = "h640dp")
+    @Config(qualifiers = "h1024dp")
     fun `click on history visibility item emits the expected event`() {
         val recorder = EventsRecorder<SecurityAndPrivacyEvent>()
         val state = aSecurityAndPrivacyState(
@@ -156,7 +156,7 @@ class SecurityAndPrivacyViewTest {
     }
 
     @Test
-    @Config(qualifiers = "h640dp")
+    @Config(qualifiers = "h1024dp")
     fun `click on encryption item emits the expected event`() {
         val recorder = EventsRecorder<SecurityAndPrivacyEvent>()
         val state = aSecurityAndPrivacyState(

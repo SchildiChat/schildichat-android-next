@@ -2,9 +2,12 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="screen_room_change_permissions_administrators">"Administrator"</string>
   <string name="screen_room_change_permissions_ban_people">"Spær brugere"</string>
+  <string name="screen_room_change_permissions_change_settings">"Skift indstillinger"</string>
   <string name="screen_room_change_permissions_delete_messages">"Fjern beskeder"</string>
   <string name="screen_room_change_permissions_everyone">"Medlem"</string>
   <string name="screen_room_change_permissions_invite_people">"Invitér andre"</string>
+  <string name="screen_room_change_permissions_manage_space">"Administrér gruppe"</string>
+  <string name="screen_room_change_permissions_manage_space_rooms">"Administrer rum"</string>
   <string name="screen_room_change_permissions_member_moderation">"Administrer medlemmer"</string>
   <string name="screen_room_change_permissions_messages_and_content">"Beskeder og indhold"</string>
   <string name="screen_room_change_permissions_moderators">"Moderator"</string>
@@ -14,6 +17,7 @@
   <string name="screen_room_change_permissions_room_name">"Skift rummets navn"</string>
   <string name="screen_room_change_permissions_room_topic">"Skift emne for rummet"</string>
   <string name="screen_room_change_permissions_send_messages">"Send beskeder"</string>
+  <string name="screen_room_change_permissions_title">"Tilladelser"</string>
   <string name="screen_room_change_role_administrators_title">"Redigér admins"</string>
   <string name="screen_room_change_role_confirm_add_admin_description">"Du kan ikke fortryde denne handling. Du forfremmer brugeren til at have samme magtniveau som dig."</string>
   <string name="screen_room_change_role_confirm_add_admin_title">"Tilføj Admin?"</string>

@@ -161,6 +161,7 @@
   <string name="action_skip">"Hepgor"</string>
   <string name="action_start">"Cychwyn"</string>
   <string name="action_start_chat">"Dechrau sgwrs"</string>
+  <string name="action_start_over">"Cychwyn eto"</string>
   <string name="action_start_verification">"Dechrau dilysu"</string>
   <string name="action_static_map_load">"Tapio i lwytho map"</string>
   <string name="action_take_photo">"Cymryd llun"</string>

@@ -22,7 +22,6 @@ Shu sababli, har kim topishi va qo‘shilishi mumkin bo‘lgan xonalar uchun shi
   <string name="screen_security_and_privacy_room_address_section_footer">"Katalogda ko‘rinadigan qilish uchun xona manzili kerak bo‘ladi."</string>
   <string name="screen_security_and_privacy_room_directory_visibility_section_footer">"Bu xonani %1$s umumiy xonalar ro‘yxatidan qidirib topish imkoniyatini berish"</string>
   <string name="screen_security_and_privacy_room_directory_visibility_toggle_title">"Umumiy xona ro‘yxatida ko‘rinadi"</string>
-  <string name="screen_security_and_privacy_room_history_anyone_option_title">"Har kim"</string>
   <string name="screen_security_and_privacy_room_history_section_header">"Tarixni kim o‘qiy oladi"</string>
   <string name="screen_security_and_privacy_room_history_since_invite_option_title">"Taklif qilinganidan buyon faqat a’zolar"</string>
   <string name="screen_security_and_privacy_room_history_since_selecting_option_title">"A’zolar faqat bu parametr tanlanganidan keyin"</string>

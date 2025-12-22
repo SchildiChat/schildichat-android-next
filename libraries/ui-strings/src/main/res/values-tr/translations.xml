@@ -122,6 +122,7 @@
   <string name="action_skip">"Atla"</string>
   <string name="action_start">"Başlat"</string>
   <string name="action_start_chat">"Sohbeti başlat"</string>
+  <string name="action_start_over">"Yeniden Başla"</string>
   <string name="action_start_verification">"Doğrulamayı başlat"</string>
   <string name="action_static_map_load">"Haritayı yüklemek için dokunun"</string>
   <string name="action_take_photo">"Fotoğraf çek"</string>
@@ -139,6 +140,7 @@
   <string name="common_adding_caption">"Açıklama ekleme"</string>
   <string name="common_advanced_settings">"Gelişmiş Ayarlar"</string>
   <string name="common_analytics">"Analizler"</string>
+  <string name="common_android_shortcuts_remove_reason_left_room">"Odadan ayrıldın."</string>
   <string name="common_appearance">"Görünüm"</string>
   <string name="common_audio">"Ses"</string>
   <string name="common_blocked_users">"Engellenen kullanıcılar"</string>

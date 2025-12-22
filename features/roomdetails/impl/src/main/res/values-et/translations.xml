@@ -71,6 +71,10 @@
   <string name="screen_room_details_topic_title">"Teema"</string>
   <string name="screen_room_details_updating_room">"Uuendame jututuba…"</string>
   <string name="screen_room_member_list_banned_empty">"Suhtluskeeluga kasutajaid pole"</string>
+  <plurals name="screen_room_member_list_banned_header_title">
+    <item quantity="one">"%1$d suhtluskeeluga kasutaja"</item>
+    <item quantity="other">"%1$d suhtluskeeluga kasutajat"</item>
+  </plurals>
   <string name="screen_room_member_list_empty_search_subtitle">"Palun kontrolli otsingusõna korrektsust ja proovi siis uuesti"</string>
   <string name="screen_room_member_list_empty_search_title">"Otsingul „%1$s“ pole tulemusi"</string>
   <plurals name="screen_room_member_list_header_title">
@@ -138,7 +142,7 @@ Me ei soovita krüptimise kasutamist selliste avalike jututubade puhul, millega 
   <string name="screen_security_and_privacy_encryption_section_header">"Krüptimine"</string>
   <string name="screen_security_and_privacy_encryption_toggle_title">"Võta läbiv krüptimine kasutusele"</string>
   <string name="screen_security_and_privacy_room_access_anyone_option_description">"Kõik võivad jututoaga liituda"</string>
-  <string name="screen_security_and_privacy_room_access_anyone_option_title">"Kõik"</string>
+  <string name="screen_security_and_privacy_room_access_anyone_option_title">"Kõik kasutajad"</string>
   <string name="screen_security_and_privacy_room_access_footer">"Vali kogukonnad, mille liikmed saavad selle jututoaga liituda ilma kutseta. %1$s"</string>
   <string name="screen_security_and_privacy_room_access_footer_manage_spaces_action">"Halda kogukondi"</string>
   <string name="screen_security_and_privacy_room_access_invite_only_option_description">"Liituda saab vaid kutse olemasolul"</string>
@@ -153,10 +157,11 @@ Me ei soovita krüptimise kasutamist selliste avalike jututubade puhul, millega 
   <string name="screen_security_and_privacy_room_directory_visibility_section_footer">"Võimalda leida seda jututuba avalikust kataloogist otsides „%1$s“"</string>
   <string name="screen_security_and_privacy_room_directory_visibility_toggle_description">"Luba leitavus avaliku kataloogi otsingust."</string>
   <string name="screen_security_and_privacy_room_directory_visibility_toggle_title">"Nähtav avalikus kataloogis"</string>
-  <string name="screen_security_and_privacy_room_history_anyone_option_title">"Kõik"</string>
+  <string name="screen_security_and_privacy_room_history_anyone_option_title">"Kõik (ajalugu on avalik)"</string>
+  <string name="screen_security_and_privacy_room_history_section_footer">"Muudatused ei mõjuta varasemaid sõnumeid, ainult uusi. %1$s"</string>
   <string name="screen_security_and_privacy_room_history_section_header">"Kes võivad lugeda jututoa ajalugu"</string>
   <string name="screen_security_and_privacy_room_history_since_invite_option_title">"Liikmed peale kutse saamist"</string>
-  <string name="screen_security_and_privacy_room_history_since_selecting_option_title">"Liikmed peale selle valiku sisselülitamist"</string>
+  <string name="screen_security_and_privacy_room_history_since_selecting_option_title">"Liikmed (terviklik ajalugu)"</string>
   <string name="screen_security_and_privacy_room_publishing_section_footer">"Jututoa aadressid annavad võimaluse neid leida ning saada neile ligi. Samuti võimaldab see jututuba teistele huvilistele jagada.
 Lisaks võid sa jututoa avaldada oma koduserveri avalikus jututubade kataloogis."</string>
   <string name="screen_security_and_privacy_room_publishing_section_header">"Jututoa avaldamine"</string>

@@ -48,7 +48,7 @@
   <string name="screen_qr_code_login_connecting_subtitle">"Établissement d’une connexion sécurisée"</string>
   <string name="screen_qr_code_login_connection_note_secure_state_description">"Aucune connexion sécurisée n’a pu être établie avec la nouvelle session. Vos sessions existantes sont toujours en sécurité et vous n’avez pas à vous en soucier."</string>
   <string name="screen_qr_code_login_connection_note_secure_state_list_header">"Et maintenant ?"</string>
-  <string name="screen_qr_code_login_connection_note_secure_state_list_item_1">"Essayez de vous connecter à nouveau à l’aide du code QR au cas où il s’agirait d’un problème réseau"</string>
+  <string name="screen_qr_code_login_connection_note_secure_state_list_item_1">"Essayez de vous connecter à nouveau à l’aide du QR code au cas où il s’agirait d’un problème réseau"</string>
   <string name="screen_qr_code_login_connection_note_secure_state_list_item_2">"Si vous rencontrez le même problème, essayez un autre réseau wifi ou utilisez vos données mobiles au lieu du wifi"</string>
   <string name="screen_qr_code_login_connection_note_secure_state_list_item_3">"Si cela ne fonctionne pas, connectez-vous manuellement"</string>
   <string name="screen_qr_code_login_connection_note_secure_state_title">"La connexion n’est pas sécurisée"</string>
@@ -62,8 +62,8 @@
   <string name="screen_qr_code_login_error_declined_title">"Connexion refusée"</string>
   <string name="screen_qr_code_login_error_expired_subtitle">"Connexion expirée. Veuillez essayer à nouveau."</string>
   <string name="screen_qr_code_login_error_expired_title">"La connexion a pris trop de temps."</string>
-  <string name="screen_qr_code_login_error_linking_not_suported_subtitle">"Votre autre appareil ne supporte pas la connexion à %s avec un code QR. Essayer de vous connecter manuellement, ou scanner le code QR avec un autre appareil."</string>
-  <string name="screen_qr_code_login_error_linking_not_suported_title">"Code QR non supporté"</string>
+  <string name="screen_qr_code_login_error_linking_not_suported_subtitle">"Votre autre appareil ne supporte pas la connexion à %s avec un QR code. Essayer de vous connecter manuellement, ou scanner le QR code avec un autre appareil."</string>
+  <string name="screen_qr_code_login_error_linking_not_suported_title">"QR code non supporté"</string>
   <string name="screen_qr_code_login_error_sliding_sync_not_supported_subtitle">"Votre fournisseur de compte ne supporte pas %1$s."</string>
   <string name="screen_qr_code_login_error_sliding_sync_not_supported_title">"%1$s n’est pas supporté"</string>
   <string name="screen_qr_code_login_initial_state_button_title">"Prêt à scanner"</string>
@@ -71,7 +71,7 @@
   <string name="screen_qr_code_login_initial_state_item_2">"Cliquez sur votre image de profil"</string>
   <string name="screen_qr_code_login_initial_state_item_3">"Choisissez %1$s"</string>
   <string name="screen_qr_code_login_initial_state_item_3_action">"“Associer une nouvelle session”"</string>
-  <string name="screen_qr_code_login_initial_state_item_4">"Scanner le code QR avec cet appareil"</string>
+  <string name="screen_qr_code_login_initial_state_item_4">"Scanner le QR code avec cet appareil"</string>
   <string name="screen_qr_code_login_initial_state_subtitle">"Disponible uniquement si votre fournisseur de compte le supporte."</string>
   <string name="screen_qr_code_login_initial_state_title">"Ouvrez %1$s sur un autre appareil pour obtenir le QR code"</string>
   <string name="screen_qr_code_login_invalid_scan_state_description">"Scannez le QR code affiché sur l’autre appareil."</string>
@@ -79,7 +79,7 @@
   <string name="screen_qr_code_login_invalid_scan_state_subtitle">"QR code erroné"</string>
   <string name="screen_qr_code_login_no_camera_permission_button">"Accéder aux paramètres de l’appareil photo"</string>
   <string name="screen_qr_code_login_no_camera_permission_state_description">"Vous devez autoriser %1$s à utiliser la camera de votre appareil pour continuer."</string>
-  <string name="screen_qr_code_login_no_camera_permission_state_title">"Autoriser l’usage de la caméra pour scanner le code QR"</string>
+  <string name="screen_qr_code_login_no_camera_permission_state_title">"Autoriser l’usage de la caméra pour scanner le QR code"</string>
   <string name="screen_qr_code_login_scanning_state_title">"Scannez le QR code"</string>
   <string name="screen_qr_code_login_start_over_button">"Recommencer"</string>
   <string name="screen_qr_code_login_unknown_error_description">"Une erreur inattendue s’est produite. Veuillez réessayer."</string>

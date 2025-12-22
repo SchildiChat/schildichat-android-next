@@ -158,6 +158,7 @@
   <string name="action_skip">"Přeskočit"</string>
   <string name="action_start">"Začít"</string>
   <string name="action_start_chat">"Zahájit chat"</string>
+  <string name="action_start_over">"Začít znovu"</string>
   <string name="action_start_verification">"Zahájit ověření"</string>
   <string name="action_static_map_load">"Klepnutím načtete mapu"</string>
   <string name="action_take_photo">"Vyfotit"</string>

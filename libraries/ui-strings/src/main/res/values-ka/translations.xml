@@ -113,6 +113,7 @@
   <string name="common_acceptable_use_policy">"მისაღები გამოყენების პოლიტიკა"</string>
   <string name="common_advanced_settings">"გაფართოებული პარამეტრები"</string>
   <string name="common_analytics">"ანალიტიკა"</string>
+  <string name="common_android_shortcuts_remove_reason_left_room">"თქვენ დატოვეთ ოთახი"</string>
   <string name="common_appearance">"გარეგნობა"</string>
   <string name="common_audio">"აუდიო"</string>
   <string name="common_blocked_users">"დაბლოკილი მომხმარებლები"</string>

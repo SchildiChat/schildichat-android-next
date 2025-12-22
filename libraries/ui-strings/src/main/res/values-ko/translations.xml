@@ -148,6 +148,7 @@
   <string name="action_skip">"건너뛰기"</string>
   <string name="action_start">"시작"</string>
   <string name="action_start_chat">"채팅 시작"</string>
+  <string name="action_start_over">"다시 시작하다"</string>
   <string name="action_start_verification">"인증 시작"</string>
   <string name="action_static_map_load">"탭해서 지도 불러오기"</string>
   <string name="action_take_photo">"사진 찍기"</string>
@@ -167,7 +168,7 @@
   <string name="common_advanced_settings">"고급 설정"</string>
   <string name="common_an_image">"이미지"</string>
   <string name="common_analytics">"통계"</string>
-  <string name="common_android_shortcuts_remove_reason_left_room">"방에서 나갔습니다"</string>
+  <string name="common_android_shortcuts_remove_reason_left_room">"방을 떠남"</string>
   <string name="common_android_shortcuts_remove_reason_session_logged_out">"세션에서 로그아웃되었습니다."</string>
   <string name="common_appearance">"외관"</string>
   <string name="common_audio">"소리"</string>

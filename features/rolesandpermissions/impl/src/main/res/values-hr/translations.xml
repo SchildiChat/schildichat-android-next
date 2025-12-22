@@ -2,9 +2,12 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="screen_room_change_permissions_administrators">"Administrator"</string>
   <string name="screen_room_change_permissions_ban_people">"Zabrana pristupa osobama"</string>
+  <string name="screen_room_change_permissions_change_settings">"Promijeni postavke"</string>
   <string name="screen_room_change_permissions_delete_messages">"Uklanjanje poruka"</string>
   <string name="screen_room_change_permissions_everyone">"Član"</string>
   <string name="screen_room_change_permissions_invite_people">"Pozivanje osoba"</string>
+  <string name="screen_room_change_permissions_manage_space">"Upravljaj prostorom"</string>
+  <string name="screen_room_change_permissions_manage_space_rooms">"Upravljaj sobama"</string>
   <string name="screen_room_change_permissions_member_moderation">"Upravljanje članovima"</string>
   <string name="screen_room_change_permissions_messages_and_content">"Poruke i sadržaj"</string>
   <string name="screen_room_change_permissions_moderators">"Moderator"</string>
@@ -14,6 +17,7 @@
   <string name="screen_room_change_permissions_room_name">"Promjena imena"</string>
   <string name="screen_room_change_permissions_room_topic">"Promjena teme"</string>
   <string name="screen_room_change_permissions_send_messages">"Slanje poruka"</string>
+  <string name="screen_room_change_permissions_title">"Dopuštenja"</string>
   <string name="screen_room_change_role_administrators_title">"Uredi administratore"</string>
   <string name="screen_room_change_role_confirm_add_admin_description">"Nećete moći poništiti ovu radnju. Postavit ćete da korisnik ima isti položaj kao i vi."</string>
   <string name="screen_room_change_role_confirm_add_admin_title">"Dodati administratora?"</string>

@@ -126,7 +126,6 @@
   <string name="screen_security_and_privacy_room_address_section_footer">"Θα χρειαστείτε μια διεύθυνση αίθουσας για να την κάνετε ορατή στον κατάλογο."</string>
   <string name="screen_security_and_privacy_room_directory_visibility_section_footer">"Επιστρέψτε την εύρεση αυτής της αίθουσας με αναζήτηση στον κατάλογο %1$s δημοσίων αιθουσών"</string>
   <string name="screen_security_and_privacy_room_directory_visibility_toggle_title">"Ορατή στον κατάλογο δημόσιων αιθουσών"</string>
-  <string name="screen_security_and_privacy_room_history_anyone_option_title">"Οποιοσδήποτε"</string>
   <string name="screen_security_and_privacy_room_history_section_header">"Ποιος μπορεί να διαβάσει το ιστορικό"</string>
   <string name="screen_security_and_privacy_room_history_since_invite_option_title">"Μόνο μέλη από τη στιγμή που προσκλήθηκαν"</string>
   <string name="screen_security_and_privacy_room_history_since_selecting_option_title">"Μόνο για μέλη μετά από αυτήν την επιλογή"</string>

@@ -114,6 +114,7 @@
   <string name="action_skip">"چھوڑیں"</string>
   <string name="action_start">"شروع کریں"</string>
   <string name="action_start_chat">"گفتگو شروع کریں"</string>
+  <string name="action_start_over">"از سر نو شروع کریں"</string>
   <string name="action_start_verification">"توثیق شروع کریں"</string>
   <string name="action_static_map_load">"نقشہ لادنے کیلئے تھپتھپائیں"</string>
   <string name="action_take_photo">"تصویر لیں"</string>
@@ -129,6 +130,7 @@
   <string name="common_acceptable_use_policy">"قابل قبول استعمال کی سیاست"</string>
   <string name="common_advanced_settings">"اعلیٰ ترتیبات"</string>
   <string name="common_analytics">"تجزیات"</string>
+  <string name="common_android_shortcuts_remove_reason_left_room">"آپ کمرے سے رخصت ہوگئے"</string>
   <string name="common_appearance">"ظہور"</string>
   <string name="common_audio">"صوت"</string>
   <string name="common_blocked_users">"مسدود صارفین"</string>

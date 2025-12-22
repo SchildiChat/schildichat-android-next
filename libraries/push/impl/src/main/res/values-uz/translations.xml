@@ -54,6 +54,7 @@
   <string name="push_distributor_background_sync_android">"Orqa Fon sinxronizatsiyasi"</string>
   <string name="push_distributor_firebase_android">"Google xizmatlari"</string>
   <string name="push_no_valid_google_play_services_apk_android">"Yaroqli Google Play xizmatlari topilmadi. Bildirishnomalar to\'g\'ri ishlamasligi mumkin."</string>
+  <string name="troubleshoot_notifications_test_blocked_users_title">"Bloklangan foydalanuvchilar"</string>
   <string name="troubleshoot_notifications_test_current_push_provider_description">"Joriy provayder nomini oling."</string>
   <string name="troubleshoot_notifications_test_current_push_provider_failure">"Hech qanday push-provayder tanlanmagan."</string>
   <string name="troubleshoot_notifications_test_current_push_provider_success">"Joriy push provider: %1$s."</string>

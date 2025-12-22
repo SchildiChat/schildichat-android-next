@@ -150,6 +150,7 @@
   <string name="action_skip">"Oʻtkazib yuborish"</string>
   <string name="action_start">"Boshlash"</string>
   <string name="action_start_chat">"Suhbatni boshlash"</string>
+  <string name="action_start_over">"Qaytadan boshlang"</string>
   <string name="action_start_verification">"Tasdiqlashni boshlang"</string>
   <string name="action_static_map_load">"Xaritani yuklash uchun bosing"</string>
   <string name="action_take_photo">"Rasmga olmoq"</string>

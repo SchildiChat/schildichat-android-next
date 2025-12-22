@@ -70,3 +70,6 @@
 -keep class uniffi.** { *;}
 -keep class io.element.android.x.di.** { *; }
 -keepclasseswithmembernames,allowoptimization,allowshrinking class io.element.android.** { *; }
+
+# Keep Metro classes
+-keep class dev.zacsweers.metro.** { *; }

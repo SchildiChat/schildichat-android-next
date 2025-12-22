@@ -47,7 +47,7 @@ class RolesAndPermissionsStateProvider : PreviewParameterProvider<RolesAndPermis
                 moderatorCount = 2,
                 resetPermissionsAction = AsyncAction.Failure(IllegalStateException("Failed to reset permissions")),
             ),
-            aRolesAndPermissionsState(availableDemoteActions = emptyList()),
+            aRolesAndPermissionsState(availableSelfDemoteActions = emptyList()),
         )
 }
 
@@ -55,14 +55,14 @@ internal fun aRolesAndPermissionsState(
     roomSupportsOwners: Boolean = true,
     adminCount: Int = 0,
     moderatorCount: Int = 0,
-    availableDemoteActions: List<DemoteActions> = listOf(DemoteActions.ToModerator, DemoteActions.ToMember),
+    availableSelfDemoteActions: List<SelfDemoteAction> = listOf(SelfDemoteAction.ToModerator, SelfDemoteAction.ToMember),
     changeOwnRoleAction: AsyncAction<Unit> = AsyncAction.Uninitialized,
     resetPermissionsAction: AsyncAction<Unit> = AsyncAction.Uninitialized,
     eventSink: (RolesAndPermissionsEvents) -> Unit = {},
 ) = RolesAndPermissionsState(
     roomSupportsOwnerRole = roomSupportsOwners,
     adminCount = adminCount,
-    availableDemoteActions = availableDemoteActions.toImmutableList(),
+    availableSelfDemoteActions = availableSelfDemoteActions.toImmutableList(),
     moderatorCount = moderatorCount,
     changeOwnRoleAction = changeOwnRoleAction,
     resetPermissionsAction = resetPermissionsAction,

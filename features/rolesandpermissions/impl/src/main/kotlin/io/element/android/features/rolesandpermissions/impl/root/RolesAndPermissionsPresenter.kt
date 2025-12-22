@@ -54,8 +54,8 @@ class RolesAndPermissionsPresenter(
             derivedStateOf {
                 val currentRole = roomInfo.roleOf(room.sessionId)
                 when (currentRole) {
-                    is RoomMember.Role.Admin -> persistentListOf(DemoteActions.ToModerator, DemoteActions.ToMember)
-                    is RoomMember.Role.Moderator -> persistentListOf(DemoteActions.ToMember)
+                    is RoomMember.Role.Admin -> persistentListOf(SelfDemoteAction.ToModerator, SelfDemoteAction.ToMember)
+                    is RoomMember.Role.Moderator -> persistentListOf(SelfDemoteAction.ToMember)
                     else -> persistentListOf()
                 }
             }
@@ -88,7 +88,7 @@ class RolesAndPermissionsPresenter(
             roomSupportsOwnerRole = roomInfo.privilegedCreatorRole,
             adminCount = adminCount,
             moderatorCount = moderatorCount,
-            availableDemoteActions = availableDemoteActions,
+            availableSelfDemoteActions = availableDemoteActions,
             changeOwnRoleAction = changeOwnRoleAction.value,
             resetPermissionsAction = resetPermissionsAction.value,
             eventSink = ::handleEvent,

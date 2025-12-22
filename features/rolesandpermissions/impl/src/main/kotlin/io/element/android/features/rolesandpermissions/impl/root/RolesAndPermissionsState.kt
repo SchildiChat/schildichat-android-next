@@ -17,15 +17,15 @@ data class RolesAndPermissionsState(
     val roomSupportsOwnerRole: Boolean,
     val adminCount: Int?,
     val moderatorCount: Int?,
-    val availableDemoteActions: ImmutableList<DemoteActions>,
+    val availableSelfDemoteActions: ImmutableList<SelfDemoteAction>,
     val changeOwnRoleAction: AsyncAction<Unit>,
     val resetPermissionsAction: AsyncAction<Unit>,
     val eventSink: (RolesAndPermissionsEvents) -> Unit,
 ) {
-    val canDemoteSelf = availableDemoteActions.isNotEmpty()
+    val canSelfDemote = availableSelfDemoteActions.isNotEmpty()
 }
 
-enum class DemoteActions(val role: RoomMember.Role, val titleRes: Int) {
+enum class SelfDemoteAction(val role: RoomMember.Role, val titleRes: Int) {
     ToModerator(RoomMember.Role.Moderator, R.string.screen_room_roles_and_permissions_change_role_demote_to_moderator),
     ToMember(RoomMember.Role.User, R.string.screen_room_roles_and_permissions_change_role_demote_to_member)
 }

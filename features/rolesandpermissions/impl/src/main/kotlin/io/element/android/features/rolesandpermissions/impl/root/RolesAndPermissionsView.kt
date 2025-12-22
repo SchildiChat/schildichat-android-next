@@ -76,7 +76,7 @@ fun RolesAndPermissionsView(
             },
             onClick = { rolesAndPermissionsNavigator.openModeratorList() },
         )
-        if (state.canDemoteSelf) {
+        if (state.canSelfDemote) {
             ListItem(
                 headlineContent = { Text(stringResource(R.string.screen_room_roles_and_permissions_change_my_role)) },
                 onClick = { state.eventSink(RolesAndPermissionsEvents.ChangeOwnRole) },
@@ -117,7 +117,7 @@ fun RolesAndPermissionsView(
     when (state.changeOwnRoleAction) {
         is AsyncAction.Confirming -> {
             ChangeOwnRoleBottomSheet(
-                availableDemoteActions = state.availableDemoteActions,
+                availableDemoteActions = state.availableSelfDemoteActions,
                 eventSink = state.eventSink,
             )
         }
@@ -137,7 +137,7 @@ fun RolesAndPermissionsView(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ChangeOwnRoleBottomSheet(
-    availableDemoteActions: ImmutableList<DemoteActions>,
+    availableDemoteActions: ImmutableList<SelfDemoteAction>,
     eventSink: (RolesAndPermissionsEvents) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()

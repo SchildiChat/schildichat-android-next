@@ -1,0 +1,2 @@
+- Update codebase to Element X v25.12.0
+- Update FOSS FCM library and backend

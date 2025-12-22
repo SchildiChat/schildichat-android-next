@@ -25,10 +25,14 @@ class DefaultFeatureFlagService(
     private val featuresProvider: FeaturesProvider,
 ) : FeatureFlagService {
     override fun isFeatureEnabledFlow(feature: Feature): Flow<Boolean> {
-        return providers.filter { it.hasFeature(feature) }
-            .maxByOrNull(FeatureFlagProvider::priority)
-            ?.isFeatureEnabledFlow(feature)
-            ?: flowOf(feature.defaultValue(buildMeta))
+        return if (feature.isFinished) {
+            flowOf(feature.defaultValue(buildMeta))
+        } else {
+            providers.filter { it.hasFeature(feature) }
+                .maxByOrNull(FeatureFlagProvider::priority)
+                ?.isFeatureEnabledFlow(feature)
+                ?: flowOf(feature.defaultValue(buildMeta))
+        }
     }
 
     override suspend fun setFeatureEnabled(feature: Feature, enabled: Boolean): Boolean {

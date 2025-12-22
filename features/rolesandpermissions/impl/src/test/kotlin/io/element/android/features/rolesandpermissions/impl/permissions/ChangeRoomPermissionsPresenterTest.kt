@@ -16,13 +16,18 @@ import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import im.vector.app.features.analytics.plan.RoomModeration
 import io.element.android.libraries.architecture.AsyncAction
+import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.matrix.api.room.RoomMember.Role.Admin
 import io.element.android.libraries.matrix.api.room.RoomMember.Role.Moderator
+import io.element.android.libraries.matrix.api.room.powerlevels.RoomPowerLevels
 import io.element.android.libraries.matrix.api.room.powerlevels.RoomPowerLevelsValues
+import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
+import io.element.android.libraries.matrix.test.room.aRoomInfo
 import io.element.android.libraries.matrix.test.room.defaultRoomPowerLevelValues
 import io.element.android.services.analytics.test.FakeAnalyticsService
+import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -67,6 +72,28 @@ class ChangeRoomPermissionsPresenterTest {
                 RoomPermissionType.KICK,
                 RoomPermissionType.BAN,
             )
+        }
+    }
+
+    @Test
+    fun `present - check canChangePermissions and selectableOptions for moderator`() = runTest {
+        val room = FakeJoinedRoom(
+            baseRoom = FakeBaseRoom(
+                initialRoomInfo = initialRoomInfo(role = Moderator),
+                powerLevelsResult = { Result.success(defaultPermissions()) }
+            ),
+        )
+        val presenter = createChangeRoomPermissionsPresenter(room = room)
+        moleculeFlow(RecompositionMode.Immediate) {
+            presenter.present()
+        }.test {
+            val state = awaitUpdatedItem()
+            assertThat(state.selectableRoles).containsExactly(SelectableRole.Moderator, SelectableRole.Everyone)
+            for (sectionItems in state.itemsBySection.values) {
+                for (permissionType in sectionItems) {
+                    assertThat(state.canChangePermission(permissionType)).isTrue()
+                }
+            }
         }
     }
 
@@ -266,12 +293,22 @@ class ChangeRoomPermissionsPresenterTest {
 
     private fun createChangeRoomPermissionsPresenter(
         room: FakeJoinedRoom = FakeJoinedRoom(
-            baseRoom = FakeBaseRoom(powerLevelsResult = { Result.success(defaultPermissions()) }),
+            baseRoom = FakeBaseRoom(
+                initialRoomInfo = initialRoomInfo(),
+                powerLevelsResult = { Result.success(defaultPermissions()) }
+            ),
         ),
         analyticsService: FakeAnalyticsService = FakeAnalyticsService(),
     ) = ChangeRoomPermissionsPresenter(
         room = room,
         analyticsService = analyticsService,
+    )
+
+    private fun initialRoomInfo(role: RoomMember.Role = Admin) = aRoomInfo(
+        roomPowerLevels = RoomPowerLevels(
+            values = defaultPermissions(),
+            users = persistentMapOf(A_SESSION_ID to role.powerLevel),
+        )
     )
 
     private fun defaultPermissions() = defaultRoomPowerLevelValues()

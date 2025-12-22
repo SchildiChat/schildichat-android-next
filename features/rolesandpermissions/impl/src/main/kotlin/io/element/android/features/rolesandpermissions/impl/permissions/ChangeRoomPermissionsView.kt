@@ -30,7 +30,6 @@ import io.element.android.libraries.designsystem.theme.components.Scaffold
 import io.element.android.libraries.designsystem.theme.components.TextButton
 import io.element.android.libraries.designsystem.theme.components.TopAppBar
 import io.element.android.libraries.ui.strings.CommonStrings
-import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -74,7 +73,8 @@ fun ChangeRoomPermissionsView(
                         PreferenceDropdown(
                             title = titleForType(permissionType),
                             selectedOption = state.selectedRoleForType(permissionType),
-                            options = SelectableRole.entries.toImmutableList(),
+                            options = state.selectableRoles,
+                            enabled = state.canChangePermission(permissionType),
                             onSelectOption = { role ->
                                 state.eventSink(
                                     ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(
@@ -127,7 +127,6 @@ private fun titleForType(type: RoomPermissionType): String = when (type) {
     RoomPermissionType.ROOM_AVATAR -> stringResource(R.string.screen_room_change_permissions_room_avatar)
     RoomPermissionType.ROOM_TOPIC -> stringResource(R.string.screen_room_change_permissions_room_topic)
     RoomPermissionType.SPACE_MANAGE_ROOMS -> stringResource(R.string.screen_room_change_permissions_manage_space_rooms)
-    RoomPermissionType.CHANGE_SETTINGS -> stringResource(R.string.screen_room_change_permissions_change_settings)
 }
 
 @PreviewsDayNight

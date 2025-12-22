@@ -28,6 +28,7 @@ import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.architecture.runUpdatingState
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
+import io.element.android.libraries.core.coroutine.mapState
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.room.RoomMember
@@ -35,7 +36,7 @@ import io.element.android.libraries.matrix.api.room.RoomMembershipState
 import io.element.android.libraries.matrix.api.room.powerlevels.permissionsAsState
 import io.element.android.libraries.matrix.api.room.roomMembers
 import io.element.android.libraries.matrix.api.user.MatrixUser
-import io.element.android.libraries.matrix.ui.room.userPowerLevelAsState
+import io.element.android.libraries.matrix.ui.model.powerLevelOf
 import io.element.android.services.analytics.api.AnalyticsService
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -56,11 +57,14 @@ class RoomMemberModerationPresenter(
     @Composable
     override fun present(): RoomMemberModerationState {
         val coroutineScope = rememberCoroutineScope()
-        val syncUpdateFlow = room.syncUpdateFlow.collectAsState()
         val permissions by room.permissionsAsState(RoomMemberModerationPermissions.DEFAULT) { perms ->
             perms.roomMemberModerationPermissions()
         }
-        val currentUserMemberPowerLevel = room.userPowerLevelAsState(syncUpdateFlow.value)
+        val currentUserPowerLevel by remember {
+            room.roomInfoFlow.mapState { info ->
+                info.powerLevelOf(room.sessionId)
+            }
+        }.collectAsState()
 
         val kickUserAsyncAction =
             remember { mutableStateOf(AsyncAction.Uninitialized as AsyncAction<Unit>) }
@@ -83,7 +87,7 @@ class RoomMemberModerationPresenter(
                     moderationActions.value = computeModerationActions(
                         member = member,
                         permissions = permissions,
-                        currentUserMemberPowerLevel = currentUserMemberPowerLevel.value,
+                        currentUserPowerLevel = currentUserPowerLevel,
                     )
                 }
                 is RoomMemberModerationEvents.ProcessAction -> {
@@ -148,25 +152,25 @@ class RoomMemberModerationPresenter(
     private fun computeModerationActions(
         member: RoomMember?,
         permissions: RoomMemberModerationPermissions,
-        currentUserMemberPowerLevel: Long,
+        currentUserPowerLevel: Long,
     ): ImmutableList<ModerationActionState> {
         return buildList {
             add(ModerationActionState(action = ModerationAction.DisplayProfile, isEnabled = true))
             // Assume the member is a regular user when it's unknown
             val targetMemberPowerLevel = member?.powerLevel ?: 0
-            val canModerateThisUser = currentUserMemberPowerLevel > targetMemberPowerLevel
+            val canModerateThisUser = currentUserPowerLevel > targetMemberPowerLevel
             // Assume the member is joined when it's unknown
             val membership = member?.membership ?: RoomMembershipState.JOIN
             if (permissions.canKick) {
-                val isKickEnabled = canModerateThisUser && membership.isActive()
-                add(ModerationActionState(action = ModerationAction.KickUser, isEnabled = isKickEnabled))
-            }
-            if (permissions.canBan) {
+                // Unban requires kick permission instead of a dedicated unban permission
                 if (membership == RoomMembershipState.BAN) {
                     add(ModerationActionState(action = ModerationAction.UnbanUser, isEnabled = canModerateThisUser))
-                } else {
-                    add(ModerationActionState(action = ModerationAction.BanUser, isEnabled = canModerateThisUser))
+                } else if (membership != RoomMembershipState.LEAVE) {
+                    add(ModerationActionState(action = ModerationAction.KickUser, isEnabled = canModerateThisUser))
                 }
+            }
+            if (permissions.canBan && membership != RoomMembershipState.BAN) {
+                add(ModerationActionState(action = ModerationAction.BanUser, isEnabled = canModerateThisUser))
             }
         }.toImmutableList()
     }

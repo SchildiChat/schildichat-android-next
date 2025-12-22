@@ -36,6 +36,7 @@ import io.element.android.libraries.matrix.api.room.powerlevels.UserRoleChange
 import io.element.android.libraries.matrix.api.room.powerlevels.usersWithRole
 import io.element.android.libraries.matrix.api.room.toMatrixUser
 import io.element.android.libraries.matrix.api.user.MatrixUser
+import io.element.android.libraries.matrix.ui.model.powerLevelOf
 import io.element.android.libraries.matrix.ui.model.roleOf
 import io.element.android.libraries.matrix.ui.room.PowerLevelRoomMemberComparator
 import io.element.android.services.analytics.api.AnalyticsService
@@ -124,9 +125,10 @@ class ChangeRolesPresenter(
 
         val roomInfo by room.roomInfoFlow.collectAsState()
         fun canChangeMemberRole(userId: UserId): Boolean {
-            val currentUserRole = roomInfo.roleOf(room.sessionId)
-            val otherUserRole = roomInfo.roleOf(userId)
-            return currentUserRole.powerLevel > otherUserRole.powerLevel
+            val currentUserPowerLevel = roomInfo.powerLevelOf(room.sessionId)
+            val otherUserPowerLevel = roomInfo.powerLevelOf(userId)
+            return currentUserPowerLevel > otherUserPowerLevel &&
+                currentUserPowerLevel >= role.powerLevel
         }
 
         fun handleEvent(event: ChangeRolesEvent) {

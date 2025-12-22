@@ -151,7 +151,7 @@ private fun <R : TestRule> AndroidComposeTestRule<R, ComponentActivity>.setSpace
             onRoomClick = onRoomClick,
             onShareSpace = onShareSpace,
             onLeaveSpaceClick = onLeaveSpaceClick,
-            onDetailsClick = onDetailsClick,
+            onSettingsClick = onDetailsClick,
             onViewMembersClick = onViewMembersClick,
             acceptDeclineInviteView = acceptDeclineInviteView,
         )

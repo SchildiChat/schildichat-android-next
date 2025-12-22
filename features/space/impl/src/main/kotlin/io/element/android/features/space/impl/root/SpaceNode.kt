@@ -80,7 +80,7 @@ class SpaceNode(
             onRoomClick = { spaceRoom ->
                 callback.navigateToRoom(spaceRoom.roomId, spaceRoom.via)
             },
-            onDetailsClick = {
+            onSettingsClick = {
                 callback.navigateToSpaceSettings()
             },
             onShareSpace = {

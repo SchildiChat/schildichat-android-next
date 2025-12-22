@@ -26,6 +26,7 @@ object ScPrefs {
     // Appearance
     val SC_THEME = ScBoolPref("SC_THEMES", true, R.string.sc_pref_sc_themes_title, R.string.sc_pref_sc_themes_summary, upstreamChoice = false)
     val EL_TYPOGRAPHY = ScBoolPref("EL_TYPOGRAPHY", false, R.string.sc_pref_el_typography_title, R.string.sc_pref_el_typography_summary, upstreamChoice = true)
+    val TWO_INITIALS_AVATAR_FALLBACK = ScBoolPref("TWO_INITIALS_AVATAR_FALLBACK", false, R.string.sc_pref_two_initials_avatar_fallback_title, R.string.sc_pref_two_initials_avatar_fallback_summary, upstreamChoice = false, authorsChoice = true)
 
     // General behavior
     val FAST_TRANSITIONS = ScBoolPref("FAST_TRANSITIONS", true, R.string.sc_pref_fast_transitions_title, R.string.sc_pref_fast_transitions_summary, upstreamChoice = false)
@@ -138,6 +139,7 @@ object ScPrefs {
             ScPrefCategory(R.string.sc_pref_category_general_appearance, null, listOf(
                 SC_THEME,
                 EL_TYPOGRAPHY,
+                TWO_INITIALS_AVATAR_FALLBACK,
                 ScPrefScreen(R.string.sc_pref_screen_advanced_theming_title, R.string.sc_pref_screen_advanced_theming_summary, listOf(
                     SC_RESTORE_ADVANCED_THEME_DEFAULTS,
                     scTweaksAdvancedTheming,
@@ -261,6 +263,7 @@ object ScPrefs {
             SC_THEME,
             SC_OVERVIEW_LAYOUT.copy(titleRes = R.string.sc_pref_sc_layout_title),
             EL_TYPOGRAPHY,
+            TWO_INITIALS_AVATAR_FALLBACK,
         )),
         ScPrefCategory(R.string.sc_pref_category_spaces, null, listOf(
             SPACE_NAV,

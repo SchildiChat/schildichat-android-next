@@ -112,6 +112,8 @@
     <string name="sc_pref_debounce_offline_state_summary">Ignore fast chances to offline state</string>
     <string name="sc_pref_always_show_reaction_search_bar_title">Sticky reaction search</string>
     <string name="sc_pref_always_show_reaction_search_bar_summary">Always show reaction search bar at the top of the reaction picker</string>
+    <string name="sc_pref_two_initials_avatar_fallback_title">Two letter avatars</string>
+    <string name="sc_pref_two_initials_avatar_fallback_summary">Show two letters as avatar fallback for rooms and users without avatar</string>
 
     <string name="sc_pref_dev_quick_options">Quick settings</string>
     <string name="sc_pref_debug_read_marker">Debug read marker</string>

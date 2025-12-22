@@ -25,7 +25,7 @@ internal fun InitialLetterAvatar(
 ) {
     val avatarColors = AvatarColorsProvider.provide(avatarData.id)
     TextAvatar(
-        text = avatarData.initialLetter,
+        text = avatarData.scInitialLetters() ?: avatarData.initialLetter,
         size = forcedAvatarSize ?: avatarData.size.dp,
         avatarShape = avatarShape,
         colors = avatarColors,

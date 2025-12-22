@@ -18,6 +18,7 @@ data class AvatarData(
     val size: AvatarSize,
     val powerLevel: Long? = null,
 ) {
+    val scPreviewLetters by lazy { scPreviewLetters() }
     val initialLetter by lazy {
         // For roomIds, use "#" as initial
         (name?.takeIf { it.isNotBlank() } ?: id.takeIf { !it.startsWith("!") } ?: "#")

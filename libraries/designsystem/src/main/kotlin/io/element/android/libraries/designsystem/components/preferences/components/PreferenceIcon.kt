@@ -34,11 +34,10 @@ fun preferenceIcon(
     @DrawableRes iconResourceId: Int? = null,
     showIconBadge: Boolean = false,
     tintColor: Color? = null,
-    enabled: Boolean = true,
     showIconAreaIfNoIcon: Boolean = false,
 ): ListItemContent.Custom? {
     return if (icon != null || iconResourceId != null || showIconAreaIfNoIcon) {
-        ListItemContent.Custom {
+        ListItemContent.Custom { enabled ->
             PreferenceIcon(
                 icon = icon,
                 iconResourceId = iconResourceId,

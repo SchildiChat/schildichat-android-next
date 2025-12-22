@@ -70,7 +70,7 @@ private fun PreferenceBlockUser(
     isLoading: Boolean,
     eventSink: (UserProfileEvents) -> Unit,
 ) {
-    val loadingCurrentValue = @Composable {
+    val loadingCurrentValue = @Composable { _: Boolean ->
         CircularProgressIndicator(
             modifier = Modifier
                 .progressSemantics()

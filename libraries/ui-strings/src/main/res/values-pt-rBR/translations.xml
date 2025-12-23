@@ -434,11 +434,6 @@ Você tem certeza de que deseja continuar?"</string>
   <string name="screen_create_poll_options_section_title">"Opções"</string>
   <string name="screen_create_poll_remove_accessibility_label">"Remover %1$s"</string>
   <string name="screen_create_poll_settings_section_title">"Configurações"</string>
-  <string name="screen_manage_authorized_spaces_header">"Os espaços dos quais os membros podem entrar na sala sem um convite."</string>
-  <string name="screen_manage_authorized_spaces_title">"Gerenciar espaços"</string>
-  <string name="screen_manage_authorized_spaces_unknown_space">"(Espaço desconhecido)"</string>
-  <string name="screen_manage_authorized_spaces_unknown_spaces_section_title">"Outros espaços dos quais você não é um membro"</string>
-  <string name="screen_manage_authorized_spaces_your_spaces_section_title">"Seus espaços"</string>
   <string name="screen_media_picker_error_failed_selection">"Falha ao selecionar a mídia, tente novamente."</string>
   <string name="screen_pinned_timeline_empty_state_description">"Pressione em uma mensagem e escolha \"%1$s\" para incluir aqui."</string>
   <string name="screen_pinned_timeline_empty_state_headline">"Fixe mensagens importantes para que elas possam ser facilmente descobertas"</string>

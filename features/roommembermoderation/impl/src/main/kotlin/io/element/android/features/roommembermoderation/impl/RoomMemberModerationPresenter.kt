@@ -161,16 +161,28 @@ class RoomMemberModerationPresenter(
             val canModerateThisUser = currentUserPowerLevel > targetMemberPowerLevel
             // Assume the member is joined when it's unknown
             val membership = member?.membership ?: RoomMembershipState.JOIN
-            if (permissions.canKick) {
-                // Unban requires kick permission instead of a dedicated unban permission
-                if (membership == RoomMembershipState.BAN) {
-                    add(ModerationActionState(action = ModerationAction.UnbanUser, isEnabled = canModerateThisUser))
-                } else if (membership != RoomMembershipState.LEAVE) {
-                    add(ModerationActionState(action = ModerationAction.KickUser, isEnabled = canModerateThisUser))
+            when (membership) {
+                RoomMembershipState.BAN -> {
+                    // Unban requires both kick and ban permission instead of a dedicated unban permission
+                    if (permissions.canBan && permissions.canKick) {
+                        add(ModerationActionState(action = ModerationAction.UnbanUser, isEnabled = canModerateThisUser))
+                    }
                 }
-            }
-            if (permissions.canBan && membership != RoomMembershipState.BAN) {
-                add(ModerationActionState(action = ModerationAction.BanUser, isEnabled = canModerateThisUser))
+                RoomMembershipState.INVITE,
+                RoomMembershipState.JOIN,
+                RoomMembershipState.KNOCK -> {
+                    if (permissions.canKick) {
+                        add(ModerationActionState(action = ModerationAction.KickUser, isEnabled = canModerateThisUser))
+                    }
+                    if (permissions.canBan) {
+                        add(ModerationActionState(action = ModerationAction.BanUser, isEnabled = canModerateThisUser))
+                    }
+                }
+                RoomMembershipState.LEAVE -> {
+                    if (permissions.canBan) {
+                        add(ModerationActionState(action = ModerationAction.BanUser, isEnabled = canModerateThisUser))
+                    }
+                }
             }
         }.toImmutableList()
     }

@@ -13,8 +13,6 @@ data class RoomMemberModerationPermissions(
     val canKick: Boolean,
     val canBan: Boolean,
 ) {
-    val hasAny = canKick || canBan
-
     companion object {
         val DEFAULT = RoomMemberModerationPermissions(
             canKick = false,

@@ -131,6 +131,7 @@
     <string name="sc_pref_category_chat_sorting">Sort order</string>
     <string name="sc_pref_category_spaces">Spaces</string>
     <string name="sc_pref_category_timeline">Conversation screen</string>
+    <string name="sc_pref_category_timeline_short">Timeline</string>
     <string name="sc_pref_category_reactions">Reactions</string>
     <string name="sc_pref_category_pinned_messages">Pinned messages</string>
     <string name="sc_pref_category_notifications">Notifications</string>
@@ -196,6 +197,9 @@
     <string name="sc_pref_message_context_menu_text_selectable_title">Selectable text on message longpress</string>
     <string name="sc_pref_message_context_menu_text_selectable_title_short">Selectable text</string>
     <string name="sc_pref_message_context_menu_text_selectable_summary">Allow fine-grained text selection for copy-pasting in the message longpress menu</string>
+    <string name="sc_pref_view_hidden_events_title">Show hidden events</string>
+    <string name="sc_pref_view_redactions_title">Show deleted messages</string>
+    <string name="sc_pref_view_redactions_summary">Render message placeholders for deleted messages rather than hiding them completely</string>
 
     <string name="sc_about_based_on_element_x_version">Based on Element X: %1$s</string>
     <string name="sc_about_git_revision">Built from: %1$s</string>

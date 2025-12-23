@@ -106,6 +106,8 @@ object ScPrefs {
     val REPLY_PREVIEW_LINE_COUNT = ScIntPref("REPLY_PREVIEW_LINE_COUNT", 4, R.string.sc_reply_preview_line_count_title, R.string.sc_reply_preview_line_count_summary, minValue = 1, authorsChoice = 4, upstreamChoice = 2)
     val FULLY_EXPAND_MESSAGE_MENU = ScBoolPref("FULLY_EXPAND_MESSAGE_MENU", false, R.string.sc_pref_fully_expand_message_menu_title, R.string.sc_pref_fully_expand_message_menu_summary, authorsChoice = true, upstreamChoice = false)
     val MESSAGE_CONTEXT_MENU_TEXT_SELECTABLE = ScBoolPref("MESSAGE_CONTEXT_MENU_TEXT_SELECTABLE", true, R.string.sc_pref_message_context_menu_text_selectable_title, R.string.sc_pref_message_context_menu_text_selectable_summary, authorsChoice = true, upstreamChoice = false)
+    val VIEW_HIDDEN_EVENTS = ScBoolPref("VIEW_HIDDEN_EVENTS", false, R.string.sc_pref_view_hidden_events_title, authorsChoice = true, upstreamChoice = false)
+    val VIEW_REDACTIONS = ScBoolPref("VIEW_REDACTIONS", true, R.string.sc_pref_view_redactions_title, R.string.sc_pref_view_redactions_summary, /*dependencies = listOf(VIEW_HIDDEN_EVENTS.toDependency(expect = false)),*/ disabledValue = true, upstreamChoice = true)
 
     // Advanced theming options - Light theme
     val BUBBLE_BG_LIGHT_OUTGOING = ScColorPref("BUBBLE_BG_LIGHT_OUTGOING", R.string.sc_pref_bubble_color_outgoing_title)
@@ -189,6 +191,7 @@ object ScPrefs {
         )),
         ScPrefScreen(R.string.sc_pref_category_timeline, null, listOf(
             SC_TIMELINE_LAYOUT,
+            VIEW_REDACTIONS,
             RENDER_INLINE_IMAGES,
             FLOATING_DATE,
             HIDE_CALL_TOOLBAR_ACTION,
@@ -231,6 +234,7 @@ object ScPrefs {
         )),
         ScPrefCategoryCollapsed(SC_DEVELOPER_OPTIONS_CATEGORY_KEY, CommonStrings.common_developer_options, prefs = listOf(
             SC_DEV_QUICK_OPTIONS,
+            VIEW_HIDDEN_EVENTS,
             READ_MARKER_DEBUG,
             SC_DANGER_ZONE,
             ScPrefScreen(R.string.sc_pref_chamber_of_secrets_title, null, listOf(
@@ -253,6 +257,11 @@ object ScPrefs {
         ELEMENT_ROOM_LIST_FILTERS, // Used to be: ScUpstreamFeatureFlagAliasPref(FeatureFlags.RoomListFilters, R.string.sc_upstream_feature_flag_room_list_filters),
         SNC_FAB.copy(titleRes = R.string.sc_pref_snc_fab_title_short),
         RENDER_SILENT_UNREAD,
+        // Timeline settings that don't reload live while the room is open
+        ScPrefCategory(R.string.sc_pref_category_timeline_short, null, listOf(
+            VIEW_REDACTIONS,
+            VIEW_HIDDEN_EVENTS,
+        )),
         ScPrefCategory(R.string.sc_pref_category_chat_sorting, null, listOf(
             SORT_BY_UNREAD,
             SORT_WITH_SILENT_UNREAD,

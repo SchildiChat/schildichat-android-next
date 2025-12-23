@@ -590,6 +590,9 @@ class RustTimeline(
     override suspend fun fullyReadEventId(): String? {
         return runCatching { inner.fullyReadEventId() }.getOrNull()
     }
+    override suspend fun latestUserReceiptEventId(userId: String): String? {
+        return runCatching { inner.latestUserReadReceiptEventId(userId) }.getOrNull()
+    }
     // SC end
 
     override suspend fun loadReplyDetails(eventId: EventId): InReplyTo = withContext(dispatcher) {

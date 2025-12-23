@@ -214,6 +214,7 @@ interface Timeline : AutoCloseable {
     // SC start
     suspend fun forceSendReadReceipt(eventId: EventId, receiptType: ReceiptType): Result<Unit>
     suspend fun fullyReadEventId(): String?
+    suspend fun latestUserReceiptEventId(userId: String): String?
     // SC end
 
     suspend fun loadReplyDetails(eventId: EventId): InReplyTo

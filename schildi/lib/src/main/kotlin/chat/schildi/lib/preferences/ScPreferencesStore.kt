@@ -12,12 +12,14 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import chat.schildi.lib.BuildConfig
+import chat.schildi.matrixsdk.ScTimelineFilterSettings
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import io.element.android.libraries.di.annotations.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -136,7 +138,7 @@ class DefaultScPreferencesStore(
         }
     }
 
-    private fun <T>cacheSetting(scPref: ScPref<T>, value: Any?) {
+    private fun cacheSetting(scPref: ScPref<*>, value: Any?) {
         val v = scPref.ensureType(value)
         if (v == null) {
             settingsCache.remove(scPref.sKey)
@@ -202,6 +204,22 @@ fun <T>ScPref<T>.value(): T = LocalScPreferencesStore.current.settingState(this)
 
 @Composable
 fun ScColorPref.userColor(): Color? = LocalScPreferencesStore.current.settingState(this).value.let { ScColorPref.valueToColor(it) }
+
+@Composable
+fun scTimelineFilterSettings(): State<ScTimelineFilterSettings> {
+    val store = LocalScPreferencesStore.current
+    return store.combinedSettingFlow { lookup ->
+        ScTimelineFilterSettings(
+            showHiddenEvents = ScPrefs.VIEW_HIDDEN_EVENTS.safeLookup(lookup),
+            showRedactions = ScPrefs.VIEW_REDACTIONS.safeLookup(lookup),
+        )
+    }.collectAsState(
+        ScTimelineFilterSettings(
+            showHiddenEvents = ScPrefs.VIEW_HIDDEN_EVENTS.safeLookup { store.getCachedOrDefaultValue(it) },
+            showRedactions = ScPrefs.VIEW_REDACTIONS.safeLookup { store.getCachedOrDefaultValue(it) },
+        )
+    )
+}
 
 @Composable
 fun <T>ScPref<T>.state(): State<T> = LocalScPreferencesStore.current.settingState(this)

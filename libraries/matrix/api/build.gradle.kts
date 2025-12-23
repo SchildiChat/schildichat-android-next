@@ -44,6 +44,7 @@ android {
 }
 
 dependencies {
+    api(projects.schildi.matrixcore)
     implementation(projects.libraries.di)
     implementation(projects.libraries.androidutils)
     implementation(projects.libraries.core)

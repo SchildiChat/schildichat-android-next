@@ -8,6 +8,7 @@
 
 package io.element.android.libraries.matrix.impl.room
 
+import chat.schildi.matrixsdk.ScTimelineFilterSettings
 import io.element.android.appconfig.TimelineConfig
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.featureflag.api.FeatureFlagService
@@ -104,7 +105,7 @@ class RustRoomFactory(
         sessionCoroutineScope = sessionCoroutineScope,
     )
 
-    suspend fun getJoinedRoomOrPreview(roomId: RoomId, serverNames: List<String>): GetRoomResult? = withContext(dispatcher) {
+    suspend fun getJoinedRoomOrPreview(roomId: RoomId, serverNames: List<String>, scTimelineFilterSettings: ScTimelineFilterSettings): GetRoomResult? = withContext(dispatcher) {
         mutex.withLock {
             if (isDestroyed.get()) {
                 Timber.d("Room factory is destroyed, returning null for $roomId")
@@ -131,7 +132,8 @@ class RustRoomFactory(
                         sdkRoom.timelineWithConfiguration(
                             TimelineConfiguration(
                                 focus = TimelineFocus.Live(hideThreadedEvents = hideThreadedEvents),
-                                filter = eventFilters?.let(TimelineFilter::EventTypeFilter) ?: TimelineFilter.All,
+                                //filter = eventFilters?.let(TimelineFilter::EventTypeFilter) ?: TimelineFilter.All,
+                                filter = eventFilters.scTimelineFilter(scTimelineFilterSettings),
                                 internalIdPrefix = "live",
                                 dateDividerMode = DateDividerMode.DAILY,
                                 trackReadReceipts = TimelineReadReceiptTracking.ALL_EVENTS,

@@ -8,6 +8,7 @@
 
 package io.element.android.libraries.matrix.api
 
+import chat.schildi.matrixsdk.ScTimelineFilterSettings
 import io.element.android.libraries.core.data.tryOrNull
 import io.element.android.libraries.matrix.api.core.DeviceId
 import io.element.android.libraries.matrix.api.core.EventId
@@ -65,7 +66,7 @@ interface MatrixClient {
     val sessionCoroutineScope: CoroutineScope
     val ignoredUsersFlow: StateFlow<ImmutableList<UserId>>
     val roomMembershipObserver: RoomMembershipObserver
-    suspend fun getJoinedRoom(roomId: RoomId): JoinedRoom?
+    suspend fun getJoinedRoom(roomId: RoomId, scTimelineFilterSettings: ScTimelineFilterSettings = ScTimelineFilterSettings()): JoinedRoom?
     suspend fun getRoom(roomId: RoomId): BaseRoom?
     suspend fun getAccountData(eventType: String): String? // SC
     suspend fun getRoomAccountData(roomId: RoomId, eventType: String): String? // SC
@@ -157,7 +158,7 @@ interface MatrixClient {
     /**
      * Get a room preview for a given room ID or alias. This is especially useful for rooms that the user is not a member of, or hasn't joined yet.
      */
-    suspend fun getRoomPreview(roomIdOrAlias: RoomIdOrAlias, serverNames: List<String>): Result<NotJoinedRoom>
+    suspend fun getRoomPreview(roomIdOrAlias: RoomIdOrAlias, serverNames: List<String>, scTimelineFilterSettings: ScTimelineFilterSettings = ScTimelineFilterSettings()): Result<NotJoinedRoom>
 
     /**
      * Returns the currently used sliding sync version.

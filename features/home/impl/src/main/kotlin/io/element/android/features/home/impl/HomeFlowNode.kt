@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
+import chat.schildi.lib.preferences.scTimelineFilterSettings
 import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
@@ -182,6 +183,8 @@ class HomeFlowNode(
                 }
             }
 
+            val scTimelineFilterSettings = scTimelineFilterSettings()
+
             fun navigateToRoom(
                 roomId: RoomId,
             ) {
@@ -192,7 +195,7 @@ class HomeFlowNode(
 
                 val job = sessionCoroutineScope.launch {
                     runCatchingExceptions {
-                        matrixClient.getJoinedRoom(roomId)
+                        matrixClient.getJoinedRoom(roomId, scTimelineFilterSettings.value)
                     }.fold(
                         onSuccess = { joinedRoom ->
                             if (isActive) {

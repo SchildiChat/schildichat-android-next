@@ -60,6 +60,7 @@
   <string name="push_distributor_background_sync_android">"Фонова синхронізація"</string>
   <string name="push_distributor_firebase_android">"Сервіси Google"</string>
   <string name="push_no_valid_google_play_services_apk_android">"Не знайдено дійсних сервісів Google Play. Сповіщення можуть не працювати належним чином."</string>
+  <string name="troubleshoot_notifications_test_blocked_users_title">"Заблоковані користувачі"</string>
   <string name="troubleshoot_notifications_test_current_push_provider_description">"Отримує назву поточного постачальника."</string>
   <string name="troubleshoot_notifications_test_current_push_provider_failure">"Постачальників push-сповіщень не вибрано."</string>
   <string name="troubleshoot_notifications_test_current_push_provider_success">"Поточний постачальник: %1$s."</string>

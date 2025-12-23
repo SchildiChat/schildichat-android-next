@@ -158,7 +158,7 @@
   <string name="action_skip">"Preskoči"</string>
   <string name="action_start">"Započni"</string>
   <string name="action_start_chat">"Započni razgovor"</string>
-  <string name="action_start_over">"Počni ispočetka"</string>
+  <string name="action_start_over">"Kreni ispočetka"</string>
   <string name="action_start_verification">"Započni provjeru"</string>
   <string name="action_static_map_load">"Dodirnite za učitavanje karte"</string>
   <string name="action_take_photo">"Uslikaj"</string>

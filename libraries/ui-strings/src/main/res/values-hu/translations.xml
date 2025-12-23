@@ -156,6 +156,7 @@
   <string name="action_skip">"Kihagyás"</string>
   <string name="action_start">"Indítás"</string>
   <string name="action_start_chat">"Csevegés indítása"</string>
+  <string name="action_start_over">"Újrakezdés"</string>
   <string name="action_start_verification">"Ellenőrzés elindítása"</string>
   <string name="action_static_map_load">"Koppintson a térkép betöltéséhez"</string>
   <string name="action_take_photo">"Fénykép készítése"</string>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="screen_link_new_device_desktop_scanning_title">"QR 코드를 스캔하세요"</string>
+  <string name="screen_link_new_device_desktop_step3">"이 기기로 QR 코드를 스캔하세요."</string>
+  <string name="screen_link_new_device_desktop_submit">"스캔 준비 완료"</string>
+  <string name="screen_link_new_device_error_app_not_supported_subtitle">"귀하의 계정 제공자는 지원하지 않습니다 %1$s ."</string>
+  <string name="screen_link_new_device_error_app_not_supported_title">"%1$s 지원되지 않습니다"</string>
+  <string name="screen_link_new_device_error_not_supported_title">"QR 코드는 지원되지 않습니다"</string>
+  <string name="screen_link_new_device_error_request_cancelled_subtitle">"다른 기기에서 로그인이 취소되었습니다."</string>
+  <string name="screen_link_new_device_error_request_cancelled_title">"로그인 요청이 취소되었습니다"</string>
+  <string name="screen_link_new_device_error_request_timeout_subtitle">"로그인이 만료되었습니다. 다시 시도해 주세요."</string>
+  <string name="screen_link_new_device_error_request_timeout_title">"로그인 시간이 초과되었습니다."</string>
+  <string name="screen_link_new_device_mobile_step2">"선택 %1$s"</string>
+  <string name="screen_qr_code_login_connection_note_secure_state_description">"새 장치에 안전하게 연결할 수 없습니다. 기존 장치는 여전히 안전하므로 걱정할 필요가 없습니다."</string>
+  <string name="screen_qr_code_login_connection_note_secure_state_list_header">"이제 어떻게 해야 할까?"</string>
+  <string name="screen_qr_code_login_connection_note_secure_state_list_item_1">"네트워크 문제로 인해 로그인에 실패한 경우 QR 코드로 다시 로그인해 보세요."</string>
+  <string name="screen_qr_code_login_connection_note_secure_state_list_item_2">"동일한 문제를 겪으신 경우 다른 Wi-Fi 네트워크를 사용해 보거나 Wi-Fi 대신 모바일 데이터를 사용해 보세요."</string>
+  <string name="screen_qr_code_login_connection_note_secure_state_list_item_3">"만약 작동하지 않는 경우, 수동으로 로그인하세요."</string>
+  <string name="screen_qr_code_login_connection_note_secure_state_title">"연결이 안전하지 않습니다"</string>
+  <string name="screen_qr_code_login_error_cancelled_subtitle">"다른 기기에서 로그인이 취소되었습니다."</string>
+  <string name="screen_qr_code_login_error_cancelled_title">"로그인 요청이 취소되었습니다"</string>
+  <string name="screen_qr_code_login_error_declined_subtitle">"다른 기기에서 로그인이 거부되었습니다."</string>
+  <string name="screen_qr_code_login_error_declined_title">"로그인 거부됨"</string>
+  <string name="screen_qr_code_login_error_expired_subtitle">"로그인이 만료되었습니다. 다시 시도해 주세요."</string>
+  <string name="screen_qr_code_login_error_expired_title">"로그인 시간이 초과되었습니다."</string>
+  <string name="screen_qr_code_login_error_linking_not_suported_subtitle">"다른 기기에서는 QR 코드로 %s 에 로그인할 수 없습니다.
+
+수동으로 로그인하거나 다른 기기로 QR 코드를 스캔해 보세요."</string>
+  <string name="screen_qr_code_login_error_linking_not_suported_title">"QR 코드는 지원되지 않습니다"</string>
+  <string name="screen_qr_code_login_error_sliding_sync_not_supported_subtitle">"귀하의 계정 제공자는 지원하지 않습니다 %1$s ."</string>
+  <string name="screen_qr_code_login_error_sliding_sync_not_supported_title">"%1$s 지원되지 않습니다"</string>
+  <string name="screen_qr_code_login_invalid_scan_state_description">"다른 기기에 표시된 QR 코드를 사용하세요."</string>
+  <string name="screen_qr_code_login_invalid_scan_state_retry_button">"다시 시도하기"</string>
+  <string name="screen_qr_code_login_invalid_scan_state_subtitle">"잘못된 QR 코드"</string>
+  <string name="screen_qr_code_login_no_camera_permission_state_description">"계속하려면 %1$s 가 기기의 카메라를 사용할 수 있도록 권한을 부여해야 합니다."</string>
+  <string name="screen_qr_code_login_no_camera_permission_state_title">"카메라 액세스를 허용하여 QR 코드를 스캔하세요"</string>
+  <string name="screen_qr_code_login_unknown_error_description">"예기치 않은 오류가 발생했습니다. 다시 시도해 주세요."</string>
+</resources>

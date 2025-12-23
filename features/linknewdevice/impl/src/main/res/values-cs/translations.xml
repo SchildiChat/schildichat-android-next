@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="screen_link_new_device_desktop_scanning_title">"Naskenujte QR kód"</string>
+  <string name="screen_link_new_device_desktop_step3">"Naskenujte QR kód pomocí tohoto zařízení"</string>
+  <string name="screen_link_new_device_desktop_submit">"Připraveno ke skenování"</string>
+  <string name="screen_link_new_device_error_app_not_supported_subtitle">"Váš poskytovatel účtu nepodporuje %1$s."</string>
+  <string name="screen_link_new_device_error_app_not_supported_title">"%1$s není podporováno"</string>
+  <string name="screen_link_new_device_error_not_supported_title">"QR kód není podporován"</string>
+  <string name="screen_link_new_device_error_request_cancelled_subtitle">"Přihlášení bylo na druhém zařízení zrušeno."</string>
+  <string name="screen_link_new_device_error_request_cancelled_title">"Žádost o přihlášení zrušena"</string>
+  <string name="screen_link_new_device_error_request_timeout_subtitle">"Platnost přihlášení vypršela. Zkuste to prosím znovu."</string>
+  <string name="screen_link_new_device_error_request_timeout_title">"Přihlášení nebylo dokončeno včas"</string>
+  <string name="screen_link_new_device_mobile_step2">"Vybrat %1$s"</string>
+  <string name="screen_qr_code_login_connection_note_secure_state_description">"K novému zařízení se nepodařilo navázat bezpečné připojení. Vaše stávající zařízení jsou stále v bezpečí a nemusíte se o ně obávat."</string>
+  <string name="screen_qr_code_login_connection_note_secure_state_list_header">"Co teď?"</string>
+  <string name="screen_qr_code_login_connection_note_secure_state_list_item_1">"Zkuste se znovu přihlásit pomocí QR kódu v případě, že se jednalo o problém se sítí"</string>
+  <string name="screen_qr_code_login_connection_note_secure_state_list_item_2">"Pokud narazíte na stejný problém, zkuste jinou síť wifi nebo použijte mobilní data místo wifi"</string>
+  <string name="screen_qr_code_login_connection_note_secure_state_list_item_3">"Pokud to nefunguje, přihlaste se ručně"</string>
+  <string name="screen_qr_code_login_connection_note_secure_state_title">"Připojení není zabezpečené"</string>
+  <string name="screen_qr_code_login_error_cancelled_subtitle">"Přihlášení bylo na druhém zařízení zrušeno."</string>
+  <string name="screen_qr_code_login_error_cancelled_title">"Žádost o přihlášení zrušena"</string>
+  <string name="screen_qr_code_login_error_declined_subtitle">"Přihlášení bylo na druhém zařízení odmítnuto."</string>
+  <string name="screen_qr_code_login_error_declined_title">"Přihlášení odmítnuto"</string>
+  <string name="screen_qr_code_login_error_expired_subtitle">"Platnost přihlášení vypršela. Zkuste to prosím znovu."</string>
+  <string name="screen_qr_code_login_error_expired_title">"Přihlášení nebylo dokončeno včas"</string>
+  <string name="screen_qr_code_login_error_linking_not_suported_subtitle">"Vaše druhé zařízení nepodporuje přihlášení k %su pomocí QR kódu.
+
+Zkuste se přihlásit ručně nebo naskenujte QR kód pomocí jiného zařízení."</string>
+  <string name="screen_qr_code_login_error_linking_not_suported_title">"QR kód není podporován"</string>
+  <string name="screen_qr_code_login_error_sliding_sync_not_supported_subtitle">"Váš poskytovatel účtu nepodporuje %1$s."</string>
+  <string name="screen_qr_code_login_error_sliding_sync_not_supported_title">"%1$s není podporováno"</string>
+  <string name="screen_qr_code_login_invalid_scan_state_description">"Použijte QR kód zobrazený na druhém zařízení."</string>
+  <string name="screen_qr_code_login_invalid_scan_state_retry_button">"Zkusit znovu"</string>
+  <string name="screen_qr_code_login_invalid_scan_state_subtitle">"Špatný QR kód"</string>
+  <string name="screen_qr_code_login_no_camera_permission_state_description">"Abyste mohli pokračovat, musíte aplikaci %1$s udělit povolení k použití kamery vašeho zařízení."</string>
+  <string name="screen_qr_code_login_no_camera_permission_state_title">"Povolte přístup k fotoaparátu a naskenujte QR kód"</string>
+  <string name="screen_qr_code_login_unknown_error_description">"Vyskytla se neočekávaná chyba. Prosím zkuste to znovu."</string>
+</resources>

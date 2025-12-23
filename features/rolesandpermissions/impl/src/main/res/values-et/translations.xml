@@ -38,6 +38,10 @@
   <string name="screen_room_change_role_unsaved_changes_description">"Sul on salvestamata muudatusi"</string>
   <string name="screen_room_change_role_unsaved_changes_title">"Kas salvestame muudatused?"</string>
   <string name="screen_room_member_list_banned_empty">"Suhtluskeeluga kasutajaid pole"</string>
+  <plurals name="screen_room_member_list_banned_header_title">
+    <item quantity="one">"%1$d suhtluskeeluga kasutaja"</item>
+    <item quantity="other">"%1$d suhtluskeeluga kasutajat"</item>
+  </plurals>
   <string name="screen_room_member_list_empty_search_subtitle">"Palun kontrolli otsingusõna korrektsust ja proovi siis uuesti"</string>
   <string name="screen_room_member_list_empty_search_title">"Otsingul „%1$s“ pole tulemusi"</string>
   <plurals name="screen_room_member_list_header_title">

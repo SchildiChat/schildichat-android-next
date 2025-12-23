@@ -155,6 +155,7 @@
   <string name="action_skip">"Überspringen"</string>
   <string name="action_start">"Start"</string>
   <string name="action_start_chat">"Chat starten"</string>
+  <string name="action_start_over">"Neu beginnen"</string>
   <string name="action_start_verification">"Verifizierung starten"</string>
   <string name="action_static_map_load">"Tippe, um die Karte zu laden"</string>
   <string name="action_take_photo">"Foto aufnehmen"</string>

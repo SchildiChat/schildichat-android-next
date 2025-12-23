@@ -156,6 +156,7 @@
   <string name="action_skip">"Spring over"</string>
   <string name="action_start">"Start"</string>
   <string name="action_start_chat">"Start samtale"</string>
+  <string name="action_start_over">"Begynd forfra"</string>
   <string name="action_start_verification">"Begynd verifikation"</string>
   <string name="action_static_map_load">"Tryk for at indlæse kort"</string>
   <string name="action_take_photo">"Tag billede"</string>

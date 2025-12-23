@@ -2,9 +2,12 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="screen_room_change_permissions_administrators">"Administrator"</string>
   <string name="screen_room_change_permissions_ban_people">"Interziceți persoane"</string>
+  <string name="screen_room_change_permissions_change_settings">"Modificați setările"</string>
   <string name="screen_room_change_permissions_delete_messages">"Ștergeți mesajele"</string>
   <string name="screen_room_change_permissions_everyone">"Membru"</string>
   <string name="screen_room_change_permissions_invite_people">"Invitați persoane"</string>
+  <string name="screen_room_change_permissions_manage_space">"Gestionați spațiul"</string>
+  <string name="screen_room_change_permissions_manage_space_rooms">"Gestionați camerele"</string>
   <string name="screen_room_change_permissions_member_moderation">"Gestionați membrii"</string>
   <string name="screen_room_change_permissions_messages_and_content">"Mesaje și conținut"</string>
   <string name="screen_room_change_permissions_moderators">"Moderator"</string>
@@ -14,6 +17,7 @@
   <string name="screen_room_change_permissions_room_name">"Schimbă numele camerei"</string>
   <string name="screen_room_change_permissions_room_topic">"Schimbați subiectul camerei"</string>
   <string name="screen_room_change_permissions_send_messages">"Trimiteți mesaje"</string>
+  <string name="screen_room_change_permissions_title">"Permisiuni"</string>
   <string name="screen_room_change_role_administrators_title">"Editați administratorii"</string>
   <string name="screen_room_change_role_confirm_add_admin_description">"Promovați utilizatorul să aibă același nivel de putere ca dumneavoastră. Nu veți putea anula această acțiune."</string>
   <string name="screen_room_change_role_confirm_add_admin_title">"Adăugați administrator?"</string>

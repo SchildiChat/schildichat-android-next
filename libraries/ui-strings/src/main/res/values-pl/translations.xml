@@ -157,6 +157,7 @@
   <string name="action_skip">"Pomiń"</string>
   <string name="action_start">"Rozpocznij"</string>
   <string name="action_start_chat">"Rozpocznij chat"</string>
+  <string name="action_start_over">"Zacznij od nowa"</string>
   <string name="action_start_verification">"Rozpocznij weryfikację"</string>
   <string name="action_static_map_load">"Stuknij, aby załadować mapę"</string>
   <string name="action_take_photo">"Zrób zdjęcie"</string>

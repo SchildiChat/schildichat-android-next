@@ -60,6 +60,8 @@
   <string name="screen_qr_code_login_error_cancelled_title">"Zahtjev za prijavu je otkazan"</string>
   <string name="screen_qr_code_login_error_declined_subtitle">"Prijava je odbijena na drugom uređaju."</string>
   <string name="screen_qr_code_login_error_declined_title">"Prijava je odbijena"</string>
+  <string name="screen_qr_code_login_error_device_already_signed_in_subtitle">"Ne morate ništa drugo napraviti."</string>
+  <string name="screen_qr_code_login_error_device_already_signed_in_title">"Vaš drugi uređaj već je prijavljen"</string>
   <string name="screen_qr_code_login_error_expired_subtitle">"Prijava je istekla. Pokušajte ponovno."</string>
   <string name="screen_qr_code_login_error_expired_title">"Prijava nije dovršena na vrijeme"</string>
   <string name="screen_qr_code_login_error_linking_not_suported_subtitle">"Vaš drugi uređaj ne podržava prijavu na %s pomoću QR koda.

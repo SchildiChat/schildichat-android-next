@@ -54,6 +54,7 @@
   <string name="push_distributor_background_sync_android">"Συγχρονισμός στο παρασκήνιο"</string>
   <string name="push_distributor_firebase_android">"Υπηρεσίες Google"</string>
   <string name="push_no_valid_google_play_services_apk_android">"Δεν βρέθηκαν έγκυρες υπηρεσίες Google Play. Οι ειδοποιήσεις ενδέχεται να μην λειτουργούν σωστά."</string>
+  <string name="troubleshoot_notifications_test_blocked_users_title">"Αποκλεισμένοι χρήστες"</string>
   <string name="troubleshoot_notifications_test_current_push_provider_description">"Λάβε το όνομα του τρέχοντος παρόχου."</string>
   <string name="troubleshoot_notifications_test_current_push_provider_failure">"Δεν έχουν επιλεγεί πάροχοι push."</string>
   <string name="troubleshoot_notifications_test_current_push_provider_success">"Τρέχων πάροχος push: %1$s."</string>

@@ -148,6 +148,7 @@
   <string name="action_skip">"Hoppa över"</string>
   <string name="action_start">"Starta"</string>
   <string name="action_start_chat">"Starta chat"</string>
+  <string name="action_start_over">"Börja om"</string>
   <string name="action_start_verification">"Starta verifiering"</string>
   <string name="action_static_map_load">"Tryck för att ladda kartan"</string>
   <string name="action_take_photo">"Ta ett foto"</string>

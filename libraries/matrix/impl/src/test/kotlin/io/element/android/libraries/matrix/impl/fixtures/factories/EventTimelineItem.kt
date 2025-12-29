@@ -21,14 +21,14 @@ import org.matrix.rustcomponents.sdk.ShieldState
 import org.matrix.rustcomponents.sdk.TimelineItemContent
 import uniffi.matrix_sdk_ui.EventItemOrigin
 
-fun aRustEventTimelineItem(
+internal fun aRustEventTimelineItem(
     isRemote: Boolean = true,
     eventOrTransactionId: EventOrTransactionId = EventOrTransactionId.EventId(AN_EVENT_ID.value),
     sender: String = A_USER_ID.value,
     senderProfile: ProfileDetails = ProfileDetails.Unavailable,
     isOwn: Boolean = true,
     isEditable: Boolean = true,
-    content: TimelineItemContent = aRustTimelineItemMessageContent(),
+    content: TimelineItemContent = aRustTimelineItemContentMsgLike(),
     timestamp: ULong = 0uL,
     debugInfo: EventTimelineItemDebugInfo = anEventTimelineItemDebugInfo(),
     localSendState: EventSendState? = null,

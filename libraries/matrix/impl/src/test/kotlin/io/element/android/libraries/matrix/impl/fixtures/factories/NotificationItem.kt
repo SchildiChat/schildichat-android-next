@@ -13,6 +13,7 @@ import io.element.android.libraries.matrix.impl.fixtures.fakes.FakeFfiTimelineEv
 import io.element.android.libraries.matrix.test.A_ROOM_NAME
 import io.element.android.libraries.matrix.test.A_USER_NAME
 import org.matrix.rustcomponents.sdk.Action
+import org.matrix.rustcomponents.sdk.BatchNotificationResult
 import org.matrix.rustcomponents.sdk.JoinRule
 import org.matrix.rustcomponents.sdk.NotificationEvent
 import org.matrix.rustcomponents.sdk.NotificationItem
@@ -21,7 +22,7 @@ import org.matrix.rustcomponents.sdk.NotificationSenderInfo
 import org.matrix.rustcomponents.sdk.NotificationStatus
 import org.matrix.rustcomponents.sdk.TimelineEvent
 
-fun aRustNotificationItem(
+internal fun aRustNotificationItem(
     event: NotificationEvent = aRustNotificationEventTimeline(),
     senderInfo: NotificationSenderInfo = aRustNotificationSenderInfo(),
     roomInfo: NotificationRoomInfo = aRustNotificationRoomInfo(),
@@ -39,13 +40,13 @@ fun aRustNotificationItem(
     actions = actions,
 )
 
-fun aRustBatchNotificationResult(
+internal fun aRustBatchNotificationResultOk(
     notificationStatus: NotificationStatus = NotificationStatus.Event(aRustNotificationItem()),
-) = org.matrix.rustcomponents.sdk.BatchNotificationResult.Ok(
+) = BatchNotificationResult.Ok(
     status = notificationStatus,
 )
 
-fun aRustNotificationSenderInfo(
+internal fun aRustNotificationSenderInfo(
     displayName: String? = A_USER_NAME,
     avatarUrl: String? = null,
     isNameAmbiguous: Boolean = false,
@@ -55,7 +56,7 @@ fun aRustNotificationSenderInfo(
     isNameAmbiguous = isNameAmbiguous,
 )
 
-fun aRustNotificationRoomInfo(
+internal fun aRustNotificationRoomInfo(
     displayName: String = A_ROOM_NAME,
     avatarUrl: String? = null,
     canonicalAlias: String? = null,
@@ -77,7 +78,7 @@ fun aRustNotificationRoomInfo(
     isSpace = isSpace,
 )
 
-fun aRustNotificationEventTimeline(
+internal fun aRustNotificationEventTimeline(
     event: TimelineEvent = FakeFfiTimelineEvent(),
 ) = NotificationEvent.Timeline(
     event = event,

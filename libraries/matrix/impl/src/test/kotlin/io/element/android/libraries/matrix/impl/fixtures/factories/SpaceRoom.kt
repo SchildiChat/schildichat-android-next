@@ -16,7 +16,7 @@ import org.matrix.rustcomponents.sdk.RoomHero
 import org.matrix.rustcomponents.sdk.RoomType
 import org.matrix.rustcomponents.sdk.SpaceRoom
 
-fun aRustSpaceRoom(
+internal fun aRustSpaceRoom(
     roomId: RoomId = A_ROOM_ID,
     isDirect: Boolean = false,
     canonicalAlias: String? = null,

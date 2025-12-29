@@ -15,15 +15,13 @@ import org.matrix.rustcomponents.sdk.MessageType
 import org.matrix.rustcomponents.sdk.TextMessageContent
 import org.matrix.rustcomponents.sdk.TimelineEventContent
 
-fun aRustTimelineEventContentMessageLike(
+internal fun aRustTimelineEventContentMessageLike(
     content: MessageLikeEventContent = aRustMessageLikeEventContentRoomMessage(),
-): TimelineEventContent.MessageLike {
-    return TimelineEventContent.MessageLike(
-        content = content,
-    )
-}
+) = TimelineEventContent.MessageLike(
+    content = content,
+)
 
-fun aRustMessageLikeEventContentRoomMessage(
+internal fun aRustMessageLikeEventContentRoomMessage(
     messageType: MessageType = aRustMessageTypeText(),
     inReplyToEventId: String? = null,
 ) = MessageLikeEventContent.RoomMessage(
@@ -31,13 +29,13 @@ fun aRustMessageLikeEventContentRoomMessage(
     inReplyToEventId = inReplyToEventId,
 )
 
-fun aRustMessageTypeText(
+internal fun aRustMessageTypeText(
     content: TextMessageContent = aRustTextMessageContent(),
 ) = MessageType.Text(
     content = content,
 )
 
-fun aRustTextMessageContent(
+internal fun aRustTextMessageContent(
     body: String = A_MESSAGE,
     formatted: FormattedBody? = null,
 ) = TextMessageContent(

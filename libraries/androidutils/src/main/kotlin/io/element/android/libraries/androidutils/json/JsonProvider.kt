@@ -10,14 +10,15 @@ package io.element.android.libraries.androidutils.json
 
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Provider
 import dev.zacsweers.metro.SingleIn
 import kotlinx.serialization.json.Json
 
 /**
  * Provides a Json instance configured to ignore unknown keys.
  */
-typealias JsonProvider = Provider<Json>
+interface JsonProvider {
+    operator fun invoke(): Json
+}
 
 @ContributesBinding(AppScope::class)
 @SingleIn(AppScope::class)

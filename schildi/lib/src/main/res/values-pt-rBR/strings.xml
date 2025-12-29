@@ -186,4 +186,10 @@
     <string name="sc_pref_notification_worker_title">Worker de notificação</string>
     <string name="sc_pref_always_show_reaction_search_bar_title">Busca fixa de reações</string>
     <string name="sc_pref_notification_worker_summary">Confiabilidade de notificação aprimorada com tentativas cientes de conexão</string>
+    <string name="sc_pref_two_initials_avatar_fallback_title">Avatares de duas letras</string>
+    <string name="sc_pref_two_initials_avatar_fallback_summary">Mostra duas letras como substituição de avatares para salas e usuários sem avatar</string>
+    <string name="sc_pref_category_timeline_short">Linha do tempo</string>
+    <string name="sc_pref_view_hidden_events_title">Mostrar eventos escondidos</string>
+    <string name="sc_pref_view_redactions_title">Mostrar mensagens excluídas</string>
+    <string name="sc_pref_view_redactions_summary">Renderizar espaço reservado para mensagens excluídas em vez de as esconder completamente</string>
 </resources>

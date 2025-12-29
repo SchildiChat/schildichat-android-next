@@ -16,7 +16,7 @@ import kotlinx.serialization.json.Json
 /**
  * Provides a Json instance configured to ignore unknown keys.
  */
-interface JsonProvider {
+fun interface JsonProvider {
     operator fun invoke(): Json
 }
 

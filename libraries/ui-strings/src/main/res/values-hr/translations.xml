@@ -163,6 +163,7 @@
   <string name="action_static_map_load">"Dodirnite za učitavanje karte"</string>
   <string name="action_take_photo">"Uslikaj"</string>
   <string name="action_tap_for_options">"Dodirnite za mogućnosti"</string>
+  <string name="action_translate">"Prevedi"</string>
   <string name="action_try_again">"Pokušajte ponovno"</string>
   <string name="action_unpin">"Otkvači"</string>
   <string name="action_view">"Prikaz"</string>

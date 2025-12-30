@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -50,7 +51,7 @@ class RustSpaceService(
 
     override suspend fun joinedSpaces(): Result<List<SpaceRoom>> = withContext(sessionDispatcher) {
         runCatchingExceptions {
-            innerSpaceService.joinedSpaces()
+            innerSpaceService.topLevelJoinedSpaces()
                 .map {
                     it.let(spaceRoomMapper::map)
                 }
@@ -96,7 +97,7 @@ internal fun SpaceServiceInterface.spaceListUpdate(): Flow<List<SpaceListUpdate>
             }
         }
         Timber.d("Open spaceDiffFlow for SpaceServiceInterface ${this@spaceListUpdate}")
-        val taskHandle = subscribeToJoinedSpaces(listener)
+        val taskHandle = subscribeToTopLevelJoinedSpaces(listener)
         awaitClose {
             Timber.d("Close spaceDiffFlow for SpaceServiceInterface ${this@spaceListUpdate}")
             taskHandle.cancelAndDestroy()

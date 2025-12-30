@@ -1,14 +1,14 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
 package io.element.android.features.messages.impl.timeline.factories.event
 
 import android.text.style.URLSpan
-import androidx.core.text.buildSpannedString
 import androidx.core.text.getSpans
 import androidx.core.text.toSpannable
 import dev.zacsweers.metro.Inject
@@ -34,11 +34,9 @@ import io.element.android.libraries.matrix.api.permalink.PermalinkParser
 import io.element.android.libraries.matrix.api.timeline.item.event.AudioMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.EmoteMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.FileMessageType
-import io.element.android.libraries.matrix.api.timeline.item.event.FormattedBody
 import io.element.android.libraries.matrix.api.timeline.item.event.ImageMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.LocationMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageContent
-import io.element.android.libraries.matrix.api.timeline.item.event.MessageFormat
 import io.element.android.libraries.matrix.api.timeline.item.event.NoticeMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.OtherMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.StickerMessageType
@@ -49,6 +47,7 @@ import io.element.android.libraries.matrix.ui.messages.toHtmlDocument
 import io.element.android.libraries.mediaviewer.api.util.FileExtensionExtractor
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import org.jsoup.nodes.Document
 import kotlin.time.Duration
 
 @Inject
@@ -59,7 +58,7 @@ class TimelineItemContentMessageFactory(
     private val permalinkParser: PermalinkParser,
     private val textPillificationHelper: TextPillificationHelper,
 ) {
-    suspend fun create(
+    fun create(
         content: MessageContent,
         senderDisambiguatedDisplayName: String,
         eventId: EventId?,
@@ -67,26 +66,29 @@ class TimelineItemContentMessageFactory(
         return when (val messageType = content.type) {
             is EmoteMessageType -> {
                 val emoteBody = "* $senderDisambiguatedDisplayName ${messageType.body.trimEnd()}"
-                val formattedBody = parseHtml(messageType.formatted, prefix = "* $senderDisambiguatedDisplayName") ?: textPillificationHelper.pillify(
-                    emoteBody
-                ).safeLinkify()
+                val dom = messageType.formatted?.toHtmlDocument(
+                    permalinkParser = permalinkParser,
+                    prefix = "* $senderDisambiguatedDisplayName",
+                )
+                val formattedBody = dom?.let(::parseHtml)
+                    ?: textPillificationHelper.pillify(emoteBody).safeLinkify()
                 TimelineItemEmoteContent(
                     body = emoteBody,
-                    htmlDocument = messageType.formatted?.toHtmlDocument(
-                        permalinkParser = permalinkParser,
-                        prefix = "* $senderDisambiguatedDisplayName",
-                    ),
+                    htmlDocument = dom,
                     formattedBody = formattedBody,
                     isEdited = content.isEdited,
                 )
             }
             is ImageMessageType -> {
+                val dom = messageType.formattedCaption?.toHtmlDocument(permalinkParser = permalinkParser)
+                val formattedCaption = dom?.let(::parseHtml)
+                    ?: messageType.caption?.withLinks()
                 val aspectRatio = aspectRatioOf(messageType.info?.width, messageType.info?.height)
                 TimelineItemImageContent(
                     filename = messageType.filename,
                     fileSize = messageType.info?.size ?: 0,
                     caption = messageType.caption?.trimEnd(),
-                    formattedCaption = parseHtml(messageType.formattedCaption) ?: messageType.caption?.withLinks(),
+                    formattedCaption = formattedCaption,
                     isEdited = content.isEdited,
                     mediaSource = messageType.source,
                     thumbnailSource = messageType.info?.thumbnailSource,
@@ -102,12 +104,15 @@ class TimelineItemContentMessageFactory(
                 )
             }
             is StickerMessageType -> {
+                val dom = messageType.formattedCaption?.toHtmlDocument(permalinkParser = permalinkParser)
+                val formattedCaption = dom?.let(::parseHtml)
+                    ?: messageType.caption?.withLinks()
                 val aspectRatio = aspectRatioOf(messageType.info?.width, messageType.info?.height)
                 TimelineItemStickerContent(
                     filename = messageType.filename,
                     fileSize = messageType.info?.size ?: 0,
                     caption = messageType.caption?.trimEnd(),
-                    formattedCaption = parseHtml(messageType.formattedCaption) ?: messageType.caption?.withLinks(),
+                    formattedCaption = formattedCaption,
                     isEdited = content.isEdited,
                     mediaSource = messageType.source,
                     thumbnailSource = messageType.info?.thumbnailSource,
@@ -139,12 +144,15 @@ class TimelineItemContentMessageFactory(
                 }
             }
             is VideoMessageType -> {
+                val dom = messageType.formattedCaption?.toHtmlDocument(permalinkParser = permalinkParser)
+                val formattedCaption = dom?.let(::parseHtml)
+                    ?: messageType.caption?.withLinks()
                 val aspectRatio = aspectRatioOf(messageType.info?.width, messageType.info?.height)
                 TimelineItemVideoContent(
                     filename = messageType.filename,
                     fileSize = messageType.info?.size ?: 0,
                     caption = messageType.caption?.trimEnd(),
-                    formattedCaption = parseHtml(messageType.formattedCaption) ?: messageType.caption?.withLinks(),
+                    formattedCaption = formattedCaption,
                     isEdited = content.isEdited,
                     thumbnailSource = messageType.info?.thumbnailSource,
                     mediaSource = messageType.source,
@@ -161,11 +169,14 @@ class TimelineItemContentMessageFactory(
                 )
             }
             is AudioMessageType -> {
+                val dom = messageType.formattedCaption?.toHtmlDocument(permalinkParser = permalinkParser)
+                val formattedCaption = dom?.let(::parseHtml)
+                    ?: messageType.caption?.withLinks()
                 TimelineItemAudioContent(
                     filename = messageType.filename,
                     fileSize = messageType.info?.size ?: 0,
                     caption = messageType.caption?.trimEnd(),
-                    formattedCaption = parseHtml(messageType.formattedCaption) ?: messageType.caption?.withLinks(),
+                    formattedCaption = formattedCaption,
                     isEdited = content.isEdited,
                     mediaSource = messageType.source,
                     duration = messageType.info?.duration ?: Duration.ZERO,
@@ -175,12 +186,15 @@ class TimelineItemContentMessageFactory(
                 )
             }
             is VoiceMessageType -> {
+                val dom = messageType.formattedCaption?.toHtmlDocument(permalinkParser = permalinkParser)
+                val formattedCaption = dom?.let(::parseHtml)
+                    ?: messageType.caption?.withLinks()
                 TimelineItemVoiceContent(
                     eventId = eventId,
                     filename = messageType.filename,
                     fileSize = messageType.info?.size ?: 0,
                     caption = messageType.caption?.trimEnd(),
-                    formattedCaption = parseHtml(messageType.formattedCaption) ?: messageType.caption?.withLinks(),
+                    formattedCaption = formattedCaption,
                     isEdited = content.isEdited,
                     mediaSource = messageType.source,
                     duration = messageType.info?.duration ?: Duration.ZERO,
@@ -191,12 +205,15 @@ class TimelineItemContentMessageFactory(
                 )
             }
             is FileMessageType -> {
+                val dom = messageType.formattedCaption?.toHtmlDocument(permalinkParser = permalinkParser)
+                val formattedCaption = dom?.let(::parseHtml)
+                    ?: messageType.caption?.withLinks()
                 val fileExtension = fileExtensionExtractor.extractFromName(messageType.filename)
                 TimelineItemFileContent(
                     filename = messageType.filename,
                     fileSize = messageType.info?.size ?: 0,
                     caption = messageType.caption?.trimEnd(),
-                    formattedCaption = parseHtml(messageType.formattedCaption) ?: messageType.caption?.withLinks(),
+                    formattedCaption = formattedCaption,
                     isEdited = content.isEdited,
                     thumbnailSource = messageType.info?.thumbnailSource,
                     mediaSource = messageType.source,
@@ -207,9 +224,9 @@ class TimelineItemContentMessageFactory(
             }
             is NoticeMessageType -> {
                 val body = messageType.body.trimEnd()
-                val formattedBody = parseHtml(messageType.formatted) ?: textPillificationHelper.pillify(
-                    body
-                ).safeLinkify()
+                val dom = messageType.formatted?.toHtmlDocument(permalinkParser = permalinkParser)
+                val formattedBody = dom?.let(::parseHtml)
+                    ?: textPillificationHelper.pillify(body).safeLinkify()
                 val htmlDocument = messageType.formatted?.toHtmlDocument(permalinkParser = permalinkParser)
                 TimelineItemNoticeContent(
                     body = body,
@@ -220,12 +237,13 @@ class TimelineItemContentMessageFactory(
             }
             is TextMessageType -> {
                 val body = messageType.body.trimEnd()
-                val formattedBody = parseHtml(messageType.formatted) ?: textPillificationHelper.pillify(
-                    body
-                ).safeLinkify()
+                val dom = messageType.formatted?.toHtmlDocument(permalinkParser = permalinkParser)
+                val formattedBody = dom?.let(::parseHtml)
+                    ?: textPillificationHelper.pillify(body).safeLinkify()
+                val htmlDocument = messageType.formatted?.toHtmlDocument(permalinkParser = permalinkParser)
                 TimelineItemTextContent(
                     body = body,
-                    htmlDocument = messageType.formatted?.toHtmlDocument(permalinkParser = permalinkParser),
+                    htmlDocument = htmlDocument,
                     formattedBody = formattedBody,
                     isEdited = content.isEdited,
                 )
@@ -252,21 +270,11 @@ class TimelineItemContentMessageFactory(
         return result?.takeIf { it.isFinite() }
     }
 
-    private fun parseHtml(formattedBody: FormattedBody?, prefix: String? = null): CharSequence? {
-        if (formattedBody == null || formattedBody.format != MessageFormat.HTML) return null
-        val result = htmlConverterProvider.provide()
-            .fromHtmlToSpans(formattedBody.body.trimEnd())
+    private fun parseHtml(document: Document): CharSequence? {
+        return htmlConverterProvider.provide()
+            .fromDocumentToSpans(document)
             .let { textPillificationHelper.pillify(it) }
             .safeLinkify()
-        return if (prefix != null) {
-            buildSpannedString {
-                append(prefix)
-                append(" ")
-                append(result)
-            }
-        } else {
-            result
-        }
     }
 }
 

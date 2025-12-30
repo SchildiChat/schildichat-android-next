@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -96,9 +97,9 @@ class CreatePollPresenter(
 
         val scope = rememberCoroutineScope()
 
-        fun handleEvents(event: CreatePollEvents) {
+        fun handleEvent(event: CreatePollEvent) {
             when (event) {
-                is CreatePollEvents.Save -> scope.launch {
+                is CreatePollEvent.Save -> scope.launch {
                     if (canSave) {
                         repository.savePoll(
                             existingPollId = when (mode) {
@@ -122,7 +123,7 @@ class CreatePollPresenter(
                         Timber.d("Cannot create poll")
                     }
                 }
-                is CreatePollEvents.Delete -> {
+                is CreatePollEvent.Delete -> {
                     if (mode !is CreatePollMode.EditPoll) {
                         return
                     }
@@ -138,25 +139,25 @@ class CreatePollPresenter(
                         navigateUp()
                     }
                 }
-                is CreatePollEvents.AddAnswer -> {
+                is CreatePollEvent.AddAnswer -> {
                     poll = poll.withNewAnswer()
                 }
-                is CreatePollEvents.RemoveAnswer -> {
+                is CreatePollEvent.RemoveAnswer -> {
                     poll = poll.withAnswerRemoved(event.index)
                 }
-                is CreatePollEvents.SetAnswer -> {
+                is CreatePollEvent.SetAnswer -> {
                     poll = poll.withAnswerChanged(event.index, event.text)
                 }
-                is CreatePollEvents.SetPollKind -> {
+                is CreatePollEvent.SetPollKind -> {
                     poll = poll.copy(isDisclosed = event.pollKind.isDisclosed)
                 }
-                is CreatePollEvents.SetQuestion -> {
+                is CreatePollEvent.SetQuestion -> {
                     poll = poll.copy(question = event.question)
                 }
-                is CreatePollEvents.NavBack -> {
+                is CreatePollEvent.NavBack -> {
                     navigateUp()
                 }
-                CreatePollEvents.ConfirmNavBack -> {
+                CreatePollEvent.ConfirmNavBack -> {
                     val shouldConfirm = isDirty
                     if (shouldConfirm) {
                         showBackConfirmation = true
@@ -164,7 +165,7 @@ class CreatePollPresenter(
                         navigateUp()
                     }
                 }
-                is CreatePollEvents.HideConfirmation -> {
+                is CreatePollEvent.HideConfirmation -> {
                     showBackConfirmation = false
                     showDeleteConfirmation = false
                 }
@@ -183,7 +184,7 @@ class CreatePollPresenter(
             pollKind = poll.pollKind,
             showBackConfirmation = showBackConfirmation,
             showDeleteConfirmation = showDeleteConfirmation,
-            eventSink = ::handleEvents,
+            eventSink = ::handleEvent,
         )
     }
 

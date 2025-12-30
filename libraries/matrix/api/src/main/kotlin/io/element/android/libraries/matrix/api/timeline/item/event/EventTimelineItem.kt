@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -26,7 +27,7 @@ data class EventTimelineItem(
     val reactions: ImmutableList<EventReaction>,
     val receipts: ImmutableList<Receipt>,
     val sender: UserId,
-    val senderProfile: ProfileTimelineDetails,
+    val senderProfile: ProfileDetails,
     val timestamp: Long,
     val content: EventContent,
     val origin: TimelineItemEventOrigin?,
@@ -38,7 +39,13 @@ data class EventTimelineItem(
         return (content as? MessageContent)?.inReplyTo
     }
 
-    fun threadInfo(): EventThreadInfo? = (content as? MessageContent)?.threadInfo
+    fun threadInfo(): EventThreadInfo? = when (content) {
+        is MessageContent -> content.threadInfo
+        is PollContent -> content.threadInfo
+        is StickerContent -> content.threadInfo
+        is UnableToDecryptContent -> content.threadInfo
+        else -> null
+    }
 
     fun hasNotLoadedInReplyTo(): Boolean {
         val details = inReplyTo()

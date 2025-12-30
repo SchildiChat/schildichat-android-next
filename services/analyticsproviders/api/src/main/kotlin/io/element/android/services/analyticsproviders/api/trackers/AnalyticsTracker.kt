@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -34,6 +35,18 @@ interface AnalyticsTracker {
      * Super properties are added to any tracked event automatically.
      */
     fun updateSuperProperties(updatedProperties: SuperProperties)
+
+    /**
+     * Adds extra data that will be sent with every event.
+     */
+    fun addExtraData(key: String, value: String) {}
+
+    /**
+     * Similar to [addExtraData], adds data that will be indexed in the analytics portal.
+     *
+     * **Do not add numerical values using this, use [addExtraData] instead.**
+     */
+    fun addIndexableData(key: String, value: String) {}
 }
 
 fun AnalyticsTracker.captureInteraction(name: Interaction.Name, type: Interaction.InteractionType? = null) {

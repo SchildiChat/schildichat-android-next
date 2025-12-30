@@ -1,7 +1,8 @@
 /*
- * Copyright 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2024, 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -17,7 +18,6 @@ import coil3.SingletonImageLoader
 import coil3.annotation.DelicateCoilApi
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import io.element.android.appconfig.ElementCallConfig
 import io.element.android.features.call.api.CallType
@@ -87,7 +87,6 @@ interface ActiveCallManager {
 
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
-@Inject
 class DefaultActiveCallManager(
     @ApplicationContext context: Context,
     @AppCoroutineScope
@@ -101,7 +100,7 @@ class DefaultActiveCallManager(
     private val imageLoaderHolder: ImageLoaderHolder,
     private val systemClock: SystemClock,
 ) : ActiveCallManager {
-    private val tag = "DefaultActiveCallManager"
+    private val tag = "ActiveCallManager"
     private var timedOutCallJob: Job? = null
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -178,8 +177,8 @@ class DefaultActiveCallManager(
     suspend fun incomingCallTimedOut(displayMissedCallNotification: Boolean) = mutex.withLock {
         Timber.tag(tag).d("Incoming call timed out")
 
-        val previousActiveCall = activeCall.value ?: return
-        val notificationData = (previousActiveCall.callState as? CallState.Ringing)?.notificationData ?: return
+        val previousActiveCall = activeCall.value ?: return@withLock
+        val notificationData = (previousActiveCall.callState as? CallState.Ringing)?.notificationData ?: return@withLock
         activeCall.value = null
         if (activeWakeLock?.isHeld == true) {
             Timber.tag(tag).d("Releasing partial wakelock after timeout")
@@ -197,11 +196,11 @@ class DefaultActiveCallManager(
         Timber.tag(tag).d("Hung up call: $callType")
         val currentActiveCall = activeCall.value ?: run {
             Timber.tag(tag).w("No active call, ignoring hang up")
-            return
+            return@withLock
         }
         if (currentActiveCall.callType != callType) {
             Timber.tag(tag).w("Call type $callType does not match the active call type, ignoring")
-            return
+            return@withLock
         }
         if (currentActiveCall.callState is CallState.Ringing) {
             // Decline the call

@@ -1,7 +1,8 @@
 /*
- * Copyright 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2024, 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -10,6 +11,7 @@
 package io.element.android.libraries.matrix.impl
 
 import com.google.common.truth.Truth.assertThat
+import io.element.android.libraries.core.data.bytes
 import io.element.android.libraries.featureflag.test.FakeFeatureFlagService
 import io.element.android.libraries.matrix.impl.fixtures.fakes.FakeFfiClient
 import io.element.android.libraries.matrix.impl.fixtures.fakes.FakeFfiSyncService
@@ -21,6 +23,8 @@ import io.element.android.libraries.matrix.test.A_USER_NAME
 import io.element.android.libraries.sessionstorage.api.SessionStore
 import io.element.android.libraries.sessionstorage.test.InMemorySessionStore
 import io.element.android.libraries.sessionstorage.test.aSessionData
+import io.element.android.libraries.workmanager.test.FakeWorkManagerScheduler
+import io.element.android.services.analytics.test.FakeAnalyticsService
 import io.element.android.services.toolbox.test.systemclock.FakeSystemClock
 import io.element.android.tests.testutils.lambda.lambdaRecorder
 import io.element.android.tests.testutils.lambda.value
@@ -31,6 +35,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.matrix.rustcomponents.sdk.Client
+import org.matrix.rustcomponents.sdk.StoreSizes
 import org.matrix.rustcomponents.sdk.UserProfile
 import java.io.File
 
@@ -95,6 +100,20 @@ class RustMatrixClientTest {
         client.destroy()
     }
 
+    @Test
+    fun `getDatabaseSizes returns the database sizes`() = runTest {
+        val client = createRustMatrixClient(
+            client = FakeFfiClient(getStoreSizesResult = { StoreSizes(null, 10uL, 11uL, 12uL) })
+        )
+
+        client.getDatabaseSizes().getOrThrow().run {
+            assertThat(cryptoStore).isNull()
+            assertThat(stateStore).isEqualTo(10.bytes)
+            assertThat(eventCacheStore).isEqualTo(11.bytes)
+            assertThat(mediaStore).isEqualTo(12.bytes)
+        }
+    }
+
     private fun TestScope.createRustMatrixClient(
         client: Client = FakeFfiClient(),
         sessionStore: SessionStore = InMemorySessionStore(
@@ -113,5 +132,7 @@ class RustMatrixClientTest {
         clock = FakeSystemClock(),
         timelineEventTypeFilterFactory = FakeTimelineEventTypeFilterFactory(),
         featureFlagService = FakeFeatureFlagService(),
+        analyticsService = FakeAnalyticsService(),
+        workManagerScheduler = FakeWorkManagerScheduler(submitLambda = {}),
     )
 }

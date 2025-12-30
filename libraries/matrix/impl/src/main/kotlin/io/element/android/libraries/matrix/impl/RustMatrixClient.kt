@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -11,18 +12,23 @@ import io.element.android.libraries.androidutils.file.getSizeOfFiles
 import io.element.android.libraries.core.bool.orFalse
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.core.coroutine.childScope
+import io.element.android.libraries.core.data.bytes
 import io.element.android.libraries.core.data.tryOrNull
 import io.element.android.libraries.core.extensions.mapFailure
 import io.element.android.libraries.core.extensions.runCatchingExceptions
 import io.element.android.libraries.featureflag.api.FeatureFlagService
 import io.element.android.libraries.matrix.api.MatrixClient
+import io.element.android.libraries.matrix.api.analytics.SdkStoreSizes
 import io.element.android.libraries.matrix.api.core.DeviceId
+import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomAlias
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.RoomIdOrAlias
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.createroom.CreateRoomParameters
 import io.element.android.libraries.matrix.api.createroom.RoomPreset
+import io.element.android.libraries.matrix.api.linknewdevice.LinkDesktopHandler
+import io.element.android.libraries.matrix.api.linknewdevice.LinkMobileHandler
 import io.element.android.libraries.matrix.api.media.MatrixMediaLoader
 import io.element.android.libraries.matrix.api.oidc.AccountManagementAction
 import io.element.android.libraries.matrix.api.room.BaseRoom
@@ -43,6 +49,9 @@ import io.element.android.libraries.matrix.api.user.MatrixSearchUserResults
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.impl.encryption.RustEncryptionService
 import io.element.android.libraries.matrix.impl.exception.mapClientException
+import io.element.android.libraries.matrix.impl.linknewdevice.RustLinkDesktopHandler
+import io.element.android.libraries.matrix.impl.linknewdevice.RustLinkMobileHandler
+import io.element.android.libraries.matrix.impl.linknewdevice.RustQrCodeDataParser
 import io.element.android.libraries.matrix.impl.mapper.map
 import io.element.android.libraries.matrix.impl.media.RustMediaLoader
 import io.element.android.libraries.matrix.impl.media.RustMediaPreviewService
@@ -73,7 +82,11 @@ import io.element.android.libraries.matrix.impl.util.SessionPathsProvider
 import io.element.android.libraries.matrix.impl.util.cancelAndDestroy
 import io.element.android.libraries.matrix.impl.util.mxCallbackFlow
 import io.element.android.libraries.matrix.impl.verification.RustSessionVerificationService
+import io.element.android.libraries.matrix.impl.workmanager.PerformDatabaseVacuumWorkManagerRequest
 import io.element.android.libraries.sessionstorage.api.SessionStore
+import io.element.android.libraries.workmanager.api.WorkManagerRequestType
+import io.element.android.libraries.workmanager.api.WorkManagerScheduler
+import io.element.android.services.analytics.api.AnalyticsService
 import io.element.android.services.toolbox.api.systemclock.SystemClock
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -129,6 +142,8 @@ class RustMatrixClient(
     clock: SystemClock,
     timelineEventTypeFilterFactory: TimelineEventTypeFilterFactory,
     private val featureFlagService: FeatureFlagService,
+    private val analyticsService: AnalyticsService,
+    private val workManagerScheduler: WorkManagerScheduler,
 ) : MatrixClient {
     override val sessionId: UserId = UserId(innerClient.userId())
     override val deviceId: DeviceId = DeviceId(innerClient.deviceId())
@@ -136,7 +151,9 @@ class RustMatrixClient(
     private val sessionDispatcher = dispatchers.io.limitedParallelism(64)
 
     private val innerRoomListService = innerSyncService.roomListService()
-    private val innerSpaceService = innerClient.spaceService()
+
+    // TODO refactor this and `innerNotificationClient` to be behind a suspend function instead
+    private val innerSpaceService = runBlocking { innerClient.spaceService() }
 
     override val roomMembershipObserver = RoomMembershipObserver()
 
@@ -176,6 +193,7 @@ class RustMatrixClient(
         roomListFactory = RoomListFactory(
             innerRoomListService = innerRoomListService,
             sessionCoroutineScope = sessionCoroutineScope,
+            analyticsService = analyticsService,
         ),
         roomSyncSubscriber = roomSyncSubscriber,
     )
@@ -210,6 +228,7 @@ class RustMatrixClient(
         roomMembershipObserver = roomMembershipObserver,
         roomInfoMapper = roomInfoMapper,
         featureFlagService = featureFlagService,
+        analyticsService = analyticsService,
     )
 
     override val matrixMediaLoader: MatrixMediaLoader = RustMediaLoader(
@@ -270,6 +289,9 @@ class RustMatrixClient(
             // Force a refresh of the profile
             getUserProfile()
         }
+
+        // Schedule regular database vacuuming to ensure DB performance remains optimal
+        scheduleDatabaseVacuum()
     }
 
     override fun userIdServerName(): String {
@@ -286,7 +308,7 @@ class RustMatrixClient(
     override suspend fun getUrl(url: String): Result<ByteArray> = withContext(sessionDispatcher) {
         runCatchingExceptions {
             innerClient.getUrl(url)
-        }
+        }.mapFailure { it.mapClientException() }
     }
 
     override suspend fun getRoom(roomId: RoomId): BaseRoom? = withContext(sessionDispatcher) {
@@ -553,6 +575,17 @@ class RustMatrixClient(
         return getCacheSize(includeCryptoDb = false)
     }
 
+    override suspend fun getDatabaseSizes(): Result<SdkStoreSizes> = runCatchingExceptions {
+        innerClient.getStoreSizes().run {
+            SdkStoreSizes(
+                stateStore = stateStore?.bytes,
+                eventCacheStore = eventCacheStore?.bytes,
+                mediaStore = mediaStore?.bytes,
+                cryptoStore = cryptoStore?.bytes,
+            )
+        }
+    }
+
     override suspend fun clearCache() {
         innerClient.clearCaches(innerSyncService)
         destroy()
@@ -713,6 +746,49 @@ class RustMatrixClient(
         }
     }
 
+    override suspend fun canLinkNewDevice(): Result<Boolean> = withContext(sessionDispatcher) {
+        runCatchingExceptions {
+            innerClient.isLoginWithQrCodeSupported()
+        }
+    }
+
+    override fun createLinkMobileHandler(): Result<LinkMobileHandler> {
+        return runCatchingExceptions {
+            val handler = innerClient.newGrantLoginWithQrCodeHandler()
+            RustLinkMobileHandler(
+                inner = handler,
+                sessionCoroutineScope = sessionCoroutineScope,
+                sessionDispatcher = sessionDispatcher,
+            )
+        }
+    }
+
+    override fun createLinkDesktopHandler(): Result<LinkDesktopHandler> {
+        return runCatchingExceptions {
+            val handler = innerClient.newGrantLoginWithQrCodeHandler()
+            RustLinkDesktopHandler(
+                inner = handler,
+                sessionCoroutineScope = sessionCoroutineScope,
+                sessionDispatcher = sessionDispatcher,
+                qrCodeDataParser = RustQrCodeDataParser(),
+            )
+        }
+    }
+
+    override suspend fun markRoomAsFullyRead(roomId: RoomId, eventId: EventId): Result<Unit> = withContext(sessionDispatcher) {
+        runCatchingExceptions {
+            val room = innerClient.getRoom(roomId.value) ?: error("Could not fetch associated room")
+            room.markAsFullyReadUnchecked(eventId.value)
+        }
+    }
+
+    override suspend fun performDatabaseVacuum(): Result<Unit> = withContext(sessionDispatcher) {
+        runCatchingExceptions {
+            Timber.d("Performing database vacuuming for session $sessionId...")
+            innerClient.optimizeStores()
+        }
+    }
+
     private suspend fun getCacheSize(
         includeCryptoDb: Boolean = false,
     ): Long = withContext(sessionDispatcher) {
@@ -736,6 +812,15 @@ class RustMatrixClient(
     private suspend fun deleteSessionDirectory() = withContext(sessionDispatcher) {
         // Delete all the files for this session
         sessionPathsProvider.provides(sessionId)?.deleteRecursively()
+    }
+
+    private fun scheduleDatabaseVacuum() {
+        // If there's already a periodic work request, do not schedule another one
+        if (workManagerScheduler.hasPendingWork(sessionId, WorkManagerRequestType.DB_VACUUM)) return
+
+        Timber.i("Scheduling periodic database vacuuming for session $sessionId")
+        val request = PerformDatabaseVacuumWorkManagerRequest(sessionId)
+        workManagerScheduler.submit(request)
     }
 }
 

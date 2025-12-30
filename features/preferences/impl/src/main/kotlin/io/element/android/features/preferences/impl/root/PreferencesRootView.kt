@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -53,6 +54,7 @@ fun PreferencesRootView(
     onAddAccountClick: () -> Unit,
     onSecureBackupClick: () -> Unit,
     onManageAccountClick: (url: String) -> Unit,
+    onLinkNewDeviceClick: () -> Unit,
     onOpenAnalytics: () -> Unit,
     onOpenRageShake: () -> Unit,
     onOpenLockScreenSettings: () -> Unit,
@@ -100,6 +102,7 @@ fun PreferencesRootView(
         ManageAccountSection(
             state = state,
             onManageAccountClick = onManageAccountClick,
+            onLinkNewDeviceClick = onLinkNewDeviceClick,
             onOpenBlockedUsers = onOpenBlockedUsers
         )
 
@@ -192,8 +195,16 @@ private fun ColumnScope.ManageAppSection(
 private fun ColumnScope.ManageAccountSection(
     state: PreferencesRootState,
     onManageAccountClick: (url: String) -> Unit,
+    onLinkNewDeviceClick: () -> Unit,
     onOpenBlockedUsers: () -> Unit,
 ) {
+    if (state.showLinkNewDevice) {
+        ListItem(
+            headlineContent = { Text(stringResource(id = CommonStrings.common_link_new_device)) },
+            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Devices())),
+            onClick = onLinkNewDeviceClick,
+        )
+    }
     state.accountManagementUrl?.let { url ->
         ListItem(
             headlineContent = { Text(stringResource(id = CommonStrings.action_manage_account)) },
@@ -352,6 +363,7 @@ private fun ContentToPreview(matrixUser: MatrixUser) {
         onOpenAbout = {},
         onSecureBackupClick = {},
         onManageAccountClick = {},
+        onLinkNewDeviceClick = {},
         onOpenNotificationSettings = {},
         onOpenLockScreenSettings = {},
         onOpenUserProfile = {},

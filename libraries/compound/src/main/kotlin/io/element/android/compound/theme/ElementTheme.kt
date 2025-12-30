@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -60,14 +61,6 @@ object ElementTheme {
      * Compound [Typography] tokens. In Figma, these have the `Android/font/` prefix.
      */
     val typography: TypographyTokens = TypographyTokens
-
-    /**
-     * Material 3 [Typography] tokens. In Figma, these have the `M3 Typography/` prefix.
-     */
-    val materialTypography: Typography
-        @Composable
-        @ReadOnlyComposable
-        get() = MaterialTheme.typography
 
     /**
      * Returns whether the theme version used is the light or the dark one.

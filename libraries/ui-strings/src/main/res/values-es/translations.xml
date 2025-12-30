@@ -128,6 +128,7 @@
   <string name="action_skip">"Saltar"</string>
   <string name="action_start">"Comenzar"</string>
   <string name="action_start_chat">"Iniciar chat"</string>
+  <string name="action_start_over">"Empezar de nuevo"</string>
   <string name="action_start_verification">"Iniciar la verificación"</string>
   <string name="action_static_map_load">"Pulsa para cargar el mapa"</string>
   <string name="action_take_photo">"Hacer foto"</string>
@@ -145,6 +146,7 @@
   <string name="common_adding_caption">"Añadiendo leyenda"</string>
   <string name="common_advanced_settings">"Ajustes avanzados"</string>
   <string name="common_analytics">"Estadísticas"</string>
+  <string name="common_android_shortcuts_remove_reason_left_room">"Saliste de la sala"</string>
   <string name="common_appearance">"Apariencia"</string>
   <string name="common_audio">"Sonido"</string>
   <string name="common_blocked_users">"Usuarios bloqueados"</string>
@@ -318,6 +320,7 @@ Motivo: %1$s."</string>
   <string name="dialog_title_error">"Error"</string>
   <string name="dialog_title_success">"Terminado"</string>
   <string name="dialog_title_warning">"Atención"</string>
+  <string name="dialog_unsaved_changes_description">"Tienes cambios sin guardar."</string>
   <string name="dialog_unsaved_changes_description_android">"Tus cambios no se han guardado. ¿Estás seguro de que quieres volver atrás?"</string>
   <string name="dialog_unsaved_changes_title">"¿Guardar cambios?"</string>
   <string name="error_account_creation_not_possible">"Tu servidor base debe actualizarse para admitir Matrix Authentication Service y la creación de cuentas."</string>

@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -16,13 +17,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
+import io.element.android.compound.tokens.compoundTypography
 
 @Preview
 @Composable
 internal fun TypographyPreview() = ElementTheme {
     Surface {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            with(ElementTheme.materialTypography) {
+            with(compoundTypography) {
                 TypographyTokenPreview(displayLarge, "Display large")
                 TypographyTokenPreview(displayMedium, "Display medium")
                 TypographyTokenPreview(displaySmall, "Display small")
@@ -38,6 +40,33 @@ internal fun TypographyPreview() = ElementTheme {
                 TypographyTokenPreview(labelLarge, "Label large")
                 TypographyTokenPreview(labelMedium, "Label medium")
                 TypographyTokenPreview(labelSmall, "Label small")
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+internal fun CompoundTypographyPreview() = ElementTheme {
+    Surface {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            with(ElementTheme.typography) {
+                TypographyTokenPreview(fontHeadingXlBold, "fontHeadingXlBold")
+                TypographyTokenPreview(fontHeadingXlRegular, "fontHeadingXlRegular")
+                TypographyTokenPreview(fontHeadingLgBold, "fontHeadingLgBold")
+                TypographyTokenPreview(fontHeadingLgRegular, "fontHeadingLgRegular")
+                TypographyTokenPreview(fontHeadingMdBold, "fontHeadingMdBold")
+                TypographyTokenPreview(fontHeadingMdRegular, "fontHeadingMdRegular")
+                TypographyTokenPreview(fontHeadingSmMedium, "fontHeadingSmMedium")
+                TypographyTokenPreview(fontHeadingSmRegular, "fontHeadingSmRegular")
+                TypographyTokenPreview(fontBodyLgMedium, "fontBodyLgMedium")
+                TypographyTokenPreview(fontBodyLgRegular, "fontBodyLgRegular")
+                TypographyTokenPreview(fontBodyMdMedium, "fontBodyMdMedium")
+                TypographyTokenPreview(fontBodyMdRegular, "fontBodyMdRegular")
+                TypographyTokenPreview(fontBodySmMedium, "fontBodySmMedium")
+                TypographyTokenPreview(fontBodySmRegular, "fontBodySmRegular")
+                TypographyTokenPreview(fontBodyXsMedium, "fontBodyXsMedium")
+                TypographyTokenPreview(fontBodyXsRegular, "fontBodyXsRegular")
             }
         }
     }

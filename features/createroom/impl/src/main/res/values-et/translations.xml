@@ -9,7 +9,7 @@
 Sa võid seda jututoa seadistustest alati muuta."</string>
   <string name="screen_create_room_public_option_title">"Avalik jututuba"</string>
   <string name="screen_create_room_room_access_section_anyone_option_description">"Kõik võivad selle jututoaga liituda"</string>
-  <string name="screen_create_room_room_access_section_anyone_option_title">"Kõik"</string>
+  <string name="screen_create_room_room_access_section_anyone_option_title">"Kõik kasutajad"</string>
   <string name="screen_create_room_room_access_section_header">"Ligipääs jututoale"</string>
   <string name="screen_create_room_room_access_section_knocking_option_description">"Kõik võivad paluda selle jututoaga liitumist, kuid peakasutaja või moderaator peavad selle kinnitama"</string>
   <string name="screen_create_room_room_access_section_knocking_option_title">"Küsi võimalust liitumiseks"</string>

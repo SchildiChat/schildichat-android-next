@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -12,6 +13,7 @@ import com.google.common.truth.Truth.assertThat
 import io.element.android.features.roommembermoderation.api.ModerationAction
 import io.element.android.features.roommembermoderation.api.ModerationActionState
 import io.element.android.features.roommembermoderation.api.RoomMemberModerationEvents
+import io.element.android.features.roommembermoderation.api.RoomMemberModerationPermissions
 import io.element.android.features.roommembermoderation.api.RoomMemberModerationState
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
@@ -19,17 +21,22 @@ import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.matrix.api.room.RoomMembersState
 import io.element.android.libraries.matrix.api.room.RoomMembershipState
+import io.element.android.libraries.matrix.api.room.powerlevels.RoomPowerLevels
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.test.A_USER_ID
 import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
+import io.element.android.libraries.matrix.test.room.aRoomInfo
 import io.element.android.libraries.matrix.test.room.aRoomMember
+import io.element.android.libraries.matrix.test.room.defaultRoomPowerLevelValues
+import io.element.android.libraries.matrix.test.room.powerlevels.FakeRoomPermissions
 import io.element.android.services.analytics.api.AnalyticsService
 import io.element.android.services.analytics.test.FakeAnalyticsService
 import io.element.android.tests.testutils.WarmUpRule
 import io.element.android.tests.testutils.test
 import io.element.android.tests.testutils.testCoroutineDispatchers
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
@@ -47,8 +54,7 @@ class RoomMemberModerationPresenterTest {
         val room = aJoinedRoom()
         createRoomMemberModerationPresenter(room = room).test {
             val initialState = awaitState()
-            assertThat(initialState.canKick).isFalse()
-            assertThat(initialState.canBan).isFalse()
+            assertThat(initialState.permissions).isEqualTo(RoomMemberModerationPermissions.DEFAULT)
             assertThat(initialState.selectedUser).isNull()
             assertThat(initialState.banUserAsyncAction).isEqualTo(AsyncAction.Uninitialized)
             assertThat(initialState.kickUserAsyncAction).isEqualTo(AsyncAction.Uninitialized)
@@ -159,7 +165,6 @@ class RoomMemberModerationPresenterTest {
             assertThat(updatedState.selectedUser).isEqualTo(targetUser)
             assertThat(updatedState.actions).containsExactly(
                 ModerationActionState(action = ModerationAction.DisplayProfile, isEnabled = true),
-                ModerationActionState(action = ModerationAction.KickUser, isEnabled = false),
                 ModerationActionState(action = ModerationAction.UnbanUser, isEnabled = true),
             )
         }
@@ -221,9 +226,11 @@ class RoomMemberModerationPresenterTest {
         val room = aJoinedRoom()
         room.baseRoom.givenUpdateMembersResult {
             // Simulate the member list being updated
-            room.givenRoomMembersState(RoomMembersState.Ready(
-                persistentListOf(aRoomMember())
-            ))
+            room.givenRoomMembersState(
+                RoomMembersState.Ready(
+                    persistentListOf(aRoomMember())
+                )
+            )
         }
         createRoomMemberModerationPresenter(room = room).test {
             val initialState = awaitState()
@@ -249,9 +256,11 @@ class RoomMemberModerationPresenterTest {
         val room = aJoinedRoom()
         room.baseRoom.givenUpdateMembersResult {
             // Simulate the member list being updated
-            room.givenRoomMembersState(RoomMembersState.Ready(
-                persistentListOf(aRoomMember())
-            ))
+            room.givenRoomMembersState(
+                RoomMembersState.Ready(
+                    persistentListOf(aRoomMember())
+                )
+            )
         }
         createRoomMemberModerationPresenter(room = room).test {
             val initialState = awaitState()
@@ -277,9 +286,11 @@ class RoomMemberModerationPresenterTest {
         val room = aJoinedRoom()
         room.baseRoom.givenUpdateMembersResult {
             // Simulate the member list being updated
-            room.givenRoomMembersState(RoomMembersState.Ready(
-                persistentListOf(aRoomMember())
-            ))
+            room.givenRoomMembersState(
+                RoomMembersState.Ready(
+                    persistentListOf(aRoomMember())
+                )
+            )
         }
         createRoomMemberModerationPresenter(room = room).test {
             val initialState = awaitState()
@@ -290,7 +301,7 @@ class RoomMemberModerationPresenterTest {
                 )
             )
             skipItems(2)
-            initialState.eventSink(InternalRoomMemberModerationEvents.DoUnbanUser)
+            initialState.eventSink(InternalRoomMemberModerationEvents.DoUnbanUser("Reason"))
             skipItems(1)
             val loadingState = awaitState()
             assertThat(loadingState.unbanUserAsyncAction).isInstanceOf(AsyncAction.Loading::class.java)
@@ -354,10 +365,18 @@ class RoomMemberModerationPresenterTest {
             banUserResult = { _, _ -> banUserResult },
             unBanUserResult = { _, _ -> unBanUserResult },
             baseRoom = FakeBaseRoom(
-                canBanResult = { _ -> Result.success(canBan) },
-                canKickResult = { _ -> Result.success(canKick) },
+                roomPermissions = FakeRoomPermissions(
+                    canBan = canBan,
+                    canKick = canKick
+                ),
                 userRoleResult = { Result.success(myUserRole) },
-                updateMembersResult = { Result.success(Unit) }
+                updateMembersResult = { Result.success(Unit) },
+                initialRoomInfo = aRoomInfo(
+                    roomPowerLevels = RoomPowerLevels(
+                        values = defaultRoomPowerLevelValues(),
+                        users = persistentMapOf(A_USER_ID to myUserRole.powerLevel)
+                    )
+                )
             ),
         ).apply {
             val roomMembers = listOfNotNull(targetRoomMember).toImmutableList()

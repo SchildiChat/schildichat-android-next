@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -20,20 +21,22 @@ import im.vector.app.features.analytics.plan.RoomModeration
 import io.element.android.features.roommembermoderation.api.ModerationAction
 import io.element.android.features.roommembermoderation.api.ModerationActionState
 import io.element.android.features.roommembermoderation.api.RoomMemberModerationEvents
+import io.element.android.features.roommembermoderation.api.RoomMemberModerationPermissions
 import io.element.android.features.roommembermoderation.api.RoomMemberModerationState
+import io.element.android.features.roommembermoderation.api.roomMemberModerationPermissions
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.architecture.runUpdatingState
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
+import io.element.android.libraries.core.coroutine.mapState
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.matrix.api.room.RoomMembershipState
+import io.element.android.libraries.matrix.api.room.powerlevels.permissionsAsState
 import io.element.android.libraries.matrix.api.room.roomMembers
 import io.element.android.libraries.matrix.api.user.MatrixUser
-import io.element.android.libraries.matrix.ui.room.canBanAsState
-import io.element.android.libraries.matrix.ui.room.canKickAsState
-import io.element.android.libraries.matrix.ui.room.userPowerLevelAsState
+import io.element.android.libraries.matrix.ui.model.powerLevelOf
 import io.element.android.services.analytics.api.AnalyticsService
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -54,10 +57,14 @@ class RoomMemberModerationPresenter(
     @Composable
     override fun present(): RoomMemberModerationState {
         val coroutineScope = rememberCoroutineScope()
-        val syncUpdateFlow = room.syncUpdateFlow.collectAsState()
-        val canBan = room.canBanAsState(syncUpdateFlow.value)
-        val canKick = room.canKickAsState(syncUpdateFlow.value)
-        val currentUserMemberPowerLevel = room.userPowerLevelAsState(syncUpdateFlow.value)
+        val permissions by room.permissionsAsState(RoomMemberModerationPermissions.DEFAULT) { perms ->
+            perms.roomMemberModerationPermissions()
+        }
+        val currentUserPowerLevel by remember {
+            room.roomInfoFlow.mapState { info ->
+                info.powerLevelOf(room.sessionId)
+            }
+        }.collectAsState()
 
         val kickUserAsyncAction =
             remember { mutableStateOf(AsyncAction.Uninitialized as AsyncAction<Unit>) }
@@ -79,9 +86,8 @@ class RoomMemberModerationPresenter(
                     }
                     moderationActions.value = computeModerationActions(
                         member = member,
-                        canKick = canKick.value,
-                        canBan = canBan.value,
-                        currentUserMemberPowerLevel = currentUserMemberPowerLevel.value,
+                        permissions = permissions,
+                        currentUserPowerLevel = currentUserPowerLevel,
                     )
                 }
                 is RoomMemberModerationEvents.ProcessAction -> {
@@ -118,7 +124,7 @@ class RoomMemberModerationPresenter(
                 }
                 is InternalRoomMemberModerationEvents.DoUnbanUser -> {
                     selectedUser?.let {
-                        coroutineScope.unbanUser(it.userId, unbanUserAsyncAction)
+                        coroutineScope.unbanUser(it.userId, event.reason, unbanUserAsyncAction)
                     }
                     selectedUser = null
                 }
@@ -133,39 +139,48 @@ class RoomMemberModerationPresenter(
         }
 
         return InternalRoomMemberModerationState(
-            canKick = canKick.value,
-            canBan = canBan.value,
+            permissions = permissions,
             selectedUser = selectedUser,
             actions = moderationActions.value,
             kickUserAsyncAction = kickUserAsyncAction.value,
             banUserAsyncAction = banUserAsyncAction.value,
             unbanUserAsyncAction = unbanUserAsyncAction.value,
-            eventSink = { handleEvent(it) },
+            eventSink = ::handleEvent,
         )
     }
 
     private fun computeModerationActions(
         member: RoomMember?,
-        canKick: Boolean,
-        canBan: Boolean,
-        currentUserMemberPowerLevel: Long,
+        permissions: RoomMemberModerationPermissions,
+        currentUserPowerLevel: Long,
     ): ImmutableList<ModerationActionState> {
         return buildList {
             add(ModerationActionState(action = ModerationAction.DisplayProfile, isEnabled = true))
             // Assume the member is a regular user when it's unknown
             val targetMemberPowerLevel = member?.powerLevel ?: 0
-            val canModerateThisUser = currentUserMemberPowerLevel > targetMemberPowerLevel
+            val canModerateThisUser = currentUserPowerLevel > targetMemberPowerLevel
             // Assume the member is joined when it's unknown
             val membership = member?.membership ?: RoomMembershipState.JOIN
-            if (canKick) {
-                val isKickEnabled = canModerateThisUser && membership.isActive()
-                add(ModerationActionState(action = ModerationAction.KickUser, isEnabled = isKickEnabled))
-            }
-            if (canBan) {
-                if (membership == RoomMembershipState.BAN) {
-                    add(ModerationActionState(action = ModerationAction.UnbanUser, isEnabled = canModerateThisUser))
-                } else {
-                    add(ModerationActionState(action = ModerationAction.BanUser, isEnabled = canModerateThisUser))
+            when (membership) {
+                RoomMembershipState.BAN -> {
+                    if (permissions.canUnban) {
+                        add(ModerationActionState(action = ModerationAction.UnbanUser, isEnabled = canModerateThisUser))
+                    }
+                }
+                RoomMembershipState.INVITE,
+                RoomMembershipState.JOIN,
+                RoomMembershipState.KNOCK -> {
+                    if (permissions.canKick) {
+                        add(ModerationActionState(action = ModerationAction.KickUser, isEnabled = canModerateThisUser))
+                    }
+                    if (permissions.canBan) {
+                        add(ModerationActionState(action = ModerationAction.BanUser, isEnabled = canModerateThisUser))
+                    }
+                }
+                RoomMembershipState.LEAVE -> {
+                    if (permissions.canBan) {
+                        add(ModerationActionState(action = ModerationAction.BanUser, isEnabled = canModerateThisUser))
+                    }
                 }
             }
         }.toImmutableList()
@@ -197,10 +212,14 @@ class RoomMemberModerationPresenter(
 
     private fun CoroutineScope.unbanUser(
         userId: UserId,
+        reason: String,
         unbanUserAction: MutableState<AsyncAction<Unit>>,
     ) = runActionAndWaitForMembershipChange(unbanUserAction) {
         analyticsService.capture(RoomModeration(RoomModeration.Action.UnbanMember))
-        room.unbanUser(userId = userId)
+        room.unbanUser(
+            userId = userId,
+            reason = reason.takeIf { it.isNotBlank() },
+        )
     }
 
     private fun <T> CoroutineScope.runActionAndWaitForMembershipChange(

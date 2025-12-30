@@ -97,6 +97,8 @@
   <string name="action_forgot_password">"Zapomněli jste heslo?"</string>
   <string name="action_forward">"Přeposlat"</string>
   <string name="action_go_back">"Přejít zpět"</string>
+  <string name="action_go_to_roles_and_permissions">"Přejít na role a oprávnění"</string>
+  <string name="action_go_to_settings">"Přejít do nastavení"</string>
   <string name="action_ignore">"Ignorovat"</string>
   <string name="action_invite">"Pozvat"</string>
   <string name="action_invite_friends">"Pozvat přátele"</string>
@@ -113,6 +115,7 @@
   <string name="action_manage_account">"Spravovat účet"</string>
   <string name="action_manage_devices">"Spravovat zařízení"</string>
   <string name="action_message">"Zpráva"</string>
+  <string name="action_minimize">"Minimalizovat"</string>
   <string name="action_next">"Další"</string>
   <string name="action_no">"Ne"</string>
   <string name="action_not_now">"Teď ne"</string>
@@ -155,6 +158,7 @@
   <string name="action_skip">"Přeskočit"</string>
   <string name="action_start">"Začít"</string>
   <string name="action_start_chat">"Zahájit chat"</string>
+  <string name="action_start_over">"Začít znovu"</string>
   <string name="action_start_verification">"Zahájit ověření"</string>
   <string name="action_static_map_load">"Klepnutím načtete mapu"</string>
   <string name="action_take_photo">"Vyfotit"</string>
@@ -180,6 +184,7 @@
   <string name="common_android_shortcuts_remove_reason_session_logged_out">"Byli jste odhlášeni z relace"</string>
   <string name="common_appearance">"Vzhled"</string>
   <string name="common_audio">"Zvuk"</string>
+  <string name="common_beta">"Beta"</string>
   <string name="common_blocked_users">"Blokovaní uživatelé"</string>
   <string name="common_bubbles">"Bubliny"</string>
   <string name="common_call_started">"Hovor zahájen"</string>
@@ -228,6 +233,7 @@ Důvod: %1$s."</string>
   <string name="common_install_apk_android">"Nainstalovat APK"</string>
   <string name="common_invite_unknown_profile">"Tento Matrix identifikátor nelze najít, takže pozvánka nemusí být přijata."</string>
   <string name="common_leaving_room">"Opuštění místnosti"</string>
+  <string name="common_leaving_space">"Opuštění prostoru"</string>
   <string name="common_light">"Světlý"</string>
   <string name="common_line_copied_to_clipboard">"Řádek zkopírován do schránky"</string>
   <string name="common_link_copied_to_clipboard">"Odkaz zkopírován do schránky"</string>
@@ -319,6 +325,7 @@ Důvod: %1$s."</string>
   <string name="common_settings">"Nastavení"</string>
   <string name="common_share_space">"Sdílet prostor"</string>
   <string name="common_shared_location">"Sdílená poloha"</string>
+  <string name="common_shared_space">"Sdílený prostor"</string>
   <string name="common_signing_out">"Odhlašování"</string>
   <string name="common_something_went_wrong">"Něco se nepovedlo"</string>
   <string name="common_something_went_wrong_message">"Narazili jsme na problém. Zkuste to prosím znovu."</string>
@@ -388,6 +395,7 @@ Opravdu chcete pokračovat?"</string>
   <string name="dialog_title_error">"Chyba"</string>
   <string name="dialog_title_success">"Úspěch"</string>
   <string name="dialog_title_warning">"Upozornění"</string>
+  <string name="dialog_unsaved_changes_description">"Máte neuložené změny."</string>
   <string name="dialog_unsaved_changes_description_android">"Vaše změny nebyly uloženy. Opravdu se chcete vrátit?"</string>
   <string name="dialog_unsaved_changes_title">"Uložit změny?"</string>
   <string name="dialog_video_quality_selector_subtitle_file_size">"Maximální povolená velikost souboru je: %1$s"</string>
@@ -468,6 +476,7 @@ Opravdu chcete pokračovat?"</string>
   <string name="screen_space_list_details">"%1$s • %2$s"</string>
   <string name="screen_space_list_parent_space">"%1$s prostor"</string>
   <string name="screen_space_list_title">"Prostory"</string>
+  <string name="screen_space_menu_action_members">"Zobrazit členy"</string>
   <string name="screen_timeline_item_menu_send_failure_changed_identity">"Zpráva nebyla odeslána, protože ověřená identita uživatele %1$s se změnila."</string>
   <string name="screen_timeline_item_menu_send_failure_unsigned_device">"Zpráva nebyla odeslána, protože%1$s neověřil(a) všechna zařízení."</string>
   <string name="screen_timeline_item_menu_send_failure_you_unsigned_device">"Zpráva nebyla odeslána, protože jste neověřili jedno nebo více zařízení."</string>

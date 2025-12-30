@@ -1,12 +1,15 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
 package io.element.android.features.space.impl.root
 
+import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -14,6 +17,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,6 +29,8 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -49,6 +56,7 @@ import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.CircularProgressIndicator
 import io.element.android.libraries.designsystem.theme.components.DropdownMenu
 import io.element.android.libraries.designsystem.theme.components.DropdownMenuItem
+import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconButton
 import io.element.android.libraries.designsystem.theme.components.Scaffold
@@ -72,6 +80,8 @@ fun SpaceView(
     onRoomClick: (spaceRoom: SpaceRoom) -> Unit,
     onShareSpace: () -> Unit,
     onLeaveSpaceClick: () -> Unit,
+    onSettingsClick: () -> Unit,
+    onViewMembersClick: () -> Unit,
     modifier: Modifier = Modifier,
     acceptDeclineInviteView: @Composable () -> Unit,
 ) {
@@ -80,9 +90,12 @@ fun SpaceView(
         topBar = {
             SpaceViewTopBar(
                 currentSpace = state.currentSpace,
+                canAccessSpaceSettings = state.canAccessSpaceSettings,
                 onBackClick = onBackClick,
                 onLeaveSpaceClick = onLeaveSpaceClick,
                 onShareSpace = onShareSpace,
+                onSettingsClick = onSettingsClick,
+                onViewMembersClick = onViewMembersClick,
             )
         },
         content = { padding ->
@@ -177,33 +190,40 @@ private fun SpaceViewContent(
                     onTopicClick = onTopicClick
                 )
             }
-        }
-        state.children.forEach { spaceRoom ->
             item {
-                val isInvitation = spaceRoom.state == CurrentUserMembership.INVITED
-                val isCurrentlyJoining = state.isJoining(spaceRoom.roomId)
-                SpaceRoomItemView(
-                    spaceRoom = spaceRoom,
-                    showUnreadIndicator = isInvitation && spaceRoom.roomId !in state.seenSpaceInvites,
-                    hideAvatars = isInvitation && state.hideInvitesAvatar,
-                    onClick = {
-                        onRoomClick(spaceRoom)
+                HorizontalDivider()
+            }
+        }
+        itemsIndexed(
+            items = state.children,
+            key = { _, spaceRoom -> spaceRoom.roomId }
+        ) { index, spaceRoom ->
+            val isInvitation = spaceRoom.state == CurrentUserMembership.INVITED
+            val isCurrentlyJoining = state.isJoining(spaceRoom.roomId)
+            SpaceRoomItemView(
+                spaceRoom = spaceRoom,
+                showUnreadIndicator = isInvitation && spaceRoom.roomId !in state.seenSpaceInvites,
+                hideAvatars = isInvitation && state.hideInvitesAvatar,
+                onClick = {
+                    onRoomClick(spaceRoom)
+                },
+                onLongClick = {
+                    // TODO
+                },
+                trailingAction = spaceRoom.trailingAction(isCurrentlyJoining = isCurrentlyJoining) {
+                    state.eventSink(SpaceEvents.Join(spaceRoom))
+                },
+                bottomAction = spaceRoom.inviteButtons(
+                    onAcceptClick = {
+                        state.eventSink(SpaceEvents.AcceptInvite(spaceRoom))
                     },
-                    onLongClick = {
-                        // TODO
-                    },
-                    trailingAction = spaceRoom.trailingAction(isCurrentlyJoining = isCurrentlyJoining) {
-                        state.eventSink(SpaceEvents.Join(spaceRoom))
-                    },
-                    bottomAction = spaceRoom.inviteButtons(
-                        onAcceptClick = {
-                            state.eventSink(SpaceEvents.AcceptInvite(spaceRoom))
-                        },
-                        onDeclineClick = {
-                            state.eventSink(SpaceEvents.DeclineInvite(spaceRoom))
-                        }
-                    )
+                    onDeclineClick = {
+                        state.eventSink(SpaceEvents.DeclineInvite(spaceRoom))
+                    }
                 )
+            )
+            if (index != state.children.lastIndex) {
+                HorizontalDivider()
             }
         }
         if (state.hasMoreToLoad) {
@@ -238,9 +258,12 @@ private fun LoadingMoreIndicator(
 @Composable
 private fun SpaceViewTopBar(
     currentSpace: SpaceRoom?,
+    canAccessSpaceSettings: Boolean,
     onBackClick: () -> Unit,
     onLeaveSpaceClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     onShareSpace: () -> Unit,
+    onViewMembersClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     TopAppBar(
@@ -250,9 +273,13 @@ private fun SpaceViewTopBar(
         },
         title = {
             if (currentSpace != null) {
+                val roundedCornerShape = RoundedCornerShape(8.dp)
                 SpaceAvatarAndNameRow(
                     name = currentSpace.displayName,
                     avatarData = currentSpace.getAvatarData(AvatarSize.TimelineRoom),
+                    modifier = Modifier
+                        .clip(roundedCornerShape)
+                        .clickable(enabled = canAccessSpaceSettings, onClick = onSettingsClick)
                 )
             }
         },
@@ -270,41 +297,68 @@ private fun SpaceViewTopBar(
                 expanded = showMenu,
                 onDismissRequest = { showMenu = false }
             ) {
-                DropdownMenuItem(
+                SpaceMenuItem(
+                    titleRes = CommonStrings.screen_space_menu_action_members,
+                    icon = CompoundIcons.User(),
+                    onClick = {
+                        showMenu = false
+                        onViewMembersClick()
+                    }
+                )
+                SpaceMenuItem(
+                    titleRes = CommonStrings.action_share,
+                    icon = CompoundIcons.ShareAndroid(),
                     onClick = {
                         showMenu = false
                         onShareSpace()
-                    },
-                    text = { Text(stringResource(id = CommonStrings.action_share)) },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = CompoundIcons.ShareAndroid(),
-                            tint = ElementTheme.colors.iconSecondary,
-                            contentDescription = null,
-                        )
                     }
                 )
-                DropdownMenuItem(
+                if (canAccessSpaceSettings) {
+                    SpaceMenuItem(
+                        titleRes = CommonStrings.common_settings,
+                        icon = CompoundIcons.Settings(),
+                        onClick = {
+                            showMenu = false
+                            onSettingsClick()
+                        }
+                    )
+                }
+                SpaceMenuItem(
+                    titleRes = CommonStrings.action_leave_space,
+                    icon = CompoundIcons.Leave(),
+                    isCritical = true,
                     onClick = {
                         showMenu = false
                         onLeaveSpaceClick()
-                    },
-                    text = {
-                        Text(
-                            text = stringResource(id = CommonStrings.action_leave),
-                            color = ElementTheme.colors.textCriticalPrimary,
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = CompoundIcons.Leave(),
-                            tint = ElementTheme.colors.iconCriticalPrimary,
-                            contentDescription = null,
-                        )
                     }
                 )
             }
         },
+    )
+}
+
+@Composable
+private fun SpaceMenuItem(
+    @StringRes titleRes: Int,
+    icon: ImageVector,
+    onClick: () -> Unit,
+    isCritical: Boolean = false,
+) {
+    DropdownMenuItem(
+        onClick = onClick,
+        text = {
+            Text(
+                text = stringResource(titleRes),
+                color = if (isCritical) ElementTheme.colors.textCriticalPrimary else ElementTheme.colors.textPrimary,
+            )
+        },
+        leadingIcon = {
+            Icon(
+                imageVector = icon,
+                tint = if (isCritical) ElementTheme.colors.iconCriticalPrimary else ElementTheme.colors.iconSecondary,
+                contentDescription = null,
+            )
+        }
     )
 }
 
@@ -382,6 +436,8 @@ internal fun SpaceViewPreview(
         onShareSpace = {},
         onLeaveSpaceClick = {},
         acceptDeclineInviteView = {},
+        onSettingsClick = {},
+        onViewMembersClick = {},
         onBackClick = {},
     )
 }

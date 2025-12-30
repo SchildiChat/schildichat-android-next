@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -66,6 +67,7 @@ import io.element.android.libraries.mediaviewer.test.util.FileExtensionExtractor
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.test.runTest
+import org.jsoup.nodes.Document
 import org.junit.Assert.fail
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -186,7 +188,7 @@ class TimelineItemContentMessageFactoryTest {
             }
         }.toSpannable()
         val sut = createTimelineItemContentMessageFactory(
-            htmlConverterTransform = { expected }
+            domConverterTransform = { expected }
         )
         val result = sut.create(
             content = createMessageContent(
@@ -678,7 +680,7 @@ class TimelineItemContentMessageFactoryTest {
             }
         }.toSpannable()
         val sut = createTimelineItemContentMessageFactory(
-            htmlConverterTransform = { expectedSpanned },
+            domConverterTransform = { expectedSpanned },
             permalinkParser = FakePermalinkParser { PermalinkData.FallbackLink(Uri.EMPTY) }
         )
         val result = sut.create(
@@ -764,11 +766,12 @@ class TimelineItemContentMessageFactoryTest {
 
     private fun createTimelineItemContentMessageFactory(
         htmlConverterTransform: (String) -> CharSequence = { it },
+        domConverterTransform: (Document) -> CharSequence = { it.body().html() },
         permalinkParser: FakePermalinkParser = FakePermalinkParser(),
     ) = TimelineItemContentMessageFactory(
         fileSizeFormatter = FakeFileSizeFormatter(),
         fileExtensionExtractor = FileExtensionExtractorWithoutValidation(),
-        htmlConverterProvider = FakeHtmlConverterProvider(htmlConverterTransform),
+        htmlConverterProvider = FakeHtmlConverterProvider(htmlConverterTransform, domConverterTransform),
         permalinkParser = permalinkParser,
         textPillificationHelper = FakeTextPillificationHelper(),
     )

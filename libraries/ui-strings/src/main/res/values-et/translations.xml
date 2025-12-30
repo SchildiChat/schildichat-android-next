@@ -95,6 +95,8 @@
   <string name="action_forgot_password">"Kas unustasid salasõna?"</string>
   <string name="action_forward">"Edasta"</string>
   <string name="action_go_back">"Tagasi eelmisesse vaatesse"</string>
+  <string name="action_go_to_roles_and_permissions">"Ava „Rollid ja õigused“"</string>
+  <string name="action_go_to_settings">"Ava seadistused"</string>
   <string name="action_ignore">"Eira"</string>
   <string name="action_invite">"Kutsu"</string>
   <string name="action_invite_friends">"Kutsu osalejaid"</string>
@@ -154,10 +156,12 @@
   <string name="action_skip">"Jäta vahele"</string>
   <string name="action_start">"Alusta"</string>
   <string name="action_start_chat">"Alusta vestlust"</string>
+  <string name="action_start_over">"Alusta uuesti"</string>
   <string name="action_start_verification">"Alusta verifitseerimist"</string>
   <string name="action_static_map_load">"Kaardi laadimiseks klõpsa"</string>
   <string name="action_take_photo">"Tee pilt"</string>
   <string name="action_tap_for_options">"Valikuteks klõpsa"</string>
+  <string name="action_translate">"Tõlgi"</string>
   <string name="action_try_again">"Proovi uuesti"</string>
   <string name="action_unpin">"Eemalda esiletõstmine"</string>
   <string name="action_view">"Vaata"</string>
@@ -175,10 +179,11 @@
   <string name="common_advanced_settings">"Täiendavad seadistused"</string>
   <string name="common_an_image">"pilt"</string>
   <string name="common_analytics">"Analüütika"</string>
-  <string name="common_android_shortcuts_remove_reason_left_room">"Sa oled jututoast lahkunud"</string>
+  <string name="common_android_shortcuts_remove_reason_left_room">"Sina lahkusid jututoast"</string>
   <string name="common_android_shortcuts_remove_reason_session_logged_out">"Sa olid sessioonist väljaloginud"</string>
   <string name="common_appearance">"Välimus"</string>
   <string name="common_audio">"Heli"</string>
+  <string name="common_beta">"Beetaversioon"</string>
   <string name="common_blocked_users">"Blokeeritud kasutajad"</string>
   <string name="common_bubbles">"Mullid"</string>
   <string name="common_call_started">"Kõne algas"</string>
@@ -227,9 +232,11 @@ Põhjus: %1$s."</string>
   <string name="common_install_apk_android">"Paigalda APK-failist"</string>
   <string name="common_invite_unknown_profile">"Sellist Matrix\'i kasutajatunnust ei õnnestu leida, seega sõnumit ilmselt keegi kätte ei saa."</string>
   <string name="common_leaving_room">"Oled lahkumas jututoast"</string>
+  <string name="common_leaving_space">"Oled lahkumas kogukonnast"</string>
   <string name="common_light">"Hele"</string>
   <string name="common_line_copied_to_clipboard">"Rida on kopeeritud lõikelauale"</string>
   <string name="common_link_copied_to_clipboard">"Link on kopeeritud lõikelauale"</string>
+  <string name="common_link_new_device">"Seo uus seade"</string>
   <string name="common_loading">"Laadime…"</string>
   <string name="common_loading_more">"Laadime veel…"</string>
   <plurals name="common_many_members">
@@ -242,10 +249,12 @@ Põhjus: %1$s."</string>
   </plurals>
   <string name="common_message">"Sõnum"</string>
   <string name="common_message_actions">"Tegevused sõnumiga"</string>
+  <string name="common_message_failed_to_send">"Sõnumi saatmine ei õnnestunud"</string>
   <string name="common_message_layout">"Sõnumi paigutus"</string>
   <string name="common_message_removed">"Sõnum on eemaldatud"</string>
   <string name="common_modern">"Kaasaegne"</string>
   <string name="common_mute">"Summutatud"</string>
+  <string name="common_name">"Nimi"</string>
   <string name="common_name_and_id">"%1$s (%2$s)"</string>
   <string name="common_no_results">"Otsingul pole tulemusi"</string>
   <string name="common_no_room_name">"Jututoal puudub nimi"</string>
@@ -315,10 +324,12 @@ Põhjus: %1$s."</string>
   <string name="common_settings">"Seadistused"</string>
   <string name="common_share_space">"Jaga kogukonda"</string>
   <string name="common_shared_location">"Jagatud asukoht"</string>
+  <string name="common_shared_space">"Jagatud kogukond"</string>
   <string name="common_signing_out">"Logime välja"</string>
   <string name="common_something_went_wrong">"Midagi läks valesti"</string>
   <string name="common_something_went_wrong_message">"Tekkis viga. Palun proovi uuesti."</string>
   <string name="common_space">"Kogukond"</string>
+  <string name="common_space_topic_placeholder">"Mida selles kogukonnas tehakse?"</string>
   <plurals name="common_spaces">
     <item quantity="one">"%1$d kogukond"</item>
     <item quantity="other">"%1$d kogukonda"</item>
@@ -363,6 +374,7 @@ Põhjus: %1$s."</string>
   <string name="common_waiting">"Ootame…"</string>
   <string name="common_waiting_for_decryption_key">"Ootame selle sõnumi dekrüptimisvõtit"</string>
   <string name="common_you">"Sina"</string>
+  <string name="crypto_history_visible">"See jututuba on seadistatud sedaviisi, et ka uued liikmed saavad lugeda varasemat ajalugu. %1$s"</string>
   <string name="crypto_identity_change_pin_violation">"Kasutaja %1$s võrguidentiteet on lähtestatud. %2$s"</string>
   <string name="crypto_identity_change_pin_violation_new">"Kasutaja %1$s %2$s võrguidentiteet on lähtestatud. %3$s"</string>
   <string name="crypto_identity_change_pin_violation_new_user_id">"(%1$s)"</string>
@@ -383,6 +395,7 @@ Kas sa oled kindel, et soovid jätkata?"</string>
   <string name="dialog_title_error">"Viga"</string>
   <string name="dialog_title_success">"Õnnestus"</string>
   <string name="dialog_title_warning">"Hoiatus"</string>
+  <string name="dialog_unsaved_changes_description">"Sul on salvestamata muudatusi"</string>
   <string name="dialog_unsaved_changes_description_android">"Sinu tehtud muudatused pole veel salvestatud. Kas sa oled kindel, et soovid minna tagasi?"</string>
   <string name="dialog_unsaved_changes_title">"Kas salvestame muudatused?"</string>
   <string name="dialog_video_quality_selector_subtitle_file_size">"Suurim lubatud failisuurus on: %1$s"</string>
@@ -422,6 +435,11 @@ Kas sa oled kindel, et soovid jätkata?"</string>
   <string name="screen_create_poll_options_section_title">"Valikud"</string>
   <string name="screen_create_poll_remove_accessibility_label">"Kustuta: %1$s"</string>
   <string name="screen_create_poll_settings_section_title">"Seadistused"</string>
+  <string name="screen_manage_authorized_spaces_header">"Kogukonnad, milles on võimalik jututoaga liituda ilma kutseta."</string>
+  <string name="screen_manage_authorized_spaces_title">"Halda kogukondi"</string>
+  <string name="screen_manage_authorized_spaces_unknown_space">"(Tundmatu kogukond)"</string>
+  <string name="screen_manage_authorized_spaces_unknown_spaces_section_title">"Muud kogukonnad, mille liige sa ei ole"</string>
+  <string name="screen_manage_authorized_spaces_your_spaces_section_title">"Sinu kogukonnad"</string>
   <string name="screen_media_picker_error_failed_selection">"Meediafaili valimine ei õnnestunud. Palun proovi uuesti."</string>
   <string name="screen_pinned_timeline_empty_state_description">"Siia lisamiseks vajuta sõnumil ja vali „%1$s“."</string>
   <string name="screen_pinned_timeline_empty_state_headline">"Et olulisi sõnumeid oleks lihtsam leida, tõsta nad esile"</string>
@@ -462,6 +480,7 @@ Kas sa oled kindel, et soovid jätkata?"</string>
   <string name="screen_space_list_details">"%1$s • %2$s"</string>
   <string name="screen_space_list_parent_space">"Kogukond: %1$s"</string>
   <string name="screen_space_list_title">"Kogukonnad"</string>
+  <string name="screen_space_menu_action_members">"Vaata liikmeid"</string>
   <string name="screen_timeline_item_menu_send_failure_changed_identity">"Sõnum on saatmata, kuna kasutaja %1$s verifitseeritud identiteet on lähtestatud."</string>
   <string name="screen_timeline_item_menu_send_failure_unsigned_device">"Sõnum on saatmata, kuna %1$s pole verifitseerinud kõiki oma seadmeid."</string>
   <string name="screen_timeline_item_menu_send_failure_you_unsigned_device">"Kuna sa pole üks või enamgi oma seadet verifitseerinud, siis sinu sõnum on saatmata."</string>

@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -25,6 +26,7 @@ data class SpaceState(
     val joinActions: ImmutableMap<RoomId, AsyncAction<Unit>>,
     val acceptDeclineInviteState: AcceptDeclineInviteState,
     val topicViewerState: TopicViewerState,
+    val canAccessSpaceSettings: Boolean,
     val eventSink: (SpaceEvents) -> Unit
 ) {
     fun isJoining(spaceId: RoomId): Boolean = joinActions[spaceId] == AsyncAction.Loading

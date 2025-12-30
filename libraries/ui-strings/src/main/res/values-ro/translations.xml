@@ -97,6 +97,7 @@
   <string name="action_forgot_password">"Ați uitat parola?"</string>
   <string name="action_forward">"Redirecționați"</string>
   <string name="action_go_back">"Înapoi"</string>
+  <string name="action_go_to_roles_and_permissions">"Mergeți la roluri și permisiuni"</string>
   <string name="action_go_to_settings">"Mergeți la setări"</string>
   <string name="action_ignore">"Ignorați"</string>
   <string name="action_invite">"Invitați"</string>
@@ -157,6 +158,7 @@
   <string name="action_skip">"Omiteți"</string>
   <string name="action_start">"Începeți"</string>
   <string name="action_start_chat">"Începeți discuția"</string>
+  <string name="action_start_over">"Începeți din nou"</string>
   <string name="action_start_verification">"Începeți verificarea"</string>
   <string name="action_static_map_load">"Atingeți pentru a încărca harta"</string>
   <string name="action_take_photo">"Faceți o fotografie"</string>
@@ -235,6 +237,7 @@ Motiv:%1$s."</string>
   <string name="common_light">"Deschis"</string>
   <string name="common_line_copied_to_clipboard">"Linie copiată în clipboard"</string>
   <string name="common_link_copied_to_clipboard">"Linkul a fost copiat în clipboard"</string>
+  <string name="common_link_new_device">"Conectați un dispozitiv nou"</string>
   <string name="common_loading">"Se încarcă…"</string>
   <string name="common_loading_more">"Se încarcă…"</string>
   <plurals name="common_many_members">
@@ -249,10 +252,12 @@ Motiv:%1$s."</string>
   </plurals>
   <string name="common_message">"Mesaj"</string>
   <string name="common_message_actions">"Acțiuni mesaj"</string>
+  <string name="common_message_failed_to_send">"Mesajul nu a putut fi trimis"</string>
   <string name="common_message_layout">"Aspectul mesajelor"</string>
   <string name="common_message_removed">"Mesaj șters"</string>
   <string name="common_modern">"Modern"</string>
   <string name="common_mute">"Dezactivați sunetul"</string>
+  <string name="common_name">"Nume"</string>
   <string name="common_name_and_id">"%1$s (%2$s)"</string>
   <string name="common_no_results">"Niciun rezultat"</string>
   <string name="common_no_room_name">"Fără nume de cameră"</string>
@@ -330,6 +335,7 @@ Motiv:%1$s."</string>
   <string name="common_something_went_wrong">"Ceva nu a mers bine"</string>
   <string name="common_something_went_wrong_message">"Am întâmpinat o problemă. Vă rugăm să încercați din nou."</string>
   <string name="common_space">"Spațiu"</string>
+  <string name="common_space_topic_placeholder">"Despre ce este vorba în acest spațiu?"</string>
   <plurals name="common_spaces">
     <item quantity="one">"%1$d Spațiu"</item>
     <item quantity="few">"%1$d Spații"</item>
@@ -375,6 +381,7 @@ Motiv:%1$s."</string>
   <string name="common_waiting">"Se aşteaptă…"</string>
   <string name="common_waiting_for_decryption_key">"Mesaj în așteptare"</string>
   <string name="common_you">"Dumneavoastră"</string>
+  <string name="crypto_history_visible">"Această cameră a fost configurată astfel încât noii membri să poată citi istoricul. %1$s"</string>
   <string name="crypto_identity_change_pin_violation">"Identitatea lui %1$s a fost resetată. %2$s"</string>
   <string name="crypto_identity_change_pin_violation_new">"Identitatea %2$s a lui %1$s a fost resetată. %3$s"</string>
   <string name="crypto_identity_change_pin_violation_new_user_id">"(%1$s)"</string>
@@ -395,6 +402,7 @@ Sunteți sigur că doriți să continuați?"</string>
   <string name="dialog_title_error">"Eroare"</string>
   <string name="dialog_title_success">"Succes"</string>
   <string name="dialog_title_warning">"Avertisment"</string>
+  <string name="dialog_unsaved_changes_description">"Aveți modificări nesalvate."</string>
   <string name="dialog_unsaved_changes_description_android">"Modificările dumneavoastră nu au fost salvate. Sunteți sigur că doriți să vă întoarceți?"</string>
   <string name="dialog_unsaved_changes_title">"Salvați modificările?"</string>
   <string name="dialog_video_quality_selector_subtitle_file_size">"Dimensiunea maximă permisă pentru fișiere este: %1$s"</string>
@@ -434,6 +442,11 @@ Sunteți sigur că doriți să continuați?"</string>
   <string name="screen_create_poll_options_section_title">"Opțiuni"</string>
   <string name="screen_create_poll_remove_accessibility_label">"Ștergeți %1$s"</string>
   <string name="screen_create_poll_settings_section_title">"Setări"</string>
+  <string name="screen_manage_authorized_spaces_header">"Spațile din care membrii se pot alătura camerei fără invitație."</string>
+  <string name="screen_manage_authorized_spaces_title">"Gestionați spațiile"</string>
+  <string name="screen_manage_authorized_spaces_unknown_space">"(Spațiu necunoscut)"</string>
+  <string name="screen_manage_authorized_spaces_unknown_spaces_section_title">"Alte spații din care nu faceți parte"</string>
+  <string name="screen_manage_authorized_spaces_your_spaces_section_title">"Spațiile dumneavoastră"</string>
   <string name="screen_media_picker_error_failed_selection">"Selectarea fișierelor media a eșuat, încercați din nou."</string>
   <string name="screen_pinned_timeline_empty_state_description">"Apăsați pe un mesaj și alegeți \"%1$s\" pentru a-l include aici."</string>
   <string name="screen_pinned_timeline_empty_state_headline">"Fixați mesajele importante, astfel încât să poată fi descoperite cu ușurință"</string>
@@ -475,6 +488,7 @@ Sunteți sigur că doriți să continuați?"</string>
   <string name="screen_space_list_details">"%1$s • %2$s"</string>
   <string name="screen_space_list_parent_space">"Spațiu %1$s"</string>
   <string name="screen_space_list_title">"Spații"</string>
+  <string name="screen_space_menu_action_members">"Vizualizați membrii"</string>
   <string name="screen_timeline_item_menu_send_failure_changed_identity">"Mesajul nu a fost trimis deoarece identitatea verificată a lui %1$s s-a schimbat."</string>
   <string name="screen_timeline_item_menu_send_failure_unsigned_device">"Mesajul nu a fost trimis deoarece %1$s nu a verificat toate dispozitivele."</string>
   <string name="screen_timeline_item_menu_send_failure_you_unsigned_device">"Mesajul nu a fost trimis deoarece nu ați verificat unul sau mai multe dispozitive."</string>

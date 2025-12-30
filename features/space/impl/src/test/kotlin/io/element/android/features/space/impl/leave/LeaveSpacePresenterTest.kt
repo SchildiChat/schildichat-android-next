@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -61,7 +62,7 @@ class LeaveSpacePresenterTest {
             val state = awaitItem()
             assertThat(state.selectableSpaceRooms.isLoading()).isTrue()
             assertThat(state.leaveSpaceAction).isEqualTo(AsyncAction.Uninitialized)
-            skipItems(3)
+            skipItems(2)
             val stateError = awaitItem()
             assertThat(stateError.selectableSpaceRooms.isFailure()).isTrue()
             // Retry
@@ -83,7 +84,7 @@ class LeaveSpacePresenterTest {
         presenter.test {
             val state = awaitItem()
             assertThat(state.spaceName).isNull()
-            skipItems(3)
+            skipItems(2)
             val finalState = awaitItem()
             assertThat(finalState.spaceName).isEqualTo(A_SPACE_NAME)
             assertThat(finalState.isLastAdmin).isTrue()
@@ -119,7 +120,7 @@ class LeaveSpacePresenterTest {
         presenter.test {
             val state = awaitItem()
             assertThat(state.spaceName).isNull()
-            skipItems(3)
+            skipItems(2)
             val finalState = awaitItem()
             // The current state is not in the sub room list
             assertThat(finalState.selectableSpaceRooms.dataOrNull()!!.map { it.spaceRoom.roomId }).containsExactly(A_ROOM_ID, A_ROOM_ID_3)
@@ -153,7 +154,7 @@ class LeaveSpacePresenterTest {
             )
         )
         presenter.test {
-            skipItems(4)
+            skipItems(3)
             val state = awaitItem()
             assertThat(state.spaceName).isNull()
             assertThat(state.isLastAdmin).isFalse()
@@ -217,7 +218,7 @@ class LeaveSpacePresenterTest {
             )
         )
         presenter.test {
-            skipItems(4)
+            skipItems(3)
             val state = awaitItem()
             state.eventSink(LeaveSpaceEvents.LeaveSpace)
             val stateLeaving = awaitItem()

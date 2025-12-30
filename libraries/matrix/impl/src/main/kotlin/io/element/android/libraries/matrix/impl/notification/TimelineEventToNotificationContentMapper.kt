@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -17,7 +18,7 @@ import io.element.android.libraries.matrix.impl.timeline.item.event.EventMessage
 import org.matrix.rustcomponents.sdk.MessageLikeEventContent
 import org.matrix.rustcomponents.sdk.StateEventContent
 import org.matrix.rustcomponents.sdk.TimelineEvent
-import org.matrix.rustcomponents.sdk.TimelineEventType
+import org.matrix.rustcomponents.sdk.TimelineEventContent
 import org.matrix.rustcomponents.sdk.use
 import org.matrix.rustcomponents.sdk.RtcNotificationType as SdkRtcNotificationType
 
@@ -25,18 +26,19 @@ class TimelineEventToNotificationContentMapper {
     fun map(timelineEvent: TimelineEvent): Result<NotificationContent> {
         return runCatchingExceptions {
             timelineEvent.use {
-                timelineEvent.eventType().use { eventType ->
-                    eventType.toContent(senderId = UserId(timelineEvent.senderId()))
+                val senderId = UserId(timelineEvent.senderId())
+                timelineEvent.content().use { eventContent ->
+                    eventContent.toContent(senderId = senderId)
                 }
             }
         }
     }
 }
 
-private fun TimelineEventType.toContent(senderId: UserId): NotificationContent {
+private fun TimelineEventContent.toContent(senderId: UserId): NotificationContent {
     return when (this) {
-        is TimelineEventType.MessageLike -> content.toContent(senderId)
-        is TimelineEventType.State -> content.toContent()
+        is TimelineEventContent.MessageLike -> content.toContent(senderId)
+        is TimelineEventContent.State -> content.toContent()
     }
 }
 

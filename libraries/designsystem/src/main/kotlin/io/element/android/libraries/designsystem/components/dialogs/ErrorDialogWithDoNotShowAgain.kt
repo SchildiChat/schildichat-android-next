@@ -1,7 +1,8 @@
 /*
- * Copyright 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2024, 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -56,14 +57,14 @@ fun ErrorDialogWithDoNotShowAgain(
             Column {
                 Text(
                     text = content,
-                    style = ElementTheme.materialTypography.bodyMedium,
+                    style = ElementTheme.typography.fontBodyMdRegular,
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(checked = doNotShowAgain, onCheckedChange = { doNotShowAgain = it })
                     Text(
                         text = stringResource(id = CommonStrings.common_do_not_show_this_again),
-                        style = ElementTheme.materialTypography.bodyMedium,
+                        style = ElementTheme.typography.fontBodyMdRegular,
                     )
                 }
             }

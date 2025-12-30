@@ -113,6 +113,7 @@
   <string name="common_acceptable_use_policy">"მისაღები გამოყენების პოლიტიკა"</string>
   <string name="common_advanced_settings">"გაფართოებული პარამეტრები"</string>
   <string name="common_analytics">"ანალიტიკა"</string>
+  <string name="common_android_shortcuts_remove_reason_left_room">"თქვენ დატოვეთ ოთახი"</string>
   <string name="common_appearance">"გარეგნობა"</string>
   <string name="common_audio">"აუდიო"</string>
   <string name="common_blocked_users">"დაბლოკილი მომხმარებლები"</string>
@@ -236,6 +237,7 @@
   <string name="dialog_title_error">"შეცდომა"</string>
   <string name="dialog_title_success">"წარმატება"</string>
   <string name="dialog_title_warning">"გაფრთხილება"</string>
+  <string name="dialog_unsaved_changes_description">"თქვენ გაქვთ შეუნახავი ცვლილებები"</string>
   <string name="dialog_unsaved_changes_description_android">"თქვენი ცვლილებები არაა შენახული. დარწმუნებული ხართ დაბრუნებაში?"</string>
   <string name="dialog_unsaved_changes_title">"შენახვა?"</string>
   <string name="error_failed_creating_the_permalink">"მუდმივი ბმულის შექმნა ვერ მოხერხდა"</string>

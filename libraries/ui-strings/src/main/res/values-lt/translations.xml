@@ -64,6 +64,7 @@
   <string name="action_yes">"Taip"</string>
   <string name="common_about">"Apie"</string>
   <string name="common_analytics">"Analitika"</string>
+  <string name="common_android_shortcuts_remove_reason_left_room">"Jūs išėjote iš kambario"</string>
   <string name="common_audio">"Garsas"</string>
   <string name="common_bubbles">"Burbulai"</string>
   <string name="common_chat_backup">"Pokalbio atsarginė kopija"</string>

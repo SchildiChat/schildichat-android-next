@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -29,6 +30,7 @@ object LinkifyHelper {
         @LinkifyCompat.LinkifyMask linkifyMask: Int = Linkify.WEB_URLS or Linkify.PHONE_NUMBERS or Linkify.EMAIL_ADDRESSES,
     ): CharSequence {
         // Convert the text to a Spannable to be able to add URL spans, return the original text if it's not possible (in tests, i.e.)
+        @Suppress("USELESS_ELVIS")
         val spannable = text.toSpannable() ?: return text
 
         // Get all URL spans, as they will be removed by LinkifyCompat.addLinks

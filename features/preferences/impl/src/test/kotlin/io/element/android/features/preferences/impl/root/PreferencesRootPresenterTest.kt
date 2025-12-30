@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -86,6 +87,7 @@ class PreferencesRootPresenterTest {
             assertThat(loadedState.accountManagementUrl).isNull()
             assertThat(loadedState.devicesManagementUrl).isNull()
             assertThat(loadedState.showAnalyticsSettings).isFalse()
+            assertThat(loadedState.showLinkNewDevice).isFalse()
             assertThat(loadedState.showDeveloperSettings).isTrue()
             assertThat(loadedState.canDeactivateAccount).isTrue()
             assertThat(loadedState.canReportBug).isTrue()
@@ -189,14 +191,16 @@ class PreferencesRootPresenterTest {
     fun `present - labs can be shown if any feature flag is in labs and not finished`() = runTest {
         createPresenter(
             featureFlagService = FakeFeatureFlagService(
-                providedAvailableFeatures = listOf(
-                    FakeFeature(
-                        key = "feature_1",
-                        title = "Feature 1",
-                        isInLabs = true,
-                        isFinished = false,
+                getAvailableFeaturesResult = { _, _ ->
+                    listOf(
+                        FakeFeature(
+                            key = "feature_1",
+                            title = "Feature 1",
+                            isInLabs = true,
+                            isFinished = false,
+                        )
                     )
-                )
+                }
             ),
             matrixClient = FakeMatrixClient(
                 canDeactivateAccountResult = { true },
@@ -212,20 +216,16 @@ class PreferencesRootPresenterTest {
     fun `present - labs can't be shown if all feature flags in labs are finished`() = runTest {
         createPresenter(
             featureFlagService = FakeFeatureFlagService(
-                providedAvailableFeatures = listOf(
-                    FakeFeature(
-                        key = "feature_1",
-                        title = "Feature 1",
-                        isInLabs = true,
-                        isFinished = true,
-                    )
-                )
+                getAvailableFeaturesResult = { _, _ ->
+                    emptyList()
+                }
             ),
             matrixClient = FakeMatrixClient(
                 canDeactivateAccountResult = { true },
                 accountManagementUrlResult = { Result.success(null) },
             ),
         ).test {
+            skipItems(1)
             assertThat(awaitItem().showLabsItem).isFalse()
             cancelAndIgnoreRemainingEvents()
         }
@@ -256,6 +256,22 @@ class PreferencesRootPresenterTest {
             assertThat(state.isMultiAccountEnabled).isTrue()
             assertThat(state.otherSessions).hasSize(1)
             assertThat(state.otherSessions[0]).isEqualTo(MatrixUser(userId = A_SESSION_ID_2, displayName = "Bob", avatarUrl = "avatarUrl"))
+        }
+    }
+
+    @Test
+    fun `present - link new device`() = runTest {
+        createPresenter(
+            matrixClient = FakeMatrixClient(
+                sessionId = A_SESSION_ID,
+                canDeactivateAccountResult = { true },
+            ),
+            featureFlagService = FakeFeatureFlagService(
+                initialState = mapOf(FeatureFlags.QrCodeLogin.key to true)
+            ),
+        ).test {
+            val state = awaitFirstItem()
+            assertThat(state.showLinkNewDevice).isTrue()
         }
     }
 

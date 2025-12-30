@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -84,7 +85,7 @@ sealed interface ListItemContent {
     data class Text(val text: String) : ListItemContent
 
     /** Displays any custom content. */
-    data class Custom(val content: @Composable () -> Unit) : ListItemContent
+    data class Custom(val content: @Composable (enabled: Boolean) -> Unit) : ListItemContent
 
     /** Displays a badge. */
     data object Badge : ListItemContent
@@ -130,7 +131,7 @@ sealed interface ListItemContent {
             is Counter -> {
                 CounterAtom(count = count)
             }
-            is Custom -> content()
+            is Custom -> content(isItemEnabled)
         }
     }
 }

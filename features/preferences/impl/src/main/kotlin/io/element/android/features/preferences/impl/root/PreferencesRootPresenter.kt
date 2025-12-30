@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -68,6 +69,9 @@ class PreferencesRootPresenter(
         val isMultiAccountEnabled by remember {
             featureFlagService.isFeatureEnabledFlow(FeatureFlags.MultiAccount)
         }.collectAsState(initial = false)
+        val showLinkNewDevice by remember {
+            featureFlagService.isFeatureEnabledFlow(FeatureFlags.QrCodeLogin)
+        }.collectAsState(initial = false)
 
         val otherSessions by remember {
             sessionStore.sessionsFlow().map { list ->
@@ -112,7 +116,7 @@ class PreferencesRootPresenter(
                 .launchIn(this)
         }
 
-        val showLabsItem = remember { featureFlagService.getAvailableFeatures().any { it.isInLabs && !it.isFinished } }
+        val showLabsItem = remember { featureFlagService.getAvailableFeatures(isInLabs = true).isNotEmpty() }
 
         val directLogoutState = directLogoutPresenter.present()
 
@@ -145,6 +149,7 @@ class PreferencesRootPresenter(
             devicesManagementUrl = devicesManagementUrl.value,
             showAnalyticsSettings = hasAnalyticsProviders,
             canReportBug = canReportBug,
+            showLinkNewDevice = showLinkNewDevice,
             showDeveloperSettings = showDeveloperSettings,
             canDeactivateAccount = canDeactivateAccount,
             showBlockedUsersItem = showBlockedUsersItem,

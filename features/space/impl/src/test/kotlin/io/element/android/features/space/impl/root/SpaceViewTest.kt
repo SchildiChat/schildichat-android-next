@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -139,6 +140,8 @@ private fun <R : TestRule> AndroidComposeTestRule<R, ComponentActivity>.setSpace
     onRoomClick: (SpaceRoom) -> Unit = EnsureNeverCalledWithParam(),
     onShareSpace: () -> Unit = EnsureNeverCalled(),
     onLeaveSpaceClick: () -> Unit = EnsureNeverCalled(),
+    onSettingsClick: () -> Unit = EnsureNeverCalled(),
+    onViewMembersClick: () -> Unit = EnsureNeverCalled(),
     acceptDeclineInviteView: @Composable () -> Unit = {},
 ) {
     setContent {
@@ -148,6 +151,8 @@ private fun <R : TestRule> AndroidComposeTestRule<R, ComponentActivity>.setSpace
             onRoomClick = onRoomClick,
             onShareSpace = onShareSpace,
             onLeaveSpaceClick = onLeaveSpaceClick,
+            onSettingsClick = onSettingsClick,
+            onViewMembersClick = onViewMembersClick,
             acceptDeclineInviteView = acceptDeclineInviteView,
         )
     }

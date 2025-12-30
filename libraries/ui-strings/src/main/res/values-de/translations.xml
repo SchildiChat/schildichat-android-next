@@ -155,6 +155,7 @@
   <string name="action_skip">"Überspringen"</string>
   <string name="action_start">"Start"</string>
   <string name="action_start_chat">"Chat starten"</string>
+  <string name="action_start_over">"Neu beginnen"</string>
   <string name="action_start_verification">"Verifizierung starten"</string>
   <string name="action_static_map_load">"Tippe, um die Karte zu laden"</string>
   <string name="action_take_photo">"Foto aufnehmen"</string>
@@ -366,7 +367,7 @@ Grund: %1$s."</string>
   <string name="common_voice_message">"Sprachnachricht"</string>
   <string name="common_waiting">"Warten…"</string>
   <string name="common_waiting_for_decryption_key">"Warte auf diese Nachricht"</string>
-  <string name="common_you">"Sie"</string>
+  <string name="common_you">"Du"</string>
   <string name="crypto_identity_change_pin_violation">"%1$s\'s Identität has sich geändert. %2$s"</string>
   <string name="crypto_identity_change_pin_violation_new">"%1$s\'s %2$s Identität hat sich geändert. %3$s"</string>
   <string name="crypto_identity_change_pin_violation_new_user_id">"(%1$s)"</string>
@@ -387,6 +388,7 @@ Möchtest du wirklich fortfahren?"</string>
   <string name="dialog_title_error">"Fehler"</string>
   <string name="dialog_title_success">"Erfolg"</string>
   <string name="dialog_title_warning">"Warnung"</string>
+  <string name="dialog_unsaved_changes_description">"Du hast nicht gespeicherte Änderungen."</string>
   <string name="dialog_unsaved_changes_description_android">"Deine Änderungen wurden nicht gespeichert. Bist du sicher, dass du zurückgehen willst?"</string>
   <string name="dialog_unsaved_changes_title">"Änderungen speichern?"</string>
   <string name="dialog_video_quality_selector_subtitle_file_size">"Die maximal erlaubte Dateigröße ist: %1$s"</string>
@@ -466,6 +468,7 @@ Möchtest du wirklich fortfahren?"</string>
   <string name="screen_space_list_details">"%1$s • %2$s"</string>
   <string name="screen_space_list_parent_space">"%1$s Space"</string>
   <string name="screen_space_list_title">"Spaces"</string>
+  <string name="screen_space_menu_action_members">"Mitglieder anzeigen"</string>
   <string name="screen_timeline_item_menu_send_failure_changed_identity">"Nachricht nicht gesendet, weil sich die verifizierte Identität von %1$s geändert hat."</string>
   <string name="screen_timeline_item_menu_send_failure_unsigned_device">"Die Nachricht wurde nicht gesendet, weil %1$s nicht alle Geräte verifiziert hat."</string>
   <string name="screen_timeline_item_menu_send_failure_you_unsigned_device">"Die Nachricht wurde nicht gesendet, weil du eines oder mehrere deiner Geräte nicht verifiziert hast."</string>

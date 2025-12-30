@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -11,7 +12,7 @@ import io.element.android.libraries.matrix.api.permalink.PermalinkData
 import io.element.android.libraries.matrix.api.permalink.PermalinkParser
 import io.element.android.libraries.matrix.api.timeline.item.event.FormattedBody
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageFormat
-import org.jsoup.Jsoup
+import io.element.android.wysiwyg.utils.HtmlToDomParser
 import org.jsoup.nodes.Document
 
 /**
@@ -33,9 +34,9 @@ fun FormattedBody.toHtmlDocument(
         ?.trimEnd()
         ?.let { formattedBody ->
             val dom = if (prefix != null) {
-                Jsoup.parse("$prefix $formattedBody")
+                HtmlToDomParser.document("$prefix $formattedBody")
             } else {
-                Jsoup.parse(formattedBody)
+                HtmlToDomParser.document(formattedBody)
             }
 
             // Prepend `@` to mentions

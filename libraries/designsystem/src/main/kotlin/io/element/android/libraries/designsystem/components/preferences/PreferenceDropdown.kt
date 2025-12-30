@@ -1,7 +1,8 @@
 /*
+ * Copyright (c) 2025 Element Creations Ltd.
  * Copyright 2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -10,13 +11,12 @@
 package io.element.android.libraries.designsystem.components.preferences
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,17 +25,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.libraries.designsystem.components.list.ListItemContent
 import io.element.android.libraries.designsystem.components.preferences.components.preferenceIcon
 import io.element.android.libraries.designsystem.preview.ElementThemedPreview
 import io.element.android.libraries.designsystem.preview.PreviewGroup
+import io.element.android.libraries.designsystem.theme.components.DropdownMenu
 import io.element.android.libraries.designsystem.theme.components.DropdownMenuItem
+import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.ListItem
 import io.element.android.libraries.designsystem.theme.components.Text
-import io.element.android.libraries.designsystem.toEnabledColor
+import io.element.android.libraries.designsystem.toIconSecondaryEnabledColor
 import io.element.android.libraries.designsystem.toSecondaryEnabledColor
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -59,7 +64,6 @@ fun <T : DropdownOption> PreferenceDropdown(
         leadingContent = preferenceIcon(
             icon = icon,
             iconResourceId = iconResourceId,
-            enabled = enabled,
             showIconAreaIfNoIcon = showIconAreaIfNoIcon,
         ),
         headlineContent = {
@@ -67,7 +71,6 @@ fun <T : DropdownOption> PreferenceDropdown(
                 style = ElementTheme.typography.fontBodyLgRegular,
                 modifier = Modifier.fillMaxWidth(),
                 text = title,
-                color = enabled.toEnabledColor(),
             )
         },
         supportingContent = supportingText?.let {
@@ -75,21 +78,23 @@ fun <T : DropdownOption> PreferenceDropdown(
                 Text(
                     style = ElementTheme.typography.fontBodyMdRegular,
                     text = it,
-                    color = enabled.toSecondaryEnabledColor(),
                 )
             }
         },
         trailingContent = ListItemContent.Custom(
-            content = {
+            content = { enabled ->
                 DropdownTrailingContent(
                     selectedOption = selectedOption,
                     options = options,
                     onSelectOption = onSelectOption,
                     expanded = isDropdownExpanded,
                     onExpandedChange = { isDropdownExpanded = it },
+                    enabled = enabled,
+                    modifier = Modifier.fillMaxSize(0.3f)
                 )
             }
         ),
+        enabled = enabled,
         onClick = { isDropdownExpanded = true }.takeIf { !isDropdownExpanded },
     )
 }
@@ -112,37 +117,50 @@ private fun <T : DropdownOption> DropdownTrailingContent(
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
     onSelectOption: (T) -> Unit,
+    enabled: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = onExpandedChange,
+    Row(
         modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End,
     ) {
-        Row(
-            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = selectedOption?.getText().orEmpty(),
-                maxLines = 1,
-                style = ElementTheme.typography.fontBodyMdRegular,
-                color = ElementTheme.colors.textSecondary,
-            )
-            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-        }
-        ExposedDropdownMenu(
+        Text(
+            text = selectedOption?.getText().orEmpty(),
+            maxLines = 1,
+            style = ElementTheme.typography.fontBodyMdRegular,
+            color = enabled.toSecondaryEnabledColor(),
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.End,
+            modifier = Modifier.weight(1f),
+        )
+        Icon(
+            imageVector = CompoundIcons.ChevronDown(),
+            contentDescription = null,
+            tint = enabled.toIconSecondaryEnabledColor(),
+        )
+        DropdownMenu(
             expanded = expanded,
+            minWidth = 0.dp,
             onDismissRequest = { onExpandedChange(false) },
-            matchTextFieldWidth = false,
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
+                    enabled = enabled,
                     text = {
                         Text(
                             text = option.getText(),
                             style = ElementTheme.typography.fontBodyMdRegular
                         )
+                    },
+                    trailingIcon = {
+                        if (option == selectedOption) {
+                            Icon(
+                                imageVector = CompoundIcons.Check(),
+                                contentDescription = null,
+                                tint = ElementTheme.colors.iconAccentPrimary,
+                            )
+                        }
                     },
                     onClick = {
                         onSelectOption(option)
@@ -188,6 +206,15 @@ internal fun PreferenceDropdownPreview() = ElementThemedPreview {
             selectedOption = options.first(),
             options = options,
             onSelectOption = {},
+        )
+        PreferenceDropdown(
+            title = "Dropdown",
+            supportingText = "Options for dropdown",
+            icon = CompoundIcons.Threads(),
+            selectedOption = options.first(),
+            options = options,
+            onSelectOption = {},
+            enabled = false
         )
     }
 }

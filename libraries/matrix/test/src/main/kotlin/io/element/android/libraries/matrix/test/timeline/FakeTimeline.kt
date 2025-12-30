@@ -1,7 +1,8 @@
 /*
- * Copyright 2023, 2024 New Vector Ltd.
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2023-2025 New Vector Ltd.
  *
- * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
@@ -47,8 +48,17 @@ class FakeTimeline(
         )
     ),
     override val membershipChangeEventReceived: Flow<Unit> = MutableSharedFlow(),
+    override val onSyncedEventReceived: Flow<Unit> = MutableSharedFlow(),
     private val cancelSendResult: (TransactionId) -> Result<Unit> = { lambdaError() },
     override val mode: Timeline.Mode = Timeline.Mode.Live,
+    private val markAsReadResult: (ReceiptType) -> Result<Unit> = { lambdaError() },
+    private val getLatestEventIdResult: () -> Result<EventId?> = { lambdaError() },
+    var sendReadReceiptLambda: (
+        eventId: EventId,
+        receiptType: ReceiptType,
+    ) -> Result<Unit> = { _, _ ->
+        lambdaError()
+    }
 ) : Timeline {
     var sendMessageLambda: (
         body: String,
@@ -148,7 +158,7 @@ class FakeTimeline(
         imageInfo: ImageInfo,
         body: String?,
         formattedBody: String?,
-        inReplyToEventId: EventId??,
+        inReplyToEventId: EventId?,
     ) -> Result<MediaUploadHandler> = { _, _, _, _, _, _ ->
         Result.success(FakeMediaUploadHandler())
     }
@@ -159,7 +169,7 @@ class FakeTimeline(
         imageInfo: ImageInfo,
         caption: String?,
         formattedCaption: String?,
-        inReplyToEventId: EventId??,
+        inReplyToEventId: EventId?,
     ): Result<MediaUploadHandler> = simulateLongTask {
         sendImageLambda(
             file,
@@ -177,7 +187,7 @@ class FakeTimeline(
         videoInfo: VideoInfo,
         body: String?,
         formattedBody: String?,
-        inReplyToEventId: EventId??,
+        inReplyToEventId: EventId?,
     ) -> Result<MediaUploadHandler> = { _, _, _, _, _, _ ->
         Result.success(FakeMediaUploadHandler())
     }
@@ -188,7 +198,7 @@ class FakeTimeline(
         videoInfo: VideoInfo,
         caption: String?,
         formattedCaption: String?,
-        inReplyToEventId: EventId??,
+        inReplyToEventId: EventId?,
     ): Result<MediaUploadHandler> = simulateLongTask {
         sendVideoLambda(
             file,
@@ -205,7 +215,7 @@ class FakeTimeline(
         audioInfo: AudioInfo,
         caption: String?,
         formattedCaption: String?,
-        inReplyToEventId: EventId??,
+        inReplyToEventId: EventId?,
     ) -> Result<MediaUploadHandler> = { _, _, _, _, _ ->
         Result.success(FakeMediaUploadHandler())
     }
@@ -215,7 +225,7 @@ class FakeTimeline(
         audioInfo: AudioInfo,
         caption: String?,
         formattedCaption: String?,
-        inReplyToEventId: EventId??,
+        inReplyToEventId: EventId?,
     ): Result<MediaUploadHandler> = simulateLongTask {
         sendAudioLambda(
             file,
@@ -231,7 +241,7 @@ class FakeTimeline(
         fileInfo: FileInfo,
         caption: String?,
         formattedCaption: String?,
-        inReplyToEventId: EventId??,
+        inReplyToEventId: EventId?,
     ) -> Result<MediaUploadHandler> = { _, _, _, _, _ ->
         Result.success(FakeMediaUploadHandler())
     }
@@ -241,7 +251,7 @@ class FakeTimeline(
         fileInfo: FileInfo,
         caption: String?,
         formattedCaption: String?,
-        inReplyToEventId: EventId??,
+        inReplyToEventId: EventId?,
     ): Result<MediaUploadHandler> = simulateLongTask {
         sendFileLambda(
             file,
@@ -256,7 +266,7 @@ class FakeTimeline(
         file: File,
         audioInfo: AudioInfo,
         waveform: List<Float>,
-        inReplyToEventId: EventId??,
+        inReplyToEventId: EventId?,
     ) -> Result<MediaUploadHandler> = { _, _, _, _ ->
         Result.success(FakeMediaUploadHandler())
     }
@@ -265,7 +275,7 @@ class FakeTimeline(
         file: File,
         audioInfo: AudioInfo,
         waveform: List<Float>,
-        inReplyToEventId: EventId??,
+        inReplyToEventId: EventId?,
     ): Result<MediaUploadHandler> = simulateLongTask {
         sendVoiceMessageLambda(
             file,
@@ -281,7 +291,7 @@ class FakeTimeline(
         description: String?,
         zoomLevel: Int?,
         assetType: AssetType?,
-        inReplyToEventId: EventId??,
+        inReplyToEventId: EventId?,
     ) -> Result<Unit> = { _, _, _, _, _, _ ->
         lambdaError()
     }
@@ -292,7 +302,7 @@ class FakeTimeline(
         description: String?,
         zoomLevel: Int?,
         assetType: AssetType?,
-        inReplyToEventId: EventId??,
+        inReplyToEventId: EventId?,
     ): Result<Unit> = simulateLongTask {
         sendLocationLambda(
             body,
@@ -397,17 +407,14 @@ class FakeTimeline(
         )
     }
 
-    var sendReadReceiptLambda: (
-        eventId: EventId,
-        receiptType: ReceiptType,
-    ) -> Result<Unit> = { _, _ ->
-        lambdaError()
-    }
-
     override suspend fun sendReadReceipt(
         eventId: EventId,
         receiptType: ReceiptType,
     ): Result<Unit> = sendReadReceiptLambda(eventId, receiptType)
+
+    override suspend fun markAsRead(receiptType: ReceiptType): Result<Unit> {
+        return markAsReadResult(receiptType)
+    }
 
     var paginateLambda: (direction: Timeline.PaginationDirection) -> Result<Boolean> = {
         Result.success(false)
@@ -429,6 +436,10 @@ class FakeTimeline(
     var unpinEventLambda: (eventId: EventId) -> Result<Boolean> = { lambdaError() }
     override suspend fun unpinEvent(eventId: EventId): Result<Boolean> {
         return unpinEventLambda(eventId)
+    }
+
+    override suspend fun getLatestEventId(): Result<EventId?> {
+        return getLatestEventIdResult()
     }
 
     var closeCounter = 0

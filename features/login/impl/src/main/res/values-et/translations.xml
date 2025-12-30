@@ -60,6 +60,8 @@
   <string name="screen_qr_code_login_error_cancelled_title">"Sisselogimispäring on tühistatud"</string>
   <string name="screen_qr_code_login_error_declined_subtitle">"Sisselogimisest on teises seadmes keeldutud."</string>
   <string name="screen_qr_code_login_error_declined_title">"Sisselogimisest on keeldutud"</string>
+  <string name="screen_qr_code_login_error_device_already_signed_in_subtitle">"Sa ei pea enam midagi muud tegema."</string>
+  <string name="screen_qr_code_login_error_device_already_signed_in_title">"Sinu muu seade on juba sisse logitud"</string>
   <string name="screen_qr_code_login_error_expired_subtitle">"Sisselogimine aegus. Palun proovi uuesti."</string>
   <string name="screen_qr_code_login_error_expired_title">"Sisselogimine jäi etteantud aja jooksul tegemata"</string>
   <string name="screen_qr_code_login_error_linking_not_suported_subtitle">"Sinu teine seade ei toeta %s sisselogimist QR-koodiga.

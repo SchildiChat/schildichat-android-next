@@ -204,8 +204,8 @@ private fun PlaybackSpeedButton(
                 color = ElementTheme.colors.bgCanvasDefault,
                 shape = RoundedCornerShape(12.dp)
             )
-            .padding(horizontal = 8.dp, vertical = 4.dp)
-            .clickable(onClick = onClick),
+            .clickable(onClick = onClick)
+            .padding(horizontal = 8.dp, vertical = 4.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(

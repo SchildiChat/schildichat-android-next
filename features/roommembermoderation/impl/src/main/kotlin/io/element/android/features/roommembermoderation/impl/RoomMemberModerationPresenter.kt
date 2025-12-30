@@ -163,8 +163,7 @@ class RoomMemberModerationPresenter(
             val membership = member?.membership ?: RoomMembershipState.JOIN
             when (membership) {
                 RoomMembershipState.BAN -> {
-                    // Unban requires both kick and ban permission instead of a dedicated unban permission
-                    if (permissions.canBan && permissions.canKick) {
+                    if (permissions.canUnban) {
                         add(ModerationActionState(action = ModerationAction.UnbanUser, isEnabled = canModerateThisUser))
                     }
                 }

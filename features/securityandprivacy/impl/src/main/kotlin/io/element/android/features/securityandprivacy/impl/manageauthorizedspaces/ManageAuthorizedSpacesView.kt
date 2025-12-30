@@ -36,7 +36,6 @@ import io.element.android.libraries.designsystem.theme.components.Scaffold
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TextButton
 import io.element.android.libraries.designsystem.theme.components.TopAppBar
-import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.matrix.ui.model.getAvatarData
 import io.element.android.libraries.ui.strings.CommonStrings
 
@@ -80,11 +79,11 @@ fun ManageAuthorizedSpacesView(
                     }
                 )
             }
-            if(state.unknownSpaceIds.isNotEmpty()){
+            if (state.unknownSpaceIds.isNotEmpty()) {
                 item {
                     ListSectionHeader(
                         title = stringResource(R.string.screen_manage_authorized_spaces_unknown_spaces_section_title),
-                        hasDivider = false,
+                        hasDivider = true,
                     )
                 }
                 items(items = state.unknownSpaceIds) {
@@ -140,7 +139,7 @@ private fun CheckableSpaceListItem(
                 Text(text = supportingText)
             }
         },
-        leadingContent = avatarData?.let{
+        leadingContent = avatarData?.let {
             ListItemContent.Custom {
                 Avatar(
                     avatarData = avatarData,
@@ -157,7 +156,6 @@ private fun CheckableSpaceListItem(
         modifier = modifier,
     )
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

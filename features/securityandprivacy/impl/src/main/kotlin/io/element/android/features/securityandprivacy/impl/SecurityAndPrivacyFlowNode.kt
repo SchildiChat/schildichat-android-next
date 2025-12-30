@@ -24,6 +24,7 @@ import io.element.android.annotations.ContributesNode
 import io.element.android.features.securityandprivacy.api.SecurityAndPrivacyEntryPoint
 import io.element.android.features.securityandprivacy.api.securityAndPrivacyPermissions
 import io.element.android.features.securityandprivacy.impl.editroomaddress.EditRoomAddressNode
+import io.element.android.features.securityandprivacy.impl.manageauthorizedspaces.ManageAuthorizedSpacesNode
 import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyNode
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
@@ -58,6 +59,9 @@ class SecurityAndPrivacyFlowNode(
 
         @Parcelize
         data object EditRoomAddress : NavTarget
+
+        @Parcelize
+        data object ManageAuthorizedSpaces : NavTarget
     }
 
     private val callback: SecurityAndPrivacyEntryPoint.Callback = callback()
@@ -88,6 +92,9 @@ class SecurityAndPrivacyFlowNode(
             }
             NavTarget.EditRoomAddress -> {
                 createNode<EditRoomAddressNode>(buildContext, plugins = listOf(navigator))
+            }
+            NavTarget.ManageAuthorizedSpaces -> {
+                createNode<ManageAuthorizedSpacesNode>(buildContext, plugins = listOf(navigator))
             }
         }
     }

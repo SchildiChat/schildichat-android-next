@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -37,9 +38,15 @@ import io.element.android.libraries.matrix.api.core.RoomAlias
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.room.RoomInfo
 import io.element.android.libraries.matrix.api.room.history.RoomHistoryVisibility
+import io.element.android.libraries.matrix.api.room.join.AllowRule
 import io.element.android.libraries.matrix.api.room.join.JoinRule
 import io.element.android.libraries.matrix.api.room.powerlevels.permissionsAsState
 import io.element.android.libraries.matrix.api.roomdirectory.RoomVisibility
+import io.element.android.libraries.matrix.api.spaces.SpaceRoom
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -86,7 +93,7 @@ class SecurityAndPrivacyPresenter(
             }
         }
 
-        var editedRoomAccess by remember(savedSettings.roomAccess) {
+        val editedRoomAccess = remember(savedSettings.roomAccess) {
             mutableStateOf(savedSettings.roomAccess)
         }
         var editedHistoryVisibility by remember(savedSettings.historyVisibility) {
@@ -99,12 +106,25 @@ class SecurityAndPrivacyPresenter(
             mutableStateOf(savedIsVisibleInRoomDirectory.value)
         }
         val editedSettings = SecurityAndPrivacySettings(
-            roomAccess = editedRoomAccess,
+            roomAccess = editedRoomAccess.value,
             isEncrypted = editedIsEncrypted,
             isVisibleInRoomDirectory = editedVisibleInRoomDirectory,
             historyVisibility = editedHistoryVisibility,
             address = savedSettings.address,
         )
+
+        val selectableJoinedSpaces by produceState(persistentSetOf()) {
+            val joinedParentSpaces = matrixClient
+                .spaceService
+                .joinedParents(room.roomId)
+                .getOrDefault(emptyList())
+
+            val nonParentJoinedSpaces = savedSettings.roomAccess
+                .spaceIds()
+                .mapNotNull { spaceId -> matrixClient.spaceService.getSpaceRoom(spaceId) }
+
+            value = (joinedParentSpaces + nonParentJoinedSpaces).toImmutableSet()
+        }
 
         var showEnableEncryptionConfirmation by remember(savedSettings.isEncrypted) { mutableStateOf(false) }
         val permissions by room.permissionsAsState(SecurityAndPrivacyPermissions.DEFAULT) { perms ->
@@ -122,7 +142,7 @@ class SecurityAndPrivacyPresenter(
                     )
                 }
                 is SecurityAndPrivacyEvent.ChangeRoomAccess -> {
-                    editedRoomAccess = event.roomAccess
+                    editedRoomAccess.value = event.roomAccess
                 }
                 is SecurityAndPrivacyEvent.ToggleEncryptionState -> {
                     if (editedIsEncrypted) {
@@ -161,6 +181,12 @@ class SecurityAndPrivacyPresenter(
                 SecurityAndPrivacyEvent.DismissExitConfirmation -> {
                     saveAction.value = AsyncAction.Uninitialized
                 }
+                SecurityAndPrivacyEvent.ManageAuthorizedSpaces -> navigator.openManageAuthorizedSpaces()
+                SecurityAndPrivacyEvent.SelectSpaceMemberAccess -> handleSpaceMemberAccessSelection(
+                    selectableJoinedSpaces = selectableJoinedSpaces,
+                    savedAccess = savedSettings.roomAccess,
+                    editedAccess = editedRoomAccess,
+                )
             }
         }
 
@@ -179,13 +205,14 @@ class SecurityAndPrivacyPresenter(
             saveAction = saveAction.value,
             permissions = permissions,
             isSpace = roomInfo.isSpace,
+            selectableJoinedSpaces = selectableJoinedSpaces,
             eventSink = ::handleEvent,
         )
 
         // Revert changes that the user is not allowed to make anymore
         LaunchedEffect(permissions, state.editedSettings.roomAccess) {
             if (!state.showRoomAccessSection) {
-                editedRoomAccess = savedSettings.roomAccess
+                editedRoomAccess.value = savedSettings.roomAccess
             }
             if (!state.showEncryptionSection) {
                 editedIsEncrypted = savedSettings.isEncrypted
@@ -200,6 +227,51 @@ class SecurityAndPrivacyPresenter(
             }
         }
         return state
+    }
+
+    private fun handleSpaceMemberAccessSelection(
+        selectableJoinedSpaces: Set<SpaceRoom>,
+        savedAccess: SecurityAndPrivacyRoomAccess,
+        editedAccess: MutableState<SecurityAndPrivacyRoomAccess>,
+    ) {
+        if(editedAccess.value is SecurityAndPrivacyRoomAccess.SpaceMember) {
+            return
+        }
+        val spaceSelection = getSpaceSelection(selectableJoinedSpaces, savedAccess)
+        when(spaceSelection){
+            is SpaceSelection.None -> Unit
+            is SpaceSelection.Multiple -> navigator.openManageAuthorizedSpaces()
+            is SpaceSelection.Single -> {
+                val newRoomAccess = SecurityAndPrivacyRoomAccess.SpaceMember(
+                    spaceIds = persistentListOf(spaceSelection.spaceId)
+                )
+                editedAccess.value = newRoomAccess
+            }
+        }
+    }
+
+    private fun getSpaceSelection(
+        selectableJoinedSpaces: Set<SpaceRoom>,
+        savedAccess: SecurityAndPrivacyRoomAccess,
+    ): SpaceSelection {
+        val selectableSpacesCount = (selectableJoinedSpaces.map { it.roomId } + savedAccess.spaceIds()).toSet().size
+        return when {
+            selectableSpacesCount == 0 -> SpaceSelection.None
+            selectableSpacesCount > 1 -> SpaceSelection.Multiple
+            else -> {
+                val joinedSpace = selectableJoinedSpaces.firstOrNull()
+                if (joinedSpace != null) {
+                    SpaceSelection.Single(joinedSpace.roomId, joinedSpace)
+                } else {
+                    val spaceId = savedAccess.spaceIds().firstOrNull()
+                    if (spaceId == null) {
+                        SpaceSelection.None
+                    } else {
+                        SpaceSelection.Single(spaceId, null)
+                    }
+                }
+            }
+        }
     }
 
     private fun CoroutineScope.isRoomVisibleInRoomDirectory(isRoomVisible: MutableState<AsyncData<Boolean>>) = launch {
@@ -280,7 +352,12 @@ private fun JoinRule?.map(): SecurityAndPrivacyRoomAccess {
     return when (this) {
         JoinRule.Public -> SecurityAndPrivacyRoomAccess.Anyone
         JoinRule.Knock, is JoinRule.KnockRestricted -> SecurityAndPrivacyRoomAccess.AskToJoin
-        is JoinRule.Restricted -> SecurityAndPrivacyRoomAccess.SpaceMember
+        is JoinRule.Restricted -> SecurityAndPrivacyRoomAccess.SpaceMember(
+            spaceIds = this.rules
+                .filterIsInstance<AllowRule.RoomMembership>()
+                .map { it.roomId }
+                .toImmutableList()
+        )
         JoinRule.Invite -> SecurityAndPrivacyRoomAccess.InviteOnly
         // All other cases are not supported so we default to InviteOnly
         is JoinRule.Custom,
@@ -294,8 +371,9 @@ private fun SecurityAndPrivacyRoomAccess.map(): JoinRule? {
         SecurityAndPrivacyRoomAccess.Anyone -> JoinRule.Public
         SecurityAndPrivacyRoomAccess.AskToJoin -> JoinRule.Knock
         SecurityAndPrivacyRoomAccess.InviteOnly -> JoinRule.Private
-        // SpaceMember can't be selected in the ui
-        SecurityAndPrivacyRoomAccess.SpaceMember -> null
+        is SecurityAndPrivacyRoomAccess.SpaceMember -> JoinRule.Restricted(
+            rules = this.spaceIds.map { AllowRule.RoomMembership(it) }.toImmutableList()
+        )
     }
 }
 

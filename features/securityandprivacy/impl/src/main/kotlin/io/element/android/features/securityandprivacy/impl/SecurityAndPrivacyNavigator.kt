@@ -18,6 +18,8 @@ interface SecurityAndPrivacyNavigator : Plugin {
     fun onDone()
     fun openEditRoomAddress()
     fun closeEditRoomAddress()
+    fun openManageAuthorizedSpaces()
+    fun closeManageAuthorizedSpaces()
 }
 
 class BackstackSecurityAndPrivacyNavigator(
@@ -33,6 +35,14 @@ class BackstackSecurityAndPrivacyNavigator(
     }
 
     override fun closeEditRoomAddress() {
+        backStack.pop()
+    }
+
+    override fun openManageAuthorizedSpaces() {
+        backStack.push(SecurityAndPrivacyFlowNode.NavTarget.ManageAuthorizedSpaces)
+    }
+
+    override fun closeManageAuthorizedSpaces() {
         backStack.pop()
     }
 }

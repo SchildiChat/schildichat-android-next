@@ -11,6 +11,11 @@ package io.element.android.features.securityandprivacy.impl.root
 import io.element.android.features.securityandprivacy.api.SecurityAndPrivacyPermissions
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
+import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.spaces.SpaceRoom
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 data class SecurityAndPrivacyState(
@@ -24,8 +29,10 @@ data class SecurityAndPrivacyState(
     val saveAction: AsyncAction<Unit>,
     val isSpace: Boolean,
     private val permissions: SecurityAndPrivacyPermissions,
+    private val selectableJoinedSpaces: ImmutableSet<SpaceRoom>,
     val eventSink: (SecurityAndPrivacyEvent) -> Unit
 ) {
+
     val canBeSaved = savedSettings != editedSettings
 
     // Logic is in https://github.com/element-hq/element-meta/issues/3029
@@ -76,16 +83,29 @@ enum class SecurityAndPrivacyHistoryVisibility {
     }
 }
 
-enum class SecurityAndPrivacyRoomAccess {
-    InviteOnly,
-    AskToJoin,
-    Anyone,
-    SpaceMember;
+sealed interface SpaceSelection {
+    data object None : SpaceSelection
+    data class Single(val spaceId: RoomId, val spaceRoom: SpaceRoom?) : SpaceSelection
+    data object Multiple : SpaceSelection
+}
+
+sealed interface SecurityAndPrivacyRoomAccess {
+    data object InviteOnly : SecurityAndPrivacyRoomAccess
+    data object AskToJoin : SecurityAndPrivacyRoomAccess
+    data object Anyone : SecurityAndPrivacyRoomAccess
+    data class SpaceMember(val spaceIds: ImmutableList<RoomId>) : SecurityAndPrivacyRoomAccess
 
     fun canConfigureRoomVisibility(): Boolean {
         return when (this) {
-            InviteOnly, SpaceMember -> false
+            InviteOnly, is SpaceMember -> false
             AskToJoin, Anyone -> true
+        }
+    }
+
+    fun spaceIds(): ImmutableList<RoomId> {
+        return when (this) {
+            is SpaceMember -> spaceIds
+            else -> persistentListOf()
         }
     }
 }

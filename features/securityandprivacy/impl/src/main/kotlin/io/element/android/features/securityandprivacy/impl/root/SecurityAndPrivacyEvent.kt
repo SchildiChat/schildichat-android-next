@@ -10,10 +10,13 @@ package io.element.android.features.securityandprivacy.impl.root
 
 sealed interface SecurityAndPrivacyEvent {
     data object EditRoomAddress : SecurityAndPrivacyEvent
+    data object ManageAuthorizedSpaces : SecurityAndPrivacyEvent
     data object Save : SecurityAndPrivacyEvent
     data object Exit : SecurityAndPrivacyEvent
     data object DismissExitConfirmation : SecurityAndPrivacyEvent
     data class ChangeRoomAccess(val roomAccess: SecurityAndPrivacyRoomAccess) : SecurityAndPrivacyEvent
+    // Special case for "Space Members"
+    data object SelectSpaceMemberAccess : SecurityAndPrivacyEvent
     data object ToggleEncryptionState : SecurityAndPrivacyEvent
     data object CancelEnableEncryption : SecurityAndPrivacyEvent
     data object ConfirmEnableEncryption : SecurityAndPrivacyEvent

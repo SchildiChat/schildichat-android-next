@@ -50,6 +50,7 @@ import io.element.android.libraries.designsystem.text.stringWithLink
 import io.element.android.libraries.designsystem.theme.components.CircularProgressIndicator
 import io.element.android.libraries.designsystem.theme.components.IconSource
 import io.element.android.libraries.designsystem.theme.components.ListItem
+import io.element.android.libraries.designsystem.theme.components.ListSectionHeader
 import io.element.android.libraries.designsystem.theme.components.Scaffold
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TextButton
@@ -95,6 +96,8 @@ fun SecurityAndPrivacyView(
                     saved = state.savedSettings.roomAccess,
                     isKnockEnabled = state.isKnockEnabled,
                     onSelectOption = { state.eventSink(SecurityAndPrivacyEvent.ChangeRoomAccess(it)) },
+                    onManageSpacesClick = { state.eventSink(SecurityAndPrivacyEvent.ManageAuthorizedSpaces) },
+                    onSpaceMemberAccessClick = { state.eventSink(SecurityAndPrivacyEvent.SelectSpaceMemberAccess) }
                 )
             }
             if (state.showRoomVisibilitySections) {
@@ -212,6 +215,8 @@ private fun RoomAccessSection(
     saved: SecurityAndPrivacyRoomAccess,
     isKnockEnabled: Boolean,
     onSelectOption: (SecurityAndPrivacyRoomAccess) -> Unit,
+    onSpaceMemberAccessClick: () -> Unit,
+    onManageSpacesClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     SecurityAndPrivacySection(
@@ -226,17 +231,15 @@ private fun RoomAccessSection(
             onClick = { onSelectOption(SecurityAndPrivacyRoomAccess.Anyone) },
         )
         // Show space member option, but disabled as we don't support this option for now.
-        if (saved == SecurityAndPrivacyRoomAccess.SpaceMember) {
             ListItem(
                 headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_title)) },
                 supportingContent = {
                     Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_unavailable_description))
                 },
-                trailingContent = ListItemContent.RadioButton(selected = edited == SecurityAndPrivacyRoomAccess.SpaceMember, enabled = false),
+                trailingContent = ListItemContent.RadioButton(selected = edited is SecurityAndPrivacyRoomAccess.SpaceMember),
                 leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Space())),
-                enabled = false,
+                onClick = onSpaceMemberAccessClick,
             )
-        }
         // Show Ask to join option in two cases:
         // - the Knock FF is enabled
         // - AskToJoin is the current saved value
@@ -257,6 +260,19 @@ private fun RoomAccessSection(
             leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Lock())),
             onClick = { onSelectOption(SecurityAndPrivacyRoomAccess.InviteOnly) },
         )
+        if (edited is SecurityAndPrivacyRoomAccess.SpaceMember) {
+            val footerText = stringWithLink(
+                textRes = R.string.screen_security_and_privacy_room_access_footer,
+                url = stringResource(R.string.screen_security_and_privacy_room_access_footer_manage_spaces_action),
+                onLinkClick = { onManageSpacesClick()},
+            )
+            Text(
+                text = footerText,
+                style = ElementTheme.typography.fontBodySmRegular,
+                color = ElementTheme.colors.textSecondary,
+                modifier = Modifier.padding(bottom = 12.dp, start = 56.dp, end = 24.dp)
+            )
+        }
     }
 }
 

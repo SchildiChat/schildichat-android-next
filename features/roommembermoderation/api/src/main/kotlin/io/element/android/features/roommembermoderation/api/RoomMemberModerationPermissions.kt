@@ -13,7 +13,8 @@ data class RoomMemberModerationPermissions(
     val canKick: Boolean,
     val canBan: Boolean,
 ) {
-    val hasAny = canKick || canBan
+    // Unban requires both kick and ban permission instead of a dedicated unban permission
+    val canUnban = canBan && canKick
 
     companion object {
         val DEFAULT = RoomMemberModerationPermissions(

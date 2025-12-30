@@ -53,6 +53,7 @@
   <string name="push_distributor_background_sync_android">"Sincronización en segundo plano"</string>
   <string name="push_distributor_firebase_android">"Servicios de Google"</string>
   <string name="push_no_valid_google_play_services_apk_android">"No se han encontrado Servicios de Google Play válidos. Es posible que las notificaciones no funcionen correctamente."</string>
+  <string name="troubleshoot_notifications_test_blocked_users_title">"Usuarios bloqueados"</string>
   <string name="troubleshoot_notifications_test_current_push_provider_description">"Obtener el nombre del proveedor actual."</string>
   <string name="troubleshoot_notifications_test_current_push_provider_failure">"No se ha seleccionado ningún proveedor de push."</string>
   <string name="troubleshoot_notifications_test_current_push_provider_success">"Proveedor de push actual: %1$s."</string>

@@ -156,6 +156,7 @@
   <string name="action_skip">"Passer"</string>
   <string name="action_start">"Démarrer"</string>
   <string name="action_start_chat">"Démarrer une discussion"</string>
+  <string name="action_start_over">"Recommencer"</string>
   <string name="action_start_verification">"Commencer la vérification"</string>
   <string name="action_static_map_load">"Cliquez pour charger la carte"</string>
   <string name="action_take_photo">"Prendre une photo"</string>
@@ -177,7 +178,7 @@
   <string name="common_advanced_settings">"Paramètres avancés"</string>
   <string name="common_an_image">"une image"</string>
   <string name="common_analytics">"Statistiques d’utilisation"</string>
-  <string name="common_android_shortcuts_remove_reason_left_room">"Vous avez quitter le salon"</string>
+  <string name="common_android_shortcuts_remove_reason_left_room">"Vous avez quitté le salon"</string>
   <string name="common_android_shortcuts_remove_reason_session_logged_out">"Vous avez été déconnecté de la session"</string>
   <string name="common_appearance">"Apparence"</string>
   <string name="common_audio">"Audio"</string>

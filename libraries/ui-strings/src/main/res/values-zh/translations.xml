@@ -154,6 +154,7 @@
   <string name="action_skip">"跳过"</string>
   <string name="action_start">"开始"</string>
   <string name="action_start_chat">"开始聊天"</string>
+  <string name="action_start_over">"重新开始"</string>
   <string name="action_start_verification">"开始验证"</string>
   <string name="action_static_map_load">"点击以加载地图"</string>
   <string name="action_take_photo">"拍摄照片"</string>

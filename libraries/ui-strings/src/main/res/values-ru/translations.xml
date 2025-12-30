@@ -158,6 +158,7 @@
   <string name="action_skip">"Пропустить"</string>
   <string name="action_start">"Начать"</string>
   <string name="action_start_chat">"Начать чат"</string>
+  <string name="action_start_over">"Начать заново"</string>
   <string name="action_start_verification">"Начать подтверждение"</string>
   <string name="action_static_map_load">"Нажмите, чтобы загрузить карту"</string>
   <string name="action_take_photo">"Сделать фото"</string>

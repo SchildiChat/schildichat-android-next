@@ -139,6 +139,7 @@
   <string name="action_skip">"Lewati"</string>
   <string name="action_start">"Mulai"</string>
   <string name="action_start_chat">"Mulai obrolan"</string>
+  <string name="action_start_over">"Mulai dari awal"</string>
   <string name="action_start_verification">"Mulai verifikasi"</string>
   <string name="action_static_map_load">"Ketuk untuk memuat peta"</string>
   <string name="action_take_photo">"Ambil foto"</string>
@@ -158,6 +159,7 @@
   <string name="common_advanced_settings">"Pengaturan tingkat lanjut"</string>
   <string name="common_an_image">"sebuah gambar"</string>
   <string name="common_analytics">"Analitik"</string>
+  <string name="common_android_shortcuts_remove_reason_left_room">"Anda keluar dari ruangan"</string>
   <string name="common_appearance">"Penampilan"</string>
   <string name="common_audio">"Audio"</string>
   <string name="common_blocked_users">"Pengguna yang diblokir"</string>

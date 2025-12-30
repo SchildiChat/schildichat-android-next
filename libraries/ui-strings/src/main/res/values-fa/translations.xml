@@ -150,6 +150,7 @@
   <string name="action_skip">"پرش"</string>
   <string name="action_start">"آغاز"</string>
   <string name="action_start_chat">"آغاز گپ"</string>
+  <string name="action_start_over">"آغاز از نو"</string>
   <string name="action_start_verification">"آغاز تأیید"</string>
   <string name="action_static_map_load">"زدن برای بار کردن نقشه"</string>
   <string name="action_take_photo">"عکس گرفتن"</string>

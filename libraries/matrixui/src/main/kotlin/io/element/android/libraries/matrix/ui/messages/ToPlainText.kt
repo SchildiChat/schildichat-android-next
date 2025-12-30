@@ -55,8 +55,15 @@ private class PlainTextNodeVisitor : NodeVisitor {
     private val builder = StringBuilder()
 
     override fun head(node: Node, depth: Int) {
-        if (node is TextNode && node.text().isNotBlank()) {
-            builder.append(node.text())
+        if (node is TextNode) {
+            // If the text node is blank, only add a single whitespace char if there wasn't already one
+            if (node.text().isBlank()) {
+                if (builder.lastOrNull()?.isWhitespace() == false) {
+                    builder.append(" ")
+                }
+            } else {
+                builder.append(node.text())
+            }
         } else if (node is Element && node.tagName() == "li") {
             val index = node.elementSiblingIndex() + 1
             val isOrdered = node.parent()?.nodeName()?.lowercase() == "ol"

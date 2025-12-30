@@ -152,6 +152,7 @@
   <string name="action_skip">"Пропустити"</string>
   <string name="action_start">"Розпочати"</string>
   <string name="action_start_chat">"Розпочати бесіду"</string>
+  <string name="action_start_over">"Почати спочатку"</string>
   <string name="action_start_verification">"Почати верифікацію"</string>
   <string name="action_static_map_load">"Натисніть, щоб завантажити мапу"</string>
   <string name="action_take_photo">"Зробити фото"</string>

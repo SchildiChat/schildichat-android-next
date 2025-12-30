@@ -140,6 +140,7 @@
   <string name="action_skip">"Overslaan"</string>
   <string name="action_start">"Starten"</string>
   <string name="action_start_chat">"Chat starten"</string>
+  <string name="action_start_over">"Opnieuw beginnen"</string>
   <string name="action_start_verification">"Verificatie starten"</string>
   <string name="action_static_map_load">"Tik om kaart te laden"</string>
   <string name="action_take_photo">"Foto maken"</string>
@@ -158,6 +159,7 @@
   <string name="common_adding_caption">"Bijschrift toevoegen"</string>
   <string name="common_advanced_settings">"Geavanceerde instellingen"</string>
   <string name="common_analytics">"Gebruiksgegevens"</string>
+  <string name="common_android_shortcuts_remove_reason_left_room">"Je hebt de kamer verlaten"</string>
   <string name="common_appearance">"Weergave"</string>
   <string name="common_audio">"Geluid"</string>
   <string name="common_blocked_users">"Geblokkeerde gebruikers"</string>

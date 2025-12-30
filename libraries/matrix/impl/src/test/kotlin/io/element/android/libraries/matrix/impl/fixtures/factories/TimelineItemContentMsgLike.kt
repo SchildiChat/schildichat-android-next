@@ -15,7 +15,9 @@ import org.matrix.rustcomponents.sdk.MsgLikeKind
 import org.matrix.rustcomponents.sdk.TextMessageContent
 import org.matrix.rustcomponents.sdk.TimelineItemContent
 
-fun aRustTimelineItemMessageContent(body: String = "Hello") = TimelineItemContent.MsgLike(
+internal fun aRustTimelineItemContentMsgLike(
+    body: String = "Hello",
+) = TimelineItemContent.MsgLike(
     content = MsgLikeContent(
         kind = MsgLikeKind.Message(
             content = MessageContent(

@@ -125,7 +125,6 @@ Kami tidak menyarankan untuk mengaktifkan enkripsi untuk ruangan yang dapat dite
   <string name="screen_security_and_privacy_room_address_section_footer">"Anda akan memerlukan alamat ruangan untuk membuatnya terlihat dalam direktori."</string>
   <string name="screen_security_and_privacy_room_directory_visibility_section_footer">"Izinkan ruangan ini ditemukan dengan mencari direktori ruangan %1$s publik"</string>
   <string name="screen_security_and_privacy_room_directory_visibility_toggle_title">"Terlihat di direktori ruangan publik"</string>
-  <string name="screen_security_and_privacy_room_history_anyone_option_title">"Siapa pun"</string>
   <string name="screen_security_and_privacy_room_history_section_header">"Siapa yang bisa membaca riwayat"</string>
   <string name="screen_security_and_privacy_room_history_since_invite_option_title">"Hanya anggota sejak mereka diundang"</string>
   <string name="screen_security_and_privacy_room_history_since_selecting_option_title">"Hanya anggota sejak memilih opsi ini"</string>

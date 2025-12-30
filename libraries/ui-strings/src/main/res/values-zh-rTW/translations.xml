@@ -154,6 +154,7 @@
   <string name="action_skip">"略過"</string>
   <string name="action_start">"開始"</string>
   <string name="action_start_chat">"開始聊天"</string>
+  <string name="action_start_over">"重新開始"</string>
   <string name="action_start_verification">"開始驗證"</string>
   <string name="action_static_map_load">"點擊以載入地圖"</string>
   <string name="action_take_photo">"拍照"</string>
@@ -175,7 +176,7 @@
   <string name="common_advanced_settings">"進階設定"</string>
   <string name="common_an_image">"影像"</string>
   <string name="common_analytics">"分析"</string>
-  <string name="common_android_shortcuts_remove_reason_left_room">"您離開了聊天室"</string>
+  <string name="common_android_shortcuts_remove_reason_left_room">"您離開聊天室"</string>
   <string name="common_android_shortcuts_remove_reason_session_logged_out">"您已登出工作階段"</string>
   <string name="common_appearance">"外觀"</string>
   <string name="common_audio">"音訊"</string>

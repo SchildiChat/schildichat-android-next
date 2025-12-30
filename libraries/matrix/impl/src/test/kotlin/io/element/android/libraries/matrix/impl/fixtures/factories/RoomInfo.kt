@@ -22,7 +22,7 @@ import org.matrix.rustcomponents.sdk.RoomPowerLevels
 import org.matrix.rustcomponents.sdk.SuccessorRoom
 import uniffi.matrix_sdk_base.EncryptionState
 
-fun aRustRoomInfo(
+internal fun aRustRoomInfo(
     id: String = A_ROOM_ID.value,
     displayName: String? = A_ROOM_NAME,
     rawName: String? = A_ROOM_NAME,

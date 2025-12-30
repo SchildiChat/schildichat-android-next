@@ -234,7 +234,7 @@ private fun VideoQualitySelectorDialog(
                     supportingContent = {
                         Text(
                             text = subtitle,
-                            style = ElementTheme.materialTypography.bodyMedium,
+                            style = ElementTheme.typography.fontBodyMdRegular,
                             color = ElementTheme.colors.textSecondary,
                         )
                     },

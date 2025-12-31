@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.libraries.designsystem.preview.ElementPreview
@@ -39,9 +40,9 @@ fun PlaybackSpeedButton(
     }
     Box(
         modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
             .background(
                 color = ElementTheme.colors.bgCanvasDefault,
-                shape = RoundedCornerShape(12.dp)
             )
             .clickable(onClick = onClick)
             .padding(horizontal = 8.dp, vertical = 4.dp),

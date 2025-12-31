@@ -114,12 +114,12 @@ private fun VoiceInfoRow(
             .padding(start = 12.dp, end = 36.dp, top = 8.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        when (state.button) {
-            VoiceMessageState.Button.Play -> PlayButton(onClick = ::playPause)
-            VoiceMessageState.Button.Pause -> PauseButton(onClick = ::playPause)
-            VoiceMessageState.Button.Downloading -> ProgressButton()
-            VoiceMessageState.Button.Retry -> RetryButton(onClick = ::playPause)
-            VoiceMessageState.Button.Disabled -> PlayButton(onClick = {}, enabled = false)
+        when (state.buttonType) {
+            VoiceMessageState.ButtonType.Play -> PlayButton(onClick = ::playPause)
+            VoiceMessageState.ButtonType.Pause -> PauseButton(onClick = ::playPause)
+            VoiceMessageState.ButtonType.Downloading -> ProgressButton()
+            VoiceMessageState.ButtonType.Retry -> RetryButton(onClick = ::playPause)
+            VoiceMessageState.ButtonType.Disabled -> PlayButton(onClick = {}, enabled = false)
         }
         Spacer(Modifier.width(8.dp))
         Column(

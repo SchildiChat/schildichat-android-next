@@ -71,21 +71,21 @@ fun TimelineItemVoiceView(
 
     val a11y = stringResource(CommonStrings.common_voice_message)
     val a11yActionLabel = stringResource(
-        when (state.button) {
-            VoiceMessageState.Button.Play -> CommonStrings.a11y_play
-            VoiceMessageState.Button.Pause -> CommonStrings.a11y_pause
-            VoiceMessageState.Button.Downloading -> CommonStrings.common_downloading
-            VoiceMessageState.Button.Retry -> CommonStrings.action_retry
-            VoiceMessageState.Button.Disabled -> CommonStrings.error_unknown
+        when (state.buttonType) {
+            VoiceMessageState.ButtonType.Play -> CommonStrings.a11y_play
+            VoiceMessageState.ButtonType.Pause -> CommonStrings.a11y_pause
+            VoiceMessageState.ButtonType.Downloading -> CommonStrings.common_downloading
+            VoiceMessageState.ButtonType.Retry -> CommonStrings.action_retry
+            VoiceMessageState.ButtonType.Disabled -> CommonStrings.error_unknown
         }
     )
     Row(
         modifier = modifier
             .clearAndSetSemantics {
                 contentDescription = a11y
-                if (state.button == VoiceMessageState.Button.Disabled) {
+                if (state.buttonType == VoiceMessageState.ButtonType.Disabled) {
                     disabled()
-                } else if (state.button in listOf(VoiceMessageState.Button.Play, VoiceMessageState.Button.Pause)) {
+                } else if (state.buttonType in listOf(VoiceMessageState.ButtonType.Play, VoiceMessageState.ButtonType.Pause)) {
                     onClick(label = a11yActionLabel) {
                         playPause()
                         true
@@ -103,12 +103,12 @@ fun TimelineItemVoiceView(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (!isTalkbackActive()) {
-            when (state.button) {
-                VoiceMessageState.Button.Play -> PlayButton(onClick = ::playPause)
-                VoiceMessageState.Button.Pause -> PauseButton(onClick = ::playPause)
-                VoiceMessageState.Button.Downloading -> ProgressButton()
-                VoiceMessageState.Button.Retry -> RetryButton(onClick = ::playPause)
-                VoiceMessageState.Button.Disabled -> PlayButton(onClick = {}, enabled = false)
+            when (state.buttonType) {
+                VoiceMessageState.ButtonType.Play -> PlayButton(onClick = ::playPause)
+                VoiceMessageState.ButtonType.Pause -> PauseButton(onClick = ::playPause)
+                VoiceMessageState.ButtonType.Downloading -> ProgressButton()
+                VoiceMessageState.ButtonType.Retry -> RetryButton(onClick = ::playPause)
+                VoiceMessageState.ButtonType.Disabled -> PlayButton(onClick = {}, enabled = false)
             }
         }
         Spacer(Modifier.width(8.dp))

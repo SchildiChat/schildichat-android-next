@@ -53,14 +53,14 @@ class VoiceMessagePresenter(
             )
         )
 
-        val button by remember {
+        val buttonType by remember {
             derivedStateOf {
                 when {
-                    eventId == null -> VoiceMessageState.Button.Disabled
-                    playerState.isPlaying -> VoiceMessageState.Button.Pause
-                    play.value is AsyncData.Loading -> VoiceMessageState.Button.Downloading
-                    play.value is AsyncData.Failure -> VoiceMessageState.Button.Retry
-                    else -> VoiceMessageState.Button.Play
+                    eventId == null -> VoiceMessageState.ButtonType.Disabled
+                    playerState.isPlaying -> VoiceMessageState.ButtonType.Pause
+                    play.value is AsyncData.Loading -> VoiceMessageState.ButtonType.Downloading
+                    play.value is AsyncData.Failure -> VoiceMessageState.ButtonType.Retry
+                    else -> VoiceMessageState.ButtonType.Play
                 }
             }
         }
@@ -122,7 +122,7 @@ class VoiceMessagePresenter(
         }
 
         return VoiceMessageState(
-            button = button,
+            buttonType = buttonType,
             progress = progress,
             time = time,
             showCursor = showCursor,

@@ -31,7 +31,7 @@ class VoiceMessagePresenterTest {
         val presenter = createVoiceMessagePresenter()
         presenter.test {
             awaitItem().let {
-                assertThat(it.button).isEqualTo(VoiceMessageState.Button.Play)
+                assertThat(it.buttonType).isEqualTo(VoiceMessageState.ButtonType.Play)
                 assertThat(it.progress).isEqualTo(0f)
                 assertThat(it.time).isEqualTo("1:01")
             }
@@ -46,7 +46,7 @@ class VoiceMessagePresenterTest {
         )
         presenter.test {
             val initialState = awaitItem().also {
-                assertThat(it.button).isEqualTo(VoiceMessageState.Button.Play)
+                assertThat(it.buttonType).isEqualTo(VoiceMessageState.ButtonType.Play)
                 assertThat(it.progress).isEqualTo(0f)
                 assertThat(it.time).isEqualTo("0:02")
             }
@@ -54,17 +54,17 @@ class VoiceMessagePresenterTest {
             initialState.eventSink(VoiceMessageEvent.PlayPause)
 
             awaitItem().also {
-                assertThat(it.button).isEqualTo(VoiceMessageState.Button.Downloading)
+                assertThat(it.buttonType).isEqualTo(VoiceMessageState.ButtonType.Downloading)
                 assertThat(it.progress).isEqualTo(0f)
                 assertThat(it.time).isEqualTo("0:02")
             }
             awaitItem().also {
-                assertThat(it.button).isEqualTo(VoiceMessageState.Button.Downloading)
+                assertThat(it.buttonType).isEqualTo(VoiceMessageState.ButtonType.Downloading)
                 assertThat(it.progress).isEqualTo(0f)
                 assertThat(it.time).isEqualTo("0:00")
             }
             awaitItem().also {
-                assertThat(it.button).isEqualTo(VoiceMessageState.Button.Pause)
+                assertThat(it.buttonType).isEqualTo(VoiceMessageState.ButtonType.Pause)
                 assertThat(it.progress).isEqualTo(0.5f)
                 assertThat(it.time).isEqualTo("0:01")
             }
@@ -82,7 +82,7 @@ class VoiceMessagePresenterTest {
         )
         presenter.test {
             val initialState = awaitItem().also {
-                assertThat(it.button).isEqualTo(VoiceMessageState.Button.Play)
+                assertThat(it.buttonType).isEqualTo(VoiceMessageState.ButtonType.Play)
                 assertThat(it.progress).isEqualTo(0f)
                 assertThat(it.time).isEqualTo("0:02")
             }
@@ -90,12 +90,12 @@ class VoiceMessagePresenterTest {
             initialState.eventSink(VoiceMessageEvent.PlayPause)
 
             awaitItem().also {
-                assertThat(it.button).isEqualTo(VoiceMessageState.Button.Downloading)
+                assertThat(it.buttonType).isEqualTo(VoiceMessageState.ButtonType.Downloading)
                 assertThat(it.progress).isEqualTo(0f)
                 assertThat(it.time).isEqualTo("0:02")
             }
             awaitItem().also {
-                assertThat(it.button).isEqualTo(VoiceMessageState.Button.Retry)
+                assertThat(it.buttonType).isEqualTo(VoiceMessageState.ButtonType.Retry)
                 assertThat(it.progress).isEqualTo(0f)
                 assertThat(it.time).isEqualTo("0:02")
             }
@@ -116,7 +116,7 @@ class VoiceMessagePresenterTest {
         )
         presenter.test {
             val initialState = awaitItem().also {
-                assertThat(it.button).isEqualTo(VoiceMessageState.Button.Play)
+                assertThat(it.buttonType).isEqualTo(VoiceMessageState.ButtonType.Play)
                 assertThat(it.progress).isEqualTo(0f)
                 assertThat(it.time).isEqualTo("0:02")
             }
@@ -125,14 +125,14 @@ class VoiceMessagePresenterTest {
             skipItems(2) // skip downloading states
 
             val playingState = awaitItem().also {
-                assertThat(it.button).isEqualTo(VoiceMessageState.Button.Pause)
+                assertThat(it.buttonType).isEqualTo(VoiceMessageState.ButtonType.Pause)
                 assertThat(it.progress).isEqualTo(0.5f)
                 assertThat(it.time).isEqualTo("0:01")
             }
 
             playingState.eventSink(VoiceMessageEvent.PlayPause)
             awaitItem().also {
-                assertThat(it.button).isEqualTo(VoiceMessageState.Button.Play)
+                assertThat(it.buttonType).isEqualTo(VoiceMessageState.ButtonType.Play)
                 assertThat(it.progress).isEqualTo(0.5f)
                 assertThat(it.time).isEqualTo("0:01")
             }
@@ -146,7 +146,7 @@ class VoiceMessagePresenterTest {
         )
         presenter.test {
             awaitItem().also {
-                assertThat(it.button).isEqualTo(VoiceMessageState.Button.Disabled)
+                assertThat(it.buttonType).isEqualTo(VoiceMessageState.ButtonType.Disabled)
                 assertThat(it.progress).isEqualTo(0f)
                 assertThat(it.time).isEqualTo("1:01")
             }
@@ -161,7 +161,7 @@ class VoiceMessagePresenterTest {
         )
         presenter.test {
             val initialState = awaitItem().also {
-                assertThat(it.button).isEqualTo(VoiceMessageState.Button.Play)
+                assertThat(it.buttonType).isEqualTo(VoiceMessageState.ButtonType.Play)
                 assertThat(it.progress).isEqualTo(0f)
                 assertThat(it.time).isEqualTo("0:10")
             }
@@ -169,7 +169,7 @@ class VoiceMessagePresenterTest {
             initialState.eventSink(VoiceMessageEvent.Seek(0.5f))
 
             awaitItem().also {
-                assertThat(it.button).isEqualTo(VoiceMessageState.Button.Play)
+                assertThat(it.buttonType).isEqualTo(VoiceMessageState.ButtonType.Play)
                 assertThat(it.progress).isEqualTo(0.5f)
                 assertThat(it.time).isEqualTo("0:05")
             }
@@ -183,7 +183,7 @@ class VoiceMessagePresenterTest {
         )
         presenter.test {
             val initialState = awaitItem().also {
-                assertThat(it.button).isEqualTo(VoiceMessageState.Button.Play)
+                assertThat(it.buttonType).isEqualTo(VoiceMessageState.ButtonType.Play)
                 assertThat(it.progress).isEqualTo(0f)
                 assertThat(it.time).isEqualTo("0:10")
             }
@@ -193,14 +193,14 @@ class VoiceMessagePresenterTest {
             skipItems(2) // skip downloading states
 
             awaitItem().also {
-                assertThat(it.button).isEqualTo(VoiceMessageState.Button.Pause)
+                assertThat(it.buttonType).isEqualTo(VoiceMessageState.ButtonType.Pause)
                 assertThat(it.progress).isEqualTo(0.1f)
                 assertThat(it.time).isEqualTo("0:01")
                 it.eventSink(VoiceMessageEvent.Seek(0.5f))
             }
 
             awaitItem().also {
-                assertThat(it.button).isEqualTo(VoiceMessageState.Button.Pause)
+                assertThat(it.buttonType).isEqualTo(VoiceMessageState.ButtonType.Pause)
                 assertThat(it.progress).isEqualTo(0.5f)
                 assertThat(it.time).isEqualTo("0:05")
             }

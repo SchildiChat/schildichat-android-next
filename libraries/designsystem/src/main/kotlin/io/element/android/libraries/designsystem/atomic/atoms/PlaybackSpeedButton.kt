@@ -36,7 +36,7 @@ fun PlaybackSpeedButton(
         1.0f -> "1×"
         1.5f -> "1.5×"
         2.0f -> "2×"
-        else -> "${speed}×"
+        else -> "$speed×"
     }
     Box(
         modifier = modifier

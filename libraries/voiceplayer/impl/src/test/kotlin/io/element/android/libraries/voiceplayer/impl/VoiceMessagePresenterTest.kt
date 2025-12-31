@@ -240,6 +240,7 @@ fun TestScope.createVoiceMessagePresenter(
     mediaPlayer: FakeMediaPlayer = FakeMediaPlayer(),
     voiceMessageMediaRepo: VoiceMessageMediaRepo = FakeVoiceMessageMediaRepo(),
     analyticsService: AnalyticsService = FakeAnalyticsService(),
+    voicePlayerStore: VoicePlayerStore = InMemoryVoicePlayerStore(),
     eventId: EventId? = EventId("\$anEventId"),
     filename: String = "filename doesn't really matter for a voice message",
     duration: Duration = 61_000.milliseconds,
@@ -257,6 +258,7 @@ fun TestScope.createVoiceMessagePresenter(
         mimeType = mimeType,
         filename = filename
     ),
+    voicePlayerStore = voicePlayerStore,
     eventId = eventId,
     duration = duration,
 )

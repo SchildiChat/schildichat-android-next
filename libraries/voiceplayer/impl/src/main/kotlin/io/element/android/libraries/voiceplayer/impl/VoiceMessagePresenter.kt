@@ -9,12 +9,13 @@
 package io.element.android.libraries.voiceplayer.impl
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.architecture.runUpdatingState
@@ -34,15 +35,16 @@ import kotlin.time.Duration.Companion.milliseconds
 class VoiceMessagePresenter(
     private val analyticsService: AnalyticsService,
     private val sessionCoroutineScope: CoroutineScope,
+    private val voicePlayerStore: VoicePlayerStore,
     private val player: VoiceMessagePlayer,
     private val eventId: EventId?,
     private val duration: Duration,
 ) : Presenter<VoiceMessageState> {
     private val play = mutableStateOf<AsyncData<Unit>>(AsyncData.Uninitialized)
-    private val playbackSpeedIndex = mutableIntStateOf(0)
 
     @Composable
     override fun present(): VoiceMessageState {
+        val localCoroutineScope = rememberCoroutineScope()
         val playerState by player.state.collectAsState(
             VoiceMessagePlayer.State(
                 isReady = false,
@@ -52,6 +54,12 @@ class VoiceMessagePresenter(
                 duration = null
             )
         )
+
+        val playbackSpeedIndex by voicePlayerStore.playBackSpeedIndex().collectAsState(0)
+
+        LaunchedEffect(playbackSpeedIndex) {
+            player.setPlaybackSpeed(VoicePlayerConfig.availablePlaybackSpeeds[playbackSpeedIndex])
+        }
 
         val buttonType by remember {
             derivedStateOf {
@@ -114,9 +122,10 @@ class VoiceMessagePresenter(
                 is VoiceMessageEvent.Seek -> {
                     player.seekTo((event.percentage * duration).toLong())
                 }
-                is VoiceMessageEvent.ChangePlaybackSpeed -> {
-                    playbackSpeedIndex.intValue = (playbackSpeedIndex.intValue + 1) % VoicePlayerConfig.availablePlaybackSpeeds.size
-                    player.setPlaybackSpeed(VoicePlayerConfig.availablePlaybackSpeeds[playbackSpeedIndex.intValue])
+                is VoiceMessageEvent.ChangePlaybackSpeed -> localCoroutineScope.launch {
+                    voicePlayerStore.setPlayBackSpeedIndex(
+                        (playbackSpeedIndex + 1) % VoicePlayerConfig.availablePlaybackSpeeds.size
+                    )
                 }
             }
         }
@@ -126,7 +135,7 @@ class VoiceMessagePresenter(
             progress = progress,
             time = time,
             showCursor = showCursor,
-            playbackSpeed = VoicePlayerConfig.availablePlaybackSpeeds[playbackSpeedIndex.intValue],
+            playbackSpeed = VoicePlayerConfig.availablePlaybackSpeeds[playbackSpeedIndex],
             eventSink = ::handleEvent,
         )
     }

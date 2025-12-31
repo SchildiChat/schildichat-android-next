@@ -14,7 +14,7 @@ data class VoiceMessageState(
     val time: String,
     val showCursor: Boolean,
     val playbackSpeed: Float,
-    val eventSink: (event: VoiceMessageEvents) -> Unit,
+    val eventSink: (event: VoiceMessageEvent) -> Unit,
 ) {
     enum class Button {
         Play,

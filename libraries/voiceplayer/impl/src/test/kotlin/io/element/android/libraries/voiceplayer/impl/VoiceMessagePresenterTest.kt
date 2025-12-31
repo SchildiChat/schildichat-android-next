@@ -13,7 +13,7 @@ import io.element.android.libraries.core.mimetype.MimeTypes
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.media.MediaSource
 import io.element.android.libraries.mediaplayer.test.FakeMediaPlayer
-import io.element.android.libraries.voiceplayer.api.VoiceMessageEvents
+import io.element.android.libraries.voiceplayer.api.VoiceMessageEvent
 import io.element.android.libraries.voiceplayer.api.VoiceMessageException
 import io.element.android.libraries.voiceplayer.api.VoiceMessageState
 import io.element.android.services.analytics.api.AnalyticsService
@@ -51,7 +51,7 @@ class VoiceMessagePresenterTest {
                 assertThat(it.time).isEqualTo("0:02")
             }
 
-            initialState.eventSink(VoiceMessageEvents.PlayPause)
+            initialState.eventSink(VoiceMessageEvent.PlayPause)
 
             awaitItem().also {
                 assertThat(it.button).isEqualTo(VoiceMessageState.Button.Downloading)
@@ -87,7 +87,7 @@ class VoiceMessagePresenterTest {
                 assertThat(it.time).isEqualTo("0:02")
             }
 
-            initialState.eventSink(VoiceMessageEvents.PlayPause)
+            initialState.eventSink(VoiceMessageEvent.PlayPause)
 
             awaitItem().also {
                 assertThat(it.button).isEqualTo(VoiceMessageState.Button.Downloading)
@@ -121,7 +121,7 @@ class VoiceMessagePresenterTest {
                 assertThat(it.time).isEqualTo("0:02")
             }
 
-            initialState.eventSink(VoiceMessageEvents.PlayPause)
+            initialState.eventSink(VoiceMessageEvent.PlayPause)
             skipItems(2) // skip downloading states
 
             val playingState = awaitItem().also {
@@ -130,7 +130,7 @@ class VoiceMessagePresenterTest {
                 assertThat(it.time).isEqualTo("0:01")
             }
 
-            playingState.eventSink(VoiceMessageEvents.PlayPause)
+            playingState.eventSink(VoiceMessageEvent.PlayPause)
             awaitItem().also {
                 assertThat(it.button).isEqualTo(VoiceMessageState.Button.Play)
                 assertThat(it.progress).isEqualTo(0.5f)
@@ -166,7 +166,7 @@ class VoiceMessagePresenterTest {
                 assertThat(it.time).isEqualTo("0:10")
             }
 
-            initialState.eventSink(VoiceMessageEvents.Seek(0.5f))
+            initialState.eventSink(VoiceMessageEvent.Seek(0.5f))
 
             awaitItem().also {
                 assertThat(it.button).isEqualTo(VoiceMessageState.Button.Play)
@@ -188,7 +188,7 @@ class VoiceMessagePresenterTest {
                 assertThat(it.time).isEqualTo("0:10")
             }
 
-            initialState.eventSink(VoiceMessageEvents.PlayPause)
+            initialState.eventSink(VoiceMessageEvent.PlayPause)
 
             skipItems(2) // skip downloading states
 
@@ -196,7 +196,7 @@ class VoiceMessagePresenterTest {
                 assertThat(it.button).isEqualTo(VoiceMessageState.Button.Pause)
                 assertThat(it.progress).isEqualTo(0.1f)
                 assertThat(it.time).isEqualTo("0:01")
-                it.eventSink(VoiceMessageEvents.Seek(0.5f))
+                it.eventSink(VoiceMessageEvent.Seek(0.5f))
             }
 
             awaitItem().also {
@@ -215,19 +215,19 @@ class VoiceMessagePresenterTest {
         presenter.test {
             awaitItem().also {
                 assertThat(it.playbackSpeed).isEqualTo(1.0f)
-                it.eventSink(VoiceMessageEvents.ChangePlaybackSpeed)
+                it.eventSink(VoiceMessageEvent.ChangePlaybackSpeed)
             }
             awaitItem().also {
                 assertThat(it.playbackSpeed).isEqualTo(1.5f)
-                it.eventSink(VoiceMessageEvents.ChangePlaybackSpeed)
+                it.eventSink(VoiceMessageEvent.ChangePlaybackSpeed)
             }
             awaitItem().also {
                 assertThat(it.playbackSpeed).isEqualTo(2.0f)
-                it.eventSink(VoiceMessageEvents.ChangePlaybackSpeed)
+                it.eventSink(VoiceMessageEvent.ChangePlaybackSpeed)
             }
             awaitItem().also {
                 assertThat(it.playbackSpeed).isEqualTo(0.5f)
-                it.eventSink(VoiceMessageEvents.ChangePlaybackSpeed)
+                it.eventSink(VoiceMessageEvent.ChangePlaybackSpeed)
             }
             awaitItem().also {
                 assertThat(it.playbackSpeed).isEqualTo(1.0f)

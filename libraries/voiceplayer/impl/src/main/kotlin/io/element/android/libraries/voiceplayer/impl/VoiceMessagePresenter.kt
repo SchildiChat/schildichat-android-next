@@ -22,7 +22,7 @@ import io.element.android.libraries.core.extensions.flatMap
 import io.element.android.libraries.core.extensions.runCatchingExceptions
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.ui.utils.time.formatShort
-import io.element.android.libraries.voiceplayer.api.VoiceMessageEvents
+import io.element.android.libraries.voiceplayer.api.VoiceMessageEvent
 import io.element.android.libraries.voiceplayer.api.VoiceMessageException
 import io.element.android.libraries.voiceplayer.api.VoiceMessageState
 import io.element.android.services.analytics.api.AnalyticsService
@@ -87,9 +87,9 @@ class VoiceMessagePresenter(
             }
         }
 
-        fun handleEvent(event: VoiceMessageEvents) {
+        fun handleEvent(event: VoiceMessageEvent) {
             when (event) {
-                is VoiceMessageEvents.PlayPause -> {
+                is VoiceMessageEvent.PlayPause -> {
                     if (playerState.isPlaying) {
                         player.pause()
                     } else if (playerState.isReady) {
@@ -111,10 +111,10 @@ class VoiceMessagePresenter(
                         }
                     }
                 }
-                is VoiceMessageEvents.Seek -> {
+                is VoiceMessageEvent.Seek -> {
                     player.seekTo((event.percentage * duration).toLong())
                 }
-                is VoiceMessageEvents.ChangePlaybackSpeed -> {
+                is VoiceMessageEvent.ChangePlaybackSpeed -> {
                     playbackSpeedIndex.intValue = (playbackSpeedIndex.intValue + 1) % VoicePlayerConfig.availablePlaybackSpeeds.size
                     player.setPlaybackSpeed(VoicePlayerConfig.availablePlaybackSpeeds[playbackSpeedIndex.intValue])
                 }

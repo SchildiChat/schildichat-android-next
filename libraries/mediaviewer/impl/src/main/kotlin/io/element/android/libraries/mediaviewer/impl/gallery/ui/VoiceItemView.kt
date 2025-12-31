@@ -52,7 +52,7 @@ import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.mediaviewer.impl.model.MediaItem
 import io.element.android.libraries.mediaviewer.impl.model.aMediaItemVoice
 import io.element.android.libraries.ui.strings.CommonStrings
-import io.element.android.libraries.voiceplayer.api.VoiceMessageEvents
+import io.element.android.libraries.voiceplayer.api.VoiceMessageEvent
 import io.element.android.libraries.voiceplayer.api.VoiceMessageState
 import io.element.android.libraries.voiceplayer.api.VoiceMessageStateProvider
 import io.element.android.libraries.voiceplayer.api.aVoiceMessageState
@@ -94,7 +94,7 @@ private fun VoiceInfoRow(
     onLongClick: () -> Unit,
 ) {
     fun playPause() {
-        state.eventSink(VoiceMessageEvents.PlayPause)
+        state.eventSink(VoiceMessageEvent.PlayPause)
     }
 
     Row(
@@ -128,7 +128,7 @@ private fun VoiceInfoRow(
         ) {
             PlaybackSpeedButton(
                 speed = state.playbackSpeed,
-                onClick = { state.eventSink(VoiceMessageEvents.ChangePlaybackSpeed) },
+                onClick = { state.eventSink(VoiceMessageEvent.ChangePlaybackSpeed) },
             )
             Text(
                 text = if (state.progress > 0f) state.time else voice.mediaInfo.duration ?: state.time,
@@ -147,7 +147,7 @@ private fun VoiceInfoRow(
             playbackProgress = state.progress,
             waveform = voice.mediaInfo.waveform.orEmpty().toImmutableList(),
             onSeek = {
-                state.eventSink(VoiceMessageEvents.Seek(it))
+                state.eventSink(VoiceMessageEvent.Seek(it))
             },
             seekEnabled = true,
         )

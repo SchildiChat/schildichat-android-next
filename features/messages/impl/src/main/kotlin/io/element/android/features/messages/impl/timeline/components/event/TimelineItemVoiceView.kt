@@ -53,7 +53,7 @@ import io.element.android.libraries.designsystem.theme.components.IconButton
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.ui.strings.CommonStrings
 import io.element.android.libraries.ui.utils.time.isTalkbackActive
-import io.element.android.libraries.voiceplayer.api.VoiceMessageEvents
+import io.element.android.libraries.voiceplayer.api.VoiceMessageEvent
 import io.element.android.libraries.voiceplayer.api.VoiceMessageState
 import io.element.android.libraries.voiceplayer.api.VoiceMessageStateProvider
 import kotlinx.coroutines.delay
@@ -66,7 +66,7 @@ fun TimelineItemVoiceView(
     modifier: Modifier = Modifier,
 ) {
     fun playPause() {
-        state.eventSink(VoiceMessageEvents.PlayPause)
+        state.eventSink(VoiceMessageEvent.PlayPause)
     }
 
     val a11y = stringResource(CommonStrings.common_voice_message)
@@ -118,7 +118,7 @@ fun TimelineItemVoiceView(
         ) {
             PlaybackSpeedButton(
                 speed = state.playbackSpeed,
-                onClick = { state.eventSink(VoiceMessageEvents.ChangePlaybackSpeed) },
+                onClick = { state.eventSink(VoiceMessageEvent.ChangePlaybackSpeed) },
             )
             Text(
                 text = state.time,
@@ -137,7 +137,7 @@ fun TimelineItemVoiceView(
                 .weight(1f)
                 .height(34.dp),
             seekEnabled = !isTalkbackActive(),
-            onSeek = { state.eventSink(VoiceMessageEvents.Seek(it)) },
+            onSeek = { state.eventSink(VoiceMessageEvent.Seek(it)) },
         )
     }
 }

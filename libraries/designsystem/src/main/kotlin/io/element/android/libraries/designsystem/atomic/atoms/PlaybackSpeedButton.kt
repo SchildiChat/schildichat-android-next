@@ -9,6 +9,7 @@ package io.element.android.libraries.designsystem.atomic.atoms
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -21,6 +22,7 @@ import io.element.android.compound.theme.ElementTheme
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.Text
+import io.element.android.libraries.designsystem.theme.messageFromMeBackground
 
 @Composable
 fun PlaybackSpeedButton(
@@ -56,10 +58,17 @@ fun PlaybackSpeedButton(
 @PreviewsDayNight
 @Composable
 internal fun PlaybackSpeedButtonPreview() = ElementPreview {
-    Row {
-        PlaybackSpeedButton(speed = 0.5f, onClick = {})
-        PlaybackSpeedButton(speed = 1.0f, onClick = {})
-        PlaybackSpeedButton(speed = 1.5f, onClick = {})
-        PlaybackSpeedButton(speed = 2.0f, onClick = {})
+    Row(
+        modifier = Modifier
+            .background(ElementTheme.colors.messageFromMeBackground)
+            .padding(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        listOf(0.5f, 1.0f, 1.5f, 2.0f, 3.0f).forEach { speed ->
+            PlaybackSpeedButton(
+                speed = speed,
+                onClick = {},
+            )
+        }
     }
 }

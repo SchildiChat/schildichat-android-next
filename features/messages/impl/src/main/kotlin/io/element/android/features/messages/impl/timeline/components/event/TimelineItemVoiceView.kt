@@ -9,7 +9,6 @@
 package io.element.android.features.messages.impl.timeline.components.event
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,6 +43,7 @@ import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayoutData
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemVoiceContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemVoiceContentProvider
+import io.element.android.libraries.designsystem.atomic.atoms.PlaybackSpeedButton
 import io.element.android.libraries.designsystem.components.media.WaveformPlaybackView
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
@@ -188,36 +187,6 @@ private fun RetryButton(
 }
 
 @Composable
-private fun PlaybackSpeedButton(
-    speed: Float,
-    onClick: () -> Unit,
-) {
-    val speedText = when (speed) {
-        0.5f -> "0.5×"
-        1.0f -> "1×"
-        1.5f -> "1.5×"
-        2.0f -> "2×"
-        else -> "${speed}×"
-    }
-    androidx.compose.foundation.layout.Box(
-        modifier = Modifier
-            .background(
-                color = ElementTheme.colors.bgCanvasDefault,
-                shape = RoundedCornerShape(12.dp)
-            )
-            .clickable(onClick = onClick)
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = speedText,
-            color = ElementTheme.colors.iconSecondary,
-            style = ElementTheme.typography.fontBodyXsMedium,
-        )
-    }
-}
-
-@Composable
 private fun ControlIcon(
     imageVector: ImageVector,
     contentDescription: String?,
@@ -338,16 +307,5 @@ internal fun ProgressButtonPreview() = ElementPreview {
     Row {
         ProgressButton(displayImmediately = true)
         ProgressButton(displayImmediately = false)
-    }
-}
-
-@PreviewsDayNight
-@Composable
-internal fun PlaybackSpeedButtonPreview() = ElementPreview {
-    Row {
-        PlaybackSpeedButton(speed = 0.5f, onClick = {})
-        PlaybackSpeedButton(speed = 1.0f, onClick = {})
-        PlaybackSpeedButton(speed = 1.5f, onClick = {})
-        PlaybackSpeedButton(speed = 2.0f, onClick = {})
     }
 }

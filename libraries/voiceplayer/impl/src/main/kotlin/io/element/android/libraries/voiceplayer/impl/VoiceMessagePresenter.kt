@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import io.element.android.libraries.architecture.AsyncData
@@ -38,9 +39,7 @@ class VoiceMessagePresenter(
     private val duration: Duration,
 ) : Presenter<VoiceMessageState> {
     private val play = mutableStateOf<AsyncData<Unit>>(AsyncData.Uninitialized)
-    private val playbackSpeed = mutableStateOf(1.0f)
-
-    private val availablePlaybackSpeeds = listOf(0.5f, 1.0f, 1.5f, 2.0f)
+    private val playbackSpeedIndex = mutableIntStateOf(0)
 
     @Composable
     override fun present(): VoiceMessageState {
@@ -116,11 +115,8 @@ class VoiceMessagePresenter(
                     player.seekTo((event.percentage * duration).toLong())
                 }
                 is VoiceMessageEvents.ChangePlaybackSpeed -> {
-                    val currentIndex = availablePlaybackSpeeds.indexOf(playbackSpeed.value)
-                    val nextIndex = (currentIndex + 1) % availablePlaybackSpeeds.size
-                    val newSpeed = availablePlaybackSpeeds[nextIndex]
-                    playbackSpeed.value = newSpeed
-                    player.setPlaybackSpeed(newSpeed)
+                    playbackSpeedIndex.intValue = (playbackSpeedIndex.intValue + 1) % VoicePlayerConfig.availablePlaybackSpeeds.size
+                    player.setPlaybackSpeed(VoicePlayerConfig.availablePlaybackSpeeds[playbackSpeedIndex.intValue])
                 }
             }
         }
@@ -130,7 +126,7 @@ class VoiceMessagePresenter(
             progress = progress,
             time = time,
             showCursor = showCursor,
-            playbackSpeed = playbackSpeed.value,
+            playbackSpeed = VoicePlayerConfig.availablePlaybackSpeeds[playbackSpeedIndex.intValue],
             eventSink = ::handleEvent,
         )
     }

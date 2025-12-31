@@ -8,9 +8,6 @@
 
 package io.element.android.libraries.voiceplayer.impl
 
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.moleculeFlow
-import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.libraries.core.mimetype.MimeTypes
 import io.element.android.libraries.matrix.api.core.EventId
@@ -21,6 +18,7 @@ import io.element.android.libraries.voiceplayer.api.VoiceMessageException
 import io.element.android.libraries.voiceplayer.api.VoiceMessageState
 import io.element.android.services.analytics.api.AnalyticsService
 import io.element.android.services.analytics.test.FakeAnalyticsService
+import io.element.android.tests.testutils.test
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -31,9 +29,7 @@ class VoiceMessagePresenterTest {
     @Test
     fun `initial state has proper default values`() = runTest {
         val presenter = createVoiceMessagePresenter()
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             awaitItem().let {
                 assertThat(it.button).isEqualTo(VoiceMessageState.Button.Play)
                 assertThat(it.progress).isEqualTo(0f)
@@ -48,9 +44,7 @@ class VoiceMessagePresenterTest {
             mediaPlayer = FakeMediaPlayer(fakeTotalDurationMs = 2_000),
             duration = 2_000.milliseconds,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem().also {
                 assertThat(it.button).isEqualTo(VoiceMessageState.Button.Play)
                 assertThat(it.progress).isEqualTo(0f)
@@ -86,9 +80,7 @@ class VoiceMessagePresenterTest {
             analyticsService = analyticsService,
             duration = 2_000.milliseconds,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem().also {
                 assertThat(it.button).isEqualTo(VoiceMessageState.Button.Play)
                 assertThat(it.progress).isEqualTo(0f)
@@ -122,9 +114,7 @@ class VoiceMessagePresenterTest {
             mediaPlayer = FakeMediaPlayer(fakeTotalDurationMs = 2_000),
             duration = 2_000.milliseconds,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem().also {
                 assertThat(it.button).isEqualTo(VoiceMessageState.Button.Play)
                 assertThat(it.progress).isEqualTo(0f)
@@ -154,9 +144,7 @@ class VoiceMessagePresenterTest {
         val presenter = createVoiceMessagePresenter(
             eventId = null,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             awaitItem().also {
                 assertThat(it.button).isEqualTo(VoiceMessageState.Button.Disabled)
                 assertThat(it.progress).isEqualTo(0f)
@@ -171,9 +159,7 @@ class VoiceMessagePresenterTest {
             mediaPlayer = FakeMediaPlayer(fakeTotalDurationMs = 2_000),
             duration = 10_000.milliseconds,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem().also {
                 assertThat(it.button).isEqualTo(VoiceMessageState.Button.Play)
                 assertThat(it.progress).isEqualTo(0f)
@@ -195,9 +181,7 @@ class VoiceMessagePresenterTest {
         val presenter = createVoiceMessagePresenter(
             duration = 10_000.milliseconds,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem().also {
                 assertThat(it.button).isEqualTo(VoiceMessageState.Button.Play)
                 assertThat(it.progress).isEqualTo(0f)
@@ -228,9 +212,7 @@ class VoiceMessagePresenterTest {
         val presenter = createVoiceMessagePresenter(
             duration = 10_000.milliseconds,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             awaitItem().also {
                 assertThat(it.playbackSpeed).isEqualTo(1.0f)
                 it.eventSink(VoiceMessageEvents.ChangePlaybackSpeed)

@@ -212,9 +212,8 @@ class VoiceMessagePresenterTest {
                 assertThat(it.button).isEqualTo(VoiceMessageState.Button.Pause)
                 assertThat(it.progress).isEqualTo(0.1f)
                 assertThat(it.time).isEqualTo("0:01")
+                it.eventSink(VoiceMessageEvents.Seek(0.5f))
             }
-
-            initialState.eventSink(VoiceMessageEvents.Seek(0.5f))
 
             awaitItem().also {
                 assertThat(it.button).isEqualTo(VoiceMessageState.Button.Pause)
@@ -232,26 +231,22 @@ class VoiceMessagePresenterTest {
         moleculeFlow(RecompositionMode.Immediate) {
             presenter.present()
         }.test {
-            val initialState = awaitItem().also {
+            awaitItem().also {
                 assertThat(it.playbackSpeed).isEqualTo(1.0f)
+                it.eventSink(VoiceMessageEvents.ChangePlaybackSpeed)
             }
-
-            initialState.eventSink(VoiceMessageEvents.ChangePlaybackSpeed)
             awaitItem().also {
                 assertThat(it.playbackSpeed).isEqualTo(1.5f)
+                it.eventSink(VoiceMessageEvents.ChangePlaybackSpeed)
             }
-
-            initialState.eventSink(VoiceMessageEvents.ChangePlaybackSpeed)
             awaitItem().also {
                 assertThat(it.playbackSpeed).isEqualTo(2.0f)
+                it.eventSink(VoiceMessageEvents.ChangePlaybackSpeed)
             }
-
-            initialState.eventSink(VoiceMessageEvents.ChangePlaybackSpeed)
             awaitItem().also {
                 assertThat(it.playbackSpeed).isEqualTo(0.5f)
+                it.eventSink(VoiceMessageEvents.ChangePlaybackSpeed)
             }
-
-            initialState.eventSink(VoiceMessageEvents.ChangePlaybackSpeed)
             awaitItem().also {
                 assertThat(it.playbackSpeed).isEqualTo(1.0f)
             }

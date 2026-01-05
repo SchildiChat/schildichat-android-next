@@ -8,7 +8,8 @@
 
 package io.element.android.libraries.voiceplayer.api
 
-sealed interface VoiceMessageEvents {
-    data object PlayPause : VoiceMessageEvents
-    data class Seek(val percentage: Float) : VoiceMessageEvents
+sealed interface VoiceMessageEvent {
+    data object PlayPause : VoiceMessageEvent
+    data class Seek(val percentage: Float) : VoiceMessageEvent
+    data object ChangePlaybackSpeed : VoiceMessageEvent
 }

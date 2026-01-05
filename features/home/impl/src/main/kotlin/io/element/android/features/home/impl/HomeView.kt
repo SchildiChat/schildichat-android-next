@@ -179,14 +179,10 @@ private fun HomeScaffold(
                 displayFilters = state.displayRoomListFilters,
                 filtersState = roomListState.filtersState,
                 canReportBug = state.canReportBug,
-                modifier = if (state.isSpaceFeatureEnabled) {
-                    Modifier.hazeEffect(
-                        state = hazeState,
-                        style = HazeMaterials.thick(),
-                    )
-                } else {
-                    Modifier.background(ElementTheme.colors.bgCanvasDefault)
-                }
+                modifier = Modifier.hazeEffect(
+                    state = hazeState,
+                    style = HazeMaterials.thick(),
+                )
             )
         },
         bottomBar = {

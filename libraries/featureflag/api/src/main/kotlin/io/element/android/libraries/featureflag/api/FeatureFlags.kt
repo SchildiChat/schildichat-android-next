@@ -70,12 +70,6 @@ enum class FeatureFlags(
         defaultValue = { false },
         isFinished = false,
     ),
-    Space(
-        key = "feature.space",
-        title = "Spaces",
-        defaultValue = { true },
-        isFinished = true,
-    ),
     SpaceSettings(
         key = "feature.spaceSettings",
         title = "Space settings",

@@ -31,7 +31,6 @@ open class HomeStateProvider : PreviewParameterProvider<HomeState> {
             aHomeState(hasNetworkConnection = false),
             aHomeState(snackbarMessage = SnackbarMessage(CommonStrings.common_verification_complete)),
             aHomeState(
-                isSpaceFeatureEnabled = true,
                 roomListState = aRoomListState(
                     // Add more rooms to see the blur effect under the NavigationBar
                     contentState = aRoomsContentState(
@@ -42,7 +41,6 @@ open class HomeStateProvider : PreviewParameterProvider<HomeState> {
                 homeSpacesState = aHomeSpacesState(),
             ),
             aHomeState(
-                isSpaceFeatureEnabled = true,
                 currentHomeNavigationBarItem = HomeNavigationBarItem.Spaces,
             ),
         ) + RoomListStateProvider().values.map {
@@ -60,7 +58,6 @@ internal fun aHomeState(
     roomListState: RoomListState = aRoomListState(),
     homeSpacesState: HomeSpacesState = aHomeSpacesState(),
     canReportBug: Boolean = true,
-    isSpaceFeatureEnabled: Boolean = false,
     directLogoutState: DirectLogoutState = aDirectLogoutState(),
     eventSink: (HomeEvents) -> Unit = {}
 ) = HomeState(
@@ -73,6 +70,5 @@ internal fun aHomeState(
     currentHomeNavigationBarItem = currentHomeNavigationBarItem,
     roomListState = roomListState,
     homeSpacesState = homeSpacesState,
-    isSpaceFeatureEnabled = isSpaceFeatureEnabled,
     eventSink = eventSink,
 )

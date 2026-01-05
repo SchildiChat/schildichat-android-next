@@ -25,7 +25,7 @@ import io.element.android.libraries.di.RoomScope
 class ManageAuthorizedSpacesNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
-    presenterFactory: EditRoomAddressPresenter.Factory,
+    presenterFactory: ManageAuthorizedSpacesPresenter.Factory,
 ) : Node(buildContext, plugins = plugins) {
     private val navigator = plugins<SecurityAndPrivacyNavigator>().first()
     private val presenter = presenterFactory.create(navigator)

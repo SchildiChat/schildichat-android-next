@@ -21,14 +21,14 @@ import io.element.android.libraries.matrix.api.room.JoinedRoom
 import kotlinx.collections.immutable.persistentListOf
 
 @AssistedInject
-class EditRoomAddressPresenter(
+class ManageAuthorizedSpacesPresenter(
     @Assisted private val navigator: SecurityAndPrivacyNavigator,
     private val client: MatrixClient,
     private val room: JoinedRoom,
 ) : Presenter<ManageAuthorizedSpacesState> {
     @AssistedFactory
     interface Factory {
-        fun create(navigator: SecurityAndPrivacyNavigator): EditRoomAddressPresenter
+        fun create(navigator: SecurityAndPrivacyNavigator): ManageAuthorizedSpacesPresenter
     }
 
     @Composable

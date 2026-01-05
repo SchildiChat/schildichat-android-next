@@ -30,6 +30,7 @@ data class SecurityAndPrivacyState(
     val isSpace: Boolean,
     private val permissions: SecurityAndPrivacyPermissions,
     private val selectableJoinedSpaces: ImmutableSet<SpaceRoom>,
+    private val spaceSelection: SpaceSelection,
     val eventSink: (SecurityAndPrivacyEvent) -> Unit
 ) {
 

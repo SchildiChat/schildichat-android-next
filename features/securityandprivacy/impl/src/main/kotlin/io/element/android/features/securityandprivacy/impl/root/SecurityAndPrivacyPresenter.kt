@@ -126,6 +126,12 @@ class SecurityAndPrivacyPresenter(
             value = (joinedParentSpaces + nonParentJoinedSpaces).toImmutableSet()
         }
 
+        val spaceSelection by remember {
+            derivedStateOf {
+                getSpaceSelection(selectableJoinedSpaces, savedSettings.roomAccess)
+            }
+        }
+
         var showEnableEncryptionConfirmation by remember(savedSettings.isEncrypted) { mutableStateOf(false) }
         val permissions by room.permissionsAsState(SecurityAndPrivacyPermissions.DEFAULT) { perms ->
             perms.securityAndPrivacyPermissions()
@@ -183,8 +189,7 @@ class SecurityAndPrivacyPresenter(
                 }
                 SecurityAndPrivacyEvent.ManageAuthorizedSpaces -> navigator.openManageAuthorizedSpaces()
                 SecurityAndPrivacyEvent.SelectSpaceMemberAccess -> handleSpaceMemberAccessSelection(
-                    selectableJoinedSpaces = selectableJoinedSpaces,
-                    savedAccess = savedSettings.roomAccess,
+                    spaceSelection = spaceSelection,
                     editedAccess = editedRoomAccess,
                 )
             }
@@ -206,6 +211,7 @@ class SecurityAndPrivacyPresenter(
             permissions = permissions,
             isSpace = roomInfo.isSpace,
             selectableJoinedSpaces = selectableJoinedSpaces,
+            spaceSelection = spaceSelection,
             eventSink = ::handleEvent,
         )
 
@@ -230,15 +236,13 @@ class SecurityAndPrivacyPresenter(
     }
 
     private fun handleSpaceMemberAccessSelection(
-        selectableJoinedSpaces: Set<SpaceRoom>,
-        savedAccess: SecurityAndPrivacyRoomAccess,
+        spaceSelection: SpaceSelection,
         editedAccess: MutableState<SecurityAndPrivacyRoomAccess>,
     ) {
-        if(editedAccess.value is SecurityAndPrivacyRoomAccess.SpaceMember) {
+        if (editedAccess.value is SecurityAndPrivacyRoomAccess.SpaceMember) {
             return
         }
-        val spaceSelection = getSpaceSelection(selectableJoinedSpaces, savedAccess)
-        when(spaceSelection){
+        when (spaceSelection) {
             is SpaceSelection.None -> Unit
             is SpaceSelection.Multiple -> navigator.openManageAuthorizedSpaces()
             is SpaceSelection.Single -> {

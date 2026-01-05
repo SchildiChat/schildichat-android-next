@@ -404,7 +404,7 @@ private fun RoomHeaderSection(
                 }.toImmutableList(),
                 isTombstoned = isTombstoned,
             ),
-            contentDescription = avatarUrl?.let { stringResource(CommonStrings.a11y_room_avatar) },
+            contentDescription = stringResource(CommonStrings.a11y_room_avatar),
             modifier = Modifier
                 .clickable(
                     enabled = avatarUrl != null,

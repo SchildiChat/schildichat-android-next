@@ -115,7 +115,7 @@ private fun SpaceInfoSection(
         Avatar(
             avatarData = AvatarData(roomId.value, name, avatarUrl, AvatarSize.SpaceListItem),
             avatarType = AvatarType.Space(),
-            contentDescription = avatarUrl?.let { stringResource(CommonStrings.a11y_avatar) },
+            contentDescription = stringResource(CommonStrings.a11y_avatar),
         )
         Spacer(Modifier.width(16.dp))
         Column {

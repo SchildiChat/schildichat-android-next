@@ -26,6 +26,7 @@ data class SecurityAndPrivacyState(
     val homeserverName: String,
     val showEnableEncryptionConfirmation: Boolean,
     val isKnockEnabled: Boolean,
+    val isSpaceSettingsEnabled: Boolean,
     val saveAction: AsyncAction<Unit>,
     val isSpace: Boolean,
     private val permissions: SecurityAndPrivacyPermissions,

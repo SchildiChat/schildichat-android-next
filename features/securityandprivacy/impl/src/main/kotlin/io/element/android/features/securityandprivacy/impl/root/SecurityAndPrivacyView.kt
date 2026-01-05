@@ -50,7 +50,6 @@ import io.element.android.libraries.designsystem.text.stringWithLink
 import io.element.android.libraries.designsystem.theme.components.CircularProgressIndicator
 import io.element.android.libraries.designsystem.theme.components.IconSource
 import io.element.android.libraries.designsystem.theme.components.ListItem
-import io.element.android.libraries.designsystem.theme.components.ListSectionHeader
 import io.element.android.libraries.designsystem.theme.components.Scaffold
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TextButton
@@ -95,6 +94,7 @@ fun SecurityAndPrivacyView(
                     edited = state.editedSettings.roomAccess,
                     saved = state.savedSettings.roomAccess,
                     isKnockEnabled = state.isKnockEnabled,
+                    isSpaceSettingsEnabled = state.isSpaceSettingsEnabled,
                     onSelectOption = { state.eventSink(SecurityAndPrivacyEvent.ChangeRoomAccess(it)) },
                     onManageSpacesClick = { state.eventSink(SecurityAndPrivacyEvent.ManageAuthorizedSpaces) },
                     onSpaceMemberAccessClick = { state.eventSink(SecurityAndPrivacyEvent.SelectSpaceMemberAccess) }
@@ -214,6 +214,7 @@ private fun RoomAccessSection(
     edited: SecurityAndPrivacyRoomAccess,
     saved: SecurityAndPrivacyRoomAccess,
     isKnockEnabled: Boolean,
+    isSpaceSettingsEnabled: Boolean,
     onSelectOption: (SecurityAndPrivacyRoomAccess) -> Unit,
     onSpaceMemberAccessClick: () -> Unit,
     onManageSpacesClick: () -> Unit,
@@ -230,7 +231,10 @@ private fun RoomAccessSection(
             leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Public())),
             onClick = { onSelectOption(SecurityAndPrivacyRoomAccess.Anyone) },
         )
-        // Show space member option, but disabled as we don't support this option for now.
+        // Show SpaceMember option in two cases:
+        // - the SpaceSettings FF is enabled
+        // - SpaceMember is the current saved value
+        if (saved is SecurityAndPrivacyRoomAccess.SpaceMember || isSpaceSettingsEnabled)
             ListItem(
                 headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_title)) },
                 supportingContent = {
@@ -239,6 +243,7 @@ private fun RoomAccessSection(
                 trailingContent = ListItemContent.RadioButton(selected = edited is SecurityAndPrivacyRoomAccess.SpaceMember),
                 leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Space())),
                 onClick = onSpaceMemberAccessClick,
+                enabled = isSpaceSettingsEnabled,
             )
         // Show Ask to join option in two cases:
         // - the Knock FF is enabled
@@ -264,7 +269,7 @@ private fun RoomAccessSection(
             val footerText = stringWithLink(
                 textRes = R.string.screen_security_and_privacy_room_access_footer,
                 url = stringResource(R.string.screen_security_and_privacy_room_access_footer_manage_spaces_action),
-                onLinkClick = { onManageSpacesClick()},
+                onLinkClick = { onManageSpacesClick() },
             )
             Text(
                 text = footerText,

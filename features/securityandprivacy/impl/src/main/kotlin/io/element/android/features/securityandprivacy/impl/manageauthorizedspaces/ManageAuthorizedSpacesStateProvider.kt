@@ -20,11 +20,15 @@ open class ManageAuthorizedSpacesStateProvider : PreviewParameterProvider<Manage
         get() = sequenceOf(
             aManageAuthorizedSpacesState(),
             aManageAuthorizedSpacesState(
-                unknownSpaceIds = listOf(aRoomId(99))
+                authorizedSpacesData = anAuthorizedSpacesData(
+                    unknownSpaceIds = listOf(aRoomId(99))
+                )
             ),
             aManageAuthorizedSpacesState(
                 currentSelection = listOf(aRoomId(1), aRoomId(3)),
-                initialSelection = listOf(aRoomId(1)),
+                authorizedSpacesData = anAuthorizedSpacesData(
+                    initialSelection = listOf(aRoomId(1)),
+                ),
             ),
         )
 }
@@ -45,17 +49,24 @@ private fun aSpaceRoomList(count: Int): List<SpaceRoom> {
     }
 }
 
-private fun aManageAuthorizedSpacesState(
+fun anAuthorizedSpacesData(
     joinedSpaces: List<SpaceRoom> = aSpaceRoomList(5),
     unknownSpaceIds: List<RoomId> = emptyList(),
-    currentSelection: List<RoomId> = emptyList(),
     initialSelection: List<RoomId> = emptyList(),
-    eventSink: (ManageAuthorizedSpacesEvent) -> Unit = {},
-) = ManageAuthorizedSpacesState(
+) = AuthorizedSpacesSelection(
     joinedSpaces = joinedSpaces.toImmutableList(),
     unknownSpaceIds = unknownSpaceIds.toImmutableList(),
-    currentSelection = currentSelection.toImmutableList(),
-    initialSelection = initialSelection.toImmutableList(),
+    initialSelectedIds = initialSelection.toImmutableList(),
+)
+
+private fun aManageAuthorizedSpacesState(
+    authorizedSpacesData: AuthorizedSpacesSelection = anAuthorizedSpacesData(),
+    currentSelection: List<RoomId> = emptyList(),
+    eventSink: (ManageAuthorizedSpacesEvent) -> Unit = {},
+) = ManageAuthorizedSpacesState(
+    selection = authorizedSpacesData,
+    selectedIds = currentSelection.toImmutableList(),
+    isSelectionComplete = false,
     eventSink = eventSink,
 )
 

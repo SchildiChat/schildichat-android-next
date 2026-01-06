@@ -8,7 +8,11 @@
 
 package io.element.android.features.securityandprivacy.impl.root
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import io.element.android.features.securityandprivacy.api.SecurityAndPrivacyPermissions
+import io.element.android.features.securityandprivacy.impl.R
+import io.element.android.features.securityandprivacy.impl.manageauthorizedspaces.AuthorizedSpacesSelection
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.matrix.api.core.RoomId
@@ -25,15 +29,31 @@ data class SecurityAndPrivacyState(
     val editedSettings: SecurityAndPrivacySettings,
     val homeserverName: String,
     val showEnableEncryptionConfirmation: Boolean,
-    val isKnockEnabled: Boolean,
-    val isSpaceSettingsEnabled: Boolean,
+    private val isKnockEnabled: Boolean,
+    private val isSpaceSettingsEnabled: Boolean,
     val saveAction: AsyncAction<Unit>,
     val isSpace: Boolean,
     private val permissions: SecurityAndPrivacyPermissions,
     private val selectableJoinedSpaces: ImmutableSet<SpaceRoom>,
-    private val spaceSelection: SpaceSelection,
+    private val spaceSelectionMode: SpaceSelectionMode,
     val eventSink: (SecurityAndPrivacyEvent) -> Unit
 ) {
+
+    val isSpaceMemberSelectable = isSpaceSettingsEnabled && spaceSelectionMode != SpaceSelectionMode.None
+
+    // Show SpaceMember option in two cases:
+    // - the SpaceSettings FF is enabled
+    // - SpaceMember is the current saved value
+    val showSpaceMemberOption = savedSettings.roomAccess is SecurityAndPrivacyRoomAccess.SpaceMember || isSpaceMemberSelectable
+
+    val showManageSpaceAction = spaceSelectionMode is SpaceSelectionMode.Multiple && editedSettings.roomAccess is SecurityAndPrivacyRoomAccess.SpaceMember
+
+    val isAskToJoinSelectable = isKnockEnabled
+
+    // Show Ask to join option in two cases:
+    // - the Knock FF is enabled
+    // - AskToJoin is the current saved value
+    val showAskToJoinOption = savedSettings.roomAccess == SecurityAndPrivacyRoomAccess.AskToJoin || isAskToJoinSelectable
 
     val canBeSaved = savedSettings != editedSettings
 
@@ -57,6 +77,32 @@ data class SecurityAndPrivacyState(
 
     val showHistoryVisibilitySection = permissions.canChangeHistoryVisibility && !isSpace
     val showEncryptionSection = permissions.canChangeEncryption && !isSpace
+
+    @Composable
+    fun spaceMemberDescription(): String {
+        return if (isSpaceMemberSelectable) {
+            when (spaceSelectionMode) {
+                is SpaceSelectionMode.Single -> {
+                    val spaceName = spaceSelectionMode.spaceRoom?.displayName ?: spaceSelectionMode.spaceId.value
+                    stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_single_parent_description, spaceName)
+                }
+                is SpaceSelectionMode.None,
+                is SpaceSelectionMode.Multiple -> stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_multiple_parents_description)
+            }
+        } else {
+            stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_unavailable_description)
+        }
+    }
+
+    fun getAuthorizedSpaceData(): AuthorizedSpacesSelection {
+        return AuthorizedSpacesSelection(
+            joinedSpaces = selectableJoinedSpaces.toImmutableList(),
+            unknownSpaceIds = savedSettings.roomAccess.spaceIds().filter { spaceId ->
+                selectableJoinedSpaces.none { it.roomId == spaceId }
+            }.toImmutableList(),
+            initialSelectedIds = editedSettings.roomAccess.spaceIds().toImmutableList()
+        )
+    }
 }
 
 data class SecurityAndPrivacySettings(
@@ -85,10 +131,10 @@ enum class SecurityAndPrivacyHistoryVisibility {
     }
 }
 
-sealed interface SpaceSelection {
-    data object None : SpaceSelection
-    data class Single(val spaceId: RoomId, val spaceRoom: SpaceRoom?) : SpaceSelection
-    data object Multiple : SpaceSelection
+sealed interface SpaceSelectionMode {
+    data object None : SpaceSelectionMode
+    data class Single(val spaceId: RoomId, val spaceRoom: SpaceRoom?) : SpaceSelectionMode
+    data object Multiple : SpaceSelectionMode
 }
 
 sealed interface SecurityAndPrivacyRoomAccess {

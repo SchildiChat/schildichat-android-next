@@ -12,12 +12,14 @@ import android.os.Parcelable
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
 import com.bumble.appyx.navmodel.backstack.BackStack
+import com.bumble.appyx.navmodel.backstack.operation.pop
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
@@ -31,12 +33,15 @@ import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.di.RoomScope
+import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.room.powerlevels.use
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.parcelize.Parcelize
 
 @ContributesNode(RoomScope::class)
@@ -61,7 +66,7 @@ class SecurityAndPrivacyFlowNode(
         data object EditRoomAddress : NavTarget
 
         @Parcelize
-        data object ManageAuthorizedSpaces : NavTarget
+        data class ManageAuthorizedSpaces(val initialSelection: List<RoomId>) : NavTarget
     }
 
     private val callback: SecurityAndPrivacyEntryPoint.Callback = callback()
@@ -83,6 +88,18 @@ class SecurityAndPrivacyFlowNode(
                 callback.onDone()
             }
         }
+        whenChildrenAttached { commonLifecycle: Lifecycle,
+                               securityAndPrivacyNode: SecurityAndPrivacyNode,
+                               manageAuthorizedSpacesNode: ManageAuthorizedSpacesNode ->
+            commonLifecycle.coroutineScope.launch {
+                val authorizedSpacesData = securityAndPrivacyNode.getAuthorizedSpacesData()
+                val selectedSpaces = manageAuthorizedSpacesNode.waitForCompletion(authorizedSpacesData)
+                withContext(NonCancellable) {
+                    backstack.pop()
+                    securityAndPrivacyNode.onAuthorizedSpacesSelected(selectedSpaces)
+                }
+            }
+        }
     }
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
@@ -93,7 +110,7 @@ class SecurityAndPrivacyFlowNode(
             NavTarget.EditRoomAddress -> {
                 createNode<EditRoomAddressNode>(buildContext, plugins = listOf(navigator))
             }
-            NavTarget.ManageAuthorizedSpaces -> {
+            is NavTarget.ManageAuthorizedSpaces -> {
                 createNode<ManageAuthorizedSpacesNode>(buildContext, plugins = listOf(navigator))
             }
         }

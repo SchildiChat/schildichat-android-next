@@ -14,7 +14,6 @@ import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
 
 open class SecurityAndPrivacyStateProvider : PreviewParameterProvider<SecurityAndPrivacyState> {
@@ -122,7 +121,7 @@ fun aSecurityAndPrivacyState(
     isKnockEnabled: Boolean = true,
     isSpace: Boolean = false,
     selectableJoinedSpaces: Set<SpaceRoom> = emptySet(),
-    spaceSelection: SpaceSelection = SpaceSelection.None,
+    spaceSelectionMode: SpaceSelectionMode = SpaceSelectionMode.None,
     isSpaceSettingsEnabled: Boolean = true,
     eventSink: (SecurityAndPrivacyEvent) -> Unit = {}
 ) = SecurityAndPrivacyState(
@@ -135,7 +134,7 @@ fun aSecurityAndPrivacyState(
     permissions = permissions,
     isSpace = isSpace,
     selectableJoinedSpaces = selectableJoinedSpaces.toImmutableSet(),
-    spaceSelection = SpaceSelection.None,
+    spaceSelectionMode = spaceSelectionMode,
     isSpaceSettingsEnabled = isSpaceSettingsEnabled,
     eventSink = eventSink,
 )

@@ -66,12 +66,12 @@ fun ManageAuthorizedSpacesView(
                     hasDivider = false,
                 )
             }
-            items(items = state.joinedSpaces) { space ->
+            items(items = state.selection.joinedSpaces) { space ->
                 CheckableSpaceListItem(
                     headlineText = space.displayName,
                     supportingText = space.canonicalAlias?.value,
                     avatarData = space.getAvatarData(AvatarSize.SpaceMember),
-                    checked = state.currentSelection.contains(space.roomId),
+                    checked = state.selectedIds.contains(space.roomId),
                     onCheckedChange = { _ ->
                         state.eventSink(
                             ManageAuthorizedSpacesEvent.ToggleSpace(space.roomId)
@@ -79,19 +79,19 @@ fun ManageAuthorizedSpacesView(
                     }
                 )
             }
-            if (state.unknownSpaceIds.isNotEmpty()) {
+            if (state.selection.unknownSpaceIds.isNotEmpty()) {
                 item {
                     ListSectionHeader(
                         title = stringResource(R.string.screen_manage_authorized_spaces_unknown_spaces_section_title),
                         hasDivider = true,
                     )
                 }
-                items(items = state.unknownSpaceIds) {
+                items(items = state.selection.unknownSpaceIds) {
                     CheckableSpaceListItem(
                         headlineText = stringResource(R.string.screen_manage_authorized_spaces_unknown_space),
                         supportingText = it.value,
                         avatarData = null,
-                        checked = state.currentSelection.contains(it),
+                        checked = state.selectedIds.contains(it),
                         onCheckedChange = { _ ->
                             state.eventSink(
                                 ManageAuthorizedSpacesEvent.ToggleSpace(it)

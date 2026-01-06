@@ -9,6 +9,8 @@
 package io.element.android.features.securityandprivacy.impl.manageauthorizedspaces
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
@@ -18,7 +20,12 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.features.securityandprivacy.impl.SecurityAndPrivacyNavigator
+import io.element.android.libraries.architecture.NodeInputs
+import io.element.android.libraries.architecture.appyx.launchMolecule
 import io.element.android.libraries.di.RoomScope
+import io.element.android.libraries.matrix.api.core.RoomId
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.coroutines.flow.first
 
 @ContributesNode(RoomScope::class)
 @AssistedInject
@@ -27,12 +34,24 @@ class ManageAuthorizedSpacesNode(
     @Assisted plugins: List<Plugin>,
     presenterFactory: ManageAuthorizedSpacesPresenter.Factory,
 ) : Node(buildContext, plugins = plugins) {
+
+    data class Params(
+        val initialSelection: List<RoomId>
+    ) : NodeInputs
+
     private val navigator = plugins<SecurityAndPrivacyNavigator>().first()
     private val presenter = presenterFactory.create(navigator)
 
+    private val stateFlow = launchMolecule { presenter.present() }
+
+    suspend fun waitForCompletion(data: AuthorizedSpacesSelection): ImmutableList<RoomId> {
+        stateFlow.value.eventSink(ManageAuthorizedSpacesEvent.SetData(data))
+        return stateFlow.first { it.isSelectionComplete }.selectedIds
+    }
+
     @Composable
     override fun View(modifier: Modifier) {
-        val state = presenter.present()
+        val state by stateFlow.collectAsState()
         ManageAuthorizedSpacesView(
             state = state,
             onBackClick = ::navigateUp,

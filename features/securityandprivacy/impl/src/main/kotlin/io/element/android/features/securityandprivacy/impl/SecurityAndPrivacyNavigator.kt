@@ -13,12 +13,13 @@ import com.bumble.appyx.navmodel.backstack.BackStack
 import com.bumble.appyx.navmodel.backstack.operation.pop
 import com.bumble.appyx.navmodel.backstack.operation.push
 import io.element.android.features.securityandprivacy.api.SecurityAndPrivacyEntryPoint
+import io.element.android.libraries.matrix.api.core.RoomId
 
 interface SecurityAndPrivacyNavigator : Plugin {
     fun onDone()
     fun openEditRoomAddress()
     fun closeEditRoomAddress()
-    fun openManageAuthorizedSpaces()
+    fun openManageAuthorizedSpaces(initialSelection: List<RoomId>)
     fun closeManageAuthorizedSpaces()
 }
 
@@ -38,8 +39,8 @@ class BackstackSecurityAndPrivacyNavigator(
         backStack.pop()
     }
 
-    override fun openManageAuthorizedSpaces() {
-        backStack.push(SecurityAndPrivacyFlowNode.NavTarget.ManageAuthorizedSpaces)
+    override fun openManageAuthorizedSpaces(initialSelection: List<RoomId>) {
+        backStack.push(SecurityAndPrivacyFlowNode.NavTarget.ManageAuthorizedSpaces(initialSelection))
     }
 
     override fun closeManageAuthorizedSpaces() {

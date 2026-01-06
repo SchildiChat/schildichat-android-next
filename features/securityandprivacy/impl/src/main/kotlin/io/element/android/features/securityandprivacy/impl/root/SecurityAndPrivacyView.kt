@@ -90,14 +90,8 @@ fun SecurityAndPrivacyView(
         ) {
             if (state.showRoomAccessSection) {
                 RoomAccessSection(
+                    state = state,
                     modifier = Modifier.padding(top = 24.dp),
-                    edited = state.editedSettings.roomAccess,
-                    saved = state.savedSettings.roomAccess,
-                    isKnockEnabled = state.isKnockEnabled,
-                    isSpaceSettingsEnabled = state.isSpaceSettingsEnabled,
-                    onSelectOption = { state.eventSink(SecurityAndPrivacyEvent.ChangeRoomAccess(it)) },
-                    onManageSpacesClick = { state.eventSink(SecurityAndPrivacyEvent.ManageAuthorizedSpaces) },
-                    onSpaceMemberAccessClick = { state.eventSink(SecurityAndPrivacyEvent.SelectSpaceMemberAccess) }
                 )
             }
             if (state.showRoomVisibilitySections) {
@@ -211,15 +205,25 @@ private fun SecurityAndPrivacySection(
 
 @Composable
 private fun RoomAccessSection(
-    edited: SecurityAndPrivacyRoomAccess,
-    saved: SecurityAndPrivacyRoomAccess,
-    isKnockEnabled: Boolean,
-    isSpaceSettingsEnabled: Boolean,
-    onSelectOption: (SecurityAndPrivacyRoomAccess) -> Unit,
-    onSpaceMemberAccessClick: () -> Unit,
-    onManageSpacesClick: () -> Unit,
+    state: SecurityAndPrivacyState,
     modifier: Modifier = Modifier,
 ) {
+
+    val edited = state.editedSettings.roomAccess
+    val saved = state.savedSettings.roomAccess
+
+    fun onSelectOption(option: SecurityAndPrivacyRoomAccess) {
+        state.eventSink(SecurityAndPrivacyEvent.ChangeRoomAccess(option))
+    }
+
+    fun onSpaceMemberAccessClick() {
+        state.eventSink(SecurityAndPrivacyEvent.SelectSpaceMemberAccess)
+    }
+
+    fun onManageSpacesClick() {
+        state.eventSink(SecurityAndPrivacyEvent.ManageAuthorizedSpaces)
+    }
+
     SecurityAndPrivacySection(
         title = stringResource(R.string.screen_security_and_privacy_room_access_section_header),
         modifier = modifier,
@@ -231,31 +235,25 @@ private fun RoomAccessSection(
             leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Public())),
             onClick = { onSelectOption(SecurityAndPrivacyRoomAccess.Anyone) },
         )
-        // Show SpaceMember option in two cases:
-        // - the SpaceSettings FF is enabled
-        // - SpaceMember is the current saved value
-        if (saved is SecurityAndPrivacyRoomAccess.SpaceMember || isSpaceSettingsEnabled)
+        if (state.showSpaceMemberOption)
             ListItem(
                 headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_title)) },
                 supportingContent = {
-                    Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_unavailable_description))
+                    Text(text = state.spaceMemberDescription())
                 },
-                trailingContent = ListItemContent.RadioButton(selected = edited is SecurityAndPrivacyRoomAccess.SpaceMember),
+                trailingContent = ListItemContent.RadioButton(selected = state.editedSettings.roomAccess is SecurityAndPrivacyRoomAccess.SpaceMember),
                 leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Space())),
-                onClick = onSpaceMemberAccessClick,
-                enabled = isSpaceSettingsEnabled,
+                onClick = ::onSpaceMemberAccessClick,
+                enabled = state.isSpaceMemberSelectable,
             )
-        // Show Ask to join option in two cases:
-        // - the Knock FF is enabled
-        // - AskToJoin is the current saved value
-        if (saved == SecurityAndPrivacyRoomAccess.AskToJoin || isKnockEnabled) {
+        if (state.showAskToJoinOption) {
             ListItem(
                 headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_ask_to_join_option_title)) },
                 supportingContent = { Text(text = stringResource(R.string.screen_security_and_privacy_ask_to_join_option_description)) },
                 trailingContent = ListItemContent.RadioButton(selected = edited == SecurityAndPrivacyRoomAccess.AskToJoin),
                 onClick = { onSelectOption(SecurityAndPrivacyRoomAccess.AskToJoin) },
                 leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.UserAdd())),
-                enabled = isKnockEnabled,
+                enabled = state.isAskToJoinSelectable,
             )
         }
         ListItem(
@@ -265,11 +263,11 @@ private fun RoomAccessSection(
             leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Lock())),
             onClick = { onSelectOption(SecurityAndPrivacyRoomAccess.InviteOnly) },
         )
-        if (edited is SecurityAndPrivacyRoomAccess.SpaceMember) {
+        if (state.showManageSpaceAction) {
             val footerText = stringWithLink(
                 textRes = R.string.screen_security_and_privacy_room_access_footer,
                 url = stringResource(R.string.screen_security_and_privacy_room_access_footer_manage_spaces_action),
-                onLinkClick = { onManageSpacesClick() },
+                onLinkClick = {onManageSpacesClick()},
             )
             Text(
                 text = footerText,

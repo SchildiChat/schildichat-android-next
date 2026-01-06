@@ -35,6 +35,7 @@ import io.element.android.libraries.featureflag.api.FeatureFlagService
 import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomAlias
+import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.room.RoomInfo
 import io.element.android.libraries.matrix.api.room.history.RoomHistoryVisibility
@@ -130,9 +131,9 @@ class SecurityAndPrivacyPresenter(
             value = (joinedParentSpaces + nonParentJoinedSpaces).toImmutableSet()
         }
 
-        val spaceSelection by remember {
+        val spaceSelectionMode by remember {
             derivedStateOf {
-                getSpaceSelection(selectableJoinedSpaces, savedSettings.roomAccess)
+                getSpaceSelectionMode(selectableJoinedSpaces, savedSettings.roomAccess)
             }
         }
 
@@ -191,9 +192,12 @@ class SecurityAndPrivacyPresenter(
                 SecurityAndPrivacyEvent.DismissExitConfirmation -> {
                     saveAction.value = AsyncAction.Uninitialized
                 }
-                SecurityAndPrivacyEvent.ManageAuthorizedSpaces -> navigator.openManageAuthorizedSpaces()
+                SecurityAndPrivacyEvent.ManageAuthorizedSpaces -> {
+                    navigator.openManageAuthorizedSpaces(editedSettings.roomAccess.spaceIds())
+                }
                 SecurityAndPrivacyEvent.SelectSpaceMemberAccess -> handleSpaceMemberAccessSelection(
-                    spaceSelection = spaceSelection,
+                    spaceSelectionMode = spaceSelectionMode,
+                    spaceIds = editedSettings.roomAccess.spaceIds(),
                     editedAccess = editedRoomAccess,
                 )
             }
@@ -216,7 +220,7 @@ class SecurityAndPrivacyPresenter(
             isSpace = roomInfo.isSpace,
             isSpaceSettingsEnabled = isSpaceSettingsEnabled,
             selectableJoinedSpaces = selectableJoinedSpaces,
-            spaceSelection = spaceSelection,
+            spaceSelectionMode = spaceSelectionMode,
             eventSink = ::handleEvent,
         )
 
@@ -241,42 +245,45 @@ class SecurityAndPrivacyPresenter(
     }
 
     private fun handleSpaceMemberAccessSelection(
-        spaceSelection: SpaceSelection,
+        spaceSelectionMode: SpaceSelectionMode,
+        spaceIds: List<RoomId>,
         editedAccess: MutableState<SecurityAndPrivacyRoomAccess>,
     ) {
         if (editedAccess.value is SecurityAndPrivacyRoomAccess.SpaceMember) {
             return
         }
-        when (spaceSelection) {
-            is SpaceSelection.None -> Unit
-            is SpaceSelection.Multiple -> navigator.openManageAuthorizedSpaces()
-            is SpaceSelection.Single -> {
+        when (spaceSelectionMode) {
+            is SpaceSelectionMode.None -> Unit
+            is SpaceSelectionMode.Multiple -> navigator.openManageAuthorizedSpaces(
+                initialSelection = spaceIds ,
+            )
+            is SpaceSelectionMode.Single -> {
                 val newRoomAccess = SecurityAndPrivacyRoomAccess.SpaceMember(
-                    spaceIds = persistentListOf(spaceSelection.spaceId)
+                    spaceIds = persistentListOf(spaceSelectionMode.spaceId)
                 )
                 editedAccess.value = newRoomAccess
             }
         }
     }
 
-    private fun getSpaceSelection(
+    private fun getSpaceSelectionMode(
         selectableJoinedSpaces: Set<SpaceRoom>,
         savedAccess: SecurityAndPrivacyRoomAccess,
-    ): SpaceSelection {
+    ): SpaceSelectionMode {
         val selectableSpacesCount = (selectableJoinedSpaces.map { it.roomId } + savedAccess.spaceIds()).toSet().size
         return when {
-            selectableSpacesCount == 0 -> SpaceSelection.None
-            selectableSpacesCount > 1 -> SpaceSelection.Multiple
+            selectableSpacesCount == 0 -> SpaceSelectionMode.None
+            selectableSpacesCount > 1 -> SpaceSelectionMode.Multiple
             else -> {
                 val joinedSpace = selectableJoinedSpaces.firstOrNull()
                 if (joinedSpace != null) {
-                    SpaceSelection.Single(joinedSpace.roomId, joinedSpace)
+                    SpaceSelectionMode.Single(joinedSpace.roomId, joinedSpace)
                 } else {
                     val spaceId = savedAccess.spaceIds().firstOrNull()
                     if (spaceId == null) {
-                        SpaceSelection.None
+                        SpaceSelectionMode.None
                     } else {
-                        SpaceSelection.Single(spaceId, null)
+                        SpaceSelectionMode.Single(spaceId, null)
                     }
                 }
             }

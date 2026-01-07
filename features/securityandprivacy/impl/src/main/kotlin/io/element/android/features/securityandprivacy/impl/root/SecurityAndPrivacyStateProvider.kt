@@ -71,6 +71,19 @@ private fun commonSecurityAndPrivacyStates(isSpace: Boolean): Sequence<SecurityA
     ),
     aSecurityAndPrivacyState(
         editedSettings = aSecurityAndPrivacySettings(
+            roomAccess = SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember(persistentListOf()),
+        ),
+        isSpace = isSpace,
+    ),
+    aSecurityAndPrivacyState(
+        savedSettings = aSecurityAndPrivacySettings(
+            roomAccess = SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember(persistentListOf())
+        ),
+        isSpace = isSpace,
+        isKnockEnabled = false,
+    ),
+    aSecurityAndPrivacyState(
+        editedSettings = aSecurityAndPrivacySettings(
             roomAccess = SecurityAndPrivacyRoomAccess.Anyone,
             address = "#therapy:myserver.xyz"
         ),

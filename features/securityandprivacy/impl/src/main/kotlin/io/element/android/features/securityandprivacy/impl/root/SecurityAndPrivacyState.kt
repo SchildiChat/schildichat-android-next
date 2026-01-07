@@ -46,14 +46,25 @@ data class SecurityAndPrivacyState(
     // - SpaceMember option is selectable (ie. the FF is enabled and there is at least one space to select)
     val showSpaceMemberOption = savedSettings.roomAccess is SecurityAndPrivacyRoomAccess.SpaceMember || isSpaceMemberSelectable
 
-    val showManageSpaceAction = spaceSelectionMode is SpaceSelectionMode.Multiple && editedSettings.roomAccess is SecurityAndPrivacyRoomAccess.SpaceMember
+    val showManageSpaceFooter = spaceSelectionMode is SpaceSelectionMode.Multiple &&
+        (editedSettings.roomAccess is SecurityAndPrivacyRoomAccess.SpaceMember ||
+            editedSettings.roomAccess is SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember)
 
     val isAskToJoinSelectable = isKnockEnabled
 
-    // Show Ask to join option in two cases:
-    // - the Knock FF is enabled
-    // - AskToJoin is the current saved value
-    val showAskToJoinOption = savedSettings.roomAccess == SecurityAndPrivacyRoomAccess.AskToJoin || isAskToJoinSelectable
+    val isAskToJoinWithSpaceMembersSelectable = isAskToJoinSelectable && isSpaceMemberSelectable
+
+    // Show Ask to join option only when:
+    // - AskToJoin is the current saved value (legacy), OR
+    // - Knock FF enabled BUT (SpaceSettings FF disabled OR no spaces available)
+    val showAskToJoinOption = savedSettings.roomAccess == SecurityAndPrivacyRoomAccess.AskToJoin ||
+        (isAskToJoinSelectable && !isAskToJoinWithSpaceMembersSelectable)
+
+    // Show AskToJoinWithSpaceMember option when:
+    // - It's the current saved value, OR
+    // - Both FFs enabled AND spaces available
+    val showAskToJoinWithSpaceMemberOption = savedSettings.roomAccess is SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember ||
+        isAskToJoinWithSpaceMembersSelectable
 
     val canBeSaved = savedSettings != editedSettings
 
@@ -94,6 +105,22 @@ data class SecurityAndPrivacyState(
         }
     }
 
+    @Composable
+    fun askToJoinWithSpaceMembersDescription(): String {
+        return if (isAskToJoinWithSpaceMembersSelectable) {
+            when (spaceSelectionMode) {
+                is SpaceSelectionMode.Single -> {
+                    val spaceName = spaceSelectionMode.spaceRoom?.displayName ?: spaceSelectionMode.spaceId.value
+                    stringResource(R.string.screen_security_and_privacy_ask_to_join_single_space_members_option_description, spaceName)
+                }
+                is SpaceSelectionMode.None,
+                is SpaceSelectionMode.Multiple -> stringResource(R.string.screen_security_and_privacy_ask_to_join_multiple_spaces_members_option_description)
+            }
+        } else {
+            stringResource(R.string.screen_security_and_privacy_ask_to_join_option_description)
+        }
+    }
+
     fun getAuthorizedSpacesSelection(): AuthorizedSpacesSelection {
         return AuthorizedSpacesSelection(
             joinedSpaces = selectableJoinedSpaces.toImmutableList(),
@@ -102,6 +129,7 @@ data class SecurityAndPrivacyState(
             }.toImmutableList(),
             initialSelectedIds = when (editedSettings.roomAccess) {
                 is SecurityAndPrivacyRoomAccess.SpaceMember -> editedSettings.roomAccess.spaceIds
+                is SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember -> editedSettings.roomAccess.spaceIds
                 else -> savedSettings.roomAccess.spaceIds()
             }
         )
@@ -145,17 +173,19 @@ sealed interface SecurityAndPrivacyRoomAccess {
     data object AskToJoin : SecurityAndPrivacyRoomAccess
     data object Anyone : SecurityAndPrivacyRoomAccess
     data class SpaceMember(val spaceIds: ImmutableList<RoomId>) : SecurityAndPrivacyRoomAccess
+    data class AskToJoinWithSpaceMember(val spaceIds: ImmutableList<RoomId>) : SecurityAndPrivacyRoomAccess
 
     fun canConfigureRoomVisibility(): Boolean {
         return when (this) {
             InviteOnly, is SpaceMember -> false
-            AskToJoin, Anyone -> true
+            AskToJoin, Anyone, is AskToJoinWithSpaceMember -> true
         }
     }
 
     fun spaceIds(): ImmutableList<RoomId> {
         return when (this) {
             is SpaceMember -> spaceIds
+            is AskToJoinWithSpaceMember -> spaceIds
             else -> persistentListOf()
         }
     }

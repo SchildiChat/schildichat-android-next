@@ -220,6 +220,10 @@ private fun RoomAccessSection(
         state.eventSink(SecurityAndPrivacyEvent.SelectSpaceMemberAccess)
     }
 
+    fun onAskToJoinWithSpaceMembersClick() {
+        state.eventSink(SecurityAndPrivacyEvent.SelectAskToJoinWithSpaceMembersAccess)
+    }
+
     fun onManageSpacesClick() {
         state.eventSink(SecurityAndPrivacyEvent.ManageAuthorizedSpaces)
     }
@@ -235,7 +239,7 @@ private fun RoomAccessSection(
             leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Public())),
             onClick = { onSelectOption(SecurityAndPrivacyRoomAccess.Anyone) },
         )
-        if (state.showSpaceMemberOption)
+        if (state.showSpaceMemberOption) {
             ListItem(
                 headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_title)) },
                 supportingContent = {
@@ -246,6 +250,7 @@ private fun RoomAccessSection(
                 onClick = ::onSpaceMemberAccessClick,
                 enabled = state.isSpaceMemberSelectable,
             )
+        }
         if (state.showAskToJoinOption) {
             ListItem(
                 headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_ask_to_join_option_title)) },
@@ -256,6 +261,16 @@ private fun RoomAccessSection(
                 enabled = state.isAskToJoinSelectable,
             )
         }
+        if (state.showAskToJoinWithSpaceMemberOption) {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_ask_to_join_option_title)) },
+                supportingContent = { Text(text = state.askToJoinWithSpaceMembersDescription()) },
+                trailingContent = ListItemContent.RadioButton(selected = edited is SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember),
+                onClick = ::onAskToJoinWithSpaceMembersClick,
+                leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.UserAdd())),
+                enabled = state.isAskToJoinWithSpaceMembersSelectable,
+            )
+        }
         ListItem(
             headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_invite_only_option_title)) },
             supportingContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_invite_only_option_description)) },
@@ -263,7 +278,7 @@ private fun RoomAccessSection(
             leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Lock())),
             onClick = { onSelectOption(SecurityAndPrivacyRoomAccess.InviteOnly) },
         )
-        if (state.showManageSpaceAction) {
+        if (state.showManageSpaceFooter) {
             val footerText = stringWithLink(
                 textRes = R.string.screen_security_and_privacy_room_access_footer,
                 url = stringResource(R.string.screen_security_and_privacy_room_access_footer_manage_spaces_action),

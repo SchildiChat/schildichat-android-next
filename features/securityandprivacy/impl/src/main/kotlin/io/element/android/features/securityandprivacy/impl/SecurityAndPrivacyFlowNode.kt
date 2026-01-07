@@ -19,6 +19,7 @@ import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
 import com.bumble.appyx.navmodel.backstack.BackStack
+import com.bumble.appyx.navmodel.backstack.activeElement
 import com.bumble.appyx.navmodel.backstack.operation.pop
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
@@ -66,7 +67,7 @@ class SecurityAndPrivacyFlowNode(
         data object EditRoomAddress : NavTarget
 
         @Parcelize
-        data object ManageAuthorizedSpaces: NavTarget
+        data class ManageAuthorizedSpaces(val forKnockRestricted: Boolean = false) : NavTarget
     }
 
     private val callback: SecurityAndPrivacyEntryPoint.Callback = callback()
@@ -94,9 +95,10 @@ class SecurityAndPrivacyFlowNode(
             commonLifecycle.coroutineScope.launch {
                 val authorizedSpacesData = securityAndPrivacyNode.getAuthorizedSpacesData()
                 val selectedSpaces = manageAuthorizedSpacesNode.waitForCompletion(authorizedSpacesData)
+                val forKnock = (backstack.activeElement as? NavTarget.ManageAuthorizedSpaces)?.forKnockRestricted ?: false
                 withContext(NonCancellable) {
                     navigator.closeManageAuthorizedSpaces()
-                    securityAndPrivacyNode.onAuthorizedSpacesSelected(selectedSpaces)
+                    securityAndPrivacyNode.onAuthorizedSpacesSelected(selectedSpaces, forKnock = forKnock)
                 }
             }
         }
@@ -110,7 +112,7 @@ class SecurityAndPrivacyFlowNode(
             NavTarget.EditRoomAddress -> {
                 createNode<EditRoomAddressNode>(buildContext, plugins = listOf(navigator))
             }
-            NavTarget.ManageAuthorizedSpaces -> {
+            is NavTarget.ManageAuthorizedSpaces -> {
                 createNode<ManageAuthorizedSpacesNode>(buildContext, plugins = listOf(navigator))
             }
         }

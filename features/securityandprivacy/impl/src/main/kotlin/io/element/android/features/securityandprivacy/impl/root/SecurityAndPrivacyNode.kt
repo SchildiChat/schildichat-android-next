@@ -50,10 +50,13 @@ class SecurityAndPrivacyNode(
         return stateFlow.value.getAuthorizedSpacesSelection()
     }
 
-    fun onAuthorizedSpacesSelected(selectedSpaces: ImmutableList<RoomId>) {
-        stateFlow.value.eventSink(
-            SecurityAndPrivacyEvent.ChangeRoomAccess(SecurityAndPrivacyRoomAccess.SpaceMember(selectedSpaces))
-        )
+    fun onAuthorizedSpacesSelected(selectedSpaces: ImmutableList<RoomId>, forKnock: Boolean) {
+        val roomAccess = if (forKnock) {
+            SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember(selectedSpaces)
+        } else {
+            SecurityAndPrivacyRoomAccess.SpaceMember(selectedSpaces)
+        }
+        stateFlow.value.eventSink(SecurityAndPrivacyEvent.ChangeRoomAccess(roomAccess))
     }
 
     @Composable

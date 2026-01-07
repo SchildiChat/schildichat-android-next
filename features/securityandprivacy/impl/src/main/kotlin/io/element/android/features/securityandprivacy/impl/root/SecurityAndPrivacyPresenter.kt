@@ -200,6 +200,10 @@ class SecurityAndPrivacyPresenter(
                     spaceIds = editedSettings.roomAccess.spaceIds(),
                     editedAccess = editedRoomAccess,
                 )
+                SecurityAndPrivacyEvent.SelectAskToJoinWithSpaceMembersAccess -> handleAskToJoinWithSpaceMembersAccessSelection(
+                    spaceSelectionMode = spaceSelectionMode,
+                    editedAccess = editedRoomAccess,
+                )
             }
         }
 
@@ -254,9 +258,28 @@ class SecurityAndPrivacyPresenter(
         }
         when (spaceSelectionMode) {
             is SpaceSelectionMode.None -> Unit
-            is SpaceSelectionMode.Multiple -> navigator.openManageAuthorizedSpaces()
+            is SpaceSelectionMode.Multiple -> navigator.openManageAuthorizedSpaces(forKnockRestricted = false)
             is SpaceSelectionMode.Single -> {
                 val newRoomAccess = SecurityAndPrivacyRoomAccess.SpaceMember(
+                    spaceIds = persistentListOf(spaceSelectionMode.spaceId)
+                )
+                editedAccess.value = newRoomAccess
+            }
+        }
+    }
+
+    private fun handleAskToJoinWithSpaceMembersAccessSelection(
+        spaceSelectionMode: SpaceSelectionMode,
+        editedAccess: MutableState<SecurityAndPrivacyRoomAccess>,
+    ) {
+        if (editedAccess.value is SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember) {
+            return
+        }
+        when (spaceSelectionMode) {
+            is SpaceSelectionMode.None -> Unit
+            is SpaceSelectionMode.Multiple -> navigator.openManageAuthorizedSpaces(forKnockRestricted = true)
+            is SpaceSelectionMode.Single -> {
+                val newRoomAccess = SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember(
                     spaceIds = persistentListOf(spaceSelectionMode.spaceId)
                 )
                 editedAccess.value = newRoomAccess
@@ -328,6 +351,7 @@ class SecurityAndPrivacyPresenter(
                 // the room should be automatically made invisible (private) in the room directory.
                 val editedIsVisibleInRoomDirectory = when (editedSettings.roomAccess) {
                     SecurityAndPrivacyRoomAccess.AskToJoin,
+                    is SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember,
                     SecurityAndPrivacyRoomAccess.Anyone -> editedSettings.isVisibleInRoomDirectory.dataOrNull()
                     else -> false
                 }
@@ -365,7 +389,13 @@ class SecurityAndPrivacyPresenter(
 private fun JoinRule?.map(): SecurityAndPrivacyRoomAccess {
     return when (this) {
         JoinRule.Public -> SecurityAndPrivacyRoomAccess.Anyone
-        JoinRule.Knock, is JoinRule.KnockRestricted -> SecurityAndPrivacyRoomAccess.AskToJoin
+        JoinRule.Knock -> SecurityAndPrivacyRoomAccess.AskToJoin
+        is JoinRule.KnockRestricted -> SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember(
+            spaceIds = this.rules
+                .filterIsInstance<AllowRule.RoomMembership>()
+                .map { it.roomId }
+                .toImmutableList()
+        )
         is JoinRule.Restricted -> SecurityAndPrivacyRoomAccess.SpaceMember(
             spaceIds = this.rules
                 .filterIsInstance<AllowRule.RoomMembership>()
@@ -386,6 +416,9 @@ private fun SecurityAndPrivacyRoomAccess.map(): JoinRule? {
         SecurityAndPrivacyRoomAccess.AskToJoin -> JoinRule.Knock
         SecurityAndPrivacyRoomAccess.InviteOnly -> JoinRule.Private
         is SecurityAndPrivacyRoomAccess.SpaceMember -> JoinRule.Restricted(
+            rules = this.spaceIds.map { AllowRule.RoomMembership(it) }.toImmutableList()
+        )
+        is SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember -> JoinRule.KnockRestricted(
             rules = this.spaceIds.map { AllowRule.RoomMembership(it) }.toImmutableList()
         )
     }

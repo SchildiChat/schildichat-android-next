@@ -47,7 +47,7 @@ class SecurityAndPrivacyNode(
     }
 
     fun getAuthorizedSpacesData(): AuthorizedSpacesSelection{
-        return stateFlow.value.getAuthorizedSpaceData()
+        return stateFlow.value.getAuthorizedSpacesSelection()
     }
 
     fun onAuthorizedSpacesSelected(selectedSpaces: ImmutableList<RoomId>) {

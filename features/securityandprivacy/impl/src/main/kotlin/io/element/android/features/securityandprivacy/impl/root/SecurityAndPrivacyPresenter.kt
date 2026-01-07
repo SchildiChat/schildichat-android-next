@@ -118,7 +118,7 @@ class SecurityAndPrivacyPresenter(
             address = savedSettings.address,
         )
 
-        val selectableJoinedSpaces by produceState(persistentSetOf()) {
+        val selectableJoinedSpaces by produceState(initialValue = persistentSetOf(), key1 = savedSettings.roomAccess.spaceIds()) {
             val joinedParentSpaces = matrixClient
                 .spaceService
                 .joinedParents(room.roomId)
@@ -193,7 +193,7 @@ class SecurityAndPrivacyPresenter(
                     saveAction.value = AsyncAction.Uninitialized
                 }
                 SecurityAndPrivacyEvent.ManageAuthorizedSpaces -> {
-                    navigator.openManageAuthorizedSpaces(editedSettings.roomAccess.spaceIds())
+                    navigator.openManageAuthorizedSpaces()
                 }
                 SecurityAndPrivacyEvent.SelectSpaceMemberAccess -> handleSpaceMemberAccessSelection(
                     spaceSelectionMode = spaceSelectionMode,
@@ -254,9 +254,7 @@ class SecurityAndPrivacyPresenter(
         }
         when (spaceSelectionMode) {
             is SpaceSelectionMode.None -> Unit
-            is SpaceSelectionMode.Multiple -> navigator.openManageAuthorizedSpaces(
-                initialSelection = spaceIds ,
-            )
+            is SpaceSelectionMode.Multiple -> navigator.openManageAuthorizedSpaces()
             is SpaceSelectionMode.Single -> {
                 val newRoomAccess = SecurityAndPrivacyRoomAccess.SpaceMember(
                     spaceIds = persistentListOf(spaceSelectionMode.spaceId)

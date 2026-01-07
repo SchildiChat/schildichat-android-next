@@ -18,7 +18,9 @@ data class ManageAuthorizedSpacesState(
     val selectedIds: ImmutableList<RoomId>,
     val isSelectionComplete: Boolean,
     val eventSink: (ManageAuthorizedSpacesEvent) -> Unit
-)
+) {
+    val isDoneButtonEnabled = selectedIds.isNotEmpty()
+}
 
 data class AuthorizedSpacesSelection(
     val joinedSpaces: ImmutableList<SpaceRoom> = persistentListOf(),

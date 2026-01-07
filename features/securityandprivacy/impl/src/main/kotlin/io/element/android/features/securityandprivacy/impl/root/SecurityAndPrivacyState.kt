@@ -42,8 +42,8 @@ data class SecurityAndPrivacyState(
     val isSpaceMemberSelectable = isSpaceSettingsEnabled && spaceSelectionMode != SpaceSelectionMode.None
 
     // Show SpaceMember option in two cases:
-    // - the SpaceSettings FF is enabled
     // - SpaceMember is the current saved value
+    // - SpaceMember option is selectable (ie. the FF is enabled and there is at least one space to select)
     val showSpaceMemberOption = savedSettings.roomAccess is SecurityAndPrivacyRoomAccess.SpaceMember || isSpaceMemberSelectable
 
     val showManageSpaceAction = spaceSelectionMode is SpaceSelectionMode.Multiple && editedSettings.roomAccess is SecurityAndPrivacyRoomAccess.SpaceMember
@@ -94,13 +94,16 @@ data class SecurityAndPrivacyState(
         }
     }
 
-    fun getAuthorizedSpaceData(): AuthorizedSpacesSelection {
+    fun getAuthorizedSpacesSelection(): AuthorizedSpacesSelection {
         return AuthorizedSpacesSelection(
             joinedSpaces = selectableJoinedSpaces.toImmutableList(),
             unknownSpaceIds = savedSettings.roomAccess.spaceIds().filter { spaceId ->
                 selectableJoinedSpaces.none { it.roomId == spaceId }
             }.toImmutableList(),
-            initialSelectedIds = editedSettings.roomAccess.spaceIds().toImmutableList()
+            initialSelectedIds = when (editedSettings.roomAccess) {
+                is SecurityAndPrivacyRoomAccess.SpaceMember -> editedSettings.roomAccess.spaceIds
+                else -> savedSettings.roomAccess.spaceIds()
+            }
         )
     }
 }

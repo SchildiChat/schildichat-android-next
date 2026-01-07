@@ -66,7 +66,7 @@ class SecurityAndPrivacyFlowNode(
         data object EditRoomAddress : NavTarget
 
         @Parcelize
-        data class ManageAuthorizedSpaces(val initialSelection: List<RoomId>) : NavTarget
+        data object ManageAuthorizedSpaces: NavTarget
     }
 
     private val callback: SecurityAndPrivacyEntryPoint.Callback = callback()
@@ -95,7 +95,7 @@ class SecurityAndPrivacyFlowNode(
                 val authorizedSpacesData = securityAndPrivacyNode.getAuthorizedSpacesData()
                 val selectedSpaces = manageAuthorizedSpacesNode.waitForCompletion(authorizedSpacesData)
                 withContext(NonCancellable) {
-                    backstack.pop()
+                    navigator.closeManageAuthorizedSpaces()
                     securityAndPrivacyNode.onAuthorizedSpacesSelected(selectedSpaces)
                 }
             }
@@ -110,7 +110,7 @@ class SecurityAndPrivacyFlowNode(
             NavTarget.EditRoomAddress -> {
                 createNode<EditRoomAddressNode>(buildContext, plugins = listOf(navigator))
             }
-            is NavTarget.ManageAuthorizedSpaces -> {
+            NavTarget.ManageAuthorizedSpaces -> {
                 createNode<ManageAuthorizedSpacesNode>(buildContext, plugins = listOf(navigator))
             }
         }

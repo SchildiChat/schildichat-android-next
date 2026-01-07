@@ -53,6 +53,7 @@ fun ManageAuthorizedSpacesView(
                 onDoneClick = {
                     state.eventSink(ManageAuthorizedSpacesEvent.Done)
                 },
+                isDoneButtonEnabled = state.isDoneButtonEnabled
             )
         }
     ) { padding ->
@@ -160,6 +161,7 @@ private fun CheckableSpaceListItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ManageAuthorizedSpacesTopBar(
+    isDoneButtonEnabled: Boolean,
     onBackClick: () -> Unit,
     onDoneClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -170,6 +172,7 @@ private fun ManageAuthorizedSpacesTopBar(
         navigationIcon = { BackButton(onClick = onBackClick) },
         actions = {
             TextButton(
+                enabled = isDoneButtonEnabled,
                 text = stringResource(CommonStrings.action_done),
                 onClick = onDoneClick,
             )

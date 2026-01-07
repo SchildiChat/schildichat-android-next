@@ -66,21 +66,24 @@ private fun commonSecurityAndPrivacyStates(isSpace: Boolean): Sequence<SecurityA
         savedSettings = aSecurityAndPrivacySettings(
             roomAccess = SecurityAndPrivacyRoomAccess.SpaceMember(persistentListOf())
         ),
+        spaceSelectionMode = SpaceSelectionMode.Multiple,
         isSpace = isSpace,
         isKnockEnabled = false,
     ),
     aSecurityAndPrivacyState(
-        editedSettings = aSecurityAndPrivacySettings(
+        spaceSelectionMode = SpaceSelectionMode.Multiple,
+        savedSettings = aSecurityAndPrivacySettings(
             roomAccess = SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember(persistentListOf()),
         ),
         isSpace = isSpace,
     ),
     aSecurityAndPrivacyState(
+        spaceSelectionMode = SpaceSelectionMode.Multiple,
         savedSettings = aSecurityAndPrivacySettings(
             roomAccess = SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember(persistentListOf())
         ),
         isSpace = isSpace,
-        isKnockEnabled = false,
+        isKnockEnabled = true,
     ),
     aSecurityAndPrivacyState(
         editedSettings = aSecurityAndPrivacySettings(

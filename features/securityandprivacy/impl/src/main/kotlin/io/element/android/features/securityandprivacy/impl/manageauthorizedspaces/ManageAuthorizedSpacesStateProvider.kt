@@ -20,14 +20,14 @@ open class ManageAuthorizedSpacesStateProvider : PreviewParameterProvider<Manage
         get() = sequenceOf(
             aManageAuthorizedSpacesState(),
             aManageAuthorizedSpacesState(
-                authorizedSpacesData = anAuthorizedSpacesData(
+                authorizedSpacesSelection = anAuthorizedSpaceSelection(
                     unknownSpaceIds = listOf(aRoomId(99))
                 )
             ),
             aManageAuthorizedSpacesState(
-                currentSelection = listOf(aRoomId(1), aRoomId(3)),
-                authorizedSpacesData = anAuthorizedSpacesData(
-                    initialSelection = listOf(aRoomId(1)),
+                selectedIds = listOf(aRoomId(1), aRoomId(3)),
+                authorizedSpacesSelection = anAuthorizedSpaceSelection(
+                    initialSelectedIds = listOf(aRoomId(1)),
                 ),
             ),
         )
@@ -49,23 +49,23 @@ private fun aSpaceRoomList(count: Int): List<SpaceRoom> {
     }
 }
 
-fun anAuthorizedSpacesData(
+fun anAuthorizedSpaceSelection(
     joinedSpaces: List<SpaceRoom> = aSpaceRoomList(5),
     unknownSpaceIds: List<RoomId> = emptyList(),
-    initialSelection: List<RoomId> = emptyList(),
+    initialSelectedIds: List<RoomId> = emptyList(),
 ) = AuthorizedSpacesSelection(
     joinedSpaces = joinedSpaces.toImmutableList(),
     unknownSpaceIds = unknownSpaceIds.toImmutableList(),
-    initialSelectedIds = initialSelection.toImmutableList(),
+    initialSelectedIds = initialSelectedIds.toImmutableList(),
 )
 
 private fun aManageAuthorizedSpacesState(
-    authorizedSpacesData: AuthorizedSpacesSelection = anAuthorizedSpacesData(),
-    currentSelection: List<RoomId> = emptyList(),
+    authorizedSpacesSelection: AuthorizedSpacesSelection = anAuthorizedSpaceSelection(),
+    selectedIds: List<RoomId> = emptyList(),
     eventSink: (ManageAuthorizedSpacesEvent) -> Unit = {},
 ) = ManageAuthorizedSpacesState(
-    selection = authorizedSpacesData,
-    selectedIds = currentSelection.toImmutableList(),
+    selection = authorizedSpacesSelection,
+    selectedIds = selectedIds.toImmutableList(),
     isSelectionComplete = false,
     eventSink = eventSink,
 )

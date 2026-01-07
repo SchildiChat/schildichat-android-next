@@ -9,6 +9,7 @@
 package io.element.android.features.securityandprivacy.impl
 
 import android.os.Parcelable
+import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
@@ -71,7 +72,9 @@ class SecurityAndPrivacyFlowNode(
     }
 
     private val callback: SecurityAndPrivacyEntryPoint.Callback = callback()
-    private val navigator = BackstackSecurityAndPrivacyNavigator(callback, backstack)
+
+    @VisibleForTesting
+    val navigator = BackstackSecurityAndPrivacyNavigator(callback, backstack)
 
     override fun onBuilt() {
         super.onBuilt()

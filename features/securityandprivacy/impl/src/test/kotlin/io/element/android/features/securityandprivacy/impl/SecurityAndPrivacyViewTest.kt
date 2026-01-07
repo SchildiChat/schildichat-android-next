@@ -19,8 +19,11 @@ import io.element.android.features.securityandprivacy.impl.root.SecurityAndPriva
 import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyRoomAccess
 import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyState
 import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyView
+import io.element.android.features.securityandprivacy.impl.root.SpaceSelectionMode
 import io.element.android.features.securityandprivacy.impl.root.aSecurityAndPrivacySettings
 import io.element.android.features.securityandprivacy.impl.root.aSecurityAndPrivacyState
+import io.element.android.libraries.matrix.test.A_ROOM_ID
+import kotlinx.collections.immutable.persistentListOf
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.ui.strings.CommonStrings
@@ -178,6 +181,48 @@ class SecurityAndPrivacyViewTest {
         rule.setSecurityAndPrivacyView(state)
         rule.clickOn(R.string.screen_security_and_privacy_enable_encryption_alert_confirm_button_title)
         recorder.assertSingle(SecurityAndPrivacyEvent.ConfirmEnableEncryption)
+    }
+
+    @Test
+    @Config(qualifiers = "h1024dp")
+    fun `click on space member access emits the expected event`() {
+        val recorder = EventsRecorder<SecurityAndPrivacyEvent>()
+        val state = aSecurityAndPrivacyState(
+            eventSink = recorder,
+            spaceSelectionMode = SpaceSelectionMode.Single(A_ROOM_ID, null),
+        )
+        rule.setSecurityAndPrivacyView(state)
+        rule.clickOn(R.string.screen_security_and_privacy_room_access_space_members_option_title)
+        recorder.assertSingle(SecurityAndPrivacyEvent.SelectSpaceMemberAccess)
+    }
+
+    @Test
+    @Config(qualifiers = "h1024dp")
+    fun `click on ask to join with space members emits the expected event`() {
+        val recorder = EventsRecorder<SecurityAndPrivacyEvent>()
+        val state = aSecurityAndPrivacyState(
+            eventSink = recorder,
+            spaceSelectionMode = SpaceSelectionMode.Single(A_ROOM_ID, null),
+        )
+        rule.setSecurityAndPrivacyView(state)
+        rule.clickOn(R.string.screen_security_and_privacy_ask_to_join_option_title)
+        recorder.assertSingle(SecurityAndPrivacyEvent.SelectAskToJoinWithSpaceMembersAccess)
+    }
+
+    @Test
+    @Config(qualifiers = "h1024dp")
+    fun `manage spaces footer is shown when space member access is selected`() {
+        val recorder = EventsRecorder<SecurityAndPrivacyEvent>(expectEvents = false)
+        val state = aSecurityAndPrivacyState(
+            eventSink = recorder,
+            spaceSelectionMode = SpaceSelectionMode.Multiple,
+            editedSettings = aSecurityAndPrivacySettings(
+                roomAccess = SecurityAndPrivacyRoomAccess.SpaceMember(persistentListOf(A_ROOM_ID)),
+            ),
+        )
+        rule.setSecurityAndPrivacyView(state)
+        // The footer text uses AnnotatedString with a link. Verify the footer text is displayed.
+        rule.onNodeWithText("Choose which spaces", substring = true).assertExists()
     }
 }
 

@@ -38,7 +38,6 @@ data class SecurityAndPrivacyState(
     private val spaceSelectionMode: SpaceSelectionMode,
     val eventSink: (SecurityAndPrivacyEvent) -> Unit
 ) {
-
     val isSpaceMemberSelectable = isSpaceSettingsEnabled && spaceSelectionMode != SpaceSelectionMode.None
 
     // Show SpaceMember option in two cases:
@@ -58,7 +57,7 @@ data class SecurityAndPrivacyState(
     // - AskToJoin is the current saved value (legacy), OR
     // - Knock FF enabled BUT (SpaceSettings FF disabled OR no spaces available)
     val showAskToJoinOption = savedSettings.roomAccess == SecurityAndPrivacyRoomAccess.AskToJoin ||
-        (isAskToJoinSelectable && !isAskToJoinWithSpaceMembersSelectable)
+        isAskToJoinSelectable && !isAskToJoinWithSpaceMembersSelectable
 
     // Show AskToJoinWithSpaceMember option when:
     // - It's the current saved value, OR
@@ -98,7 +97,9 @@ data class SecurityAndPrivacyState(
                     stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_single_parent_description, spaceName)
                 }
                 is SpaceSelectionMode.None,
-                is SpaceSelectionMode.Multiple -> stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_multiple_parents_description)
+                is SpaceSelectionMode.Multiple -> stringResource(
+                    R.string.screen_security_and_privacy_room_access_space_members_option_multiple_parents_description
+                )
             }
         } else {
             stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_unavailable_description)

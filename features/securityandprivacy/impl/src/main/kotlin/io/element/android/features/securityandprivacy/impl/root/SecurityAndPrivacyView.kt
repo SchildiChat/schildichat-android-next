@@ -208,9 +208,7 @@ private fun RoomAccessSection(
     state: SecurityAndPrivacyState,
     modifier: Modifier = Modifier,
 ) {
-
     val edited = state.editedSettings.roomAccess
-    val saved = state.savedSettings.roomAccess
 
     fun onSelectOption(option: SecurityAndPrivacyRoomAccess) {
         state.eventSink(SecurityAndPrivacyEvent.ChangeRoomAccess(option))
@@ -282,7 +280,7 @@ private fun RoomAccessSection(
             val footerText = stringWithLink(
                 textRes = R.string.screen_security_and_privacy_room_access_footer,
                 url = stringResource(R.string.screen_security_and_privacy_room_access_footer_manage_spaces_action),
-                onLinkClick = {onManageSpacesClick()},
+                onLinkClick = { onManageSpacesClick() },
             )
             Text(
                 text = footerText,

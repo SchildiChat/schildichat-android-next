@@ -46,7 +46,7 @@ class SecurityAndPrivacyNode(
         activity.openUrlInChromeCustomTab(null, darkTheme, url)
     }
 
-    fun getAuthorizedSpacesData(): AuthorizedSpacesSelection{
+    fun getAuthorizedSpacesData(): AuthorizedSpacesSelection {
         return stateFlow.value.getAuthorizedSpacesSelection()
     }
 
@@ -72,5 +72,4 @@ class SecurityAndPrivacyNode(
             modifier = modifier
         )
     }
-
 }

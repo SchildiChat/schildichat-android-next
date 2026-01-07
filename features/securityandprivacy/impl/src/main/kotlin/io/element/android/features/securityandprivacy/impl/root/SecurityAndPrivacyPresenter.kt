@@ -35,7 +35,6 @@ import io.element.android.libraries.featureflag.api.FeatureFlagService
 import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomAlias
-import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.room.RoomInfo
 import io.element.android.libraries.matrix.api.room.history.RoomHistoryVisibility
@@ -193,11 +192,12 @@ class SecurityAndPrivacyPresenter(
                     saveAction.value = AsyncAction.Uninitialized
                 }
                 SecurityAndPrivacyEvent.ManageAuthorizedSpaces -> {
-                    navigator.openManageAuthorizedSpaces()
+                    navigator.openManageAuthorizedSpaces(
+                        forKnockRestricted = editedRoomAccess.value is SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember
+                    )
                 }
                 SecurityAndPrivacyEvent.SelectSpaceMemberAccess -> handleSpaceMemberAccessSelection(
                     spaceSelectionMode = spaceSelectionMode,
-                    spaceIds = editedSettings.roomAccess.spaceIds(),
                     editedAccess = editedRoomAccess,
                 )
                 SecurityAndPrivacyEvent.SelectAskToJoinWithSpaceMembersAccess -> handleAskToJoinWithSpaceMembersAccessSelection(
@@ -250,7 +250,6 @@ class SecurityAndPrivacyPresenter(
 
     private fun handleSpaceMemberAccessSelection(
         spaceSelectionMode: SpaceSelectionMode,
-        spaceIds: List<RoomId>,
         editedAccess: MutableState<SecurityAndPrivacyRoomAccess>,
     ) {
         if (editedAccess.value is SecurityAndPrivacyRoomAccess.SpaceMember) {

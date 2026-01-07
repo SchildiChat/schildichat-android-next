@@ -44,6 +44,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
+@Suppress("LargeClass")
 class SecurityAndPrivacyPresenterTest {
     @Test
     fun `present - initial states`() = runTest {

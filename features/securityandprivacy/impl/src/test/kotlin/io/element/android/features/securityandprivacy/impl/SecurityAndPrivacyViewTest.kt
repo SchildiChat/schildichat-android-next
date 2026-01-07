@@ -22,15 +22,15 @@ import io.element.android.features.securityandprivacy.impl.root.SecurityAndPriva
 import io.element.android.features.securityandprivacy.impl.root.SpaceSelectionMode
 import io.element.android.features.securityandprivacy.impl.root.aSecurityAndPrivacySettings
 import io.element.android.features.securityandprivacy.impl.root.aSecurityAndPrivacyState
-import io.element.android.libraries.matrix.test.A_ROOM_ID
-import kotlinx.collections.immutable.persistentListOf
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
+import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.ui.strings.CommonStrings
 import io.element.android.tests.testutils.EnsureNeverCalledWithParam
 import io.element.android.tests.testutils.EventsRecorder
 import io.element.android.tests.testutils.clickOn
 import io.element.android.tests.testutils.pressBack
+import kotlinx.collections.immutable.persistentListOf
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule

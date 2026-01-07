@@ -9,7 +9,6 @@
 package io.element.android.features.securityandprivacy.impl.manageauthorizedspaces
 
 import com.google.common.truth.Truth.assertThat
-import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.tests.testutils.test
 import kotlinx.collections.immutable.persistentListOf

@@ -21,7 +21,6 @@ import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
 import com.bumble.appyx.navmodel.backstack.BackStack
 import com.bumble.appyx.navmodel.backstack.activeElement
-import com.bumble.appyx.navmodel.backstack.operation.pop
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
@@ -35,7 +34,6 @@ import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.di.RoomScope
-import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.room.powerlevels.use
 import kotlinx.coroutines.NonCancellable
@@ -92,9 +90,11 @@ class SecurityAndPrivacyFlowNode(
                 callback.onDone()
             }
         }
-        whenChildrenAttached { commonLifecycle: Lifecycle,
+        whenChildrenAttached {
+            commonLifecycle: Lifecycle,
                                securityAndPrivacyNode: SecurityAndPrivacyNode,
-                               manageAuthorizedSpacesNode: ManageAuthorizedSpacesNode ->
+                               manageAuthorizedSpacesNode: ManageAuthorizedSpacesNode
+            ->
             commonLifecycle.coroutineScope.launch {
                 val authorizedSpacesData = securityAndPrivacyNode.getAuthorizedSpacesData()
                 val selectedSpaces = manageAuthorizedSpacesNode.waitForCompletion(authorizedSpacesData)

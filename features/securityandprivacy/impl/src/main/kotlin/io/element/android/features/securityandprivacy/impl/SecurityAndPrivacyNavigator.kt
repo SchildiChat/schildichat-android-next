@@ -18,7 +18,7 @@ interface SecurityAndPrivacyNavigator : Plugin {
     fun onDone()
     fun openEditRoomAddress()
     fun closeEditRoomAddress()
-    fun openManageAuthorizedSpaces(forKnockRestricted: Boolean = false)
+    fun openManageAuthorizedSpaces(forKnockRestricted: Boolean)
     fun closeManageAuthorizedSpaces()
 }
 

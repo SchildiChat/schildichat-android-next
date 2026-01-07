@@ -15,8 +15,10 @@ sealed interface SecurityAndPrivacyEvent {
     data object Exit : SecurityAndPrivacyEvent
     data object DismissExitConfirmation : SecurityAndPrivacyEvent
     data class ChangeRoomAccess(val roomAccess: SecurityAndPrivacyRoomAccess) : SecurityAndPrivacyEvent
+
     // Special case for "Space Members"
     data object SelectSpaceMemberAccess : SecurityAndPrivacyEvent
+
     // Special case for "Ask to join with Space Members"
     data object SelectAskToJoinWithSpaceMembersAccess : SecurityAndPrivacyEvent
     data object ToggleEncryptionState : SecurityAndPrivacyEvent

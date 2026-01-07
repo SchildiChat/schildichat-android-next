@@ -69,4 +69,3 @@ private fun aManageAuthorizedSpacesState(
     isSelectionComplete = false,
     eventSink = eventSink,
 )
-

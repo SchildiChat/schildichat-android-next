@@ -11,7 +11,6 @@ package io.element.android.features.securityandprivacy.impl
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.bumble.appyx.core.modality.AncestryInfo
 import com.bumble.appyx.core.modality.BuildContext
-import com.bumble.appyx.navmodel.backstack.BackStack
 import com.bumble.appyx.navmodel.backstack.activeElement
 import com.bumble.appyx.utils.customisations.NodeCustomisationDirectoryImpl
 import com.google.common.truth.Truth.assertThat
@@ -27,7 +26,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class SecurityAndPrivacyFlowNodeTest {
-
     @Test
     fun `initial backstack contains SecurityAndPrivacy`() = runTest {
         val flowNode = createFlowNode()

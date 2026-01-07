@@ -18,11 +18,10 @@ import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.matrix.api.core.RoomId
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 @Inject
-class ManageAuthorizedSpacesPresenter() : Presenter<ManageAuthorizedSpacesState> {
-
+class ManageAuthorizedSpacesPresenter : Presenter<ManageAuthorizedSpacesState> {
     @Composable
     override fun present(): ManageAuthorizedSpacesState {
         var selectedIds: ImmutableList<RoomId> by remember { mutableStateOf(persistentListOf()) }
@@ -31,12 +30,12 @@ class ManageAuthorizedSpacesPresenter() : Presenter<ManageAuthorizedSpacesState>
 
         fun handleEvent(event: ManageAuthorizedSpacesEvent) {
             when (event) {
-                ManageAuthorizedSpacesEvent.Done ->isSelectionComplete = true
+                ManageAuthorizedSpacesEvent.Done -> isSelectionComplete = true
                 is ManageAuthorizedSpacesEvent.ToggleSpace -> {
                     selectedIds = if (selectedIds.contains(event.roomId)) {
-                        selectedIds.minus(event.roomId).toPersistentList()
+                        selectedIds.minus(event.roomId).toImmutableList()
                     } else {
-                        selectedIds.plus(event.roomId).toPersistentList()
+                        selectedIds.plus(event.roomId).toImmutableList()
                     }
                 }
                 is ManageAuthorizedSpacesEvent.SetData -> {

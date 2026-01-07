@@ -33,7 +33,6 @@ class ManageAuthorizedSpacesNode(
     @Assisted plugins: List<Plugin>,
     presenter: ManageAuthorizedSpacesPresenter,
 ) : Node(buildContext, plugins = plugins) {
-
     private val navigator = plugins<SecurityAndPrivacyNavigator>().first()
     private val stateFlow = launchMolecule { presenter.present() }
 

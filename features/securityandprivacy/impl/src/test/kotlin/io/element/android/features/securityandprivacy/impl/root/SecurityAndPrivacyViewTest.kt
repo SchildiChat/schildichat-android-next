@@ -1,12 +1,11 @@
 /*
- * Copyright (c) 2025 Element Creations Ltd.
- * Copyright 2025 New Vector Ltd.
+ * Copyright (c) 2026 Element Creations Ltd.
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.features.securityandprivacy.impl
+package io.element.android.features.securityandprivacy.impl.root
 
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
@@ -14,14 +13,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyEvent
-import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyHistoryVisibility
-import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyRoomAccess
-import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyState
-import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyView
-import io.element.android.features.securityandprivacy.impl.root.SpaceSelectionMode
-import io.element.android.features.securityandprivacy.impl.root.aSecurityAndPrivacySettings
-import io.element.android.features.securityandprivacy.impl.root.aSecurityAndPrivacyState
+import io.element.android.features.securityandprivacy.impl.R
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.matrix.test.A_ROOM_ID
@@ -222,7 +214,9 @@ class SecurityAndPrivacyViewTest {
         )
         rule.setSecurityAndPrivacyView(state)
         // The footer text uses AnnotatedString with a link. Verify the footer text is displayed.
-        rule.onNodeWithText("Choose which spaces", substring = true).assertExists()
+        val actionFooterText = rule.activity.getString(R.string.screen_security_and_privacy_room_access_footer_manage_spaces_action)
+        val footerText = rule.activity.getString(R.string.screen_security_and_privacy_room_access_footer, actionFooterText)
+        rule.onNodeWithText(footerText).assertExists()
     }
 }
 

@@ -1,18 +1,15 @@
 /*
- * Copyright (c) 2025 Element Creations Ltd.
- * Copyright 2025 New Vector Ltd.
+ * Copyright (c) 2026 Element Creations Ltd.
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.features.securityandprivacy.impl
+package io.element.android.features.securityandprivacy.impl.root
 
 import com.google.common.truth.Truth.assertThat
-import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyEvent
-import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyHistoryVisibility
-import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyPresenter
-import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyRoomAccess
+import io.element.android.features.securityandprivacy.impl.FakeSecurityAndPrivacyNavigator
+import io.element.android.features.securityandprivacy.impl.SecurityAndPrivacyNavigator
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.featureflag.api.FeatureFlagService
@@ -214,7 +211,8 @@ class SecurityAndPrivacyPresenterTest {
     @Test
     fun `present - edit room address`() = runTest {
         val openEditRoomAddressLambda = lambdaRecorder<Unit> { }
-        val navigator = FakeSecurityAndPrivacyNavigator(openEditRoomAddressLambda = openEditRoomAddressLambda)
+        val navigator =
+            FakeSecurityAndPrivacyNavigator(openEditRoomAddressLambda = openEditRoomAddressLambda)
         val presenter = createSecurityAndPrivacyPresenter(navigator = navigator)
         presenter.test {
             skipItems(1)
@@ -439,7 +437,8 @@ class SecurityAndPrivacyPresenterTest {
     @Test
     fun `present - SelectSpaceMemberAccess with multiple spaces opens ManageAuthorizedSpaces`() = runTest {
         val openManageAuthorizedSpacesLambda = lambdaRecorder<Boolean, Unit> { }
-        val navigator = FakeSecurityAndPrivacyNavigator(openManageAuthorizedSpacesLambda = openManageAuthorizedSpacesLambda)
+        val navigator =
+            FakeSecurityAndPrivacyNavigator(openManageAuthorizedSpacesLambda = openManageAuthorizedSpacesLambda)
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
                 roomPermissions = roomPermissions(),
@@ -607,7 +606,8 @@ class SecurityAndPrivacyPresenterTest {
     @Test
     fun `present - SelectAskToJoinWithSpaceMembersAccess with multiple spaces opens ManageAuthorizedSpaces`() = runTest {
         val openManageAuthorizedSpacesLambda = lambdaRecorder<Boolean, Unit> { }
-        val navigator = FakeSecurityAndPrivacyNavigator(openManageAuthorizedSpacesLambda = openManageAuthorizedSpacesLambda)
+        val navigator =
+            FakeSecurityAndPrivacyNavigator(openManageAuthorizedSpacesLambda = openManageAuthorizedSpacesLambda)
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
                 roomPermissions = roomPermissions(),

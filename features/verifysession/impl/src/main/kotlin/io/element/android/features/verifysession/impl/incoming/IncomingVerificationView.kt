@@ -140,12 +140,12 @@ private fun IncomingVerificationHeader(step: Step, request: VerificationRequest.
     }
     IconTitleSubtitleMolecule(
         modifier = Modifier
-                .padding(bottom = 16.dp)
-                .semantics(mergeDescendants = true) {
-                    contentDescription = timeLimitMessage
-                    focused = true
-                }
-                .focusable(),
+            .padding(bottom = 16.dp)
+            .semantics(mergeDescendants = true) {
+                contentDescription = timeLimitMessage
+                focused = true
+            }
+            .focusable(),
         iconStyle = iconStyle,
         title = stringResource(id = titleTextId),
         subTitle = stringResource(id = subtitleTextId),
@@ -166,7 +166,7 @@ private fun IncomingVerificationContent(
 
 @Composable
 private fun ContentInitial(
-    initialIncoming: Step.Initial,
+    stepInitial: Step.Initial,
     request: VerificationRequest.Incoming,
 ) {
     when (request) {
@@ -176,14 +176,14 @@ private fun ContentInitial(
                 verticalArrangement = Arrangement.spacedBy(24.dp),
             ) {
                 SessionDetailsView(
-                    deviceName = initialIncoming.deviceDisplayName,
-                    deviceId = initialIncoming.deviceId,
-                    signInFormattedTimestamp = initialIncoming.formattedSignInTime,
+                    deviceName = stepInitial.deviceDisplayName,
+                    deviceId = stepInitial.deviceId,
+                    signInFormattedTimestamp = stepInitial.formattedSignInTime,
                 )
                 Text(
                     modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(bottom = 16.dp),
+                        .align(Alignment.CenterHorizontally)
+                        .padding(bottom = 16.dp),
                     text = stringResource(R.string.screen_session_verification_request_footer),
                     style = ElementTheme.typography.fontBodyMdMedium,
                     textAlign = TextAlign.Center,
@@ -193,8 +193,8 @@ private fun ContentInitial(
         is VerificationRequest.Incoming.User -> {
             Column(
                 modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 24.dp),
+                    .fillMaxWidth()
+                    .padding(top = 24.dp),
             ) {
                 VerificationUserProfileContent(
                     user = request.details.senderProfile,
@@ -208,10 +208,8 @@ private fun ContentInitial(
 private fun IncomingVerificationBottomMenu(
     state: IncomingVerificationState,
 ) {
-    val step = state.step
     val eventSink = state.eventSink
-
-    when (step) {
+    when (val step = state.step) {
         is Step.Initial -> {
             VerificationBottomMenu {
                 Button(
@@ -236,7 +234,9 @@ private fun IncomingVerificationBottomMenu(
                     text = stringResource(R.string.screen_session_verification_they_match),
                     enabled = !step.isWaiting,
                     showProgress = step.isWaiting,
-                    onClick = { eventSink(IncomingVerificationViewEvents.ConfirmVerification) },
+                    onClick = {
+                        eventSink(IncomingVerificationViewEvents.ConfirmVerification)
+                    },
                 )
                 TextButton(
                     modifier = Modifier.fillMaxWidth(),
@@ -253,7 +253,9 @@ private fun IncomingVerificationBottomMenu(
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(CommonStrings.action_done),
-                    onClick = { eventSink(IncomingVerificationViewEvents.GoBack) },
+                    onClick = {
+                        eventSink(IncomingVerificationViewEvents.GoBack)
+                    },
                 )
             }
         }

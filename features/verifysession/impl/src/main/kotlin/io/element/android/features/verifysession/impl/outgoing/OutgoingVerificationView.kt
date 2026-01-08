@@ -35,7 +35,6 @@ import io.element.android.features.verifysession.impl.R
 import io.element.android.features.verifysession.impl.outgoing.OutgoingVerificationState.Step
 import io.element.android.features.verifysession.impl.ui.VerificationBottomMenu
 import io.element.android.features.verifysession.impl.ui.VerificationContentVerifying
-import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.designsystem.atomic.molecules.IconTitleSubtitleMolecule
 import io.element.android.libraries.designsystem.atomic.pages.HeaderFooterPage
 import io.element.android.libraries.designsystem.components.BigIcon
@@ -97,15 +96,15 @@ fun OutgoingVerificationView(
                     navigationIcon = {
                         BackButton(onClick = ::cancelOrResetFlow)
                     },
-                    colors = topAppBarColors(containerColor = Color.Transparent)
+                    colors = topAppBarColors(containerColor = Color.Transparent),
                 )
             },
             header = {
                 OutgoingVerificationHeader(step = step, request = state.request)
             },
             footer = {
-                OutgoingVerificationViewBottomMenu(
-                    screenState = state,
+                OutgoingVerificationBottomMenu(
+                    state = state,
                     onCancelClick = ::cancelOrResetFlow,
                     onContinueClick = onFinish,
                 )
@@ -113,7 +112,7 @@ fun OutgoingVerificationView(
             isScrollable = true,
         ) {
             OutgoingVerificationContent(
-                flowState = step,
+                step = step,
                 request = state.request,
                 onLearnMoreClick = onLearnMoreClick,
             )
@@ -203,20 +202,16 @@ private fun OutgoingVerificationHeader(step: Step, request: VerificationRequest.
 
 @Composable
 private fun OutgoingVerificationContent(
-    flowState: Step,
+    step: Step,
     request: VerificationRequest.Outgoing,
     onLearnMoreClick: () -> Unit,
 ) {
-    when (flowState) {
-        is Step.Initial -> {
-            when (request) {
-                is VerificationRequest.Outgoing.CurrentSession -> Unit
-                is VerificationRequest.Outgoing.User -> ContentInitial(onLearnMoreClick)
-            }
+    when (step) {
+        is Step.Initial -> when (request) {
+            is VerificationRequest.Outgoing.CurrentSession -> Unit
+            is VerificationRequest.Outgoing.User -> ContentInitial(onLearnMoreClick)
         }
-        is Step.Verifying -> {
-            VerificationContentVerifying(flowState.data)
-        }
+        is Step.Verifying -> VerificationContentVerifying(step.data)
         else -> Unit
     }
 }
@@ -240,22 +235,18 @@ private fun ContentInitial(
 }
 
 @Composable
-private fun OutgoingVerificationViewBottomMenu(
-    screenState: OutgoingVerificationState,
+private fun OutgoingVerificationBottomMenu(
+    state: OutgoingVerificationState,
     onCancelClick: () -> Unit,
     onContinueClick: () -> Unit,
 ) {
-    val verificationViewState = screenState.step
-    val eventSink = screenState.eventSink
-
-    val isVerifying = (verificationViewState as? Step.Verifying)?.state is AsyncData.Loading<Unit>
-
-    when (verificationViewState) {
+    val eventSink = state.eventSink
+    when (val step = state.step) {
         Step.Loading -> error("Should not happen")
         is Step.AwaitingOtherDeviceResponse,
         is Step.Initial -> {
             VerificationBottomMenu {
-                val isWaiting = verificationViewState is Step.AwaitingOtherDeviceResponse
+                val isWaiting = step is Step.AwaitingOtherDeviceResponse
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(CommonStrings.action_start_verification),
@@ -291,6 +282,7 @@ private fun OutgoingVerificationViewBottomMenu(
             }
         }
         is Step.Verifying -> {
+            val isVerifying = step.state.isLoading()
             VerificationBottomMenu {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
@@ -305,7 +297,9 @@ private fun OutgoingVerificationViewBottomMenu(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(R.string.screen_session_verification_they_dont_match),
                     enabled = !isVerifying,
-                    onClick = { eventSink(OutgoingVerificationViewEvents.DeclineVerification) },
+                    onClick = {
+                        eventSink(OutgoingVerificationViewEvents.DeclineVerification)
+                    },
                 )
             }
         }

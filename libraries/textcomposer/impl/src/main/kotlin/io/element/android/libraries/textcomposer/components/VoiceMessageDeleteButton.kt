@@ -25,39 +25,33 @@ import io.element.android.libraries.ui.strings.CommonStrings
 @Composable
 fun VoiceMessageDeleteButton(
     enabled: Boolean,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    IconButton(
-        modifier = modifier
-            .size(48.dp),
-        enabled = enabled,
-        onClick = onClick,
-    ) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            imageVector = CompoundIcons.Delete(),
-            contentDescription = stringResource(CommonStrings.a11y_delete),
-            tint = if (enabled) {
-                ElementTheme.colors.iconCriticalPrimary
-            } else {
-                ElementTheme.colors.iconDisabled
-            },
-        )
-    }
+    Icon(
+        modifier = modifier.size(24.dp),
+        imageVector = CompoundIcons.Delete(),
+        contentDescription = stringResource(CommonStrings.a11y_delete),
+        tint = if (enabled) {
+            ElementTheme.colors.iconCriticalPrimary
+        } else {
+            ElementTheme.colors.iconDisabled
+        },
+    )
 }
 
 @PreviewsDayNight
 @Composable
 internal fun VoiceMessageDeleteButtonPreview() = ElementPreview {
     Row {
-        VoiceMessageDeleteButton(
-            enabled = true,
-            onClick = {},
-        )
-        VoiceMessageDeleteButton(
-            enabled = false,
-            onClick = {},
-        )
+        IconButton(onClick = {}) {
+            VoiceMessageDeleteButton(
+                enabled = true,
+            )
+        }
+        IconButton(onClick = {}) {
+            VoiceMessageDeleteButton(
+                enabled = false,
+            )
+        }
     }
 }

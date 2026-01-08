@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ReadOnlyComposable
@@ -142,26 +143,6 @@ fun TextComposer(
     val layoutModifier = modifier
         .fillMaxSize()
         .height(IntrinsicSize.Min)
-
-    val composerOptionsButton: @Composable () -> Unit = remember(composerMode) {
-        @Composable {
-            when (composerMode) {
-                is MessageComposerMode.Attachment -> {
-                    Spacer(modifier = Modifier.width(9.dp))
-                }
-                is MessageComposerMode.EditCaption -> {
-                    Spacer(modifier = Modifier.width(16.dp))
-                }
-                else -> {
-                    IconColorButton(
-                        onClick = onAddAttachment,
-                        imageVector = CompoundIcons.Plus(),
-                        contentDescription = stringResource(R.string.rich_text_editor_a11y_add_attachment),
-                    )
-                }
-            }
-        }
-    }
 
     val placeholder = if (composerMode.inThread) {
         stringResource(id = CommonStrings.action_reply_in_thread)
@@ -337,16 +318,6 @@ fun TextComposer(
         }
     }
 
-    val voiceDeleteButton = @Composable {
-        when (voiceMessageState) {
-            is VoiceMessageState.Preview ->
-                VoiceMessageDeleteButton(enabled = !voiceMessageState.isSending, onClick = onDeleteVoiceMessage)
-            is VoiceMessageState.Recording ->
-                VoiceMessageDeleteButton(enabled = true, onClick = { onVoiceRecorderEvent(VoiceMessageRecorderEvent.Cancel) })
-            else -> {}
-        }
-    }
-
     if (showTextFormatting && textFormattingOptions != null) {
         TextFormattingLayout(
             modifier = layoutModifier,
@@ -366,16 +337,18 @@ fun TextComposer(
         )
     } else {
         StandardLayout(
+            composerMode = composerMode,
             voiceMessageState = voiceMessageState,
             isRoomEncrypted = state.isRoomEncrypted,
             modifier = layoutModifier,
-            composerOptionsButton = composerOptionsButton,
             textInput = textInput,
             endButton = sendOrRecordButton,
             endButtonClick = ::endButtonClickStandard,
             endButtonA11y = endButtonA11y,
             voiceRecording = voiceRecording,
-            voiceDeleteButton = voiceDeleteButton,
+            onAddAttachment = onAddAttachment,
+            onDeleteVoiceMessage = onDeleteVoiceMessage,
+            onVoiceRecorderEvent = onVoiceRecorderEvent,
         )
     }
 
@@ -434,15 +407,17 @@ private fun endButtonA11y(
 
 @Composable
 private fun StandardLayout(
+    composerMode: MessageComposerMode,
     voiceMessageState: VoiceMessageState,
     isRoomEncrypted: Boolean?,
     textInput: @Composable () -> Unit,
-    composerOptionsButton: @Composable () -> Unit,
     voiceRecording: @Composable () -> Unit,
-    voiceDeleteButton: @Composable () -> Unit,
     endButton: @Composable () -> Unit,
     endButtonClick: () -> Unit,
     endButtonA11y: (SemanticsPropertyReceiver.() -> Unit),
+    onAddAttachment: () -> Unit,
+    onDeleteVoiceMessage: () -> Unit,
+    onVoiceRecorderEvent: (VoiceMessageRecorderEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -452,21 +427,54 @@ private fun StandardLayout(
             Spacer(Modifier.height(4.dp))
         }
         Row(verticalAlignment = Alignment.Bottom) {
-            if (voiceMessageState is VoiceMessageState.Idle) {
-                Box(
-                    Modifier
-                        .padding(bottom = 5.dp, top = 5.dp, start = 3.dp)
-                ) {
-                    composerOptionsButton()
+            when (composerMode) {
+                is MessageComposerMode.Attachment -> {
+                    Spacer(modifier = Modifier.width(12.dp))
                 }
-            } else {
-                Box(
-                    modifier = Modifier
-                        .padding(bottom = 5.dp, top = 5.dp, end = 3.dp, start = 3.dp)
-                        .size(48.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    voiceDeleteButton()
+                is MessageComposerMode.EditCaption -> {
+                    Spacer(modifier = Modifier.width(19.dp))
+                }
+                else -> {
+                    val endPadding = if (voiceMessageState is VoiceMessageState.Idle) 0.dp else 3.dp
+                    // To avoid loosing keyboard focus, the IconButton has to be defined here and has to be always enabled.
+                    IconButton(
+                        modifier = Modifier
+                            .padding(top = 5.dp, bottom = 5.dp, start = 3.dp, end = endPadding)
+                            .size(48.dp),
+                        onClick = {
+                            if (voiceMessageState is VoiceMessageState.Idle) {
+                                onAddAttachment()
+                            } else {
+                                when (voiceMessageState) {
+                                    is VoiceMessageState.Preview -> if (!voiceMessageState.isSending) {
+                                        onDeleteVoiceMessage()
+                                    }
+                                    is VoiceMessageState.Recording ->
+                                        onVoiceRecorderEvent(VoiceMessageRecorderEvent.Cancel)
+                                }
+                            }
+                        },
+                    ) {
+                        if (voiceMessageState is VoiceMessageState.Idle) {
+                            Icon(
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .size(30.dp)
+                                    .background(ElementTheme.colors.iconPrimary)
+                                    .padding(3.dp),
+                                imageVector = CompoundIcons.Plus(),
+                                contentDescription = stringResource(R.string.rich_text_editor_a11y_add_attachment),
+                                tint = ElementTheme.colors.iconOnSolidPrimary
+                            )
+                        } else {
+                            when (voiceMessageState) {
+                                is VoiceMessageState.Preview ->
+                                    VoiceMessageDeleteButton(enabled = !voiceMessageState.isSending)
+                                is VoiceMessageState.Recording ->
+                                    VoiceMessageDeleteButton(enabled = true)
+                            }
+                        }
+                    }
                 }
             }
             Box(

@@ -453,17 +453,13 @@ private fun StandardLayout(
         }
         Row(verticalAlignment = Alignment.Bottom) {
             if (voiceMessageState !is VoiceMessageState.Idle) {
-                if (voiceMessageState is VoiceMessageState.Preview || voiceMessageState is VoiceMessageState.Recording) {
-                    Box(
-                        modifier = Modifier
-                            .padding(bottom = 5.dp, top = 5.dp, end = 3.dp, start = 3.dp)
-                            .size(48.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        voiceDeleteButton()
-                    }
-                } else {
-                    Spacer(modifier = Modifier.width(16.dp))
+                Box(
+                    modifier = Modifier
+                        .padding(bottom = 5.dp, top = 5.dp, end = 3.dp, start = 3.dp)
+                        .size(48.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    voiceDeleteButton()
                 }
                 Box(
                     modifier = Modifier

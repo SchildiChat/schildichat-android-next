@@ -24,10 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.focused
-import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -129,20 +127,16 @@ fun OutgoingVerificationView(
 private fun OutgoingVerificationHeader(step: Step, request: VerificationRequest.Outgoing) {
     val iconStyle = when (step) {
         Step.Loading -> error("Should not happen")
+        Step.AwaitingOtherDeviceResponse,
         Step.Initial -> when (request) {
             is VerificationRequest.Outgoing.CurrentSession -> BigIcon.Style.Default(CompoundIcons.Devices())
             is VerificationRequest.Outgoing.User -> BigIcon.Style.Default(CompoundIcons.LockSolid())
         }
-        Step.AwaitingOtherDeviceResponse -> BigIcon.Style.Loading
         Step.Canceled -> BigIcon.Style.AlertSolid
         Step.Ready -> BigIcon.Style.Default(CompoundIcons.ReactionSolid())
         Step.Completed -> BigIcon.Style.SuccessSolid
         is Step.Verifying -> {
-            if (step.state is AsyncData.Loading<Unit>) {
-                BigIcon.Style.Loading
-            } else {
-                BigIcon.Style.Default(CompoundIcons.ReactionSolid())
-            }
+            BigIcon.Style.Default(CompoundIcons.ReactionSolid())
         }
         is Step.Exit -> return
     }
@@ -201,10 +195,6 @@ private fun OutgoingVerificationHeader(step: Step, request: VerificationRequest.
             .semantics(mergeDescendants = true) {
                 contentDescription = timeLimitMessage
                 focused = true
-                if (iconStyle == BigIcon.Style.Loading) {
-                    // Same code than Modifier.progressSemantics()
-                    progressBarRangeInfo = ProgressBarRangeInfo.Indeterminate
-                }
             }
             .focusable(),
         iconStyle = iconStyle,
@@ -264,11 +254,15 @@ private fun OutgoingVerificationViewBottomMenu(
 
     when (verificationViewState) {
         Step.Loading -> error("Should not happen")
+        is Step.AwaitingOtherDeviceResponse,
         is Step.Initial -> {
             VerificationBottomMenu {
+                val isWaiting = verificationViewState is Step.AwaitingOtherDeviceResponse
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(CommonStrings.action_start_verification),
+                    enabled = !isWaiting,
+                    showProgress = isWaiting,
                     onClick = { eventSink(OutgoingVerificationViewEvents.RequestVerification) },
                 )
                 InvisibleButton()
@@ -298,30 +292,23 @@ private fun OutgoingVerificationViewBottomMenu(
                 )
             }
         }
-        is Step.AwaitingOtherDeviceResponse -> Unit
         is Step.Verifying -> {
-            if (isVerifying) {
-                // Add invisible buttons to keep the same screen layout
-                VerificationBottomMenu {
-                    InvisibleButton()
-                    InvisibleButton()
-                }
-            } else {
-                VerificationBottomMenu {
-                    Button(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.screen_session_verification_they_match),
-                        onClick = {
-                            eventSink(OutgoingVerificationViewEvents.ConfirmVerification)
-                        },
-                    )
+            VerificationBottomMenu {
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(R.string.screen_session_verification_they_match),
+                    enabled = !isVerifying,
+                    showProgress = isVerifying,
+                    onClick = {
+                        eventSink(OutgoingVerificationViewEvents.ConfirmVerification)
+                    },
+                )
 
-                    TextButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.screen_session_verification_they_dont_match),
-                        onClick = { eventSink(OutgoingVerificationViewEvents.DeclineVerification) },
-                    )
-                }
+                TextButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(R.string.screen_session_verification_they_dont_match),
+                    onClick = { eventSink(OutgoingVerificationViewEvents.DeclineVerification) },
+                )
             }
         }
         is Step.Completed -> {
@@ -334,7 +321,7 @@ private fun OutgoingVerificationViewBottomMenu(
                 InvisibleButton()
             }
         }
-        is Step.Exit -> return
+        is Step.Exit -> Unit
     }
 }
 

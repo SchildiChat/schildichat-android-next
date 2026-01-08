@@ -279,7 +279,8 @@ private fun RoomAccessSection(
         if (state.showManageSpaceFooter) {
             val footerText = stringWithLink(
                 textRes = R.string.screen_security_and_privacy_room_access_footer,
-                url = stringResource(R.string.screen_security_and_privacy_room_access_footer_manage_spaces_action),
+                url = "",
+                linkTextRes = R.string.screen_security_and_privacy_room_access_footer_manage_spaces_action,
                 onLinkClick = { onManageSpacesClick() },
             )
             Text(

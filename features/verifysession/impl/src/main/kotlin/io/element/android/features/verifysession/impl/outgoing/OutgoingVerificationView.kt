@@ -94,10 +94,8 @@ fun OutgoingVerificationView(
             topBar = {
                 TopAppBar(
                     title = {},
-                    navigationIcon = if (step != Step.Completed) {
-                        { BackButton(onClick = ::cancelOrResetFlow) }
-                    } else {
-                        {}
+                    navigationIcon = {
+                        BackButton(onClick = ::cancelOrResetFlow)
                     },
                     colors = topAppBarColors(containerColor = Color.Transparent)
                 )

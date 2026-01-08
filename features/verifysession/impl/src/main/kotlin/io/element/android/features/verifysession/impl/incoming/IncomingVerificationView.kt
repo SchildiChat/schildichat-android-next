@@ -70,11 +70,7 @@ fun IncomingVerificationView(
             TopAppBar(
                 title = {},
                 navigationIcon = {
-                    when {
-                        step is Step.Initial && !step.isWaiting -> Unit
-                        step is Step.Completed -> Unit
-                        else -> BackButton(onClick = { state.eventSink(IncomingVerificationViewEvents.GoBack) })
-                    }
+                    BackButton(onClick = { state.eventSink(IncomingVerificationViewEvents.GoBack) })
                 },
                 colors = topAppBarColors(containerColor = Color.Transparent),
             )
@@ -144,12 +140,12 @@ private fun IncomingVerificationHeader(step: Step, request: VerificationRequest.
     }
     IconTitleSubtitleMolecule(
         modifier = Modifier
-            .padding(bottom = 16.dp)
-            .semantics(mergeDescendants = true) {
-                contentDescription = timeLimitMessage
-                focused = true
-            }
-            .focusable(),
+                .padding(bottom = 16.dp)
+                .semantics(mergeDescendants = true) {
+                    contentDescription = timeLimitMessage
+                    focused = true
+                }
+                .focusable(),
         iconStyle = iconStyle,
         title = stringResource(id = titleTextId),
         subTitle = stringResource(id = subtitleTextId),
@@ -186,8 +182,8 @@ private fun ContentInitial(
                 )
                 Text(
                     modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(bottom = 16.dp),
+                            .align(Alignment.CenterHorizontally)
+                            .padding(bottom = 16.dp),
                     text = stringResource(R.string.screen_session_verification_request_footer),
                     style = ElementTheme.typography.fontBodyMdMedium,
                     textAlign = TextAlign.Center,
@@ -197,8 +193,8 @@ private fun ContentInitial(
         is VerificationRequest.Incoming.User -> {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 24.dp),
+                        .fillMaxWidth()
+                        .padding(top = 24.dp),
             ) {
                 VerificationUserProfileContent(
                     user = request.details.senderProfile,

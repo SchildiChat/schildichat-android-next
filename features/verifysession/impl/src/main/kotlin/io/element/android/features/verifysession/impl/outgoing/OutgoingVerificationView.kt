@@ -301,10 +301,10 @@ private fun OutgoingVerificationViewBottomMenu(
                         eventSink(OutgoingVerificationViewEvents.ConfirmVerification)
                     },
                 )
-
                 TextButton(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(R.string.screen_session_verification_they_dont_match),
+                    enabled = !isVerifying,
                     onClick = { eventSink(OutgoingVerificationViewEvents.DeclineVerification) },
                 )
             }

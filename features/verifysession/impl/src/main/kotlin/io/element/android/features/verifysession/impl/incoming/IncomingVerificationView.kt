@@ -101,7 +101,7 @@ private fun IncomingVerificationHeader(step: Step, request: VerificationRequest.
     val iconStyle = when (step) {
         Step.Canceled -> BigIcon.Style.AlertSolid
         is Step.Initial -> when (request) {
-            is VerificationRequest.Incoming.OtherSession -> BigIcon.Style.Default(CompoundIcons.LockSolid())
+            is VerificationRequest.Incoming.OtherSession -> BigIcon.Style.Default(CompoundIcons.Devices())
             is VerificationRequest.Incoming.User -> BigIcon.Style.Default(CompoundIcons.UserProfileSolid())
         }
         is Step.Verifying -> BigIcon.Style.Default(CompoundIcons.ReactionSolid())

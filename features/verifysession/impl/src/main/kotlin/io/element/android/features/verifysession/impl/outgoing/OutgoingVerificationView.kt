@@ -130,7 +130,7 @@ private fun OutgoingVerificationHeader(step: Step, request: VerificationRequest.
         Step.AwaitingOtherDeviceResponse,
         Step.Initial -> when (request) {
             is VerificationRequest.Outgoing.CurrentSession -> BigIcon.Style.Default(CompoundIcons.Devices())
-            is VerificationRequest.Outgoing.User -> BigIcon.Style.Default(CompoundIcons.LockSolid())
+            is VerificationRequest.Outgoing.User -> BigIcon.Style.Default(CompoundIcons.UserProfileSolid())
         }
         Step.Canceled -> BigIcon.Style.AlertSolid
         Step.Ready -> BigIcon.Style.Default(CompoundIcons.ReactionSolid())

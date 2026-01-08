@@ -39,6 +39,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
@@ -61,6 +63,7 @@ import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.CircularProgressIndicator
 import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
 import io.element.android.libraries.designsystem.theme.components.Icon
+import io.element.android.libraries.designsystem.theme.components.IconButton
 import io.element.android.libraries.designsystem.theme.components.IconColorButton
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.matrix.api.core.EventId
@@ -122,9 +125,6 @@ fun TextComposer(
     val markdown = when (state) {
         is TextEditorState.Markdown -> state.state.text.value()
         is TextEditorState.Rich -> state.richTextEditorState.messageMarkdown
-    }
-    val onSendClick = {
-        onSendMessage()
     }
 
     val onPlayVoiceMessageClick = {
@@ -238,20 +238,17 @@ fun TextComposer(
     val sendButton = @Composable {
         SendButton(
             canSendMessage = canSendMessage,
-            onClick = onSendClick,
             composerMode = composerMode,
         )
     }
     val recordVoiceButton = @Composable {
         VoiceMessageRecorderButton(
             isRecording = voiceMessageState is VoiceMessageState.Recording,
-            onEvent = onVoiceRecorderEvent,
         )
     }
     val sendVoiceButton = @Composable {
         SendButton(
             canSendMessage = voiceMessageState is VoiceMessageState.Preview,
-            onClick = onSendVoiceMessage,
             composerMode = composerMode,
         )
     }
@@ -263,6 +260,39 @@ fun TextComposer(
 
     val textFormattingOptions: @Composable (() -> Unit)? = (state as? TextEditorState.Rich)?.let {
         @Composable { TextFormatting(state = it.richTextEditorState) }
+    }
+
+    val hapticFeedback = LocalHapticFeedback.current
+
+    fun performHapticFeedback() {
+        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+    }
+
+    fun endButtonClickStandard() = when {
+        !canSendMessage ->
+            when (voiceMessageState) {
+                VoiceMessageState.Idle -> {
+                    performHapticFeedback()
+                    onVoiceRecorderEvent.invoke(VoiceMessageRecorderEvent.Start)
+                }
+                is VoiceMessageState.Recording -> {
+                    performHapticFeedback()
+                    onVoiceRecorderEvent.invoke(VoiceMessageRecorderEvent.Stop)
+                }
+                is VoiceMessageState.Preview -> when (voiceMessageState.isSending) {
+                    true -> {
+                        // No op
+                    }
+                    false -> onSendVoiceMessage()
+                }
+            }
+        else -> onSendMessage()
+    }
+
+    fun endButtonClickFormatting() {
+        if (canSendMessage) {
+            onSendMessage()
+        }
     }
 
     val sendOrRecordButton = when {
@@ -330,8 +360,9 @@ fun TextComposer(
                 )
             },
             textFormatting = textFormattingOptions,
-            endButtonA11y = endButtonA11y,
             sendButton = sendButton,
+            endButtonClick = ::endButtonClickFormatting,
+            endButtonA11y = endButtonA11y,
         )
     } else {
         StandardLayout(
@@ -341,6 +372,7 @@ fun TextComposer(
             composerOptionsButton = composerOptionsButton,
             textInput = textInput,
             endButton = sendOrRecordButton,
+            endButtonClick = ::endButtonClickStandard,
             endButtonA11y = endButtonA11y,
             voiceRecording = voiceRecording,
             voiceDeleteButton = voiceDeleteButton,
@@ -409,6 +441,7 @@ private fun StandardLayout(
     voiceRecording: @Composable () -> Unit,
     voiceDeleteButton: @Composable () -> Unit,
     endButton: @Composable () -> Unit,
+    endButtonClick: () -> Unit,
     endButtonA11y: (SemanticsPropertyReceiver.() -> Unit),
     modifier: Modifier = Modifier,
 ) {
@@ -454,12 +487,13 @@ private fun StandardLayout(
                     textInput()
                 }
             }
-            Box(
-                Modifier
+            // To avoid loosing keyboard focus, the IconButton has to be defined here and has to be always enabled.
+            IconButton(
+                modifier = Modifier
                     .padding(bottom = 5.dp, top = 5.dp, end = 6.dp, start = 6.dp)
                     .size(48.dp)
                     .clearAndSetSemantics(endButtonA11y),
-                contentAlignment = Alignment.Center,
+                onClick = endButtonClick,
             ) {
                 endButton()
             }
@@ -496,6 +530,7 @@ private fun TextFormattingLayout(
     dismissTextFormattingButton: @Composable () -> Unit,
     textFormatting: @Composable () -> Unit,
     sendButton: @Composable () -> Unit,
+    endButtonClick: () -> Unit,
     endButtonA11y: (SemanticsPropertyReceiver.() -> Unit),
     modifier: Modifier = Modifier
 ) {
@@ -527,13 +562,16 @@ private fun TextFormattingLayout(
             Box(modifier = Modifier.weight(1f)) {
                 textFormatting()
             }
-            Box(
+            // To avoid loosing keyboard focus, the IconButton has to be defined here and has to be always enabled.
+            IconButton(
                 modifier = Modifier
                     .padding(
                         start = 14.dp,
                         end = 6.dp,
                     )
-                    .clearAndSetSemantics(endButtonA11y)
+                    .size(48.dp)
+                    .clearAndSetSemantics(endButtonA11y),
+                onClick = endButtonClick,
             ) {
                 sendButton()
             }

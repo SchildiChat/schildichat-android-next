@@ -41,48 +41,40 @@ import io.element.android.libraries.textcomposer.model.MessageComposerMode
 @Composable
 internal fun SendButton(
     canSendMessage: Boolean,
-    onClick: () -> Unit,
     composerMode: MessageComposerMode,
     modifier: Modifier = Modifier,
 ) {
-    IconButton(
+    val iconVector = when {
+        composerMode.isEditing -> CompoundIcons.Check()
+        else -> CompoundIcons.SendSolid()
+    }
+    val iconStartPadding = when {
+        composerMode.isEditing -> 0.dp
+        else -> 2.dp
+    }
+    Box(
         modifier = modifier
-            .size(48.dp),
-        onClick = onClick,
-        enabled = canSendMessage,
+            .clip(CircleShape)
+            .size(36.dp)
+            .buttonBackgroundModifier(canSendMessage)
     ) {
-        val iconVector = when {
-            composerMode.isEditing -> CompoundIcons.Check()
-            else -> CompoundIcons.SendSolid()
-        }
-        val iconStartPadding = when {
-            composerMode.isEditing -> 0.dp
-            else -> 2.dp
-        }
-        Box(
+        Icon(
             modifier = Modifier
-                .clip(CircleShape)
-                .size(36.dp)
-                .buttonBackgroundModifier(canSendMessage)
-        ) {
-            Icon(
-                modifier = Modifier
-                    .padding(start = iconStartPadding)
-                    .align(Alignment.Center),
-                imageVector = iconVector,
-                // Note: accessibility is managed in TextComposer.
-                contentDescription = null,
-                tint = if (canSendMessage) {
-                    if (ElementTheme.colors.isLight) {
-                        ElementTheme.colors.iconOnSolidPrimary
-                    } else {
-                        ElementTheme.colors.iconPrimary
-                    }
+                .padding(start = iconStartPadding)
+                .align(Alignment.Center),
+            imageVector = iconVector,
+            // Note: accessibility is managed in TextComposer.
+            contentDescription = null,
+            tint = if (canSendMessage) {
+                if (ElementTheme.colors.isLight) {
+                    ElementTheme.colors.iconOnSolidPrimary
                 } else {
-                    ElementTheme.colors.iconQuaternary
+                    ElementTheme.colors.iconPrimary
                 }
-            )
-        }
+            } else {
+                ElementTheme.colors.iconQuaternary
+            }
+        )
     }
 }
 
@@ -117,9 +109,17 @@ internal fun SendButtonPreview() = ElementPreview {
     val normalMode = MessageComposerMode.Normal
     val editMode = MessageComposerMode.Edit(EventId("\$id").toEventOrTransactionId(), "")
     Row {
-        SendButton(canSendMessage = true, onClick = {}, composerMode = normalMode)
-        SendButton(canSendMessage = false, onClick = {}, composerMode = normalMode)
-        SendButton(canSendMessage = true, onClick = {}, composerMode = editMode)
-        SendButton(canSendMessage = false, onClick = {}, composerMode = editMode)
+        IconButton(onClick = {}) {
+            SendButton(canSendMessage = true, composerMode = normalMode)
+        }
+        IconButton(onClick = {}) {
+            SendButton(canSendMessage = false, composerMode = normalMode)
+        }
+        IconButton(onClick = {}) {
+            SendButton(canSendMessage = true, composerMode = editMode)
+        }
+        IconButton(onClick = {}) {
+            SendButton(canSendMessage = false, composerMode = editMode)
+        }
     }
 }

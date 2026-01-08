@@ -732,6 +732,406 @@ class SecurityAndPrivacyPresenterTest {
         }
     }
 
+    @Test
+    fun `present - availableHistoryVisibilities includes WorldReadable for Anyone without encryption`() = runTest {
+        val room = FakeJoinedRoom(
+            baseRoom = FakeBaseRoom(
+                roomPermissions = roomPermissions(),
+                initialRoomInfo = aRoomInfo(
+                    joinRule = JoinRule.Public,
+                    historyVisibility = RoomHistoryVisibility.Shared,
+                )
+            )
+        )
+        val presenter = createSecurityAndPrivacyPresenter(room = room)
+        presenter.test {
+            skipItems(1)
+            with(awaitItem()) {
+                assertThat(editedSettings.roomAccess).isEqualTo(SecurityAndPrivacyRoomAccess.Anyone)
+                assertThat(editedSettings.isEncrypted).isFalse()
+                assertThat(availableHistoryVisibilities).contains(SecurityAndPrivacyHistoryVisibility.WorldReadable)
+                assertThat(availableHistoryVisibilities).doesNotContain(SecurityAndPrivacyHistoryVisibility.Invited)
+            }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `present - availableHistoryVisibilities includes Invited for InviteOnly access`() = runTest {
+        val presenter = createSecurityAndPrivacyPresenter()
+        presenter.test {
+            skipItems(1)
+            with(awaitItem()) {
+                assertThat(editedSettings.roomAccess).isEqualTo(SecurityAndPrivacyRoomAccess.InviteOnly)
+                assertThat(availableHistoryVisibilities).contains(SecurityAndPrivacyHistoryVisibility.Invited)
+                assertThat(availableHistoryVisibilities).doesNotContain(SecurityAndPrivacyHistoryVisibility.WorldReadable)
+            }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `present - availableHistoryVisibilities excludes WorldReadable when encrypted`() = runTest {
+        val room = FakeJoinedRoom(
+            baseRoom = FakeBaseRoom(
+                roomPermissions = roomPermissions(),
+                initialRoomInfo = aRoomInfo(
+                    joinRule = JoinRule.Public,
+                    historyVisibility = RoomHistoryVisibility.Shared,
+                    isEncrypted = true,
+                )
+            )
+        )
+        val presenter = createSecurityAndPrivacyPresenter(room = room)
+        presenter.test {
+            skipItems(1)
+            with(awaitItem()) {
+                assertThat(editedSettings.roomAccess).isEqualTo(SecurityAndPrivacyRoomAccess.Anyone)
+                assertThat(editedSettings.isEncrypted).isTrue()
+                assertThat(availableHistoryVisibilities).contains(SecurityAndPrivacyHistoryVisibility.Invited)
+                assertThat(availableHistoryVisibilities).doesNotContain(SecurityAndPrivacyHistoryVisibility.WorldReadable)
+            }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `present - showSpaceMemberOption is true when savedSettings has SpaceMember`() = runTest {
+        val room = FakeJoinedRoom(
+            baseRoom = FakeBaseRoom(
+                roomPermissions = roomPermissions(),
+                initialRoomInfo = aRoomInfo(
+                    joinRule = JoinRule.Restricted(
+                        rules = persistentListOf(AllowRule.RoomMembership(A_ROOM_ID))
+                    ),
+                    historyVisibility = RoomHistoryVisibility.Shared,
+                )
+            )
+        )
+        // No spaces available, so isSpaceMemberSelectable should be false
+        val presenter = createSecurityAndPrivacyPresenter(room = room)
+        presenter.test {
+            skipItems(1)
+            with(awaitItem()) {
+                assertThat(savedSettings.roomAccess).isInstanceOf(SecurityAndPrivacyRoomAccess.SpaceMember::class.java)
+                assertThat(isSpaceMemberSelectable).isFalse()
+                // showSpaceMemberOption should still be true because savedSettings has SpaceMember
+                assertThat(showSpaceMemberOption).isTrue()
+            }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `present - showSpaceMemberOption is false when not selectable and savedSettings is not SpaceMember`() = runTest {
+        // No spaces available, default InviteOnly join rule
+        val presenter = createSecurityAndPrivacyPresenter()
+        presenter.test {
+            skipItems(1)
+            with(awaitItem()) {
+                assertThat(savedSettings.roomAccess).isEqualTo(SecurityAndPrivacyRoomAccess.InviteOnly)
+                assertThat(isSpaceMemberSelectable).isFalse()
+                assertThat(showSpaceMemberOption).isFalse()
+            }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `present - showManageSpaceFooter is true when Multiple mode and SpaceMember access`() = runTest {
+        val room = FakeJoinedRoom(
+            baseRoom = FakeBaseRoom(
+                roomPermissions = roomPermissions(),
+                initialRoomInfo = aRoomInfo(
+                    historyVisibility = RoomHistoryVisibility.Shared,
+                    joinRule = JoinRule.Invite
+                )
+            )
+        )
+        val client = FakeMatrixClient(
+            userIdServerNameLambda = { "matrix.org" },
+            spaceService = FakeSpaceService(
+                joinedParentsResult = { _ ->
+                    Result.success(listOf(aSpaceRoom(roomId = A_ROOM_ID), aSpaceRoom(roomId = RoomId("!space2:matrix.org"))))
+                }
+            )
+        )
+        val presenter = createSecurityAndPrivacyPresenter(
+            room = room,
+            matrixClient = client,
+            featureFlagService = FakeFeatureFlagService(
+                initialState = mapOf(FeatureFlags.SpaceSettings.key to true)
+            )
+        )
+        presenter.test {
+            skipItems(1)
+            val state = awaitItem()
+            // Change to SpaceMember access
+            val spaceMemberAccess = SecurityAndPrivacyRoomAccess.SpaceMember(
+                spaceIds = persistentListOf(A_ROOM_ID)
+            )
+            state.eventSink(SecurityAndPrivacyEvent.ChangeRoomAccess(spaceMemberAccess))
+            with(awaitItem()) {
+                assertThat(editedSettings.roomAccess).isInstanceOf(SecurityAndPrivacyRoomAccess.SpaceMember::class.java)
+                assertThat(showManageSpaceFooter).isTrue()
+            }
+        }
+    }
+
+    @Test
+    fun `present - showManageSpaceFooter is false when Single mode`() = runTest {
+        val room = FakeJoinedRoom(
+            baseRoom = FakeBaseRoom(
+                roomPermissions = roomPermissions(),
+                initialRoomInfo = aRoomInfo(
+                    historyVisibility = RoomHistoryVisibility.Shared,
+                    joinRule = JoinRule.Invite
+                )
+            )
+        )
+        // Single space available
+        val client = FakeMatrixClient(
+            userIdServerNameLambda = { "matrix.org" },
+            spaceService = FakeSpaceService(
+                joinedParentsResult = { _ ->
+                    Result.success(listOf(aSpaceRoom(roomId = A_ROOM_ID)))
+                }
+            )
+        )
+        val presenter = createSecurityAndPrivacyPresenter(
+            room = room,
+            matrixClient = client,
+            featureFlagService = FakeFeatureFlagService(
+                initialState = mapOf(FeatureFlags.SpaceSettings.key to true)
+            )
+        )
+        presenter.test {
+            skipItems(1)
+            val state = awaitItem()
+            // Select SpaceMember access (single space auto-selects)
+            state.eventSink(SecurityAndPrivacyEvent.SelectSpaceMemberAccess)
+            with(awaitItem()) {
+                assertThat(editedSettings.roomAccess).isInstanceOf(SecurityAndPrivacyRoomAccess.SpaceMember::class.java)
+                // Single mode, so no footer
+                assertThat(showManageSpaceFooter).isFalse()
+            }
+        }
+    }
+
+    @Test
+    fun `present - isAskToJoinSelectable is true when Knock FF enabled`() = runTest {
+        val presenter = createSecurityAndPrivacyPresenter(
+            featureFlagService = FakeFeatureFlagService(
+                initialState = mapOf(FeatureFlags.Knock.key to true)
+            )
+        )
+        presenter.test {
+            skipItems(1)
+            with(awaitItem()) {
+                assertThat(isAskToJoinSelectable).isTrue()
+            }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `present - isAskToJoinSelectable is false when Knock FF disabled`() = runTest {
+        val presenter = createSecurityAndPrivacyPresenter(
+            featureFlagService = FakeFeatureFlagService(
+                initialState = mapOf(FeatureFlags.Knock.key to false)
+            )
+        )
+        presenter.test {
+            skipItems(1)
+            with(awaitItem()) {
+                assertThat(isAskToJoinSelectable).isFalse()
+            }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `present - getAuthorizedSpacesSelection returns correct data for SpaceMember`() = runTest {
+        val room = FakeJoinedRoom(
+            baseRoom = FakeBaseRoom(
+                roomPermissions = roomPermissions(),
+                initialRoomInfo = aRoomInfo(
+                    historyVisibility = RoomHistoryVisibility.Shared,
+                    joinRule = JoinRule.Restricted(
+                        rules = persistentListOf(AllowRule.RoomMembership(A_ROOM_ID))
+                    )
+                )
+            )
+        )
+        val spaceRoom = aSpaceRoom(roomId = A_ROOM_ID)
+        val client = FakeMatrixClient(
+            userIdServerNameLambda = { "matrix.org" },
+            spaceService = FakeSpaceService(
+                joinedParentsResult = { _ -> Result.success(listOf(spaceRoom)) },
+                getSpaceRoomResult = { null }
+            )
+        )
+        val presenter = createSecurityAndPrivacyPresenter(
+            room = room,
+            matrixClient = client,
+            featureFlagService = FakeFeatureFlagService(
+                initialState = mapOf(FeatureFlags.SpaceSettings.key to true)
+            )
+        )
+        presenter.test {
+            skipItems(1)
+            with(awaitItem()) {
+                val selection = getAuthorizedSpacesSelection()
+                assertThat(selection.joinedSpaces).containsExactly(spaceRoom)
+                assertThat(selection.initialSelectedIds).containsExactly(A_ROOM_ID)
+                assertThat(selection.unknownSpaceIds).isEmpty()
+            }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `present - getAuthorizedSpacesSelection identifies unknown space IDs`() = runTest {
+        val unknownSpaceId = RoomId("!unknown:matrix.org")
+        val room = FakeJoinedRoom(
+            baseRoom = FakeBaseRoom(
+                roomPermissions = roomPermissions(),
+                initialRoomInfo = aRoomInfo(
+                    historyVisibility = RoomHistoryVisibility.Shared,
+                    joinRule = JoinRule.Restricted(
+                        rules = persistentListOf(AllowRule.RoomMembership(unknownSpaceId))
+                    )
+                )
+            )
+        )
+        // No spaces available (the space in the join rule is unknown)
+        val presenter = createSecurityAndPrivacyPresenter(room = room)
+        presenter.test {
+            skipItems(1)
+            with(awaitItem()) {
+                val selection = getAuthorizedSpacesSelection()
+                assertThat(selection.joinedSpaces).isEmpty()
+                assertThat(selection.unknownSpaceIds).containsExactly(unknownSpaceId)
+            }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `present - SelectAskToJoinWithSpaceMembersAccess with single space auto-selects`() = runTest {
+        val room = FakeJoinedRoom(
+            baseRoom = FakeBaseRoom(
+                roomPermissions = roomPermissions(),
+                initialRoomInfo = aRoomInfo(
+                    historyVisibility = RoomHistoryVisibility.Shared,
+                    joinRule = JoinRule.Invite
+                )
+            )
+        )
+        val client = FakeMatrixClient(
+            userIdServerNameLambda = { "matrix.org" },
+            spaceService = FakeSpaceService(
+                joinedParentsResult = { _ ->
+                    Result.success(listOf(aSpaceRoom(roomId = A_ROOM_ID)))
+                }
+            )
+        )
+        val presenter = createSecurityAndPrivacyPresenter(
+            room = room,
+            matrixClient = client,
+            featureFlagService = FakeFeatureFlagService(
+                initialState = mapOf(
+                    FeatureFlags.Knock.key to true,
+                    FeatureFlags.SpaceSettings.key to true,
+                )
+            )
+        )
+        presenter.test {
+            skipItems(1)
+            val state = awaitItem()
+            assertThat(state.isAskToJoinWithSpaceMembersSelectable).isTrue()
+            state.eventSink(SecurityAndPrivacyEvent.SelectAskToJoinWithSpaceMembersAccess)
+            with(awaitItem()) {
+                assertThat(editedSettings.roomAccess).isInstanceOf(SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember::class.java)
+                val access = editedSettings.roomAccess as SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember
+                assertThat(access.spaceIds).containsExactly(A_ROOM_ID)
+            }
+        }
+    }
+
+    @Test
+    fun `present - showAskToJoinOption is true when savedSettings is AskToJoin`() = runTest {
+        val room = FakeJoinedRoom(
+            baseRoom = FakeBaseRoom(
+                roomPermissions = roomPermissions(),
+                initialRoomInfo = aRoomInfo(
+                    joinRule = JoinRule.Knock,
+                    historyVisibility = RoomHistoryVisibility.Shared,
+                )
+            )
+        )
+        // Knock FF disabled, but showAskToJoinOption should still be true because savedSettings has AskToJoin
+        val presenter = createSecurityAndPrivacyPresenter(
+            room = room,
+            featureFlagService = FakeFeatureFlagService(
+                initialState = mapOf(FeatureFlags.Knock.key to false)
+            )
+        )
+        presenter.test {
+            skipItems(1)
+            with(awaitItem()) {
+                assertThat(savedSettings.roomAccess).isEqualTo(SecurityAndPrivacyRoomAccess.AskToJoin)
+                assertThat(isAskToJoinSelectable).isFalse()
+                assertThat(showAskToJoinOption).isTrue()
+            }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `present - showHistoryVisibilitySection is false for space`() = runTest {
+        val room = FakeJoinedRoom(
+            baseRoom = FakeBaseRoom(
+                roomPermissions = roomPermissions(),
+                initialRoomInfo = aRoomInfo(
+                    historyVisibility = RoomHistoryVisibility.Shared,
+                    joinRule = JoinRule.Invite,
+                    isSpace = true,
+                )
+            )
+        )
+        val presenter = createSecurityAndPrivacyPresenter(room = room)
+        presenter.test {
+            skipItems(1)
+            with(awaitItem()) {
+                assertThat(showHistoryVisibilitySection).isFalse()
+            }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `present - showEncryptionSection is false for space`() = runTest {
+        val room = FakeJoinedRoom(
+            baseRoom = FakeBaseRoom(
+                roomPermissions = roomPermissions(),
+                initialRoomInfo = aRoomInfo(
+                    historyVisibility = RoomHistoryVisibility.Shared,
+                    joinRule = JoinRule.Invite,
+                    isSpace = true,
+                )
+            )
+        )
+        val presenter = createSecurityAndPrivacyPresenter(room = room)
+        presenter.test {
+            skipItems(1)
+            with(awaitItem()) {
+                assertThat(showEncryptionSection).isFalse()
+            }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
     private fun roomPermissions(
         canChangeRoomAccess: Boolean = true,
         canChangeHistoryVisibility: Boolean = true,

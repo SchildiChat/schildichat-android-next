@@ -452,7 +452,14 @@ private fun StandardLayout(
             Spacer(Modifier.height(4.dp))
         }
         Row(verticalAlignment = Alignment.Bottom) {
-            if (voiceMessageState !is VoiceMessageState.Idle) {
+            if (voiceMessageState is VoiceMessageState.Idle) {
+                Box(
+                    Modifier
+                        .padding(bottom = 5.dp, top = 5.dp, start = 3.dp)
+                ) {
+                    composerOptionsButton()
+                }
+            } else {
                 Box(
                     modifier = Modifier
                         .padding(bottom = 5.dp, top = 5.dp, end = 3.dp, start = 3.dp)
@@ -461,26 +468,16 @@ private fun StandardLayout(
                 ) {
                     voiceDeleteButton()
                 }
-                Box(
-                    modifier = Modifier
-                        .padding(bottom = 8.dp, top = 8.dp)
-                        .weight(1f)
-                ) {
-                    voiceRecording()
-                }
-            } else {
-                Box(
-                    Modifier
-                        .padding(bottom = 5.dp, top = 5.dp, start = 3.dp)
-                ) {
-                    composerOptionsButton()
-                }
-                Box(
-                    modifier = Modifier
-                        .padding(bottom = 8.dp, top = 8.dp)
-                        .weight(1f)
-                ) {
+            }
+            Box(
+                modifier = Modifier
+                    .padding(bottom = 8.dp, top = 8.dp)
+                    .weight(1f)
+            ) {
+                if (voiceMessageState is VoiceMessageState.Idle) {
                     textInput()
+                } else {
+                    voiceRecording()
                 }
             }
             // To avoid loosing keyboard focus, the IconButton has to be defined here and has to be always enabled.

@@ -14,7 +14,7 @@ import org.matrix.rustcomponents.sdk.PowerLevel
 import org.matrix.rustcomponents.sdk.RoomMember
 import uniffi.matrix_sdk.RoomMemberRole
 
-fun aRustRoomMember(
+internal fun aRustRoomMember(
     userId: UserId,
     displayName: String? = null,
     avatarUrl: String? = null,

@@ -49,7 +49,7 @@ fun GroupHeaderView(
     modifier: Modifier = Modifier
 ) {
     // Ignore isHighlighted for now, we need a design decision on it.
-    val backgroundColor = Color.Companion.Transparent
+    val backgroundColor = Color.Transparent
     val shape = RoundedCornerShape(CORNER_RADIUS)
 
     Box(

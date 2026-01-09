@@ -8,6 +8,7 @@
 
 package io.element.android.features.securityandprivacy.impl.manageauthorizedspaces
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -42,17 +43,24 @@ import io.element.android.libraries.ui.strings.CommonStrings
 @Composable
 fun ManageAuthorizedSpacesView(
     state: ManageAuthorizedSpacesState,
-    onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    fun onCancel() {
+        state.eventSink(ManageAuthorizedSpacesEvent.Cancel)
+    }
+
+    fun onDone() {
+        state.eventSink(ManageAuthorizedSpacesEvent.Done)
+    }
+
+    BackHandler(onBack = ::onCancel)
+
     Scaffold(
         modifier = modifier,
         topBar = {
             ManageAuthorizedSpacesTopBar(
-                onBackClick = onBackClick,
-                onDoneClick = {
-                    state.eventSink(ManageAuthorizedSpacesEvent.Done)
-                },
+                onBackClick = ::onCancel,
+                onDoneClick = ::onDone,
                 isDoneButtonEnabled = state.isDoneButtonEnabled
             )
         }
@@ -67,7 +75,7 @@ fun ManageAuthorizedSpacesView(
                     hasDivider = false,
                 )
             }
-            items(items = state.selection.joinedSpaces) { space ->
+            items(items = state.selectableSpaces.toList()) { space ->
                 CheckableSpaceListItem(
                     headlineText = space.displayName,
                     supportingText = space.canonicalAlias?.value,
@@ -80,14 +88,14 @@ fun ManageAuthorizedSpacesView(
                     }
                 )
             }
-            if (state.selection.unknownSpaceIds.isNotEmpty()) {
+            if (state.unknownSpaceIds.isNotEmpty()) {
                 item {
                     ListSectionHeader(
                         title = stringResource(R.string.screen_manage_authorized_spaces_unknown_spaces_section_title),
                         hasDivider = true,
                     )
                 }
-                items(items = state.selection.unknownSpaceIds) {
+                items(items = state.unknownSpaceIds) {
                     CheckableSpaceListItem(
                         headlineText = stringResource(R.string.screen_manage_authorized_spaces_unknown_space),
                         supportingText = it.value,
@@ -185,8 +193,5 @@ private fun ManageAuthorizedSpacesTopBar(
 internal fun ManageAuthorizedSpacesViewPreview(
     @PreviewParameter(ManageAuthorizedSpacesStateProvider::class) state: ManageAuthorizedSpacesState
 ) = ElementPreview {
-    ManageAuthorizedSpacesView(
-        state = state,
-        onBackClick = {},
-    )
+    ManageAuthorizedSpacesView(state = state)
 }

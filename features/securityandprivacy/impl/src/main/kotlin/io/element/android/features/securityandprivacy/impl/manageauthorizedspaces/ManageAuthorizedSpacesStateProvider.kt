@@ -14,21 +14,17 @@ import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.previewutils.room.aSpaceRoom
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableSet
 
 open class ManageAuthorizedSpacesStateProvider : PreviewParameterProvider<ManageAuthorizedSpacesState> {
     override val values: Sequence<ManageAuthorizedSpacesState>
         get() = sequenceOf(
             aManageAuthorizedSpacesState(),
             aManageAuthorizedSpacesState(
-                authorizedSpacesSelection = anAuthorizedSpaceSelection(
-                    unknownSpaceIds = listOf(aRoomId(99))
-                )
+                unknownSpaceIds = listOf(aRoomId(99))
             ),
             aManageAuthorizedSpacesState(
                 selectedIds = listOf(aRoomId(1), aRoomId(3)),
-                authorizedSpacesSelection = anAuthorizedSpaceSelection(
-                    initialSelectedIds = listOf(aRoomId(1)),
-                ),
             ),
         )
 }
@@ -49,23 +45,14 @@ private fun aSpaceRoomList(count: Int): List<SpaceRoom> {
     }
 }
 
-fun anAuthorizedSpaceSelection(
-    joinedSpaces: List<SpaceRoom> = aSpaceRoomList(5),
+fun aManageAuthorizedSpacesState(
+    selectableSpaces: List<SpaceRoom> = aSpaceRoomList(5),
     unknownSpaceIds: List<RoomId> = emptyList(),
-    initialSelectedIds: List<RoomId> = emptyList(),
-) = AuthorizedSpacesSelection(
-    joinedSpaces = joinedSpaces.toImmutableList(),
-    unknownSpaceIds = unknownSpaceIds.toImmutableList(),
-    initialSelectedIds = initialSelectedIds.toImmutableList(),
-)
-
-private fun aManageAuthorizedSpacesState(
-    authorizedSpacesSelection: AuthorizedSpacesSelection = anAuthorizedSpaceSelection(),
     selectedIds: List<RoomId> = emptyList(),
     eventSink: (ManageAuthorizedSpacesEvent) -> Unit = {},
 ) = ManageAuthorizedSpacesState(
-    selection = authorizedSpacesSelection,
+    selectableSpaces = selectableSpaces.toImmutableSet(),
+    unknownSpaceIds = unknownSpaceIds.toImmutableList(),
     selectedIds = selectedIds.toImmutableList(),
-    isSelectionComplete = false,
     eventSink = eventSink,
 )

@@ -26,6 +26,8 @@ import io.element.android.features.securityandprivacy.api.SecurityAndPrivacyPerm
 import io.element.android.features.securityandprivacy.api.securityAndPrivacyPermissions
 import io.element.android.features.securityandprivacy.impl.SecurityAndPrivacyNavigator
 import io.element.android.features.securityandprivacy.impl.editroomaddress.matchesServer
+import io.element.android.features.securityandprivacy.impl.manageauthorizedspaces.SpaceSelectionState
+import io.element.android.features.securityandprivacy.impl.manageauthorizedspaces.SpaceSelectionStateHolder
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.Presenter
@@ -51,18 +53,22 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @AssistedInject
 class SecurityAndPrivacyPresenter(
     @Assisted private val navigator: SecurityAndPrivacyNavigator,
+    private val spaceSelectionStateHolder: SpaceSelectionStateHolder,
     private val matrixClient: MatrixClient,
     private val room: JoinedRoom,
     private val featureFlagService: FeatureFlagService,
 ) : Presenter<SecurityAndPrivacyState> {
     @AssistedFactory
     interface Factory {
-        fun create(navigator: SecurityAndPrivacyNavigator): SecurityAndPrivacyPresenter
+        fun create(
+            navigator: SecurityAndPrivacyNavigator,
+        ): SecurityAndPrivacyPresenter
     }
 
     @Composable
@@ -136,6 +142,18 @@ class SecurityAndPrivacyPresenter(
             }
         }
 
+        LaunchedEffect(selectableJoinedSpaces, savedSettings.roomAccess) {
+            val unknownSpaceIds = savedSettings.roomAccess.spaceIds().filter { spaceId ->
+                selectableJoinedSpaces.none { it.roomId == spaceId }
+            }.toImmutableList()
+            spaceSelectionStateHolder.update { state ->
+                state.copy(
+                    selectableSpaces = selectableJoinedSpaces,
+                    unknownSpaceIds = unknownSpaceIds,
+                )
+            }
+        }
+
         var showEnableEncryptionConfirmation by remember(savedSettings.isEncrypted) { mutableStateOf(false) }
         val permissions by room.permissionsAsState(SecurityAndPrivacyPermissions.DEFAULT) { perms ->
             perms.securityAndPrivacyPermissions()
@@ -191,19 +209,27 @@ class SecurityAndPrivacyPresenter(
                 SecurityAndPrivacyEvent.DismissExitConfirmation -> {
                     saveAction.value = AsyncAction.Uninitialized
                 }
-                SecurityAndPrivacyEvent.ManageAuthorizedSpaces -> {
-                    navigator.openManageAuthorizedSpaces(
+                SecurityAndPrivacyEvent.ManageAuthorizedSpaces -> coroutineScope.launch {
+                    handleMultipleSelection(
+                        savedAccess = savedSettings.roomAccess,
+                        editedRoomAccess = editedRoomAccess,
                         forKnockRestricted = editedRoomAccess.value is SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember
                     )
                 }
-                SecurityAndPrivacyEvent.SelectSpaceMemberAccess -> handleSpaceMemberAccessSelection(
-                    spaceSelectionMode = spaceSelectionMode,
-                    editedAccess = editedRoomAccess,
-                )
-                SecurityAndPrivacyEvent.SelectAskToJoinWithSpaceMembersAccess -> handleAskToJoinWithSpaceMembersAccessSelection(
-                    spaceSelectionMode = spaceSelectionMode,
-                    editedAccess = editedRoomAccess,
-                )
+                SecurityAndPrivacyEvent.SelectSpaceMemberAccess -> coroutineScope.launch {
+                    handleSpaceMemberAccessSelection(
+                        spaceSelectionMode = spaceSelectionMode,
+                        savedAccess = savedSettings.roomAccess,
+                        editedAccess = editedRoomAccess,
+                    )
+                }
+                SecurityAndPrivacyEvent.SelectAskToJoinWithSpaceMembersAccess -> coroutineScope.launch {
+                    handleAskToJoinWithSpaceMembersAccessSelection(
+                        spaceSelectionMode = spaceSelectionMode,
+                        savedAccess = savedSettings.roomAccess,
+                        editedAccess = editedRoomAccess,
+                    )
+                }
             }
         }
 
@@ -248,8 +274,9 @@ class SecurityAndPrivacyPresenter(
         return state
     }
 
-    private fun handleSpaceMemberAccessSelection(
+    private suspend fun handleSpaceMemberAccessSelection(
         spaceSelectionMode: SpaceSelectionMode,
+        savedAccess: SecurityAndPrivacyRoomAccess,
         editedAccess: MutableState<SecurityAndPrivacyRoomAccess>,
     ) {
         if (editedAccess.value is SecurityAndPrivacyRoomAccess.SpaceMember) {
@@ -257,7 +284,11 @@ class SecurityAndPrivacyPresenter(
         }
         when (spaceSelectionMode) {
             is SpaceSelectionMode.None -> Unit
-            is SpaceSelectionMode.Multiple -> navigator.openManageAuthorizedSpaces(forKnockRestricted = false)
+            is SpaceSelectionMode.Multiple -> handleMultipleSelection(
+                savedAccess = savedAccess,
+                editedRoomAccess = editedAccess,
+                forKnockRestricted = false,
+            )
             is SpaceSelectionMode.Single -> {
                 val newRoomAccess = SecurityAndPrivacyRoomAccess.SpaceMember(
                     spaceIds = persistentListOf(spaceSelectionMode.spaceId)
@@ -267,8 +298,9 @@ class SecurityAndPrivacyPresenter(
         }
     }
 
-    private fun handleAskToJoinWithSpaceMembersAccessSelection(
+    private suspend fun handleAskToJoinWithSpaceMembersAccessSelection(
         spaceSelectionMode: SpaceSelectionMode,
+        savedAccess: SecurityAndPrivacyRoomAccess,
         editedAccess: MutableState<SecurityAndPrivacyRoomAccess>,
     ) {
         if (editedAccess.value is SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember) {
@@ -276,12 +308,48 @@ class SecurityAndPrivacyPresenter(
         }
         when (spaceSelectionMode) {
             is SpaceSelectionMode.None -> Unit
-            is SpaceSelectionMode.Multiple -> navigator.openManageAuthorizedSpaces(forKnockRestricted = true)
+            is SpaceSelectionMode.Multiple -> handleMultipleSelection(
+                savedAccess = savedAccess,
+                editedRoomAccess = editedAccess,
+                forKnockRestricted = true,
+            )
             is SpaceSelectionMode.Single -> {
                 val newRoomAccess = SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember(
                     spaceIds = persistentListOf(spaceSelectionMode.spaceId)
                 )
                 editedAccess.value = newRoomAccess
+            }
+        }
+    }
+
+    private suspend fun handleMultipleSelection(
+        savedAccess: SecurityAndPrivacyRoomAccess,
+        editedRoomAccess: MutableState<SecurityAndPrivacyRoomAccess>,
+        forKnockRestricted: Boolean
+    ) {
+        val initialSelection = when (val currentRoomAccess = editedRoomAccess.value) {
+            is SecurityAndPrivacyRoomAccess.SpaceMember -> currentRoomAccess.spaceIds
+            is SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember -> currentRoomAccess.spaceIds
+            else -> savedAccess.spaceIds()
+        }
+        spaceSelectionStateHolder.update { state ->
+            state.copy(selectedSpaceIds = initialSelection, completion = SpaceSelectionState.Completion.Initial)
+        }
+        navigator.openManageAuthorizedSpaces()
+        val newState = spaceSelectionStateHolder.state.first { it.completion != SpaceSelectionState.Completion.Initial }
+        when (newState.completion) {
+            SpaceSelectionState.Completion.Initial -> Unit
+            SpaceSelectionState.Completion.Cancelled -> {
+                navigator.closeManageAuthorizedSpaces()
+            }
+            SpaceSelectionState.Completion.Completed -> {
+                val selectedIds = newState.selectedSpaceIds
+                editedRoomAccess.value = if (forKnockRestricted) {
+                    SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember(spaceIds = selectedIds)
+                } else {
+                    SecurityAndPrivacyRoomAccess.SpaceMember(spaceIds = selectedIds)
+                }
+                navigator.closeManageAuthorizedSpaces()
             }
         }
     }

@@ -11,7 +11,7 @@ package io.element.android.features.securityandprivacy.impl.manageauthorizedspac
 import io.element.android.libraries.matrix.api.core.RoomId
 
 sealed interface ManageAuthorizedSpacesEvent {
-    data class SetData(val data: AuthorizedSpacesSelection) : ManageAuthorizedSpacesEvent
+    data object Cancel : ManageAuthorizedSpacesEvent
     data object Done : ManageAuthorizedSpacesEvent
     data class ToggleSpace(val roomId: RoomId) : ManageAuthorizedSpacesEvent
 }

@@ -9,46 +9,43 @@
 package io.element.android.features.securityandprivacy.impl.manageauthorizedspaces
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import dev.zacsweers.metro.Inject
 import io.element.android.libraries.architecture.Presenter
-import io.element.android.libraries.matrix.api.core.RoomId
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 @Inject
-class ManageAuthorizedSpacesPresenter : Presenter<ManageAuthorizedSpacesState> {
+class ManageAuthorizedSpacesPresenter(
+    private val spaceSelectionStateHolder: SpaceSelectionStateHolder,
+) : Presenter<ManageAuthorizedSpacesState> {
     @Composable
     override fun present(): ManageAuthorizedSpacesState {
-        var selectedIds: ImmutableList<RoomId> by remember { mutableStateOf(persistentListOf()) }
-        var spacesSelection by remember { mutableStateOf(AuthorizedSpacesSelection()) }
-        var isSelectionComplete by remember { mutableStateOf(false) }
-
+        val spaceSelectionState by spaceSelectionStateHolder.state.collectAsState()
         fun handleEvent(event: ManageAuthorizedSpacesEvent) {
             when (event) {
-                ManageAuthorizedSpacesEvent.Done -> isSelectionComplete = true
                 is ManageAuthorizedSpacesEvent.ToggleSpace -> {
-                    selectedIds = if (selectedIds.contains(event.roomId)) {
-                        selectedIds.minus(event.roomId).toImmutableList()
+                    val currentSelectedIds = spaceSelectionState.selectedSpaceIds
+                    val newSelectedIds = if (currentSelectedIds.contains(event.roomId)) {
+                        currentSelectedIds.minus(event.roomId).toImmutableList()
                     } else {
-                        selectedIds.plus(event.roomId).toImmutableList()
+                        currentSelectedIds.plus(event.roomId).toImmutableList()
                     }
+                    spaceSelectionStateHolder.updateSelectedSpaceIds(newSelectedIds)
                 }
-                is ManageAuthorizedSpacesEvent.SetData -> {
-                    spacesSelection = event.data
-                    selectedIds = event.data.initialSelectedIds
+                ManageAuthorizedSpacesEvent.Done -> {
+                    spaceSelectionStateHolder.setCompletion(SpaceSelectionState.Completion.Completed)
+                }
+                ManageAuthorizedSpacesEvent.Cancel -> {
+                    spaceSelectionStateHolder.setCompletion(SpaceSelectionState.Completion.Cancelled)
                 }
             }
         }
 
         return ManageAuthorizedSpacesState(
-            selection = spacesSelection,
-            selectedIds = selectedIds,
-            isSelectionComplete = isSelectionComplete,
+            selectableSpaces = spaceSelectionState.selectableSpaces,
+            unknownSpaceIds = spaceSelectionState.unknownSpaceIds,
+            selectedIds = spaceSelectionState.selectedSpaceIds,
             eventSink = ::handleEvent,
         )
     }

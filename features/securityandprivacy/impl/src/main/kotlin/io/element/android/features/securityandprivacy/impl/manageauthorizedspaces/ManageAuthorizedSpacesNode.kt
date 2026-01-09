@@ -19,12 +19,8 @@ import com.bumble.appyx.core.plugin.plugins
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
-import io.element.android.features.securityandprivacy.impl.SecurityAndPrivacyNavigator
 import io.element.android.libraries.architecture.appyx.launchMolecule
 import io.element.android.libraries.di.RoomScope
-import io.element.android.libraries.matrix.api.core.RoomId
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.coroutines.flow.first
 
 @ContributesNode(RoomScope::class)
 @AssistedInject
@@ -33,20 +29,13 @@ class ManageAuthorizedSpacesNode(
     @Assisted plugins: List<Plugin>,
     presenter: ManageAuthorizedSpacesPresenter,
 ) : Node(buildContext, plugins = plugins) {
-    private val navigator = plugins<SecurityAndPrivacyNavigator>().first()
     private val stateFlow = launchMolecule { presenter.present() }
-
-    suspend fun waitForCompletion(data: AuthorizedSpacesSelection): ImmutableList<RoomId> {
-        stateFlow.value.eventSink(ManageAuthorizedSpacesEvent.SetData(data))
-        return stateFlow.first { it.isSelectionComplete }.selectedIds
-    }
 
     @Composable
     override fun View(modifier: Modifier) {
         val state by stateFlow.collectAsState()
         ManageAuthorizedSpacesView(
             state = state,
-            onBackClick = { navigator.closeManageAuthorizedSpaces() },
             modifier = modifier
         )
     }

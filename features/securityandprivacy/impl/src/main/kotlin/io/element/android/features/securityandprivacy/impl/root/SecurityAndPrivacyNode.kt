@@ -23,12 +23,9 @@ import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.securityandprivacy.impl.SecurityAndPrivacyNavigator
-import io.element.android.features.securityandprivacy.impl.manageauthorizedspaces.AuthorizedSpacesSelection
 import io.element.android.libraries.androidutils.browser.openUrlInChromeCustomTab
 import io.element.android.libraries.architecture.appyx.launchMolecule
 import io.element.android.libraries.di.RoomScope
-import io.element.android.libraries.matrix.api.core.RoomId
-import kotlinx.collections.immutable.ImmutableList
 
 @ContributesNode(RoomScope::class)
 @AssistedInject
@@ -44,19 +41,6 @@ class SecurityAndPrivacyNode(
 
     private fun onOpenExternalUrl(activity: Activity, darkTheme: Boolean, url: String) {
         activity.openUrlInChromeCustomTab(null, darkTheme, url)
-    }
-
-    fun getAuthorizedSpacesData(): AuthorizedSpacesSelection {
-        return stateFlow.value.getAuthorizedSpacesSelection()
-    }
-
-    fun onAuthorizedSpacesSelected(selectedSpaces: ImmutableList<RoomId>, forKnock: Boolean) {
-        val roomAccess = if (forKnock) {
-            SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember(selectedSpaces)
-        } else {
-            SecurityAndPrivacyRoomAccess.SpaceMember(selectedSpaces)
-        }
-        stateFlow.value.eventSink(SecurityAndPrivacyEvent.ChangeRoomAccess(roomAccess))
     }
 
     @Composable

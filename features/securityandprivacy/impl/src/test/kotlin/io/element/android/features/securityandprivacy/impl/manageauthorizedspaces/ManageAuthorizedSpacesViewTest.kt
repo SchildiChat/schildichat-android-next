@@ -15,15 +15,15 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.previewutils.room.aSpaceRoom
 import io.element.android.libraries.ui.strings.CommonStrings
-import io.element.android.tests.testutils.EnsureNeverCalled
 import io.element.android.tests.testutils.EventsRecorder
 import io.element.android.tests.testutils.clickOn
-import io.element.android.tests.testutils.ensureCalledOnce
 import io.element.android.tests.testutils.pressBack
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableSet
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
@@ -34,11 +34,12 @@ class ManageAuthorizedSpacesViewTest {
     @get:Rule val rule = createAndroidComposeRule<ComponentActivity>()
 
     @Test
-    fun `clicking back invokes callback`() {
-        ensureCalledOnce { callback ->
-            rule.setManageAuthorizedSpacesView(onBackClick = callback)
-            rule.pressBack()
-        }
+    fun `clicking back emits Cancel event`() {
+        val recorder = EventsRecorder<ManageAuthorizedSpacesEvent>()
+        val state = aManageAuthorizedSpacesState(eventSink = recorder)
+        rule.setManageAuthorizedSpacesView(state)
+        rule.pressBack()
+        recorder.assertSingle(ManageAuthorizedSpacesEvent.Cancel)
     }
 
     @Test
@@ -47,9 +48,7 @@ class ManageAuthorizedSpacesViewTest {
         val space = aSpaceRoom(roomId = roomId, displayName = "Test Space")
         val recorder = EventsRecorder<ManageAuthorizedSpacesEvent>()
         val state = aManageAuthorizedSpacesState(
-            selection = anAuthorizedSpaceSelection(
-                joinedSpaces = listOf(space)
-            ),
+            selectableSpaces = listOf(space),
             eventSink = recorder
         )
         rule.setManageAuthorizedSpacesView(state)
@@ -86,24 +85,20 @@ private fun <R : TestRule> AndroidComposeTestRule<R, ComponentActivity>.setManag
     state: ManageAuthorizedSpacesState = aManageAuthorizedSpacesState(
         eventSink = EventsRecorder(expectEvents = false)
     ),
-    onBackClick: () -> Unit = EnsureNeverCalled(),
 ) {
     setContent {
-        ManageAuthorizedSpacesView(
-            state = state,
-            onBackClick = onBackClick,
-        )
+        ManageAuthorizedSpacesView(state = state)
     }
 }
 
 private fun aManageAuthorizedSpacesState(
-    selection: AuthorizedSpacesSelection = AuthorizedSpacesSelection(),
+    selectableSpaces: List<SpaceRoom> = emptyList(),
+    unknownSpaceIds: List<RoomId> = emptyList(),
     selectedIds: List<RoomId> = emptyList(),
-    isSelectionComplete: Boolean = false,
     eventSink: (ManageAuthorizedSpacesEvent) -> Unit = {},
 ) = ManageAuthorizedSpacesState(
-    selection = selection,
+    selectableSpaces = selectableSpaces.toImmutableSet(),
+    unknownSpaceIds = unknownSpaceIds.toImmutableList(),
     selectedIds = selectedIds.toImmutableList(),
-    isSelectionComplete = isSelectionComplete,
     eventSink = eventSink,
 )

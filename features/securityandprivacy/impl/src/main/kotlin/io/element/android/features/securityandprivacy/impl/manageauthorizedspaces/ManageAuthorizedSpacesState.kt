@@ -11,19 +11,13 @@ package io.element.android.features.securityandprivacy.impl.manageauthorizedspac
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.ImmutableSet
 
 data class ManageAuthorizedSpacesState(
-    val selection: AuthorizedSpacesSelection,
+    val selectableSpaces: ImmutableSet<SpaceRoom>,
+    val unknownSpaceIds: ImmutableList<RoomId>,
     val selectedIds: ImmutableList<RoomId>,
-    val isSelectionComplete: Boolean,
     val eventSink: (ManageAuthorizedSpacesEvent) -> Unit
 ) {
     val isDoneButtonEnabled = selectedIds.isNotEmpty()
 }
-
-data class AuthorizedSpacesSelection(
-    val joinedSpaces: ImmutableList<SpaceRoom> = persistentListOf(),
-    val unknownSpaceIds: ImmutableList<RoomId> = persistentListOf(),
-    val initialSelectedIds: ImmutableList<RoomId> = persistentListOf()
-)

@@ -49,27 +49,16 @@ class SecurityAndPrivacyFlowNodeTest {
     }
 
     @Test
-    fun `openManageAuthorizedSpaces navigates with forKnockRestricted false`() = runTest {
+    fun `openManageAuthorizedSpaces navigates to ManageAuthorizedSpaces`() = runTest {
         val flowNode = createFlowNode()
-        flowNode.navigator.openManageAuthorizedSpaces(forKnockRestricted = false)
-        assertThat(flowNode.currentNavTarget()).isEqualTo(
-            SecurityAndPrivacyFlowNode.NavTarget.ManageAuthorizedSpaces(forKnockRestricted = false)
-        )
-    }
-
-    @Test
-    fun `openManageAuthorizedSpaces navigates with forKnockRestricted true`() = runTest {
-        val flowNode = createFlowNode()
-        flowNode.navigator.openManageAuthorizedSpaces(forKnockRestricted = true)
-        assertThat(flowNode.currentNavTarget()).isEqualTo(
-            SecurityAndPrivacyFlowNode.NavTarget.ManageAuthorizedSpaces(forKnockRestricted = true)
-        )
+        flowNode.navigator.openManageAuthorizedSpaces()
+        assertThat(flowNode.currentNavTarget()).isEqualTo(SecurityAndPrivacyFlowNode.NavTarget.ManageAuthorizedSpaces)
     }
 
     @Test
     fun `closeManageAuthorizedSpaces pops backstack`() = runTest {
         val flowNode = createFlowNode()
-        flowNode.navigator.openManageAuthorizedSpaces(forKnockRestricted = false)
+        flowNode.navigator.openManageAuthorizedSpaces()
         assertThat(flowNode.currentNavTarget())
             .isInstanceOf(SecurityAndPrivacyFlowNode.NavTarget.ManageAuthorizedSpaces::class.java)
         flowNode.navigator.closeManageAuthorizedSpaces()

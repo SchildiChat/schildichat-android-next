@@ -10,6 +10,7 @@ package io.element.android.features.securityandprivacy.impl.root
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.securityandprivacy.impl.FakeSecurityAndPrivacyNavigator
 import io.element.android.features.securityandprivacy.impl.SecurityAndPrivacyNavigator
+import io.element.android.features.securityandprivacy.impl.manageauthorizedspaces.SpaceSelectionStateHolder
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.featureflag.api.FeatureFlagService
@@ -436,7 +437,7 @@ class SecurityAndPrivacyPresenterTest {
 
     @Test
     fun `present - SelectSpaceMemberAccess with multiple spaces opens ManageAuthorizedSpaces`() = runTest {
-        val openManageAuthorizedSpacesLambda = lambdaRecorder<Boolean, Unit> { }
+        val openManageAuthorizedSpacesLambda = lambdaRecorder<Unit> { }
         val navigator =
             FakeSecurityAndPrivacyNavigator(openManageAuthorizedSpacesLambda = openManageAuthorizedSpacesLambda)
         val room = FakeJoinedRoom(
@@ -471,7 +472,7 @@ class SecurityAndPrivacyPresenterTest {
             val state = awaitItem()
             assertThat(state.isSpaceMemberSelectable).isTrue()
             state.eventSink(SecurityAndPrivacyEvent.SelectSpaceMemberAccess)
-            assert(openManageAuthorizedSpacesLambda).isCalledOnce().with(value(false))
+            assert(openManageAuthorizedSpacesLambda).isCalledOnce()
         }
     }
 
@@ -605,7 +606,7 @@ class SecurityAndPrivacyPresenterTest {
 
     @Test
     fun `present - SelectAskToJoinWithSpaceMembersAccess with multiple spaces opens ManageAuthorizedSpaces`() = runTest {
-        val openManageAuthorizedSpacesLambda = lambdaRecorder<Boolean, Unit> { }
+        val openManageAuthorizedSpacesLambda = lambdaRecorder<Unit> { }
         val navigator =
             FakeSecurityAndPrivacyNavigator(openManageAuthorizedSpacesLambda = openManageAuthorizedSpacesLambda)
         val room = FakeJoinedRoom(
@@ -642,7 +643,7 @@ class SecurityAndPrivacyPresenterTest {
             val state = awaitItem()
             assertThat(state.isAskToJoinWithSpaceMembersSelectable).isTrue()
             state.eventSink(SecurityAndPrivacyEvent.SelectAskToJoinWithSpaceMembersAccess)
-            assert(openManageAuthorizedSpacesLambda).isCalledOnce().with(value(true))
+            assert(openManageAuthorizedSpacesLambda).isCalledOnce()
         }
     }
 
@@ -951,73 +952,6 @@ class SecurityAndPrivacyPresenterTest {
     }
 
     @Test
-    fun `present - getAuthorizedSpacesSelection returns correct data for SpaceMember`() = runTest {
-        val room = FakeJoinedRoom(
-            baseRoom = FakeBaseRoom(
-                roomPermissions = roomPermissions(),
-                initialRoomInfo = aRoomInfo(
-                    historyVisibility = RoomHistoryVisibility.Shared,
-                    joinRule = JoinRule.Restricted(
-                        rules = persistentListOf(AllowRule.RoomMembership(A_ROOM_ID))
-                    )
-                )
-            )
-        )
-        val spaceRoom = aSpaceRoom(roomId = A_ROOM_ID)
-        val client = FakeMatrixClient(
-            userIdServerNameLambda = { "matrix.org" },
-            spaceService = FakeSpaceService(
-                joinedParentsResult = { _ -> Result.success(listOf(spaceRoom)) },
-                getSpaceRoomResult = { null }
-            )
-        )
-        val presenter = createSecurityAndPrivacyPresenter(
-            room = room,
-            matrixClient = client,
-            featureFlagService = FakeFeatureFlagService(
-                initialState = mapOf(FeatureFlags.SpaceSettings.key to true)
-            )
-        )
-        presenter.test {
-            skipItems(1)
-            with(awaitItem()) {
-                val selection = getAuthorizedSpacesSelection()
-                assertThat(selection.joinedSpaces).containsExactly(spaceRoom)
-                assertThat(selection.initialSelectedIds).containsExactly(A_ROOM_ID)
-                assertThat(selection.unknownSpaceIds).isEmpty()
-            }
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun `present - getAuthorizedSpacesSelection identifies unknown space IDs`() = runTest {
-        val unknownSpaceId = RoomId("!unknown:matrix.org")
-        val room = FakeJoinedRoom(
-            baseRoom = FakeBaseRoom(
-                roomPermissions = roomPermissions(),
-                initialRoomInfo = aRoomInfo(
-                    historyVisibility = RoomHistoryVisibility.Shared,
-                    joinRule = JoinRule.Restricted(
-                        rules = persistentListOf(AllowRule.RoomMembership(unknownSpaceId))
-                    )
-                )
-            )
-        )
-        // No spaces available (the space in the join rule is unknown)
-        val presenter = createSecurityAndPrivacyPresenter(room = room)
-        presenter.test {
-            skipItems(1)
-            with(awaitItem()) {
-                val selection = getAuthorizedSpacesSelection()
-                assertThat(selection.joinedSpaces).isEmpty()
-                assertThat(selection.unknownSpaceIds).containsExactly(unknownSpaceId)
-            }
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
     fun `present - SelectAskToJoinWithSpaceMembersAccess with single space auto-selects`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
@@ -1169,12 +1103,14 @@ class SecurityAndPrivacyPresenterTest {
                 getSpaceRoomResult = { null }
             ),
         ),
+        spaceSelectionStateHolder: SpaceSelectionStateHolder = SpaceSelectionStateHolder(),
     ): SecurityAndPrivacyPresenter {
         return SecurityAndPrivacyPresenter(
             room = room,
             matrixClient = matrixClient,
             navigator = navigator,
             featureFlagService = featureFlagService,
+            spaceSelectionStateHolder = spaceSelectionStateHolder,
         )
     }
 }

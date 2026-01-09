@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import io.element.android.features.securityandprivacy.api.SecurityAndPrivacyPermissions
 import io.element.android.features.securityandprivacy.impl.R
-import io.element.android.features.securityandprivacy.impl.manageauthorizedspaces.AuthorizedSpacesSelection
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.matrix.api.core.RoomId
@@ -120,20 +119,6 @@ data class SecurityAndPrivacyState(
         } else {
             stringResource(R.string.screen_security_and_privacy_ask_to_join_option_description)
         }
-    }
-
-    fun getAuthorizedSpacesSelection(): AuthorizedSpacesSelection {
-        return AuthorizedSpacesSelection(
-            joinedSpaces = selectableJoinedSpaces.toImmutableList(),
-            unknownSpaceIds = savedSettings.roomAccess.spaceIds().filter { spaceId ->
-                selectableJoinedSpaces.none { it.roomId == spaceId }
-            }.toImmutableList(),
-            initialSelectedIds = when (editedSettings.roomAccess) {
-                is SecurityAndPrivacyRoomAccess.SpaceMember -> editedSettings.roomAccess.spaceIds
-                is SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember -> editedSettings.roomAccess.spaceIds
-                else -> savedSettings.roomAccess.spaceIds()
-            }
-        )
     }
 }
 

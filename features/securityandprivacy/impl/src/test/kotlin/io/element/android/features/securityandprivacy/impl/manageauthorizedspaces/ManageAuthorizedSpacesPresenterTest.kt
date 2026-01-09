@@ -12,38 +12,33 @@ import com.google.common.truth.Truth.assertThat
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.tests.testutils.test
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class ManageAuthorizedSpacesPresenterTest {
     @Test
-    fun `present - initial state has empty selection`() = runTest {
-        val presenter = ManageAuthorizedSpacesPresenter()
+    fun `present - initial state reflects shared state`() = runTest {
+        val sharedStateHolder = SpaceSelectionStateHolder()
+        val presenter = ManageAuthorizedSpacesPresenter(sharedStateHolder)
         presenter.test {
             with(awaitItem()) {
                 assertThat(selectedIds).isEmpty()
-                assertThat(isSelectionComplete).isFalse()
                 assertThat(isDoneButtonEnabled).isFalse()
             }
         }
     }
 
     @Test
-    fun `present - SetData event updates selection and initial selectedIds`() = runTest {
-        val presenter = ManageAuthorizedSpacesPresenter()
+    fun `present - state reflects shared state with pre-selected spaces`() = runTest {
+        val sharedStateHolder = SpaceSelectionStateHolder()
+        val roomId = A_ROOM_ID
+        sharedStateHolder.update {
+            it.copy(selectedSpaceIds = persistentListOf(roomId))
+        }
+        val presenter = ManageAuthorizedSpacesPresenter(sharedStateHolder)
         presenter.test {
-            val initialState = awaitItem()
-            val roomId = A_ROOM_ID
-            val data = AuthorizedSpacesSelection(
-                joinedSpaces = persistentListOf(),
-                unknownSpaceIds = persistentListOf(),
-                initialSelectedIds = persistentListOf(roomId)
-            )
-            initialState.eventSink(ManageAuthorizedSpacesEvent.SetData(data))
-            // SetData updates two state variables, which may emit intermediate states
-            skipItems(1)
             with(awaitItem()) {
-                assertThat(selection).isEqualTo(data)
                 assertThat(selectedIds).containsExactly(roomId)
                 assertThat(isDoneButtonEnabled).isTrue()
             }
@@ -51,8 +46,9 @@ class ManageAuthorizedSpacesPresenterTest {
     }
 
     @Test
-    fun `present - ToggleSpace event adds space to selectedIds`() = runTest {
-        val presenter = ManageAuthorizedSpacesPresenter()
+    fun `present - ToggleSpace event adds space to selectedIds in shared state`() = runTest {
+        val sharedStateHolder = SpaceSelectionStateHolder()
+        val presenter = ManageAuthorizedSpacesPresenter(sharedStateHolder)
         presenter.test {
             val initialState = awaitItem()
             val roomId = A_ROOM_ID
@@ -61,34 +57,69 @@ class ManageAuthorizedSpacesPresenterTest {
                 assertThat(selectedIds).containsExactly(roomId)
                 assertThat(isDoneButtonEnabled).isTrue()
             }
+            // Verify the shared state is also updated
+            assertThat(sharedStateHolder.state.value.selectedSpaceIds).containsExactly(roomId)
         }
     }
 
     @Test
     fun `present - ToggleSpace event removes space when already selected`() = runTest {
-        val presenter = ManageAuthorizedSpacesPresenter()
+        val sharedStateHolder = SpaceSelectionStateHolder()
+        sharedStateHolder.updateSelectedSpaceIds(persistentListOf(A_ROOM_ID))
+        val presenter = ManageAuthorizedSpacesPresenter(sharedStateHolder)
         presenter.test {
             val initialState = awaitItem()
-            val roomId = A_ROOM_ID
-            initialState.eventSink(ManageAuthorizedSpacesEvent.ToggleSpace(roomId))
-            val stateWithSelection = awaitItem()
-            assertThat(stateWithSelection.selectedIds).containsExactly(roomId)
-            stateWithSelection.eventSink(ManageAuthorizedSpacesEvent.ToggleSpace(roomId))
+            assertThat(initialState.selectedIds).containsExactly(A_ROOM_ID)
+            initialState.eventSink(ManageAuthorizedSpacesEvent.ToggleSpace(A_ROOM_ID))
             with(awaitItem()) {
                 assertThat(selectedIds).isEmpty()
                 assertThat(isDoneButtonEnabled).isFalse()
             }
+            // Verify the shared state is also updated
+            assertThat(sharedStateHolder.state.value.selectedSpaceIds).isEmpty()
         }
     }
 
     @Test
-    fun `present - Done event sets isSelectionComplete to true`() = runTest {
-        val presenter = ManageAuthorizedSpacesPresenter()
+    fun `present - Done event sets completion to Completed`() = runTest {
+        val sharedStateHolder = SpaceSelectionStateHolder()
+        val presenter = ManageAuthorizedSpacesPresenter(sharedStateHolder)
         presenter.test {
             val initialState = awaitItem()
             initialState.eventSink(ManageAuthorizedSpacesEvent.Done)
+            cancelAndIgnoreRemainingEvents()
+            assertThat(sharedStateHolder.state.value.completion)
+                .isEqualTo(SpaceSelectionState.Completion.Completed)
+        }
+    }
+
+    @Test
+    fun `present - Cancel event sets completion to Cancelled`() = runTest {
+        val sharedStateHolder = SpaceSelectionStateHolder()
+        val presenter = ManageAuthorizedSpacesPresenter(sharedStateHolder)
+        presenter.test {
+            val initialState = awaitItem()
+            initialState.eventSink(ManageAuthorizedSpacesEvent.Cancel)
+            cancelAndIgnoreRemainingEvents()
+            assertThat(sharedStateHolder.state.value.completion)
+                .isEqualTo(SpaceSelectionState.Completion.Cancelled)
+        }
+    }
+
+    @Test
+    fun `present - displays spaces from shared state`() = runTest {
+        val sharedStateHolder = SpaceSelectionStateHolder()
+        sharedStateHolder.update {
+            it.copy(
+                selectableSpaces = persistentSetOf(),
+                unknownSpaceIds = persistentListOf(A_ROOM_ID),
+            )
+        }
+        val presenter = ManageAuthorizedSpacesPresenter(sharedStateHolder)
+        presenter.test {
             with(awaitItem()) {
-                assertThat(isSelectionComplete).isTrue()
+                assertThat(selectableSpaces).isEmpty()
+                assertThat(unknownSpaceIds).containsExactly(A_ROOM_ID)
             }
         }
     }

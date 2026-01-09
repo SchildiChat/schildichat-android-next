@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2025 Element Creations Ltd.
- * Copyright 2025 New Vector Ltd.
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
@@ -40,6 +39,7 @@ import io.element.android.libraries.designsystem.theme.components.TopAppBar
 import io.element.android.libraries.matrix.ui.model.getAvatarData
 import io.element.android.libraries.ui.strings.CommonStrings
 
+// Figma design: https://www.figma.com/design/kcnHxunG1LDWXsJhaNuiHz/ER-145--Spaces-on-Element-X?node-id=6361-86274&m=dev
 @Composable
 fun ManageAuthorizedSpacesView(
     state: ManageAuthorizedSpacesState,

@@ -9,6 +9,7 @@
 package io.element.android.features.securityandprivacy.impl
 
 import android.os.Parcelable
+import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
@@ -24,6 +25,7 @@ import io.element.android.annotations.ContributesNode
 import io.element.android.features.securityandprivacy.api.SecurityAndPrivacyEntryPoint
 import io.element.android.features.securityandprivacy.api.securityAndPrivacyPermissions
 import io.element.android.features.securityandprivacy.impl.editroomaddress.EditRoomAddressNode
+import io.element.android.features.securityandprivacy.impl.manageauthorizedspaces.ManageAuthorizedSpacesNode
 import io.element.android.features.securityandprivacy.impl.root.SecurityAndPrivacyNode
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
@@ -58,10 +60,15 @@ class SecurityAndPrivacyFlowNode(
 
         @Parcelize
         data object EditRoomAddress : NavTarget
+
+        @Parcelize
+        data object ManageAuthorizedSpaces : NavTarget
     }
 
     private val callback: SecurityAndPrivacyEntryPoint.Callback = callback()
-    private val navigator = BackstackSecurityAndPrivacyNavigator(callback, backstack)
+
+    @VisibleForTesting
+    val navigator = BackstackSecurityAndPrivacyNavigator(callback, backstack)
 
     override fun onBuilt() {
         super.onBuilt()
@@ -88,6 +95,9 @@ class SecurityAndPrivacyFlowNode(
             }
             NavTarget.EditRoomAddress -> {
                 createNode<EditRoomAddressNode>(buildContext, plugins = listOf(navigator))
+            }
+            NavTarget.ManageAuthorizedSpaces -> {
+                createNode<ManageAuthorizedSpacesNode>(buildContext, plugins = listOf(navigator))
             }
         }
     }

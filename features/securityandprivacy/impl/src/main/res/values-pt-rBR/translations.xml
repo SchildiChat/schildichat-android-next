@@ -2,6 +2,11 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="screen_edit_room_address_room_address_section_footer">"Você precisará de um endereço para torná-la visível no diretório."</string>
   <string name="screen_edit_room_address_title">"Editar endereço"</string>
+  <string name="screen_manage_authorized_spaces_header">"Os espaços dos quais os membros podem entrar na sala sem um convite."</string>
+  <string name="screen_manage_authorized_spaces_title">"Gerenciar espaços"</string>
+  <string name="screen_manage_authorized_spaces_unknown_space">"(Espaço desconhecido)"</string>
+  <string name="screen_manage_authorized_spaces_unknown_spaces_section_title">"Outros espaços dos quais você não é um membro"</string>
+  <string name="screen_manage_authorized_spaces_your_spaces_section_title">"Seus espaços"</string>
   <string name="screen_security_and_privacy_add_room_address_action">"Adicionar endereço"</string>
   <string name="screen_security_and_privacy_ask_to_join_multiple_spaces_members_option_description">"Qualquer um nos espaços autorizados podem entrar, mas todos os outros devem pedir acesso."</string>
   <string name="screen_security_and_privacy_ask_to_join_option_description">"Qualquer um pode pedir acesso, mas um administrador terá que aceitar o pedido."</string>

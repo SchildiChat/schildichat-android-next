@@ -2,6 +2,11 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="screen_edit_room_address_room_address_section_footer">"Budete potrebovať adresu, aby sa zobrazovala vo verejnom adresári."</string>
   <string name="screen_edit_room_address_title">"Upraviť adresu"</string>
+  <string name="screen_manage_authorized_spaces_header">"Priestory, kde sa členovia môžu pripojiť k miestnosti bez pozvania."</string>
+  <string name="screen_manage_authorized_spaces_title">"Spravovať priestory"</string>
+  <string name="screen_manage_authorized_spaces_unknown_space">"(Neznámy priestor)"</string>
+  <string name="screen_manage_authorized_spaces_unknown_spaces_section_title">"Iné priestory, ktorých nie ste členom"</string>
+  <string name="screen_manage_authorized_spaces_your_spaces_section_title">"Vaše priestory"</string>
   <string name="screen_security_and_privacy_add_room_address_action">"Pridať adresu"</string>
   <string name="screen_security_and_privacy_ask_to_join_option_description">"Všetci musia požiadať o prístup."</string>
   <string name="screen_security_and_privacy_ask_to_join_option_title">"Požiadať o pripojenie"</string>

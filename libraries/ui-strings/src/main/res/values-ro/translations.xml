@@ -442,11 +442,6 @@ Sunteți sigur că doriți să continuați?"</string>
   <string name="screen_create_poll_options_section_title">"Opțiuni"</string>
   <string name="screen_create_poll_remove_accessibility_label">"Ștergeți %1$s"</string>
   <string name="screen_create_poll_settings_section_title">"Setări"</string>
-  <string name="screen_manage_authorized_spaces_header">"Spațile din care membrii se pot alătura camerei fără invitație."</string>
-  <string name="screen_manage_authorized_spaces_title">"Gestionați spațiile"</string>
-  <string name="screen_manage_authorized_spaces_unknown_space">"(Spațiu necunoscut)"</string>
-  <string name="screen_manage_authorized_spaces_unknown_spaces_section_title">"Alte spații din care nu faceți parte"</string>
-  <string name="screen_manage_authorized_spaces_your_spaces_section_title">"Spațiile dumneavoastră"</string>
   <string name="screen_media_picker_error_failed_selection">"Selectarea fișierelor media a eșuat, încercați din nou."</string>
   <string name="screen_pinned_timeline_empty_state_description">"Apăsați pe un mesaj și alegeți \"%1$s\" pentru a-l include aici."</string>
   <string name="screen_pinned_timeline_empty_state_headline">"Fixați mesajele importante, astfel încât să poată fi descoperite cu ușurință"</string>

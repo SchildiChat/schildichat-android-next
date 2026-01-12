@@ -29,9 +29,6 @@ import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconButton
-import io.element.android.libraries.matrix.api.core.EventId
-import io.element.android.libraries.matrix.api.timeline.item.event.toEventOrTransactionId
-import io.element.android.libraries.textcomposer.model.MessageComposerMode
 
 /**
  * Send button for the message composer.
@@ -39,17 +36,17 @@ import io.element.android.libraries.textcomposer.model.MessageComposerMode
  * Temporary Figma : https://www.figma.com/design/Ni6Ii8YKtmXCKYNE90cC67/Timeline-(new)?node-id=2274-39944&m=dev
  */
 @Composable
-internal fun SendButton(
+internal fun SendButtonIcon(
     canSendMessage: Boolean,
-    composerMode: MessageComposerMode,
+    isEditing: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val iconVector = when {
-        composerMode.isEditing -> CompoundIcons.Check()
+        isEditing -> CompoundIcons.Check()
         else -> CompoundIcons.SendSolid()
     }
     val iconStartPadding = when {
-        composerMode.isEditing -> 0.dp
+        isEditing -> 0.dp
         else -> 2.dp
     }
     Box(
@@ -105,21 +102,19 @@ private fun Modifier.buttonBackgroundModifier(
 
 @PreviewsDayNight
 @Composable
-internal fun SendButtonPreview() = ElementPreview {
-    val normalMode = MessageComposerMode.Normal
-    val editMode = MessageComposerMode.Edit(EventId("\$id").toEventOrTransactionId(), "")
+internal fun SendButtonIconPreview() = ElementPreview {
     Row {
         IconButton(onClick = {}) {
-            SendButton(canSendMessage = true, composerMode = normalMode)
+            SendButtonIcon(canSendMessage = true, isEditing = false)
         }
         IconButton(onClick = {}) {
-            SendButton(canSendMessage = false, composerMode = normalMode)
+            SendButtonIcon(canSendMessage = false, isEditing = false)
         }
         IconButton(onClick = {}) {
-            SendButton(canSendMessage = true, composerMode = editMode)
+            SendButtonIcon(canSendMessage = true, isEditing = true)
         }
         IconButton(onClick = {}) {
-            SendButton(canSendMessage = false, composerMode = editMode)
+            SendButtonIcon(canSendMessage = false, isEditing = true)
         }
     }
 }

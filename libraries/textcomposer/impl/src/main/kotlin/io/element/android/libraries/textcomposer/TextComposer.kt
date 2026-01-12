@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,7 +43,6 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.hideFromAccessibility
@@ -74,11 +72,11 @@ import io.element.android.libraries.matrix.ui.messages.reply.InReplyToDetails
 import io.element.android.libraries.matrix.ui.messages.reply.InReplyToDetailsProvider
 import io.element.android.libraries.testtags.TestTags
 import io.element.android.libraries.testtags.testTag
-import io.element.android.libraries.textcomposer.components.SendButton
+import io.element.android.libraries.textcomposer.components.SendButtonIcon
 import io.element.android.libraries.textcomposer.components.TextFormatting
-import io.element.android.libraries.textcomposer.components.VoiceMessageDeleteButton
+import io.element.android.libraries.textcomposer.components.VoiceMessageDeleteButtonIcon
 import io.element.android.libraries.textcomposer.components.VoiceMessagePreview
-import io.element.android.libraries.textcomposer.components.VoiceMessageRecorderButton
+import io.element.android.libraries.textcomposer.components.VoiceMessageRecorderButtonIcon
 import io.element.android.libraries.textcomposer.components.VoiceMessageRecording
 import io.element.android.libraries.textcomposer.components.markdown.MarkdownTextInput
 import io.element.android.libraries.textcomposer.components.textInputRoundedCornerShape
@@ -215,29 +213,7 @@ fun TextComposer(
         }
     }
 
-    val canSendMessage = markdown.isNotBlank() || composerMode is MessageComposerMode.Attachment
-    val sendButton = @Composable {
-        SendButton(
-            canSendMessage = canSendMessage,
-            composerMode = composerMode,
-        )
-    }
-    val recordVoiceButton = @Composable {
-        VoiceMessageRecorderButton(
-            isRecording = voiceMessageState is VoiceMessageState.Recording,
-        )
-    }
-    val sendVoiceButton = @Composable {
-        SendButton(
-            canSendMessage = voiceMessageState is VoiceMessageState.Preview,
-            composerMode = composerMode,
-        )
-    }
-    val uploadVoiceProgress = @Composable {
-        CircularProgressIndicator(
-            modifier = Modifier.size(24.dp),
-        )
-    }
+    val canSendTextMessage = markdown.isNotBlank() || composerMode is MessageComposerMode.Attachment
 
     val textFormattingOptions: @Composable (() -> Unit)? = (state as? TextEditorState.Rich)?.let {
         @Composable { TextFormatting(state = it.richTextEditorState) }
@@ -249,51 +225,125 @@ fun TextComposer(
         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
     }
 
-    fun endButtonClickStandard() = when {
-        !canSendMessage ->
-            when (voiceMessageState) {
-                VoiceMessageState.Idle -> {
-                    performHapticFeedback()
-                    onVoiceRecorderEvent.invoke(VoiceMessageRecorderEvent.Start)
-                }
-                is VoiceMessageState.Recording -> {
-                    performHapticFeedback()
-                    onVoiceRecorderEvent.invoke(VoiceMessageRecorderEvent.Stop)
-                }
-                is VoiceMessageState.Preview -> when (voiceMessageState.isSending) {
-                    true -> {
-                        // No op
+    @Composable
+    fun rememberEndButtonParams() = remember(
+        composerMode.isEditing,
+        voiceMessageState.endButtonKey(),
+        canSendTextMessage,
+    ) {
+        when {
+            !canSendTextMessage ->
+                when (voiceMessageState) {
+                    VoiceMessageState.Idle -> EndButtonParams(
+                        endButtonContentDescriptionResId = CommonStrings.a11y_voice_message_record,
+                        endButtonClick = {
+                            performHapticFeedback()
+                            onVoiceRecorderEvent.invoke(VoiceMessageRecorderEvent.Start)
+                        },
+                        endButtonContent = @Composable {
+                            VoiceMessageRecorderButtonIcon(
+                                isRecording = false,
+                            )
+                        }
+                    )
+                    is VoiceMessageState.Recording -> EndButtonParams(
+                        endButtonContentDescriptionResId = CommonStrings.a11y_voice_message_stop_recording,
+                        endButtonClick = {
+                            performHapticFeedback()
+                            onVoiceRecorderEvent.invoke(VoiceMessageRecorderEvent.Stop)
+                        },
+                        endButtonContent = @Composable {
+                            VoiceMessageRecorderButtonIcon(
+                                isRecording = true,
+                            )
+                        }
+                    )
+                    is VoiceMessageState.Preview -> if (voiceMessageState.isSending) {
+                        EndButtonParams(
+                            endButtonContentDescriptionResId = CommonStrings.common_sending,
+                            endButtonClick = {},
+                            endButtonContent = @Composable {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(24.dp),
+                                )
+                            }
+                        )
+                    } else {
+                        EndButtonParams(
+                            endButtonContentDescriptionResId = CommonStrings.action_send_voice_message,
+                            endButtonClick = {
+                                onSendVoiceMessage()
+                            },
+                            endButtonContent = @Composable {
+                                SendButtonIcon(
+                                    canSendMessage = true,
+                                    isEditing = composerMode.isEditing,
+                                )
+                            },
+                        )
                     }
-                    false -> onSendVoiceMessage()
                 }
-            }
-        else -> onSendMessage()
-    }
-
-    fun endButtonClickFormatting() {
-        if (canSendMessage) {
-            onSendMessage()
+            composerMode.isEditing -> EndButtonParams(
+                endButtonContentDescriptionResId = CommonStrings.action_send_edited_message,
+                endButtonClick = {
+                    onSendMessage()
+                },
+                endButtonContent = @Composable {
+                    SendButtonIcon(
+                        canSendMessage = true,
+                        isEditing = true,
+                    )
+                },
+            )
+            else -> EndButtonParams(
+                endButtonContentDescriptionResId = CommonStrings.action_send_message,
+                endButtonClick = {
+                    onSendMessage()
+                },
+                endButtonContent = @Composable {
+                    SendButtonIcon(
+                        canSendMessage = true,
+                        isEditing = false,
+                    )
+                },
+            )
         }
     }
 
-    val sendOrRecordButton = when {
-        !canSendMessage ->
-            when (voiceMessageState) {
-                VoiceMessageState.Idle,
-                is VoiceMessageState.Recording -> recordVoiceButton
-                is VoiceMessageState.Preview -> when (voiceMessageState.isSending) {
-                    true -> uploadVoiceProgress
-                    false -> sendVoiceButton
-                }
-            }
-        else -> sendButton
+    @Composable
+    fun rememberEndButtonParamsFormatting() = remember(composerMode.isEditing, canSendTextMessage) {
+        if (composerMode.isEditing) {
+            EndButtonParams(
+                endButtonContentDescriptionResId = CommonStrings.action_send_edited_message,
+                endButtonClick = {
+                    if (canSendTextMessage) {
+                        onSendMessage()
+                    }
+                },
+                endButtonContent = @Composable {
+                    SendButtonIcon(
+                        canSendMessage = canSendTextMessage,
+                        isEditing = true,
+                    )
+                },
+            )
+        } else {
+            EndButtonParams(
+                endButtonContentDescriptionResId = CommonStrings.action_send_message,
+                endButtonClick = {
+                    if (canSendTextMessage) {
+                        onSendMessage()
+                    }
+                },
+                endButtonContent = @Composable {
+                    SendButtonIcon(
+                        canSendMessage = canSendTextMessage,
+                        isEditing = false,
+                    )
+                },
+            )
+        }
     }
-
-    val endButtonA11y = endButtonA11y(
-        composerMode = composerMode,
-        voiceMessageState = voiceMessageState,
-        canSendMessage = canSendMessage,
-    )
 
     val voiceRecording = @Composable {
         when (voiceMessageState) {
@@ -319,6 +369,7 @@ fun TextComposer(
     }
 
     if (showTextFormatting && textFormattingOptions != null) {
+        val endButtonParams = rememberEndButtonParamsFormatting()
         TextFormattingLayout(
             modifier = layoutModifier,
             isRoomEncrypted = state.isRoomEncrypted,
@@ -331,20 +382,17 @@ fun TextComposer(
                 )
             },
             textFormatting = textFormattingOptions,
-            sendButton = sendButton,
-            endButtonClick = ::endButtonClickFormatting,
-            endButtonA11y = endButtonA11y,
+            endButtonParams = endButtonParams,
         )
     } else {
+        val endButtonParams = rememberEndButtonParams()
         StandardLayout(
             composerMode = composerMode,
             voiceMessageState = voiceMessageState,
             isRoomEncrypted = state.isRoomEncrypted,
             modifier = layoutModifier,
             textInput = textInput,
-            endButton = sendOrRecordButton,
-            endButtonClick = ::endButtonClickStandard,
-            endButtonA11y = endButtonA11y,
+            endButtonParams = endButtonParams,
             voiceRecording = voiceRecording,
             onAddAttachment = onAddAttachment,
             onDeleteVoiceMessage = onDeleteVoiceMessage,
@@ -372,38 +420,11 @@ fun TextComposer(
     }
 }
 
-@ReadOnlyComposable
-@Composable
-private fun endButtonA11y(
-    composerMode: MessageComposerMode,
-    voiceMessageState: VoiceMessageState,
-    canSendMessage: Boolean,
-): (SemanticsPropertyReceiver) -> Unit {
-    val a11ySendButtonDescription = stringResource(
-        id = when {
-            !canSendMessage ->
-                when (voiceMessageState) {
-                    VoiceMessageState.Idle,
-                    is VoiceMessageState.Recording -> if (voiceMessageState is VoiceMessageState.Recording) {
-                        CommonStrings.a11y_voice_message_stop_recording
-                    } else {
-                        CommonStrings.a11y_voice_message_record
-                    }
-                    is VoiceMessageState.Preview -> when (voiceMessageState.isSending) {
-                        true -> CommonStrings.common_sending
-                        false -> CommonStrings.action_send_voice_message
-                    }
-                }
-            composerMode.isEditing -> CommonStrings.action_send_edited_message
-            else -> CommonStrings.action_send_message
-        }
-    )
-    val endButtonA11y: (SemanticsPropertyReceiver.() -> Unit) = {
-        contentDescription = a11ySendButtonDescription
-        onClick(null, null)
-    }
-    return endButtonA11y
-}
+private data class EndButtonParams(
+    val endButtonContentDescriptionResId: Int,
+    val endButtonClick: () -> Unit,
+    val endButtonContent: @Composable () -> Unit,
+)
 
 @Composable
 private fun StandardLayout(
@@ -412,9 +433,7 @@ private fun StandardLayout(
     isRoomEncrypted: Boolean?,
     textInput: @Composable () -> Unit,
     voiceRecording: @Composable () -> Unit,
-    endButton: @Composable () -> Unit,
-    endButtonClick: () -> Unit,
-    endButtonA11y: (SemanticsPropertyReceiver.() -> Unit),
+    endButtonParams: EndButtonParams,
     onAddAttachment: () -> Unit,
     onDeleteVoiceMessage: () -> Unit,
     onVoiceRecorderEvent: (VoiceMessageRecorderEvent) -> Unit,
@@ -469,9 +488,9 @@ private fun StandardLayout(
                         } else {
                             when (voiceMessageState) {
                                 is VoiceMessageState.Preview ->
-                                    VoiceMessageDeleteButton(enabled = !voiceMessageState.isSending)
+                                    VoiceMessageDeleteButtonIcon(enabled = !voiceMessageState.isSending)
                                 is VoiceMessageState.Recording ->
-                                    VoiceMessageDeleteButton(enabled = true)
+                                    VoiceMessageDeleteButtonIcon(enabled = true)
                             }
                         }
                     }
@@ -489,15 +508,18 @@ private fun StandardLayout(
                 }
             }
             // To avoid loosing keyboard focus, the IconButton has to be defined here and has to be always enabled.
+            val endButtonContentDescription = stringResource(endButtonParams.endButtonContentDescriptionResId)
             IconButton(
                 modifier = Modifier
                     .padding(bottom = 5.dp, top = 5.dp, end = 6.dp, start = 6.dp)
                     .size(48.dp)
-                    .clearAndSetSemantics(endButtonA11y),
-                onClick = endButtonClick,
-            ) {
-                endButton()
-            }
+                    .clearAndSetSemantics {
+                        contentDescription = endButtonContentDescription
+                        onClick(null, null)
+                    },
+                onClick = endButtonParams.endButtonClick,
+                content = endButtonParams.endButtonContent,
+            )
         }
     }
 }
@@ -530,9 +552,7 @@ private fun TextFormattingLayout(
     textInput: @Composable () -> Unit,
     dismissTextFormattingButton: @Composable () -> Unit,
     textFormatting: @Composable () -> Unit,
-    sendButton: @Composable () -> Unit,
-    endButtonClick: () -> Unit,
-    endButtonA11y: (SemanticsPropertyReceiver.() -> Unit),
+    endButtonParams: EndButtonParams,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -564,6 +584,7 @@ private fun TextFormattingLayout(
                 textFormatting()
             }
             // To avoid loosing keyboard focus, the IconButton has to be defined here and has to be always enabled.
+            val endButtonContentDescription = stringResource(endButtonParams.endButtonContentDescriptionResId)
             IconButton(
                 modifier = Modifier
                     .padding(
@@ -571,11 +592,13 @@ private fun TextFormattingLayout(
                         end = 6.dp,
                     )
                     .size(48.dp)
-                    .clearAndSetSemantics(endButtonA11y),
-                onClick = endButtonClick,
-            ) {
-                sendButton()
-            }
+                    .clearAndSetSemantics {
+                        contentDescription = endButtonContentDescription
+                        onClick(null, null)
+                    },
+                onClick = endButtonParams.endButtonClick,
+                content = endButtonParams.endButtonContent,
+            )
         }
     }
 }
@@ -633,6 +656,12 @@ private fun TextInputBox(
             }
         }
     }
+}
+
+private fun VoiceMessageState.endButtonKey() = when (this) {
+    is VoiceMessageState.Idle -> "Idle"
+    is VoiceMessageState.Preview -> "Preview_$isSending"
+    is VoiceMessageState.Recording -> "Recording"
 }
 
 private fun aTextEditorStateMarkdownList(isRoomEncrypted: Boolean? = null) = persistentListOf(

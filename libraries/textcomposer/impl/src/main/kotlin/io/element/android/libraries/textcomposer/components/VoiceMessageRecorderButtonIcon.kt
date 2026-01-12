@@ -26,7 +26,7 @@ import io.element.android.libraries.designsystem.theme.components.IconButton
 import io.element.android.libraries.designsystem.utils.CommonDrawables
 
 @Composable
-internal fun VoiceMessageRecorderButton(
+internal fun VoiceMessageRecorderButtonIcon(
     isRecording: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -75,15 +75,15 @@ private fun StopButton(
 
 @PreviewsDayNight
 @Composable
-internal fun VoiceMessageRecorderButtonPreview() = ElementPreview {
+internal fun VoiceMessageRecorderButtonIconPreview() = ElementPreview {
     Row {
         IconButton(onClick = {}) {
-            VoiceMessageRecorderButton(
+            VoiceMessageRecorderButtonIcon(
                 isRecording = false,
             )
         }
         IconButton(onClick = {}) {
-            VoiceMessageRecorderButton(
+            VoiceMessageRecorderButtonIcon(
                 isRecording = true,
             )
         }

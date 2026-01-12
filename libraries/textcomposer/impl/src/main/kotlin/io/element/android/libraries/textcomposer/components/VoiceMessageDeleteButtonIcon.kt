@@ -23,7 +23,7 @@ import io.element.android.libraries.designsystem.theme.components.IconButton
 import io.element.android.libraries.ui.strings.CommonStrings
 
 @Composable
-fun VoiceMessageDeleteButton(
+fun VoiceMessageDeleteButtonIcon(
     enabled: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -41,15 +41,15 @@ fun VoiceMessageDeleteButton(
 
 @PreviewsDayNight
 @Composable
-internal fun VoiceMessageDeleteButtonPreview() = ElementPreview {
+internal fun VoiceMessageDeleteButtonIconPreview() = ElementPreview {
     Row {
         IconButton(onClick = {}) {
-            VoiceMessageDeleteButton(
+            VoiceMessageDeleteButtonIcon(
                 enabled = true,
             )
         }
         IconButton(onClick = {}) {
-            VoiceMessageDeleteButton(
+            VoiceMessageDeleteButtonIcon(
                 enabled = false,
             )
         }

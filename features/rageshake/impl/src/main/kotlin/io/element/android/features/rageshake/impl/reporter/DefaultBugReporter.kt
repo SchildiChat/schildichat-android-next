@@ -158,6 +158,7 @@ class DefaultBugReporter(
                 }
                 if (withCrashLogs || withDevicesLogs) {
                     saveLogCat()
+                        ?.takeIf { it.length() < RageshakeConfig.MAX_LOG_CONTENT_SIZE }
                         ?.let { logCatFile ->
                             compressFile(logCatFile).also {
                                 logCatFile.safeDelete()
@@ -191,6 +192,7 @@ class DefaultBugReporter(
                     .addFormDataPart("label", buildMeta.versionName)
                     .addFormDataPart("label", buildMeta.flavorDescription)
                     .addFormDataPart("branch_name", buildMeta.gitBranchName)
+
                 userId?.let {
                     matrixClientProvider.getOrNull(it)?.let { client ->
                         val curveKey = client.encryptionService.deviceCurve25519()
@@ -390,7 +392,11 @@ class DefaultBugReporter(
         ) {
             val logDirectory = logDirectory()
             logDirectory.listFiles()
-                ?.filter { it.isFile && !it.name.endsWith(LOG_CAT_FILENAME) }
+                ?.filter {
+                    it.isFile &&
+                        !it.name.endsWith(LOG_CAT_FILENAME) &&
+                        it.length() < RageshakeConfig.MAX_LOG_CONTENT_SIZE
+                }
         }.orEmpty()
     }
 

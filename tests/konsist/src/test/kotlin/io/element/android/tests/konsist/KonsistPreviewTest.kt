@@ -47,7 +47,7 @@ class KonsistPreviewTest {
                     " and should be internal."
             ) {
                 val testedView = it.name.removeSuffix("A11yPreview")
-                it.text.contains("$testedView(") &&
+                (it.text.contains("$testedView(") || it.text.contains("ContentToPreview(")) &&
                     it.hasAllAnnotationsOf(PreviewsDayNight::class).not() &&
                     it.text.contains("ElementPreview") &&
                     it.hasInternalModifier

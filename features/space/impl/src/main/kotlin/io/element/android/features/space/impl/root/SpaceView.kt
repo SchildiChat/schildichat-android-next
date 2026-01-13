@@ -40,7 +40,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
+import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.designsystem.atomic.molecules.InviteButtonsRowMolecule
+import io.element.android.libraries.designsystem.components.async.AsyncActionView
+import io.element.android.libraries.designsystem.components.dialogs.ConfirmationDialog
 import io.element.android.libraries.designsystem.components.ClickableLinkText
 import io.element.android.libraries.designsystem.components.SimpleModalBottomSheet
 import io.element.android.libraries.designsystem.components.async.AsyncIndicator
@@ -56,9 +59,11 @@ import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.CircularProgressIndicator
 import io.element.android.libraries.designsystem.theme.components.DropdownMenu
 import io.element.android.libraries.designsystem.theme.components.DropdownMenuItem
+import io.element.android.libraries.designsystem.theme.components.Checkbox
 import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconButton
+import io.element.android.libraries.designsystem.theme.components.TextButton
 import io.element.android.libraries.designsystem.theme.components.Scaffold
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TopAppBar
@@ -88,15 +93,26 @@ fun SpaceView(
     Scaffold(
         modifier = modifier,
         topBar = {
-            SpaceViewTopBar(
-                currentSpace = state.currentSpace,
-                canAccessSpaceSettings = state.canAccessSpaceSettings,
-                onBackClick = onBackClick,
-                onLeaveSpaceClick = onLeaveSpaceClick,
-                onShareSpace = onShareSpace,
-                onSettingsClick = onSettingsClick,
-                onViewMembersClick = onViewMembersClick,
-            )
+            if (state.isManageMode) {
+                ManageModeTopBar(
+                    selectedCount = state.selectedCount,
+                    isRemoveButtonEnabled = state.isRemoveButtonEnabled,
+                    onCancelClick = { state.eventSink(SpaceEvents.ExitManageMode) },
+                    onRemoveClick = { state.eventSink(SpaceEvents.RemoveSelectedRooms) },
+                )
+            } else {
+                SpaceViewTopBar(
+                    currentSpace = state.currentSpace,
+                    canAccessSpaceSettings = state.canAccessSpaceSettings,
+                    showManageRoomsAction = state.showManageRoomsAction,
+                    onBackClick = onBackClick,
+                    onLeaveSpaceClick = onLeaveSpaceClick,
+                    onShareSpace = onShareSpace,
+                    onSettingsClick = onSettingsClick,
+                    onViewMembersClick = onViewMembersClick,
+                    onManageRoomsClick = { state.eventSink(SpaceEvents.EnterManageMode) },
+                )
+            }
         },
         content = { padding ->
             Box(
@@ -104,7 +120,13 @@ fun SpaceView(
             ) {
                 SpaceViewContent(
                     state = state,
-                    onRoomClick = onRoomClick,
+                    onRoomClick = { spaceRoom ->
+                        if (state.isManageMode) {
+                            state.eventSink(SpaceEvents.ToggleRoomSelection(spaceRoom.roomId))
+                        } else {
+                            onRoomClick(spaceRoom)
+                        }
+                    },
                     onTopicClick = { topic ->
                         state.eventSink(SpaceEvents.ShowTopicViewer(topic))
                     }
@@ -125,6 +147,14 @@ fun SpaceView(
             }
         )
     }
+
+    // Confirmation dialog for removing rooms
+    RemoveRoomsConfirmationDialog(
+        removeRoomsAction = state.removeRoomsAction,
+        selectedCount = state.selectedCount,
+        onConfirm = { state.eventSink(SpaceEvents.ConfirmRoomRemoval) },
+        onDismiss = { state.eventSink(SpaceEvents.ClearRemoveAction) },
+    )
 }
 
 @Composable
@@ -200,6 +230,7 @@ private fun SpaceViewContent(
         ) { index, spaceRoom ->
             val isInvitation = spaceRoom.state == CurrentUserMembership.INVITED
             val isCurrentlyJoining = state.isJoining(spaceRoom.roomId)
+            val isSelected = spaceRoom.roomId in state.selectedRoomIds
             SpaceRoomItemView(
                 spaceRoom = spaceRoom,
                 showUnreadIndicator = isInvitation && spaceRoom.roomId !in state.seenSpaceInvites,
@@ -210,17 +241,30 @@ private fun SpaceViewContent(
                 onLongClick = {
                     // TODO
                 },
-                trailingAction = spaceRoom.trailingAction(isCurrentlyJoining = isCurrentlyJoining) {
-                    state.eventSink(SpaceEvents.Join(spaceRoom))
-                },
-                bottomAction = spaceRoom.inviteButtons(
-                    onAcceptClick = {
-                        state.eventSink(SpaceEvents.AcceptInvite(spaceRoom))
-                    },
-                    onDeclineClick = {
-                        state.eventSink(SpaceEvents.DeclineInvite(spaceRoom))
+                trailingAction = if (state.isManageMode) {
+                    {
+                        Checkbox(
+                            checked = isSelected,
+                            onCheckedChange = null,
+                        )
                     }
-                )
+                } else {
+                    spaceRoom.trailingAction(isCurrentlyJoining = isCurrentlyJoining) {
+                        state.eventSink(SpaceEvents.Join(spaceRoom))
+                    }
+                },
+                bottomAction = if (state.isManageMode) {
+                    null
+                } else {
+                    spaceRoom.inviteButtons(
+                        onAcceptClick = {
+                            state.eventSink(SpaceEvents.AcceptInvite(spaceRoom))
+                        },
+                        onDeclineClick = {
+                            state.eventSink(SpaceEvents.DeclineInvite(spaceRoom))
+                        }
+                    )
+                }
             )
             if (index != state.children.lastIndex) {
                 HorizontalDivider()
@@ -259,11 +303,13 @@ private fun LoadingMoreIndicator(
 private fun SpaceViewTopBar(
     currentSpace: SpaceRoom?,
     canAccessSpaceSettings: Boolean,
+    showManageRoomsAction: Boolean,
     onBackClick: () -> Unit,
     onLeaveSpaceClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onShareSpace: () -> Unit,
     onViewMembersClick: () -> Unit,
+    onManageRoomsClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     TopAppBar(
@@ -313,6 +359,16 @@ private fun SpaceViewTopBar(
                         onShareSpace()
                     }
                 )
+                if (showManageRoomsAction) {
+                    SpaceMenuItem(
+                        titleRes = CommonStrings.action_manage_rooms,
+                        icon = CompoundIcons.Edit(),
+                        onClick = {
+                            showMenu = false
+                            onManageRoomsClick()
+                        }
+                    )
+                }
                 if (canAccessSpaceSettings) {
                     SpaceMenuItem(
                         titleRes = CommonStrings.common_settings,
@@ -333,6 +389,39 @@ private fun SpaceViewTopBar(
                     }
                 )
             }
+        },
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ManageModeTopBar(
+    selectedCount: Int,
+    isRemoveButtonEnabled: Boolean,
+    onCancelClick: () -> Unit,
+    onRemoveClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    TopAppBar(
+        modifier = modifier,
+        navigationIcon = {
+            BackButton(
+                onClick = onCancelClick,
+                imageVector = CompoundIcons.Close()
+            )
+        },
+        title = {
+            Text(
+                text = "$selectedCount selected",
+                style = ElementTheme.typography.fontBodyLgMedium,
+            )
+        },
+        actions = {
+            TextButton(
+                text = stringResource(CommonStrings.action_remove),
+                onClick = onRemoveClick,
+                enabled = isRemoveButtonEnabled,
+            )
         },
     )
 }
@@ -422,6 +511,34 @@ private fun SpaceRoom.inviteButtons(
             }
         }
         else -> null
+    }
+}
+
+@Composable
+private fun RemoveRoomsConfirmationDialog(
+    removeRoomsAction: AsyncAction<Unit>,
+    selectedCount: Int,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    when (removeRoomsAction) {
+        AsyncAction.ConfirmingNoParams -> {
+            ConfirmationDialog(
+                title = "Remove $selectedCount rooms from space?",
+                content = "Removing a room will not affect the room access. To change the access go to Room info > Privacy & security.",
+                submitText = stringResource(CommonStrings.action_remove),
+                onSubmitClick = onConfirm,
+                onDismiss = onDismiss,
+                destructiveSubmit = true,
+            )
+        }
+        else -> {
+            AsyncActionView(
+                async = removeRoomsAction,
+                onSuccess = { onDismiss() },
+                onErrorDismiss = onDismiss,
+            )
+        }
     }
 }
 

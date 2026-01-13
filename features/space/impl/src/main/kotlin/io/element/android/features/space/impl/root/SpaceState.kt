@@ -27,12 +27,20 @@ data class SpaceState(
     val acceptDeclineInviteState: AcceptDeclineInviteState,
     val topicViewerState: TopicViewerState,
     val canAccessSpaceSettings: Boolean,
+    val isManageMode: Boolean,
+    val selectedRoomIds: ImmutableSet<RoomId>,
+    val canManageRooms: Boolean,
+    val removeRoomsAction: AsyncAction<Unit>,
     val eventSink: (SpaceEvents) -> Unit
 ) {
     fun isJoining(spaceId: RoomId): Boolean = joinActions[spaceId] == AsyncAction.Loading
     val hasAnyFailure: Boolean = joinActions.values.any {
         it is AsyncAction.Failure
     }
+
+    val showManageRoomsAction: Boolean = canManageRooms && children.isNotEmpty()
+    val selectedCount: Int = selectedRoomIds.size
+    val isRemoveButtonEnabled: Boolean = selectedRoomIds.isNotEmpty()
 }
 
 @Immutable

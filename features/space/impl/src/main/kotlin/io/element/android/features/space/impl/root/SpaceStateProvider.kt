@@ -39,7 +39,26 @@ open class SpaceStateProvider : PreviewParameterProvider<SpaceState> {
             aSpaceState(
                 topicViewerState = TopicViewerState.Shown(topic = "Space description goes here." + LoremIpsum(20).values.first()),
             ),
-            // Add other states here
+            // Manage mode states
+            aSpaceState(
+                parentSpace = aParentSpace(),
+                children = aListOfSpaceRooms(),
+                isManageMode = true,
+                selectedRoomIds = emptySet(),
+            ),
+            aSpaceState(
+                parentSpace = aParentSpace(),
+                children = aListOfSpaceRooms(),
+                isManageMode = true,
+                selectedRoomIds = setOf(RoomId("!spaceId0:example.com"), RoomId("!spaceId1:example.com")),
+            ),
+            aSpaceState(
+                parentSpace = aParentSpace(),
+                children = aListOfSpaceRooms(),
+                isManageMode = true,
+                selectedRoomIds = setOf(RoomId("!spaceId0:example.com")),
+                removeRoomsAction = AsyncAction.ConfirmingNoParams,
+            ),
         )
 }
 
@@ -54,6 +73,10 @@ fun aSpaceState(
     acceptDeclineInviteState: AcceptDeclineInviteState = anAcceptDeclineInviteState(),
     topicViewerState: TopicViewerState = TopicViewerState.Hidden,
     canAccessSpaceSettings: Boolean = true,
+    isManageMode: Boolean = false,
+    selectedRoomIds: Set<RoomId> = emptySet(),
+    canManageRooms: Boolean = true,
+    removeRoomsAction: AsyncAction<Unit> = AsyncAction.Uninitialized,
     eventSink: (SpaceEvents) -> Unit = { },
 ) = SpaceState(
     currentSpace = parentSpace,
@@ -65,6 +88,10 @@ fun aSpaceState(
     acceptDeclineInviteState = acceptDeclineInviteState,
     topicViewerState = topicViewerState,
     canAccessSpaceSettings = canAccessSpaceSettings,
+    isManageMode = isManageMode,
+    selectedRoomIds = selectedRoomIds.toImmutableSet(),
+    canManageRooms = canManageRooms,
+    removeRoomsAction = removeRoomsAction,
     eventSink = eventSink,
 )
 

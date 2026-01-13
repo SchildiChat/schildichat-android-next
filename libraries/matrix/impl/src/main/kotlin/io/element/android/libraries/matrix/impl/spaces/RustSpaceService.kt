@@ -79,6 +79,12 @@ class RustSpaceService(
         }
     }
 
+    override suspend fun removeChildFromSpace(spaceId: RoomId, childId: RoomId): Result<Unit> = withContext(sessionDispatcher) {
+        runCatchingExceptions {
+            innerSpaceService.removeChildFromSpace(spaceId.value, childId.value)
+        }
+    }
+
     init {
         innerSpaceService
             .spaceListUpdate()

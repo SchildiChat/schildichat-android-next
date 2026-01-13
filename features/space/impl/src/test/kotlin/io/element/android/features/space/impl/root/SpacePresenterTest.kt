@@ -28,6 +28,7 @@ import io.element.android.libraries.matrix.api.room.BaseRoom
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
 import io.element.android.libraries.matrix.api.room.join.JoinRoom
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
+import io.element.android.libraries.matrix.api.spaces.SpaceService
 import io.element.android.libraries.matrix.test.AN_EXCEPTION
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_ROOM_ID_2
@@ -36,6 +37,7 @@ import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.join.FakeJoinRoom
 import io.element.android.libraries.matrix.test.room.powerlevels.FakeRoomPermissions
 import io.element.android.libraries.matrix.test.spaces.FakeSpaceRoomList
+import io.element.android.libraries.matrix.test.spaces.FakeSpaceService
 import io.element.android.libraries.previewutils.room.aSpaceRoom
 import io.element.android.tests.testutils.EventsRecorder
 import io.element.android.tests.testutils.lambda.lambdaRecorder
@@ -365,6 +367,7 @@ class SpacePresenterTest {
         ),
         acceptDeclineInvitePresenter: Presenter<AcceptDeclineInviteState> = Presenter { anAcceptDeclineInviteState() },
         spaceSettingsEnabled: Boolean = false,
+        spaceService: FakeSpaceService = FakeSpaceService(),
     ): SpacePresenter {
         return SpacePresenter(
             client = client,
@@ -379,6 +382,7 @@ class SpacePresenterTest {
                     FeatureFlags.SpaceSettings.key to spaceSettingsEnabled,
                 )
             ),
+            spaceService = spaceService,
         )
     }
 }

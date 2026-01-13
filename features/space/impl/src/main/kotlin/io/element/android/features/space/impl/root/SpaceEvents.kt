@@ -8,6 +8,7 @@
 
 package io.element.android.features.space.impl.root
 
+import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 
 sealed interface SpaceEvents {
@@ -19,4 +20,12 @@ sealed interface SpaceEvents {
 
     data class ShowTopicViewer(val topic: String) : SpaceEvents
     data object HideTopicViewer : SpaceEvents
+
+    // Manage mode events
+    data object EnterManageMode : SpaceEvents
+    data object ExitManageMode : SpaceEvents
+    data class ToggleRoomSelection(val roomId: RoomId) : SpaceEvents
+    data object ConfirmRoomRemoval : SpaceEvents
+    data object RemoveSelectedRooms : SpaceEvents
+    data object ClearRemoveAction : SpaceEvents
 }

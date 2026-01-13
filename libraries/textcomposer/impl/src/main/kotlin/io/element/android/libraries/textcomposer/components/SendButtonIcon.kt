@@ -29,9 +29,6 @@ import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconButton
-import io.element.android.libraries.matrix.api.core.EventId
-import io.element.android.libraries.matrix.api.timeline.item.event.toEventOrTransactionId
-import io.element.android.libraries.textcomposer.model.MessageComposerMode
 
 /**
  * Send button for the message composer.
@@ -39,50 +36,42 @@ import io.element.android.libraries.textcomposer.model.MessageComposerMode
  * Temporary Figma : https://www.figma.com/design/Ni6Ii8YKtmXCKYNE90cC67/Timeline-(new)?node-id=2274-39944&m=dev
  */
 @Composable
-internal fun SendButton(
+internal fun SendButtonIcon(
     canSendMessage: Boolean,
-    onClick: () -> Unit,
-    composerMode: MessageComposerMode,
+    isEditing: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    IconButton(
+    val iconVector = when {
+        isEditing -> CompoundIcons.Check()
+        else -> CompoundIcons.SendSolid()
+    }
+    val iconStartPadding = when {
+        isEditing -> 0.dp
+        else -> 2.dp
+    }
+    Box(
         modifier = modifier
-            .size(48.dp),
-        onClick = onClick,
-        enabled = canSendMessage,
+            .clip(CircleShape)
+            .size(36.dp)
+            .buttonBackgroundModifier(canSendMessage)
     ) {
-        val iconVector = when {
-            composerMode.isEditing -> CompoundIcons.Check()
-            else -> CompoundIcons.SendSolid()
-        }
-        val iconStartPadding = when {
-            composerMode.isEditing -> 0.dp
-            else -> 2.dp
-        }
-        Box(
+        Icon(
             modifier = Modifier
-                .clip(CircleShape)
-                .size(36.dp)
-                .buttonBackgroundModifier(canSendMessage)
-        ) {
-            Icon(
-                modifier = Modifier
-                    .padding(start = iconStartPadding)
-                    .align(Alignment.Center),
-                imageVector = iconVector,
-                // Note: accessibility is managed in TextComposer.
-                contentDescription = null,
-                tint = if (canSendMessage) {
-                    if (ElementTheme.colors.isLight) {
-                        ElementTheme.colors.iconOnSolidPrimary
-                    } else {
-                        ElementTheme.colors.iconPrimary
-                    }
+                .padding(start = iconStartPadding)
+                .align(Alignment.Center),
+            imageVector = iconVector,
+            // Note: accessibility is managed in TextComposer.
+            contentDescription = null,
+            tint = if (canSendMessage) {
+                if (ElementTheme.colors.isLight) {
+                    ElementTheme.colors.iconOnSolidPrimary
                 } else {
-                    ElementTheme.colors.iconQuaternary
+                    ElementTheme.colors.iconPrimary
                 }
-            )
-        }
+            } else {
+                ElementTheme.colors.iconQuaternary
+            }
+        )
     }
 }
 
@@ -113,13 +102,19 @@ private fun Modifier.buttonBackgroundModifier(
 
 @PreviewsDayNight
 @Composable
-internal fun SendButtonPreview() = ElementPreview {
-    val normalMode = MessageComposerMode.Normal
-    val editMode = MessageComposerMode.Edit(EventId("\$id").toEventOrTransactionId(), "")
+internal fun SendButtonIconPreview() = ElementPreview {
     Row {
-        SendButton(canSendMessage = true, onClick = {}, composerMode = normalMode)
-        SendButton(canSendMessage = false, onClick = {}, composerMode = normalMode)
-        SendButton(canSendMessage = true, onClick = {}, composerMode = editMode)
-        SendButton(canSendMessage = false, onClick = {}, composerMode = editMode)
+        IconButton(onClick = {}) {
+            SendButtonIcon(canSendMessage = true, isEditing = false)
+        }
+        IconButton(onClick = {}) {
+            SendButtonIcon(canSendMessage = false, isEditing = false)
+        }
+        IconButton(onClick = {}) {
+            SendButtonIcon(canSendMessage = true, isEditing = true)
+        }
+        IconButton(onClick = {}) {
+            SendButtonIcon(canSendMessage = false, isEditing = true)
+        }
     }
 }

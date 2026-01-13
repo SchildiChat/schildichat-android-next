@@ -23,41 +23,35 @@ import io.element.android.libraries.designsystem.theme.components.IconButton
 import io.element.android.libraries.ui.strings.CommonStrings
 
 @Composable
-fun VoiceMessageDeleteButton(
+fun VoiceMessageDeleteButtonIcon(
     enabled: Boolean,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    IconButton(
-        modifier = modifier
-            .size(48.dp),
-        enabled = enabled,
-        onClick = onClick,
-    ) {
-        Icon(
-            modifier = Modifier.size(24.dp),
-            imageVector = CompoundIcons.Delete(),
-            contentDescription = stringResource(CommonStrings.a11y_delete),
-            tint = if (enabled) {
-                ElementTheme.colors.iconCriticalPrimary
-            } else {
-                ElementTheme.colors.iconDisabled
-            },
-        )
-    }
+    Icon(
+        modifier = modifier.size(24.dp),
+        imageVector = CompoundIcons.Delete(),
+        contentDescription = stringResource(CommonStrings.a11y_delete),
+        tint = if (enabled) {
+            ElementTheme.colors.iconCriticalPrimary
+        } else {
+            ElementTheme.colors.iconDisabled
+        },
+    )
 }
 
 @PreviewsDayNight
 @Composable
-internal fun VoiceMessageDeleteButtonPreview() = ElementPreview {
+internal fun VoiceMessageDeleteButtonIconPreview() = ElementPreview {
     Row {
-        VoiceMessageDeleteButton(
-            enabled = true,
-            onClick = {},
-        )
-        VoiceMessageDeleteButton(
-            enabled = false,
-            onClick = {},
-        )
+        IconButton(onClick = {}) {
+            VoiceMessageDeleteButtonIcon(
+                enabled = true,
+            )
+        }
+        IconButton(onClick = {}) {
+            VoiceMessageDeleteButtonIcon(
+                enabled = false,
+            )
+        }
     }
 }

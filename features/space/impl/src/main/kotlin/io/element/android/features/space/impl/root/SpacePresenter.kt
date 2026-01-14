@@ -112,6 +112,23 @@ class SpacePresenter(
         var isManageMode by remember { mutableStateOf(false) }
         var selectedRoomIds by remember { mutableStateOf<Set<RoomId>>(emptySet()) }
         var removeRoomsAction by remember { mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized) }
+        var removedRoomIds by remember { mutableStateOf<Set<RoomId>>(emptySet()) }
+
+        val filteredChildren by remember {
+            derivedStateOf {
+                children
+                    .filterNot { it.roomId in removedRoomIds }
+                    .let { list ->
+                        if (isManageMode) {
+                            // In manage mode, only show rooms (not spaces)
+                            list.filter { !it.isSpace }
+                        } else {
+                            list
+                        }
+                    }
+                    .toImmutableList()
+            }
+        }
 
         LaunchedEffect(children) {
             // Remove joined children from the join actions
@@ -171,10 +188,19 @@ class SpacePresenter(
                     localCoroutineScope.launch {
                         removeRoomsAction = AsyncAction.Loading
                         val spaceId = spaceRoomList.roomId
-                        val results = selectedRoomIds.map { roomId ->
-                            async { spaceService.removeChildFromSpace(spaceId, roomId) }
+                        val roomsToRemove = selectedRoomIds.toSet()
+                        val successfullyRemoved = mutableSetOf<RoomId>()
+                        val results = roomsToRemove.map { roomId ->
+                            async {
+                                spaceService.removeChildFromSpace(spaceId, roomId)
+                                    .onSuccess { successfullyRemoved.add(roomId) }
+                            }
                         }
-                        val hasError = results.awaitAll().any { it.isFailure }
+                        results.awaitAll()
+                        if (successfullyRemoved.isNotEmpty()) {
+                            removedRoomIds = removedRoomIds + successfullyRemoved
+                        }
+                        val hasError = successfullyRemoved.size < roomsToRemove.size
                         if (hasError) {
                             removeRoomsAction = AsyncAction.Failure(Exception("Failed to remove some rooms"))
                         } else {
@@ -191,7 +217,7 @@ class SpacePresenter(
         }
         return SpaceState(
             currentSpace = currentSpace.getOrNull(),
-            children = children,
+            children = filteredChildren,
             seenSpaceInvites = seenSpaceInvites,
             hideInvitesAvatar = hideInvitesAvatar,
             hasMoreToLoad = hasMoreToLoad,

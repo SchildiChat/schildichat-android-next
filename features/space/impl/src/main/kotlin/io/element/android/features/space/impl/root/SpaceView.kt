@@ -8,6 +8,7 @@
 
 package io.element.android.features.space.impl.root
 
+import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -42,10 +43,9 @@ import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.designsystem.atomic.molecules.InviteButtonsRowMolecule
-import io.element.android.libraries.designsystem.components.async.AsyncActionView
-import io.element.android.libraries.designsystem.components.dialogs.ConfirmationDialog
 import io.element.android.libraries.designsystem.components.ClickableLinkText
 import io.element.android.libraries.designsystem.components.SimpleModalBottomSheet
+import io.element.android.libraries.designsystem.components.async.AsyncActionView
 import io.element.android.libraries.designsystem.components.async.AsyncIndicator
 import io.element.android.libraries.designsystem.components.async.AsyncIndicatorHost
 import io.element.android.libraries.designsystem.components.async.rememberAsyncIndicatorState
@@ -54,18 +54,19 @@ import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.components.button.BackButton
+import io.element.android.libraries.designsystem.components.dialogs.ConfirmationDialog
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
+import io.element.android.libraries.designsystem.theme.components.Checkbox
 import io.element.android.libraries.designsystem.theme.components.CircularProgressIndicator
 import io.element.android.libraries.designsystem.theme.components.DropdownMenu
 import io.element.android.libraries.designsystem.theme.components.DropdownMenuItem
-import io.element.android.libraries.designsystem.theme.components.Checkbox
 import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconButton
-import io.element.android.libraries.designsystem.theme.components.TextButton
 import io.element.android.libraries.designsystem.theme.components.Scaffold
 import io.element.android.libraries.designsystem.theme.components.Text
+import io.element.android.libraries.designsystem.theme.components.TextButton
 import io.element.android.libraries.designsystem.theme.components.TopAppBar
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
@@ -90,6 +91,15 @@ fun SpaceView(
     modifier: Modifier = Modifier,
     acceptDeclineInviteView: @Composable () -> Unit,
 ) {
+
+    BackHandler {
+        if (state.isManageMode) {
+            state.eventSink(SpaceEvents.ExitManageMode)
+        } else {
+            onBackClick()
+        }
+    }
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -230,7 +240,7 @@ private fun SpaceViewContent(
         ) { index, spaceRoom ->
             val isInvitation = spaceRoom.state == CurrentUserMembership.INVITED
             val isCurrentlyJoining = state.isJoining(spaceRoom.roomId)
-            val isSelected = spaceRoom.roomId in state.selectedRoomIds
+            val isSelected = state.isSelected(spaceRoom.roomId)
             SpaceRoomItemView(
                 spaceRoom = spaceRoom,
                 showUnreadIndicator = isInvitation && spaceRoom.roomId !in state.seenSpaceInvites,
@@ -530,6 +540,13 @@ private fun RemoveRoomsConfirmationDialog(
                 onSubmitClick = onConfirm,
                 onDismiss = onDismiss,
                 destructiveSubmit = true,
+                icon = {
+                    Icon(
+                        imageVector = CompoundIcons.Error(),
+                        tint = ElementTheme.colors.textCriticalPrimary,
+                        contentDescription = null
+                    )
+                }
             )
         }
         else -> {

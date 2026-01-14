@@ -34,11 +34,12 @@ data class SpaceState(
     val eventSink: (SpaceEvents) -> Unit
 ) {
     fun isJoining(spaceId: RoomId): Boolean = joinActions[spaceId] == AsyncAction.Loading
+    fun isSelected(spaceId: RoomId): Boolean = selectedRoomIds.contains(spaceId)
     val hasAnyFailure: Boolean = joinActions.values.any {
         it is AsyncAction.Failure
     }
 
-    val showManageRoomsAction: Boolean = canManageRooms && children.isNotEmpty()
+    val showManageRoomsAction: Boolean = canManageRooms && children.any { spaceRoom -> !spaceRoom.isSpace }
     val selectedCount: Int = selectedRoomIds.size
     val isRemoveButtonEnabled: Boolean = selectedRoomIds.isNotEmpty()
 }

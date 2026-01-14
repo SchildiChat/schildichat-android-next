@@ -10,9 +10,17 @@ package io.element.android.features.space.impl.root
 
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.veilOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -103,25 +111,36 @@ fun SpaceView(
     Scaffold(
         modifier = modifier,
         topBar = {
-            if (state.isManageMode) {
-                ManageModeTopBar(
-                    selectedCount = state.selectedCount,
-                    isRemoveButtonEnabled = state.isRemoveButtonEnabled,
-                    onCancelClick = { state.eventSink(SpaceEvents.ExitManageMode) },
-                    onRemoveClick = { state.eventSink(SpaceEvents.RemoveSelectedRooms) },
-                )
-            } else {
-                SpaceViewTopBar(
-                    currentSpace = state.currentSpace,
-                    canAccessSpaceSettings = state.canAccessSpaceSettings,
-                    showManageRoomsAction = state.showManageRoomsAction,
-                    onBackClick = onBackClick,
-                    onLeaveSpaceClick = onLeaveSpaceClick,
-                    onShareSpace = onShareSpace,
-                    onSettingsClick = onSettingsClick,
-                    onViewMembersClick = onViewMembersClick,
-                    onManageRoomsClick = { state.eventSink(SpaceEvents.EnterManageMode) },
-                )
+            Box {
+                AnimatedVisibility(
+                    visible = state.isManageMode,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    ManageModeTopBar(
+                        selectedCount = state.selectedCount,
+                        isRemoveButtonEnabled = state.isRemoveButtonEnabled,
+                        onCancelClick = { state.eventSink(SpaceEvents.ExitManageMode) },
+                        onRemoveClick = { state.eventSink(SpaceEvents.RemoveSelectedRooms) },
+                    )
+                }
+                AnimatedVisibility(
+                    visible = !state.isManageMode,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    SpaceViewTopBar(
+                        currentSpace = state.currentSpace,
+                        canAccessSpaceSettings = state.canAccessSpaceSettings,
+                        showManageRoomsAction = state.showManageRoomsAction,
+                        onBackClick = onBackClick,
+                        onLeaveSpaceClick = onLeaveSpaceClick,
+                        onShareSpace = onShareSpace,
+                        onSettingsClick = onSettingsClick,
+                        onViewMembersClick = onViewMembersClick,
+                        onManageRoomsClick = { state.eventSink(SpaceEvents.EnterManageMode) },
+                    )
+                }
             }
         },
         content = { padding ->
@@ -218,20 +237,26 @@ private fun SpaceViewContent(
     LazyColumn(modifier.fillMaxSize()) {
         val currentSpace = state.currentSpace
         if (currentSpace != null) {
-            item {
-                SpaceHeaderView(
-                    avatarData = currentSpace.getAvatarData(AvatarSize.SpaceHeader),
-                    name = currentSpace.displayName,
-                    topic = currentSpace.topic,
-                    topicMaxLines = 2,
-                    visibility = currentSpace.visibility,
-                    heroes = currentSpace.heroes.toImmutableList(),
-                    numberOfMembers = currentSpace.numJoinedMembers,
-                    onTopicClick = onTopicClick
-                )
-            }
-            item {
-                HorizontalDivider()
+            item(key = "space_header") {
+                AnimatedVisibility(
+                    !state.isManageMode,
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically()
+                ) {
+                    Column {
+                        SpaceHeaderView(
+                            avatarData = currentSpace.getAvatarData(AvatarSize.SpaceHeader),
+                            name = currentSpace.displayName,
+                            topic = currentSpace.topic,
+                            topicMaxLines = 2,
+                            visibility = currentSpace.visibility,
+                            heroes = currentSpace.heroes.toImmutableList(),
+                            numberOfMembers = currentSpace.numJoinedMembers,
+                            onTopicClick = onTopicClick
+                        )
+                        HorizontalDivider()
+                    }
+                }
             }
         }
         itemsIndexed(

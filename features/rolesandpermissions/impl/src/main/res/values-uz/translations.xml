@@ -4,11 +4,12 @@
   <string name="screen_room_change_permissions_ban_people">"Odamlarni taqiqlash"</string>
   <string name="screen_room_change_permissions_delete_messages">"Xabarlarni olib tashlash"</string>
   <string name="screen_room_change_permissions_invite_people">"Odamlarni taklif qiling va qo‘shilish so‘rovlarini qabul qiling"</string>
+  <string name="screen_room_change_permissions_member_moderation">"A’zolarni boshqarish"</string>
   <string name="screen_room_change_permissions_messages_and_content">"Xabarlar va kontent"</string>
   <string name="screen_room_change_permissions_moderators">"Adminlar va moderatorlar"</string>
   <string name="screen_room_change_permissions_remove_people">"Odamlarni olib tashlash va qoʻshilish soʻrovlarini rad etish"</string>
   <string name="screen_room_change_permissions_room_avatar">"Xona avatarini oʻzgartirish"</string>
-  <string name="screen_room_change_permissions_room_details">"Xonani tahrirlash"</string>
+  <string name="screen_room_change_permissions_room_details">"Tafsilotlarni tahrirlash"</string>
   <string name="screen_room_change_permissions_room_name">"Xona nomini oʻzgartirish"</string>
   <string name="screen_room_change_permissions_room_topic">"Xona mavzusini almashtirish"</string>
   <string name="screen_room_change_permissions_send_messages">"Xabarlar yuborish"</string>

@@ -42,7 +42,7 @@ fun SpaceHeaderRootView(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         BigIcon(
-            style = BigIcon.Style.Default(CompoundIcons.WorkspaceSolid())
+            style = BigIcon.Style.Default(CompoundIcons.SpaceSolid())
         )
         Text(
             text = stringResource(CommonStrings.screen_space_list_title),

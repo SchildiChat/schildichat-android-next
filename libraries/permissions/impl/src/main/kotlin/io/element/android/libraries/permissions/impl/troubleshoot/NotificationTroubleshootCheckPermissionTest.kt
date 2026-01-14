@@ -61,6 +61,6 @@ class NotificationTroubleshootCheckPermissionTest(
         navigator: NotificationTroubleshootNavigator,
     ) {
         // Do not bother about asking the permission inline, just lead the user to the settings
-        permissionActions.openSettings()
+        permissionActions.openSettings(Manifest.permission.POST_NOTIFICATIONS)
     }
 }

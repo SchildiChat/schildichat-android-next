@@ -110,6 +110,7 @@
   <string name="action_load_more">"載入更多"</string>
   <string name="action_manage_account">"管理帳號"</string>
   <string name="action_manage_devices">"管理裝置"</string>
+  <string name="action_manage_rooms">"管理聊天室"</string>
   <string name="action_message">"聊天"</string>
   <string name="action_minimize">"最小化"</string>
   <string name="action_next">"下一步"</string>
@@ -154,6 +155,7 @@
   <string name="action_skip">"略過"</string>
   <string name="action_start">"開始"</string>
   <string name="action_start_chat">"開始聊天"</string>
+  <string name="action_start_over">"重新開始"</string>
   <string name="action_start_verification">"開始驗證"</string>
   <string name="action_static_map_load">"點擊以載入地圖"</string>
   <string name="action_take_photo">"拍照"</string>
@@ -175,7 +177,7 @@
   <string name="common_advanced_settings">"進階設定"</string>
   <string name="common_an_image">"影像"</string>
   <string name="common_analytics">"分析"</string>
-  <string name="common_android_shortcuts_remove_reason_left_room">"您離開了聊天室"</string>
+  <string name="common_android_shortcuts_remove_reason_left_room">"您離開聊天室"</string>
   <string name="common_android_shortcuts_remove_reason_session_logged_out">"您已登出工作階段"</string>
   <string name="common_appearance">"外觀"</string>
   <string name="common_audio">"音訊"</string>
@@ -380,6 +382,7 @@
   <string name="dialog_title_error">"錯誤"</string>
   <string name="dialog_title_success">"成功"</string>
   <string name="dialog_title_warning">"警告"</string>
+  <string name="dialog_unsaved_changes_description">"您有尚未儲存的變更"</string>
   <string name="dialog_unsaved_changes_description_android">"變更尚未儲存，您確定要返回嗎？"</string>
   <string name="dialog_unsaved_changes_title">"是否儲存變更？"</string>
   <string name="dialog_video_quality_selector_subtitle_file_size">"最大允許的檔案大小為：%1$s"</string>
@@ -436,10 +439,6 @@
   <string name="screen_resolve_send_failure_unsigned_device_title">"未傳送您的訊息，因為 %1$s 尚未驗證所有裝置。"</string>
   <string name="screen_resolve_send_failure_you_unsigned_device_subtitle">"您的一個或多個裝置未經驗證。您仍可傳送訊息，也可以取消並在您驗證您的所有裝置後再試一次。"</string>
   <string name="screen_resolve_send_failure_you_unsigned_device_title">"因為您尚未驗證一個或多個裝置，因為未傳送您的訊息"</string>
-  <string name="screen_room_change_permissions_change_settings">"變更設定"</string>
-  <string name="screen_room_change_permissions_manage_space">"管理空間"</string>
-  <string name="screen_room_change_permissions_manage_space_rooms">"管理聊天室"</string>
-  <string name="screen_room_change_permissions_title">"權限"</string>
   <string name="screen_room_change_role_administrators_or_owners_title">"編輯管理員或擁有者"</string>
   <string name="screen_room_error_failed_processing_media">"無法處理要上傳的媒體，請再試一次。"</string>
   <string name="screen_room_error_failed_retrieving_user_details">"無法擷取使用者詳細資訊"</string>

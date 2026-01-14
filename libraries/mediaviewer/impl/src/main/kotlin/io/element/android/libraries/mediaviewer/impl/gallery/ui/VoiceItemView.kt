@@ -11,6 +11,7 @@ package io.element.android.libraries.mediaviewer.impl.gallery.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -38,6 +39,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
+import io.element.android.libraries.designsystem.atomic.atoms.PlaybackSpeedButton
 import io.element.android.libraries.designsystem.components.media.WaveformPlaybackView
 import io.element.android.libraries.designsystem.modifiers.onKeyboardContextMenuAction
 import io.element.android.libraries.designsystem.preview.ElementPreview
@@ -50,7 +52,7 @@ import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.mediaviewer.impl.model.MediaItem
 import io.element.android.libraries.mediaviewer.impl.model.aMediaItemVoice
 import io.element.android.libraries.ui.strings.CommonStrings
-import io.element.android.libraries.voiceplayer.api.VoiceMessageEvents
+import io.element.android.libraries.voiceplayer.api.VoiceMessageEvent
 import io.element.android.libraries.voiceplayer.api.VoiceMessageState
 import io.element.android.libraries.voiceplayer.api.VoiceMessageStateProvider
 import io.element.android.libraries.voiceplayer.api.aVoiceMessageState
@@ -92,7 +94,7 @@ private fun VoiceInfoRow(
     onLongClick: () -> Unit,
 ) {
     fun playPause() {
-        state.eventSink(VoiceMessageEvents.PlayPause)
+        state.eventSink(VoiceMessageEvent.PlayPause)
     }
 
     Row(
@@ -112,21 +114,30 @@ private fun VoiceInfoRow(
             .padding(start = 12.dp, end = 36.dp, top = 8.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        when (state.button) {
-            VoiceMessageState.Button.Play -> PlayButton(onClick = ::playPause)
-            VoiceMessageState.Button.Pause -> PauseButton(onClick = ::playPause)
-            VoiceMessageState.Button.Downloading -> ProgressButton()
-            VoiceMessageState.Button.Retry -> RetryButton(onClick = ::playPause)
-            VoiceMessageState.Button.Disabled -> PlayButton(onClick = {}, enabled = false)
+        when (state.buttonType) {
+            VoiceMessageState.ButtonType.Play -> PlayButton(onClick = ::playPause)
+            VoiceMessageState.ButtonType.Pause -> PauseButton(onClick = ::playPause)
+            VoiceMessageState.ButtonType.Downloading -> ProgressButton()
+            VoiceMessageState.ButtonType.Retry -> RetryButton(onClick = ::playPause)
+            VoiceMessageState.ButtonType.Disabled -> PlayButton(onClick = {}, enabled = false)
         }
         Spacer(Modifier.width(8.dp))
-        Text(
-            text = if (state.progress > 0f) state.time else voice.mediaInfo.duration ?: state.time,
-            color = ElementTheme.colors.textSecondary,
-            style = ElementTheme.typography.fontBodyMdMedium,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            PlaybackSpeedButton(
+                speed = state.playbackSpeed,
+                onClick = { state.eventSink(VoiceMessageEvent.ChangePlaybackSpeed) },
+            )
+            Text(
+                text = if (state.progress > 0f) state.time else voice.mediaInfo.duration ?: state.time,
+                color = ElementTheme.colors.textSecondary,
+                style = ElementTheme.typography.fontBodyMdMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
         Spacer(modifier = Modifier.width(8.dp))
         WaveformPlaybackView(
             modifier = Modifier
@@ -136,7 +147,7 @@ private fun VoiceInfoRow(
             playbackProgress = state.progress,
             waveform = voice.mediaInfo.waveform.orEmpty().toImmutableList(),
             onSeek = {
-                state.eventSink(VoiceMessageEvents.Seek(it))
+                state.eventSink(VoiceMessageEvent.Seek(it))
             },
             seekEnabled = true,
         )

@@ -70,10 +70,18 @@ enum class FeatureFlags(
         defaultValue = { false },
         isFinished = false,
     ),
-    Space(
-        key = "feature.space",
-        title = "Spaces",
-        defaultValue = { true },
+    CreateSpaces(
+        key = "feature.createSpaces",
+        title = "Create spaces",
+        description = "Allow creating spaces.",
+        defaultValue = { false },
+        isFinished = false,
+    ),
+    SpaceSettings(
+        key = "feature.spaceSettings",
+        title = "Space settings",
+        description = "Allow managing space settings such as details, permissions and privacy.",
+        defaultValue = { false },
         isFinished = false,
     ),
     PrintLogsToLogcat(
@@ -116,6 +124,13 @@ enum class FeatureFlags(
         description = "Use WorkManager to schedule notification sync tasks when a push is received." +
             " This should improve reliability and battery usage.",
         defaultValue = { true },
+        isFinished = false,
+    ),
+    QrCodeLogin(
+        key = "feature.qr_code_login",
+        title = "QR Code Login",
+        description = "Allow logging in on other devices using a QR code.",
+        defaultValue = { false },
         isFinished = false,
     ),
 }

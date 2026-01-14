@@ -112,6 +112,7 @@
   <string name="action_load_more">"Näita veel"</string>
   <string name="action_manage_account">"Halda kasutajakontot"</string>
   <string name="action_manage_devices">"Halda seadmeid"</string>
+  <string name="action_manage_rooms">"Halda jututuba"</string>
   <string name="action_message">"Saada sõnum"</string>
   <string name="action_minimize">"Minimeeri"</string>
   <string name="action_next">"Edasi"</string>
@@ -156,10 +157,12 @@
   <string name="action_skip">"Jäta vahele"</string>
   <string name="action_start">"Alusta"</string>
   <string name="action_start_chat">"Alusta vestlust"</string>
+  <string name="action_start_over">"Alusta uuesti"</string>
   <string name="action_start_verification">"Alusta verifitseerimist"</string>
   <string name="action_static_map_load">"Kaardi laadimiseks klõpsa"</string>
   <string name="action_take_photo">"Tee pilt"</string>
   <string name="action_tap_for_options">"Valikuteks klõpsa"</string>
+  <string name="action_translate">"Tõlgi"</string>
   <string name="action_try_again">"Proovi uuesti"</string>
   <string name="action_unpin">"Eemalda esiletõstmine"</string>
   <string name="action_view">"Vaata"</string>
@@ -177,7 +180,7 @@
   <string name="common_advanced_settings">"Täiendavad seadistused"</string>
   <string name="common_an_image">"pilt"</string>
   <string name="common_analytics">"Analüütika"</string>
-  <string name="common_android_shortcuts_remove_reason_left_room">"Sa oled jututoast lahkunud"</string>
+  <string name="common_android_shortcuts_remove_reason_left_room">"Sina lahkusid jututoast"</string>
   <string name="common_android_shortcuts_remove_reason_session_logged_out">"Sa olid sessioonist väljaloginud"</string>
   <string name="common_appearance">"Välimus"</string>
   <string name="common_audio">"Heli"</string>
@@ -234,6 +237,7 @@ Põhjus: %1$s."</string>
   <string name="common_light">"Hele"</string>
   <string name="common_line_copied_to_clipboard">"Rida on kopeeritud lõikelauale"</string>
   <string name="common_link_copied_to_clipboard">"Link on kopeeritud lõikelauale"</string>
+  <string name="common_link_new_device">"Seo uus seade"</string>
   <string name="common_loading">"Laadime…"</string>
   <string name="common_loading_more">"Laadime veel…"</string>
   <plurals name="common_many_members">
@@ -246,10 +250,12 @@ Põhjus: %1$s."</string>
   </plurals>
   <string name="common_message">"Sõnum"</string>
   <string name="common_message_actions">"Tegevused sõnumiga"</string>
+  <string name="common_message_failed_to_send">"Sõnumi saatmine ei õnnestunud"</string>
   <string name="common_message_layout">"Sõnumi paigutus"</string>
   <string name="common_message_removed">"Sõnum on eemaldatud"</string>
   <string name="common_modern">"Kaasaegne"</string>
   <string name="common_mute">"Summutatud"</string>
+  <string name="common_name">"Nimi"</string>
   <string name="common_name_and_id">"%1$s (%2$s)"</string>
   <string name="common_no_results">"Otsingul pole tulemusi"</string>
   <string name="common_no_room_name">"Jututoal puudub nimi"</string>
@@ -324,6 +330,7 @@ Põhjus: %1$s."</string>
   <string name="common_something_went_wrong">"Midagi läks valesti"</string>
   <string name="common_something_went_wrong_message">"Tekkis viga. Palun proovi uuesti."</string>
   <string name="common_space">"Kogukond"</string>
+  <string name="common_space_topic_placeholder">"Mida selles kogukonnas tehakse?"</string>
   <plurals name="common_spaces">
     <item quantity="one">"%1$d kogukond"</item>
     <item quantity="other">"%1$d kogukonda"</item>
@@ -368,6 +375,7 @@ Põhjus: %1$s."</string>
   <string name="common_waiting">"Ootame…"</string>
   <string name="common_waiting_for_decryption_key">"Ootame selle sõnumi dekrüptimisvõtit"</string>
   <string name="common_you">"Sina"</string>
+  <string name="crypto_history_visible">"See jututuba on seadistatud sedaviisi, et ka uued liikmed saavad lugeda varasemat ajalugu. %1$s"</string>
   <string name="crypto_identity_change_pin_violation">"Kasutaja %1$s võrguidentiteet on lähtestatud. %2$s"</string>
   <string name="crypto_identity_change_pin_violation_new">"Kasutaja %1$s %2$s võrguidentiteet on lähtestatud. %3$s"</string>
   <string name="crypto_identity_change_pin_violation_new_user_id">"(%1$s)"</string>
@@ -388,6 +396,7 @@ Kas sa oled kindel, et soovid jätkata?"</string>
   <string name="dialog_title_error">"Viga"</string>
   <string name="dialog_title_success">"Õnnestus"</string>
   <string name="dialog_title_warning">"Hoiatus"</string>
+  <string name="dialog_unsaved_changes_description">"Sul on salvestamata muudatusi"</string>
   <string name="dialog_unsaved_changes_description_android">"Sinu tehtud muudatused pole veel salvestatud. Kas sa oled kindel, et soovid minna tagasi?"</string>
   <string name="dialog_unsaved_changes_title">"Kas salvestame muudatused?"</string>
   <string name="dialog_video_quality_selector_subtitle_file_size">"Suurim lubatud failisuurus on: %1$s"</string>
@@ -445,10 +454,6 @@ Kas sa oled kindel, et soovid jätkata?"</string>
   <string name="screen_resolve_send_failure_unsigned_device_title">"Sinu sõnum on saatmata, kuna %1$s pole verifitseerinud kõiki oma seadmeid"</string>
   <string name="screen_resolve_send_failure_you_unsigned_device_subtitle">"Üks või enam sinu seadet on verifitseerimata. Sa võid sõnumi ikkagi ära saata või katkestad saatmise ning proovid uuesti, kui oled kõik oma seadmed verifitseerinud."</string>
   <string name="screen_resolve_send_failure_you_unsigned_device_title">"Kuna sul on üks või enam verifitseerimata seadet, siis sinu sõnum jäi saatmata"</string>
-  <string name="screen_room_change_permissions_change_settings">"Muuda seadistusi"</string>
-  <string name="screen_room_change_permissions_manage_space">"Halda kogukonda"</string>
-  <string name="screen_room_change_permissions_manage_space_rooms">"Halda jututuba"</string>
-  <string name="screen_room_change_permissions_title">"Õigused"</string>
   <string name="screen_room_change_role_administrators_or_owners_title">"Muuda peakasutajaid või omanikke"</string>
   <string name="screen_room_error_failed_processing_media">"Meediafaili töötlemine enne üleslaadimist ei õnnestunud. Palun proovi uuesti."</string>
   <string name="screen_room_error_failed_retrieving_user_details">"Kasutaja andmete laadimine ei õnnestunud"</string>

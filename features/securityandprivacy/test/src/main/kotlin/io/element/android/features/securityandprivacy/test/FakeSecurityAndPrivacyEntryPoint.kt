@@ -13,7 +13,11 @@ import io.element.android.features.securityandprivacy.api.SecurityAndPrivacyEntr
 import io.element.android.tests.testutils.lambda.lambdaError
 
 class FakeSecurityAndPrivacyEntryPoint : SecurityAndPrivacyEntryPoint {
-    override fun createNode(parentNode: Node, buildContext: BuildContext): Node {
+    override fun createNode(
+        parentNode: Node,
+        buildContext: BuildContext,
+        callback: SecurityAndPrivacyEntryPoint.Callback,
+    ): Node {
         lambdaError()
     }
 }

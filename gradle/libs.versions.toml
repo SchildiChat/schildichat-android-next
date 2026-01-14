@@ -3,11 +3,11 @@
 
 [versions]
 # Project
-android_gradle_plugin = "8.13.1"
+android_gradle_plugin = "8.13.2"
 # When updateing this, please also update the version in the file ./idea/kotlinc.xml
-kotlin = "2.2.20"
+kotlin = "2.3.0"
 kotlinpoet = "2.2.0"
-ksp = "2.2.20-2.0.2"
+ksp = "2.3.4"
 firebaseAppDistribution = "5.2.0"
 
 # AndroidX
@@ -15,14 +15,14 @@ core = "1.17.0"
 datastore = "1.2.0"
 constraintlayout = "2.2.1"
 constraintlayout_compose = "1.1.1"
-lifecycle = "2.9.2"
-activity = "1.11.0"
-media3 = "1.8.0"
-camera = "1.5.1"
+lifecycle = "2.10.0"
+activity = "1.12.2"
+media3 = "1.9.0"
+camera = "1.5.2"
 work = "2.11.0"
 
 # Compose
-compose_bom = "2025.07.00"
+compose_bom = "2025.12.01"
 
 # Coroutines
 coroutines = "1.10.2"
@@ -32,7 +32,7 @@ accompanist = "0.37.3"
 
 # Test
 test_core = "1.7.0"
-roborazzi = "1.52.0"
+roborazzi = "1.56.0"
 
 # Jetbrain
 datetime = "0.7.1"
@@ -41,18 +41,18 @@ serialization_json = "1.9.0"
 #other
 coil = "3.3.0"
 # Rollback to 1.0.4, 1.0.5 has this issue: https://github.com/airbnb/Showkase/issues/420
-showkase = "1.0.4"
+showkase = "1.0.5"
 appyx = "1.7.1"
 sqldelight = "2.2.1"
-wysiwyg = "2.40.0"
+wysiwyg = "2.41.0"
 telephoto = "0.18.0"
-haze = "1.6.10"
+haze = "1.7.1"
 
 # Dependency analysis
 dependencyAnalysis = "3.5.1"
 
 # DI
-metro = "0.7.7"
+metro = "0.9.4"
 
 # Auto service
 autoservice = "1.1.1"
@@ -62,7 +62,7 @@ detekt = "1.23.8"
 # See https://github.com/pinterest/ktlint/releases/
 ktlint = "1.8.0"
 androidx-test-ext-junit = "1.3.0"
-kover = "0.9.1"
+kover = "0.9.4"
 
 [libraries]
 # Project
@@ -78,11 +78,11 @@ kotlinpoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlin
 kover_gradle_plugin = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kover" }
 ksp_gradle_plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 # https://firebase.google.com/docs/android/setup#available-libraries
-google_firebase_bom = "com.google.firebase:firebase-bom:34.6.0"
+google_firebase_bom = "com.google.firebase:firebase-bom:34.7.0"
 firebase_appdistribution_gradle = { module = "com.google.firebase:firebase-appdistribution-gradle", version.ref = "firebaseAppDistribution" }
 autonomousapps_dependencyanalysis_plugin = { module = "com.autonomousapps:dependency-analysis-gradle-plugin", version.ref = "dependencyAnalysis" }
 ksp_plugin = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
-google_tink = "com.google.crypto.tink:tink-android:1.19.0"
+google_tink = "com.google.crypto.tink:tink-android:1.20.0"
 
 # AndroidX
 androidx_core = { module = "androidx.core:core", version.ref = "core" }
@@ -90,7 +90,7 @@ androidx_corektx = { module = "androidx.core:core-ktx", version.ref = "core" }
 androidx_annotationjvm = "androidx.annotation:annotation-jvm:1.9.1"
 androidx_datastore_preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 androidx_datastore_datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
-androidx_exifinterface = "androidx.exifinterface:exifinterface:1.4.1"
+androidx_exifinterface = "androidx.exifinterface:exifinterface:1.4.2"
 androidx_constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
 androidx_constraintlayout_compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayout_compose" }
 androidx_camera_lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "camera" }
@@ -115,7 +115,7 @@ androidx_activity_activity = { module = "androidx.activity:activity", version.re
 androidx_activity_compose = { module = "androidx.activity:activity-compose", version.ref = "activity" }
 androidx_startup = "androidx.startup:startup-runtime:1.2.0"
 androidx_preference = "androidx.preference:preference:1.2.1"
-androidx_webkit = "androidx.webkit:webkit:1.14.0"
+androidx_webkit = "androidx.webkit:webkit:1.15.0"
 
 androidx_compose_bom = { module = "androidx.compose:compose-bom", version.ref = "compose_bom" }
 androidx_compose_material3 = { module = "androidx.compose.material3:material3" }
@@ -160,14 +160,14 @@ test_corektx = { module = "androidx.test:core-ktx", version.ref = "test_core" }
 test_arch_core = "androidx.arch.core:core-testing:2.2.0"
 test_junit = "junit:junit:4.13.2"
 test_runner = "androidx.test:runner:1.7.0"
-test_mockk = "io.mockk:mockk:1.14.6"
+test_mockk = "io.mockk:mockk:1.14.7"
 test_konsist = "com.lemonappdev:konsist:0.17.3"
 test_turbine = "app.cash.turbine:turbine:1.2.1"
 test_truth = "com.google.truth:truth:1.4.5"
 test_parameter_injector = "com.google.testparameterinjector:test-parameter-injector:1.20"
-test_robolectric = "org.robolectric:robolectric:4.15.1"
+test_robolectric = "org.robolectric:robolectric:4.16"
 test_appyx_junit = { module = "com.bumble.appyx:testing-junit4", version.ref = "appyx" }
-test_composable_preview_scanner = "io.github.sergio-sastre.ComposablePreviewScanner:android:0.7.2"
+test_composable_preview_scanner = "io.github.sergio-sastre.ComposablePreviewScanner:android:0.8.1"
 test_detekt_api = { module = "io.gitlab.arturbosch.detekt:detekt-api", version.ref = "detekt" }
 test_detekt_test = { module = "io.gitlab.arturbosch.detekt:detekt-test", version.ref = "detekt" }
 
@@ -177,7 +177,7 @@ test_detekt_test = { module = "io.gitlab.arturbosch.detekt:detekt-test", version
 # https://github.com/matrix-org/matrix-rust-components-kotlin/commits/main/sdk/sdk-android/src/main/kotlin/org/matrix/rustcomponents/sdk/matrix_sdk_ffi.kt
 # All new features should not be implemented in the pull request that upgrades the version, developers should
 # only fix API breaks and may add some TODOs.
-matrix_sdk = "org.matrix.rustcomponents:sdk-android:25.12.2"
+matrix_sdk = "org.matrix.rustcomponents:sdk-android:26.1.12"
 
 # Others
 coil = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
@@ -199,25 +199,27 @@ matrix_richtexteditor_compose = { module = "io.element.android:wysiwyg-compose",
 sqldelight-driver-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-driver-jvm = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
 sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
-sqlcipher = "net.zetetic:sqlcipher-android:4.11.0"
+sqlcipher = "net.zetetic:sqlcipher-android:4.12.0"
 sqlite = "androidx.sqlite:sqlite-ktx:2.6.2"
-unifiedpush = "org.unifiedpush.android:connector:3.1.2"
+unifiedpush = "org.unifiedpush.android:connector:3.2.0"
 vanniktech_blurhash = "com.vanniktech:blurhash:0.3.0"
 telephoto_zoomableimage = { module = "me.saket.telephoto:zoomable-image-coil", version.ref = "telephoto" }
 telephoto_flick = { module = "me.saket.telephoto:flick-android", version.ref = "telephoto" }
 statemachine = "com.freeletics.flowredux:compose:1.2.2"
-maplibre = "org.maplibre.gl:android-sdk:12.2.0"
+maplibre = "org.maplibre.gl:android-sdk:12.3.1"
 maplibre_ktx = "org.maplibre.gl:android-sdk-ktx-v7:3.0.2"
 maplibre_annotation = "org.maplibre.gl:android-plugin-annotation-v9:3.0.2"
 opusencoder = "io.element.android:opusencoder:1.2.0"
 zxing_cpp = "io.github.zxing-cpp:android:2.3.0"
+google_zxing = "com.google.zxing:core:3.5.4"
+
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 haze_materials = { module = "dev.chrisbanes.haze:haze-materials", version.ref = "haze" }
 color_picker = "io.mhssn:colorpicker:1.0.0"
 
 # Analytics
-posthog = "com.posthog:posthog-android:3.26.0"
-sentry = "io.sentry:sentry-android:8.27.1"
+posthog = "com.posthog:posthog-android:3.28.1"
+sentry = "io.sentry:sentry-android:8.29.0"
 # main branch can be tested replacing the version with main-SNAPSHOT
 matrix_analytics_events = "com.github.matrix-org:matrix-analytics-events:0.29.2"
 
@@ -264,7 +266,7 @@ roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 firebaseAppDistribution = { id = "com.google.firebase.appdistribution", version.ref = "firebaseAppDistribution" }
 knit = { id = "org.jetbrains.kotlinx.knit", version = "0.5.0" }
-sonarqube = "org.sonarqube:7.1.0.6387"
+sonarqube = "org.sonarqube:7.2.2.6593"
 licensee = "app.cash.licensee:1.14.1"
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 gms_google_services = { id = "com.google.gms.google-services", version = "4.4.4" }

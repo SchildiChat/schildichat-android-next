@@ -34,6 +34,7 @@ import io.element.android.features.preferences.impl.R
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.designsystem.components.async.AsyncActionView
 import io.element.android.libraries.designsystem.components.async.AsyncActionViewDefaults
+import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.components.button.BackButton
@@ -47,7 +48,8 @@ import io.element.android.libraries.designsystem.theme.components.TextButton
 import io.element.android.libraries.designsystem.theme.components.TextField
 import io.element.android.libraries.designsystem.theme.components.TopAppBar
 import io.element.android.libraries.matrix.ui.components.AvatarActionBottomSheet
-import io.element.android.libraries.matrix.ui.components.EditableAvatarView
+import io.element.android.libraries.matrix.ui.components.AvatarPickerState
+import io.element.android.libraries.matrix.ui.components.AvatarPickerView
 import io.element.android.libraries.permissions.api.PermissionsView
 import io.element.android.libraries.ui.strings.CommonStrings
 
@@ -68,7 +70,7 @@ fun EditUserProfileView(
 
     fun onBackClick() {
         focusManager.clearFocus()
-        state.eventSink(EditUserProfileEvents.Exit)
+        state.eventSink(EditUserProfileEvent.Exit)
     }
 
     BackHandler(
@@ -87,7 +89,7 @@ fun EditUserProfileView(
                         enabled = state.saveButtonEnabled,
                         onClick = {
                             focusManager.clearFocus()
-                            state.eventSink(EditUserProfileEvents.Save)
+                            state.eventSink(EditUserProfileEvent.Save)
                         },
                     )
                 }
@@ -103,13 +105,17 @@ fun EditUserProfileView(
                 .verticalScroll(rememberScrollState())
         ) {
             Spacer(modifier = Modifier.height(24.dp))
-            EditableAvatarView(
-                matrixId = state.userId.value,
-                displayName = state.displayName,
-                avatarUrl = state.userAvatarUrl,
-                avatarSize = AvatarSize.EditProfileDetails,
-                avatarType = AvatarType.User,
-                onAvatarClick = { onAvatarClick() },
+            val avatarPickerState = remember(state.userAvatarUrl) {
+                val size = AvatarSize.EditProfileDetails
+                val type = AvatarType.User
+                AvatarPickerState.Selected(
+                    avatarData = AvatarData(id = state.userId.value, name = state.displayName, size = size, url = state.userAvatarUrl),
+                    type = type
+                )
+            }
+            AvatarPickerView(
+                state = avatarPickerState,
+                onClick = ::onAvatarClick,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -125,7 +131,7 @@ fun EditUserProfileView(
                 value = state.displayName,
                 placeholder = stringResource(CommonStrings.common_room_name_placeholder),
                 singleLine = true,
-                onValueChange = { state.eventSink(EditUserProfileEvents.UpdateDisplayName(it)) },
+                onValueChange = { state.eventSink(EditUserProfileEvent.UpdateDisplayName(it)) },
             )
         }
 
@@ -133,7 +139,7 @@ fun EditUserProfileView(
             actions = state.avatarActions,
             isVisible = isAvatarActionsSheetVisible.value,
             onDismiss = { isAvatarActionsSheetVisible.value = false },
-            onSelectAction = { state.eventSink(EditUserProfileEvents.HandleAvatarAction(it)) }
+            onSelectAction = { state.eventSink(EditUserProfileEvent.HandleAvatarAction(it)) }
         )
 
         AsyncActionView(
@@ -147,8 +153,9 @@ fun EditUserProfileView(
                 when (confirming) {
                     is AsyncAction.ConfirmingCancellation -> {
                         SaveChangesDialog(
-                            onSubmitClick = { state.eventSink(EditUserProfileEvents.Exit) },
-                            onDismiss = { state.eventSink(EditUserProfileEvents.CloseDialog) }
+                            onSaveClick = { state.eventSink(EditUserProfileEvent.Save) },
+                            onDiscardClick = { state.eventSink(EditUserProfileEvent.Exit) },
+                            onDismiss = { state.eventSink(EditUserProfileEvent.CloseDialog) },
                         )
                     }
                 }
@@ -156,7 +163,7 @@ fun EditUserProfileView(
             onSuccess = { onEditProfileSuccess() },
             errorTitle = { stringResource(R.string.screen_edit_profile_error_title) },
             errorMessage = { stringResource(R.string.screen_edit_profile_error) },
-            onErrorDismiss = { state.eventSink(EditUserProfileEvents.CloseDialog) },
+            onErrorDismiss = { state.eventSink(EditUserProfileEvent.CloseDialog) },
         )
     }
     PermissionsView(

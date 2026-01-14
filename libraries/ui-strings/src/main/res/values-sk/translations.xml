@@ -114,6 +114,7 @@
   <string name="action_load_more">"Načítať viac"</string>
   <string name="action_manage_account">"Spravovať účet"</string>
   <string name="action_manage_devices">"Spravovať zariadenia"</string>
+  <string name="action_manage_rooms">"Spravovať miestnosti"</string>
   <string name="action_message">"Poslať správu"</string>
   <string name="action_minimize">"Minimalizovať"</string>
   <string name="action_next">"Ďalej"</string>
@@ -158,6 +159,7 @@
   <string name="action_skip">"Preskočiť"</string>
   <string name="action_start">"Spustiť"</string>
   <string name="action_start_chat">"Začať konverzáciu"</string>
+  <string name="action_start_over">"Začať odznova"</string>
   <string name="action_start_verification">"Spustiť overovanie"</string>
   <string name="action_static_map_load">"Ťuknutím načítate mapu"</string>
   <string name="action_take_photo">"Urobiť fotku"</string>
@@ -250,6 +252,7 @@ Dôvod: %1$s."</string>
   </plurals>
   <string name="common_message">"Správa"</string>
   <string name="common_message_actions">"Akcie správy"</string>
+  <string name="common_message_failed_to_send">"Správu sa nepodarilo odoslať"</string>
   <string name="common_message_layout">"Štýl správ"</string>
   <string name="common_message_removed">"Správa odstránená"</string>
   <string name="common_modern">"Moderné"</string>
@@ -376,6 +379,7 @@ Dôvod: %1$s."</string>
   <string name="common_waiting">"Čaká sa…"</string>
   <string name="common_waiting_for_decryption_key">"Čaká sa na dešifrovací kľúč"</string>
   <string name="common_you">"Vy"</string>
+  <string name="crypto_history_visible">"Správy, ktoré odošlete, budú zdieľané s novými členmi pozvanými do tejto miestnosti. %1$s"</string>
   <string name="crypto_identity_change_pin_violation">"Totožnosť používateľa %1$s sa obnovila.%2$s"</string>
   <string name="crypto_identity_change_pin_violation_new">"Totožnosť používateľa %1$s %2$s bola obnovená. %3$s"</string>
   <string name="crypto_identity_change_pin_violation_new_user_id">"(%1$s)"</string>
@@ -396,6 +400,7 @@ Naozaj chcete pokračovať?"</string>
   <string name="dialog_title_error">"Chyba"</string>
   <string name="dialog_title_success">"Úspech"</string>
   <string name="dialog_title_warning">"Upozornenie"</string>
+  <string name="dialog_unsaved_changes_description">"Máte neuložené zmeny."</string>
   <string name="dialog_unsaved_changes_description_android">"Vaše zmeny neboli uložené. Naozaj sa chcete vrátiť?"</string>
   <string name="dialog_unsaved_changes_title">"Uložiť zmeny?"</string>
   <string name="dialog_video_quality_selector_subtitle_file_size">"Maximálna povolená veľkosť súboru je: %1$s"</string>

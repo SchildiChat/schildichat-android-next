@@ -116,11 +116,12 @@ private fun Content(
 ) {
     val context = LocalContext.current
     val formattedRecoveryKey = state.recoveryKeyViewState.formattedRecoveryKey
+    val toastMessage = stringResource(R.string.screen_recovery_key_copied_to_clipboard)
     val clickLambda = if (formattedRecoveryKey != null) {
         {
             context.copyToClipboard(
-                formattedRecoveryKey,
-                context.getString(R.string.screen_recovery_key_copied_to_clipboard)
+                text = formattedRecoveryKey,
+                toastMessage = toastMessage,
             )
             state.eventSink.invoke(SecureBackupSetupEvents.RecoveryKeyHasBeenSaved)
         }

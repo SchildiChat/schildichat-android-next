@@ -75,6 +75,7 @@
   <string name="action_copy_text">"Copiar texto"</string>
   <string name="action_create">"Criar"</string>
   <string name="action_create_a_room">"Criar uma sala"</string>
+  <string name="action_create_space">"Criar espaço"</string>
   <string name="action_deactivate">"Desativar"</string>
   <string name="action_deactivate_account">"Desativar conta"</string>
   <string name="action_decline">"Recusar"</string>
@@ -112,6 +113,7 @@
   <string name="action_load_more">"Carregar mais"</string>
   <string name="action_manage_account">"Gerenciar conta"</string>
   <string name="action_manage_devices">"Gerenciar dispositivos"</string>
+  <string name="action_manage_rooms">"Gerenciar salas"</string>
   <string name="action_message">"Mensagem"</string>
   <string name="action_minimize">"Minimizar"</string>
   <string name="action_next">"Avançar"</string>
@@ -156,10 +158,12 @@
   <string name="action_skip">"Pular"</string>
   <string name="action_start">"Iniciar"</string>
   <string name="action_start_chat">"Iniciar conversa"</string>
+  <string name="action_start_over">"Começar de novo"</string>
   <string name="action_start_verification">"Iniciar verificação"</string>
   <string name="action_static_map_load">"Toque para carregar o mapa"</string>
   <string name="action_take_photo">"Tirar foto"</string>
   <string name="action_tap_for_options">"Toque para opções"</string>
+  <string name="action_translate">"Traduzir"</string>
   <string name="action_try_again">"Tente novamente"</string>
   <string name="action_unpin">"Desafixar"</string>
   <string name="action_view">"Visualizar"</string>
@@ -189,6 +193,7 @@
   <string name="common_copied_to_clipboard">"Copiado para a área de transferência"</string>
   <string name="common_copyright">"Direitos autorais"</string>
   <string name="common_creating_room">"Criando sala…"</string>
+  <string name="common_creating_space">"Criando espaço…"</string>
   <string name="common_current_user_canceled_knock">"Solicitação cancelada"</string>
   <string name="common_current_user_left_room">"Saiu da sala"</string>
   <string name="common_current_user_left_space">"Saiu do espaço"</string>
@@ -234,6 +239,7 @@ Motivo:​ %1$s."</string>
   <string name="common_light">"Claro"</string>
   <string name="common_line_copied_to_clipboard">"Linha copiada para a área de transferência"</string>
   <string name="common_link_copied_to_clipboard">"Link copiado para área de transferência"</string>
+  <string name="common_link_new_device">"Vincular novo dispositivo"</string>
   <string name="common_loading">"Carregando…"</string>
   <string name="common_loading_more">"Carregando mais…"</string>
   <plurals name="common_many_members">
@@ -246,10 +252,12 @@ Motivo:​ %1$s."</string>
   </plurals>
   <string name="common_message">"Mensagem"</string>
   <string name="common_message_actions">"Ações de mensagem"</string>
+  <string name="common_message_failed_to_send">"Falha no envio da mensagem"</string>
   <string name="common_message_layout">"Layout da mensagem"</string>
   <string name="common_message_removed">"Mensagem removida"</string>
   <string name="common_modern">"Moderno"</string>
   <string name="common_mute">"Mudo"</string>
+  <string name="common_name">"Nome"</string>
   <string name="common_name_and_id">"%1$s (%2$s)"</string>
   <string name="common_no_results">"Não há resultados"</string>
   <string name="common_no_room_name">"Não há um nome para a sala"</string>
@@ -324,6 +332,7 @@ Motivo:​ %1$s."</string>
   <string name="common_something_went_wrong">"Algo deu errado"</string>
   <string name="common_something_went_wrong_message">"Encontramos um problema. Tente novamente."</string>
   <string name="common_space">"Espaço"</string>
+  <string name="common_space_topic_placeholder">"Sobre o que é esse espaço?"</string>
   <plurals name="common_spaces">
     <item quantity="one">"%1$d espaço"</item>
     <item quantity="other">"%1$d espaços"</item>
@@ -331,6 +340,7 @@ Motivo:​ %1$s."</string>
   <string name="common_starting_chat">"Iniciando a conversa…"</string>
   <string name="common_sticker">"Figurinha"</string>
   <string name="common_success">"Sucesso"</string>
+  <string name="common_suggested">"Sugerido"</string>
   <string name="common_suggestions">"Sugestões"</string>
   <string name="common_syncing">"Sincronizando"</string>
   <string name="common_system">"Sistema"</string>
@@ -368,6 +378,7 @@ Motivo:​ %1$s."</string>
   <string name="common_waiting">"Aguardando…"</string>
   <string name="common_waiting_for_decryption_key">"Aguardando por esta mensagem"</string>
   <string name="common_you">"Você"</string>
+  <string name="crypto_history_visible">"Esta sala foi configurada para que membros novos possam ler o histórico. %1$s"</string>
   <string name="crypto_identity_change_pin_violation">"A identidade de %1$s foi redefinida. %2$s"</string>
   <string name="crypto_identity_change_pin_violation_new">"A identidade de %1$s %2$s foi redefinida. %3$s"</string>
   <string name="crypto_identity_change_pin_violation_new_user_id">"(%1$s)"</string>
@@ -388,6 +399,7 @@ Você tem certeza de que deseja continuar?"</string>
   <string name="dialog_title_error">"Erro"</string>
   <string name="dialog_title_success">"Sucesso"</string>
   <string name="dialog_title_warning">"Alerta"</string>
+  <string name="dialog_unsaved_changes_description">"Você tem alterações não salvas."</string>
   <string name="dialog_unsaved_changes_description_android">"Suas alterações não foram salvas. Tem certeza de que você quer voltar?"</string>
   <string name="dialog_unsaved_changes_title">"Salvar alterações?"</string>
   <string name="dialog_video_quality_selector_subtitle_file_size">"O tamanho máximo permitido de arquivos é: %1$s"</string>
@@ -445,10 +457,6 @@ Você tem certeza de que deseja continuar?"</string>
   <string name="screen_resolve_send_failure_unsigned_device_title">"Sua mensagem não foi enviada porque %1$s não verificou todos os dispositivos"</string>
   <string name="screen_resolve_send_failure_you_unsigned_device_subtitle">"Um ou mais de seus dispositivos não foram verificados. Você pode enviar a mensagem mesmo assim ou pode cancelar por enquanto e tentar novamente mais tarde, depois de ter verificado todos os seus dispositivos."</string>
   <string name="screen_resolve_send_failure_you_unsigned_device_title">"Sua mensagem não foi enviada porque você não verificou um ou mais de seus dispositivos"</string>
-  <string name="screen_room_change_permissions_change_settings">"Alterar configurações"</string>
-  <string name="screen_room_change_permissions_manage_space">"Gerenciar espaço"</string>
-  <string name="screen_room_change_permissions_manage_space_rooms">"Gerenciar salas"</string>
-  <string name="screen_room_change_permissions_title">"Permissões"</string>
   <string name="screen_room_change_role_administrators_or_owners_title">"Editar administradores ou proprietários"</string>
   <string name="screen_room_error_failed_processing_media">"Falha ao processar a mídia para o envio. Tente novamente."</string>
   <string name="screen_room_error_failed_retrieving_user_details">"Não foi possível buscar os detalhes do usuário"</string>

@@ -15,6 +15,10 @@ interface SpaceService {
     val spaceRoomsFlow: SharedFlow<List<SpaceRoom>>
     suspend fun joinedSpaces(): Result<List<SpaceRoom>>
 
+    suspend fun joinedParents(spaceId: RoomId): Result<List<SpaceRoom>>
+
+    suspend fun getSpaceRoom(spaceId: RoomId): SpaceRoom?
+
     fun spaceRoomList(id: RoomId): SpaceRoomList
 
     fun getLeaveSpaceHandle(spaceId: RoomId): LeaveSpaceHandle

@@ -14,29 +14,29 @@ open class VoiceMessageStateProvider : PreviewParameterProvider<VoiceMessageStat
     override val values: Sequence<VoiceMessageState>
         get() = sequenceOf(
             aVoiceMessageState(
-                VoiceMessageState.Button.Downloading,
+                VoiceMessageState.ButtonType.Downloading,
                 progress = 0f,
                 time = "0:00",
             ),
             aVoiceMessageState(
-                VoiceMessageState.Button.Retry,
+                VoiceMessageState.ButtonType.Retry,
                 progress = 0.5f,
                 time = "0:01",
             ),
             aVoiceMessageState(
-                VoiceMessageState.Button.Play,
+                VoiceMessageState.ButtonType.Play,
                 progress = 1f,
                 time = "1:00",
                 showCursor = true,
             ),
             aVoiceMessageState(
-                VoiceMessageState.Button.Pause,
+                VoiceMessageState.ButtonType.Pause,
                 progress = 0.2f,
                 time = "10:00",
                 showCursor = true,
             ),
             aVoiceMessageState(
-                VoiceMessageState.Button.Disabled,
+                VoiceMessageState.ButtonType.Disabled,
                 progress = 0.2f,
                 time = "30:00",
             ),
@@ -44,14 +44,16 @@ open class VoiceMessageStateProvider : PreviewParameterProvider<VoiceMessageStat
 }
 
 fun aVoiceMessageState(
-    button: VoiceMessageState.Button = VoiceMessageState.Button.Play,
+    buttonType: VoiceMessageState.ButtonType = VoiceMessageState.ButtonType.Play,
     progress: Float = 0f,
     time: String = "1:00",
     showCursor: Boolean = false,
+    playbackSpeed: Float = 1.0f,
 ) = VoiceMessageState(
-    button = button,
+    buttonType = buttonType,
     progress = progress,
     time = time,
     showCursor = showCursor,
+    playbackSpeed = playbackSpeed,
     eventSink = {},
 )

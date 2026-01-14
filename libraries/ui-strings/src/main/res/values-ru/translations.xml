@@ -114,6 +114,7 @@
   <string name="action_load_more">"Загрузить еще"</string>
   <string name="action_manage_account">"Настройки учетной записи"</string>
   <string name="action_manage_devices">"Управление устройствами"</string>
+  <string name="action_manage_rooms">"Управление комнатами"</string>
   <string name="action_message">"Сообщение"</string>
   <string name="action_minimize">"Свернуть"</string>
   <string name="action_next">"Далее"</string>
@@ -158,6 +159,7 @@
   <string name="action_skip">"Пропустить"</string>
   <string name="action_start">"Начать"</string>
   <string name="action_start_chat">"Начать чат"</string>
+  <string name="action_start_over">"Начать заново"</string>
   <string name="action_start_verification">"Начать подтверждение"</string>
   <string name="action_static_map_load">"Нажмите, чтобы загрузить карту"</string>
   <string name="action_take_photo">"Сделать фото"</string>
@@ -396,6 +398,7 @@
   <string name="dialog_title_error">"Ошибка"</string>
   <string name="dialog_title_success">"Успешно"</string>
   <string name="dialog_title_warning">"Предупреждение"</string>
+  <string name="dialog_unsaved_changes_description">"У вас есть несохраненные изменения."</string>
   <string name="dialog_unsaved_changes_description_android">"Изменения не сохранены. Вы действительно хотите вернуться?"</string>
   <string name="dialog_unsaved_changes_title">"Сохранить изменения?"</string>
   <string name="dialog_video_quality_selector_subtitle_file_size">"Максимально допустимый размер файла: %1$s"</string>
@@ -454,10 +457,6 @@
   <string name="screen_resolve_send_failure_unsigned_device_title">"Ваше сообщение не было отправлено, потому что %1$s не проверил одно или несколько устройств"</string>
   <string name="screen_resolve_send_failure_you_unsigned_device_subtitle">"Одно или несколько ваших устройств не проверены. Вы можете отправить сообщение в любом случае или отменить его пока и повторить попытку позже, проверив все свои устройства."</string>
   <string name="screen_resolve_send_failure_you_unsigned_device_title">"Ваше сообщение не было отправлено, поскольку вы не подтвердили одно или несколько своих устройств."</string>
-  <string name="screen_room_change_permissions_change_settings">"Изменить настройки"</string>
-  <string name="screen_room_change_permissions_manage_space">"Управление пространством"</string>
-  <string name="screen_room_change_permissions_manage_space_rooms">"Управление комнатами"</string>
-  <string name="screen_room_change_permissions_title">"Разрешения"</string>
   <string name="screen_room_change_role_administrators_or_owners_title">"Редактировать роль владельца и администратора"</string>
   <string name="screen_room_error_failed_processing_media">"Не удалось обработать медиафайл для загрузки, попробуйте еще раз."</string>
   <string name="screen_room_error_failed_retrieving_user_details">"Не удалось получить данные о пользователе"</string>

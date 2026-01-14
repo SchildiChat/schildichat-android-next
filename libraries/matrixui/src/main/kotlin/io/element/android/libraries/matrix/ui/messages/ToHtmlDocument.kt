@@ -12,7 +12,7 @@ import io.element.android.libraries.matrix.api.permalink.PermalinkData
 import io.element.android.libraries.matrix.api.permalink.PermalinkParser
 import io.element.android.libraries.matrix.api.timeline.item.event.FormattedBody
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageFormat
-import org.jsoup.Jsoup
+import io.element.android.wysiwyg.utils.HtmlToDomParser
 import org.jsoup.nodes.Document
 
 /**
@@ -34,9 +34,9 @@ fun FormattedBody.toHtmlDocument(
         ?.trimEnd()
         ?.let { formattedBody ->
             val dom = if (prefix != null) {
-                Jsoup.parse("$prefix $formattedBody")
+                HtmlToDomParser.document("$prefix $formattedBody")
             } else {
-                Jsoup.parse(formattedBody)
+                HtmlToDomParser.document(formattedBody)
             }
 
             // Prepend `@` to mentions

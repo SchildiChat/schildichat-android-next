@@ -56,7 +56,7 @@
   <plurals name="troubleshoot_notifications_test_blocked_users_result_some">
     <item quantity="other">"您已封鎖 %1$d 個使用者。您將不會收到來自這些使用者的通知。"</item>
   </plurals>
-  <string name="troubleshoot_notifications_test_blocked_users_title">"已封鎖使用者"</string>
+  <string name="troubleshoot_notifications_test_blocked_users_title">"封鎖的使用者"</string>
   <string name="troubleshoot_notifications_test_current_push_provider_description">"取得目前提供者的名稱。"</string>
   <string name="troubleshoot_notifications_test_current_push_provider_failure">"未選取推播提供者。"</string>
   <string name="troubleshoot_notifications_test_current_push_provider_failure_distributor_not_found">"目前的推播提供者 %1$s 與目前的散佈者 %2$s。但找不到散佈者 %3$s。可能已解除安裝應用程式？"</string>

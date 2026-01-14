@@ -31,6 +31,7 @@ import io.element.android.libraries.matrix.test.A_UNIQUE_ID
 import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
 import io.element.android.libraries.matrix.test.room.aRoomInfo
+import io.element.android.libraries.matrix.test.room.powerlevels.FakeRoomPermissions
 import io.element.android.libraries.matrix.test.sync.FakeSyncService
 import io.element.android.libraries.matrix.test.timeline.FakeTimeline
 import io.element.android.libraries.matrix.test.timeline.aMessageContent
@@ -55,9 +56,7 @@ class PinnedMessagesListPresenterTest {
     fun `present - initial state`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ).apply {
                 givenRoomInfo(aRoomInfo(pinnedEventIds = listOf(AN_EVENT_ID)))
             }
@@ -74,9 +73,7 @@ class PinnedMessagesListPresenterTest {
     fun `present - timeline failure state`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ).apply {
                 givenRoomInfo(aRoomInfo(pinnedEventIds = listOf(AN_EVENT_ID)))
             },
@@ -95,9 +92,7 @@ class PinnedMessagesListPresenterTest {
     fun `present - empty state`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ).apply {
                 givenRoomInfo(aRoomInfo(pinnedEventIds = listOf()))
             },
@@ -117,9 +112,7 @@ class PinnedMessagesListPresenterTest {
         val pinnedEventsTimeline = createPinnedMessagesTimeline()
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ).apply {
                 givenRoomInfo(aRoomInfo(pinnedEventIds = listOf(AN_EVENT_ID)))
             },
@@ -146,9 +139,7 @@ class PinnedMessagesListPresenterTest {
         val analyticsService = FakeAnalyticsService()
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ).apply {
                 givenRoomInfo(aRoomInfo(pinnedEventIds = listOf(AN_EVENT_ID)))
             },
@@ -194,9 +185,7 @@ class PinnedMessagesListPresenterTest {
         val pinnedEventsTimeline = createPinnedMessagesTimeline()
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ).apply {
                 givenRoomInfo(aRoomInfo(pinnedEventIds = listOf(AN_EVENT_ID)))
             },
@@ -225,9 +214,7 @@ class PinnedMessagesListPresenterTest {
         val pinnedEventsTimeline = createPinnedMessagesTimeline()
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ).apply {
                 givenRoomInfo(aRoomInfo(pinnedEventIds = listOf(AN_EVENT_ID)))
             },
@@ -256,9 +243,7 @@ class PinnedMessagesListPresenterTest {
         val pinnedEventsTimeline = createPinnedMessagesTimeline()
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
-                canRedactOwnResult = { Result.success(true) },
-                canRedactOtherResult = { Result.success(true) },
-                canUserPinUnpinResult = { Result.success(true) },
+                roomPermissions = roomPermissions(),
             ).apply {
                 givenRoomInfo(aRoomInfo(pinnedEventIds = listOf(AN_EVENT_ID)))
             },
@@ -294,6 +279,16 @@ class PinnedMessagesListPresenterTest {
             )
         )
     }
+
+    private fun roomPermissions(
+        canRedactOther: Boolean = true,
+        canRedactOwn: Boolean = true,
+        canPinUnpin: Boolean = true,
+    ) = FakeRoomPermissions(
+        canRedactOther = canRedactOther,
+        canRedactOwn = canRedactOwn,
+        canPinUnpin = canPinUnpin,
+    )
 
     private fun TestScope.createPinnedMessagesListPresenter(
         navigator: PinnedMessagesListNavigator = FakePinnedMessagesListNavigator(),

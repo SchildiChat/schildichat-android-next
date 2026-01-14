@@ -9,6 +9,7 @@
 package io.element.android.libraries.matrix.test
 
 import io.element.android.libraries.matrix.api.MatrixClient
+import io.element.android.libraries.matrix.api.analytics.SdkStoreSizes
 import io.element.android.libraries.matrix.api.core.DeviceId
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomAlias
@@ -18,6 +19,8 @@ import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.createroom.CreateRoomParameters
 import io.element.android.libraries.matrix.api.encryption.EncryptionService
+import io.element.android.libraries.matrix.api.linknewdevice.LinkDesktopHandler
+import io.element.android.libraries.matrix.api.linknewdevice.LinkMobileHandler
 import io.element.android.libraries.matrix.api.media.MatrixMediaLoader
 import io.element.android.libraries.matrix.api.media.MediaPreviewService
 import io.element.android.libraries.matrix.api.notification.NotificationService
@@ -95,6 +98,9 @@ class FakeMatrixClient(
     private val deactivateAccountResult: (String, Boolean) -> Result<Unit> = { _, _ -> lambdaError() },
     private val currentSlidingSyncVersionLambda: () -> Result<SlidingSyncVersion> = { lambdaError() },
     private val ignoreUserResult: (UserId) -> Result<Unit> = { lambdaError() },
+    private val canLinkNewDeviceResult: () -> Result<Boolean> = { lambdaError() },
+    private val createLinkMobileHandlerResult: () -> Result<LinkMobileHandler> = { lambdaError() },
+    private val createLinkDesktopHandlerResult: () -> Result<LinkDesktopHandler> = { lambdaError() },
     private var unIgnoreUserResult: (UserId) -> Result<Unit> = { Result.success(Unit) },
     private val canReportRoomLambda: () -> Boolean = { false },
     private val isLivekitRtcSupportedLambda: () -> Boolean = { false },
@@ -104,6 +110,8 @@ class FakeMatrixClient(
     private val getRecentEmojisLambda: () -> Result<List<String>> = { Result.success(emptyList()) },
     private val addRecentEmojiLambda: (String) -> Result<Unit> = { Result.success(Unit) },
     private val markRoomAsFullyReadResult: (RoomId, EventId) -> Result<Unit> = { _, _ -> lambdaError() },
+    private val performDatabaseVacuumLambda: () -> Result<Unit> = { lambdaError() },
+    private val getDatabaseSizesLambda: () -> Result<SdkStoreSizes> = { lambdaError() },
 ) : MatrixClient {
     var setDisplayNameCalled: Boolean = false
         private set
@@ -181,6 +189,10 @@ class FakeMatrixClient(
 
     override suspend fun getCacheSize(): Long {
         return 0
+    }
+
+    override suspend fun getDatabaseSizes(): Result<SdkStoreSizes> {
+        return getDatabaseSizesLambda()
     }
 
     override suspend fun clearCache() = simulateLongTask {
@@ -350,5 +362,21 @@ class FakeMatrixClient(
 
     override suspend fun markRoomAsFullyRead(roomId: RoomId, eventId: EventId): Result<Unit> {
         return markRoomAsFullyReadResult(roomId, eventId)
+    }
+
+    override suspend fun performDatabaseVacuum(): Result<Unit> {
+        return performDatabaseVacuumLambda()
+    }
+
+    override suspend fun canLinkNewDevice(): Result<Boolean> = simulateLongTask {
+        return canLinkNewDeviceResult()
+    }
+
+    override fun createLinkDesktopHandler(): Result<LinkDesktopHandler> {
+        return createLinkDesktopHandlerResult()
+    }
+
+    override fun createLinkMobileHandler(): Result<LinkMobileHandler> {
+        return createLinkMobileHandlerResult()
     }
 }

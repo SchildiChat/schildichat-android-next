@@ -91,7 +91,7 @@ class ContributesNodeProcessor(
                             .addAnnotation(Binds::class)
                             .addAnnotation(IntoMap::class)
                             .addAnnotation(
-                                AnnotationSpec.Companion.builder(ClassName.bestGuess(nodeKeyFqName.asString())).addMember(
+                                AnnotationSpec.builder(ClassName.bestGuess(nodeKeyFqName.asString())).addMember(
                                     CLASS_PLACEHOLDER,
                                     ClassName.bestGuess(ksClass.qualifiedName!!.asString())
                                 ).build()

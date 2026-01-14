@@ -106,7 +106,7 @@ private fun Content(
             QrCodeCameraView(
                 modifier = Modifier.fillMaxSize(),
                 onScanQrCode = { state.eventSink.invoke(QrCodeScanEvents.QrCodeScanned(it)) },
-                renderPreview = state.isScanning,
+                isScanning = state.isScanning,
             )
         }
     }

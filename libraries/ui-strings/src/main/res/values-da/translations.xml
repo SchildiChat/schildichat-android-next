@@ -112,6 +112,7 @@
   <string name="action_load_more">"Indlæs mere"</string>
   <string name="action_manage_account">"Administrer konto"</string>
   <string name="action_manage_devices">"Administrer enheder"</string>
+  <string name="action_manage_rooms">"Administrer rum"</string>
   <string name="action_message">"Besked"</string>
   <string name="action_minimize">"Minimér"</string>
   <string name="action_next">"Næste"</string>
@@ -156,6 +157,7 @@
   <string name="action_skip">"Spring over"</string>
   <string name="action_start">"Start"</string>
   <string name="action_start_chat">"Start samtale"</string>
+  <string name="action_start_over">"Begynd forfra"</string>
   <string name="action_start_verification">"Begynd verifikation"</string>
   <string name="action_static_map_load">"Tryk for at indlæse kort"</string>
   <string name="action_take_photo">"Tag billede"</string>
@@ -387,6 +389,7 @@ Er du sikker på, at du vil fortsætte?"</string>
   <string name="dialog_title_error">"Fejl"</string>
   <string name="dialog_title_success">"Succes"</string>
   <string name="dialog_title_warning">"Advarsel"</string>
+  <string name="dialog_unsaved_changes_description">"Du har ændringer, der ikke er gemt."</string>
   <string name="dialog_unsaved_changes_description_android">"Dine ændringer er ikke blevet gemt. Er du sikker på, at du vil gå tilbage?"</string>
   <string name="dialog_unsaved_changes_title">"Gem ændringer?"</string>
   <string name="dialog_video_quality_selector_subtitle_file_size">"Den maksimalt tilladte filstørrelse er: %1$s"</string>

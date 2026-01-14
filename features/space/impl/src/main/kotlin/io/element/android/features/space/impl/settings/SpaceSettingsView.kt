@@ -73,6 +73,7 @@ fun SpaceSettingsView(
                 name = state.name,
                 avatarUrl = state.avatarUrl,
                 canonicalAlias = state.canonicalAlias?.value,
+                canEditDetails = state.canEditDetails,
                 onSpaceInfoClick = onSpaceInfoClick,
             )
             Section(isVisible = state.showSecurityAndPrivacy, content = {
@@ -101,19 +102,20 @@ private fun SpaceInfoSection(
     name: String,
     avatarUrl: String?,
     canonicalAlias: String?,
+    canEditDetails: Boolean,
     onSpaceInfoClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onSpaceInfoClick)
+            .clickable(enabled = canEditDetails, onClick = onSpaceInfoClick)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Avatar(
             avatarData = AvatarData(roomId.value, name, avatarUrl, AvatarSize.SpaceListItem),
             avatarType = AvatarType.Space(),
-            contentDescription = avatarUrl?.let { stringResource(CommonStrings.a11y_avatar) },
+            contentDescription = stringResource(CommonStrings.a11y_avatar),
         )
         Spacer(Modifier.width(16.dp))
         Column {

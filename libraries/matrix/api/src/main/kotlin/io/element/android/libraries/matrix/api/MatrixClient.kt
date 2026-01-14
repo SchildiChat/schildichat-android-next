@@ -9,6 +9,7 @@
 package io.element.android.libraries.matrix.api
 
 import io.element.android.libraries.core.data.tryOrNull
+import io.element.android.libraries.matrix.api.analytics.SdkStoreSizes
 import io.element.android.libraries.matrix.api.core.DeviceId
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.MatrixPatterns
@@ -19,6 +20,8 @@ import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.createroom.CreateRoomParameters
 import io.element.android.libraries.matrix.api.encryption.EncryptionService
+import io.element.android.libraries.matrix.api.linknewdevice.LinkDesktopHandler
+import io.element.android.libraries.matrix.api.linknewdevice.LinkMobileHandler
 import io.element.android.libraries.matrix.api.media.MatrixMediaLoader
 import io.element.android.libraries.matrix.api.media.MediaPreviewService
 import io.element.android.libraries.matrix.api.notification.NotificationService
@@ -81,6 +84,7 @@ interface MatrixClient {
     suspend fun joinRoomByIdOrAlias(roomIdOrAlias: RoomIdOrAlias, serverNames: List<String>): Result<RoomInfo?>
     suspend fun knockRoom(roomIdOrAlias: RoomIdOrAlias, message: String, serverNames: List<String>): Result<RoomInfo?>
     suspend fun getCacheSize(): Long
+    suspend fun getDatabaseSizes(): Result<SdkStoreSizes>
 
     /**
      * Will close the client and delete the cache data.
@@ -194,6 +198,23 @@ interface MatrixClient {
      * Use [Timeline.markAsRead] instead when possible.
      */
     suspend fun markRoomAsFullyRead(roomId: RoomId, eventId: EventId): Result<Unit>
+
+    /**
+     * Check if linking a new device using QrCode is supported by the server.
+     */
+    suspend fun canLinkNewDevice(): Result<Boolean>
+
+    /**
+     * Create a handler to link a new mobile device, i.e. a device capable of scanning QrCodes.
+     */
+    fun createLinkMobileHandler(): Result<LinkMobileHandler>
+
+    /**
+     * Create a handler to link a new desktop device, i.e. a device not capable of scanning QrCodes.
+     */
+    fun createLinkDesktopHandler(): Result<LinkDesktopHandler>
+
+    suspend fun performDatabaseVacuum(): Result<Unit>
 }
 
 /**

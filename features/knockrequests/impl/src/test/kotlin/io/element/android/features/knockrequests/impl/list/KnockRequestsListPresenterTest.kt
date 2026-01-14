@@ -11,7 +11,7 @@
 package io.element.android.features.knockrequests.impl.list
 
 import com.google.common.truth.Truth.assertThat
-import io.element.android.features.knockrequests.impl.data.KnockRequestPermissions
+import io.element.android.features.knockrequests.api.KnockRequestPermissions
 import io.element.android.features.knockrequests.impl.data.KnockRequestsService
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData

@@ -117,6 +117,7 @@
   <string name="action_skip">"Прапусціць"</string>
   <string name="action_start">"Пачаць"</string>
   <string name="action_start_chat">"Пачаць чат"</string>
+  <string name="action_start_over">"Пачаць спачатку"</string>
   <string name="action_start_verification">"Пачаць праверку"</string>
   <string name="action_static_map_load">"Націсніце, каб загрузіць карту"</string>
   <string name="action_take_photo">"Зрабіць фота"</string>
@@ -132,6 +133,7 @@
   <string name="common_acceptable_use_policy">"Палітыка дапушчальнага выкарыстання"</string>
   <string name="common_advanced_settings">"Пашыраныя налады"</string>
   <string name="common_analytics">"Аналітыка"</string>
+  <string name="common_android_shortcuts_remove_reason_left_room">"Вы выйшлі з пакоя"</string>
   <string name="common_appearance">"Знешні выгляд"</string>
   <string name="common_audio">"Аўдыя"</string>
   <string name="common_blocked_users">"Заблакіраваныя карыстальнікі"</string>
@@ -272,6 +274,7 @@
   <string name="dialog_title_error">"Памылка"</string>
   <string name="dialog_title_success">"Поспех"</string>
   <string name="dialog_title_warning">"Папярэджанне"</string>
+  <string name="dialog_unsaved_changes_description">"У вас ёсць незахаваныя змены."</string>
   <string name="dialog_unsaved_changes_description_android">"Вашы змены не былі захаваны. Вы ўпэўнены, што хочаце вярнуцца?"</string>
   <string name="dialog_unsaved_changes_title">"Захаваць змены?"</string>
   <string name="error_account_creation_not_possible">"Ваш хатні сервер неабходна абнавіць для падтрымкі Matrix Authentication Service і стварэння ўліковага запісу."</string>

@@ -2,9 +2,12 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="screen_room_change_permissions_administrators">"Ylläpitäjä"</string>
   <string name="screen_room_change_permissions_ban_people">"Porttikieltojen antaminen"</string>
+  <string name="screen_room_change_permissions_change_settings">"Asetusten muuttaminen"</string>
   <string name="screen_room_change_permissions_delete_messages">"Viestien poistaminen"</string>
   <string name="screen_room_change_permissions_everyone">"Jäsen"</string>
   <string name="screen_room_change_permissions_invite_people">"Ihmisten kutsuminen ja liittymispyyntöjen hyväksyminen"</string>
+  <string name="screen_room_change_permissions_manage_space">"Tilan hallitseminen"</string>
+  <string name="screen_room_change_permissions_manage_space_rooms">"Huoneiden hallitseminen"</string>
   <string name="screen_room_change_permissions_member_moderation">"Jäsenien hallinta"</string>
   <string name="screen_room_change_permissions_messages_and_content">"Viestit ja sisältö"</string>
   <string name="screen_room_change_permissions_moderators">"Valvoja"</string>
@@ -14,6 +17,7 @@
   <string name="screen_room_change_permissions_room_name">"Huoneen nimen vaihtaminen"</string>
   <string name="screen_room_change_permissions_room_topic">"Huoneen aiheen vaihtaminen"</string>
   <string name="screen_room_change_permissions_send_messages">"Viestien lähettäminen"</string>
+  <string name="screen_room_change_permissions_title">"Oikeudet"</string>
   <string name="screen_room_change_role_administrators_title">"Muokkaa ylläpitäjiä"</string>
   <string name="screen_room_change_role_confirm_add_admin_description">"Et voi peruuttaa tätä toimenpidettä. Ylennät käyttäjän samalle oikeustasolle kuin sinä."</string>
   <string name="screen_room_change_role_confirm_add_admin_title">"Lisätäänkö ylläpitäjä?"</string>

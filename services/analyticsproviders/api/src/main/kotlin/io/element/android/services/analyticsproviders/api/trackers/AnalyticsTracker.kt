@@ -35,6 +35,18 @@ interface AnalyticsTracker {
      * Super properties are added to any tracked event automatically.
      */
     fun updateSuperProperties(updatedProperties: SuperProperties)
+
+    /**
+     * Adds extra data that will be sent with every event.
+     */
+    fun addExtraData(key: String, value: String) {}
+
+    /**
+     * Similar to [addExtraData], adds data that will be indexed in the analytics portal.
+     *
+     * **Do not add numerical values using this, use [addExtraData] instead.**
+     */
+    fun addIndexableData(key: String, value: String) {}
 }
 
 fun AnalyticsTracker.captureInteraction(name: Interaction.Name, type: Interaction.InteractionType? = null) {

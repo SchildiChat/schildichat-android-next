@@ -33,7 +33,7 @@ import io.element.android.libraries.di.RoomScope
 import io.element.android.libraries.di.annotations.SessionCoroutineScope
 import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.mediaupload.api.MediaSenderFactory
-import io.element.android.libraries.permissions.api.PermissionsEvents
+import io.element.android.libraries.permissions.api.PermissionsEvent
 import io.element.android.libraries.permissions.api.PermissionsPresenter
 import io.element.android.libraries.textcomposer.model.VoiceMessagePlayerEvent
 import io.element.android.libraries.textcomposer.model.VoiceMessageRecorderEvent
@@ -111,7 +111,7 @@ class DefaultVoiceMessageComposerPresenter(
                         }
                         else -> {
                             Timber.i("Voice message permission needed")
-                            permissionState.eventSink(PermissionsEvents.RequestPermissions)
+                            permissionState.eventSink(PermissionsEvent.RequestPermissions)
                         }
                     }
                 }
@@ -176,10 +176,10 @@ class DefaultVoiceMessageComposerPresenter(
                     localCoroutineScope.deleteRecording()
                 }
                 VoiceMessageComposerEvent.DismissPermissionsRationale -> {
-                    permissionState.eventSink(PermissionsEvents.CloseDialog)
+                    permissionState.eventSink(PermissionsEvent.CloseDialog)
                 }
                 VoiceMessageComposerEvent.AcceptPermissionRationale -> {
-                    permissionState.eventSink(PermissionsEvents.OpenSystemSettingAndCloseDialog)
+                    permissionState.eventSink(PermissionsEvent.OpenSystemSettingAndCloseDialog)
                 }
                 is VoiceMessageComposerEvent.LifecycleEvent -> handleLifecycleEvent(event.event)
                 VoiceMessageComposerEvent.DismissSendFailureDialog -> {

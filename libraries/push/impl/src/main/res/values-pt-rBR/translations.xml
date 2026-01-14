@@ -38,6 +38,8 @@
   <string name="notification_room_invite_body_with_sender">"%1$s te convidou para entrar na sala"</string>
   <string name="notification_sender_me">"Eu"</string>
   <string name="notification_sender_mention_reply">"%1$s mencionado ou respondido"</string>
+  <string name="notification_space_invite_body">"Te convidou para entrar no espaço"</string>
+  <string name="notification_space_invite_body_with_sender">"%1$s te convidou para entrar no espaço"</string>
   <string name="notification_test_push_notification_content">"Você está visualizando a notificação! Clique em mim!"</string>
   <string name="notification_thread_in_room">"Tópico em %1$s"</string>
   <string name="notification_ticker_text_dm">"%1$s: %2$s"</string>

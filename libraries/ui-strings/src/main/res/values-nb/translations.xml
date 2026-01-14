@@ -95,6 +95,7 @@
   <string name="action_forgot_password">"Glemt passordet?"</string>
   <string name="action_forward">"Videresend"</string>
   <string name="action_go_back">"Gå tilbake"</string>
+  <string name="action_go_to_roles_and_permissions">"Gå til roller og tillatelser"</string>
   <string name="action_go_to_settings">"Gå til innstillinger"</string>
   <string name="action_ignore">"Ignorer"</string>
   <string name="action_invite">"Inviter"</string>
@@ -155,6 +156,7 @@
   <string name="action_skip">"Hopp over"</string>
   <string name="action_start">"Start"</string>
   <string name="action_start_chat">"Start chat"</string>
+  <string name="action_start_over">"Begynn på nytt"</string>
   <string name="action_start_verification">"Start verifisering"</string>
   <string name="action_static_map_load">"Trykk for å laste inn kart"</string>
   <string name="action_take_photo">"Ta bilde"</string>
@@ -385,6 +387,7 @@ Er du sikker på at du vil fortsette?"</string>
   <string name="dialog_title_error">"Feil"</string>
   <string name="dialog_title_success">"Suksess"</string>
   <string name="dialog_title_warning">"Advarsel"</string>
+  <string name="dialog_unsaved_changes_description">"Du har endringer som ikke er lagret."</string>
   <string name="dialog_unsaved_changes_description_android">"Endringene dine er ikke lagret. Er du sikker på at du vil gå tilbake?"</string>
   <string name="dialog_unsaved_changes_title">"Lagre endringer?"</string>
   <string name="dialog_video_quality_selector_subtitle_file_size">"Maksimal tillatt filstørrelse er: %1$s"</string>

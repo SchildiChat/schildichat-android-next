@@ -231,7 +231,7 @@ private fun ImageOptimizationSelector(state: MediaOptimizationSelectorState) {
             Text(
                 modifier = Modifier.weight(1f).align(Alignment.CenterVertically),
                 text = stringResource(R.string.screen_media_upload_preview_optimize_image_quality_title),
-                style = ElementTheme.materialTypography.bodyLarge,
+                style = ElementTheme.typography.fontBodyLgRegular,
             )
             Switch(
                 modifier = Modifier.height(32.dp),
@@ -337,7 +337,7 @@ private fun VideoQualitySelectorDialog(
                     supportingContent = {
                         Text(
                             text = preset.subtitle(),
-                            style = ElementTheme.materialTypography.bodyMedium,
+                            style = ElementTheme.typography.fontBodyMdRegular,
                             color = ElementTheme.colors.textSecondary,
                         )
                     },

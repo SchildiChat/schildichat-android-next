@@ -11,7 +11,7 @@ package io.element.android.libraries.matrix.impl.fixtures.factories
 import io.element.android.libraries.matrix.test.A_USER_ID
 import org.matrix.rustcomponents.sdk.UserProfile
 
-fun aRustUserProfile(
+internal fun aRustUserProfile(
     userId: String = A_USER_ID.value,
     displayName: String = "displayName",
     avatarUrl: String = "avatarUrl",

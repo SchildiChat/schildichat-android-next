@@ -19,7 +19,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.net.toUri
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import im.vector.app.features.analytics.plan.CreatedRoom
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
@@ -40,7 +42,7 @@ import io.element.android.libraries.matrix.ui.room.address.RoomAddressValidityEf
 import io.element.android.libraries.mediapickers.api.PickerProvider
 import io.element.android.libraries.mediaupload.api.MediaOptimizationConfigProvider
 import io.element.android.libraries.mediaupload.api.MediaPreProcessor
-import io.element.android.libraries.permissions.api.PermissionsEvents
+import io.element.android.libraries.permissions.api.PermissionsEvent
 import io.element.android.libraries.permissions.api.PermissionsPresenter
 import io.element.android.services.analytics.api.AnalyticsService
 import kotlinx.collections.immutable.toImmutableList
@@ -49,8 +51,9 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.jvm.optionals.getOrDefault
 
-@Inject
+@AssistedInject
 class ConfigureRoomPresenter(
+    @Assisted private val isSpace: Boolean,
     private val dataStore: CreateRoomConfigStore,
     private val matrixClient: MatrixClient,
     private val mediaPickerProvider: PickerProvider,
@@ -61,13 +64,22 @@ class ConfigureRoomPresenter(
     private val roomAliasHelper: RoomAliasHelper,
     private val mediaOptimizationConfigProvider: MediaOptimizationConfigProvider,
 ) : Presenter<ConfigureRoomState> {
+    @AssistedFactory
+    interface Factory {
+        fun create(isSpace: Boolean): ConfigureRoomPresenter
+    }
+
     private val cameraPermissionPresenter: PermissionsPresenter = permissionsPresenterFactory.create(android.Manifest.permission.CAMERA)
     private var pendingPermissionRequest = false
+
+    init {
+        dataStore.setIsSpace(isSpace)
+    }
 
     @Composable
     override fun present(): ConfigureRoomState {
         val cameraPermissionState = cameraPermissionPresenter.present()
-        val createRoomConfig by dataStore.getCreateRoomConfigFlow().collectAsState(CreateRoomConfig())
+        val createRoomConfig by dataStore.getCreateRoomConfigFlow().collectAsState()
         val homeserverName = remember { matrixClient.userIdServerName() }
         val isKnockFeatureEnabled by remember {
             featureFlagService.isFeatureEnabledFlow(FeatureFlags.Knock)
@@ -132,7 +144,7 @@ class ConfigureRoomPresenter(
                             cameraPhotoPicker.launch()
                         } else {
                             pendingPermissionRequest = true
-                            cameraPermissionState.eventSink(PermissionsEvents.RequestPermissions)
+                            cameraPermissionState.eventSink(PermissionsEvent.RequestPermissions)
                         }
                         AvatarAction.Remove -> dataStore.setAvatarUri(uri = null)
                     }
@@ -171,7 +183,8 @@ class ConfigureRoomPresenter(
                     preset = RoomPreset.PUBLIC_CHAT,
                     invite = config.invites.map { it.userId },
                     avatar = avatarUrl,
-                    roomAliasName = config.roomVisibility.roomAddress()
+                    roomAliasName = config.roomVisibility.roomAddress(),
+                    isSpace = isSpace,
                 )
             } else {
                 CreateRoomParameters(
@@ -184,6 +197,7 @@ class ConfigureRoomPresenter(
                     preset = RoomPreset.PRIVATE_CHAT,
                     invite = config.invites.map { it.userId },
                     avatar = avatarUrl,
+                    isSpace = isSpace,
                 )
             }
             matrixClient.createRoom(params)

@@ -35,11 +35,11 @@ import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRoles
 import io.element.android.features.rolesandpermissions.api.ChangeRoomMemberRolesListType
 import io.element.android.features.rolesandpermissions.api.RolesAndPermissionsEntryPoint
 import io.element.android.features.roomdetails.api.RoomDetailsEntryPoint
-import io.element.android.features.roomdetails.impl.edit.RoomDetailsEditNode
 import io.element.android.features.roomdetails.impl.invite.RoomInviteMembersNode
 import io.element.android.features.roomdetails.impl.members.RoomMemberListNode
 import io.element.android.features.roomdetails.impl.members.details.RoomMemberDetailsNode
 import io.element.android.features.roomdetails.impl.notificationsettings.RoomNotificationSettingsNode
+import io.element.android.features.roomdetailsedit.api.RoomDetailsEditEntryPoint
 import io.element.android.features.securityandprivacy.api.SecurityAndPrivacyEntryPoint
 import io.element.android.features.userprofile.shared.UserProfileNodeHelper
 import io.element.android.features.verifysession.api.OutgoingVerificationEntryPoint
@@ -85,6 +85,7 @@ class RoomDetailsFlowNode(
     private val changeRoomMemberRolesEntryPoint: ChangeRoomMemberRolesEntryPoint,
     private val rolesAndPermissionsEntryPoint: RolesAndPermissionsEntryPoint,
     private val securityAndPrivacyEntryPoint: SecurityAndPrivacyEntryPoint,
+    private val roomDetailsEditEntryPoint: RoomDetailsEditEntryPoint,
 ) : BaseFlowNode<RoomDetailsFlowNode.NavTarget>(
     backstack = BackStack(
         initialElement = plugins.filterIsInstance<RoomDetailsEntryPoint.Params>().first().initialElement.toNavTarget(),
@@ -256,7 +257,7 @@ class RoomDetailsFlowNode(
             }
 
             NavTarget.RoomDetailsEdit -> {
-                createNode<RoomDetailsEditNode>(buildContext)
+                roomDetailsEditEntryPoint.createNode(this, buildContext)
             }
 
             NavTarget.InviteMembers -> {
@@ -348,7 +349,16 @@ class RoomDetailsFlowNode(
             }
 
             is NavTarget.AdminSettings -> {
-                rolesAndPermissionsEntryPoint.createNode(this, buildContext)
+                val callback = object : RolesAndPermissionsEntryPoint.Callback {
+                    override fun onDone() {
+                        backstack.pop()
+                    }
+                }
+                rolesAndPermissionsEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    callback = callback,
+                )
             }
             NavTarget.PinnedMessagesList -> {
                 val params = MessagesEntryPoint.Params(
@@ -382,7 +392,16 @@ class RoomDetailsFlowNode(
                 knockRequestsListEntryPoint.createNode(this, buildContext)
             }
             NavTarget.SecurityAndPrivacy -> {
-                securityAndPrivacyEntryPoint.createNode(this, buildContext)
+                val callback = object : SecurityAndPrivacyEntryPoint.Callback {
+                    override fun onDone() {
+                        backstack.pop()
+                    }
+                }
+                securityAndPrivacyEntryPoint.createNode(
+                    parentNode = this,
+                    buildContext = buildContext,
+                    callback = callback,
+                )
             }
             is NavTarget.VerifyUser -> {
                 val params = OutgoingVerificationEntryPoint.Params(

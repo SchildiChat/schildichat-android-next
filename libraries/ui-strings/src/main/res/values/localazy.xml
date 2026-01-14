@@ -56,6 +56,7 @@
   <string name="a11y_your_avatar">"Your avatar"</string>
   <string name="action_accept">"Accept"</string>
   <string name="action_add_caption">"Add caption"</string>
+  <string name="action_add_existing_rooms">"Add existing rooms"</string>
   <string name="action_add_to_timeline">"Add to timeline"</string>
   <string name="action_back">"Back"</string>
   <string name="action_call">"Call"</string>
@@ -75,6 +76,7 @@
   <string name="action_copy_text">"Copy text"</string>
   <string name="action_create">"Create"</string>
   <string name="action_create_a_room">"Create a room"</string>
+  <string name="action_create_space">"Create space"</string>
   <string name="action_deactivate">"Deactivate"</string>
   <string name="action_deactivate_account">"Deactivate account"</string>
   <string name="action_decline">"Decline"</string>
@@ -192,6 +194,7 @@
   <string name="common_copied_to_clipboard">"Copied to clipboard"</string>
   <string name="common_copyright">"Copyright"</string>
   <string name="common_creating_room">"Creating room…"</string>
+  <string name="common_creating_space">"Creating space…"</string>
   <string name="common_current_user_canceled_knock">"Request canceled"</string>
   <string name="common_current_user_left_room">"Left room"</string>
   <string name="common_current_user_left_space">"Left space"</string>
@@ -338,6 +341,7 @@ Reason: %1$s."</string>
   <string name="common_starting_chat">"Starting chat…"</string>
   <string name="common_sticker">"Sticker"</string>
   <string name="common_success">"Success"</string>
+  <string name="common_suggested">"Suggested"</string>
   <string name="common_suggestions">"Suggestions"</string>
   <string name="common_syncing">"Syncing"</string>
   <string name="common_system">"System"</string>
@@ -375,6 +379,8 @@ Reason: %1$s."</string>
   <string name="common_waiting">"Waiting…"</string>
   <string name="common_waiting_for_decryption_key">"Waiting for this message"</string>
   <string name="common_you">"You"</string>
+  <string name="crypto_event_key_forwarded_known_profile_dialog_content">"%1$s (%2$s) shared this message since you were not in the room when it was sent."</string>
+  <string name="crypto_event_key_forwarded_unknown_profile_dialog_content">"%1$s shared this message since you were not in the room when it was sent."</string>
   <string name="crypto_history_visible">"This room has been configured so that new members can read history. %1$s"</string>
   <string name="crypto_identity_change_pin_violation">"%1$s\'s identity was reset. %2$s"</string>
   <string name="crypto_identity_change_pin_violation_new">"%1$s’s %2$s identity was reset. %3$s"</string>
@@ -436,11 +442,6 @@ Are you sure you want to continue?"</string>
   <string name="screen_create_poll_options_section_title">"Options"</string>
   <string name="screen_create_poll_remove_accessibility_label">"Remove %1$s"</string>
   <string name="screen_create_poll_settings_section_title">"Settings"</string>
-  <string name="screen_manage_authorized_spaces_header">"Spaces where members can join the room without an invitation."</string>
-  <string name="screen_manage_authorized_spaces_title">"Manage spaces"</string>
-  <string name="screen_manage_authorized_spaces_unknown_space">"(Unknown space)"</string>
-  <string name="screen_manage_authorized_spaces_unknown_spaces_section_title">"Other spaces you’re not a member of"</string>
-  <string name="screen_manage_authorized_spaces_your_spaces_section_title">"Your spaces"</string>
   <string name="screen_media_picker_error_failed_selection">"Failed selecting media, please try again."</string>
   <string name="screen_pinned_timeline_empty_state_description">"Press on a message and choose “%1$s” to include here."</string>
   <string name="screen_pinned_timeline_empty_state_headline">"Pin important messages so that they can be easily discovered"</string>
@@ -477,11 +478,18 @@ Are you sure you want to continue?"</string>
   <string name="screen_share_open_google_maps">"Open in Google Maps"</string>
   <string name="screen_share_open_osm_maps">"Open in OpenStreetMap"</string>
   <string name="screen_share_this_location_action">"Share this location"</string>
+  <string name="screen_space_add_rooms_room_access_description">"Adding a room will not affect the room access. To change the access go to Room info &gt; Privacy &amp; security."</string>
   <string name="screen_space_list_description">"Spaces you have created or joined."</string>
   <string name="screen_space_list_details">"%1$s • %2$s"</string>
+  <string name="screen_space_list_empty_state_title">"Create spaces to organize rooms"</string>
   <string name="screen_space_list_parent_space">"%1$s space"</string>
   <string name="screen_space_list_title">"Spaces"</string>
   <string name="screen_space_menu_action_members">"View members"</string>
+  <string name="screen_space_remove_rooms_confirmation_content">"Removing a room will not affect the room access. To change the access go to Room info &gt; Privacy &amp; security."</string>
+  <plurals name="screen_space_remove_rooms_confirmation_title">
+    <item quantity="one">"Remove room from %1$s"</item>
+    <item quantity="other">"Remove %1$d rooms from %2$s"</item>
+  </plurals>
   <string name="screen_timeline_item_menu_send_failure_changed_identity">"Message not sent because %1$s’s verified identity was reset."</string>
   <string name="screen_timeline_item_menu_send_failure_unsigned_device">"Message not sent because %1$s has not verified all devices."</string>
   <string name="screen_timeline_item_menu_send_failure_you_unsigned_device">"Message not sent because you have not verified one or more of your devices."</string>

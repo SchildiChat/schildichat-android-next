@@ -403,7 +403,8 @@
       "name" : ":features:securityandprivacy:impl",
       "includeRegex" : [
         "screen\\.edit_room_address\\..*",
-        "screen\\.security_and_privacy\\..*"
+        "screen\\.security_and_privacy\\..*",
+        "screen\\.manage_authorized_spaces\\..*"
       ]
     }
   ]

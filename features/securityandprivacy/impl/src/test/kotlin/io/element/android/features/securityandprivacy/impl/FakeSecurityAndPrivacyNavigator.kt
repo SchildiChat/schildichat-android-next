@@ -14,6 +14,8 @@ class FakeSecurityAndPrivacyNavigator(
     private val onDoneLambda: () -> Unit = { lambdaError() },
     private val openEditRoomAddressLambda: () -> Unit = { lambdaError() },
     private val closeEditRoomAddressLambda: () -> Unit = { lambdaError() },
+    private val openManageAuthorizedSpacesLambda: () -> Unit = { lambdaError() },
+    private val closeManageAuthorizedSpacesLambda: () -> Unit = { lambdaError() },
 ) : SecurityAndPrivacyNavigator {
     override fun onDone() {
         onDoneLambda()
@@ -25,5 +27,13 @@ class FakeSecurityAndPrivacyNavigator(
 
     override fun closeEditRoomAddress() {
         closeEditRoomAddressLambda()
+    }
+
+    override fun openManageAuthorizedSpaces() {
+        openManageAuthorizedSpacesLambda()
+    }
+
+    override fun closeManageAuthorizedSpaces() {
+        closeManageAuthorizedSpacesLambda()
     }
 }

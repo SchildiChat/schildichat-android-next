@@ -47,6 +47,7 @@ import io.element.android.appnav.room.RoomFlowNode
 import io.element.android.appnav.room.RoomNavigationTarget
 import io.element.android.appnav.room.joined.JoinedRoomLoadedFlowNode
 import io.element.android.compound.colors.SemanticColorsLightDark
+import io.element.android.features.createroom.api.CreateRoomEntryPoint
 import io.element.android.features.enterprise.api.EnterpriseService
 import io.element.android.features.enterprise.api.SessionEnterpriseService
 import io.element.android.features.ftue.api.FtueEntryPoint
@@ -144,6 +145,7 @@ class LoggedInFlowNode(
     snackbarDispatcher: SnackbarDispatcher,
     private val analyticsService: AnalyticsService,
     private val analyticsRoomListStateWatcher: AnalyticsRoomListStateWatcher,
+    private val createRoomEntryPoint: CreateRoomEntryPoint,
 ) : BaseFlowNode<LoggedInFlowNode.NavTarget>(
     backstack = BackStack(
         initialElement = NavTarget.Placeholder,
@@ -288,6 +290,9 @@ class LoggedInFlowNode(
         data object CreateRoom : NavTarget
 
         @Parcelize
+        data object CreateSpace : NavTarget
+
+        @Parcelize
         data class SecureBackup(
             val initialElement: SecureBackupEntryPoint.InitialTarget = SecureBackupEntryPoint.InitialTarget.Root
         ) : NavTarget
@@ -336,6 +341,10 @@ class LoggedInFlowNode(
 
                     override fun navigateToCreateRoom() {
                         backstack.push(NavTarget.CreateRoom)
+                    }
+
+                    override fun navigateToCreateSpace() {
+                        backstack.push(NavTarget.CreateSpace)
                     }
 
                     override fun navigateToSetUpRecovery() {
@@ -469,6 +478,14 @@ class LoggedInFlowNode(
                     callback = callback,
                 )
             }
+            is NavTarget.CreateSpace -> {
+                val callback = object : CreateRoomEntryPoint.Callback {
+                    override fun onRoomCreated(roomId: RoomId) {
+                        backstack.replace(NavTarget.Room(roomIdOrAlias = RoomIdOrAlias.Id(roomId), serverNames = emptyList()))
+                    }
+                }
+                createRoomEntryPoint.createNode(isSpace = true, parentNode = this, buildContext = buildContext, callback = callback)
+            }
             is NavTarget.SecureBackup -> {
                 secureBackupEntryPoint.createNode(
                     parentNode = this,
@@ -516,9 +533,18 @@ class LoggedInFlowNode(
                     params = ShareEntryPoint.Params(intent = navTarget.intent),
                     callback = object : ShareEntryPoint.Callback {
                         override fun onDone(roomIds: List<RoomId>) {
+                            // Remove the incoming share screen
                             backstack.pop()
+
+                            // Navigate to the room if the text/media was shared to a single one
                             roomIds.singleOrNull()?.let { roomId ->
-                                backstack.push(NavTarget.Room(roomId.toRoomIdOrAlias()))
+                                sessionCoroutineScope.launch {
+                                    // Wait until the incoming share screen is removed
+                                    backstack.elements.first { it.lastOrNull()?.key?.navTarget !is NavTarget.IncomingShare }
+
+                                    // Then attach the room
+                                    attachRoom(roomId.toRoomIdOrAlias(), clearBackstack = false)
+                                }
                             }
                         }
                     },
@@ -644,7 +670,21 @@ private class AttachRoomOperation(
                 operation = this
             )
         } else {
-            Push<LoggedInFlowNode.NavTarget>(roomTarget).invoke(elements)
+            val existingRoomElement = elements.find {
+                val roomNavTarget = it.key.navTarget as? LoggedInFlowNode.NavTarget.Room
+                roomNavTarget?.roomIdOrAlias == roomTarget.roomIdOrAlias
+            }
+            if (existingRoomElement != null) {
+                elements.mapNotNull { element ->
+                    if (element == existingRoomElement) {
+                        null
+                    } else {
+                        element.transitionTo(STASHED, this)
+                    }
+                } + existingRoomElement.transitionTo(ACTIVE, this)
+            } else {
+                Push<LoggedInFlowNode.NavTarget>(roomTarget).invoke(elements)
+            }
         }
     }
 }

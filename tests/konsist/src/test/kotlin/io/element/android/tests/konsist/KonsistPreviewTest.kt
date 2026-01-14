@@ -79,6 +79,9 @@ class KonsistPreviewTest {
     private val previewNameExceptions = listOf(
         "AsyncIndicatorFailurePreview",
         "AsyncIndicatorLoadingPreview",
+        "AvatarPickerSizesPreview",
+        "AvatarPickerViewPreview",
+        "AvatarPickerViewRtlPreview",
         "BackgroundVerticalGradientDisabledPreview",
         "BackgroundVerticalGradientPreview",
         "ColorAliasesPreview",
@@ -86,6 +89,7 @@ class KonsistPreviewTest {
         "GradientFloatingActionButtonCircleShapePreview",
         "HeaderFooterPageScrollablePreview",
         "HomeTopBarMultiAccountPreview",
+        "HomeTopBarSpacesPreview",
         "HomeTopBarWithIndicatorPreview",
         "IconsOtherPreview",
         "MarkdownTextComposerEditPreview",

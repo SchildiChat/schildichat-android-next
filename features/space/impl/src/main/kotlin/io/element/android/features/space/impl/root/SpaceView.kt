@@ -266,9 +266,10 @@ private fun SpaceViewContent(
             val isInvitation = spaceRoom.state == CurrentUserMembership.INVITED
             val isCurrentlyJoining = state.isJoining(spaceRoom.roomId)
             val isSelected = state.isSelected(spaceRoom.roomId)
+            val showUnreadIndicator = isInvitation && spaceRoom.roomId !in state.seenSpaceInvites && !state.isManageMode
             SpaceRoomItemView(
                 spaceRoom = spaceRoom,
-                showUnreadIndicator = isInvitation && spaceRoom.roomId !in state.seenSpaceInvites,
+                showUnreadIndicator = showUnreadIndicator,
                 hideAvatars = isInvitation && state.hideInvitesAvatar,
                 onClick = {
                     onRoomClick(spaceRoom)

@@ -102,6 +102,9 @@ class SpacePresenter(
         val canAccessSpaceSettings by remember {
             derivedStateOf { isSpaceSettingsEnabled && permissions.settingsPermissions.hasAny(roomInfo.joinRule) }
         }
+        val canEditSpaceGraph by remember {
+            derivedStateOf { isSpaceSettingsEnabled && permissions.canEditSpaceGraph }
+        }
         val (joinActions, setJoinActions) = remember { mutableStateOf(emptyMap<RoomId, AsyncAction<Unit>>()) }
 
         var topicViewerState: TopicViewerState by remember { mutableStateOf(TopicViewerState.Hidden) }
@@ -225,7 +228,7 @@ class SpacePresenter(
             canAccessSpaceSettings = canAccessSpaceSettings,
             isManageMode = isManageMode,
             selectedRoomIds = selectedRoomIds.toImmutableSet(),
-            canEditSpaceGraph = permissions.canEditSpaceGraph,
+            canEditSpaceGraph = canEditSpaceGraph,
             removeRoomsAction = removeRoomsAction,
             eventSink = ::handleEvent,
         )

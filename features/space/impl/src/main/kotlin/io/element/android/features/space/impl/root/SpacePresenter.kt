@@ -53,7 +53,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlin.jvm.optionals.getOrNull
 
 @Inject
 class SpacePresenter(
@@ -103,7 +102,6 @@ class SpacePresenter(
         val canAccessSpaceSettings by remember {
             derivedStateOf { isSpaceSettingsEnabled && permissions.settingsPermissions.hasAny(roomInfo.joinRule) }
         }
-        val currentSpace by spaceRoomList.currentSpaceFlow.collectAsState()
         val (joinActions, setJoinActions) = remember { mutableStateOf(emptyMap<RoomId, AsyncAction<Unit>>()) }
 
         var topicViewerState: TopicViewerState by remember { mutableStateOf(TopicViewerState.Hidden) }
@@ -216,8 +214,7 @@ class SpacePresenter(
             }
         }
         return SpaceState(
-            currentSpaceId = spaceRoomList.roomId,
-            currentSpace = currentSpace.getOrNull(),
+            spaceInfo = roomInfo,
             children = filteredChildren,
             seenSpaceInvites = seenSpaceInvites,
             hideInvitesAvatar = hideInvitesAvatar,

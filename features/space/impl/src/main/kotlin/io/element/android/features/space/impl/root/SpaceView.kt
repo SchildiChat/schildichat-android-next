@@ -77,7 +77,9 @@ import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TextButton
 import io.element.android.libraries.designsystem.theme.components.TopAppBar
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
+import io.element.android.libraries.matrix.api.room.RoomInfo
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
+import io.element.android.libraries.matrix.api.spaces.SpaceRoomVisibility
 import io.element.android.libraries.matrix.ui.components.JoinButton
 import io.element.android.libraries.matrix.ui.components.SpaceHeaderView
 import io.element.android.libraries.matrix.ui.components.SpaceRoomItemView
@@ -131,7 +133,7 @@ fun SpaceView(
                     exit = fadeOut()
                 ) {
                     SpaceViewTopBar(
-                        currentSpace = state.currentSpace,
+                        spaceInfo = state.spaceInfo,
                         canAccessSpaceSettings = state.canAccessSpaceSettings,
                         showManageRoomsAction = state.showManageRoomsAction,
                         onBackClick = onBackClick,
@@ -166,7 +168,7 @@ fun SpaceView(
                     eventSink = state.eventSink
                 )
                 RemoveRoomsActionView(
-                    spaceDisplayName = state.currentSpaceDisplayName,
+                    spaceDisplayName = state.spaceInfo.name ?: state.spaceInfo.id.value,
                     removeRoomsAction = state.removeRoomsAction,
                     selectedCount = state.selectedCount,
                     onConfirm = { state.eventSink(SpaceEvents.ConfirmRoomRemoval) },
@@ -235,27 +237,25 @@ private fun SpaceViewContent(
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier.fillMaxSize()) {
-        val currentSpace = state.currentSpace
-        if (currentSpace != null) {
-            item(key = "space_header") {
-                AnimatedVisibility(
-                    !state.isManageMode,
-                    enter = fadeIn() + expandVertically(),
-                    exit = fadeOut() + shrinkVertically()
-                ) {
-                    Column {
-                        SpaceHeaderView(
-                            avatarData = currentSpace.getAvatarData(AvatarSize.SpaceHeader),
-                            name = currentSpace.displayName,
-                            topic = currentSpace.topic,
-                            topicMaxLines = 2,
-                            visibility = currentSpace.visibility,
-                            heroes = currentSpace.heroes.toImmutableList(),
-                            numberOfMembers = currentSpace.numJoinedMembers,
-                            onTopicClick = onTopicClick
-                        )
-                        HorizontalDivider()
-                    }
+        val spaceInfo = state.spaceInfo
+        item(key = "space_header") {
+            AnimatedVisibility(
+                !state.isManageMode,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                Column {
+                    SpaceHeaderView(
+                        avatarData = spaceInfo.getAvatarData(AvatarSize.SpaceHeader),
+                        name = spaceInfo.name,
+                        topic = spaceInfo.topic,
+                        topicMaxLines = 2,
+                        visibility = SpaceRoomVisibility.fromJoinRule(spaceInfo.joinRule),
+                        heroes = spaceInfo.heroes,
+                        numberOfMembers = spaceInfo.joinedMembersCount.toInt(),
+                        onTopicClick = onTopicClick
+                    )
+                    HorizontalDivider()
                 }
             }
         }
@@ -337,7 +337,7 @@ private fun LoadingMoreIndicator(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SpaceViewTopBar(
-    currentSpace: SpaceRoom?,
+    spaceInfo: RoomInfo,
     canAccessSpaceSettings: Boolean,
     showManageRoomsAction: Boolean,
     onBackClick: () -> Unit,
@@ -354,16 +354,14 @@ private fun SpaceViewTopBar(
             BackButton(onClick = onBackClick)
         },
         title = {
-            if (currentSpace != null) {
-                val roundedCornerShape = RoundedCornerShape(8.dp)
-                SpaceAvatarAndNameRow(
-                    name = currentSpace.displayName,
-                    avatarData = currentSpace.getAvatarData(AvatarSize.TimelineRoom),
-                    modifier = Modifier
-                        .clip(roundedCornerShape)
-                        .clickable(enabled = canAccessSpaceSettings, onClick = onSettingsClick)
-                )
-            }
+            val roundedCornerShape = RoundedCornerShape(8.dp)
+            SpaceAvatarAndNameRow(
+                name = spaceInfo.name,
+                avatarData = spaceInfo.getAvatarData(AvatarSize.TimelineRoom),
+                modifier = Modifier
+                    .clip(roundedCornerShape)
+                    .clickable(enabled = canAccessSpaceSettings, onClick = onSettingsClick)
+            )
         },
         actions = {
             var showMenu by remember { mutableStateOf(false) }

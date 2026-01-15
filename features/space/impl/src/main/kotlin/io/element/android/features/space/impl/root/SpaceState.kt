@@ -12,14 +12,14 @@ import androidx.compose.runtime.Immutable
 import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteState
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.room.RoomInfo
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.ImmutableSet
 
 data class SpaceState(
-    private val currentSpaceId: RoomId,
-    val currentSpace: SpaceRoom?,
+    val spaceInfo: RoomInfo,
     val children: ImmutableList<SpaceRoom>,
     val seenSpaceInvites: ImmutableSet<RoomId>,
     val hideInvitesAvatar: Boolean,
@@ -39,8 +39,6 @@ data class SpaceState(
     val hasAnyJoinFailures: Boolean = joinActions.values.any {
         it is AsyncAction.Failure
     }
-
-    val currentSpaceDisplayName = currentSpace?.displayName ?: currentSpaceId.value
 
     val showManageRoomsAction: Boolean = canEditSpaceGraph && children.any { spaceRoom -> !spaceRoom.isSpace }
     val selectedCount: Int = selectedRoomIds.size

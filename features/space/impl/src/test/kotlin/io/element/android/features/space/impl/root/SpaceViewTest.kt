@@ -22,6 +22,7 @@ import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_ROOM_NAME
 import io.element.android.libraries.matrix.test.A_ROOM_TOPIC
+import io.element.android.libraries.matrix.test.room.aRoomInfo
 import io.element.android.libraries.previewutils.room.aSpaceRoom
 import io.element.android.libraries.ui.strings.CommonStrings
 import io.element.android.tests.testutils.EnsureNeverCalled
@@ -127,7 +128,7 @@ class SpaceViewTest {
         val eventsRecorder = EventsRecorder<SpaceEvents>()
         rule.setSpaceView(
             aSpaceState(
-                parentSpace = aSpaceRoom(topic = A_ROOM_TOPIC),
+                spaceInfo = aRoomInfo(topic = A_ROOM_TOPIC),
                 hasMoreToLoad = false,
                 eventSink = eventsRecorder,
             )

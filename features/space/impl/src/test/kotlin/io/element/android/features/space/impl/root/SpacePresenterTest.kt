@@ -36,6 +36,7 @@ import io.element.android.libraries.matrix.test.A_ROOM_ID_2
 import io.element.android.libraries.matrix.test.A_ROOM_ID_3
 import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.matrix.test.room.FakeBaseRoom
+import io.element.android.libraries.matrix.test.room.aRoomInfo
 import io.element.android.libraries.matrix.test.room.join.FakeJoinRoom
 import io.element.android.libraries.matrix.test.room.powerlevels.FakeRoomPermissions
 import io.element.android.libraries.matrix.test.spaces.FakeSpaceRoomList
@@ -63,7 +64,7 @@ class SpacePresenterTest {
         val presenter = createSpacePresenter(spaceRoomList = spaceRoomList)
         presenter.test {
             val state = awaitItem()
-            assertThat(state.currentSpace).isNull()
+            assertThat(state.spaceInfo).isNotNull()
             assertThat(state.children).isEmpty()
             assertThat(state.seenSpaceInvites).isEmpty()
             assertThat(state.hideInvitesAvatar).isFalse()
@@ -140,23 +141,6 @@ class SpacePresenterTest {
                 SpaceRoomList.PaginationStatus.Idle(hasMoreToLoad = true)
             )
             assertThat(awaitItem().hasMoreToLoad).isTrue()
-        }
-    }
-
-    @Test
-    fun `present - current space value`() = runTest {
-        val paginateResult = lambdaRecorder<Result<Unit>> {
-            Result.success(Unit)
-        }
-        val spaceRoomList = FakeSpaceRoomList(paginateResult = paginateResult)
-        val presenter = createSpacePresenter(spaceRoomList = spaceRoomList)
-        presenter.test {
-            val state = awaitItem()
-            advanceUntilIdle()
-            assertThat(state.currentSpace).isNull()
-            val aSpace = aSpaceRoom()
-            spaceRoomList.emitCurrentSpace(aSpace)
-            assertThat(awaitItem().currentSpace).isEqualTo(aSpace)
         }
     }
 

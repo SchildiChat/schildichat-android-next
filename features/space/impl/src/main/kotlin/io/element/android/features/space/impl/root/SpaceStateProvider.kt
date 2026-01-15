@@ -15,6 +15,8 @@ import io.element.android.features.invite.api.acceptdecline.anAcceptDeclineInvit
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
+import io.element.android.libraries.matrix.api.room.RoomInfo
+import io.element.android.libraries.matrix.api.room.history.RoomHistoryVisibility
 import io.element.android.libraries.matrix.api.room.join.JoinRule
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.previewutils.room.aSpaceRoom
@@ -27,11 +29,11 @@ open class SpaceStateProvider : PreviewParameterProvider<SpaceState> {
     override val values: Sequence<SpaceState>
         get() = sequenceOf(
             aSpaceState(),
-            aSpaceState(parentSpace = aParentSpace(joinRule = JoinRule.Public)),
-            aSpaceState(parentSpace = aParentSpace(joinRule = JoinRule.Restricted(persistentListOf()))),
+            aSpaceState(spaceInfo = aSpaceInfo(joinRule = JoinRule.Public)),
+            aSpaceState(spaceInfo = aSpaceInfo(joinRule = JoinRule.Restricted(persistentListOf()))),
             aSpaceState(children = aListOfSpaceRooms()),
             aSpaceState(
-                parentSpace = aParentSpace(),
+                spaceInfo = aSpaceInfo(),
                 children = aListOfSpaceRooms(),
                 joiningRooms = setOf(RoomId("!spaceId0:example.com")),
                 hasMoreToLoad = false
@@ -41,19 +43,19 @@ open class SpaceStateProvider : PreviewParameterProvider<SpaceState> {
             ),
             // Manage mode states
             aSpaceState(
-                parentSpace = aParentSpace(),
+                spaceInfo = aSpaceInfo(),
                 children = aListOfSpaceRooms(),
                 isManageMode = true,
                 selectedRoomIds = emptySet(),
             ),
             aSpaceState(
-                parentSpace = aParentSpace(),
+                spaceInfo = aSpaceInfo(),
                 children = aListOfSpaceRooms(),
                 isManageMode = true,
                 selectedRoomIds = setOf(RoomId("!spaceId0:example.com"), RoomId("!spaceId1:example.com")),
             ),
             aSpaceState(
-                parentSpace = aParentSpace(),
+                spaceInfo = aSpaceInfo(),
                 children = aListOfSpaceRooms(),
                 isManageMode = true,
                 selectedRoomIds = setOf(RoomId("!spaceId0:example.com")),
@@ -63,7 +65,7 @@ open class SpaceStateProvider : PreviewParameterProvider<SpaceState> {
 }
 
 fun aSpaceState(
-    parentSpace: SpaceRoom = aParentSpace(),
+    spaceInfo: RoomInfo = aSpaceInfo(),
     children: List<SpaceRoom> = emptyList(),
     seenSpaceInvites: Set<RoomId> = emptySet(),
     joiningRooms: Set<RoomId> = emptySet(),
@@ -79,8 +81,7 @@ fun aSpaceState(
     removeRoomsAction: AsyncAction<Unit> = AsyncAction.Uninitialized,
     eventSink: (SpaceEvents) -> Unit = { },
 ) = SpaceState(
-    currentSpaceId = parentSpace.roomId,
-    currentSpace = parentSpace,
+    spaceInfo = spaceInfo,
     children = children.toImmutableList(),
     seenSpaceInvites = seenSpaceInvites.toImmutableSet(),
     hideInvitesAvatar = hideInvitesAvatar,
@@ -96,16 +97,45 @@ fun aSpaceState(
     eventSink = eventSink,
 )
 
-private fun aParentSpace(
+private fun aSpaceInfo(
     joinRule: JoinRule? = null,
-): SpaceRoom {
-    return aSpaceRoom(
-        numJoinedMembers = 5,
-        childrenCount = 10,
-        worldReadable = true,
-        joinRule = joinRule,
-        roomId = RoomId("!spaceId0:example.com"),
+): RoomInfo {
+    return RoomInfo(
+        id = RoomId("!spaceId0:example.com"),
+        name = "A Space",
+        rawName = "A Space",
         topic = "Space description goes here. " + LoremIpsum(20).values.first(),
+        avatarUrl = null,
+        isPublic = true,
+        isDirect = false,
+        isEncrypted = false,
+        joinRule = joinRule,
+        isSpace = true,
+        isFavorite = false,
+        canonicalAlias = null,
+        alternativeAliases = persistentListOf(),
+        currentUserMembership = CurrentUserMembership.JOINED,
+        inviter = null,
+        activeMembersCount = 5,
+        invitedMembersCount = 0,
+        joinedMembersCount = 5,
+        roomPowerLevels = null,
+        highlightCount = 0,
+        notificationCount = 0,
+        userDefinedNotificationMode = null,
+        hasRoomCall = false,
+        activeRoomCallParticipants = persistentListOf(),
+        isMarkedUnread = false,
+        numUnreadMessages = 0,
+        numUnreadNotifications = 0,
+        numUnreadMentions = 0,
+        heroes = persistentListOf(),
+        pinnedEventIds = persistentListOf(),
+        creators = persistentListOf(),
+        historyVisibility = RoomHistoryVisibility.Joined,
+        successorRoom = null,
+        roomVersion = "11",
+        privilegedCreatorRole = false,
     )
 }
 

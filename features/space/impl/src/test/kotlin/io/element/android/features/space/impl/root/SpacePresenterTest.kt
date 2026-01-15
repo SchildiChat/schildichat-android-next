@@ -36,7 +36,6 @@ import io.element.android.libraries.matrix.test.A_ROOM_ID_2
 import io.element.android.libraries.matrix.test.A_ROOM_ID_3
 import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.matrix.test.room.FakeBaseRoom
-import io.element.android.libraries.matrix.test.room.aRoomInfo
 import io.element.android.libraries.matrix.test.room.join.FakeJoinRoom
 import io.element.android.libraries.matrix.test.room.powerlevels.FakeRoomPermissions
 import io.element.android.libraries.matrix.test.spaces.FakeSpaceRoomList
@@ -433,8 +432,11 @@ class SpacePresenterTest {
             roomType = RoomType.Room,
         )
         val removeChildFromSpaceResult = lambdaRecorder<RoomId, RoomId, Result<Unit>> { _, childId ->
-            if (childId == A_ROOM_ID_2) Result.failure(AN_EXCEPTION)
-            else Result.success(Unit)
+            if (childId == A_ROOM_ID_2) {
+                Result.failure(AN_EXCEPTION)
+            } else {
+                Result.success(Unit)
+            }
         }
         val fakeSpaceRoomList = FakeSpaceRoomList(
             initialSpaceRoomsValue = listOf(aRoom1, aRoom2),

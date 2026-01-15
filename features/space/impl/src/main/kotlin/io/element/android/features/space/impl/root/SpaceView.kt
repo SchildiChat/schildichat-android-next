@@ -86,7 +86,6 @@ import io.element.android.libraries.matrix.ui.components.SpaceRoomItemView
 import io.element.android.libraries.matrix.ui.model.getAvatarData
 import io.element.android.libraries.ui.strings.CommonPlurals
 import io.element.android.libraries.ui.strings.CommonStrings
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -102,7 +101,6 @@ fun SpaceView(
     modifier: Modifier = Modifier,
     acceptDeclineInviteView: @Composable () -> Unit,
 ) {
-
     BackHandler {
         if (state.isManageMode) {
             state.eventSink(SpaceEvents.ExitManageMode)

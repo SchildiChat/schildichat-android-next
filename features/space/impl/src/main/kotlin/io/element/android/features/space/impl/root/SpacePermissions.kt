@@ -30,4 +30,3 @@ fun RoomPermissions.spacePermissions(): SpacePermissions {
         canEditSpaceGraph = canOwnUserSendState(StateEventType.SpaceChild) || canOwnUserSendState(StateEventType.SpaceParent),
     )
 }
-

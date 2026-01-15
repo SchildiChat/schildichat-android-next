@@ -10,11 +10,11 @@ package io.element.android.features.space.impl.root
 
 import com.google.common.truth.Truth.assertThat
 import io.element.android.libraries.architecture.AsyncAction
+import io.element.android.libraries.matrix.api.room.RoomType
 import io.element.android.libraries.matrix.test.AN_EXCEPTION
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_ROOM_ID_2
 import io.element.android.libraries.matrix.test.A_ROOM_ID_3
-import io.element.android.libraries.matrix.api.room.RoomType
 import io.element.android.libraries.previewutils.room.aSpaceRoom
 import org.junit.Test
 

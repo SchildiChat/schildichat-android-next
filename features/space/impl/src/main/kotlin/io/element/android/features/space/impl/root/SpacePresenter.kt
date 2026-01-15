@@ -23,8 +23,6 @@ import io.element.android.features.invite.api.SeenInvitesStore
 import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteEvents
 import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteState
 import io.element.android.features.invite.api.toInviteData
-import io.element.android.features.space.impl.settings.SpaceSettingsPermissions
-import io.element.android.features.space.impl.settings.spaceSettingsPermissions
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.coroutine.mapState

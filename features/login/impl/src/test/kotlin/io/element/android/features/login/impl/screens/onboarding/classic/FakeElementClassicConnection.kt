@@ -21,9 +21,9 @@ class FakeElementClassicConnection(
     override fun start() = startResult()
     override fun stop() = stopResult()
     override fun requestData() = requestDataResult()
-    private val _state = MutableStateFlow(initialState)
-    override val state: StateFlow<ElementClassicConnectionState> = _state.asStateFlow()
+    private val mutableStateFlow = MutableStateFlow(initialState)
+    override val stateFlow: StateFlow<ElementClassicConnectionState> = mutableStateFlow.asStateFlow()
     suspend fun emitState(state: ElementClassicConnectionState) {
-        _state.emit(state)
+        mutableStateFlow.emit(state)
     }
 }

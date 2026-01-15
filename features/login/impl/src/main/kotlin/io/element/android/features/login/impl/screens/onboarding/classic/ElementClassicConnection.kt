@@ -37,7 +37,7 @@ interface ElementClassicConnection {
     fun start()
     fun stop()
     fun requestData()
-    val state: StateFlow<ElementClassicConnectionState>
+    val stateFlow: StateFlow<ElementClassicConnectionState>
 }
 
 sealed interface ElementClassicConnectionState {
@@ -107,11 +107,11 @@ class DefaultElementClassicConnection(
                 } else {
                     // This happen when the app is not installed
                     Timber.tag(loggerTag.value).d("Binding returned false")
-                    elementClassicConnectionStateFlow.emit(ElementClassicConnectionState.ElementClassicNotFound)
+                    mutableStateFlow.emit(ElementClassicConnectionState.ElementClassicNotFound)
                 }
             } catch (e: SecurityException) {
                 Timber.tag(loggerTag.value).e(e, "Can't bind to Service")
-                elementClassicConnectionStateFlow.emit(ElementClassicConnectionState.Error(e.localizedMessage.orEmpty()))
+                mutableStateFlow.emit(ElementClassicConnectionState.Error(e.localizedMessage.orEmpty()))
             }
         }
     }
@@ -124,7 +124,7 @@ class DefaultElementClassicConnection(
             bound = false
         }
         coroutineScope.launch {
-            elementClassicConnectionStateFlow.emit(ElementClassicConnectionState.Idle)
+            mutableStateFlow.emit(ElementClassicConnectionState.Idle)
         }
     }
 
@@ -134,7 +134,7 @@ class DefaultElementClassicConnection(
             val finalMessenger = messenger
             if (finalMessenger == null) {
                 Timber.tag(loggerTag.value).w("The messenger is null, can't request data")
-                elementClassicConnectionStateFlow.emit(ElementClassicConnectionState.Error("The messenger is null, can't request data"))
+                mutableStateFlow.emit(ElementClassicConnectionState.Error("The messenger is null, can't request data"))
             } else {
                 try {
                     // Get the data
@@ -147,16 +147,14 @@ class DefaultElementClassicConnection(
                     // disconnected (and then reconnected if it can be restarted)
                     // so there is no need to do anything here.
                     Timber.tag(loggerTag.value).e(e, "RemoteException")
-                    elementClassicConnectionStateFlow.emit(ElementClassicConnectionState.Error(e.localizedMessage.orEmpty()))
+                    mutableStateFlow.emit(ElementClassicConnectionState.Error(e.localizedMessage.orEmpty()))
                 }
             }
         }
     }
 
-    private val elementClassicConnectionStateFlow = MutableStateFlow<ElementClassicConnectionState>(ElementClassicConnectionState.Idle)
-
-    override val state: StateFlow<ElementClassicConnectionState>
-        get() = elementClassicConnectionStateFlow.asStateFlow()
+    private val mutableStateFlow = MutableStateFlow<ElementClassicConnectionState>(ElementClassicConnectionState.Idle)
+    override val stateFlow = mutableStateFlow.asStateFlow()
 
     /**
      * Handler of incoming messages from service.
@@ -182,20 +180,20 @@ class DefaultElementClassicConnection(
         when (state) {
             is ElementClassicConnectionState.Error -> {
                 Timber.tag(loggerTag.value).w("Received error from Element Classic: %s", state.error)
-                elementClassicConnectionStateFlow.emit(state)
+                mutableStateFlow.emit(state)
             }
             is ElementClassicConnectionState.ElementClassicReady -> {
                 Timber.tag(loggerTag.value).d("Received userId from Element Classic: %s", state.userId)
-                elementClassicConnectionStateFlow.emit(state)
+                mutableStateFlow.emit(state)
             }
             ElementClassicConnectionState.ElementClassicReadyNoSession -> {
                 Timber.tag(loggerTag.value).d("Received no session from Element Classic")
-                elementClassicConnectionStateFlow.emit(state)
+                mutableStateFlow.emit(state)
             }
             else -> {
                 // Should not happen
                 Timber.tag(loggerTag.value).w("Received unexpected state from Element Classic: %s", state)
-                elementClassicConnectionStateFlow.emit(ElementClassicConnectionState.Idle)
+                mutableStateFlow.emit(ElementClassicConnectionState.Idle)
             }
         }
     }

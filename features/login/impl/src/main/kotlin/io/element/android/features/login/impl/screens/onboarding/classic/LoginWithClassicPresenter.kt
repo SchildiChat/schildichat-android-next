@@ -48,7 +48,7 @@ class LoginWithClassicPresenter(
             }
         }
 
-        val state by elementClassicConnection.state.collectAsState()
+        val state by elementClassicConnection.stateFlow.collectAsState()
         val loginWithClassicAction = remember { mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized) }
 
         val existingSession by remember {
@@ -73,7 +73,7 @@ class LoginWithClassicPresenter(
                     elementClassicConnection.requestData()
                 }
                 LoginWithClassicEvent.StartLoginWithClassic -> {
-                    val currentState = elementClassicConnection.state.value
+                    val currentState = elementClassicConnection.stateFlow.value
                     if (currentState is ElementClassicConnectionState.ElementClassicReady) {
                         loginWithClassicAction.value = ConfirmingLoginWithElementClassic(
                             userId = currentState.userId,

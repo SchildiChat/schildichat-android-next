@@ -54,6 +54,7 @@ fun EnterNumberView(
         subTitle = stringResource(R.string.screen_link_new_device_enter_number_subtitle),
         iconStyle = BigIcon.Style.Default(CompoundIcons.Computer()),
         modifier = modifier,
+        isScrollable = true,
         buttons = {
             Button(
                 text = stringResource(CommonStrings.action_continue),

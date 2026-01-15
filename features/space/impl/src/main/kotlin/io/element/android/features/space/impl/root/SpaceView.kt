@@ -136,8 +136,8 @@ fun SpaceView(
                         showManageRoomsAction = state.showManageRoomsAction,
                         onBackClick = onBackClick,
                         onLeaveSpaceClick = onLeaveSpaceClick,
-                        onShareSpace = onShareSpace,
                         onSettingsClick = onSettingsClick,
+                        onShareSpace = onShareSpace,
                         onViewMembersClick = onViewMembersClick,
                         onManageRoomsClick = { state.eventSink(SpaceEvents.EnterManageMode) },
                     )
@@ -379,6 +379,17 @@ private fun SpaceViewTopBar(
                 expanded = showMenu,
                 onDismissRequest = { showMenu = false }
             ) {
+                if (showManageRoomsAction) {
+                    SpaceMenuItem(
+                        titleRes = CommonStrings.action_manage_rooms,
+                        icon = CompoundIcons.Edit(),
+                        onClick = {
+                            showMenu = false
+                            onManageRoomsClick()
+                        }
+                    )
+                    HorizontalDivider()
+                }
                 SpaceMenuItem(
                     titleRes = R.string.screen_space_menu_action_members,
                     icon = CompoundIcons.User(),
@@ -395,16 +406,6 @@ private fun SpaceViewTopBar(
                         onShareSpace()
                     }
                 )
-                if (showManageRoomsAction) {
-                    SpaceMenuItem(
-                        titleRes = CommonStrings.action_manage_rooms,
-                        icon = CompoundIcons.Edit(),
-                        onClick = {
-                            showMenu = false
-                            onManageRoomsClick()
-                        }
-                    )
-                }
                 if (canAccessSpaceSettings) {
                     SpaceMenuItem(
                         titleRes = CommonStrings.common_settings,
@@ -415,6 +416,7 @@ private fun SpaceViewTopBar(
                         }
                     )
                 }
+                HorizontalDivider()
                 SpaceMenuItem(
                     titleRes = CommonStrings.action_leave_space,
                     icon = CompoundIcons.Leave(),

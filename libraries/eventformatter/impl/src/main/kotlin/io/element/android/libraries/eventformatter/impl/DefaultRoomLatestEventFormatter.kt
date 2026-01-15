@@ -9,6 +9,7 @@
 package io.element.android.libraries.eventformatter.impl
 
 import dev.zacsweers.metro.ContributesBinding
+import io.element.android.libraries.core.extensions.DEFAULT_SAFE_LENGTH
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.eventformatter.api.RoomLatestEventFormatter
 import io.element.android.libraries.eventformatter.impl.mode.RenderingMode
@@ -54,11 +55,6 @@ class DefaultRoomLatestEventFormatter(
     private val stateContentFormatter: StateContentFormatter,
     private val permalinkParser: PermalinkParser,
 ) : RoomLatestEventFormatter {
-    companion object {
-        // Max characters to display in the last message. This works around https://github.com/element-hq/element-x-android/issues/2105
-        private const val MAX_SAFE_LENGTH = 500
-    }
-
     override fun format(
         latestEvent: LatestEventValue.Local,
         isDmRoom: Boolean,
@@ -121,7 +117,7 @@ class DefaultRoomLatestEventFormatter(
             }
             is LegacyCallInviteContent -> sp.getString(CommonStrings.common_unsupported_call)
             is CallNotifyContent -> sp.getString(CommonStrings.common_call_started)
-        }?.take(MAX_SAFE_LENGTH)
+        }?.take(DEFAULT_SAFE_LENGTH)
     }
 
     private fun MessageContent.process(

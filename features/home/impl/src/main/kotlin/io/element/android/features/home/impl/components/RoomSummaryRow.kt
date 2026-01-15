@@ -46,6 +46,7 @@ import io.element.android.features.home.impl.model.RoomListRoomSummaryProvider
 import io.element.android.features.home.impl.model.RoomSummaryDisplayType
 import io.element.android.features.home.impl.roomlist.RoomListEvents
 import io.element.android.libraries.core.extensions.orEmpty
+import io.element.android.libraries.core.extensions.toSafeLength
 import io.element.android.libraries.designsystem.atomic.atoms.UnreadIndicatorAtom
 import io.element.android.libraries.designsystem.atomic.molecules.InviteButtonsRowMolecule
 import io.element.android.libraries.designsystem.components.avatar.Avatar
@@ -227,7 +228,7 @@ private fun NameAndTimestampRow(
             // Name
             Text(
                 style = ElementTheme.typography.fontBodyLgMedium,
-                text = name ?: stringResource(id = CommonStrings.common_no_room_name),
+                text = name?.toSafeLength(ellipsize = true) ?: stringResource(id = CommonStrings.common_no_room_name),
                 fontStyle = FontStyle.Italic.takeIf { name == null },
                 color = ElementTheme.colors.roomListRoomName,
                 maxLines = 1,
@@ -380,7 +381,7 @@ private fun InviteNameAndIndicatorRow(
         Text(
             modifier = Modifier.weight(1f),
             style = ElementTheme.typography.fontBodyLgMedium,
-            text = name ?: stringResource(id = CommonStrings.common_no_room_name),
+            text = name?.toSafeLength(ellipsize = true) ?: stringResource(id = CommonStrings.common_no_room_name),
             fontStyle = FontStyle.Italic.takeIf { name == null },
             color = ElementTheme.colors.roomListRoomName,
             maxLines = 1,

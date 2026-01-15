@@ -92,8 +92,8 @@ class SpacePresenter(
             }
         }.collectAsState()
 
-        val permissions by room.permissionsAsState(SpaceSettingsPermissions.DEFAULT) { perms ->
-            perms.spaceSettingsPermissions()
+        val permissions by room.permissionsAsState(SpacePermissions.DEFAULT) { perms ->
+            perms.spacePermissions()
         }
         val isSpaceSettingsEnabled by remember {
             featureFlagService.isFeatureEnabledFlow(FeatureFlags.SpaceSettings)
@@ -101,7 +101,7 @@ class SpacePresenter(
 
         val roomInfo by room.roomInfoFlow.collectAsState()
         val canAccessSpaceSettings by remember {
-            derivedStateOf { isSpaceSettingsEnabled && permissions.hasAny(roomInfo.joinRule) }
+            derivedStateOf { isSpaceSettingsEnabled && permissions.settingsPermissions.hasAny(roomInfo.joinRule) }
         }
         val currentSpace by spaceRoomList.currentSpaceFlow.collectAsState()
         val (joinActions, setJoinActions) = remember { mutableStateOf(emptyMap<RoomId, AsyncAction<Unit>>()) }

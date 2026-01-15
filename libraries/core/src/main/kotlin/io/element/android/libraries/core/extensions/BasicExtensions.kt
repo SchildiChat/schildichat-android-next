@@ -100,6 +100,8 @@ fun String.containsRtLOverride() = contains(RTL_OVERRIDE_CHAR)
 
 fun String.filterDirectionOverrides() = filterNot { it == RTL_OVERRIDE_CHAR || it == LTR_OVERRIDE_CHAR }
 
+const val DEFAULT_SAFE_LENGTH = 500
+
 /**
  * This works around https://github.com/element-hq/element-x-android/issues/2105.
  * @param maxLength Max characters to retrieve. Defaults to `500`.
@@ -107,7 +109,7 @@ fun String.filterDirectionOverrides() = filterNot { it == RTL_OVERRIDE_CHAR || i
  * @return The string truncated to [maxLength] characters, with an optional ellipsis if larger.
  */
 fun String.toSafeLength(
-    maxLength: Int = 500,
+    maxLength: Int = DEFAULT_SAFE_LENGTH,
     ellipsize: Boolean = false,
 ): String {
     return if (ellipsize) {

@@ -15,8 +15,6 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideIn
-import androidx.compose.animation.veilOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -40,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -49,6 +48,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
+import io.element.android.features.space.impl.R
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.designsystem.atomic.molecules.InviteButtonsRowMolecule
 import io.element.android.libraries.designsystem.components.ClickableLinkText
@@ -82,6 +82,7 @@ import io.element.android.libraries.matrix.ui.components.JoinButton
 import io.element.android.libraries.matrix.ui.components.SpaceHeaderView
 import io.element.android.libraries.matrix.ui.components.SpaceRoomItemView
 import io.element.android.libraries.matrix.ui.model.getAvatarData
+import io.element.android.libraries.ui.strings.CommonPlurals
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.delay
@@ -160,9 +161,16 @@ fun SpaceView(
                         state.eventSink(SpaceEvents.ShowTopicViewer(topic))
                     }
                 )
-                JoinRoomFailureEffect(
-                    hasAnyFailure = state.hasAnyFailure,
+                JoinFailuresEffect(
+                    hasAnyFailure = state.hasAnyJoinFailures,
                     eventSink = state.eventSink
+                )
+                RemoveRoomsActionView(
+                    spaceDisplayName = state.currentSpaceDisplayName,
+                    removeRoomsAction = state.removeRoomsAction,
+                    selectedCount = state.selectedCount,
+                    onConfirm = { state.eventSink(SpaceEvents.ConfirmRoomRemoval) },
+                    onDismiss = { state.eventSink(SpaceEvents.ClearRemoveAction) },
                 )
                 acceptDeclineInviteView()
             }
@@ -176,18 +184,10 @@ fun SpaceView(
             }
         )
     }
-
-    // Confirmation dialog for removing rooms
-    RemoveRoomsConfirmationDialog(
-        removeRoomsAction = state.removeRoomsAction,
-        selectedCount = state.selectedCount,
-        onConfirm = { state.eventSink(SpaceEvents.ConfirmRoomRemoval) },
-        onDismiss = { state.eventSink(SpaceEvents.ClearRemoveAction) },
-    )
 }
 
 @Composable
-private fun JoinRoomFailureEffect(
+private fun JoinFailuresEffect(
     hasAnyFailure: Boolean,
     eventSink: (SpaceEvents) -> Unit,
 ) {
@@ -380,7 +380,7 @@ private fun SpaceViewTopBar(
                 onDismissRequest = { showMenu = false }
             ) {
                 SpaceMenuItem(
-                    titleRes = CommonStrings.screen_space_menu_action_members,
+                    titleRes = R.string.screen_space_menu_action_members,
                     icon = CompoundIcons.User(),
                     onClick = {
                         showMenu = false
@@ -448,7 +448,7 @@ private fun ManageModeTopBar(
         },
         title = {
             Text(
-                text = "$selectedCount selected",
+                text = pluralStringResource(CommonPlurals.common_selected_count, selectedCount, selectedCount),
                 style = ElementTheme.typography.fontBodyLgMedium,
             )
         },
@@ -551,17 +551,19 @@ private fun SpaceRoom.inviteButtons(
 }
 
 @Composable
-private fun RemoveRoomsConfirmationDialog(
+private fun RemoveRoomsActionView(
+    spaceDisplayName: String,
     removeRoomsAction: AsyncAction<Unit>,
     selectedCount: Int,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    when (removeRoomsAction) {
-        AsyncAction.ConfirmingNoParams -> {
+    AsyncActionView(
+        async = removeRoomsAction,
+        confirmationDialog = {
             ConfirmationDialog(
-                title = "Remove $selectedCount rooms from space?",
-                content = "Removing a room will not affect the room access. To change the access go to Room info > Privacy & security.",
+                title = pluralStringResource(R.plurals.screen_space_remove_rooms_confirmation_title, selectedCount, selectedCount, spaceDisplayName),
+                content = stringResource(R.string.screen_space_remove_rooms_confirmation_content),
                 submitText = stringResource(CommonStrings.action_remove),
                 onSubmitClick = onConfirm,
                 onDismiss = onDismiss,
@@ -574,15 +576,17 @@ private fun RemoveRoomsConfirmationDialog(
                     )
                 }
             )
-        }
-        else -> {
-            AsyncActionView(
-                async = removeRoomsAction,
-                onSuccess = { onDismiss() },
-                onErrorDismiss = onDismiss,
-            )
-        }
-    }
+        },
+        onRetry = onConfirm,
+        errorTitle = {
+            stringResource(CommonStrings.common_something_went_wrong)
+        },
+        errorMessage = {
+            stringResource(CommonStrings.error_network_or_server_issue)
+        },
+        onSuccess = { onDismiss() },
+        onErrorDismiss = onDismiss,
+    )
 }
 
 @PreviewsDayNight

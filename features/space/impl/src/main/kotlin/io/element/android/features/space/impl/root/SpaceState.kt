@@ -18,6 +18,7 @@ import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.ImmutableSet
 
 data class SpaceState(
+    private val currentSpaceId: RoomId,
     val currentSpace: SpaceRoom?,
     val children: ImmutableList<SpaceRoom>,
     val seenSpaceInvites: ImmutableSet<RoomId>,
@@ -35,9 +36,11 @@ data class SpaceState(
 ) {
     fun isJoining(spaceId: RoomId): Boolean = joinActions[spaceId] == AsyncAction.Loading
     fun isSelected(spaceId: RoomId): Boolean = selectedRoomIds.contains(spaceId)
-    val hasAnyFailure: Boolean = joinActions.values.any {
+    val hasAnyJoinFailures: Boolean = joinActions.values.any {
         it is AsyncAction.Failure
     }
+
+    val currentSpaceDisplayName = currentSpace?.displayName ?: currentSpaceId.value
 
     val showManageRoomsAction: Boolean = canManageRooms && children.any { spaceRoom -> !spaceRoom.isSpace }
     val selectedCount: Int = selectedRoomIds.size

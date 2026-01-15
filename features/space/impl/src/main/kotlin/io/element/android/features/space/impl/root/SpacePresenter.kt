@@ -216,6 +216,7 @@ class SpacePresenter(
             }
         }
         return SpaceState(
+            currentSpaceId = spaceRoomList.roomId,
             currentSpace = currentSpace.getOrNull(),
             children = filteredChildren,
             seenSpaceInvites = seenSpaceInvites,

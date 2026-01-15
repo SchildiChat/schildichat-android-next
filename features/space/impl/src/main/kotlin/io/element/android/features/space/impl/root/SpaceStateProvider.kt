@@ -63,7 +63,7 @@ open class SpaceStateProvider : PreviewParameterProvider<SpaceState> {
 }
 
 fun aSpaceState(
-    parentSpace: SpaceRoom? = aParentSpace(),
+    parentSpace: SpaceRoom = aParentSpace(),
     children: List<SpaceRoom> = emptyList(),
     seenSpaceInvites: Set<RoomId> = emptySet(),
     joiningRooms: Set<RoomId> = emptySet(),
@@ -79,6 +79,7 @@ fun aSpaceState(
     removeRoomsAction: AsyncAction<Unit> = AsyncAction.Uninitialized,
     eventSink: (SpaceEvents) -> Unit = { },
 ) = SpaceState(
+    currentSpaceId = parentSpace.roomId,
     currentSpace = parentSpace,
     children = children.toImmutableList(),
     seenSpaceInvites = seenSpaceInvites.toImmutableSet(),

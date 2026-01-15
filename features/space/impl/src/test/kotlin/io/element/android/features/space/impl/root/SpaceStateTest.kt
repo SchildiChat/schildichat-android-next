@@ -22,7 +22,7 @@ class SpaceStateTest {
     @Test
     fun `test default state`() {
         val state = aSpaceState()
-        assertThat(state.hasAnyFailure).isFalse()
+        assertThat(state.hasAnyJoinFailures).isFalse()
         assertThat(state.isJoining(A_ROOM_ID)).isFalse()
     }
 
@@ -35,7 +35,7 @@ class SpaceStateTest {
                 A_ROOM_ID_3 to AsyncAction.Success(Unit),
             )
         )
-        assertThat(state.hasAnyFailure).isTrue()
+        assertThat(state.hasAnyJoinFailures).isTrue()
     }
 
     @Test

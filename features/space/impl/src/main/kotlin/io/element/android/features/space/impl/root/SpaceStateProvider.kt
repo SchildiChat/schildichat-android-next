@@ -91,7 +91,7 @@ fun aSpaceState(
     canAccessSpaceSettings = canAccessSpaceSettings,
     isManageMode = isManageMode,
     selectedRoomIds = selectedRoomIds.toImmutableSet(),
-    canManageRooms = canManageRooms,
+    canEditSpaceGraph = canManageRooms,
     removeRoomsAction = removeRoomsAction,
     eventSink = eventSink,
 )

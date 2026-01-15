@@ -30,7 +30,7 @@ data class SpaceState(
     val canAccessSpaceSettings: Boolean,
     val isManageMode: Boolean,
     val selectedRoomIds: ImmutableSet<RoomId>,
-    val canManageRooms: Boolean,
+    val canEditSpaceGraph: Boolean,
     val removeRoomsAction: AsyncAction<Unit>,
     val eventSink: (SpaceEvents) -> Unit
 ) {
@@ -42,7 +42,7 @@ data class SpaceState(
 
     val currentSpaceDisplayName = currentSpace?.displayName ?: currentSpaceId.value
 
-    val showManageRoomsAction: Boolean = canManageRooms && children.any { spaceRoom -> !spaceRoom.isSpace }
+    val showManageRoomsAction: Boolean = canEditSpaceGraph && children.any { spaceRoom -> !spaceRoom.isSpace }
     val selectedCount: Int = selectedRoomIds.size
     val isRemoveButtonEnabled: Boolean = selectedRoomIds.isNotEmpty()
 }

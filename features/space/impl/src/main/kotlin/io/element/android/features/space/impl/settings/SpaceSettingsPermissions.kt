@@ -20,7 +20,7 @@ data class SpaceSettingsPermissions(
     val editDetailsPermissions: RoomDetailsEditPermissions,
     val canEditRolesAndPermissions: Boolean,
     val securityAndPrivacyPermissions: SecurityAndPrivacyPermissions,
-    val canManageRooms: Boolean,
+    val canEditSpaceGraph: Boolean,
 ) {
     fun hasAny(joinRule: JoinRule?): Boolean {
         return editDetailsPermissions.hasAny ||
@@ -33,7 +33,7 @@ data class SpaceSettingsPermissions(
             editDetailsPermissions = RoomDetailsEditPermissions.DEFAULT,
             canEditRolesAndPermissions = false,
             securityAndPrivacyPermissions = SecurityAndPrivacyPermissions.DEFAULT,
-            canManageRooms = false,
+            canEditSpaceGraph = false,
         )
     }
 }
@@ -43,6 +43,6 @@ fun RoomPermissions.spaceSettingsPermissions(): SpaceSettingsPermissions {
         editDetailsPermissions = roomDetailsEditPermissions(),
         canEditRolesAndPermissions = canEditRolesAndPermissions(),
         securityAndPrivacyPermissions = securityAndPrivacyPermissions(),
-        canManageRooms = canOwnUserSendState(StateEventType.SpaceChild),
+        canEditSpaceGraph = canOwnUserSendState(StateEventType.SpaceChild) || canOwnUserSendState(StateEventType.SpaceParent),
     )
 }

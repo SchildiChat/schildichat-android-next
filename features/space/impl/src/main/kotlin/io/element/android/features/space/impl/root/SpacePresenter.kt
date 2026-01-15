@@ -228,7 +228,7 @@ class SpacePresenter(
             canAccessSpaceSettings = canAccessSpaceSettings,
             isManageMode = isManageMode,
             selectedRoomIds = selectedRoomIds.toImmutableSet(),
-            canManageRooms = permissions.canManageRooms,
+            canEditSpaceGraph = permissions.canEditSpaceGraph,
             removeRoomsAction = removeRoomsAction,
             eventSink = ::handleEvent,
         )

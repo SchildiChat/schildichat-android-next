@@ -27,14 +27,17 @@ import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.Text
+import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageShield
+import io.element.android.libraries.matrix.api.timeline.item.event.ProfileDetails
+import io.element.android.libraries.matrix.api.timeline.item.event.getDisplayName
 import io.element.android.libraries.matrix.api.timeline.item.event.isCritical
 import io.element.android.libraries.ui.strings.CommonStrings
 
 @Composable
 internal fun MessageShieldView(
-    shield: MessageShield,
-    modifier: Modifier = Modifier
+    shield: MessageShieldData,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -55,8 +58,24 @@ internal fun MessageShieldView(
     }
 }
 
+data class MessageShieldData(
+    /**
+     * The message shield that the rust layer thinks we should show.
+     */
+    val shield: MessageShield,
+    /**
+     * If the keys to this message were forwarded by another user via history sharing (MSC4268), the ID of that user.
+     */
+    val forwarder: UserId? = null,
+    /** If [forwarder] is set, the profile of the forwarding user, if it was cached at the time the `EventTimelineItem` was created. */
+    val forwarderProfile: ProfileDetails? = null,
+)
+
+val MessageShieldData.isCritical: Boolean
+    get() = shield.isCritical
+
 @Composable
-internal fun MessageShield.toIconColor(): Color {
+internal fun MessageShieldData.toIconColor(): Color {
     return when (isCritical) {
         true -> ElementTheme.colors.iconCriticalPrimary
         false -> ElementTheme.colors.iconSecondary
@@ -64,7 +83,7 @@ internal fun MessageShield.toIconColor(): Color {
 }
 
 @Composable
-private fun MessageShield.toTextColor(): Color {
+private fun MessageShieldData.toTextColor(): Color {
     return when (isCritical) {
         true -> ElementTheme.colors.textCriticalPrimary
         false -> ElementTheme.colors.textSecondary
@@ -72,9 +91,24 @@ private fun MessageShield.toTextColor(): Color {
 }
 
 @Composable
-internal fun MessageShield.toText(): String {
+internal fun MessageShieldData.toText(): String {
+    if (shield is MessageShield.AuthenticityNotGuaranteed && forwarder != null) {
+        var displayName = forwarderProfile?.getDisplayName()
+        return if (displayName == null) {
+            stringResource(
+                CommonStrings.crypto_event_key_forwarded_unknown_profile_dialog_content,
+                forwarder.toString(),
+            )
+        } else {
+            stringResource(
+                CommonStrings.crypto_event_key_forwarded_known_profile_dialog_content,
+                displayName,
+                forwarder.toString(),
+            )
+        }
+    }
     return stringResource(
-        id = when (this) {
+        id = when (shield) {
             is MessageShield.AuthenticityNotGuaranteed -> CommonStrings.event_shield_reason_authenticity_not_guaranteed
             is MessageShield.UnknownDevice -> CommonStrings.event_shield_reason_unknown_device
             is MessageShield.UnsignedDevice -> CommonStrings.event_shield_reason_unsigned_device
@@ -87,8 +121,8 @@ internal fun MessageShield.toText(): String {
 }
 
 @Composable
-internal fun MessageShield.toIcon(): ImageVector {
-    return when (this) {
+internal fun MessageShieldData.toIcon(): ImageVector {
+    return when (shield) {
         is MessageShield.AuthenticityNotGuaranteed -> CompoundIcons.Info()
         is MessageShield.UnknownDevice,
         is MessageShield.UnsignedDevice,
@@ -108,25 +142,42 @@ internal fun MessageShieldViewPreview() {
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             MessageShieldView(
-                shield = MessageShield.UnknownDevice(true)
+                shield = MessageShieldData(MessageShield.UnknownDevice(true))
             )
             MessageShieldView(
-                shield = MessageShield.UnverifiedIdentity(true)
+                shield = MessageShieldData(MessageShield.UnverifiedIdentity(true))
             )
             MessageShieldView(
-                shield = MessageShield.AuthenticityNotGuaranteed(false)
+                shield = MessageShieldData(MessageShield.AuthenticityNotGuaranteed(false))
             )
             MessageShieldView(
-                shield = MessageShield.UnsignedDevice(false)
+                shield = MessageShieldData(
+                    MessageShield.AuthenticityNotGuaranteed(false),
+                    forwarder = UserId("@alice:example.com"),
+                )
             )
             MessageShieldView(
-                shield = MessageShield.SentInClear(false)
+                shield = MessageShieldData(
+                    MessageShield.AuthenticityNotGuaranteed(false),
+                    forwarder = UserId("@alice:example.com"),
+                    forwarderProfile = ProfileDetails.Ready(
+                        displayName = "Alice",
+                        displayNameAmbiguous = false,
+                        avatarUrl = null,
+                    ),
+                )
             )
             MessageShieldView(
-                shield = MessageShield.VerificationViolation(false)
+                shield = MessageShieldData(MessageShield.UnsignedDevice(false))
             )
             MessageShieldView(
-                shield = MessageShield.MismatchedSender(false)
+                shield = MessageShieldData(MessageShield.SentInClear(false))
+            )
+            MessageShieldView(
+                shield = MessageShieldData(MessageShield.VerificationViolation(false))
+            )
+            MessageShieldView(
+                shield = MessageShieldData(MessageShield.MismatchedSender(false))
             )
         }
     }

@@ -9,6 +9,7 @@
 package io.element.android.features.messages.impl.timeline.model
 
 import androidx.compose.runtime.Immutable
+import io.element.android.features.messages.impl.timeline.components.MessageShieldData
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemEventContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemImageContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemStickerContent
@@ -87,6 +88,13 @@ sealed interface TimelineItem {
         val timelineItemDebugInfoProvider: TimelineItemDebugInfoProvider,
         val messageShieldProvider: MessageShieldProvider,
         val sendHandleProvider: SendHandleProvider,
+        /**
+         * If the keys to this message were forwarded by another user via history sharing (MSC4268), the ID of that user.
+         * If this is non-null, then [messageShieldProvider] will also return [MessageShield.AuthenticityNotGuaranteed].
+         */
+        val forwarder: UserId?,
+        /** If [forwarder] is set, the profile of the forwarding user, if it was cached at the time the `EventTimelineItem` was created. */
+        val forwarderProfile: ProfileDetails?,
     ) : TimelineItem {
         val showSenderInformation = groupPosition.isNew() && !isMine
 
@@ -115,7 +123,9 @@ sealed interface TimelineItem {
             get() = EventOrTransactionId.from(eventId = eventId, transactionId = transactionId)
 
         // No need to be lazy here?
-        val messageShield: MessageShield? = messageShieldProvider(strict = false)
+        val messageShield: MessageShieldData? = messageShieldProvider(strict = false)?.let {
+            MessageShieldData(it, forwarder, forwarderProfile)
+        }
 
         val debugInfo: TimelineItemDebugInfo
             get() = timelineItemDebugInfoProvider()

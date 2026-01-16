@@ -139,7 +139,7 @@ class PreferencesRootPresenter(
 
         return PreferencesRootState(
             myUser = matrixUser.value,
-            version = versionFormatter.get(),
+            version = remember { versionFormatter.get() },
             deviceId = matrixClient.deviceId,
             isMultiAccountEnabled = isMultiAccountEnabled,
             otherSessions = otherSessions,

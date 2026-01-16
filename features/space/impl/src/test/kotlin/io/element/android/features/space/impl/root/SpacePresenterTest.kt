@@ -22,20 +22,24 @@ import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.featureflag.test.FakeFeatureFlagService
 import io.element.android.libraries.matrix.api.MatrixClient
+import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.RoomIdOrAlias
 import io.element.android.libraries.matrix.api.core.toRoomIdOrAlias
 import io.element.android.libraries.matrix.api.room.BaseRoom
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
+import io.element.android.libraries.matrix.api.room.RoomType
 import io.element.android.libraries.matrix.api.room.join.JoinRoom
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
 import io.element.android.libraries.matrix.test.AN_EXCEPTION
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_ROOM_ID_2
+import io.element.android.libraries.matrix.test.A_ROOM_ID_3
 import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.join.FakeJoinRoom
 import io.element.android.libraries.matrix.test.room.powerlevels.FakeRoomPermissions
 import io.element.android.libraries.matrix.test.spaces.FakeSpaceRoomList
+import io.element.android.libraries.matrix.test.spaces.FakeSpaceService
 import io.element.android.libraries.previewutils.room.aSpaceRoom
 import io.element.android.tests.testutils.EventsRecorder
 import io.element.android.tests.testutils.lambda.lambdaRecorder
@@ -59,7 +63,7 @@ class SpacePresenterTest {
         val presenter = createSpacePresenter(spaceRoomList = spaceRoomList)
         presenter.test {
             val state = awaitItem()
-            assertThat(state.currentSpace).isNull()
+            assertThat(state.spaceInfo).isNotNull()
             assertThat(state.children).isEmpty()
             assertThat(state.seenSpaceInvites).isEmpty()
             assertThat(state.hideInvitesAvatar).isFalse()
@@ -136,23 +140,6 @@ class SpacePresenterTest {
                 SpaceRoomList.PaginationStatus.Idle(hasMoreToLoad = true)
             )
             assertThat(awaitItem().hasMoreToLoad).isTrue()
-        }
-    }
-
-    @Test
-    fun `present - current space value`() = runTest {
-        val paginateResult = lambdaRecorder<Result<Unit>> {
-            Result.success(Unit)
-        }
-        val spaceRoomList = FakeSpaceRoomList(paginateResult = paginateResult)
-        val presenter = createSpacePresenter(spaceRoomList = spaceRoomList)
-        presenter.test {
-            val state = awaitItem()
-            advanceUntilIdle()
-            assertThat(state.currentSpace).isNull()
-            val aSpace = aSpaceRoom()
-            spaceRoomList.emitCurrentSpace(aSpace)
-            assertThat(awaitItem().currentSpace).isEqualTo(aSpace)
         }
     }
 
@@ -353,6 +340,216 @@ class SpacePresenterTest {
         }
     }
 
+    @Test
+    fun `present - enter manage mode`() = runTest {
+        val presenter = createSpacePresenter()
+        presenter.test {
+            val state = awaitItem()
+            assertThat(state.isManageMode).isFalse()
+            state.eventSink(SpaceEvents.EnterManageMode)
+            val manageModeState = awaitItem()
+            assertThat(manageModeState.isManageMode).isTrue()
+            assertThat(manageModeState.selectedRoomIds).isEmpty()
+        }
+    }
+
+    @Test
+    fun `present - exit manage mode clears selection`() = runTest {
+        val presenter = createSpacePresenter()
+        presenter.test {
+            val initialState = awaitItem()
+            initialState.eventSink(SpaceEvents.EnterManageMode)
+            initialState.eventSink(SpaceEvents.ToggleRoomSelection(A_ROOM_ID))
+            initialState.eventSink(SpaceEvents.ExitManageMode)
+            val finalState = expectMostRecentItem()
+            assertThat(finalState.isManageMode).isFalse()
+            assertThat(finalState.selectedRoomIds).isEmpty()
+        }
+    }
+
+    @Test
+    fun `present - toggle room selection`() = runTest {
+        val presenter = createSpacePresenter()
+        presenter.test {
+            val initialState = awaitItem()
+            initialState.eventSink(SpaceEvents.EnterManageMode)
+            // Select a room
+            initialState.eventSink(SpaceEvents.ToggleRoomSelection(A_ROOM_ID))
+            var latestState = expectMostRecentItem()
+            assertThat(latestState.selectedRoomIds).containsExactly(A_ROOM_ID)
+            // Deselect the room
+            latestState.eventSink(SpaceEvents.ToggleRoomSelection(A_ROOM_ID))
+            latestState = expectMostRecentItem()
+            assertThat(latestState.selectedRoomIds).isEmpty()
+        }
+    }
+
+    @Test
+    fun `present - remove rooms success`() = runTest {
+        val removeChildFromSpaceResult = lambdaRecorder<RoomId, RoomId, Result<Unit>> { _, _ ->
+            Result.success(Unit)
+        }
+        val aRoom = aSpaceRoom(
+            roomId = A_ROOM_ID,
+            roomType = RoomType.Room,
+        )
+        val fakeSpaceRoomList = FakeSpaceRoomList(
+            initialSpaceRoomsValue = listOf(aRoom),
+            paginateResult = { Result.success(Unit) },
+        )
+        val presenter = createSpacePresenter(
+            spaceRoomList = fakeSpaceRoomList,
+            spaceService = FakeSpaceService(
+                removeChildFromSpaceResult = removeChildFromSpaceResult,
+            ),
+        )
+        presenter.test {
+            awaitItem() // Initial empty state
+            advanceUntilIdle()
+            val stateWithChildren = awaitItem()
+            assertThat(stateWithChildren.children).hasSize(1)
+            stateWithChildren.eventSink(SpaceEvents.EnterManageMode)
+            stateWithChildren.eventSink(SpaceEvents.ToggleRoomSelection(A_ROOM_ID))
+            stateWithChildren.eventSink(SpaceEvents.RemoveSelectedRooms)
+            stateWithChildren.eventSink(SpaceEvents.ConfirmRoomRemoval)
+            advanceUntilIdle()
+            val successState = expectMostRecentItem()
+            assertThat(successState.removeRoomsAction).isEqualTo(AsyncAction.Success(Unit))
+            assertThat(successState.isManageMode).isFalse()
+            assertThat(successState.children).isEmpty()
+            removeChildFromSpaceResult.assertions().isCalledOnce()
+        }
+    }
+
+    @Test
+    fun `present - remove rooms partial failure`() = runTest {
+        val aRoom1 = aSpaceRoom(
+            roomId = A_ROOM_ID,
+            roomType = RoomType.Room,
+        )
+        val aRoom2 = aSpaceRoom(
+            roomId = A_ROOM_ID_2,
+            roomType = RoomType.Room,
+        )
+        val removeChildFromSpaceResult = lambdaRecorder<RoomId, RoomId, Result<Unit>> { _, childId ->
+            if (childId == A_ROOM_ID_2) {
+                Result.failure(AN_EXCEPTION)
+            } else {
+                Result.success(Unit)
+            }
+        }
+        val fakeSpaceRoomList = FakeSpaceRoomList(
+            initialSpaceRoomsValue = listOf(aRoom1, aRoom2),
+            paginateResult = { Result.success(Unit) },
+        )
+        val presenter = createSpacePresenter(
+            spaceRoomList = fakeSpaceRoomList,
+            spaceService = FakeSpaceService(
+                removeChildFromSpaceResult = removeChildFromSpaceResult,
+            ),
+        )
+        presenter.test {
+            awaitItem() // Initial empty state
+            advanceUntilIdle()
+            val stateWithChildren = awaitItem()
+            assertThat(stateWithChildren.children).hasSize(2)
+            stateWithChildren.eventSink(SpaceEvents.EnterManageMode)
+            stateWithChildren.eventSink(SpaceEvents.ToggleRoomSelection(A_ROOM_ID))
+            stateWithChildren.eventSink(SpaceEvents.ToggleRoomSelection(A_ROOM_ID_2))
+            stateWithChildren.eventSink(SpaceEvents.RemoveSelectedRooms)
+            stateWithChildren.eventSink(SpaceEvents.ConfirmRoomRemoval)
+            advanceUntilIdle()
+            val failureState = expectMostRecentItem()
+            assertThat(failureState.removeRoomsAction.isFailure()).isTrue()
+            // Successfully removed room should be filtered out
+            assertThat(failureState.children.map { it.roomId }).doesNotContain(A_ROOM_ID)
+            // Failed room should still be present
+            assertThat(failureState.children.map { it.roomId }).contains(A_ROOM_ID_2)
+            removeChildFromSpaceResult.assertions().isCalledExactly(2)
+        }
+    }
+
+    @Test
+    fun `present - children filtered in manage mode shows only rooms`() = runTest {
+        val aRoom = aSpaceRoom(
+            roomId = A_ROOM_ID,
+            roomType = RoomType.Room,
+        )
+        val aSubSpace = aSpaceRoom(
+            roomId = A_ROOM_ID_2,
+            roomType = RoomType.Space,
+        )
+        val fakeSpaceRoomList = FakeSpaceRoomList(
+            initialSpaceRoomsValue = listOf(aRoom, aSubSpace),
+            paginateResult = { Result.success(Unit) },
+        )
+        val presenter = createSpacePresenter(spaceRoomList = fakeSpaceRoomList)
+        presenter.test {
+            awaitItem() // Initial empty state
+            advanceUntilIdle()
+            val stateWithChildren = awaitItem()
+            // Both room and space visible initially
+            assertThat(stateWithChildren.children).hasSize(2)
+            assertThat(stateWithChildren.isManageMode).isFalse()
+            stateWithChildren.eventSink(SpaceEvents.EnterManageMode)
+            val manageModeState = expectMostRecentItem()
+            // Only rooms visible in manage mode
+            assertThat(manageModeState.children).hasSize(1)
+            assertThat(manageModeState.children.first().roomId).isEqualTo(A_ROOM_ID)
+            assertThat(manageModeState.children.first().isSpace).isFalse()
+        }
+    }
+
+    @Test
+    fun `present - removed rooms persist after flow update`() = runTest {
+        val removeChildFromSpaceResult = lambdaRecorder<RoomId, RoomId, Result<Unit>> { _, _ ->
+            Result.success(Unit)
+        }
+        val aRoom1 = aSpaceRoom(
+            roomId = A_ROOM_ID,
+            roomType = RoomType.Room,
+        )
+        val aRoom2 = aSpaceRoom(
+            roomId = A_ROOM_ID_2,
+            roomType = RoomType.Room,
+        )
+        val aRoom3 = aSpaceRoom(
+            roomId = A_ROOM_ID_3,
+            roomType = RoomType.Room,
+        )
+        val spaceRoomList = FakeSpaceRoomList(
+            initialSpaceRoomsValue = listOf(aRoom1, aRoom2),
+            paginateResult = { Result.success(Unit) },
+        )
+        val presenter = createSpacePresenter(
+            spaceRoomList = spaceRoomList,
+            spaceService = FakeSpaceService(
+                removeChildFromSpaceResult = removeChildFromSpaceResult,
+            ),
+        )
+        presenter.test {
+            awaitItem() // Initial empty state
+            advanceUntilIdle()
+            val stateWithChildren = awaitItem()
+            stateWithChildren.eventSink(SpaceEvents.EnterManageMode)
+            stateWithChildren.eventSink(SpaceEvents.ToggleRoomSelection(A_ROOM_ID))
+            stateWithChildren.eventSink(SpaceEvents.RemoveSelectedRooms)
+            stateWithChildren.eventSink(SpaceEvents.ConfirmRoomRemoval)
+            advanceUntilIdle()
+            val successState = expectMostRecentItem()
+            assertThat(successState.children.map { it.roomId }).doesNotContain(A_ROOM_ID)
+            // Emit new flow update with a new room added (simulating server refresh)
+            spaceRoomList.emitSpaceRooms(listOf(aRoom1, aRoom2, aRoom3))
+            advanceUntilIdle()
+            val afterFlowUpdate = awaitItem()
+            // A_ROOM_ID should still be filtered out even though it's in the new emission
+            assertThat(afterFlowUpdate.children.map { it.roomId }).doesNotContain(A_ROOM_ID)
+            // But the other rooms should be present
+            assertThat(afterFlowUpdate.children.map { it.roomId }).contains(A_ROOM_ID_2)
+            assertThat(afterFlowUpdate.children.map { it.roomId }).contains(A_ROOM_ID_3)
+        }
+    }
+
     private fun TestScope.createSpacePresenter(
         client: MatrixClient = FakeMatrixClient(),
         room: BaseRoom = FakeBaseRoom(),
@@ -365,6 +562,7 @@ class SpacePresenterTest {
         ),
         acceptDeclineInvitePresenter: Presenter<AcceptDeclineInviteState> = Presenter { anAcceptDeclineInviteState() },
         spaceSettingsEnabled: Boolean = false,
+        spaceService: FakeSpaceService = FakeSpaceService(),
     ): SpacePresenter {
         return SpacePresenter(
             client = client,
@@ -379,6 +577,7 @@ class SpacePresenterTest {
                     FeatureFlags.SpaceSettings.key to spaceSettingsEnabled,
                 )
             ),
+            spaceService = spaceService,
         )
     }
 }

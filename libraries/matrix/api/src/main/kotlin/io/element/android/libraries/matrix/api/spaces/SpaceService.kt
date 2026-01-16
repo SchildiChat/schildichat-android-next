@@ -22,4 +22,12 @@ interface SpaceService {
     fun spaceRoomList(id: RoomId): SpaceRoomList
 
     fun getLeaveSpaceHandle(spaceId: RoomId): LeaveSpaceHandle
+
+    /**
+     * Remove a child room from a space.
+     * @param spaceId The space ID from which to remove the child.
+     * @param childId The room ID of the child to remove.
+     * @return A result indicating success or failure.
+     */
+    suspend fun removeChildFromSpace(spaceId: RoomId, childId: RoomId): Result<Unit>
 }

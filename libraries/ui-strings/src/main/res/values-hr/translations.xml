@@ -485,7 +485,6 @@ Jeste li sigurni da želite nastaviti?"</string>
   <string name="screen_space_list_details">"%1$s • %2$s"</string>
   <string name="screen_space_list_parent_space">"Prostor %1$s"</string>
   <string name="screen_space_list_title">"Prostori"</string>
-  <string name="screen_space_menu_action_members">"Prikaži članove"</string>
   <string name="screen_timeline_item_menu_send_failure_changed_identity">"Poruka nije poslana jer je poništen potvrđeni identitet korisnika %1$s."</string>
   <string name="screen_timeline_item_menu_send_failure_unsigned_device">"Poruka nije poslana jer %1$s nije potvrdio sve uređaje."</string>
   <string name="screen_timeline_item_menu_send_failure_you_unsigned_device">"Poruka nije poslana jer niste potvrdili jedan svoj uređaj ili više njih."</string>

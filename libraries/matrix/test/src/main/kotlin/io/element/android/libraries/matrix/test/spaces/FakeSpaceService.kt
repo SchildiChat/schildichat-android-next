@@ -23,6 +23,7 @@ class FakeSpaceService(
     private val joinedSpacesResult: () -> Result<List<SpaceRoom>> = { lambdaError() },
     private val spaceRoomListResult: (RoomId) -> SpaceRoomList = { lambdaError() },
     private val leaveSpaceHandleResult: (RoomId) -> LeaveSpaceHandle = { lambdaError() },
+    private val removeChildFromSpaceResult: (RoomId, RoomId) -> Result<Unit> = { _, _ -> lambdaError() },
     private val joinedParentsResult: (RoomId) -> Result<List<SpaceRoom>> = { lambdaError() },
     private val getSpaceRoomResult: (RoomId) -> SpaceRoom? = { lambdaError() },
 ) : SpaceService {
@@ -52,5 +53,9 @@ class FakeSpaceService(
 
     override fun getLeaveSpaceHandle(spaceId: RoomId): LeaveSpaceHandle {
         return leaveSpaceHandleResult(spaceId)
+    }
+
+    override suspend fun removeChildFromSpace(spaceId: RoomId, childId: RoomId): Result<Unit> = simulateLongTask {
+        removeChildFromSpaceResult(spaceId, childId)
     }
 }

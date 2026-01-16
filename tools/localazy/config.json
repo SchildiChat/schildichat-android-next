@@ -233,7 +233,8 @@
       "name" : ":features:space:impl",
       "includeRegex" : [
         "screen\\.leave_space\\..*",
-        "screen\\.space_settings\\..*"
+        "screen\\.space_settings\\..*",
+        "screen\\.space\\..*"
       ]
     },
     {

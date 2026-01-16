@@ -483,12 +483,6 @@ Möchtest du wirklich fortfahren?"</string>
   <string name="screen_space_list_empty_state_title">"Erstelle einen Space, um Chats zu organisieren"</string>
   <string name="screen_space_list_parent_space">"%1$s Space"</string>
   <string name="screen_space_list_title">"Spaces"</string>
-  <string name="screen_space_menu_action_members">"Mitglieder anzeigen"</string>
-  <string name="screen_space_remove_rooms_confirmation_content">"Das Entfernen eines Chats hat keinen Einfluss auf die Beitrittsregeln. Um die Regeln zu ändern, gehe zu \"Raum Info\" und dann zu \"Datenschutz und Sicherheit\""</string>
-  <plurals name="screen_space_remove_rooms_confirmation_title">
-    <item quantity="one">"Chat aus %1$s entfernen"</item>
-    <item quantity="other">"%1$d chats aus %2$s entfernen"</item>
-  </plurals>
   <string name="screen_timeline_item_menu_send_failure_changed_identity">"Nachricht nicht gesendet, weil sich die verifizierte Identität von %1$s geändert hat."</string>
   <string name="screen_timeline_item_menu_send_failure_unsigned_device">"Die Nachricht wurde nicht gesendet, weil %1$s nicht alle Geräte verifiziert hat."</string>
   <string name="screen_timeline_item_menu_send_failure_you_unsigned_device">"Die Nachricht wurde nicht gesendet, weil du eines oder mehrere deiner Geräte nicht verifiziert hast."</string>

@@ -10,6 +10,7 @@
   <string name="screen_leave_space_subtitle_only_last_admin">"Non verrai rimosso dalle seguenti stanze perché sei l\'unico amministratore:"</string>
   <string name="screen_leave_space_title">"Uscire da %1$s?"</string>
   <string name="screen_leave_space_title_last_admin">"Sei l\'unico amministratore di %1$s"</string>
+  <string name="screen_space_menu_action_members">"Visualizza membri"</string>
   <string name="screen_space_settings_leave_space">"Esci dallo spazio"</string>
   <string name="screen_space_settings_roles_and_permissions">"Ruoli e autorizzazioni"</string>
   <string name="screen_space_settings_security_and_privacy">"Sicurezza e privacy"</string>

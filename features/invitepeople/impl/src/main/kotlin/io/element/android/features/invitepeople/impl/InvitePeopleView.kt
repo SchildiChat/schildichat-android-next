@@ -31,6 +31,8 @@ import io.element.android.libraries.designsystem.components.async.AsyncLoading
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
+import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
+import io.element.android.libraries.designsystem.theme.components.ListSectionHeader
 import io.element.android.libraries.designsystem.theme.components.SearchBar
 import io.element.android.libraries.designsystem.theme.components.SearchBarResultState
 import io.element.android.libraries.designsystem.theme.components.Text
@@ -82,6 +84,10 @@ private fun InvitePeopleContentView(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        fun toggleUser(user: MatrixUser) {
+            state.eventSink(DefaultInvitePeopleEvents.ToggleUser(user))
+        }
+
         InvitePeopleSearchBar(
             modifier = Modifier.fillMaxWidth(),
             query = state.searchQuery,
@@ -97,17 +103,45 @@ private fun InvitePeopleContentView(
                 )
             },
             onTextChange = { state.eventSink(DefaultInvitePeopleEvents.UpdateSearchQuery(it)) },
-            onToggleUser = { state.eventSink(DefaultInvitePeopleEvents.ToggleUser(it)) },
+            onToggleUser = ::toggleUser,
         )
 
         if (!state.isSearchActive) {
-            SelectedUsersRowList(
-                modifier = Modifier.fillMaxWidth(),
-                selectedUsers = state.selectedUsers,
-                autoScroll = true,
-                onUserRemove = { state.eventSink(DefaultInvitePeopleEvents.ToggleUser(it)) },
-                contentPadding = PaddingValues(16.dp),
-            )
+            if (state.selectedUsers.isNotEmpty()) {
+                SelectedUsersRowList(
+                    modifier = Modifier.fillMaxWidth(),
+                    selectedUsers = state.selectedUsers,
+                    autoScroll = true,
+                    onUserRemove = ::toggleUser,
+                    contentPadding = PaddingValues(all = 16.dp),
+                )
+            }
+            if (state.suggestions.isNotEmpty()) {
+                LazyColumn {
+                    item {
+                        ListSectionHeader(
+                            title = stringResource(id = CommonStrings.common_suggestions),
+                            hasDivider = false,
+                        )
+                    }
+                    itemsIndexed(state.suggestions) { index, invitableUser ->
+                        CheckableUserRow(
+                            checked = invitableUser.isSelected,
+                            onCheckedChange = {
+                                state.eventSink(DefaultInvitePeopleEvents.ToggleUser(invitableUser.matrixUser))
+                            },
+                            data = CheckableUserRowData.Resolved(
+                                avatarData = invitableUser.matrixUser.getAvatarData(AvatarSize.UserListItem),
+                                name = invitableUser.matrixUser.getBestName(),
+                                subtext = invitableUser.matrixUser.userId.value,
+                            ),
+                        )
+                        if (index < state.suggestions.lastIndex) {
+                            HorizontalDivider()
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -140,7 +174,7 @@ private fun InvitePeopleSearchBar(
                     selectedUsers = selectedUsers,
                     autoScroll = true,
                     onUserRemove = onToggleUser,
-                    contentPadding = PaddingValues(16.dp),
+                    contentPadding = PaddingValues(all = 16.dp),
                 )
             }
         },

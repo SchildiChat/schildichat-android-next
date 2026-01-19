@@ -19,7 +19,7 @@ import dev.zacsweers.metro.ContributesBinding
 import io.element.android.features.rageshake.api.detection.RageshakeDetectionEvent
 import io.element.android.features.rageshake.api.detection.RageshakeDetectionPresenter
 import io.element.android.features.rageshake.api.detection.RageshakeDetectionState
-import io.element.android.features.rageshake.api.preferences.RageshakePreferencesEvents
+import io.element.android.features.rageshake.api.preferences.RageshakePreferencesEvent
 import io.element.android.features.rageshake.api.preferences.RageshakePreferencesPresenter
 import io.element.android.features.rageshake.api.screenshot.ImageResult
 import io.element.android.features.rageshake.impl.rageshake.RageShake
@@ -51,7 +51,7 @@ class DefaultRageshakeDetectionPresenter(
         fun handleEvent(event: RageshakeDetectionEvent) {
             when (event) {
                 RageshakeDetectionEvent.Disable -> {
-                    preferencesState.eventSink(RageshakePreferencesEvents.SetIsEnabled(false))
+                    preferencesState.eventSink(RageshakePreferencesEvent.SetIsEnabled(false))
                     showDialog.value = false
                 }
                 RageshakeDetectionEvent.StartDetection -> isStarted.value = true

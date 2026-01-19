@@ -12,7 +12,7 @@ import app.cash.molecule.RecompositionMode
 import app.cash.molecule.moleculeFlow
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
-import io.element.android.features.rageshake.api.preferences.RageshakePreferencesEvents
+import io.element.android.features.rageshake.api.preferences.RageshakePreferencesEvent
 import io.element.android.features.rageshake.impl.rageshake.A_SENSITIVITY
 import io.element.android.features.rageshake.impl.rageshake.FakeRageShake
 import io.element.android.features.rageshake.impl.rageshake.FakeRageshakeDataStore
@@ -73,9 +73,9 @@ class RageshakePreferencesPresenterTest {
             skipItems(1)
             val initialState = awaitItem()
             assertThat(initialState.isEnabled).isTrue()
-            initialState.eventSink.invoke(RageshakePreferencesEvents.SetIsEnabled(false))
+            initialState.eventSink.invoke(RageshakePreferencesEvent.SetIsEnabled(false))
             assertThat(awaitItem().isEnabled).isFalse()
-            initialState.eventSink.invoke(RageshakePreferencesEvents.SetIsEnabled(true))
+            initialState.eventSink.invoke(RageshakePreferencesEvent.SetIsEnabled(true))
             assertThat(awaitItem().isEnabled).isTrue()
         }
     }
@@ -93,7 +93,7 @@ class RageshakePreferencesPresenterTest {
             skipItems(1)
             val initialState = awaitItem()
             assertThat(initialState.sensitivity).isEqualTo(A_SENSITIVITY)
-            initialState.eventSink.invoke(RageshakePreferencesEvents.SetSensitivity(A_SENSITIVITY + 1f))
+            initialState.eventSink.invoke(RageshakePreferencesEvent.SetSensitivity(A_SENSITIVITY + 1f))
             assertThat(awaitItem().sensitivity).isEqualTo(A_SENSITIVITY + 1f)
         }
     }

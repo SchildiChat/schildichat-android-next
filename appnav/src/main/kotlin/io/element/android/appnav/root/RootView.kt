@@ -15,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import io.element.android.features.rageshake.api.crash.CrashDetectionEvents
+import io.element.android.features.rageshake.api.crash.CrashDetectionEvent
 import io.element.android.features.rageshake.api.crash.CrashDetectionView
 import io.element.android.features.rageshake.api.detection.RageshakeDetectionEvent
 import io.element.android.features.rageshake.api.detection.RageshakeDetectionView
@@ -39,7 +39,7 @@ fun RootView(
         children()
 
         fun onOpenBugReport() {
-            state.crashDetectionState.eventSink(CrashDetectionEvents.ResetAppHasCrashed)
+            state.crashDetectionState.eventSink(CrashDetectionEvent.ResetAppHasCrashed)
             state.rageshakeDetectionState.eventSink(RageshakeDetectionEvent.Dismiss)
             onOpenBugReport.invoke()
         }

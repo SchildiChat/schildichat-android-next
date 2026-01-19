@@ -12,7 +12,7 @@ import app.cash.molecule.RecompositionMode
 import app.cash.molecule.moleculeFlow
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
-import io.element.android.features.rageshake.api.crash.CrashDetectionEvents
+import io.element.android.features.rageshake.api.crash.CrashDetectionEvent
 import io.element.android.features.rageshake.impl.crash.A_CRASH_DATA
 import io.element.android.features.rageshake.impl.crash.DefaultCrashDetectionPresenter
 import io.element.android.features.rageshake.impl.crash.FakeCrashDataStore
@@ -80,7 +80,7 @@ class CrashDetectionPresenterTest {
             skipItems(1)
             val initialState = awaitItem()
             assertThat(initialState.crashDetected).isTrue()
-            initialState.eventSink.invoke(CrashDetectionEvents.ResetAppHasCrashed)
+            initialState.eventSink.invoke(CrashDetectionEvent.ResetAppHasCrashed)
             assertThat(awaitItem().crashDetected).isFalse()
         }
     }
@@ -96,7 +96,7 @@ class CrashDetectionPresenterTest {
             skipItems(1)
             val initialState = awaitItem()
             assertThat(initialState.crashDetected).isTrue()
-            initialState.eventSink.invoke(CrashDetectionEvents.ResetAllCrashData)
+            initialState.eventSink.invoke(CrashDetectionEvent.ResetAllCrashData)
             assertThat(awaitItem().crashDetected).isFalse()
         }
     }

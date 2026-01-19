@@ -60,4 +60,6 @@ dependencies {
     testImplementation(projects.libraries.permissions.test)
     testImplementation(projects.libraries.sessionStorage.test)
     testImplementation(projects.libraries.wellknown.test)
+    testImplementation(libs.androidx.camera.camera2)
+    testImplementation(libs.androidx.camera.lifecycle)
 }

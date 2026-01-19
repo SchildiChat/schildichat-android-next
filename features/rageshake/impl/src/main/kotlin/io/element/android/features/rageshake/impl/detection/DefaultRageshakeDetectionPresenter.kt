@@ -16,7 +16,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
-import io.element.android.features.rageshake.api.detection.RageshakeDetectionEvents
+import io.element.android.features.rageshake.api.detection.RageshakeDetectionEvent
 import io.element.android.features.rageshake.api.detection.RageshakeDetectionPresenter
 import io.element.android.features.rageshake.api.detection.RageshakeDetectionState
 import io.element.android.features.rageshake.api.preferences.RageshakePreferencesEvents
@@ -48,16 +48,16 @@ class DefaultRageshakeDetectionPresenter(
             mutableStateOf(false)
         }
 
-        fun handleEvent(event: RageshakeDetectionEvents) {
+        fun handleEvent(event: RageshakeDetectionEvent) {
             when (event) {
-                RageshakeDetectionEvents.Disable -> {
+                RageshakeDetectionEvent.Disable -> {
                     preferencesState.eventSink(RageshakePreferencesEvents.SetIsEnabled(false))
                     showDialog.value = false
                 }
-                RageshakeDetectionEvents.StartDetection -> isStarted.value = true
-                RageshakeDetectionEvents.StopDetection -> isStarted.value = false
-                is RageshakeDetectionEvents.ProcessScreenshot -> localCoroutineScope.processScreenshot(takeScreenshot, showDialog, event.imageResult)
-                RageshakeDetectionEvents.Dismiss -> showDialog.value = false
+                RageshakeDetectionEvent.StartDetection -> isStarted.value = true
+                RageshakeDetectionEvent.StopDetection -> isStarted.value = false
+                is RageshakeDetectionEvent.ProcessScreenshot -> localCoroutineScope.processScreenshot(takeScreenshot, showDialog, event.imageResult)
+                RageshakeDetectionEvent.Dismiss -> showDialog.value = false
             }
         }
 

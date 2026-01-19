@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import io.element.android.features.rageshake.api.crash.CrashDetectionEvents
 import io.element.android.features.rageshake.api.crash.CrashDetectionView
-import io.element.android.features.rageshake.api.detection.RageshakeDetectionEvents
+import io.element.android.features.rageshake.api.detection.RageshakeDetectionEvent
 import io.element.android.features.rageshake.api.detection.RageshakeDetectionView
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
@@ -40,7 +40,7 @@ fun RootView(
 
         fun onOpenBugReport() {
             state.crashDetectionState.eventSink(CrashDetectionEvents.ResetAppHasCrashed)
-            state.rageshakeDetectionState.eventSink(RageshakeDetectionEvents.Dismiss)
+            state.rageshakeDetectionState.eventSink(RageshakeDetectionEvent.Dismiss)
             onOpenBugReport.invoke()
         }
 

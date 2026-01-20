@@ -101,6 +101,9 @@ private fun aDefaultInvitePeopleState(
     isSearchActive: Boolean = false,
     showSearchLoader: Boolean = false,
     sendInvitesAction: AsyncAction<Unit> = AsyncAction.Uninitialized,
+    suggestions: List<InvitableUser> = aMatrixUserList()
+        .take(5)
+        .map { user -> anInvitableUser(matrixUser = user, isSelected = user in selectedUsers) },
 ): DefaultInvitePeopleState {
     return DefaultInvitePeopleState(
         room = room,
@@ -111,6 +114,7 @@ private fun aDefaultInvitePeopleState(
         isSearchActive = isSearchActive,
         showSearchLoader = showSearchLoader,
         sendInvitesAction = sendInvitesAction,
+        suggestions = suggestions.toImmutableList(),
         eventSink = {},
     )
 }

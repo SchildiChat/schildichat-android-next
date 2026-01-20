@@ -25,5 +25,6 @@ data class DefaultInvitePeopleState(
     val selectedUsers: ImmutableList<MatrixUser>,
     override val isSearchActive: Boolean,
     override val sendInvitesAction: AsyncAction<Unit>,
+    val suggestions: ImmutableList<InvitableUser>,
     override val eventSink: (InvitePeopleEvents) -> Unit
 ) : InvitePeopleState

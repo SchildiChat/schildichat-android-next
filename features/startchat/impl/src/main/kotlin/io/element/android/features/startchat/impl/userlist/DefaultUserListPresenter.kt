@@ -31,6 +31,10 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
+
+private const val MAX_SUGGESTIONS_COUNT = 5
 
 @AssistedInject
 class DefaultUserListPresenter(
@@ -53,7 +57,10 @@ class DefaultUserListPresenter(
     override fun present(): UserListState {
         var recentDirectRooms by remember { mutableStateOf(emptyList<RecentDirectRoom>()) }
         LaunchedEffect(Unit) {
-            recentDirectRooms = matrixClient.getRecentDirectRooms()
+            recentDirectRooms = matrixClient
+                .getRecentDirectRooms()
+                .take(MAX_SUGGESTIONS_COUNT)
+                .toList()
         }
         var isSearchActive by rememberSaveable { mutableStateOf(false) }
         val selectedUsers by userListDataStore.selectedUsers.collectAsState(emptyList())

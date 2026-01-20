@@ -1,0 +1,71 @@
+/*
+ * Copyright (c) 2025 Element Creations Ltd.
+ * Copyright 2025 New Vector Ltd.
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
+ * Please see LICENSE files in the repository root for full details.
+ */
+
+package io.element.android.features.space.impl.addroom
+
+import dev.zacsweers.metro.Inject
+import io.element.android.libraries.core.coroutine.CoroutineDispatchers
+import io.element.android.libraries.matrix.api.room.CurrentUserMembership
+import io.element.android.libraries.matrix.api.room.isDm
+import io.element.android.libraries.matrix.api.roomlist.RoomList
+import io.element.android.libraries.matrix.api.roomlist.RoomListFilter
+import io.element.android.libraries.matrix.api.roomlist.RoomListService
+import io.element.android.libraries.matrix.api.roomlist.loadAllIncrementally
+import io.element.android.libraries.matrix.ui.model.SelectRoomInfo
+import io.element.android.libraries.matrix.ui.model.toSelectRoomInfo
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+
+private const val PAGE_SIZE = 30
+
+/**
+ * DataSource for rooms that can be added to a space.
+ * Filters out DMs, spaces, and only includes rooms the user has joined.
+ */
+@Inject
+class AddRoomToSpaceSearchDataSource(
+    roomListService: RoomListService,
+    coroutineDispatchers: CoroutineDispatchers,
+) {
+    private val roomList = roomListService.createRoomList(
+        pageSize = PAGE_SIZE,
+        initialFilter = RoomListFilter.all(),
+        source = RoomList.Source.All,
+    )
+
+    val roomInfoList: Flow<ImmutableList<SelectRoomInfo>> = roomList.filteredSummaries
+        .map { roomSummaries ->
+            roomSummaries
+                .filter {
+                    it.info.currentUserMembership == CurrentUserMembership.JOINED &&
+                        !it.info.isDm &&
+                        !it.info.isSpace
+                }
+                .distinctBy { it.roomId }
+                .map { roomSummary -> roomSummary.toSelectRoomInfo() }
+                .toImmutableList()
+        }
+        .flowOn(coroutineDispatchers.computation)
+
+    suspend fun load() = coroutineScope {
+        roomList.loadAllIncrementally(this)
+    }
+
+    suspend fun setSearchQuery(searchQuery: String) {
+        val filter = if (searchQuery.isBlank()) {
+            RoomListFilter.None
+        } else {
+            RoomListFilter.NormalizedMatchRoomName(searchQuery)
+        }
+        roomList.updateFilter(filter)
+    }
+}

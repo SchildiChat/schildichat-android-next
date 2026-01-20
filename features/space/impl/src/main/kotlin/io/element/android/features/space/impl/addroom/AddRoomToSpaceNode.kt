@@ -24,6 +24,7 @@ import io.element.android.libraries.architecture.callback
 class AddRoomToSpaceNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
+    private val presenter: AddRoomToSpacePresenter,
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
         fun onFinish()
@@ -33,6 +34,12 @@ class AddRoomToSpaceNode(
 
     @Composable
     override fun View(modifier: Modifier) {
-
+        val state = presenter.present()
+        AddRoomToSpaceView(
+            state = state,
+            onBackClick = ::navigateUp,
+            onRoomsAdded = callback::onFinish,
+            modifier = modifier
+        )
     }
 }

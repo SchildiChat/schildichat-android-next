@@ -28,11 +28,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import io.element.android.libraries.architecture.AsyncAction
-import io.element.android.libraries.designsystem.components.ProgressDialog
+import io.element.android.libraries.designsystem.components.async.AsyncActionView
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.components.button.BackButton
-import io.element.android.libraries.designsystem.components.dialogs.ErrorDialog
 import io.element.android.libraries.designsystem.components.list.AvatarListItem
 import io.element.android.libraries.designsystem.components.list.ListItemContent
 import io.element.android.libraries.designsystem.preview.ElementPreview
@@ -58,12 +57,12 @@ fun AddRoomToSpaceView(
     modifier: Modifier = Modifier,
 ) {
     fun onRoomRemoved(roomInfo: SelectRoomInfo) {
-        state.eventSink(AddRoomToSpaceEvents.ToggleRoom(roomInfo))
+        state.eventSink(AddRoomToSpaceEvent.ToggleRoom(roomInfo))
     }
 
     fun onBack() {
         if (state.isSearchActive) {
-            state.eventSink(AddRoomToSpaceEvents.CloseSearch)
+            state.eventSink(AddRoomToSpaceEvent.CloseSearch)
         } else {
             onBackClick()
         }
@@ -90,7 +89,7 @@ fun AddRoomToSpaceView(
                     TextButton(
                         text = stringResource(CommonStrings.action_save),
                         enabled = state.canSave,
-                        onClick = { state.eventSink(AddRoomToSpaceEvents.Save) }
+                        onClick = { state.eventSink(AddRoomToSpaceEvent.Save) }
                     )
                 }
             )
@@ -105,9 +104,9 @@ fun AddRoomToSpaceView(
                 modifier = Modifier.fillMaxWidth(),
                 placeHolderTitle = stringResource(CommonStrings.action_search),
                 query = state.searchQuery,
-                onQueryChange = { state.eventSink(AddRoomToSpaceEvents.UpdateSearchQuery(it)) },
+                onQueryChange = { state.eventSink(AddRoomToSpaceEvent.UpdateSearchQuery(it)) },
                 active = state.isSearchActive,
-                onActiveChange = { state.eventSink(AddRoomToSpaceEvents.OnSearchActiveChanged(it)) },
+                onActiveChange = { state.eventSink(AddRoomToSpaceEvent.OnSearchActiveChanged(it)) },
                 resultState = state.searchResults,
                 showBackButton = false,
                 contentPrefix = {
@@ -125,7 +124,7 @@ fun AddRoomToSpaceView(
                         RoomListItem(
                             roomInfo = roomInfo,
                             isSelected = state.selectedRooms.any { it.roomId == roomInfo.roomId },
-                            onToggle = { state.eventSink(AddRoomToSpaceEvents.ToggleRoom(it)) }
+                            onToggle = { state.eventSink(AddRoomToSpaceEvent.ToggleRoom(it)) }
                         )
                     }
                 }
@@ -154,7 +153,7 @@ fun AddRoomToSpaceView(
                             RoomListItem(
                                 roomInfo = roomInfo,
                                 isSelected = state.selectedRooms.any { it.roomId == roomInfo.roomId },
-                                onToggle = { state.eventSink(AddRoomToSpaceEvents.ToggleRoom(it)) }
+                                onToggle = { state.eventSink(AddRoomToSpaceEvent.ToggleRoom(it)) }
                             )
                         }
                     }
@@ -162,19 +161,31 @@ fun AddRoomToSpaceView(
             }
         }
     }
+    SaveActionView(
+        saveAction = state.saveAction,
+        onRetry = { state.eventSink(AddRoomToSpaceEvent.Save)},
+        onDismiss = {state.eventSink(AddRoomToSpaceEvent.ResetSaveAction)}
+    )
+}
 
-    // Loading dialog
-    if (state.saveAction.isLoading()) {
-        ProgressDialog()
-    }
-
-    // Error dialog
-    if (state.saveAction.isFailure()) {
-        ErrorDialog(
-            content = stringResource(CommonStrings.error_unknown),
-            onSubmit = { state.eventSink(AddRoomToSpaceEvents.ClearError) },
-        )
-    }
+@Composable
+private fun SaveActionView(
+    saveAction: AsyncAction<Unit>,
+    onRetry: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AsyncActionView(
+        async = saveAction,
+        onRetry = onRetry,
+        errorTitle = {
+            stringResource(CommonStrings.common_something_went_wrong)
+        },
+        errorMessage = {
+            stringResource(CommonStrings.error_network_or_server_issue)
+        },
+        onSuccess = { onDismiss() },
+        onErrorDismiss = onDismiss,
+    )
 }
 
 @Composable

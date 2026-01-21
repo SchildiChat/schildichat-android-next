@@ -9,6 +9,8 @@
 package io.element.android.features.space.impl.addroom
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
@@ -17,6 +19,7 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.features.space.impl.di.SpaceFlowScope
+import io.element.android.libraries.architecture.appyx.launchMolecule
 import io.element.android.libraries.architecture.callback
 
 @ContributesNode(SpaceFlowScope::class)
@@ -31,10 +34,11 @@ class AddRoomToSpaceNode(
     }
 
     private val callback: Callback = callback()
+    private val stateFlow = launchMolecule { presenter.present() }
 
     @Composable
     override fun View(modifier: Modifier) {
-        val state = presenter.present()
+        val state by stateFlow.collectAsState()
         AddRoomToSpaceView(
             state = state,
             onBackClick = ::navigateUp,

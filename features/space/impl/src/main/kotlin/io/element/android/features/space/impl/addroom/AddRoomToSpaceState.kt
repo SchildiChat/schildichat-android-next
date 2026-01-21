@@ -20,7 +20,7 @@ data class AddRoomToSpaceState(
     val selectedRooms: ImmutableList<SelectRoomInfo>,
     val suggestions: ImmutableList<SelectRoomInfo>,
     val saveAction: AsyncAction<Unit>,
-    val eventSink: (AddRoomToSpaceEvents) -> Unit,
+    val eventSink: (AddRoomToSpaceEvent) -> Unit,
 ) {
     val canSave: Boolean = selectedRooms.isNotEmpty() && !saveAction.isLoading()
 }

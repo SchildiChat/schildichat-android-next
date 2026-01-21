@@ -17,6 +17,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import dev.zacsweers.metro.Inject
 import io.element.android.libraries.architecture.AsyncAction
@@ -38,9 +39,8 @@ import kotlinx.coroutines.launch
 @Inject
 class AddRoomToSpacePresenter(
     private val spaceRoomList: SpaceRoomList,
-    private val dataSource: AddRoomToSpaceSearchDataSource,
     private val spaceService: SpaceService,
-    @SessionCoroutineScope private val sessionCoroutineScope: CoroutineScope,
+    private val dataSourceFactory: AddRoomToSpaceSearchDataSource.Factory,
 ) : Presenter<AddRoomToSpaceState> {
 
     @Composable
@@ -49,6 +49,9 @@ class AddRoomToSpacePresenter(
         var searchQuery by remember { mutableStateOf("") }
         var isSearchActive by remember { mutableStateOf(false) }
         val saveAction = remember { mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized) }
+
+        val coroutineScope = rememberCoroutineScope()
+        val dataSource = remember { dataSourceFactory.create(coroutineScope) }
 
         // Update search query in data source
         LaunchedEffect(searchQuery) {
@@ -94,7 +97,7 @@ class AddRoomToSpacePresenter(
                     searchQuery = ""
                 }
                 AddRoomToSpaceEvent.Save -> {
-                    sessionCoroutineScope.addRoomsToSpace(
+                    coroutineScope.addRoomsToSpace(
                         selectedRooms = selectedRooms,
                         addAction = saveAction,
                     )

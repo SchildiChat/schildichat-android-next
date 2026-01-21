@@ -8,6 +8,9 @@
 
 package io.element.android.features.space.impl.addroom
 
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.Inject
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.matrix.api.MatrixClient
@@ -25,6 +28,7 @@ import io.element.android.libraries.matrix.ui.model.SelectRoomInfo
 import io.element.android.libraries.matrix.ui.model.toSelectRoomInfo
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -40,17 +44,25 @@ private const val MAX_SUGGESTIONS_COUNT = 5
  * DataSource for rooms that can be added to a space.
  * Filters out DMs, spaces, rooms already in the space, and only includes rooms the user has joined.
  */
-@Inject
+@AssistedInject
 class AddRoomToSpaceSearchDataSource(
+    @Assisted coroutineScope: CoroutineScope,
     roomListService: RoomListService,
     spaceRoomList: SpaceRoomList,
     private val matrixClient: MatrixClient,
     private val coroutineDispatchers: CoroutineDispatchers,
 ) {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(coroutineScope: CoroutineScope): AddRoomToSpaceSearchDataSource
+    }
+
     private val roomList = roomListService.createRoomList(
         pageSize = PAGE_SIZE,
         initialFilter = RoomListFilter.all(),
         source = RoomList.Source.All,
+        coroutineScope = coroutineScope,
     )
 
     private val spaceChildrenFlow = spaceRoomList.spaceRoomsFlow.map { spaceChildren ->

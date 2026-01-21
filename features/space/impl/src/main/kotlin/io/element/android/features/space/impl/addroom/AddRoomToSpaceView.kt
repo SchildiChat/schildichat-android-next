@@ -27,6 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import io.element.android.compound.theme.ElementTheme
+import io.element.android.features.space.impl.R
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.designsystem.components.async.AsyncActionView
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
@@ -39,6 +41,7 @@ import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.ListSectionHeader
 import io.element.android.libraries.designsystem.theme.components.Scaffold
 import io.element.android.libraries.designsystem.theme.components.SearchBar
+import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TextButton
 import io.element.android.libraries.designsystem.theme.components.TopAppBar
 import io.element.android.libraries.matrix.ui.components.SelectedRoom
@@ -131,6 +134,13 @@ fun AddRoomToSpaceView(
             }
 
             if (!state.isSearchActive) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = stringResource(R.string.screen_space_add_rooms_room_access_description),
+                    color = ElementTheme.colors.textSecondary,
+                    style = ElementTheme.typography.fontBodySmRegular,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                )
                 if (state.selectedRooms.isNotEmpty()) {
                     SelectedRoomsRow(
                         selectedRooms = state.selectedRooms,
@@ -138,8 +148,6 @@ fun AddRoomToSpaceView(
                         modifier = Modifier.padding(vertical = 16.dp)
                     )
                 }
-
-                Spacer(modifier = Modifier.height(8.dp))
 
                 if (state.suggestions.isNotEmpty()) {
                     LazyColumn {

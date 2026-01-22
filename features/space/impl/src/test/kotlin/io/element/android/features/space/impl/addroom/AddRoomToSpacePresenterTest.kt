@@ -15,17 +15,14 @@ import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.designsystem.theme.components.SearchBarResultState
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
-import io.element.android.libraries.matrix.test.A_ROOM_ID
-import io.element.android.libraries.matrix.test.A_ROOM_ID_2
 import io.element.android.libraries.matrix.test.AN_EXCEPTION
+import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.FakeMatrixClient
-import io.element.android.libraries.matrix.test.room.aRoomInfo
 import io.element.android.libraries.matrix.test.room.aRoomSummary
 import io.element.android.libraries.matrix.test.roomlist.FakeRoomListService
 import io.element.android.libraries.matrix.test.spaces.FakeSpaceRoomList
 import io.element.android.libraries.matrix.test.spaces.FakeSpaceService
 import io.element.android.tests.testutils.lambda.lambdaRecorder
-import io.element.android.tests.testutils.lambda.value
 import io.element.android.tests.testutils.test
 import io.element.android.tests.testutils.testCoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
@@ -38,7 +35,7 @@ import org.junit.Test
 class AddRoomToSpacePresenterTest {
     @Test
     fun `present - initial state has empty selection and no search`() = runTest {
-        val presenter = createPresenter()
+        val presenter = createAddRoomToSpacePresenter()
         presenter.test {
             val state = awaitItem()
             assertThat(state.selectedRooms).isEmpty()
@@ -51,7 +48,7 @@ class AddRoomToSpacePresenterTest {
 
     @Test
     fun `present - ToggleRoom adds room to selection`() = runTest {
-        val presenter = createPresenter()
+        val presenter = createAddRoomToSpacePresenter()
         presenter.test {
             val state = awaitItem()
             val room = aSelectRoomInfoList().first()
@@ -65,7 +62,7 @@ class AddRoomToSpacePresenterTest {
 
     @Test
     fun `present - ToggleRoom removes already selected room`() = runTest {
-        val presenter = createPresenter()
+        val presenter = createAddRoomToSpacePresenter()
         presenter.test {
             val state = awaitItem()
             val room = aSelectRoomInfoList().first()
@@ -83,7 +80,7 @@ class AddRoomToSpacePresenterTest {
 
     @Test
     fun `present - UpdateSearchQuery updates query`() = runTest {
-        val presenter = createPresenter()
+        val presenter = createAddRoomToSpacePresenter()
         presenter.test {
             val state = awaitItem()
             state.eventSink(AddRoomToSpaceEvent.UpdateSearchQuery("test"))
@@ -94,7 +91,7 @@ class AddRoomToSpacePresenterTest {
 
     @Test
     fun `present - OnSearchActiveChanged activates search`() = runTest {
-        val presenter = createPresenter()
+        val presenter = createAddRoomToSpacePresenter()
         presenter.test {
             val state = awaitItem()
             state.eventSink(AddRoomToSpaceEvent.OnSearchActiveChanged(true))
@@ -105,7 +102,7 @@ class AddRoomToSpacePresenterTest {
 
     @Test
     fun `present - OnSearchActiveChanged deactivates search and clears query`() = runTest {
-        val presenter = createPresenter()
+        val presenter = createAddRoomToSpacePresenter()
         presenter.test {
             val state = awaitItem()
             // Activate search and set query
@@ -124,7 +121,7 @@ class AddRoomToSpacePresenterTest {
 
     @Test
     fun `present - CloseSearch deactivates and clears query`() = runTest {
-        val presenter = createPresenter()
+        val presenter = createAddRoomToSpacePresenter()
         presenter.test {
             val state = awaitItem()
             // Activate search and set query
@@ -144,7 +141,7 @@ class AddRoomToSpacePresenterTest {
     @Test
     fun `present - searchResults shows Results when rooms available`() = runTest {
         val roomListService = FakeRoomListService()
-        val presenter = createPresenter(roomListService = roomListService)
+        val presenter = createAddRoomToSpacePresenter(roomListService = roomListService)
         presenter.test {
             awaitItem() // Initial state
             // Post rooms to the service
@@ -167,7 +164,7 @@ class AddRoomToSpacePresenterTest {
 
     @Test
     fun `present - searchResults shows NoResultsFound when search active with query but no results`() = runTest {
-        val presenter = createPresenter()
+        val presenter = createAddRoomToSpacePresenter()
         presenter.test {
             val state = awaitItem()
             state.eventSink(AddRoomToSpaceEvent.OnSearchActiveChanged(true))
@@ -189,7 +186,7 @@ class AddRoomToSpacePresenterTest {
         val spaceService = FakeSpaceService(
             addChildToSpaceResult = addChildToSpaceResult,
         )
-        val presenter = createPresenter(spaceService = spaceService)
+        val presenter = createAddRoomToSpacePresenter(spaceService = spaceService)
         presenter.test {
             val state = awaitItem()
             // Select two rooms
@@ -215,7 +212,7 @@ class AddRoomToSpacePresenterTest {
         val spaceService = FakeSpaceService(
             addChildToSpaceResult = { _, _ -> Result.success(Unit) },
         )
-        val presenter = createPresenter(spaceService = spaceService)
+        val presenter = createAddRoomToSpacePresenter(spaceService = spaceService)
         presenter.test {
             val state = awaitItem()
             val room = aSelectRoomInfoList().first()
@@ -237,7 +234,7 @@ class AddRoomToSpacePresenterTest {
         val spaceService = FakeSpaceService(
             addChildToSpaceResult = { _, _ -> Result.failure(AN_EXCEPTION) },
         )
-        val presenter = createPresenter(spaceService = spaceService)
+        val presenter = createAddRoomToSpacePresenter(spaceService = spaceService)
         presenter.test {
             val state = awaitItem()
             val room = aSelectRoomInfoList().first()
@@ -259,7 +256,7 @@ class AddRoomToSpacePresenterTest {
         val spaceService = FakeSpaceService(
             addChildToSpaceResult = { _, _ -> Result.success(Unit) },
         )
-        val presenter = createPresenter(spaceService = spaceService)
+        val presenter = createAddRoomToSpacePresenter(spaceService = spaceService)
         presenter.test {
             val state = awaitItem()
             val room = aSelectRoomInfoList().first()
@@ -279,7 +276,7 @@ class AddRoomToSpacePresenterTest {
 
     @Test
     fun `canSave is false when no rooms selected`() = runTest {
-        val presenter = createPresenter()
+        val presenter = createAddRoomToSpacePresenter()
         presenter.test {
             val state = awaitItem()
             assertThat(state.selectedRooms).isEmpty()
@@ -292,7 +289,7 @@ class AddRoomToSpacePresenterTest {
         val spaceService = FakeSpaceService(
             addChildToSpaceResult = { _, _ -> Result.success(Unit) },
         )
-        val presenter = createPresenter(spaceService = spaceService)
+        val presenter = createAddRoomToSpacePresenter(spaceService = spaceService)
         presenter.test {
             val state = awaitItem()
             val room = aSelectRoomInfoList().first()
@@ -306,7 +303,7 @@ class AddRoomToSpacePresenterTest {
         }
     }
 
-    private fun TestScope.createPresenter(
+    private fun TestScope.createAddRoomToSpacePresenter(
         spaceRoomList: FakeSpaceRoomList = FakeSpaceRoomList(
             paginateResult = { Result.success(Unit) },
         ),

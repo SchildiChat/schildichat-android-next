@@ -11,7 +11,6 @@ package io.element.android.features.space.impl.addroom
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
-import dev.zacsweers.metro.Inject
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
@@ -52,7 +51,6 @@ class AddRoomToSpaceSearchDataSource(
     private val matrixClient: MatrixClient,
     private val coroutineDispatchers: CoroutineDispatchers,
 ) {
-
     @AssistedFactory
     interface Factory {
         fun create(coroutineScope: CoroutineScope): AddRoomToSpaceSearchDataSource

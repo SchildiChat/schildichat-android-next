@@ -24,13 +24,12 @@ import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.architecture.runUpdatingState
 import io.element.android.libraries.designsystem.theme.components.SearchBarResultState
-import io.element.android.libraries.di.annotations.SessionCoroutineScope
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
 import io.element.android.libraries.matrix.api.spaces.SpaceService
 import io.element.android.libraries.matrix.ui.model.SelectRoomInfo
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -42,10 +41,9 @@ class AddRoomToSpacePresenter(
     private val spaceService: SpaceService,
     private val dataSourceFactory: AddRoomToSpaceSearchDataSource.Factory,
 ) : Presenter<AddRoomToSpaceState> {
-
     @Composable
     override fun present(): AddRoomToSpaceState {
-        var selectedRooms by remember { mutableStateOf(persistentListOf<SelectRoomInfo>()) }
+        var selectedRooms: ImmutableList<SelectRoomInfo> by remember { mutableStateOf(persistentListOf()) }
         var searchQuery by remember { mutableStateOf("") }
         var isSearchActive by remember { mutableStateOf(false) }
         val saveAction = remember { mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized) }
@@ -78,9 +76,9 @@ class AddRoomToSpacePresenter(
             when (event) {
                 is AddRoomToSpaceEvent.ToggleRoom -> {
                     selectedRooms = if (selectedRooms.any { it.roomId == event.room.roomId }) {
-                        selectedRooms.filterNot { it.roomId == event.room.roomId }.toPersistentList()
+                        selectedRooms.filterNot { it.roomId == event.room.roomId }.toImmutableList()
                     } else {
-                        (selectedRooms + event.room).toPersistentList()
+                        (selectedRooms + event.room).toImmutableList()
                     }
                 }
                 is AddRoomToSpaceEvent.UpdateSearchQuery -> {

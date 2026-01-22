@@ -43,4 +43,3 @@ fun RoomInfo.toSelectRoomInfo() = SelectRoomInfo(
     canonicalAlias = canonicalAlias,
     isTombstoned = successorRoom != null,
 )
-

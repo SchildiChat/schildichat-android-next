@@ -171,8 +171,8 @@ fun AddRoomToSpaceView(
     }
     SaveActionView(
         saveAction = state.saveAction,
-        onRetry = { state.eventSink(AddRoomToSpaceEvent.Save)},
-        onDismiss = {state.eventSink(AddRoomToSpaceEvent.ResetSaveAction)}
+        onRetry = { state.eventSink(AddRoomToSpaceEvent.Save) },
+        onDismiss = { state.eventSink(AddRoomToSpaceEvent.ResetSaveAction) }
     )
 }
 

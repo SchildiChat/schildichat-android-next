@@ -21,6 +21,7 @@ import io.element.android.tests.testutils.lambda.lambdaRecorder
 import io.element.android.tests.testutils.test
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import java.util.Optional
 
 class JoinBaseRoomByAddressPresenterTest {
     @Test
@@ -53,6 +54,107 @@ class JoinBaseRoomByAddressPresenterTest {
             // The address should be marked as invalid only after the user tries to continue
             with(awaitItem()) {
                 assertThat(address).isEqualTo("invalid_address")
+                assertThat(addressState).isEqualTo(RoomAddressState.Invalid)
+            }
+        }
+    }
+
+    @Test
+    fun `present - invalid address - but room exists`() = runTest {
+        val presenter = createJoinRoomByAddressPresenter(
+            roomAliasHelper = FakeRoomAliasHelper(
+                isRoomAliasValidLambda = {
+                    // The SDK still return false, but we have a room for this alias
+                    false
+                }
+            )
+        )
+        presenter.test {
+            with(awaitItem()) {
+                eventSink(JoinRoomByAddressEvents.UpdateAddress("#ö:invalid.org"))
+            }
+            with(awaitItem()) {
+                assertThat(address).isEqualTo("#ö:invalid.org")
+                assertThat(addressState).isEqualTo(RoomAddressState.Unknown)
+                eventSink(JoinRoomByAddressEvents.Continue)
+            }
+            // The address should not be marked as valid
+            with(awaitItem()) {
+                assertThat(address).isEqualTo("#ö:invalid.org")
+                assertThat(addressState).isEqualTo(RoomAddressState.Resolving)
+            }
+            with(awaitItem()) {
+                assertThat(address).isEqualTo("#ö:invalid.org")
+                assertThat(addressState).isInstanceOf(RoomAddressState.RoomFound::class.java)
+            }
+        }
+    }
+
+    @Test
+    fun `present - invalid address - room does not exist`() = runTest {
+        val presenter = createJoinRoomByAddressPresenter(
+            roomAliasHelper = FakeRoomAliasHelper(
+                isRoomAliasValidLambda = {
+                    // The SDK return false
+                    false
+                }
+            ),
+            matrixClient = FakeMatrixClient(
+                resolveRoomAliasResult = {
+                    Result.success(Optional.empty())
+                }
+            )
+        )
+        presenter.test {
+            with(awaitItem()) {
+                eventSink(JoinRoomByAddressEvents.UpdateAddress("#ö:invalid.org"))
+            }
+            with(awaitItem()) {
+                assertThat(address).isEqualTo("#ö:invalid.org")
+                assertThat(addressState).isEqualTo(RoomAddressState.Unknown)
+                eventSink(JoinRoomByAddressEvents.Continue)
+            }
+            // The address should not be marked as valid
+            with(awaitItem()) {
+                assertThat(address).isEqualTo("#ö:invalid.org")
+                assertThat(addressState).isEqualTo(RoomAddressState.Resolving)
+            }
+            with(awaitItem()) {
+                assertThat(address).isEqualTo("#ö:invalid.org")
+                assertThat(addressState).isEqualTo(RoomAddressState.Invalid)
+            }
+        }
+    }
+
+    @Test
+    fun `present - invalid address - failure to resolve the room`() = runTest {
+        val presenter = createJoinRoomByAddressPresenter(
+            roomAliasHelper = FakeRoomAliasHelper(
+                isRoomAliasValidLambda = {
+                    // The SDK still return false, but we have a room for this alias
+                    false
+                }
+            ),
+            matrixClient = FakeMatrixClient(
+                resolveRoomAliasResult = { Result.failure(RuntimeException()) }
+            )
+        )
+        presenter.test {
+            with(awaitItem()) {
+                eventSink(JoinRoomByAddressEvents.UpdateAddress("#ö:invalid.org"))
+            }
+            with(awaitItem()) {
+                assertThat(address).isEqualTo("#ö:invalid.org")
+                assertThat(addressState).isEqualTo(RoomAddressState.Unknown)
+                eventSink(JoinRoomByAddressEvents.Continue)
+            }
+            // The address should not be marked as valid
+            with(awaitItem()) {
+                assertThat(address).isEqualTo("#ö:invalid.org")
+                assertThat(addressState).isEqualTo(RoomAddressState.Resolving)
+            }
+            with(awaitItem()) {
+                assertThat(address).isEqualTo("#ö:invalid.org")
                 assertThat(addressState).isEqualTo(RoomAddressState.Invalid)
             }
         }

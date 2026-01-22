@@ -113,7 +113,7 @@ class JoinRoomByAddressPresenter(
             // debounce the room address resolution
             delay(300)
             val roomAlias = tryOrNull { RoomAlias(fullAddress) }
-            if (roomAlias != null && roomAliasHelper.isRoomAliasValid(roomAlias)) {
+            if (roomAlias != null) {
                 onChange(RoomAddressState.Resolving)
                 onChange(client.resolveRoomAddress(roomAlias))
             } else {
@@ -130,11 +130,21 @@ class JoinRoomByAddressPresenter(
                         if (resolved.isPresent) {
                             RoomAddressState.RoomFound(resolved.get())
                         } else {
-                            RoomAddressState.RoomNotFound
+                            roomAlias.toInvalidOrNotFound()
                         }
                     },
-                    onFailure = { _ -> RoomAddressState.RoomNotFound }
+                    onFailure = { _ ->
+                        roomAlias.toInvalidOrNotFound()
+                    }
                 )
         } ?: RoomAddressState.RoomNotFound
+    }
+
+    private fun RoomAlias.toInvalidOrNotFound(): RoomAddressState {
+        return if (roomAliasHelper.isRoomAliasValid(this)) {
+            RoomAddressState.RoomNotFound
+        } else {
+            RoomAddressState.Invalid
+        }
     }
 }

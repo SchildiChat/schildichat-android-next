@@ -44,12 +44,12 @@ class JoinBaseRoomByAddressPresenterTest {
         )
         presenter.test {
             with(awaitItem()) {
-                eventSink(JoinRoomByAddressEvents.UpdateAddress("invalid_address"))
+                eventSink(JoinRoomByAddressEvent.UpdateAddress("invalid_address"))
             }
             with(awaitItem()) {
                 assertThat(address).isEqualTo("invalid_address")
                 assertThat(addressState).isEqualTo(RoomAddressState.Unknown)
-                eventSink(JoinRoomByAddressEvents.Continue)
+                eventSink(JoinRoomByAddressEvent.Continue)
             }
             // The address should be marked as invalid only after the user tries to continue
             with(awaitItem()) {
@@ -71,12 +71,12 @@ class JoinBaseRoomByAddressPresenterTest {
         )
         presenter.test {
             with(awaitItem()) {
-                eventSink(JoinRoomByAddressEvents.UpdateAddress("#ö:invalid.org"))
+                eventSink(JoinRoomByAddressEvent.UpdateAddress("#ö:invalid.org"))
             }
             with(awaitItem()) {
                 assertThat(address).isEqualTo("#ö:invalid.org")
                 assertThat(addressState).isEqualTo(RoomAddressState.Unknown)
-                eventSink(JoinRoomByAddressEvents.Continue)
+                eventSink(JoinRoomByAddressEvent.Continue)
             }
             // The address should not be marked as valid
             with(awaitItem()) {
@@ -107,12 +107,12 @@ class JoinBaseRoomByAddressPresenterTest {
         )
         presenter.test {
             with(awaitItem()) {
-                eventSink(JoinRoomByAddressEvents.UpdateAddress("#ö:invalid.org"))
+                eventSink(JoinRoomByAddressEvent.UpdateAddress("#ö:invalid.org"))
             }
             with(awaitItem()) {
                 assertThat(address).isEqualTo("#ö:invalid.org")
                 assertThat(addressState).isEqualTo(RoomAddressState.Unknown)
-                eventSink(JoinRoomByAddressEvents.Continue)
+                eventSink(JoinRoomByAddressEvent.Continue)
             }
             // The address should not be marked as valid
             with(awaitItem()) {
@@ -141,12 +141,12 @@ class JoinBaseRoomByAddressPresenterTest {
         )
         presenter.test {
             with(awaitItem()) {
-                eventSink(JoinRoomByAddressEvents.UpdateAddress("#ö:invalid.org"))
+                eventSink(JoinRoomByAddressEvent.UpdateAddress("#ö:invalid.org"))
             }
             with(awaitItem()) {
                 assertThat(address).isEqualTo("#ö:invalid.org")
                 assertThat(addressState).isEqualTo(RoomAddressState.Unknown)
-                eventSink(JoinRoomByAddressEvents.Continue)
+                eventSink(JoinRoomByAddressEvent.Continue)
             }
             // The address should not be marked as valid
             with(awaitItem()) {
@@ -171,7 +171,7 @@ class JoinBaseRoomByAddressPresenterTest {
         val presenter = createJoinRoomByAddressPresenter(navigator = navigator)
         presenter.test {
             with(awaitItem()) {
-                eventSink(JoinRoomByAddressEvents.UpdateAddress("#room_found:matrix.org"))
+                eventSink(JoinRoomByAddressEvent.UpdateAddress("#room_found:matrix.org"))
             }
             with(awaitItem()) {
                 assertThat(address).isEqualTo("#room_found:matrix.org")
@@ -180,7 +180,7 @@ class JoinBaseRoomByAddressPresenterTest {
             with(awaitItem()) {
                 assertThat(address).isEqualTo("#room_found:matrix.org")
                 assertThat(addressState).isInstanceOf(RoomAddressState.RoomFound::class.java)
-                eventSink(JoinRoomByAddressEvents.Continue)
+                eventSink(JoinRoomByAddressEvent.Continue)
             }
             assert(openRoomLambda).isCalledOnce()
             assert(dismissJoinRoomByAddressLambda).isCalledOnce()
@@ -196,12 +196,12 @@ class JoinBaseRoomByAddressPresenterTest {
         )
         presenter.test {
             with(awaitItem()) {
-                eventSink(JoinRoomByAddressEvents.UpdateAddress("#room_not_found:matrix.org"))
+                eventSink(JoinRoomByAddressEvent.UpdateAddress("#room_not_found:matrix.org"))
             }
             with(awaitItem()) {
                 assertThat(address).isEqualTo("#room_not_found:matrix.org")
                 assertThat(addressState).isEqualTo(RoomAddressState.Unknown)
-                eventSink(JoinRoomByAddressEvents.Continue)
+                eventSink(JoinRoomByAddressEvent.Continue)
             }
             with(awaitItem()) {
                 assertThat(address).isEqualTo("#room_not_found:matrix.org")
@@ -223,7 +223,7 @@ class JoinBaseRoomByAddressPresenterTest {
         val presenter = createJoinRoomByAddressPresenter(navigator = navigator)
         presenter.test {
             with(awaitItem()) {
-                eventSink(JoinRoomByAddressEvents.Dismiss)
+                eventSink(JoinRoomByAddressEvent.Dismiss)
             }
             assert(dismissJoinRoomByAddressLambda).isCalledOnce()
         }

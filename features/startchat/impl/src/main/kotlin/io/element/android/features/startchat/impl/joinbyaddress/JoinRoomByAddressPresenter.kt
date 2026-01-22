@@ -49,16 +49,16 @@ class JoinRoomByAddressPresenter(
         var internalAddressState by remember { mutableStateOf<RoomAddressState>(RoomAddressState.Unknown) }
         var validateAddress: Boolean by remember { mutableStateOf(false) }
 
-        fun handleEvent(event: JoinRoomByAddressEvents) {
+        fun handleEvent(event: JoinRoomByAddressEvent) {
             when (event) {
-                JoinRoomByAddressEvents.Continue -> {
+                JoinRoomByAddressEvent.Continue -> {
                     when (val currentState = internalAddressState) {
                         is RoomAddressState.RoomFound -> onRoomFound(currentState)
                         else -> validateAddress = true
                     }
                 }
-                JoinRoomByAddressEvents.Dismiss -> navigator.onDismissJoinRoomByAddress()
-                is JoinRoomByAddressEvents.UpdateAddress -> {
+                JoinRoomByAddressEvent.Dismiss -> navigator.onDismissJoinRoomByAddress()
+                is JoinRoomByAddressEvent.UpdateAddress -> {
                     validateAddress = false
                     address = event.address.trim()
                 }

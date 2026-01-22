@@ -26,6 +26,7 @@ class FakeSpaceRoomList(
     initialSpaceRoomsValue: List<SpaceRoom> = emptyList(),
     initialSpaceRoomList: SpaceRoomList.PaginationStatus = SpaceRoomList.PaginationStatus.Loading,
     private val paginateResult: () -> Result<Unit> = { lambdaError() },
+    private val resetResult: () -> Result<Unit> = { lambdaError() },
 ) : SpaceRoomList {
     private val currentSpaceMutableStateFlow: MutableStateFlow<Optional<SpaceRoom>> = MutableStateFlow(Optional.ofNullable(initialSpaceFlowValue))
     override val currentSpaceFlow: StateFlow<Optional<SpaceRoom>> = currentSpaceMutableStateFlow.asStateFlow()
@@ -50,6 +51,10 @@ class FakeSpaceRoomList(
 
     override suspend fun paginate(): Result<Unit> = simulateLongTask {
         paginateResult()
+    }
+
+    override suspend fun reset(): Result<Unit> = simulateLongTask {
+        resetResult()
     }
 
     override fun destroy() {

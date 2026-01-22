@@ -26,6 +26,7 @@ interface SpaceRoomList {
     val spaceRoomsFlow: Flow<List<SpaceRoom>>
     val paginationStatusFlow: StateFlow<PaginationStatus>
     suspend fun paginate(): Result<Unit>
+    suspend fun reset(): Result<Unit>
 
     fun destroy()
 }

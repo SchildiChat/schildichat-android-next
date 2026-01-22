@@ -81,6 +81,12 @@ class RustSpaceRoomList(
         }
     }
 
+    override suspend fun reset(): Result<Unit> {
+        return runCatchingExceptions {
+            innerCompletable.await().reset()
+        }
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun destroy() {
         Timber.d("Destroying SpaceRoomList $roomId")

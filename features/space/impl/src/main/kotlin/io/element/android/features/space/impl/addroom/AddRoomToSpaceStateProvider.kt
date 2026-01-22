@@ -60,13 +60,14 @@ internal class AddRoomToSpaceStateProvider : PreviewParameterProvider<AddRoomToS
         )
 }
 
-private fun anAddRoomToSpaceState(
+internal fun anAddRoomToSpaceState(
     searchQuery: String = "",
     searchResults: SearchBarResultState<ImmutableList<SelectRoomInfo>> = SearchBarResultState.Initial(),
     selectedRooms: ImmutableList<SelectRoomInfo> = persistentListOf(),
     isSearchActive: Boolean = false,
     saveAction: AsyncAction<Unit> = AsyncAction.Uninitialized,
     suggestions: ImmutableList<SelectRoomInfo> = persistentListOf(),
+    eventSink: (AddRoomToSpaceEvent) -> Unit = {},
 ): AddRoomToSpaceState {
     return AddRoomToSpaceState(
         searchQuery = searchQuery,
@@ -75,11 +76,11 @@ private fun anAddRoomToSpaceState(
         isSearchActive = isSearchActive,
         saveAction = saveAction,
         suggestions = suggestions,
-        eventSink = {},
+        eventSink = eventSink,
     )
 }
 
-private fun aSelectRoomInfoList(): ImmutableList<SelectRoomInfo> = listOf(
+internal fun aSelectRoomInfoList(): ImmutableList<SelectRoomInfo> = listOf(
     SelectRoomInfo(
         roomId = RoomId("!room1:server.org"),
         name = "General",

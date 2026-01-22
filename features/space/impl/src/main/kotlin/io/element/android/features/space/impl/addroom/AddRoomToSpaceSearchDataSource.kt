@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2025 Element Creations Ltd.
- * Copyright 2025 New Vector Ltd.
+ * Copyright (c) 2026 Element Creations Ltd.
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
@@ -17,7 +16,7 @@ import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
 import io.element.android.libraries.matrix.api.room.RoomInfo
 import io.element.android.libraries.matrix.api.room.isDm
-import io.element.android.libraries.matrix.api.room.recent.getRecentRooms
+import io.element.android.libraries.matrix.api.room.recent.getRecentlyVisitedRoomInfoFlow
 import io.element.android.libraries.matrix.api.roomlist.RoomList
 import io.element.android.libraries.matrix.api.roomlist.RoomListFilter
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
@@ -86,7 +85,7 @@ class AddRoomToSpaceSearchDataSource(
 
     val suggestions: Flow<ImmutableList<SelectRoomInfo>> = spaceChildrenFlow.map { childIds ->
         matrixClient
-            .getRecentRooms { filterRoomPredicate(it, childIds) }
+            .getRecentlyVisitedRoomInfoFlow { filterRoomPredicate(it, childIds) }
             .take(MAX_SUGGESTIONS_COUNT)
             .map { it.toSelectRoomInfo() }
             .toList()

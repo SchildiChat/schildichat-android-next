@@ -13,11 +13,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 /**
- * Returns a [Flow] of [RoomInfo] from recently visited DM rooms.
+ * Returns a [Flow] of [RoomInfo] from recently visited rooms.
  * The flow emits items lazily, allowing callers to filter and take only what they need.
  * Use [kotlinx.coroutines.flow.take] to limit results and stop iteration early.
+ *
  */
-fun MatrixClient.getRecentRooms(
+fun MatrixClient.getRecentlyVisitedRoomInfoFlow(
     predicate: (RoomInfo) -> Boolean,
 ): Flow<RoomInfo> = flow {
     val recentlyVisitedRooms = getRecentlyVisitedRooms().getOrDefault(emptyList())

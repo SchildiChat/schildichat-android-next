@@ -9,9 +9,15 @@
 package io.element.android.libraries.matrix.api.spaces
 
 import io.element.android.libraries.matrix.api.core.RoomId
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.withTimeoutOrNull
 import java.util.Optional
+import kotlin.time.Duration
 
 interface SpaceRoomList {
     sealed interface PaginationStatus {
@@ -29,4 +35,28 @@ interface SpaceRoomList {
     suspend fun reset(): Result<Unit>
 
     fun destroy()
+}
+
+fun SpaceRoomList.loadAllIncrementally(coroutineScope: CoroutineScope) {
+    paginationStatusFlow
+        .onEach { paginationStatus ->
+            when (paginationStatus) {
+                is SpaceRoomList.PaginationStatus.Idle -> {
+                    if (paginationStatus.hasMoreToLoad) {
+                        paginate()
+                    }
+                }
+                SpaceRoomList.PaginationStatus.Loading -> Unit
+            }
+        }
+        .launchIn(coroutineScope)
+}
+
+suspend fun SpaceRoomList.resetAndWaitForFullReload(timeout: Duration) {
+    reset()
+    withTimeoutOrNull(timeout) {
+        paginationStatusFlow.first { status ->
+            status is SpaceRoomList.PaginationStatus.Idle && !status.hasMoreToLoad
+        }
+    }
 }

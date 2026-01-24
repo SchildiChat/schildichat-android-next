@@ -300,6 +300,12 @@ class JoinedRustRoom(
         }
     }
 
+    override suspend fun setAvatarUrl(url: String): Result<Unit> = withContext(roomDispatcher) { // SC
+        runCatchingExceptions {
+            innerRoom.setAvatarUrl(url, null)
+        }
+    }
+
     override suspend fun removeAvatar(): Result<Unit> = withContext(roomDispatcher) {
         runCatchingExceptions {
             innerRoom.removeAvatar()

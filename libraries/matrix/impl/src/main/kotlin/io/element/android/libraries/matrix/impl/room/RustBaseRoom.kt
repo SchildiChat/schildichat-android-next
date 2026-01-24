@@ -255,6 +255,37 @@ class RustBaseRoom(
             innerRoom.forceSendSingleReceipt(receiptType.toRustReceiptType(), eventId.value)
         }
     }
+    override suspend fun sendRaw(eventType: String, content: String) = withContext(roomDispatcher) {
+        runCatchingExceptions {
+            innerRoom.sendRaw(eventType, content)
+        }
+    }
+    override suspend fun sendRawState(eventType: String, stateKey: String, content: String) = withContext(roomDispatcher) {
+        runCatchingExceptions {
+            innerRoom.sendStateEventRaw(eventType, stateKey, content)
+        }
+    }
+    override suspend fun getRawState(eventType: String, stateKey: String) = withContext(roomDispatcher) {
+        runCatchingExceptions {
+            innerRoom.getStateEventRaw(eventType, stateKey)
+        }
+    }
+    override suspend fun getRawState(eventType: String) = withContext(roomDispatcher) {
+        runCatchingExceptions {
+            innerRoom.getStateEventsRaw(eventType)
+        }
+    }
+    override suspend fun fetchFullRoomState(): Result<List<String>> = withContext(roomDispatcher) {
+        runCatchingExceptions {
+            innerRoom.fetchFullRoomState()
+        }
+    }
+
+    override suspend fun setRoomUserDisplayName(displayName: String?): Result<Unit> = withContext(roomDispatcher) {
+        runCatchingExceptions {
+            innerRoom.setUserDisplayname(displayName)
+        }
+    }
     // SC end
 
     override suspend fun saveComposerDraft(composerDraft: ComposerDraft, threadRoot: ThreadId?): Result<Unit> = withContext(roomDispatcher) {

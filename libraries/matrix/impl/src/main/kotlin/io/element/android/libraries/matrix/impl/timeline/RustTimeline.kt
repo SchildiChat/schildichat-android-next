@@ -41,7 +41,9 @@ import io.element.android.libraries.matrix.impl.timeline.postprocessor.LoadingIn
 import io.element.android.libraries.matrix.impl.timeline.postprocessor.RoomBeginningPostProcessor
 import io.element.android.libraries.matrix.impl.timeline.postprocessor.TypingNotificationPostProcessor
 import io.element.android.libraries.matrix.impl.timeline.reply.InReplyToMapper
+import io.element.android.libraries.matrix.impl.util.EmoteEventContent
 import io.element.android.libraries.matrix.impl.util.MessageEventContent
+import io.element.android.libraries.matrix.impl.util.NoticeEventContent
 import io.element.android.services.toolbox.api.systemclock.SystemClock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -65,6 +67,7 @@ import kotlinx.coroutines.withContext
 import org.matrix.rustcomponents.sdk.EditedContent
 import org.matrix.rustcomponents.sdk.FormattedBody
 import org.matrix.rustcomponents.sdk.MessageFormat
+import org.matrix.rustcomponents.sdk.NoticeMessageContent
 import org.matrix.rustcomponents.sdk.PollData
 import org.matrix.rustcomponents.sdk.SendAttachmentJoinHandle
 import org.matrix.rustcomponents.sdk.UploadParameters
@@ -275,6 +278,40 @@ class RustTimeline(
         MessageEventContent.from(body, htmlBody, intentionalMentions).use { content ->
             runCatchingExceptions<Unit> {
                 inner.send(content)
+            }
+        }
+    }
+
+    override suspend fun sendNotice( // SC
+        body: String,
+        htmlBody: String?,
+        intentionalMentions: List<IntentionalMention>,
+        inReplyToEventId: EventId?
+    ): Result<Unit> = withContext(dispatcher) {
+        NoticeEventContent.from(body, htmlBody, intentionalMentions).use { content ->
+            runCatchingExceptions<Unit> {
+                if (inReplyToEventId == null) {
+                    inner.send(content)
+                } else {
+                    inner.sendReply(content, inReplyToEventId.value)
+                }
+            }
+        }
+    }
+
+    override suspend fun sendEmote( // SC
+        body: String,
+        htmlBody: String?,
+        intentionalMentions: List<IntentionalMention>,
+        inReplyToEventId: EventId?
+    ): Result<Unit> = withContext(dispatcher) {
+        EmoteEventContent.from(body, htmlBody, intentionalMentions).use { content ->
+            runCatchingExceptions<Unit> {
+                if (inReplyToEventId == null) {
+                    inner.send(content)
+                } else {
+                    inner.sendReply(content, inReplyToEventId.value)
+                }
             }
         }
     }

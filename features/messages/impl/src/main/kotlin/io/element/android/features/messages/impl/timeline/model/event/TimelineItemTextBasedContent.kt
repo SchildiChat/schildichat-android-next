@@ -9,6 +9,7 @@
 package io.element.android.features.messages.impl.timeline.model.event
 
 import androidx.compose.runtime.Immutable
+import com.beeper.android.messageformat.MatrixBodyParseResult
 import org.jsoup.nodes.Document
 
 /**
@@ -27,7 +28,9 @@ sealed interface TimelineItemTextBasedContent :
     /** The formatted body of the event, already parsed and with the DOM translated to Android spans.
      * This can also includes mention spans from permalink parsing */
     val formattedBody: CharSequence
-    val formattedCollapsedBody: CharSequence?
+
+    // SC: formatted body already parsed but for compose-native AnnotatedString
+    val formattedBodySc: MatrixBodyParseResult
 
     /** The plain text version of the event body. This is the Markdown version without actual Markdown formatting. */
     val plainText: String

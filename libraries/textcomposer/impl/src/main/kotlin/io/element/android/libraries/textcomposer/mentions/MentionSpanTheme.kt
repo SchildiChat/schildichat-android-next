@@ -77,10 +77,10 @@ class MentionSpanTheme(val currentUserId: UserId) {
     @Suppress("ComposableNaming")
     @Composable
     fun updateStyles() {
-        currentUserTextColor = ScTheme.exposures.mentionFg?.toArgb() ?: ElementTheme.colors.textBadgeAccent.toArgb()
-        currentUserBackgroundColor = ScTheme.exposures.mentionBg?.toArgb() ?: ElementTheme.colors.bgBadgeAccent.toArgb()
+        currentUserTextColor = ScTheme.exposures.mentionFgLegacy?.toArgb() ?: ElementTheme.colors.textBadgeAccent.toArgb()
+        currentUserBackgroundColor = ScTheme.exposures.mentionBgLegacy?.toArgb() ?: ElementTheme.colors.bgBadgeAccent.toArgb()
         otherTextColor = ElementTheme.colors.textPrimary.toArgb()
-        otherBackgroundColor = ScTheme.exposures.mentionBgOther?.toArgb() ?: ElementTheme.colors.bgBadgeDefault.toArgb()
+        otherBackgroundColor = ScTheme.exposures.mentionBgOtherLegacy?.toArgb() ?: ElementTheme.colors.bgBadgeDefault.toArgb()
 
         typeface.value = ElementTheme.typography.fontBodyLgMedium.rememberTypeface().value
         val density = LocalDensity.current

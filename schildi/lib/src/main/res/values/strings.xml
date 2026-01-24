@@ -200,6 +200,8 @@
     <string name="sc_pref_view_hidden_events_title">Show hidden events</string>
     <string name="sc_pref_view_redactions_title">Show deleted messages</string>
     <string name="sc_pref_view_redactions_summary">Render message placeholders for deleted messages rather than hiding them completely</string>
+    <string name="sc_pref_legacy_message_rendering_title">Legacy message renderer</string>
+    <string name="sc_pref_legacy_message_rendering_summary">Element\'s way to render formatted messages</string>
 
     <string name="sc_about_based_on_element_x_version">Based on Element X: %1$s</string>
     <string name="sc_about_git_revision">Built from: %1$s</string>

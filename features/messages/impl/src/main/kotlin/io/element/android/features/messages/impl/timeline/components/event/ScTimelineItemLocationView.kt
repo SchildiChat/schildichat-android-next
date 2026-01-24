@@ -26,6 +26,7 @@ import chat.schildi.lib.R
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import chat.schildi.theme.ScTheme
+import com.beeper.android.messageformat.MatrixBodyParseResult
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.location.api.Location
 import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayout
@@ -74,6 +75,14 @@ fun ScTimelineItemLocationView(
             LocalTextStyle provides if (ScPrefs.EL_TYPOGRAPHY.value()) ElementTheme.typography.fontBodyLgRegular else ElementTheme.typography.fontBodyMdRegular
         ) {
             Box(modifier.semantics { contentDescription = text }) {
+                if (!ScPrefs.LEGACY_MESSAGE_RENDERING.value()) {
+                    ScTimelineItemTextView(
+                        content = MatrixBodyParseResult(text),
+                        modifier = modifier,
+                        onContentLayoutChange = onContentLayoutChange,
+                    )
+                    return@Box
+                }
                 EditorStyledText(
                     text = text,
                     style = ElementRichTextEditorStyle.textStyle(),

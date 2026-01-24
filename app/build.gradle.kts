@@ -385,6 +385,8 @@ tasks.withType<GenerateBuildConfig>().configureEach {
 licensee {
     ignoreDependencies("chat.schildi.rustcomponents", "sdk-android")
     ignoreDependencies("com.github.SchildiChat", "element-compound-android")
+    ignoreDependencies("com.beeper.android.messageformat", "messageformat-android")
+    ignoreDependencies("com.github.beeper.matrix-messageformat-compose", "messageformat-android")
     ignoreDependencies(groupId = "chat.schildi")
     allow("Apache-2.0")
     allow("MIT")

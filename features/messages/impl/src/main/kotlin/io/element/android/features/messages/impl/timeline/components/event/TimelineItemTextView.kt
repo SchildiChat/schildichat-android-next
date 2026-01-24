@@ -15,15 +15,13 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.value
 import chat.schildi.theme.scBubbleFont
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayout
@@ -31,7 +29,6 @@ import io.element.android.features.messages.impl.timeline.components.layout.Cont
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContentProvider
 import io.element.android.features.messages.impl.timeline.model.event.aTimelineItemTextContent
-import io.element.android.features.messages.impl.utils.containsOnlyEmojis
 import io.element.android.libraries.androidutils.text.LinkifyHelper
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
@@ -45,14 +42,19 @@ fun TimelineItemTextView(
     content: TimelineItemTextBasedContent,
     onLinkClick: (Link) -> Unit,
     onLinkLongClick: (Link) -> Unit,
-    onLongClick: () -> Unit, // SC I think?
     modifier: Modifier = Modifier,
     onContentLayoutChange: (ContentAvoidingLayoutData) -> Unit = {},
 ) {
-    val canCollapse = content.formattedCollapsedBody != null
+    if (!ScPrefs.LEGACY_MESSAGE_RENDERING.value()) {
+        ScTimelineItemTextView(
+            content = content,
+            modifier = modifier,
+            onContentLayoutChange = onContentLayoutChange,
+        )
+        return
+    }
     val emojiOnly = //content.formattedBody.toString() == content.body &&
-        !canCollapse && containsOnlyEmojisOrEmotes(content.formattedBody, content.body)
-    val collapsed = remember { mutableStateOf(canCollapse) }
+        containsOnlyEmojisOrEmotes(content.formattedBodySc.text)
     val textStyle = when {
         emojiOnly -> ElementTheme.typography.fontHeadingXlRegular
         else -> ElementTheme.typography.scBubbleFont
@@ -61,8 +63,8 @@ fun TimelineItemTextView(
         LocalContentColor provides ElementTheme.colors.textPrimary,
         LocalTextStyle provides textStyle,
     ) {
-        val text = scGetTextWithResolvedMentions(content, collapsed, textStyle)
-        Box(modifier.semantics { contentDescription = content.plainText }.scCollapseClick(collapsed, canCollapse, onLongClick)) {
+        val text = getTextWithResolvedMentions(content)
+        Box(modifier.semantics { contentDescription = content.plainText }) {
             EditorStyledText(
                 text = text,
                 onLinkClickedListener = onLinkClick,
@@ -94,7 +96,6 @@ internal fun TimelineItemTextViewPreview(
         content = content,
         onLinkClick = {},
         onLinkLongClick = {},
-        onLongClick = {},
     )
 }
 
@@ -108,7 +109,6 @@ internal fun TimelineItemTextViewWithLinkifiedUrlPreview() = ElementPreview {
         content = content,
         onLinkClick = {},
         onLinkLongClick = {},
-        onLongClick = {},
     )
 }
 
@@ -122,6 +122,5 @@ internal fun TimelineItemTextViewWithLinkifiedUrlAndNestedParenthesisPreview() =
         content = content,
         onLinkClick = {},
         onLinkLongClick = {},
-        onLongClick = {},
     )
 }

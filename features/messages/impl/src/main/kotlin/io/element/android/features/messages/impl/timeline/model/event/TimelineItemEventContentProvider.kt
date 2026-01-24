@@ -13,6 +13,7 @@ import android.text.style.StyleSpan
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
+import com.beeper.android.messageformat.MatrixBodyParseResult
 import io.element.android.libraries.matrix.api.timeline.item.event.UnableToDecryptContent
 import org.jsoup.nodes.Document
 
@@ -69,6 +70,7 @@ fun aTimelineItemEmoteContent(
     body = body,
     htmlDocument = htmlDocument,
     formattedBody = formattedBody,
+    formattedBodySc = MatrixBodyParseResult(body),
     isEdited = isEdited,
 )
 
@@ -85,6 +87,7 @@ fun aTimelineItemNoticeContent(
     body = body,
     htmlDocument = htmlDocument,
     formattedBody = formattedBody,
+    formattedBodySc = MatrixBodyParseResult(body),
     isEdited = isEdited,
 )
 
@@ -99,6 +102,7 @@ fun aTimelineItemTextContent(
     body = body,
     htmlDocument = htmlDocument,
     formattedBody = formattedBody,
+    formattedBodySc = MatrixBodyParseResult(body),
     isEdited = isEdited,
 )
 

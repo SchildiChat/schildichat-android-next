@@ -8,6 +8,7 @@
 
 package io.element.android.features.messages.impl.timeline.model.event
 
+import com.beeper.android.messageformat.MatrixBodyParseResult
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.media.MediaSource
 import kotlinx.collections.immutable.ImmutableList
@@ -19,6 +20,7 @@ data class TimelineItemVoiceContent(
     override val fileSize: Long?,
     override val caption: String?,
     override val formattedCaption: CharSequence?,
+    override val formattedCaptionSc: MatrixBodyParseResult?,
     override val isEdited: Boolean,
     val duration: Duration,
     override val mediaSource: MediaSource,

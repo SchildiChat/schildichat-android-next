@@ -31,6 +31,8 @@ dependencies {
     implementation(projects.schildi.theme)
     implementation(projects.schildi.matrixsdk)
 
+    api(libs.beeper.messageformat)
+
     api(projects.features.messages.api)
     implementation(projects.appconfig)
     implementation(projects.features.call.api)

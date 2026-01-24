@@ -22,6 +22,7 @@ dependencyResolutionManagement {
             content {
                 includeModule("com.github.matrix-org", "matrix-analytics-events")
                 includeModule("com.github.SchildiChat", "element-compound-android")
+                includeModule("com.github.beeper.matrix-messageformat-compose", "messageformat-android")
             }
         }
         // SC forks of upstream Rust projects
@@ -31,6 +32,11 @@ dependencyResolutionManagement {
                 includeModule("chat.schildi.rustcomponents", "sdk-android")
                 includeModule("chat.schildi", "wysiwyg")
                 includeModule("chat.schildi", "wysiwyg-compose")
+            }
+        }
+        mavenLocal {
+            mavenContent {
+                includeModule("com.beeper.android.messageformat", "messageformat-android")
             }
         }
         // SC forks end

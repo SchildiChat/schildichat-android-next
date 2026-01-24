@@ -31,13 +31,15 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Floating date header while scrolling †
 - Bigger stickers
 - Differentiate notices from normal text messages by adding some transparency
-- Render collapsible `<details>` tags in messages
+- Custom [compose-native message rendering](https://github.com/beeper/matrix-messageformat-compose) instead of old view-based spans
+    - Render collapsible `<details>` tags in messages
+    - Render reveal-able spoilers in messages
+    - Render inline images such as custom emotes in text messages
 - URL previews (optionally also in encrypted chats) †
 - Hide deleted messages †
 
 - Allow sending freeform reactions
 - Don't waste horizontal space in message bubbles with forced line-breaks that do not make full use of the available width
-- Render inline images such as custom emotes in text messages †
 - Setting for reply preview max lines †
 
 - Disable Element's pinned message overlay on top of the conversation screen †

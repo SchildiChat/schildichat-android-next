@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import chat.schildi.matrixsdk.urlpreview.UrlPreviewProvider
 import chat.schildi.matrixsdk.urlpreview.UrlPreviewStateProvider
+import com.beeper.android.messageformat.MatrixToLink
 import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
@@ -43,6 +44,11 @@ import io.element.android.features.messages.impl.timeline.TimelinePresenter
 import io.element.android.features.messages.impl.timeline.di.LocalTimelineItemPresenterFactories
 import io.element.android.features.messages.impl.timeline.di.LocalUrlPreviewStateProvider
 import io.element.android.features.messages.impl.timeline.di.TimelineItemPresenterFactories
+import io.element.android.features.messages.impl.timeline.factories.event.LocalMatrixBodyDrawStyle
+import io.element.android.features.messages.impl.timeline.factories.event.LocalMatrixBodyFormatter
+import io.element.android.features.messages.impl.timeline.factories.event.LocalSessionId
+import io.element.android.features.messages.impl.timeline.factories.event.matrixBodyDrawStyle
+import io.element.android.features.messages.impl.timeline.factories.event.matrixBodyFormatter
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.features.roommembermoderation.api.ModerationAction
 import io.element.android.features.roommembermoderation.api.RoomMemberModerationEvents
@@ -59,6 +65,7 @@ import io.element.android.libraries.di.annotations.ApplicationContext
 import io.element.android.libraries.di.annotations.SessionCoroutineScope
 import io.element.android.libraries.matrix.api.analytics.toAnalyticsViewRoom
 import io.element.android.libraries.matrix.api.core.EventId
+import io.element.android.libraries.matrix.api.core.RoomAlias
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.ThreadId
 import io.element.android.libraries.matrix.api.core.UserId
@@ -75,6 +82,7 @@ import io.element.android.services.analytics.api.AnalyticsLongRunningTransaction
 import io.element.android.services.analytics.api.AnalyticsService
 import io.element.android.services.analytics.api.finishLongRunningTransaction
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -244,11 +252,62 @@ class MessagesNode(
     override fun View(modifier: Modifier) {
         val activity = requireNotNull(LocalActivity.current)
         val isDark = ElementTheme.isLightTheme.not()
+        val state = presenter.present() // SC: moved up for click listener provides
         CompositionLocalProvider(
             LocalTimelineItemPresenterFactories provides timelineItemPresenterFactories,
             LocalUrlPreviewStateProvider provides urlPreviewStateProvider.takeIfUrlPreviewsEnabledForRoom(room), // SC
+            LocalSessionId provides room.sessionId, // SC
+            LocalMatrixBodyFormatter provides matrixBodyFormatter( // SC
+                room.sessionId,
+                onLinkClick = {
+                    activity.openUrlInExternalApp(it)
+                },
+                onMatrixLinkClick = {
+                    when (it) {
+                        is MatrixToLink.MessageLink -> {
+                            val roomIdOrAlias = when {
+                                it.roomId.startsWith("!") -> RoomId(it.roomId).toRoomIdOrAlias()
+                                it.roomId.startsWith("#") -> RoomAlias(it.roomId).toRoomIdOrAlias()
+                                else -> {
+                                    // ???
+                                    activity.openUrlInExternalApp(it.rawUrl)
+                                    return@matrixBodyFormatter
+                                }
+                            }
+                            val permalinkData = PermalinkData.RoomLink(
+                                roomIdOrAlias,
+                                EventId(it.messageId),
+                                viaParameters = it.via?.toImmutableList() ?: persistentListOf(),
+                            )
+                            callback.handlePermalinkClick(permalinkData)
+                            handleRoomLinkClick(permalinkData, state.timelineState.eventSink)
+                        }
+                        is MatrixToLink.RoomLink -> {
+                            val roomIdOrAlias = when {
+                                it.roomId.startsWith("!") -> RoomId(it.roomId).toRoomIdOrAlias()
+                                it.roomId.startsWith("#") -> RoomAlias(it.roomId).toRoomIdOrAlias()
+                                else -> {
+                                    // ???
+                                    activity.openUrlInExternalApp(it.rawUrl)
+                                    return@matrixBodyFormatter
+                                }
+                            }
+                            val permalinkData = PermalinkData.RoomLink(
+                                roomIdOrAlias,
+                                viaParameters = it.via?.toImmutableList() ?: persistentListOf(),
+                            )
+                            callback.handlePermalinkClick(permalinkData)
+                            handleRoomLinkClick(permalinkData, state.timelineState.eventSink)
+                        }
+                        is MatrixToLink.UserMention -> {
+                            callback.navigateToRoomMemberDetails(UserId(it.userId))
+                        }
+                    }
+                },
+            ), // SC
+            LocalMatrixBodyDrawStyle provides matrixBodyDrawStyle(room.sessionId), // SC
         ) {
-            val state = presenter.present()
+            //val state = presenter.present()
 
             BackHandler {
                 state.eventSink(MessagesEvents.MarkAsFullyReadAndExit)

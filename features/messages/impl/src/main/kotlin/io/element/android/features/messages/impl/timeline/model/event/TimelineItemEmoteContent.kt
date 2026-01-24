@@ -8,6 +8,7 @@
 
 package io.element.android.features.messages.impl.timeline.model.event
 
+import com.beeper.android.messageformat.MatrixBodyParseResult
 import io.element.android.libraries.matrix.ui.messages.toPlainText
 import org.jsoup.nodes.Document
 
@@ -15,7 +16,7 @@ data class TimelineItemEmoteContent(
     override val body: String,
     override val htmlDocument: Document?,
     override val formattedBody: CharSequence,
-    override val formattedCollapsedBody: CharSequence? = null,
+    override val formattedBodySc: MatrixBodyParseResult,
     override val isEdited: Boolean,
 ) : TimelineItemTextBasedContent {
     override val type: String = "TimelineItemEmoteContent"

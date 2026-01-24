@@ -67,7 +67,6 @@ fun TimelineItemEventContentView(
             modifier = modifier.thenIf(content is TimelineItemNoticeContent) { alpha(0.65f) }, // SC
             onLinkClick = onLinkClick,
             onLinkLongClick = onLinkLongClick,
-            onLongClick = onLongClick,
             onContentLayoutChange = onContentLayoutChange
         )
         is TimelineItemUnknownContent -> TimelineItemUnknownView(

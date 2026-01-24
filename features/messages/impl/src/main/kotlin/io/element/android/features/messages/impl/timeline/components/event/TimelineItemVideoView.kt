@@ -41,6 +41,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import chat.schildi.lib.compose.thenIf
+import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.value
 import chat.schildi.theme.scBubbleFont
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
@@ -158,6 +160,16 @@ fun TimelineItemVideoView(
                 LocalTextStyle provides ElementTheme.typography.scBubbleFont,
             ) {
                 val aspectRatio = content.aspectRatio ?: DEFAULT_ASPECT_RATIO
+                if (!ScPrefs.LEGACY_MESSAGE_RENDERING.value()) {
+                    ScTimelineItemTextView(
+                        content = content,
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp) // This is (12.dp - 8.dp) contentPadding from CommonLayout
+                            .widthIn(min = scLayoutDpUnspecified() ?: (MIN_HEIGHT_IN_DP.dp * aspectRatio), max = MAX_HEIGHT_IN_DP.dp * aspectRatio),
+                        onContentLayoutChange = onContentLayoutChange,
+                    )
+                    return@CompositionLocalProvider
+                }
                 EditorStyledText(
                     modifier = Modifier
                         .padding(horizontal = 4.dp) // This is (12.dp - 8.dp) contentPadding from CommonLayout

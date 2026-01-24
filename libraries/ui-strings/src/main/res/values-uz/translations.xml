@@ -150,6 +150,7 @@
   <string name="action_skip">"Oʻtkazib yuborish"</string>
   <string name="action_start">"Boshlash"</string>
   <string name="action_start_chat">"Suhbatni boshlash"</string>
+  <string name="action_start_over">"Qaytadan boshlang"</string>
   <string name="action_start_verification">"Tasdiqlashni boshlang"</string>
   <string name="action_static_map_load">"Xaritani yuklash uchun bosing"</string>
   <string name="action_take_photo">"Rasmga olmoq"</string>
@@ -376,6 +377,7 @@ Davom etasizmi?"</string>
   <string name="dialog_title_error">"Xato"</string>
   <string name="dialog_title_success">"Muvaffaqiyat"</string>
   <string name="dialog_title_warning">"Ogohlantirish"</string>
+  <string name="dialog_unsaved_changes_description">"Sizda saqlanmagan oʻzgarishlar bor"</string>
   <string name="dialog_unsaved_changes_description_android">"Oʻzgarishlar saqlanmadi. Haqiqatan ham orqaga qaytmoqchimisiz?"</string>
   <string name="dialog_unsaved_changes_title">"O‘zgartirishlarni saqlaysizmi?"</string>
   <string name="dialog_video_quality_selector_subtitle_file_size">"Ruxsat etilgan maksimal fayl hajmi: %1$s"</string>

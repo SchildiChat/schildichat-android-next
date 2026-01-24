@@ -79,7 +79,7 @@ class DefaultRoomGroupMessageCreator(
                 hasSmartReplyError = smartReplyErrors.isNotEmpty(),
                 shouldBing = events.any { it.noisy },
                 customSound = events.last().soundName,
-                isUpdated = events.last().isUpdated,
+                isUpdated = events.last().let { it.isUpdated || it.outGoingMessage },
             ),
             threadId = threadId,
             largeIcon = largeBitmap,

@@ -10,6 +10,8 @@ files = [
     "ic_compound_arrow_right.xml",
     "ic_compound_arrow_up_right.xml",
     "ic_compound_attachment.xml",
+    "ic_compound_backspace.xml",
+    "ic_compound_backspace_solid.xml",
     "ic_compound_block.xml",
     "ic_compound_chart.xml",
     "ic_compound_chat.xml",

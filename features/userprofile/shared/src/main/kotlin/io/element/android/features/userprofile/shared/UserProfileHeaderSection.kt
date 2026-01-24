@@ -66,7 +66,7 @@ fun UserProfileHeaderSection(
         Avatar(
             avatarData = AvatarData(userId.value, userName, avatarUrl, AvatarSize.UserHeader),
             avatarType = AvatarType.User,
-            contentDescription = avatarUrl?.let { stringResource(CommonStrings.a11y_user_avatar) },
+            contentDescription = stringResource(CommonStrings.a11y_user_avatar),
             modifier = Modifier
                 .clip(CircleShape)
                 .clickable(

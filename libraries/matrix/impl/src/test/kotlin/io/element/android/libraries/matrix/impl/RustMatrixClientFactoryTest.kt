@@ -14,26 +14,33 @@ import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.impl.auth.FakeProxyProvider
 import io.element.android.libraries.matrix.impl.auth.FakeUserCertificatesProvider
 import io.element.android.libraries.matrix.impl.room.FakeTimelineEventTypeFilterFactory
+import io.element.android.libraries.matrix.impl.storage.FakeSqliteStoreBuilderProvider
 import io.element.android.libraries.network.useragent.SimpleUserAgentProvider
 import io.element.android.libraries.sessionstorage.api.SessionStore
 import io.element.android.libraries.sessionstorage.test.InMemorySessionStore
 import io.element.android.libraries.sessionstorage.test.aSessionData
+import io.element.android.libraries.workmanager.api.WorkManagerRequest
+import io.element.android.libraries.workmanager.test.FakeWorkManagerScheduler
 import io.element.android.services.analytics.test.FakeAnalyticsService
 import io.element.android.services.toolbox.test.systemclock.FakeSystemClock
+import io.element.android.tests.testutils.lambda.lambdaRecorder
 import io.element.android.tests.testutils.testCoroutineDispatchers
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
-import org.junit.Ignore
 import org.junit.Test
 import java.io.File
 
-@Ignore("JNA direct mapping has broken unit tests with FFI fakes")
 class RustMatrixClientFactoryTest {
     @Test
     fun test() = runTest {
-        val sut = createRustMatrixClientFactory()
+        val scheduleVacuumLambda = lambdaRecorder<WorkManagerRequest, Unit> {}
+        val workManagerScheduler = FakeWorkManagerScheduler(submitLambda = scheduleVacuumLambda)
+        val sut = createRustMatrixClientFactory(workManagerScheduler = workManagerScheduler)
+
         val result = sut.create(aSessionData())
+
         assertThat(result.sessionId).isEqualTo(SessionId("@alice:server.org"))
+        scheduleVacuumLambda.assertions().isCalledOnce()
         result.destroy()
     }
 }
@@ -44,6 +51,7 @@ fun TestScope.createRustMatrixClientFactory(
         updateUserProfileResult = { _, _, _ -> },
     ),
     clientBuilderProvider: ClientBuilderProvider = FakeClientBuilderProvider(),
+    workManagerScheduler: FakeWorkManagerScheduler = FakeWorkManagerScheduler(),
 ) = RustMatrixClientFactory(
     cacheDirectory = cacheDirectory,
     appCoroutineScope = backgroundScope,
@@ -57,4 +65,6 @@ fun TestScope.createRustMatrixClientFactory(
     featureFlagService = FakeFeatureFlagService(),
     timelineEventTypeFilterFactory = FakeTimelineEventTypeFilterFactory(),
     clientBuilderProvider = clientBuilderProvider,
+    sqliteStoreBuilderProvider = FakeSqliteStoreBuilderProvider(),
+    workManagerScheduler = workManagerScheduler,
 )

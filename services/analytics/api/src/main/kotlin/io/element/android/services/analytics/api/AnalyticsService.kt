@@ -53,7 +53,7 @@ interface AnalyticsService : AnalyticsTracker, ErrorTracker {
     /**
      * Starts a transaction to measure the performance of an operation.
      */
-    fun startTransaction(name: String, operation: String? = null): AnalyticsTransaction
+    fun startTransaction(name: String, operation: String? = null, description: String? = null): AnalyticsTransaction
 
     /**
      * Starts an [AnalyticsLongRunningTransaction], that can be shared with other components.
@@ -72,16 +72,20 @@ interface AnalyticsService : AnalyticsTracker, ErrorTracker {
      * Removes an ongoing [AnalyticsLongRunningTransaction] so it's no longer shared.
      */
     fun removeLongRunningTransaction(longRunningTransaction: AnalyticsLongRunningTransaction): AnalyticsTransaction?
+
+    /** Enter a span inside the Rust SDK tracing system. If a [parentTraceId] is provided, the SDK trace will be added as a child of that trace. */
+    fun enterSdkSpan(name: String?, parentTraceId: String?): AnalyticsSdkSpan
 }
 
 inline fun <T> AnalyticsService.recordTransaction(
     name: String,
     operation: String,
+    description: String? = null,
     parentTransaction: AnalyticsTransaction? = null,
     block: (AnalyticsTransaction) -> T
 ): T {
-    val transaction = parentTransaction?.startChild(name, operation)
-        ?: startTransaction(name, operation)
+    val transaction = parentTransaction?.startChild(operation, description)
+        ?: startTransaction(name, operation, description)
     try {
         val result = block(transaction)
         return result
@@ -108,5 +112,14 @@ fun AnalyticsService.finishLongRunningTransaction(
     removeLongRunningTransaction(longRunningTransaction)?.let {
         action(it)
         it.finish()
+    }
+}
+
+inline fun <T> AnalyticsService.inBridgeSdkSpan(parentTraceId: String?, block: (AnalyticsSdkSpan) -> T): T {
+    val span = enterSdkSpan(name = null, parentTraceId = parentTraceId)
+    return try {
+        block(span)
+    } finally {
+        span.exit()
     }
 }

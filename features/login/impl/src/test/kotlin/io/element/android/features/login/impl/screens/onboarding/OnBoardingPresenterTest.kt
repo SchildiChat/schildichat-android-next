@@ -16,6 +16,7 @@ import io.element.android.features.enterprise.test.FakeEnterpriseService
 import io.element.android.features.login.impl.accesscontrol.DefaultAccountProviderAccessControl
 import io.element.android.features.login.impl.accountprovider.AccountProviderDataSource
 import io.element.android.features.login.impl.login.LoginHelper
+import io.element.android.features.login.impl.screens.onboarding.classic.aLoginWithClassicState
 import io.element.android.features.login.impl.web.FakeWebClientUrlForAuthenticationRetriever
 import io.element.android.features.login.impl.web.WebClientUrlForAuthenticationRetriever
 import io.element.android.features.wellknown.test.FakeWellknownRetriever
@@ -88,7 +89,10 @@ class OnBoardingPresenterTest {
             assertThat(initialState.canCreateAccount).isEqualTo(OnBoardingConfig.CAN_CREATE_ACCOUNT)
             assertThat(initialState.canReportBug).isFalse()
             assertThat(initialState.isAddingAccount).isFalse()
-            assertThat(awaitItem().canLoginWithQrCode).isTrue()
+            assertThat(initialState.loginWithClassicState.canLoginWithClassic).isFalse()
+            val finalState = awaitItem()
+            assertThat(finalState.canLoginWithQrCode).isTrue()
+            assertThat(finalState.loginWithClassicState.canLoginWithClassic).isFalse()
         }
     }
 
@@ -283,6 +287,7 @@ private fun createPresenter(
     onBoardingLogoResIdProvider = onBoardingLogoResIdProvider,
     sessionStore = sessionStore,
     accountProviderDataSource = accountProviderDataSource,
+    loginWithClassicPresenter = { aLoginWithClassicState() },
 )
 
 fun createLoginHelper(

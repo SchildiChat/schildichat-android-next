@@ -33,19 +33,19 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion
  * Year of the version on 2 digits.
  * Do not update this value. it is updated by the release script.
  */
-private const val versionYear = 25
+private const val versionYear = 26
 
 /**
  * Month of the version on 2 digits. Value must be in [1,12].
  * Do not update this value. it is updated by the release script.
  */
-private const val versionMonth = 12
+private const val versionMonth = 1
 
 /**
  * Release number in the month. Value must be in [0,99].
  * Do not update this value. it is updated by the release script.
  */
-private const val versionReleaseNumber = 0
+private const val versionReleaseNumber = 1
 
 object Versions {
     /**

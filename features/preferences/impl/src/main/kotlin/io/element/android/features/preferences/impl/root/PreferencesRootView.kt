@@ -60,6 +60,7 @@ fun PreferencesRootView(
     onAddAccountClick: () -> Unit,
     onSecureBackupClick: () -> Unit,
     onManageAccountClick: (url: String) -> Unit,
+    onLinkNewDeviceClick: () -> Unit,
     onOpenAnalytics: () -> Unit,
     onOpenRageShake: () -> Unit,
     onOpenLockScreenSettings: () -> Unit,
@@ -117,6 +118,7 @@ fun PreferencesRootView(
         ManageAccountSection(
             state = state,
             onManageAccountClick = onManageAccountClick,
+            onLinkNewDeviceClick = onLinkNewDeviceClick,
             onOpenBlockedUsers = onOpenBlockedUsers
         )
 
@@ -210,8 +212,16 @@ private fun ColumnScope.ManageAppSection(
 private fun ColumnScope.ManageAccountSection(
     state: PreferencesRootState,
     onManageAccountClick: (url: String) -> Unit,
+    onLinkNewDeviceClick: () -> Unit,
     onOpenBlockedUsers: () -> Unit,
 ) {
+    if (state.showLinkNewDevice) {
+        ListItem(
+            headlineContent = { Text(stringResource(id = CommonStrings.common_link_new_device)) },
+            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Devices())),
+            onClick = onLinkNewDeviceClick,
+        )
+    }
     state.accountManagementUrl?.let { url ->
         ListItem(
             headlineContent = { Text(stringResource(id = CommonStrings.action_manage_account)) },
@@ -372,6 +382,7 @@ private fun ContentToPreview(matrixUser: MatrixUser) {
         onOpenAbout = {},
         onSecureBackupClick = {},
         onManageAccountClick = {},
+        onLinkNewDeviceClick = {},
         onOpenNotificationSettings = {},
         onOpenLockScreenSettings = {},
         onOpenUserProfile = {},

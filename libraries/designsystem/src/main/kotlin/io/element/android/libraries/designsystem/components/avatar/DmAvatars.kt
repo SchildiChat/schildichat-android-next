@@ -59,7 +59,7 @@ fun DmAvatars(
         Avatar(
             avatarData = userAvatarData,
             avatarType = AvatarType.User,
-            contentDescription = userAvatarData.url?.let { stringResource(CommonStrings.a11y_your_avatar) },
+            contentDescription = stringResource(CommonStrings.a11y_your_avatar),
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .graphicsLayer {
@@ -94,7 +94,7 @@ fun DmAvatars(
         Avatar(
             avatarData = otherUserAvatarData,
             avatarType = AvatarType.User,
-            contentDescription = otherUserAvatarData.url?.let { stringResource(CommonStrings.a11y_other_user_avatar) },
+            contentDescription = stringResource(CommonStrings.a11y_other_user_avatar),
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .clip(CircleShape)

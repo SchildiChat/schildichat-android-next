@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="screen_link_new_device_desktop_scanning_title">"Pindai kode QR"</string>
+  <string name="screen_link_new_device_desktop_step3">"Pindai kode QR dengan perangkat ini"</string>
+  <string name="screen_link_new_device_desktop_submit">"Siap untuk memindai"</string>
+  <string name="screen_link_new_device_error_app_not_supported_subtitle">"Penyedia akun Anda tidak mendukung %1$s."</string>
+  <string name="screen_link_new_device_error_app_not_supported_title">"%1$s tidak didukung"</string>
+  <string name="screen_link_new_device_error_not_supported_title">"Kode QR tidak didukung"</string>
+  <string name="screen_link_new_device_error_request_cancelled_subtitle">"Proses masuk dibatalkan di perangkat lain."</string>
+  <string name="screen_link_new_device_error_request_cancelled_title">"Permintaan masuk dibatalkan"</string>
+  <string name="screen_link_new_device_error_request_timeout_subtitle">"Masa masuk kedaluwarsa. Silakan coba lagi."</string>
+  <string name="screen_link_new_device_error_request_timeout_title">"Proses masuk tidak selesai tepat waktu"</string>
+  <string name="screen_link_new_device_mobile_step2">"Pilih %1$s"</string>
+  <string name="screen_qr_code_login_connection_note_secure_state_description">"Koneksi aman tidak dapat dibuat ke perangkat baru. Perangkat Anda yang ada masih aman dan Anda tidak perlu khawatir tentang mereka."</string>
+  <string name="screen_qr_code_login_connection_note_secure_state_list_header">"Apa sekarang?"</string>
+  <string name="screen_qr_code_login_connection_note_secure_state_list_item_1">"Coba masuk lagi dengan kode QR jika ini adalah masalah jaringan"</string>
+  <string name="screen_qr_code_login_connection_note_secure_state_list_item_2">"Jika Anda mengalami masalah yang sama, coba jaringan Wi-Fi yang berbeda atau gunakan data seluler Anda daripada Wi-Fi"</string>
+  <string name="screen_qr_code_login_connection_note_secure_state_list_item_3">"Jika tidak berhasil, masuk secara manual"</string>
+  <string name="screen_qr_code_login_connection_note_secure_state_title">"Koneksi tidak aman"</string>
+  <string name="screen_qr_code_login_error_cancelled_subtitle">"Proses masuk dibatalkan di perangkat lain."</string>
+  <string name="screen_qr_code_login_error_cancelled_title">"Permintaan masuk dibatalkan"</string>
+  <string name="screen_qr_code_login_error_declined_subtitle">"Proses masuk ditolak di perangkat lain."</string>
+  <string name="screen_qr_code_login_error_declined_title">"Proses masuk ditolak"</string>
+  <string name="screen_qr_code_login_error_expired_subtitle">"Masa masuk kedaluwarsa. Silakan coba lagi."</string>
+  <string name="screen_qr_code_login_error_expired_title">"Proses masuk tidak selesai tepat waktu"</string>
+  <string name="screen_qr_code_login_error_linking_not_suported_subtitle">"Perangkat Anda yang lain tidak mendukung masuk ke %s dengan kode QR.
+
+Coba masuk secara manual, atau pindai kode QR dengan perangkat lain."</string>
+  <string name="screen_qr_code_login_error_linking_not_suported_title">"Kode QR tidak didukung"</string>
+  <string name="screen_qr_code_login_error_sliding_sync_not_supported_subtitle">"Penyedia akun Anda tidak mendukung %1$s."</string>
+  <string name="screen_qr_code_login_error_sliding_sync_not_supported_title">"%1$s tidak didukung"</string>
+  <string name="screen_qr_code_login_invalid_scan_state_description">"Gunakan kode QR yang ditampilkan di perangkat lain."</string>
+  <string name="screen_qr_code_login_invalid_scan_state_retry_button">"Coba lagi"</string>
+  <string name="screen_qr_code_login_invalid_scan_state_subtitle">"Kode QR salah"</string>
+  <string name="screen_qr_code_login_no_camera_permission_state_description">"Anda perlu memberikan izin ke %1$s untuk menggunakan kamera perangkat Anda untuk melanjutkan."</string>
+  <string name="screen_qr_code_login_no_camera_permission_state_title">"Izinkan akses kamera untuk memindai kode QR"</string>
+  <string name="screen_qr_code_login_unknown_error_description">"Terjadi kesalahan tak terduga. Silakan coba lagi."</string>
+</resources>

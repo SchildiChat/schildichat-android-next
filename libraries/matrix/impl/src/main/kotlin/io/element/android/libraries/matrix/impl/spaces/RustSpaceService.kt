@@ -17,6 +17,7 @@ import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
 import io.element.android.libraries.matrix.api.spaces.SpaceService
 import io.element.android.libraries.matrix.impl.util.cancelAndDestroy
+import io.element.android.services.analytics.api.AnalyticsService
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -41,21 +42,38 @@ class RustSpaceService(
     private val sessionCoroutineScope: CoroutineScope,
     private val sessionDispatcher: CoroutineDispatcher,
     private val roomMembershipObserver: RoomMembershipObserver,
+    private val analyticsService: AnalyticsService,
 ) : SpaceService {
     private val spaceRoomMapper = SpaceRoomMapper()
     override val spaceRoomsFlow = MutableSharedFlow<List<SpaceRoom>>(replay = 1, extraBufferCapacity = 1)
     private val spaceListUpdateProcessor = SpaceListUpdateProcessor(
         spaceRoomsFlow = spaceRoomsFlow,
-        mapper = spaceRoomMapper
+        mapper = spaceRoomMapper,
+        analyticsService = analyticsService,
     )
 
     override suspend fun joinedSpaces(): Result<List<SpaceRoom>> = withContext(sessionDispatcher) {
         runCatchingExceptions {
-            innerSpaceService.joinedSpaces()
-                .map {
-                    it.let(spaceRoomMapper::map)
-                }
+            innerSpaceService
+                .topLevelJoinedSpaces()
+                .map(spaceRoomMapper::map)
         }
+    }
+
+    override suspend fun joinedParents(spaceId: RoomId): Result<List<SpaceRoom>> = withContext(sessionDispatcher) {
+        runCatchingExceptions {
+            innerSpaceService
+                .joinedParentsOfChild(spaceId.value)
+                .map(spaceRoomMapper::map)
+        }
+    }
+
+    override suspend fun getSpaceRoom(spaceId: RoomId): SpaceRoom? = withContext(sessionDispatcher) {
+        runCatchingExceptions {
+            innerSpaceService.getSpaceRoom(spaceId.value)?.let { spaceRoom ->
+                spaceRoomMapper.map(spaceRoom)
+            }
+        }.getOrNull()
     }
 
     override fun spaceRoomList(id: RoomId): SpaceRoomList {
@@ -65,6 +83,7 @@ class RustSpaceService(
             innerProvider = { innerSpaceService.spaceRoomList(id.value) },
             coroutineScope = childCoroutineScope,
             spaceRoomMapper = spaceRoomMapper,
+            analyticsService = analyticsService,
         )
     }
 
@@ -76,6 +95,12 @@ class RustSpaceService(
             sessionCoroutineScope = sessionCoroutineScope,
         ) {
             innerSpaceService.leaveSpace(spaceId.value)
+        }
+    }
+
+    override suspend fun removeChildFromSpace(spaceId: RoomId, childId: RoomId): Result<Unit> = withContext(sessionDispatcher) {
+        runCatchingExceptions {
+            innerSpaceService.removeChildFromSpace(childId = childId.value, spaceId = spaceId.value)
         }
     }
 
@@ -97,7 +122,7 @@ internal fun SpaceServiceInterface.spaceListUpdate(): Flow<List<SpaceListUpdate>
             }
         }
         Timber.d("Open spaceDiffFlow for SpaceServiceInterface ${this@spaceListUpdate}")
-        val taskHandle = subscribeToJoinedSpaces(listener)
+        val taskHandle = subscribeToTopLevelJoinedSpaces(listener)
         awaitClose {
             Timber.d("Close spaceDiffFlow for SpaceServiceInterface ${this@spaceListUpdate}")
             taskHandle.cancelAndDestroy()

@@ -11,13 +11,14 @@ package io.element.android.features.space.impl.root
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import dev.zacsweers.metro.Inject
-import im.vector.app.features.analytics.plan.JoinedRoom
+import im.vector.app.features.analytics.plan.JoinedRoom.Trigger
 import io.element.android.features.invite.api.SeenInvitesStore
 import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteEvents
 import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteState
@@ -26,13 +27,18 @@ import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.coroutine.mapState
 import io.element.android.libraries.di.annotations.SessionCoroutineScope
+import io.element.android.libraries.featureflag.api.FeatureFlagService
+import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.toRoomIdOrAlias
+import io.element.android.libraries.matrix.api.room.BaseRoom
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
 import io.element.android.libraries.matrix.api.room.join.JoinRoom
+import io.element.android.libraries.matrix.api.room.powerlevels.permissionsAsState
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
+import io.element.android.libraries.matrix.api.spaces.SpaceService
 import io.element.android.libraries.matrix.ui.safety.rememberHideInvitesAvatar
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -41,18 +47,22 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlin.jvm.optionals.getOrNull
 
 @Inject
 class SpacePresenter(
     private val spaceRoomList: SpaceRoomList,
+    private val room: BaseRoom,
     private val client: MatrixClient,
     private val seenInvitesStore: SeenInvitesStore,
     private val joinRoom: JoinRoom,
     private val acceptDeclineInvitePresenter: Presenter<AcceptDeclineInviteState>,
     @SessionCoroutineScope private val sessionCoroutineScope: CoroutineScope,
+    private val featureFlagService: FeatureFlagService,
+    private val spaceService: SpaceService,
 ) : Presenter<SpaceState> {
     private var children by mutableStateOf<ImmutableList<SpaceRoom>>(persistentListOf())
 
@@ -79,10 +89,45 @@ class SpacePresenter(
             }
         }.collectAsState()
 
-        val currentSpace by spaceRoomList.currentSpaceFlow.collectAsState()
+        val permissions by room.permissionsAsState(SpacePermissions.DEFAULT) { perms ->
+            perms.spacePermissions()
+        }
+        val isSpaceSettingsEnabled by remember {
+            featureFlagService.isFeatureEnabledFlow(FeatureFlags.SpaceSettings)
+        }.collectAsState(false)
+
+        val roomInfo by room.roomInfoFlow.collectAsState()
+        val canAccessSpaceSettings by remember {
+            derivedStateOf { isSpaceSettingsEnabled && permissions.settingsPermissions.hasAny(roomInfo.joinRule) }
+        }
+        val canEditSpaceGraph by remember {
+            derivedStateOf { isSpaceSettingsEnabled && permissions.canEditSpaceGraph }
+        }
         val (joinActions, setJoinActions) = remember { mutableStateOf(emptyMap<RoomId, AsyncAction<Unit>>()) }
 
         var topicViewerState: TopicViewerState by remember { mutableStateOf(TopicViewerState.Hidden) }
+
+        // Manage mode state
+        var isManageMode by remember { mutableStateOf(false) }
+        var selectedRoomIds by remember { mutableStateOf<Set<RoomId>>(emptySet()) }
+        var removeRoomsAction by remember { mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized) }
+        var removedRoomIds by remember { mutableStateOf<Set<RoomId>>(emptySet()) }
+
+        val filteredChildren by remember {
+            derivedStateOf {
+                children
+                    .filterNot { it.roomId in removedRoomIds }
+                    .let { list ->
+                        if (isManageMode) {
+                            // In manage mode, only show rooms (not spaces)
+                            list.filter { !it.isSpace }
+                        } else {
+                            list
+                        }
+                    }
+                    .toImmutableList()
+            }
+        }
 
         LaunchedEffect(children) {
             // Remove joined children from the join actions
@@ -118,17 +163,71 @@ class SpacePresenter(
                 }
                 SpaceEvents.HideTopicViewer -> topicViewerState = TopicViewerState.Hidden
                 is SpaceEvents.ShowTopicViewer -> topicViewerState = TopicViewerState.Shown(event.topic)
+
+                // Manage mode events
+                SpaceEvents.EnterManageMode -> {
+                    isManageMode = true
+                    selectedRoomIds = emptySet()
+                }
+                SpaceEvents.ExitManageMode -> {
+                    isManageMode = false
+                    selectedRoomIds = emptySet()
+                }
+                is SpaceEvents.ToggleRoomSelection -> {
+                    selectedRoomIds = if (event.roomId in selectedRoomIds) {
+                        selectedRoomIds - event.roomId
+                    } else {
+                        selectedRoomIds + event.roomId
+                    }
+                }
+                SpaceEvents.RemoveSelectedRooms -> {
+                    removeRoomsAction = AsyncAction.ConfirmingNoParams
+                }
+                SpaceEvents.ConfirmRoomRemoval -> {
+                    localCoroutineScope.launch {
+                        removeRoomsAction = AsyncAction.Loading
+                        val spaceId = spaceRoomList.roomId
+                        val roomsToRemove = selectedRoomIds.toSet()
+                        val successfullyRemoved = mutableSetOf<RoomId>()
+                        val results = roomsToRemove.map { roomId ->
+                            async {
+                                spaceService.removeChildFromSpace(spaceId, roomId)
+                                    .onSuccess { successfullyRemoved.add(roomId) }
+                            }
+                        }
+                        results.awaitAll()
+                        if (successfullyRemoved.isNotEmpty()) {
+                            removedRoomIds = removedRoomIds + successfullyRemoved
+                        }
+                        val hasError = successfullyRemoved.size < roomsToRemove.size
+                        if (hasError) {
+                            removeRoomsAction = AsyncAction.Failure(Exception("Failed to remove some rooms"))
+                        } else {
+                            removeRoomsAction = AsyncAction.Success(Unit)
+                            isManageMode = false
+                            selectedRoomIds = emptySet()
+                        }
+                    }
+                }
+                SpaceEvents.ClearRemoveAction -> {
+                    removeRoomsAction = AsyncAction.Uninitialized
+                }
             }
         }
         return SpaceState(
-            currentSpace = currentSpace.getOrNull(),
-            children = children,
+            spaceInfo = roomInfo,
+            children = filteredChildren,
             seenSpaceInvites = seenSpaceInvites,
             hideInvitesAvatar = hideInvitesAvatar,
             hasMoreToLoad = hasMoreToLoad,
             joinActions = joinActions.toImmutableMap(),
             acceptDeclineInviteState = acceptDeclineInviteState,
             topicViewerState = topicViewerState,
+            canAccessSpaceSettings = canAccessSpaceSettings,
+            isManageMode = isManageMode,
+            selectedRoomIds = selectedRoomIds.toImmutableSet(),
+            canEditSpaceGraph = canEditSpaceGraph,
+            removeRoomsAction = removeRoomsAction,
             eventSink = ::handleEvent,
         )
     }
@@ -142,7 +241,7 @@ class SpacePresenter(
         joinRoom.invoke(
             roomIdOrAlias = spaceRoom.roomId.toRoomIdOrAlias(),
             serverNames = spaceRoom.via,
-            trigger = JoinedRoom.Trigger.SpaceHierarchy,
+            trigger = Trigger.SpaceHierarchy,
         ).onFailure {
             setJoinActions(joinActions + mapOf(spaceRoom.roomId to AsyncAction.Failure(it)))
         }

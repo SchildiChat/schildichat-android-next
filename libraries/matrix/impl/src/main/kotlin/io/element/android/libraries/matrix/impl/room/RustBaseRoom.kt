@@ -18,13 +18,12 @@ import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.core.ThreadId
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.room.BaseRoom
-import io.element.android.libraries.matrix.api.room.MessageEventType
 import io.element.android.libraries.matrix.api.room.RoomInfo
 import io.element.android.libraries.matrix.api.room.RoomMember
 import io.element.android.libraries.matrix.api.room.RoomMembersState
 import io.element.android.libraries.matrix.api.room.RoomMembershipObserver
-import io.element.android.libraries.matrix.api.room.StateEventType
 import io.element.android.libraries.matrix.api.room.draft.ComposerDraft
+import io.element.android.libraries.matrix.api.room.powerlevels.RoomPermissions
 import io.element.android.libraries.matrix.api.room.powerlevels.RoomPowerLevelsValues
 import io.element.android.libraries.matrix.api.room.tombstone.PredecessorRoom
 import io.element.android.libraries.matrix.api.roomdirectory.RoomVisibility
@@ -33,6 +32,7 @@ import io.element.android.libraries.matrix.impl.room.draft.into
 import io.element.android.libraries.matrix.impl.room.member.RoomMemberListFetcher
 import io.element.android.libraries.matrix.impl.room.member.RoomMemberMapper
 import io.element.android.libraries.matrix.impl.room.powerlevels.RoomPowerLevelsValuesMapper
+import io.element.android.libraries.matrix.impl.room.powerlevels.RustRoomPermissions
 import io.element.android.libraries.matrix.impl.room.tombstone.map
 import io.element.android.libraries.matrix.impl.roomdirectory.map
 import io.element.android.libraries.matrix.impl.timeline.toRustReceiptType
@@ -180,57 +180,9 @@ class RustBaseRoom(
         }
     }
 
-    override suspend fun canUserInvite(userId: UserId): Result<Boolean> = withContext(roomDispatcher) {
+    override suspend fun roomPermissions(): Result<RoomPermissions> = withContext(roomDispatcher) {
         runCatchingExceptions {
-            innerRoom.getPowerLevels().use { it.canUserInvite(userId.value) }
-        }
-    }
-
-    override suspend fun canUserKick(userId: UserId): Result<Boolean> = withContext(roomDispatcher) {
-        runCatchingExceptions {
-            innerRoom.getPowerLevels().use { it.canUserKick(userId.value) }
-        }
-    }
-
-    override suspend fun canUserBan(userId: UserId): Result<Boolean> = withContext(roomDispatcher) {
-        runCatchingExceptions {
-            innerRoom.getPowerLevels().use { it.canUserBan(userId.value) }
-        }
-    }
-
-    override suspend fun canUserRedactOwn(userId: UserId): Result<Boolean> = withContext(roomDispatcher) {
-        runCatchingExceptions {
-            innerRoom.getPowerLevels().use { it.canUserRedactOwn(userId.value) }
-        }
-    }
-
-    override suspend fun canUserRedactOther(userId: UserId): Result<Boolean> = withContext(roomDispatcher) {
-        runCatchingExceptions {
-            innerRoom.getPowerLevels().use { it.canUserRedactOther(userId.value) }
-        }
-    }
-
-    override suspend fun canUserSendState(userId: UserId, type: StateEventType): Result<Boolean> = withContext(roomDispatcher) {
-        runCatchingExceptions {
-            innerRoom.getPowerLevels().use { it.canUserSendState(userId.value, type.map()) }
-        }
-    }
-
-    override suspend fun canUserSendMessage(userId: UserId, type: MessageEventType): Result<Boolean> = withContext(roomDispatcher) {
-        runCatchingExceptions {
-            innerRoom.getPowerLevels().use { it.canUserSendMessage(userId.value, type.map()) }
-        }
-    }
-
-    override suspend fun canUserTriggerRoomNotification(userId: UserId): Result<Boolean> = withContext(roomDispatcher) {
-        runCatchingExceptions {
-            innerRoom.getPowerLevels().use { it.canUserTriggerRoomNotification(userId.value) }
-        }
-    }
-
-    override suspend fun canUserPinUnpin(userId: UserId): Result<Boolean> = withContext(roomDispatcher) {
-        runCatchingExceptions {
-            innerRoom.getPowerLevels().use { it.canUserPinUnpin(userId.value) }
+            RustRoomPermissions(innerRoom.getPowerLevels())
         }
     }
 

@@ -72,11 +72,11 @@ class CreateRoomConfigStore(
             config.copy(
                 roomVisibility = when (visibility) {
                     RoomVisibilityItem.Private -> RoomVisibilityState.Private
-                    RoomVisibilityItem.Public -> {
+                    RoomVisibilityItem.Public, RoomVisibilityItem.AskToJoin -> {
                         val roomAliasName = roomAliasHelper.roomAliasNameFromRoomDisplayName(config.roomName.orEmpty())
                         RoomVisibilityState.Public(
                             roomAddress = RoomAddress.AutoFilled(roomAliasName),
-                            roomAccess = RoomAccess.Anyone,
+                            roomAccess = if (visibility == RoomVisibilityItem.AskToJoin) RoomAccess.Knocking else RoomAccess.Anyone,
                         )
                     }
                 }
@@ -111,6 +111,12 @@ class CreateRoomConfigStore(
                     else -> config.roomVisibility
                 }
             )
+        }
+    }
+
+    fun setIsSpace(isSpace: Boolean) {
+        createRoomConfigFlow.getAndUpdate { config ->
+            config.copy(isSpace = isSpace)
         }
     }
 

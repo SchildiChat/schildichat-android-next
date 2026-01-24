@@ -45,7 +45,7 @@ class ToPlainTextTest {
         val formattedBody = FormattedBody(
             format = MessageFormat.HTML,
             body = """
-                Hello world
+                Hello <strong>formatted</strong> <em>world</em>
                 <ul><li>This is an unordered list.</li></ul>
                 <ol><li>This is an ordered list.</li></ol>
                 <br />
@@ -53,7 +53,7 @@ class ToPlainTextTest {
         )
         assertThat(formattedBody.toPlainText(permalinkParser = FakePermalinkParser())).isEqualTo(
             """
-            Hello world 
+            Hello formatted world 
             • This is an unordered list.
             1. This is an ordered list.
             """.trimIndent()

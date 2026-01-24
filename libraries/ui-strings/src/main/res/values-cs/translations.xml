@@ -114,6 +114,7 @@
   <string name="action_load_more">"Načíst více"</string>
   <string name="action_manage_account">"Spravovat účet"</string>
   <string name="action_manage_devices">"Spravovat zařízení"</string>
+  <string name="action_manage_rooms">"Spravovat místnosti"</string>
   <string name="action_message">"Zpráva"</string>
   <string name="action_minimize">"Minimalizovat"</string>
   <string name="action_next">"Další"</string>
@@ -158,10 +159,12 @@
   <string name="action_skip">"Přeskočit"</string>
   <string name="action_start">"Začít"</string>
   <string name="action_start_chat">"Zahájit chat"</string>
+  <string name="action_start_over">"Začít znovu"</string>
   <string name="action_start_verification">"Zahájit ověření"</string>
   <string name="action_static_map_load">"Klepnutím načtete mapu"</string>
   <string name="action_take_photo">"Vyfotit"</string>
   <string name="action_tap_for_options">"Klepnutím zobrazíte možnosti"</string>
+  <string name="action_translate">"Přeložit"</string>
   <string name="action_try_again">"Zkusit znovu"</string>
   <string name="action_unpin">"Odepnout"</string>
   <string name="action_view">"Zobrazit"</string>
@@ -236,6 +239,7 @@ Důvod: %1$s."</string>
   <string name="common_light">"Světlý"</string>
   <string name="common_line_copied_to_clipboard">"Řádek zkopírován do schránky"</string>
   <string name="common_link_copied_to_clipboard">"Odkaz zkopírován do schránky"</string>
+  <string name="common_link_new_device">"Připojit nové zařízení"</string>
   <string name="common_loading">"Načítání…"</string>
   <string name="common_loading_more">"Načítání dalších…"</string>
   <plurals name="common_many_members">
@@ -250,10 +254,12 @@ Důvod: %1$s."</string>
   </plurals>
   <string name="common_message">"Zpráva"</string>
   <string name="common_message_actions">"Akce zprávy"</string>
+  <string name="common_message_failed_to_send">"Zprávu se nepodařilo odeslat"</string>
   <string name="common_message_layout">"Zobrazení zpráv"</string>
   <string name="common_message_removed">"Zpráva byla odstraněna"</string>
   <string name="common_modern">"Moderní"</string>
   <string name="common_mute">"Ztlumit"</string>
+  <string name="common_name">"Název"</string>
   <string name="common_name_and_id">"%1$s (%2$s)"</string>
   <string name="common_no_results">"Žádné výsledky"</string>
   <string name="common_no_room_name">"Žádný název místnosti"</string>
@@ -329,6 +335,7 @@ Důvod: %1$s."</string>
   <string name="common_something_went_wrong">"Něco se nepovedlo"</string>
   <string name="common_something_went_wrong_message">"Narazili jsme na problém. Zkuste to prosím znovu."</string>
   <string name="common_space">"Prostor"</string>
+  <string name="common_space_topic_placeholder">"O čem je tento prostor?"</string>
   <plurals name="common_spaces">
     <item quantity="one">"%1$d prostor"</item>
     <item quantity="few">"%1$d prostory"</item>
@@ -374,6 +381,7 @@ Důvod: %1$s."</string>
   <string name="common_waiting">"Čekání…"</string>
   <string name="common_waiting_for_decryption_key">"Čekání na dešifrovací klíč"</string>
   <string name="common_you">"Vy"</string>
+  <string name="crypto_history_visible">"Tato místnost byla nastavena tak, aby noví členové mohli číst historii. %1$s"</string>
   <string name="crypto_identity_change_pin_violation">"Identita uživatele %1$s se změnila. %2$s"</string>
   <string name="crypto_identity_change_pin_violation_new">"Identita uživatele %1$s %2$s se změnila. %3$s"</string>
   <string name="crypto_identity_change_pin_violation_new_user_id">"(%1$s)"</string>
@@ -394,6 +402,7 @@ Opravdu chcete pokračovat?"</string>
   <string name="dialog_title_error">"Chyba"</string>
   <string name="dialog_title_success">"Úspěch"</string>
   <string name="dialog_title_warning">"Upozornění"</string>
+  <string name="dialog_unsaved_changes_description">"Máte neuložené změny."</string>
   <string name="dialog_unsaved_changes_description_android">"Vaše změny nebyly uloženy. Opravdu se chcete vrátit?"</string>
   <string name="dialog_unsaved_changes_title">"Uložit změny?"</string>
   <string name="dialog_video_quality_selector_subtitle_file_size">"Maximální povolená velikost souboru je: %1$s"</string>
@@ -452,10 +461,6 @@ Opravdu chcete pokračovat?"</string>
   <string name="screen_resolve_send_failure_unsigned_device_title">"Vaše zpráva nebyla odeslána, protože%1$s neověřil(a) všechna zařízení"</string>
   <string name="screen_resolve_send_failure_you_unsigned_device_subtitle">"Jedno nebo více vašich zařízení není ověřeno. Zprávu můžete přesto odeslat, nebo ji můžete prozatím zrušit a zkusit to znovu později, až ověříte všechna svá zařízení."</string>
   <string name="screen_resolve_send_failure_you_unsigned_device_title">"Vaše zpráva nebyla odeslána, protože jste neověřili jedno nebo více zařízení"</string>
-  <string name="screen_room_change_permissions_change_settings">"Změnit nastavení"</string>
-  <string name="screen_room_change_permissions_manage_space">"Správa prostoru"</string>
-  <string name="screen_room_change_permissions_manage_space_rooms">"Spravovat místnosti"</string>
-  <string name="screen_room_change_permissions_title">"Oprávnění"</string>
   <string name="screen_room_change_role_administrators_or_owners_title">"Upravit správce nebo vlastníky"</string>
   <string name="screen_room_error_failed_processing_media">"Nahrání média se nezdařilo, zkuste to prosím znovu."</string>
   <string name="screen_room_error_failed_retrieving_user_details">"Nepodařilo se načíst údaje o uživateli"</string>
@@ -478,7 +483,6 @@ Opravdu chcete pokračovat?"</string>
   <string name="screen_space_list_details">"%1$s • %2$s"</string>
   <string name="screen_space_list_parent_space">"%1$s prostor"</string>
   <string name="screen_space_list_title">"Prostory"</string>
-  <string name="screen_space_menu_action_members">"Zobrazit členy"</string>
   <string name="screen_timeline_item_menu_send_failure_changed_identity">"Zpráva nebyla odeslána, protože ověřená identita uživatele %1$s se změnila."</string>
   <string name="screen_timeline_item_menu_send_failure_unsigned_device">"Zpráva nebyla odeslána, protože%1$s neověřil(a) všechna zařízení."</string>
   <string name="screen_timeline_item_menu_send_failure_you_unsigned_device">"Zpráva nebyla odeslána, protože jste neověřili jedno nebo více zařízení."</string>

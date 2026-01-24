@@ -2,9 +2,12 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="screen_room_change_permissions_administrators">"Administrateurs"</string>
   <string name="screen_room_change_permissions_ban_people">"Bannir des participants"</string>
+  <string name="screen_room_change_permissions_change_settings">"Changer les paramètres"</string>
   <string name="screen_room_change_permissions_delete_messages">"Supprimer des messages"</string>
   <string name="screen_room_change_permissions_everyone">"Membre"</string>
   <string name="screen_room_change_permissions_invite_people">"Inviter des personnes"</string>
+  <string name="screen_room_change_permissions_manage_space">"Gérer l’espace"</string>
+  <string name="screen_room_change_permissions_manage_space_rooms">"Gérer les salons"</string>
   <string name="screen_room_change_permissions_member_moderation">"Gérer les membres"</string>
   <string name="screen_room_change_permissions_messages_and_content">"Messages et contenus"</string>
   <string name="screen_room_change_permissions_moderators">"Modérateurs"</string>
@@ -14,6 +17,7 @@
   <string name="screen_room_change_permissions_room_name">"Changer le nom du salon"</string>
   <string name="screen_room_change_permissions_room_topic">"Changer le sujet du salon"</string>
   <string name="screen_room_change_permissions_send_messages">"Envoyer des messages"</string>
+  <string name="screen_room_change_permissions_title">"Autorisations"</string>
   <string name="screen_room_change_role_administrators_title">"Modifier les administrateurs"</string>
   <string name="screen_room_change_role_confirm_add_admin_description">"Vous ne pourrez pas annuler cette action. Vous êtes en train de promouvoir l’utilisateur pour qu’il ait le même niveau que vous."</string>
   <string name="screen_room_change_role_confirm_add_admin_title">"Ajouter un administrateur ?"</string>

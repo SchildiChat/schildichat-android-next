@@ -156,6 +156,17 @@
       ]
     },
     {
+      "name" : ":features:linknewdevice:impl",
+      "includeRegex" : [
+        "screen\\.link_new_device\\..*",
+        "screen_qr_code_login_error_.*",
+        "screen_qr_code_login_connection_note_secure_state.*",
+        "screen_qr_code_login_unknown_error_description",
+        "screen_qr_code_login_invalid_scan_state_.*",
+        "screen_qr_code_login_no_camera_permission_state_.*"
+      ]
+    },
+    {
       "name" : ":features:login:impl",
       "includeRegex" : [
         "screen_onboarding_.*",
@@ -210,10 +221,20 @@
       ]
     },
     {
+      "name" : ":features:roomdetailsedit:impl",
+      "includeRegex" : [
+        "screen_room_details_edit_room_title",
+        "screen_room_details_edition_error",
+        "screen_room_details_edition_error_title",
+        "screen_room_details_updating_room"
+      ]
+    },
+    {
       "name" : ":features:space:impl",
       "includeRegex" : [
         "screen\\.leave_space\\..*",
-        "screen\\.space_settings\\..*"
+        "screen\\.space_settings\\..*",
+        "screen\\.space\\..*"
       ]
     },
     {
@@ -372,6 +393,7 @@
       "name" : ":features:rolesandpermissions:impl",
       "includeRegex" : [
         "screen_room_change_.*",
+        "screen\\.room_change_permissions\\..*",
         "screen_room_roles_.*",
         "screen\\.room_roles_and_permissions\\..*",
         "screen_room_member_list.*",
@@ -382,7 +404,8 @@
       "name" : ":features:securityandprivacy:impl",
       "includeRegex" : [
         "screen\\.edit_room_address\\..*",
-        "screen\\.security_and_privacy\\..*"
+        "screen\\.security_and_privacy\\..*",
+        "screen\\.manage_authorized_spaces\\..*"
       ]
     }
   ]

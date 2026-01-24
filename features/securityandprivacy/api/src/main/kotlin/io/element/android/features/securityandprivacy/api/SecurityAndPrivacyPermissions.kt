@@ -8,13 +8,9 @@
 
 package io.element.android.features.securityandprivacy.api
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.produceState
-import io.element.android.features.securityandprivacy.api.SecurityAndPrivacyPermissions.Companion.DEFAULT
-import io.element.android.libraries.matrix.api.room.BaseRoom
 import io.element.android.libraries.matrix.api.room.StateEventType
-import io.element.android.libraries.matrix.api.room.powerlevels.canSendState
+import io.element.android.libraries.matrix.api.room.join.JoinRule
+import io.element.android.libraries.matrix.api.room.powerlevels.RoomPermissions
 
 data class SecurityAndPrivacyPermissions(
     val canChangeRoomAccess: Boolean,
@@ -22,10 +18,19 @@ data class SecurityAndPrivacyPermissions(
     val canChangeEncryption: Boolean,
     val canChangeRoomVisibility: Boolean,
 ) {
-    val hasAny = canChangeRoomAccess ||
-        canChangeHistoryVisibility ||
-        canChangeEncryption ||
-        canChangeRoomVisibility
+    fun hasAny(isSpace: Boolean, joinRule: JoinRule?): Boolean {
+        val canChangeRoomVisibility = when (joinRule) {
+            is JoinRule.Public,
+            is JoinRule.Knock,
+            is JoinRule.KnockRestricted -> canChangeRoomVisibility
+            else -> false
+        }
+        return if (isSpace) {
+            canChangeRoomAccess || canChangeRoomVisibility
+        } else {
+            canChangeRoomAccess || canChangeRoomVisibility || canChangeHistoryVisibility || canChangeEncryption
+        }
+    }
 
     companion object {
         val DEFAULT = SecurityAndPrivacyPermissions(
@@ -37,14 +42,11 @@ data class SecurityAndPrivacyPermissions(
     }
 }
 
-@Composable
-fun BaseRoom.securityAndPrivacyPermissionsAsState(updateKey: Long): State<SecurityAndPrivacyPermissions> {
-    return produceState(DEFAULT, key1 = updateKey) {
-        value = SecurityAndPrivacyPermissions(
-            canChangeRoomAccess = canSendState(type = StateEventType.ROOM_JOIN_RULES).getOrElse { false },
-            canChangeHistoryVisibility = canSendState(type = StateEventType.ROOM_HISTORY_VISIBILITY).getOrElse { false },
-            canChangeEncryption = canSendState(type = StateEventType.ROOM_ENCRYPTION).getOrElse { false },
-            canChangeRoomVisibility = canSendState(type = StateEventType.ROOM_CANONICAL_ALIAS).getOrElse { false },
-        )
-    }
+fun RoomPermissions.securityAndPrivacyPermissions(): SecurityAndPrivacyPermissions {
+    return SecurityAndPrivacyPermissions(
+        canChangeRoomAccess = canOwnUserSendState(StateEventType.RoomJoinRules),
+        canChangeHistoryVisibility = canOwnUserSendState(StateEventType.RoomHistoryVisibility),
+        canChangeEncryption = canOwnUserSendState(StateEventType.RoomEncryption),
+        canChangeRoomVisibility = canOwnUserSendState(StateEventType.RoomCanonicalAlias),
+    )
 }

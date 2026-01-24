@@ -16,32 +16,31 @@ import io.element.android.libraries.matrix.impl.fixtures.fakes.FakeFfiRoomListSe
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_ROOM_ID_2
 import io.element.android.libraries.matrix.test.A_ROOM_ID_3
+import io.element.android.libraries.matrix.test.A_ROOM_ID_4
 import io.element.android.libraries.matrix.test.room.aRoomSummary
+import io.element.android.services.analytics.test.FakeAnalyticsService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
-import org.junit.Ignore
 import org.junit.Test
+import org.matrix.rustcomponents.sdk.LatestEventValue
 import org.matrix.rustcomponents.sdk.RoomListEntriesUpdate
 
 class RoomSummaryListProcessorTest {
     private val summaries = MutableStateFlow<List<RoomSummary>>(emptyList())
 
-    @Ignore("JNA direct mapping has broken unit tests with FFI fakes")
     @Test
     fun `Append adds new entries at the end of the list`() = runTest {
         summaries.value = listOf(aRoomSummary())
         val processor = createProcessor()
 
-        val newEntry = aRustRoom(A_ROOM_ID_2)
-        processor.postUpdate(listOf(RoomListEntriesUpdate.Append(listOf(newEntry, newEntry, newEntry))))
+        processor.postUpdate(listOf(RoomListEntriesUpdate.Append(listOf(aRustRoom(A_ROOM_ID_2), aRustRoom(A_ROOM_ID_3), aRustRoom(A_ROOM_ID_4)))))
 
         assertThat(summaries.value.count()).isEqualTo(4)
-        assertThat(summaries.value.subList(1, 4).all { it.roomId == A_ROOM_ID_2 }).isTrue()
+        assertThat(summaries.value.subList(1, 4).map { it.roomId }).isEqualTo(listOf(A_ROOM_ID_2, A_ROOM_ID_3, A_ROOM_ID_4))
     }
 
-    @Ignore("JNA direct mapping has broken unit tests with FFI fakes")
     @Test
     fun `PushBack adds a new entry at the end of the list`() = runTest {
         summaries.value = listOf(aRoomSummary())
@@ -52,7 +51,6 @@ class RoomSummaryListProcessorTest {
         assertThat(summaries.value.last().roomId).isEqualTo(A_ROOM_ID_2)
     }
 
-    @Ignore("JNA direct mapping has broken unit tests with FFI fakes")
     @Test
     fun `PushFront inserts a new entry at the start of the list`() = runTest {
         summaries.value = listOf(aRoomSummary())
@@ -63,7 +61,6 @@ class RoomSummaryListProcessorTest {
         assertThat(summaries.value.first().roomId).isEqualTo(A_ROOM_ID_2)
     }
 
-    @Ignore("JNA direct mapping has broken unit tests with FFI fakes")
     @Test
     fun `Set replaces an entry at some index`() = runTest {
         summaries.value = listOf(aRoomSummary())
@@ -76,7 +73,6 @@ class RoomSummaryListProcessorTest {
         assertThat(summaries.value[index].roomId).isEqualTo(A_ROOM_ID_2)
     }
 
-    @Ignore("JNA direct mapping has broken unit tests with FFI fakes")
     @Test
     fun `Insert inserts a new entry at the provided index`() = runTest {
         summaries.value = listOf(aRoomSummary())
@@ -89,7 +85,6 @@ class RoomSummaryListProcessorTest {
         assertThat(summaries.value[index].roomId).isEqualTo(A_ROOM_ID_2)
     }
 
-    @Ignore("JNA direct mapping has broken unit tests with FFI fakes")
     @Test
     fun `Remove removes an entry at some index`() = runTest {
         summaries.value = listOf(
@@ -105,7 +100,6 @@ class RoomSummaryListProcessorTest {
         assertThat(summaries.value[index].roomId).isEqualTo(A_ROOM_ID_2)
     }
 
-    @Ignore("JNA direct mapping has broken unit tests with FFI fakes")
     @Test
     fun `PopBack removes an entry at the end of the list`() = runTest {
         summaries.value = listOf(
@@ -121,7 +115,6 @@ class RoomSummaryListProcessorTest {
         assertThat(summaries.value[index].roomId).isEqualTo(A_ROOM_ID)
     }
 
-    @Ignore("JNA direct mapping has broken unit tests with FFI fakes")
     @Test
     fun `PopFront removes an entry at the start of the list`() = runTest {
         summaries.value = listOf(
@@ -137,7 +130,6 @@ class RoomSummaryListProcessorTest {
         assertThat(summaries.value[index].roomId).isEqualTo(A_ROOM_ID_2)
     }
 
-    @Ignore("JNA direct mapping has broken unit tests with FFI fakes")
     @Test
     fun `Clear removes all the entries`() = runTest {
         summaries.value = listOf(
@@ -151,7 +143,6 @@ class RoomSummaryListProcessorTest {
         assertThat(summaries.value).isEmpty()
     }
 
-    @Ignore("JNA direct mapping has broken unit tests with FFI fakes")
     @Test
     fun `Truncate removes all entries after the provided length`() = runTest {
         summaries.value = listOf(
@@ -167,7 +158,6 @@ class RoomSummaryListProcessorTest {
         assertThat(summaries.value[index].roomId).isEqualTo(A_ROOM_ID)
     }
 
-    @Ignore("JNA direct mapping has broken unit tests with FFI fakes")
     @Test
     fun `Reset removes all entries and add the provided ones`() = runTest {
         summaries.value = listOf(
@@ -185,7 +175,7 @@ class RoomSummaryListProcessorTest {
 
     private fun aRustRoom(roomId: RoomId = A_ROOM_ID) = FakeFfiRoom(
         roomId = roomId,
-        latestEventLambda = { null },
+        latestEventLambda = { LatestEventValue.None }
     )
 
     private fun TestScope.createProcessor() = RoomSummaryListProcessor(
@@ -193,5 +183,6 @@ class RoomSummaryListProcessorTest {
         FakeFfiRoomListService(),
         coroutineContext = StandardTestDispatcher(testScheduler),
         roomSummaryFactory = RoomSummaryFactory(),
+        analyticsService = FakeAnalyticsService(),
     )
 }

@@ -21,22 +21,24 @@ import org.matrix.rustcomponents.sdk.ShieldState
 import org.matrix.rustcomponents.sdk.TimelineItemContent
 import uniffi.matrix_sdk_ui.EventItemOrigin
 
-fun aRustEventTimelineItem(
+internal fun aRustEventTimelineItem(
     isRemote: Boolean = true,
     eventOrTransactionId: EventOrTransactionId = EventOrTransactionId.EventId(AN_EVENT_ID.value),
     sender: String = A_USER_ID.value,
     senderProfile: ProfileDetails = ProfileDetails.Unavailable,
     isOwn: Boolean = true,
     isEditable: Boolean = true,
-    content: TimelineItemContent = aRustTimelineItemMessageContent(),
+    content: TimelineItemContent = aRustTimelineItemContentMsgLike(),
     timestamp: ULong = 0uL,
     debugInfo: EventTimelineItemDebugInfo = anEventTimelineItemDebugInfo(),
     localSendState: EventSendState? = null,
     readReceipts: Map<String, Receipt> = emptyMap(),
     origin: EventItemOrigin? = EventItemOrigin.SYNC,
     canBeRepliedTo: Boolean = true,
-    shieldsState: ShieldState? = null,
+    shieldsState: ShieldState = ShieldState.None,
     localCreatedAt: ULong? = null,
+    forwarder: String? = null,
+    forwarderProfile: ProfileDetails? = null,
 ) = EventTimelineItem(
     isRemote = isRemote,
     eventOrTransactionId = eventOrTransactionId,
@@ -54,5 +56,7 @@ fun aRustEventTimelineItem(
     lazyProvider = FakeFfiLazyTimelineItemProvider(
         debugInfo = debugInfo,
         shieldsState = shieldsState,
-    )
+    ),
+    forwarder = forwarder,
+    forwarderProfile = forwarderProfile,
 )

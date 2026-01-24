@@ -27,11 +27,14 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import io.element.android.appconfig.LearnMoreConfig
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.securityandprivacy.impl.R
+import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
 import io.element.android.libraries.architecture.coverage.ExcludeFromCoverage
 import io.element.android.libraries.designsystem.components.async.AsyncActionView
@@ -43,6 +46,7 @@ import io.element.android.libraries.designsystem.components.list.ListItemContent
 import io.element.android.libraries.designsystem.preview.ElementPreviewDark
 import io.element.android.libraries.designsystem.preview.ElementPreviewLight
 import io.element.android.libraries.designsystem.preview.PreviewWithLargeHeight
+import io.element.android.libraries.designsystem.text.stringWithLink
 import io.element.android.libraries.designsystem.theme.components.CircularProgressIndicator
 import io.element.android.libraries.designsystem.theme.components.IconSource
 import io.element.android.libraries.designsystem.theme.components.ListItem
@@ -51,16 +55,16 @@ import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TextButton
 import io.element.android.libraries.designsystem.theme.components.TopAppBar
 import io.element.android.libraries.ui.strings.CommonStrings
-import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun SecurityAndPrivacyView(
     state: SecurityAndPrivacyState,
-    onBackClick: () -> Unit,
+    onLinkClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     BackHandler {
-        state.eventSink(SecurityAndPrivacyEvents.Exit)
+        state.eventSink(SecurityAndPrivacyEvent.Exit)
     }
     Scaffold(
         modifier = modifier,
@@ -68,10 +72,10 @@ fun SecurityAndPrivacyView(
             SecurityAndPrivacyToolbar(
                 isSaveActionEnabled = state.canBeSaved,
                 onBackClick = {
-                    state.eventSink(SecurityAndPrivacyEvents.Exit)
+                    state.eventSink(SecurityAndPrivacyEvent.Exit)
                 },
                 onSaveClick = {
-                    state.eventSink(SecurityAndPrivacyEvents.Save)
+                    state.eventSink(SecurityAndPrivacyEvent.Save)
                 },
             )
         }
@@ -86,11 +90,8 @@ fun SecurityAndPrivacyView(
         ) {
             if (state.showRoomAccessSection) {
                 RoomAccessSection(
+                    state = state,
                     modifier = Modifier.padding(top = 24.dp),
-                    edited = state.editedSettings.roomAccess,
-                    saved = state.savedSettings.roomAccess,
-                    isKnockEnabled = state.isKnockEnabled,
-                    onSelectOption = { state.eventSink(SecurityAndPrivacyEvents.ChangeRoomAccess(it)) },
                 )
             }
             if (state.showRoomVisibilitySections) {
@@ -98,10 +99,10 @@ fun SecurityAndPrivacyView(
                 RoomAddressSection(
                     roomAddress = state.editedSettings.address,
                     homeserverName = state.homeserverName,
-                    onRoomAddressClick = { state.eventSink(SecurityAndPrivacyEvents.EditRoomAddress) },
+                    onRoomAddressClick = { state.eventSink(SecurityAndPrivacyEvent.EditRoomAddress) },
                     isVisibleInRoomDirectory = state.editedSettings.isVisibleInRoomDirectory,
                     onVisibilityChange = {
-                        state.eventSink(SecurityAndPrivacyEvents.ToggleRoomVisibility)
+                        state.eventSink(SecurityAndPrivacyEvent.ToggleRoomVisibility)
                     },
                 )
             }
@@ -110,10 +111,10 @@ fun SecurityAndPrivacyView(
                     isRoomEncrypted = state.editedSettings.isEncrypted,
                     // encryption can't be disabled once enabled
                     canToggleEncryption = !state.savedSettings.isEncrypted,
-                    onToggleEncryption = { state.eventSink(SecurityAndPrivacyEvents.ToggleEncryptionState) },
+                    onToggleEncryption = { state.eventSink(SecurityAndPrivacyEvent.ToggleEncryptionState) },
                     showConfirmation = state.showEnableEncryptionConfirmation,
-                    onDismissConfirmation = { state.eventSink(SecurityAndPrivacyEvents.CancelEnableEncryption) },
-                    onConfirmEncryption = { state.eventSink(SecurityAndPrivacyEvents.ConfirmEnableEncryption) },
+                    onDismissConfirmation = { state.eventSink(SecurityAndPrivacyEvent.CancelEnableEncryption) },
+                    onConfirmEncryption = { state.eventSink(SecurityAndPrivacyEvent.ConfirmEnableEncryption) },
                 )
             }
             if (state.showHistoryVisibilitySection) {
@@ -121,7 +122,8 @@ fun SecurityAndPrivacyView(
                     editedOption = state.editedSettings.historyVisibility,
                     savedOptions = state.savedSettings.historyVisibility,
                     availableOptions = state.availableHistoryVisibilities,
-                    onSelectOption = { state.eventSink(SecurityAndPrivacyEvents.ChangeHistoryVisibility(it)) },
+                    onSelectOption = { state.eventSink(SecurityAndPrivacyEvent.ChangeHistoryVisibility(it)) },
+                    onLinkClick = onLinkClick,
                 )
             }
         }
@@ -129,25 +131,24 @@ fun SecurityAndPrivacyView(
     AsyncActionView(
         async = state.saveAction,
         onSuccess = { },
-        onErrorDismiss = { state.eventSink(SecurityAndPrivacyEvents.DismissSaveError) },
+        onErrorDismiss = { state.eventSink(SecurityAndPrivacyEvent.DismissSaveError) },
+        confirmationDialog = { confirming ->
+            when (confirming) {
+                is AsyncAction.ConfirmingCancellation ->
+                    SaveChangesDialog(
+                        onSaveClick = { state.eventSink(SecurityAndPrivacyEvent.Save) },
+                        onDiscardClick = { state.eventSink(SecurityAndPrivacyEvent.Exit) },
+                        onDismiss = { state.eventSink(SecurityAndPrivacyEvent.DismissExitConfirmation) }
+                    )
+            }
+        },
         errorMessage = { stringResource(CommonStrings.error_unknown) },
         progressDialog = {
             AsyncActionViewDefaults.ProgressDialog(
                 progressText = stringResource(CommonStrings.common_saving),
             )
         },
-        onRetry = { state.eventSink(SecurityAndPrivacyEvents.Save) },
-    )
-    AsyncActionView(
-        async = state.confirmExitAction,
-        onSuccess = { onBackClick() },
-        onErrorDismiss = { },
-        confirmationDialog = {
-            SaveChangesDialog(
-                onSubmitClick = { state.eventSink(SecurityAndPrivacyEvents.Exit) },
-                onDismiss = { state.eventSink(SecurityAndPrivacyEvents.DismissExitConfirmation) }
-            )
-        },
+        onRetry = { state.eventSink(SecurityAndPrivacyEvent.Save) },
     )
 }
 
@@ -177,6 +178,7 @@ private fun SecurityAndPrivacyToolbar(
 private fun SecurityAndPrivacySection(
     title: String,
     modifier: Modifier = Modifier,
+    subtitle: AnnotatedString? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
@@ -188,18 +190,42 @@ private fun SecurityAndPrivacySection(
             color = ElementTheme.colors.textPrimary,
             modifier = Modifier.padding(horizontal = 16.dp),
         )
+        if (subtitle != null) {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = subtitle,
+                style = ElementTheme.typography.fontBodyMdRegular,
+                color = ElementTheme.colors.textSecondary,
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+        }
         content()
     }
 }
 
 @Composable
 private fun RoomAccessSection(
-    edited: SecurityAndPrivacyRoomAccess,
-    saved: SecurityAndPrivacyRoomAccess,
-    isKnockEnabled: Boolean,
-    onSelectOption: (SecurityAndPrivacyRoomAccess) -> Unit,
+    state: SecurityAndPrivacyState,
     modifier: Modifier = Modifier,
 ) {
+    val edited = state.editedSettings.roomAccess
+
+    fun onSelectOption(option: SecurityAndPrivacyRoomAccess) {
+        state.eventSink(SecurityAndPrivacyEvent.ChangeRoomAccess(option))
+    }
+
+    fun onSpaceMemberAccessClick() {
+        state.eventSink(SecurityAndPrivacyEvent.SelectSpaceMemberAccess)
+    }
+
+    fun onAskToJoinWithSpaceMembersClick() {
+        state.eventSink(SecurityAndPrivacyEvent.SelectAskToJoinWithSpaceMembersAccess)
+    }
+
+    fun onManageSpacesClick() {
+        state.eventSink(SecurityAndPrivacyEvent.ManageAuthorizedSpaces)
+    }
+
     SecurityAndPrivacySection(
         title = stringResource(R.string.screen_security_and_privacy_room_access_section_header),
         modifier = modifier,
@@ -211,29 +237,36 @@ private fun RoomAccessSection(
             leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Public())),
             onClick = { onSelectOption(SecurityAndPrivacyRoomAccess.Anyone) },
         )
-        // Show space member option, but disabled as we don't support this option for now.
-        if (saved == SecurityAndPrivacyRoomAccess.SpaceMember) {
+        if (state.showSpaceMemberOption) {
             ListItem(
                 headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_title)) },
                 supportingContent = {
-                    Text(text = stringResource(R.string.screen_security_and_privacy_room_access_space_members_option_unavailable_description))
+                    Text(text = state.spaceMemberDescription())
                 },
-                trailingContent = ListItemContent.RadioButton(selected = edited == SecurityAndPrivacyRoomAccess.SpaceMember, enabled = false),
-                leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Workspace())),
-                enabled = false,
+                trailingContent = ListItemContent.RadioButton(selected = state.editedSettings.roomAccess is SecurityAndPrivacyRoomAccess.SpaceMember),
+                leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Space())),
+                onClick = ::onSpaceMemberAccessClick,
+                enabled = state.isSpaceMemberSelectable,
             )
         }
-        // Show Ask to join option in two cases:
-        // - the Knock FF is enabled
-        // - AskToJoin is the current saved value
-        if (saved == SecurityAndPrivacyRoomAccess.AskToJoin || isKnockEnabled) {
+        if (state.showAskToJoinOption) {
             ListItem(
                 headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_ask_to_join_option_title)) },
                 supportingContent = { Text(text = stringResource(R.string.screen_security_and_privacy_ask_to_join_option_description)) },
                 trailingContent = ListItemContent.RadioButton(selected = edited == SecurityAndPrivacyRoomAccess.AskToJoin),
                 onClick = { onSelectOption(SecurityAndPrivacyRoomAccess.AskToJoin) },
                 leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.UserAdd())),
-                enabled = isKnockEnabled,
+                enabled = state.isAskToJoinSelectable,
+            )
+        }
+        if (state.showAskToJoinWithSpaceMemberOption) {
+            ListItem(
+                headlineContent = { Text(text = stringResource(R.string.screen_security_and_privacy_ask_to_join_option_title)) },
+                supportingContent = { Text(text = state.askToJoinWithSpaceMembersDescription()) },
+                trailingContent = ListItemContent.RadioButton(selected = edited is SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember),
+                onClick = ::onAskToJoinWithSpaceMembersClick,
+                leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.UserAdd())),
+                enabled = state.isAskToJoinWithSpaceMembersSelectable,
             )
         }
         ListItem(
@@ -243,6 +276,20 @@ private fun RoomAccessSection(
             leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Lock())),
             onClick = { onSelectOption(SecurityAndPrivacyRoomAccess.InviteOnly) },
         )
+        if (state.showManageSpaceFooter) {
+            val footerText = stringWithLink(
+                textRes = R.string.screen_security_and_privacy_room_access_footer,
+                url = "",
+                linkTextRes = R.string.screen_security_and_privacy_room_access_footer_manage_spaces_action,
+                onLinkClick = { onManageSpacesClick() },
+            )
+            Text(
+                text = footerText,
+                style = ElementTheme.typography.fontBodySmRegular,
+                color = ElementTheme.colors.textSecondary,
+                modifier = Modifier.padding(bottom = 12.dp, start = 56.dp, end = 24.dp)
+            )
+        }
     }
 }
 
@@ -360,12 +407,18 @@ private fun EncryptionSection(
 private fun HistoryVisibilitySection(
     editedOption: SecurityAndPrivacyHistoryVisibility?,
     savedOptions: SecurityAndPrivacyHistoryVisibility?,
-    availableOptions: ImmutableSet<SecurityAndPrivacyHistoryVisibility>,
+    availableOptions: ImmutableList<SecurityAndPrivacyHistoryVisibility>,
     onSelectOption: (SecurityAndPrivacyHistoryVisibility) -> Unit,
+    onLinkClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     SecurityAndPrivacySection(
         title = stringResource(R.string.screen_security_and_privacy_room_history_section_header),
+        subtitle = stringWithLink(
+            textRes = R.string.screen_security_and_privacy_room_history_section_footer,
+            url = LearnMoreConfig.HISTORY_VISIBLE_URL,
+            onLinkClick = onLinkClick,
+        ),
         modifier = modifier,
     ) {
         for (availableOption in availableOptions) {
@@ -397,9 +450,9 @@ private fun HistoryVisibilityItem(
     isEnabled: Boolean = true,
 ) {
     val headlineText = when (option) {
-        SecurityAndPrivacyHistoryVisibility.SinceSelection -> stringResource(R.string.screen_security_and_privacy_room_history_since_selecting_option_title)
-        SecurityAndPrivacyHistoryVisibility.SinceInvite -> stringResource(R.string.screen_security_and_privacy_room_history_since_invite_option_title)
-        SecurityAndPrivacyHistoryVisibility.Anyone -> stringResource(R.string.screen_security_and_privacy_room_history_anyone_option_title)
+        SecurityAndPrivacyHistoryVisibility.Invited -> stringResource(R.string.screen_security_and_privacy_room_history_since_invite_option_title)
+        SecurityAndPrivacyHistoryVisibility.Shared -> stringResource(R.string.screen_security_and_privacy_room_history_since_selecting_option_title)
+        SecurityAndPrivacyHistoryVisibility.WorldReadable -> stringResource(R.string.screen_security_and_privacy_room_history_anyone_option_title)
     }
     ListItem(
         headlineContent = { Text(text = headlineText) },
@@ -425,6 +478,6 @@ internal fun SecurityAndPrivacyViewDarkPreview(@PreviewParameter(SecurityAndPriv
 private fun ContentToPreview(state: SecurityAndPrivacyState) {
     SecurityAndPrivacyView(
         state = state,
-        onBackClick = {},
+        onLinkClick = {},
     )
 }

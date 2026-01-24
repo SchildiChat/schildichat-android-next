@@ -112,6 +112,7 @@
   <string name="action_load_more">"Indlæs mere"</string>
   <string name="action_manage_account">"Administrer konto"</string>
   <string name="action_manage_devices">"Administrer enheder"</string>
+  <string name="action_manage_rooms">"Administrer rum"</string>
   <string name="action_message">"Besked"</string>
   <string name="action_minimize">"Minimér"</string>
   <string name="action_next">"Næste"</string>
@@ -156,6 +157,7 @@
   <string name="action_skip">"Spring over"</string>
   <string name="action_start">"Start"</string>
   <string name="action_start_chat">"Start samtale"</string>
+  <string name="action_start_over">"Begynd forfra"</string>
   <string name="action_start_verification">"Begynd verifikation"</string>
   <string name="action_static_map_load">"Tryk for at indlæse kort"</string>
   <string name="action_take_photo">"Tag billede"</string>
@@ -387,6 +389,7 @@ Er du sikker på, at du vil fortsætte?"</string>
   <string name="dialog_title_error">"Fejl"</string>
   <string name="dialog_title_success">"Succes"</string>
   <string name="dialog_title_warning">"Advarsel"</string>
+  <string name="dialog_unsaved_changes_description">"Du har ændringer, der ikke er gemt."</string>
   <string name="dialog_unsaved_changes_description_android">"Dine ændringer er ikke blevet gemt. Er du sikker på, at du vil gå tilbage?"</string>
   <string name="dialog_unsaved_changes_title">"Gem ændringer?"</string>
   <string name="dialog_video_quality_selector_subtitle_file_size">"Den maksimalt tilladte filstørrelse er: %1$s"</string>
@@ -466,7 +469,6 @@ Er du sikker på, at du vil fortsætte?"</string>
   <string name="screen_space_list_details">"%1$s•%2$s"</string>
   <string name="screen_space_list_parent_space">"%1$s gruppe"</string>
   <string name="screen_space_list_title">"Grupper"</string>
-  <string name="screen_space_menu_action_members">"Vis medlemmer"</string>
   <string name="screen_timeline_item_menu_send_failure_changed_identity">"Beskeden blev ikke sendt fordi %1$s s bekræftede identitet blev nulstillet."</string>
   <string name="screen_timeline_item_menu_send_failure_unsigned_device">"Meddelelsen er ikke sendt, fordi %1$s ikke har bekræftet alle enheder."</string>
   <string name="screen_timeline_item_menu_send_failure_you_unsigned_device">"Beskeden er ikke sendt, fordi du ikke har verificeret en eller flere af dine enheder."</string>

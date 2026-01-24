@@ -14,10 +14,8 @@ import org.matrix.rustcomponents.sdk.RoomHero
 
 internal fun aRustRoomHero(
     userId: UserId = A_USER_ID,
-): RoomHero {
-    return RoomHero(
-        userId = userId.value,
-        displayName = "displayName",
-        avatarUrl = "avatarUrl",
-    )
-}
+) = RoomHero(
+    userId = userId.value,
+    displayName = "displayName",
+    avatarUrl = "avatarUrl",
+)

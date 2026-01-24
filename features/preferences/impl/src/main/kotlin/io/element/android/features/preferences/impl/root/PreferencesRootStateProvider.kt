@@ -31,6 +31,7 @@ fun aPreferencesRootState(
     accountManagementUrl = "aUrl",
     devicesManagementUrl = "anOtherUrl",
     showAnalyticsSettings = true,
+    showLinkNewDevice = true,
     canReportBug = true,
     showDeveloperSettings = true,
     showBlockedUsersItem = true,

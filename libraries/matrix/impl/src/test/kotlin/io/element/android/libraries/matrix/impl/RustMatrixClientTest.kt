@@ -11,6 +11,7 @@
 package io.element.android.libraries.matrix.impl
 
 import com.google.common.truth.Truth.assertThat
+import io.element.android.libraries.core.data.bytes
 import io.element.android.libraries.featureflag.test.FakeFeatureFlagService
 import io.element.android.libraries.matrix.impl.fixtures.fakes.FakeFfiClient
 import io.element.android.libraries.matrix.impl.fixtures.fakes.FakeFfiSyncService
@@ -22,6 +23,7 @@ import io.element.android.libraries.matrix.test.A_USER_NAME
 import io.element.android.libraries.sessionstorage.api.SessionStore
 import io.element.android.libraries.sessionstorage.test.InMemorySessionStore
 import io.element.android.libraries.sessionstorage.test.aSessionData
+import io.element.android.libraries.workmanager.test.FakeWorkManagerScheduler
 import io.element.android.services.analytics.test.FakeAnalyticsService
 import io.element.android.services.toolbox.test.systemclock.FakeSystemClock
 import io.element.android.tests.testutils.lambda.lambdaRecorder
@@ -31,13 +33,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.junit.Ignore
 import org.junit.Test
 import org.matrix.rustcomponents.sdk.Client
+import org.matrix.rustcomponents.sdk.StoreSizes
 import org.matrix.rustcomponents.sdk.UserProfile
 import java.io.File
 
-@Ignore("JNA direct mapping has broken unit tests with FFI fakes")
 class RustMatrixClientTest {
     @Test
     fun `ensure that sessionId and deviceId can be retrieved from the client`() = runTest {
@@ -99,6 +100,20 @@ class RustMatrixClientTest {
         client.destroy()
     }
 
+    @Test
+    fun `getDatabaseSizes returns the database sizes`() = runTest {
+        val client = createRustMatrixClient(
+            client = FakeFfiClient(getStoreSizesResult = { StoreSizes(null, 10uL, 11uL, 12uL) })
+        )
+
+        client.getDatabaseSizes().getOrThrow().run {
+            assertThat(cryptoStore).isNull()
+            assertThat(stateStore).isEqualTo(10.bytes)
+            assertThat(eventCacheStore).isEqualTo(11.bytes)
+            assertThat(mediaStore).isEqualTo(12.bytes)
+        }
+    }
+
     private fun TestScope.createRustMatrixClient(
         client: Client = FakeFfiClient(),
         sessionStore: SessionStore = InMemorySessionStore(
@@ -118,5 +133,6 @@ class RustMatrixClientTest {
         timelineEventTypeFilterFactory = FakeTimelineEventTypeFilterFactory(),
         featureFlagService = FakeFeatureFlagService(),
         analyticsService = FakeAnalyticsService(),
+        workManagerScheduler = FakeWorkManagerScheduler(submitLambda = {}),
     )
 }

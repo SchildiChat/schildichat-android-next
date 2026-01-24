@@ -22,15 +22,26 @@ fun RoomInfo.getAvatarData(size: AvatarSize) = AvatarData(
 )
 
 /**
+ * Returns the power level of the user in the room.
+ * If the user is a creator and [RoomInfo.privilegedCreatorRole] is true, returns the power level of [RoomMember.Role.Owner].
+ * Otherwise, checks the room's power levels for the user's power level.
+ * If no specific power level is set for the user, defaults to 0.
+ */
+fun RoomInfo.powerLevelOf(userId: UserId): Long {
+    return if (privilegedCreatorRole && creators.contains(userId)) {
+        RoomMember.Role.Owner(isCreator = true).powerLevel
+    } else {
+        roomPowerLevels?.powerLevelOf(userId = userId) ?: 0L
+    }
+}
+
+/**
  * Returns the role of the user in the room.
  * If the user is a creator and [RoomInfo.privilegedCreatorRole] is true, returns [RoomMember.Role.Owner].
  * Otherwise, checks the power levels and returns the corresponding role.
  * If no specific power level is set for the user, defaults to [RoomMember.Role.User].
  */
 fun RoomInfo.roleOf(userId: UserId): RoomMember.Role {
-    return if (privilegedCreatorRole && creators.contains(userId)) {
-        RoomMember.Role.Owner(isCreator = true)
-    } else {
-        roomPowerLevels?.roleOf(userId) ?: RoomMember.Role.User
-    }
+    val powerLevel = powerLevelOf(userId = userId)
+    return RoomMember.Role.forPowerLevel(powerLevel)
 }

@@ -152,6 +152,7 @@
   <string name="action_skip">"Пропустити"</string>
   <string name="action_start">"Розпочати"</string>
   <string name="action_start_chat">"Розпочати бесіду"</string>
+  <string name="action_start_over">"Почати спочатку"</string>
   <string name="action_start_verification">"Почати верифікацію"</string>
   <string name="action_static_map_load">"Натисніть, щоб завантажити мапу"</string>
   <string name="action_take_photo">"Зробити фото"</string>
@@ -382,6 +383,7 @@
   <string name="dialog_title_error">"Помилка"</string>
   <string name="dialog_title_success">"Успіх"</string>
   <string name="dialog_title_warning">"Попередження"</string>
+  <string name="dialog_unsaved_changes_description">"У вас є не збережені зміни."</string>
   <string name="dialog_unsaved_changes_description_android">"Внесені зміни не збережено. Ви впевнені, що хочете повернутися?"</string>
   <string name="dialog_unsaved_changes_title">"Зберегти зміни?"</string>
   <string name="dialog_video_quality_selector_subtitle_file_size">"Максимально дозволений розмір файлу: %1$s"</string>

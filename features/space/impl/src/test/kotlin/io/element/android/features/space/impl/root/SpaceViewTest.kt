@@ -15,11 +15,13 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_ROOM_NAME
 import io.element.android.libraries.matrix.test.A_ROOM_TOPIC
+import io.element.android.libraries.matrix.test.room.aRoomInfo
 import io.element.android.libraries.previewutils.room.aSpaceRoom
 import io.element.android.libraries.ui.strings.CommonStrings
 import io.element.android.tests.testutils.EnsureNeverCalled
@@ -29,6 +31,7 @@ import io.element.android.tests.testutils.clickOn
 import io.element.android.tests.testutils.ensureCalledOnce
 import io.element.android.tests.testutils.ensureCalledOnceWithParam
 import io.element.android.tests.testutils.pressBack
+import io.element.android.tests.testutils.pressBackKey
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
@@ -124,13 +127,78 @@ class SpaceViewTest {
         val eventsRecorder = EventsRecorder<SpaceEvents>()
         rule.setSpaceView(
             aSpaceState(
-                parentSpace = aSpaceRoom(topic = A_ROOM_TOPIC),
+                spaceInfo = aRoomInfo(topic = A_ROOM_TOPIC),
                 hasMoreToLoad = false,
                 eventSink = eventsRecorder,
             )
         )
         rule.onNodeWithText(A_ROOM_TOPIC).performClick()
         eventsRecorder.assertSingle(SpaceEvents.ShowTopicViewer(A_ROOM_TOPIC))
+    }
+
+    @Test
+    fun `clicking back in manage mode emits ExitManageMode event`() {
+        val eventsRecorder = EventsRecorder<SpaceEvents>()
+        rule.setSpaceView(
+            aSpaceState(
+                hasMoreToLoad = false,
+                isManageMode = true,
+                eventSink = eventsRecorder,
+            )
+        )
+        rule.pressBackKey()
+        eventsRecorder.assertSingle(SpaceEvents.ExitManageMode)
+    }
+
+    @Test
+    fun `clicking on room in manage mode emits ToggleRoomSelection event`() {
+        val aSpaceRoom = aSpaceRoom(roomId = A_ROOM_ID, displayName = A_ROOM_NAME)
+        val eventsRecorder = EventsRecorder<SpaceEvents>()
+        rule.setSpaceView(
+            aSpaceState(
+                children = listOf(aSpaceRoom),
+                hasMoreToLoad = false,
+                isManageMode = true,
+                eventSink = eventsRecorder,
+            )
+        )
+        rule.onNodeWithText(A_ROOM_NAME).performClick()
+        eventsRecorder.assertSingle(SpaceEvents.ToggleRoomSelection(A_ROOM_ID))
+    }
+
+    @Test
+    fun `clicking remove button emits RemoveSelectedRooms event`() {
+        val eventsRecorder = EventsRecorder<SpaceEvents>()
+        rule.setSpaceView(
+            aSpaceState(
+                children = listOf(aSpaceRoom(roomId = A_ROOM_ID)),
+                hasMoreToLoad = false,
+                isManageMode = true,
+                selectedRoomIds = setOf(A_ROOM_ID),
+                eventSink = eventsRecorder,
+            )
+        )
+        rule.clickOn(CommonStrings.action_remove)
+        eventsRecorder.assertSingle(SpaceEvents.RemoveSelectedRooms)
+    }
+
+    @Config(qualifiers = "h1024dp")
+    @Test
+    fun `clicking confirm in removal dialog emits ConfirmRoomRemoval event`() {
+        val eventsRecorder = EventsRecorder<SpaceEvents>()
+        rule.setSpaceView(
+            aSpaceState(
+                children = listOf(aSpaceRoom(roomId = A_ROOM_ID)),
+                hasMoreToLoad = false,
+                isManageMode = true,
+                selectedRoomIds = setOf(A_ROOM_ID),
+                removeRoomsAction = AsyncAction.ConfirmingNoParams,
+                eventSink = eventsRecorder,
+            )
+        )
+        // Click on the Remove button in the confirmation dialog
+        rule.clickOn(CommonStrings.action_remove, inDialog = true)
+        eventsRecorder.assertSingle(SpaceEvents.ConfirmRoomRemoval)
     }
 }
 
@@ -140,7 +208,7 @@ private fun <R : TestRule> AndroidComposeTestRule<R, ComponentActivity>.setSpace
     onRoomClick: (SpaceRoom) -> Unit = EnsureNeverCalledWithParam(),
     onShareSpace: () -> Unit = EnsureNeverCalled(),
     onLeaveSpaceClick: () -> Unit = EnsureNeverCalled(),
-    onDetailsClick: () -> Unit = EnsureNeverCalled(),
+    onSettingsClick: () -> Unit = EnsureNeverCalled(),
     onViewMembersClick: () -> Unit = EnsureNeverCalled(),
     acceptDeclineInviteView: @Composable () -> Unit = {},
 ) {
@@ -151,7 +219,7 @@ private fun <R : TestRule> AndroidComposeTestRule<R, ComponentActivity>.setSpace
             onRoomClick = onRoomClick,
             onShareSpace = onShareSpace,
             onLeaveSpaceClick = onLeaveSpaceClick,
-            onDetailsClick = onDetailsClick,
+            onSettingsClick = onSettingsClick,
             onViewMembersClick = onViewMembersClick,
             acceptDeclineInviteView = acceptDeclineInviteView,
         )

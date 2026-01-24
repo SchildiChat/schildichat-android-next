@@ -55,6 +55,7 @@ import io.element.android.libraries.matrix.api.room.draft.ComposerDraft
 import io.element.android.libraries.matrix.api.room.draft.ComposerDraftType
 import io.element.android.libraries.matrix.api.room.getDirectRoomMember
 import io.element.android.libraries.matrix.api.room.isDm
+import io.element.android.libraries.matrix.api.room.powerlevels.use
 import io.element.android.libraries.matrix.api.timeline.TimelineException
 import io.element.android.libraries.matrix.api.timeline.item.event.toEventOrTransactionId
 import io.element.android.libraries.matrix.ui.messages.reply.InReplyToDetails
@@ -63,7 +64,7 @@ import io.element.android.libraries.mediapickers.api.PickerProvider
 import io.element.android.libraries.mediaupload.api.MediaOptimizationConfigProvider
 import io.element.android.libraries.mediaupload.api.MediaSenderFactory
 import io.element.android.libraries.mediaviewer.api.local.LocalMediaFactory
-import io.element.android.libraries.permissions.api.PermissionsEvents
+import io.element.android.libraries.permissions.api.PermissionsEvent
 import io.element.android.libraries.permissions.api.PermissionsPresenter
 import io.element.android.libraries.preferences.api.store.SessionPreferencesStore
 import io.element.android.libraries.push.api.notifications.conversations.NotificationConversationService
@@ -98,6 +99,7 @@ import timber.log.Timber
 import kotlin.time.Duration.Companion.seconds
 import io.element.android.libraries.core.mimetype.MimeTypes.Any as AnyMimeTypes
 
+@Suppress("LargeClass")
 @AssistedInject
 class MessageComposerPresenter(
     @Assisted private val navigator: MessagesNavigator,
@@ -284,7 +286,7 @@ class MessageComposerPresenter(
                         cameraPhotoPicker.launch()
                     } else {
                         pendingEvent = event
-                        cameraPermissionState.eventSink(PermissionsEvents.RequestPermissions)
+                        cameraPermissionState.eventSink(PermissionsEvent.RequestPermissions)
                     }
                 }
                 MessageComposerEvent.PickAttachmentSource.VideoFromCamera -> localCoroutineScope.launch {
@@ -293,7 +295,7 @@ class MessageComposerPresenter(
                         cameraVideoPicker.launch()
                     } else {
                         pendingEvent = event
-                        cameraPermissionState.eventSink(PermissionsEvents.RequestPermissions)
+                        cameraPermissionState.eventSink(PermissionsEvent.RequestPermissions)
                     }
                 }
                 MessageComposerEvent.PickAttachmentSource.Location -> {
@@ -396,7 +398,9 @@ class MessageComposerPresenter(
             val currentUserId = room.sessionId
 
             suspend fun canSendRoomMention(): Boolean {
-                val userCanSendAtRoom = room.canUserTriggerRoomNotification(currentUserId).getOrDefault(false)
+                val userCanSendAtRoom = room.roomPermissions().use(false) { perms ->
+                    perms.canOwnUserTriggerRoomNotification()
+                }
                 return !room.isDm() && userCanSendAtRoom
             }
 

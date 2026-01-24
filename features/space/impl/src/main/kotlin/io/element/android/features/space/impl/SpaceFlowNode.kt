@@ -28,7 +28,7 @@ import io.element.android.features.space.api.SpaceEntryPoint
 import io.element.android.features.space.impl.di.SpaceFlowGraph
 import io.element.android.features.space.impl.leave.LeaveSpaceNode
 import io.element.android.features.space.impl.root.SpaceNode
-import io.element.android.features.space.impl.settings.SpaceSettingsNode
+import io.element.android.features.space.impl.settings.SpaceSettingsFlowNode
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.callback
@@ -65,7 +65,7 @@ class SpaceFlowNode(
         data object Root : NavTarget
 
         @Parcelize
-        data object Settings : NavTarget
+        data class Settings(val initialTarget: SpaceSettingsFlowNode.NavTarget = SpaceSettingsFlowNode.NavTarget.Root) : NavTarget
 
         @Parcelize
         data object Leave : NavTarget
@@ -89,7 +89,7 @@ class SpaceFlowNode(
                     }
 
                     override fun navigateToRolesAndPermissions() {
-                        // TODO
+                        backstack.push(NavTarget.Settings(SpaceSettingsFlowNode.NavTarget.RolesAndPermissions))
                     }
                 }
                 createNode<LeaveSpaceNode>(buildContext, listOf(callback))
@@ -101,7 +101,7 @@ class SpaceFlowNode(
                     }
 
                     override fun navigateToSpaceSettings() {
-                        backstack.push(NavTarget.Settings)
+                        backstack.push(NavTarget.Settings())
                     }
 
                     override fun navigateToRoomMemberList() {
@@ -114,33 +114,23 @@ class SpaceFlowNode(
                 }
                 createNode<SpaceNode>(buildContext, listOf(callback))
             }
-            NavTarget.Settings -> {
-                val callback = object : SpaceSettingsNode.Callback {
-                    override fun closeSettings() {
-                        backstack.pop()
-                    }
-
-                    override fun navigateToSpaceInfo() {
-                        // TODO
-                    }
+            is NavTarget.Settings -> {
+                val callback = object : SpaceSettingsFlowNode.Callback {
+                    override fun initialTarget() = navTarget.initialTarget
 
                     override fun navigateToSpaceMembers() {
                         callback.navigateToRoomMemberList()
                     }
 
-                    override fun navigateToRolesAndPermissions() {
-                        // TODO
-                    }
-
-                    override fun navigateToSecurityAndPrivacy() {
-                        // TODO
-                    }
-
                     override fun startLeaveSpaceFlow() {
                         backstack.push(NavTarget.Leave)
                     }
+
+                    override fun closeSettings() {
+                        backstack.pop()
+                    }
                 }
-                createNode<SpaceSettingsNode>(buildContext, listOf(callback))
+                createNode<SpaceSettingsFlowNode>(buildContext, listOf(callback))
             }
         }
     }

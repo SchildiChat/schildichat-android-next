@@ -12,6 +12,9 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.element.android.features.securityandprivacy.api.SecurityAndPrivacyPermissions
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.AsyncData
+import io.element.android.libraries.matrix.api.spaces.SpaceRoom
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableSet
 
 open class SecurityAndPrivacyStateProvider : PreviewParameterProvider<SecurityAndPrivacyState> {
     override val values: Sequence<SecurityAndPrivacyState>
@@ -27,7 +30,7 @@ open class SecurityAndPrivacyStateProvider : PreviewParameterProvider<SecurityAn
                     isSpace = false,
                 ),
                 aSecurityAndPrivacyState(
-                    confirmExitAction = AsyncAction.ConfirmingCancellation,
+                    saveAction = AsyncAction.ConfirmingCancellation,
                     isSpace = false,
                 ),
                 aSecurityAndPrivacyState(
@@ -61,10 +64,26 @@ private fun commonSecurityAndPrivacyStates(isSpace: Boolean): Sequence<SecurityA
     ),
     aSecurityAndPrivacyState(
         savedSettings = aSecurityAndPrivacySettings(
-            roomAccess = SecurityAndPrivacyRoomAccess.SpaceMember
+            roomAccess = SecurityAndPrivacyRoomAccess.SpaceMember(persistentListOf())
         ),
+        spaceSelectionMode = SpaceSelectionMode.Multiple,
         isSpace = isSpace,
         isKnockEnabled = false,
+    ),
+    aSecurityAndPrivacyState(
+        spaceSelectionMode = SpaceSelectionMode.Multiple,
+        savedSettings = aSecurityAndPrivacySettings(
+            roomAccess = SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember(persistentListOf()),
+        ),
+        isSpace = isSpace,
+    ),
+    aSecurityAndPrivacyState(
+        spaceSelectionMode = SpaceSelectionMode.Multiple,
+        savedSettings = aSecurityAndPrivacySettings(
+            roomAccess = SecurityAndPrivacyRoomAccess.AskToJoinWithSpaceMember(persistentListOf())
+        ),
+        isSpace = isSpace,
+        isKnockEnabled = true,
     ),
     aSecurityAndPrivacyState(
         editedSettings = aSecurityAndPrivacySettings(
@@ -93,7 +112,7 @@ fun aSecurityAndPrivacySettings(
     roomAccess: SecurityAndPrivacyRoomAccess = SecurityAndPrivacyRoomAccess.InviteOnly,
     isEncrypted: Boolean = true,
     address: String? = null,
-    historyVisibility: SecurityAndPrivacyHistoryVisibility = SecurityAndPrivacyHistoryVisibility.SinceSelection,
+    historyVisibility: SecurityAndPrivacyHistoryVisibility = SecurityAndPrivacyHistoryVisibility.Shared,
     isVisibleInRoomDirectory: AsyncData<Boolean> = AsyncData.Uninitialized,
 ) = SecurityAndPrivacySettings(
     roomAccess = roomAccess,
@@ -109,7 +128,6 @@ fun aSecurityAndPrivacyState(
     homeserverName: String = "myserver.xyz",
     showEncryptionConfirmation: Boolean = false,
     saveAction: AsyncAction<Unit> = AsyncAction.Uninitialized,
-    confirmExitAction: AsyncAction<Unit> = AsyncAction.Uninitialized,
     permissions: SecurityAndPrivacyPermissions = SecurityAndPrivacyPermissions(
         canChangeRoomAccess = true,
         canChangeHistoryVisibility = true,
@@ -118,16 +136,21 @@ fun aSecurityAndPrivacyState(
     ),
     isKnockEnabled: Boolean = true,
     isSpace: Boolean = false,
-    eventSink: (SecurityAndPrivacyEvents) -> Unit = {}
+    selectableJoinedSpaces: Set<SpaceRoom> = emptySet(),
+    spaceSelectionMode: SpaceSelectionMode = SpaceSelectionMode.None,
+    isSpaceSettingsEnabled: Boolean = true,
+    eventSink: (SecurityAndPrivacyEvent) -> Unit = {}
 ) = SecurityAndPrivacyState(
     editedSettings = editedSettings,
     savedSettings = savedSettings,
     homeserverName = homeserverName,
     showEnableEncryptionConfirmation = showEncryptionConfirmation,
     saveAction = saveAction,
-    confirmExitAction = confirmExitAction,
     isKnockEnabled = isKnockEnabled,
     permissions = permissions,
     isSpace = isSpace,
+    selectableJoinedSpaces = selectableJoinedSpaces.toImmutableSet(),
+    spaceSelectionMode = spaceSelectionMode,
+    isSpaceSettingsEnabled = isSpaceSettingsEnabled,
     eventSink = eventSink,
 )

@@ -27,6 +27,7 @@ data class PreferencesRootState(
     val accountManagementUrl: String?,
     val devicesManagementUrl: String?,
     val canReportBug: Boolean,
+    val showLinkNewDevice: Boolean,
     val showAnalyticsSettings: Boolean,
     val showDeveloperSettings: Boolean,
     val canDeactivateAccount: Boolean,

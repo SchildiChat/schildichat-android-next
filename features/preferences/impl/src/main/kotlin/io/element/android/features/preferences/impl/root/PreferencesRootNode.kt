@@ -47,6 +47,7 @@ class PreferencesRootNode(
         fun navigateToAdvancedSettings()
         fun navigateToScTweaks(scPrefScreen: ScPrefScreen?) // SC
         fun navigateToLabs()
+        fun navigateToLinkNewDevice()
         fun navigateToUserProfile(matrixUser: MatrixUser)
         fun navigateToBlockedUsers()
         fun startSignOutFlow()
@@ -87,6 +88,7 @@ class PreferencesRootNode(
             onOpenAdvancedSettings = callback::navigateToAdvancedSettings,
             onOpenLabs = callback::navigateToLabs,
             navigateToScTweaks = callback::navigateToScTweaks,
+            onLinkNewDeviceClick = callback::navigateToLinkNewDevice,
             onManageAccountClick = { onManageAccountClick(activity, it, isDark) },
             onOpenNotificationSettings = callback::navigateToNotificationSettings,
             onOpenLockScreenSettings = callback::navigateToLockScreenSettings,

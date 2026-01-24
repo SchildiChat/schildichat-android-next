@@ -28,7 +28,9 @@ setupDependencyInjection()
 
 dependencies {
     api(projects.features.securityandprivacy.api)
+    implementation(projects.appconfig)
     implementation(projects.appnav)
+    implementation(projects.libraries.androidutils)
     implementation(projects.libraries.architecture)
     implementation(projects.libraries.core)
     implementation(projects.libraries.designsystem)

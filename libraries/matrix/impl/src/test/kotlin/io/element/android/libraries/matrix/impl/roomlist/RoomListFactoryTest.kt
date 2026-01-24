@@ -12,12 +12,10 @@ import io.element.android.libraries.matrix.impl.fixtures.fakes.FakeFfiRoomList
 import io.element.android.libraries.matrix.impl.fixtures.fakes.FakeFfiRoomListService
 import io.element.android.services.analytics.test.FakeAnalyticsService
 import kotlinx.coroutines.test.runTest
-import org.junit.Ignore
 import org.junit.Test
 import kotlin.coroutines.EmptyCoroutineContext
 
 class RoomListFactoryTest {
-    @Ignore("JNA direct mapping has broken unit tests with FFI fakes")
     @Test
     fun `createRoomList should work`() = runTest {
         val sut = RoomListFactory(

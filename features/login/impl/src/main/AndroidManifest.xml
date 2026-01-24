@@ -15,4 +15,6 @@
         </intent>
     </queries>
 
+    <!-- Permission to read data from Element classic -->
+    <uses-permission android:name="im.vector.app.READ_DATA" />
 </manifest>

@@ -2,9 +2,12 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="screen_room_change_permissions_administrators">"Только администраторы"</string>
   <string name="screen_room_change_permissions_ban_people">"Блокировать людей могут"</string>
+  <string name="screen_room_change_permissions_change_settings">"Изменить настройки"</string>
   <string name="screen_room_change_permissions_delete_messages">"Удалить сообщения"</string>
   <string name="screen_room_change_permissions_everyone">"Участник"</string>
   <string name="screen_room_change_permissions_invite_people">"Пригласить людей"</string>
+  <string name="screen_room_change_permissions_manage_space">"Управление пространством"</string>
+  <string name="screen_room_change_permissions_manage_space_rooms">"Управление комнатами"</string>
   <string name="screen_room_change_permissions_member_moderation">"Список участников"</string>
   <string name="screen_room_change_permissions_messages_and_content">"Сообщения и содержание"</string>
   <string name="screen_room_change_permissions_moderators">"Модератор"</string>
@@ -14,6 +17,7 @@
   <string name="screen_room_change_permissions_room_name">"Менять название комнаты могут"</string>
   <string name="screen_room_change_permissions_room_topic">"Менять тему комнаты могут"</string>
   <string name="screen_room_change_permissions_send_messages">"Отправлять сообщения могут"</string>
+  <string name="screen_room_change_permissions_title">"Разрешения"</string>
   <string name="screen_room_change_role_administrators_title">"Редактировать роль администраторов"</string>
   <string name="screen_room_change_role_confirm_add_admin_description">"Вы не сможете отменить это действие. Вы устанавливаете уровень пользователю соответствующий вашему."</string>
   <string name="screen_room_change_role_confirm_add_admin_title">"Добавить администратора?"</string>

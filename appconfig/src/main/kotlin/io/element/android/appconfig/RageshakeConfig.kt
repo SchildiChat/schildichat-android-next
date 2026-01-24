@@ -25,4 +25,9 @@ object RageshakeConfig {
      * The maximum size of the upload request. Default value is just below CloudFlare's max request size.
      */
     const val MAX_LOG_UPLOAD_SIZE = 50 * 1024 * 1024L
+
+    /**
+     * The maximum size of a single log file.
+     */
+    const val MAX_LOG_CONTENT_SIZE = 100 * 1024 * 1024L
 }

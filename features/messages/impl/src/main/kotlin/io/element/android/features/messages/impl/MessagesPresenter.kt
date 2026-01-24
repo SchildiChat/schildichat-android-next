@@ -12,12 +12,10 @@ import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -34,6 +32,7 @@ import io.element.android.features.messages.api.timeline.HtmlConverterProvider
 import io.element.android.features.messages.impl.actionlist.ActionListEvents
 import io.element.android.features.messages.impl.actionlist.ActionListState
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemAction
+import io.element.android.features.messages.impl.crypto.historyvisible.HistoryVisibleState
 import io.element.android.features.messages.impl.crypto.identity.IdentityChangeState
 import io.element.android.features.messages.impl.link.LinkState
 import io.element.android.features.messages.impl.messagecomposer.MessageComposerEvent
@@ -77,14 +76,10 @@ import io.element.android.libraries.matrix.api.encryption.EncryptionService
 import io.element.android.libraries.matrix.api.encryption.identity.IdentityState
 import io.element.android.libraries.matrix.api.permalink.PermalinkParser
 import io.element.android.libraries.matrix.api.room.JoinedRoom
-import io.element.android.libraries.matrix.api.room.MessageEventType
 import io.element.android.libraries.matrix.api.room.RoomInfo
 import io.element.android.libraries.matrix.api.room.RoomMembersState
 import io.element.android.libraries.matrix.api.room.isDm
-import io.element.android.libraries.matrix.api.room.powerlevels.canPinUnpin
-import io.element.android.libraries.matrix.api.room.powerlevels.canRedactOther
-import io.element.android.libraries.matrix.api.room.powerlevels.canRedactOwn
-import io.element.android.libraries.matrix.api.room.powerlevels.canSendMessage
+import io.element.android.libraries.matrix.api.room.powerlevels.permissionsAsState
 import io.element.android.libraries.matrix.api.timeline.ReceiptType
 import io.element.android.libraries.matrix.api.timeline.item.event.EventOrTransactionId
 import io.element.android.libraries.matrix.ui.messages.reply.map
@@ -112,6 +107,7 @@ class MessagesPresenter(
     @Assisted private val timelinePresenter: Presenter<TimelineState>,
     private val timelineProtectionPresenter: Presenter<TimelineProtectionState>,
     private val identityChangeStatePresenter: Presenter<IdentityChangeState>,
+    private val historyVisibleStatePresenter: Presenter<HistoryVisibleState>,
     private val linkPresenter: Presenter<LinkState>,
     @Assisted private val actionListPresenter: Presenter<ActionListState>,
     private val customReactionPresenter: Presenter<CustomReactionState>,
@@ -165,6 +161,7 @@ class MessagesPresenter(
         val timelineState = timelinePresenter.present()
         val timelineProtectionState = timelineProtectionPresenter.present()
         val identityChangeState = identityChangeStatePresenter.present()
+        val historyVisibleState = historyVisibleStatePresenter.present()
         val actionListState = actionListPresenter.present()
         val linkState = linkPresenter.present()
         val customReactionState = customReactionPresenter.present()
@@ -174,7 +171,9 @@ class MessagesPresenter(
         val roomCallState = roomCallStatePresenter.present()
         val roomMemberModerationState = roomMemberModerationPresenter.present()
 
-        val userEventPermissions by userEventPermissions(roomInfo)
+        val userEventPermissions by room.permissionsAsState(UserEventPermissions.DEFAULT) { perms ->
+            perms.userEventPermissions()
+        }
 
         val roomAvatar by remember {
             derivedStateOf { roomInfo.avatarData() }
@@ -299,6 +298,7 @@ class MessagesPresenter(
             timelineState = timelineState,
             timelineProtectionState = timelineProtectionState,
             identityChangeState = identityChangeState,
+            historyVisibleState = historyVisibleState,
             linkState = linkState,
             actionListState = actionListState,
             customReactionState = customReactionState,
@@ -317,24 +317,6 @@ class MessagesPresenter(
             successorRoom = roomInfo.successorRoom,
             eventSink = ::handleEvent,
         )
-    }
-
-    @Composable
-    private fun userEventPermissions(roomInfo: RoomInfo): State<UserEventPermissions> {
-        val key = if (roomInfo.privilegedCreatorRole && roomInfo.creators.contains(room.sessionId)) {
-            Long.MAX_VALUE
-        } else {
-            roomInfo.roomPowerLevels?.hashCode() ?: 0L
-        }
-        return produceState(UserEventPermissions.DEFAULT, key1 = key) {
-            value = UserEventPermissions(
-                canSendMessage = room.canSendMessage(type = MessageEventType.RoomMessage).getOrElse { true },
-                canSendReaction = room.canSendMessage(type = MessageEventType.Reaction).getOrElse { true },
-                canRedactOwn = room.canRedactOwn().getOrElse { false },
-                canRedactOther = room.canRedactOther().getOrElse { false },
-                canPinUnpin = room.canPinUnpin().getOrElse { false },
-            )
-        }
     }
 
     private fun RoomInfo.avatarData(): AvatarData {

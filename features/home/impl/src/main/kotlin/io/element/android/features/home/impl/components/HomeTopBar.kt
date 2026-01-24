@@ -141,6 +141,7 @@ fun HomeTopBar(
             actions = {
                 when (selectedNavigationItem) {
                     HomeNavigationBarItem.Chats -> RoomListMenuItems(
+                        onStartChatClick = onStartChatClick, // SC
                         onToggleSearch = onToggleSearch,
                         onMenuActionClick = onMenuActionClick,
                         canReportBug = canReportBug
@@ -170,6 +171,7 @@ fun HomeTopBar(
 
 @Composable
 private fun RoomListMenuItems(
+    onStartChatClick: () -> Unit, // SC
     onToggleSearch: () -> Unit,
     onMenuActionClick: (RoomListMenuAction) -> Unit,
     canReportBug: Boolean,
@@ -353,6 +355,7 @@ internal fun HomeTopBarPreview() = ElementPreview {
 @Composable
 internal fun HomeTopBarSpacesPreview() = ElementPreview {
     HomeTopBar(
+        selectedSpaceName = null, onStartChatClick = {}, // SC
         selectedNavigationItem = HomeNavigationBarItem.Spaces,
         title = stringResource(R.string.screen_home_tab_spaces),
         currentUserAndNeighbors = persistentListOf(MatrixUser(UserId("@id:domain"), "Alice")),

@@ -32,8 +32,6 @@ import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.designsystem.icons.CompoundDrawables
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.di.annotations.ApplicationContext
-import io.element.android.libraries.featureflag.api.FeatureFlagService
-import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.room.MatrixSpaceChildInfo
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
@@ -65,7 +63,6 @@ class SpaceListDataSource(
     private val roomListRoomSummaryFactory: RoomListRoomSummaryFactory,
     private val coroutineDispatchers: CoroutineDispatchers,
     private val scPreferencesStore: ScPreferencesStore,
-    private val featureFlagService: FeatureFlagService,
     @ApplicationContext
     private val context: Context,
 ) {
@@ -81,7 +78,7 @@ class SpaceListDataSource(
     fun launchIn(coroutineScope: CoroutineScope) {
         combine(
             roomListService.allSpaces.summaries,
-            scPreferencesStore.pseudoSpaceSettingsFlow(featureFlagService),
+            scPreferencesStore.pseudoSpaceSettingsFlow(),
             _forceRebuildFlow,
         ) { roomSummaries, pseudoSpaces, _ ->
             Timber.v("Rebuild space list with ${roomSummaries.size}/${roomListService.allSpaces.loadingState.value} spaces")
@@ -184,7 +181,7 @@ class SpaceListDataSource(
             listOf(
                 UpstreamSpaceListItem(
                     context.getString(chat.schildi.lib.R.string.sc_pseudo_space_list),
-                    ImageVector.vectorResource(res = context.resources, resId = CompoundDrawables.ic_compound_workspace_solid)
+                    ImageVector.vectorResource(res = context.resources, resId = CompoundDrawables.ic_compound_space_solid)
                 )
             )
         } else {
@@ -491,7 +488,7 @@ class SpaceListDataSource(
     }
 }
 
-fun ScPreferencesStore.pseudoSpaceSettingsFlow(featureFlagService: FeatureFlagService): Flow<SpaceListDataSource.PseudoSpaceSettings> {
+fun ScPreferencesStore.pseudoSpaceSettingsFlow(): Flow<SpaceListDataSource.PseudoSpaceSettings> {
     return combinedSettingFlow { lookup ->
         SpaceListDataSource.PseudoSpaceSettings(
             favorites = ScPrefs.PSEUDO_SPACE_FAVORITES.safeLookup(lookup),
@@ -505,8 +502,6 @@ fun ScPreferencesStore.pseudoSpaceSettingsFlow(featureFlagService: FeatureFlagSe
             clientUnreadCounts = ScPrefs.CLIENT_GENERATED_UNREAD_COUNTS.safeLookup(lookup),
             upstreamSpaceList = true,
         )
-    }.combine(featureFlagService.isFeatureEnabledFlow(FeatureFlags.Space)) { settings, upstreamSpacesEnabled ->
-        settings.copy(upstreamSpaceList = upstreamSpacesEnabled)
     }
 }
 

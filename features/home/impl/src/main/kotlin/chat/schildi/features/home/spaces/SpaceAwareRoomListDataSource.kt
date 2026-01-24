@@ -6,7 +6,6 @@ import chat.schildi.lib.preferences.ScPrefs
 import dev.zacsweers.metro.Inject
 import io.element.android.features.home.impl.datasource.RoomListDataSource
 import io.element.android.features.home.impl.model.RoomListRoomSummary
-import io.element.android.libraries.featureflag.api.FeatureFlagService
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -28,7 +27,6 @@ import timber.log.Timber
 @Inject
 class SpaceAwareRoomListDataSource(
     private val scPreferencesStore: ScPreferencesStore,
-    private val featureFlagService: FeatureFlagService,
 ) {
 
     private val _spaceSelectionHierarchy = MutableStateFlow<ImmutableList<String>?>(null)
@@ -62,7 +60,7 @@ class SpaceAwareRoomListDataSource(
         combine(
             _spaceSelectionHierarchy,
             spaceListDataSource.allSpaces,
-            scPreferencesStore.pseudoSpaceSettingsFlow(featureFlagService),
+            scPreferencesStore.pseudoSpaceSettingsFlow(),
         ) { spaceSelectionValue, allSpacesValue, pseudoSpaces ->
             // No space selected or not initialized yet -> show all
             if (spaceSelectionValue.isNullOrEmpty()) {

@@ -76,7 +76,7 @@ class TimelineItemContentMessageFactory(
                     body = emoteBody,
                     htmlDocument = dom,
                     formattedBody = formattedBody,
-                    formattedCollapsedBody = parseHtmlCollapsed(permalinkParser, messageType.formatted, prefix = "* $senderDisambiguatedDisplayName"),
+                    formattedCollapsedBody = null, // TODO drop
                     isEdited = content.isEdited,
                 )
             }
@@ -233,7 +233,7 @@ class TimelineItemContentMessageFactory(
                     body = body,
                     htmlDocument = htmlDocument,
                     formattedBody = formattedBody,
-                    formattedCollapsedBody = parseHtmlCollapsed(permalinkParser, messageType.formatted),
+                    formattedCollapsedBody = null, // TODO drop
                     isEdited = content.isEdited,
                 )
             }
@@ -247,7 +247,7 @@ class TimelineItemContentMessageFactory(
                     body = body,
                     htmlDocument = htmlDocument,
                     formattedBody = formattedBody,
-                    formattedCollapsedBody = parseHtmlCollapsed(permalinkParser, messageType.formatted),
+                    formattedCollapsedBody = null, // TODO drop
                     isEdited = content.isEdited,
                 )
             }

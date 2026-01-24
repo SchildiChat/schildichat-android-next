@@ -98,7 +98,6 @@ fun PreferenceColorPreview(
             icon = icon,
             iconResourceId = iconResourceId,
             showIconBadge = showIconBadge,
-            enabled = enabled,
             showIconAreaIfNoIcon = showIconAreaIfNoIcon,
             tintColor = tintColor,
         ),

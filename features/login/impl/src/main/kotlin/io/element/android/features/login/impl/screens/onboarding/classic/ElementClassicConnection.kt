@@ -95,6 +95,7 @@ class DefaultElementClassicConnection(
 
     override fun start() {
         Timber.tag(loggerTag.value).w("start()")
+        /* SC disabled
         coroutineScope.launch {
             // Establish a connection with the service. We use an explicit
             // class name because there is no reason to be able to let other
@@ -114,6 +115,7 @@ class DefaultElementClassicConnection(
                 mutableStateFlow.emit(ElementClassicConnectionState.Error(e.localizedMessage.orEmpty()))
             }
         }
+         */
     }
 
     override fun stop() {
@@ -198,6 +200,7 @@ class DefaultElementClassicConnection(
         }
     }
 
+    /* SC disabled
     private fun getElementClassicComponent(buildMeta: BuildMeta) = ComponentName(
         buildString {
             append(ELEMENT_CLASSIC_APP_ID)
@@ -211,6 +214,7 @@ class DefaultElementClassicConnection(
         },
         ELEMENT_CLASSIC_SERVICE_FULL_CLASS_NAME,
     )
+     */
 
     private fun Bundle?.toElementClassicConnectionState(): ElementClassicConnectionState {
         return if (this == null) {

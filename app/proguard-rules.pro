@@ -73,3 +73,8 @@
 
 # Keep Metro classes
 -keep,allowshrinking class dev.zacsweers.metro.** { *; }
+
+# Unneeded messageformat htmlcompressor dependencies
+-dontwarn com.yahoo.platform.yui.compressor.CssCompressor
+-dontwarn com.yahoo.platform.yui.compressor.JavaScriptCompressor
+-dontwarn org.mozilla.javascript.ErrorReporter

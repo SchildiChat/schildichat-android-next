@@ -18,6 +18,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.core.text.getSpans
 import chat.schildi.lib.preferences.ScPrefs
@@ -93,7 +94,12 @@ fun ScTimelineItemTextView(
     MatrixStyledFormattedText(
         content,
         color = textColor,
-        style = textStyle,
+        style = if (content.inlineImages.isEmpty()) {
+            textStyle
+        } else {
+            // Allow inline images/content to increase the line height on demand by having this unspecified here
+            textStyle.copy(lineHeight = TextUnit.Unspecified)
+        },
         modifier = modifier,
         formatter = LocalMatrixBodyFormatter.current ?: matrixBodyFormatter(),
         drawStyle = LocalMatrixBodyDrawStyle.current ?: matrixBodyDrawStyle(),

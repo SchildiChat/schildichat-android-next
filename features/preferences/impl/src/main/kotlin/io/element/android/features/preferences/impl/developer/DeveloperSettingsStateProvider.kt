@@ -32,7 +32,12 @@ open class DeveloperSettingsStateProvider : PreviewParameterProvider<DeveloperSe
             ),
             aDeveloperSettingsState(
                 isEnterpriseBuild = true,
-                showColorPicker = true,
+                // Disable the color picker for now, Paparazzi is failing with:
+                // java.lang.IllegalArgumentException: Cannot round NaN value.
+                //  at kotlin.math.MathKt__MathJVMKt.roundToInt(MathJVM.kt:1210)
+                //  at io.mhssn.colorpicker.ext.ColorExtKt.lighten(ColorExt.kt:86)
+                //  at io.mhssn.colorpicker.pickers.ClassicColorPickerKt$ClassicColorPicker$1$1.invokeSuspend(ClassicColorPicker.kt:53)
+                showColorPicker = false,
             ),
         )
 }

@@ -317,12 +317,6 @@ Reden: %1$s."</string>
   <string name="error_missing_microphone_voice_rationale_android">"%1$s heeft geen toegang tot je microfoon. Schakel toegang in om een spraakbericht op te nemen."</string>
   <string name="error_some_messages_have_not_been_sent">"Sommige berichten zijn niet verzonden"</string>
   <string name="error_unknown">"Sorry, er is een fout opgetreden"</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"De echtheid van dit versleutelde bericht kan op dit apparaat niet worden gegarandeerd."</string>
-  <string name="event_shield_reason_previously_verified">"Versleuteld door een eerder geverifieerde gebruiker."</string>
-  <string name="event_shield_reason_sent_in_clear">"Niet versleuteld."</string>
-  <string name="event_shield_reason_unknown_device">"Versleuteld door een onbekend of verwijderd apparaat."</string>
-  <string name="event_shield_reason_unsigned_device">"Versleuteld door een apparaat dat niet is geverifieerd door de eigenaar."</string>
-  <string name="event_shield_reason_unverified_identity">"Versleuteld door een niet-geverifieerde gebruiker."</string>
   <string name="invite_friends_rich_title">"🔐️ Sluit je bij mij aan op %1$s"</string>
   <string name="invite_friends_text">"Hé, praat met me op %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>

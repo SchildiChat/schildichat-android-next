@@ -338,12 +338,6 @@ Motivo: %1$s."</string>
   <string name="error_room_address_invalid_symbols">"No se permiten algunos caracteres. Solo se admiten letras, dígitos y los siguientes símbolos ! $ &amp; ‘ ( ) * + / ; = ? @ [ ] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Algunos mensajes no se han enviado"</string>
   <string name="error_unknown">"Lo siento, se ha producido un error"</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"La autenticidad de este mensaje cifrado no puede ser garantizada en este dispositivo."</string>
-  <string name="event_shield_reason_previously_verified">"Cifrado por un usuario verificado anteriormente."</string>
-  <string name="event_shield_reason_sent_in_clear">"No cifrado."</string>
-  <string name="event_shield_reason_unknown_device">"Cifrado por un dispositivo desconocido o eliminado."</string>
-  <string name="event_shield_reason_unsigned_device">"Cifrado por un dispositivo no verificado por su propietario."</string>
-  <string name="event_shield_reason_unverified_identity">"Cifrado por un usuario no verificado."</string>
   <string name="invite_friends_rich_title">"🔐️ Únete a mí en %1$s"</string>
   <string name="invite_friends_text">"Hola, puedes hablar conmigo en %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>

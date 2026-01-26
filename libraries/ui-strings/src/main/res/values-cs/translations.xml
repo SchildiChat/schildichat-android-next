@@ -426,13 +426,6 @@ Opravdu chcete pokračovat?"</string>
   <string name="error_room_address_invalid_symbols">"Některé znaky nejsou povoleny. Podporovány jsou pouze písmena, číslice a následující symboly ! $ &amp; ‘ ( ) * + / ; = ? @ [ ] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Některé zprávy nebyly odeslány"</string>
   <string name="error_unknown">"Omlouváme se, došlo k chybě"</string>
-  <string name="event_shield_mismatched_sender">"Odesílatel události se neshoduje s vlastníkem zařízení, které ji odeslalo."</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"Autenticitu této zašifrované zprávy nelze na tomto zařízení zaručit."</string>
-  <string name="event_shield_reason_previously_verified">"Zašifrováno dříve ověřeným uživatelem."</string>
-  <string name="event_shield_reason_sent_in_clear">"Není zašifrováno."</string>
-  <string name="event_shield_reason_unknown_device">"Šifrováno neznámým nebo smazaným zařízením."</string>
-  <string name="event_shield_reason_unsigned_device">"Šifrováno zařízením, které nebylo ověřeno jeho vlastníkem."</string>
-  <string name="event_shield_reason_unverified_identity">"Šifrováno neověřeným uživatelem."</string>
   <string name="invite_friends_rich_title">"🔐️ Připojte se ke mně na %1$s"</string>
   <string name="invite_friends_text">"Ahoj, ozvi se mi na %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>

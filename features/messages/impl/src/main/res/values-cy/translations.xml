@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="crypto_event_authenticity_mismatched_sender">"Nid yw anfonwr y digwyddiad yn cyfateb i berchennog y ddyfais a\'i hanfonodd."</string>
+  <string name="crypto_event_authenticity_not_guaranteed">"Nid oes modd gwarantu dilysrwydd y neges hon sydd wedi\'i hamgryptio ar y ddyfais hon."</string>
+  <string name="crypto_event_authenticity_previously_verified">"Wedi\'i amgryptio gan ddefnyddiwr a wiriwyd gynt."</string>
+  <string name="crypto_event_authenticity_sent_in_clear">"Heb ei amgryptio."</string>
+  <string name="crypto_event_authenticity_unknown_device">"Wedi\'i amgryptio gan ddyfais anhysbys neu wedi\'i dileu."</string>
+  <string name="crypto_event_authenticity_unsigned_device">"Wedi\'i amgryptio gan ddyfais nad yw wedi\'i wirio gan ei pherchennog."</string>
+  <string name="crypto_event_authenticity_unverified_identity">"Wedi\'i amgryptio gan ddefnyddiwr heb ei wirio."</string>
   <string name="emoji_picker_category_activity">"Gweithgareddau"</string>
   <string name="emoji_picker_category_flags">"Baneri"</string>
   <string name="emoji_picker_category_foods">"Bwyd a Diod"</string>

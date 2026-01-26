@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="crypto_event_authenticity_mismatched_sender">"Tapahtuman lähettäjä ei vastaa sitä lähettäneen laitteen omistajaa."</string>
+  <string name="crypto_event_authenticity_not_guaranteed">"Tämän salatun viestin aitoutta ei voida taata tällä laitteella."</string>
+  <string name="crypto_event_authenticity_previously_verified">"Aiemmin vahvistetun käyttäjän salaama."</string>
+  <string name="crypto_event_authenticity_sent_in_clear">"Ei salattu."</string>
+  <string name="crypto_event_authenticity_unknown_device">"Tuntemattoman tai poistetun laitteen salaama."</string>
+  <string name="crypto_event_authenticity_unsigned_device">"Salattu laitteella, jota sen omistaja ei ole vahvistanut."</string>
+  <string name="crypto_event_authenticity_unverified_identity">"Vahvistamattoman käyttäjän salaama."</string>
   <string name="emoji_picker_category_activity">"Aktiviteetit"</string>
   <string name="emoji_picker_category_flags">"Liput"</string>
   <string name="emoji_picker_category_foods">"Ruoka ja juoma"</string>

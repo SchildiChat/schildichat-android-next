@@ -354,13 +354,6 @@ Apakah Anda yakin ingin melanjutkan?"</string>
   <string name="error_room_address_invalid_symbols">"Beberapa karakter tidak diperbolehkan. Hanya huruf, angka, dan simbol berikut didukung ! $ &amp; ‘ ( ) * + / ; = ? @ [ ] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Beberapa pesan belum terkirim"</string>
   <string name="error_unknown">"Maaf, terjadi kesalahan"</string>
-  <string name="event_shield_mismatched_sender">"Pengirim peristiwa tidak cocok dengan pemilik perangkat yang mengirimnya."</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"Keaslian pesan terenkripsi ini tidak dapat dijamin pada perangkat ini."</string>
-  <string name="event_shield_reason_previously_verified">"Dienkripsi oleh pengguna yang telah diverifikasi sebelumnya."</string>
-  <string name="event_shield_reason_sent_in_clear">"Tidak dienkripsi."</string>
-  <string name="event_shield_reason_unknown_device">"Dienkripsi oleh perangkat yang tidak dikenal atau dihapus."</string>
-  <string name="event_shield_reason_unsigned_device">"Dienkripsi oleh perangkat yang tidak diverifikasi oleh pemiliknya."</string>
-  <string name="event_shield_reason_unverified_identity">"Dienkripsi oleh pengguna yang tidak terverifikasi."</string>
   <string name="invite_friends_rich_title">"🔐️ Bergabunglah dengan saya di %1$s"</string>
   <string name="invite_friends_text">"Hai, bicaralah dengan saya di %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>

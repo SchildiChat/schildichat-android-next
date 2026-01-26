@@ -327,12 +327,6 @@ Devam etmek istediğinizden emin misiniz?"</string>
   <string name="error_room_address_invalid_symbols">"Bazı karakterlere izin verilmez. Yalnızca harfler, rakamlar ve aşağıdaki semboller desteklenir ! $ &amp;amp; \' ( ) * + / ; = ? @ [ ] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Bazı mesajlar gönderilmedi"</string>
   <string name="error_unknown">"Üzgünüz, bir hata oluştu"</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"Bu şifrelenmiş mesajın doğruluğu bu cihazda garanti edilemez."</string>
-  <string name="event_shield_reason_previously_verified">"Daha önce doğrulanmış bir kullanıcı tarafından şifrelenmiştir."</string>
-  <string name="event_shield_reason_sent_in_clear">"Şifrelenmemiş."</string>
-  <string name="event_shield_reason_unknown_device">"Bilinmeyen veya silinmiş bir cihaz tarafından şifrelenmiştir."</string>
-  <string name="event_shield_reason_unsigned_device">"Sahibi tarafından doğrulanmamış bir cihaz tarafından şifrelenmiştir."</string>
-  <string name="event_shield_reason_unverified_identity">"Doğrulanmamış bir kullanıcı tarafından şifrelenmiştir."</string>
   <string name="invite_friends_rich_title">"🔐️ Bana katılın %1$s"</string>
   <string name="invite_friends_text">"Hey, benimle konuş %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>

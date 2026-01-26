@@ -439,13 +439,6 @@
   <string name="error_room_address_invalid_symbols">"Некоторые символы не допускаются. Поддерживаются только буквы, цифры и следующие символы! $ &amp; \'() * +/; =? @ [] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Некоторые сообщения не были отправлены"</string>
   <string name="error_unknown">"Извините, произошла ошибка"</string>
-  <string name="event_shield_mismatched_sender">"Отправитель события и владелец устройства не совпадают."</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"Подлинность этого зашифрованного сообщения не может быть гарантирована на этом устройстве."</string>
-  <string name="event_shield_reason_previously_verified">"Зашифровано ранее проверенным пользователем."</string>
-  <string name="event_shield_reason_sent_in_clear">"Не зашифровано."</string>
-  <string name="event_shield_reason_unknown_device">"Зашифровано неизвестным или удаленным устройством."</string>
-  <string name="event_shield_reason_unsigned_device">"Зашифровано устройством, не проверенным его владельцем."</string>
-  <string name="event_shield_reason_unverified_identity">"Зашифровано непроверенным пользователем."</string>
   <string name="invite_friends_rich_title">"🔐️ Присоединяйтесь ко мне в %1$s"</string>
   <string name="invite_friends_text">"Привет, поговори со мной по %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>

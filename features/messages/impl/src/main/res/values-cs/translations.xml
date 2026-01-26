@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="crypto_event_authenticity_mismatched_sender">"Odesílatel události se neshoduje s vlastníkem zařízení, které ji odeslalo."</string>
+  <string name="crypto_event_authenticity_not_guaranteed">"Autenticitu této zašifrované zprávy nelze na tomto zařízení zaručit."</string>
+  <string name="crypto_event_authenticity_previously_verified">"Zašifrováno dříve ověřeným uživatelem."</string>
+  <string name="crypto_event_authenticity_sent_in_clear">"Není zašifrováno."</string>
+  <string name="crypto_event_authenticity_unknown_device">"Šifrováno neznámým nebo smazaným zařízením."</string>
+  <string name="crypto_event_authenticity_unsigned_device">"Šifrováno zařízením, které nebylo ověřeno jeho vlastníkem."</string>
+  <string name="crypto_event_authenticity_unverified_identity">"Šifrováno neověřeným uživatelem."</string>
   <string name="emoji_picker_category_activity">"Aktivity"</string>
   <string name="emoji_picker_category_flags">"Vlajky"</string>
   <string name="emoji_picker_category_foods">"Jídlo a nápoje"</string>

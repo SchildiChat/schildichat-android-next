@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
+import io.element.android.features.messages.impl.R
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.Icon
@@ -109,13 +110,13 @@ internal fun MessageShieldData.toText(): String {
     }
     return stringResource(
         id = when (shield) {
-            is MessageShield.AuthenticityNotGuaranteed -> CommonStrings.event_shield_reason_authenticity_not_guaranteed
-            is MessageShield.UnknownDevice -> CommonStrings.event_shield_reason_unknown_device
-            is MessageShield.UnsignedDevice -> CommonStrings.event_shield_reason_unsigned_device
-            is MessageShield.UnverifiedIdentity -> CommonStrings.event_shield_reason_unverified_identity
-            is MessageShield.SentInClear -> CommonStrings.event_shield_reason_sent_in_clear
-            is MessageShield.VerificationViolation -> CommonStrings.event_shield_reason_previously_verified
-            is MessageShield.MismatchedSender -> CommonStrings.event_shield_mismatched_sender
+            is MessageShield.AuthenticityNotGuaranteed -> R.string.crypto_event_authenticity_not_guaranteed
+            is MessageShield.UnknownDevice -> R.string.crypto_event_authenticity_unknown_device
+            is MessageShield.UnsignedDevice -> R.string.crypto_event_authenticity_unsigned_device
+            is MessageShield.UnverifiedIdentity -> R.string.crypto_event_authenticity_unverified_identity
+            is MessageShield.SentInClear -> R.string.crypto_event_authenticity_sent_in_clear
+            is MessageShield.VerificationViolation -> R.string.crypto_event_authenticity_previously_verified
+            is MessageShield.MismatchedSender -> R.string.crypto_event_authenticity_mismatched_sender
         }
     )
 }

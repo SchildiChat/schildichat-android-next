@@ -356,7 +356,6 @@ Ziur jarraitu nahi duzula?"</string>
   <string name="error_room_address_invalid_symbols">"Karaktere batzuk ez daude baimenduta. Hizkiak, zifrak, eta ondorengo ikurrak onartzen dira bakarrik: ! $ &amp; ‘ ( ) * + / ; = ? @ [ ] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Mezu batzuk ez dira bidali"</string>
   <string name="error_unknown">"Barka, errore bat gertatu da"</string>
-  <string name="event_shield_reason_sent_in_clear">"Ez dago zifratuta."</string>
   <string name="invite_friends_rich_title">"🔐️ Zatoz nirekin %1$s(e)ra"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>
   <string name="preference_rageshake">"Astindu erroreen berri emateko"</string>

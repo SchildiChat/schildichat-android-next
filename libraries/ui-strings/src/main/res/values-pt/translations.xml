@@ -407,13 +407,6 @@ Tens a certeza de que queres continuar?"</string>
   <string name="error_room_address_invalid_symbols">"Alguns caracteres não são permitidos. Apenas letras, dígitos e os seguintes símbolos são suportados! $ &amp; ‘ ( ) * + / ; = ? @ [ ] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Algumas mensagens não foram enviadas"</string>
   <string name="error_unknown">"Pedimos desculpa, ocorreu um erro desconhecido"</string>
-  <string name="event_shield_mismatched_sender">"O remetente deste evento não é o dono do dispositivo que o enviou."</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"A autenticidade desta mensagem cifrada não pode ser garantida neste dispositivo."</string>
-  <string name="event_shield_reason_previously_verified">"Criptografado por um usuário verificado anteriormente."</string>
-  <string name="event_shield_reason_sent_in_clear">"Não cifrado."</string>
-  <string name="event_shield_reason_unknown_device">"Cifragem com origem num dispositivo eliminado ou desconhecido."</string>
-  <string name="event_shield_reason_unsigned_device">"Cifragem com origem num dispositivo não verificado pelo seu dono."</string>
-  <string name="event_shield_reason_unverified_identity">"Cifragem com origem num utilizador não verificado."</string>
   <string name="invite_friends_rich_title">"🔐️ Junta-te a mim na %1$s"</string>
   <string name="invite_friends_text">"Alô! Fala comigo na %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>

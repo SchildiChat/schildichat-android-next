@@ -401,13 +401,6 @@ Davom etasizmi?"</string>
   <string name="error_room_address_invalid_symbols">"Ayrim belgilarga ruxsat berilmagan. Faqat harf, raqam va quyidagi belgilar ishlaydi! $ &amp;’() * + /; =? @ [ ] -. _"</string>
   <string name="error_some_messages_have_not_been_sent">"Bazi xabarlar yuborilmagan"</string>
   <string name="error_unknown">"Kechirasiz, xatolik yuz berdi"</string>
-  <string name="event_shield_mismatched_sender">"Hodisani yuborgan shaxs uni yuborgan qurilmaning egasi bilan mos kelmaydi."</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"Bu qurilmada shifrlangan xabarning haqiqiyligini kafolatlash imkonsiz."</string>
-  <string name="event_shield_reason_previously_verified">"Avval tasdiqlangan foydalanuvchi tomonidan shifrlangan."</string>
-  <string name="event_shield_reason_sent_in_clear">"Shifrlanmagan"</string>
-  <string name="event_shield_reason_unknown_device">"Nomaʼlum yoki oʻchirib tashlangan qurilma tomonidan shifrlangan."</string>
-  <string name="event_shield_reason_unsigned_device">"Egasi tasdiqlamagan qurilma tomonidan shifrlangan."</string>
-  <string name="event_shield_reason_unverified_identity">"Tasdiqlanmagan foydalanuvchi tomonidan shifrlangan."</string>
   <string name="invite_friends_rich_title">"🔐️ Menga qo\'shiling%1$s"</string>
   <string name="invite_friends_text">"Hey, men bilan gaplash%1$s :%2$s"</string>
   <string name="login_initial_device_name_android">"%1$sAndroid"</string>

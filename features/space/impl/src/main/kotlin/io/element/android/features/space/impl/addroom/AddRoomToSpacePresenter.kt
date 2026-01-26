@@ -12,7 +12,6 @@ import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -25,8 +24,10 @@ import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.architecture.runUpdatingState
 import io.element.android.libraries.designsystem.theme.components.SearchBarResultState
+import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
 import io.element.android.libraries.matrix.api.spaces.SpaceService
+import io.element.android.libraries.matrix.api.spaces.resetAndWaitForFullReload
 import io.element.android.libraries.matrix.ui.model.SelectRoomInfo
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -35,6 +36,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 @Inject
 class AddRoomToSpacePresenter(
@@ -45,7 +47,7 @@ class AddRoomToSpacePresenter(
     @Composable
     override fun present(): AddRoomToSpaceState {
         var selectedRooms: ImmutableList<SelectRoomInfo> by remember { mutableStateOf(persistentListOf()) }
-        var searchQuery = rememberTextFieldState()
+        val searchQuery = rememberTextFieldState()
         var isSearchActive by remember { mutableStateOf(false) }
         val saveAction = remember { mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized) }
 
@@ -63,12 +65,12 @@ class AddRoomToSpacePresenter(
         val suggestions by dataSource.suggestions.collectAsState(initial = persistentListOf())
 
         val filteredRooms by dataSource.roomInfoList.collectAsState(initial = persistentListOf())
-        val searchResults by remember<State<SearchBarResultState<ImmutableList<SelectRoomInfo>>>> {
+        val searchResults by remember {
             derivedStateOf {
                 when {
                     filteredRooms.isNotEmpty() -> SearchBarResultState.Results(filteredRooms)
-                    isSearchActive && searchQuery.text.isNotEmpty() -> SearchBarResultState.NoResultsFound()
-                    else -> SearchBarResultState.Initial()
+                    isSearchActive && searchQuery.text.isNotEmpty() -> SearchBarResultState.NoResultsFound<ImmutableList<SelectRoomInfo>>()
+                    else -> SearchBarResultState.Initial<ImmutableList<SelectRoomInfo>>()
                 }
             }
         }
@@ -91,7 +93,11 @@ class AddRoomToSpacePresenter(
                 AddRoomToSpaceEvent.Save -> {
                     coroutineScope.addRoomsToSpace(
                         selectedRooms = selectedRooms,
-                        addAction = saveAction,
+                        dataSource = dataSource,
+                        saveAction = saveAction,
+                        onPartialSuccess = { successfullyAdded ->
+                            selectedRooms = selectedRooms.filterNot { it.roomId in successfullyAdded }.toImmutableList()
+                        },
                     )
                 }
                 AddRoomToSpaceEvent.ResetSaveAction -> {
@@ -113,21 +119,30 @@ class AddRoomToSpacePresenter(
 
     private fun CoroutineScope.addRoomsToSpace(
         selectedRooms: ImmutableList<SelectRoomInfo>,
-        addAction: MutableState<AsyncAction<Unit>>,
+        dataSource: AddRoomToSpaceSearchDataSource,
+        saveAction: MutableState<AsyncAction<Unit>>,
+        onPartialSuccess: (Set<RoomId>) -> Unit,
     ) = launch {
-        addAction.runUpdatingState {
-            val results = selectedRooms.map { selectedRoom ->
+        saveAction.runUpdatingState {
+            val spaceId = spaceRoomList.spaceId
+            val successfullyAdded = mutableSetOf<RoomId>()
+            val results = selectedRooms.map { room ->
                 async {
                     spaceService.addChildToSpace(
-                        spaceId = spaceRoomList.roomId,
-                        childId = selectedRoom.roomId,
-                    )
+                        spaceId = spaceId,
+                        childId = room.roomId,
+                    ).onSuccess { successfullyAdded.add(room.roomId) }
                 }
             }.awaitAll()
             val anyFailure = results.any { it.isFailure }
             if (anyFailure) {
+                // On partial success, mark added rooms in data source and update selection
+                dataSource.markAsAdded(successfullyAdded)
+                onPartialSuccess(successfullyAdded)
                 Result.failure(Exception("Failed to add some rooms"))
             } else {
+                // On full success, refresh the space room list
+                spaceRoomList.reset()
                 Result.success(Unit)
             }
         }

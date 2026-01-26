@@ -17,6 +17,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -29,7 +30,7 @@ import java.util.Optional
 import org.matrix.rustcomponents.sdk.SpaceRoomList as InnerSpaceRoomList
 
 class RustSpaceRoomList(
-    override val roomId: RoomId,
+    override val spaceId: RoomId,
     private val innerProvider: suspend () -> InnerSpaceRoomList,
     private val coroutineScope: CoroutineScope,
     spaceRoomMapper: SpaceRoomMapper,
@@ -89,7 +90,7 @@ class RustSpaceRoomList(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun destroy() {
-        Timber.d("Destroying SpaceRoomList $roomId")
+        Timber.d("Destroying SpaceRoomList $spaceId")
         coroutineScope.cancel()
         try {
             innerCompletable.getCompleted().destroy()

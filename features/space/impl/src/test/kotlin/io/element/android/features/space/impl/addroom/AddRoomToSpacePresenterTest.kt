@@ -17,11 +17,16 @@ import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
 import io.element.android.libraries.matrix.test.AN_EXCEPTION
 import io.element.android.libraries.matrix.test.A_ROOM_ID
+import io.element.android.libraries.matrix.test.A_ROOM_ID_2
 import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.matrix.test.room.aRoomSummary
 import io.element.android.libraries.matrix.test.roomlist.FakeRoomListService
 import io.element.android.libraries.matrix.test.spaces.FakeSpaceRoomList
 import io.element.android.libraries.matrix.test.spaces.FakeSpaceService
+import io.element.android.libraries.matrix.ui.components.aSelectRoomInfo
+import io.element.android.libraries.matrix.ui.model.SelectRoomInfo
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import io.element.android.tests.testutils.lambda.lambdaRecorder
 import io.element.android.tests.testutils.test
 import io.element.android.tests.testutils.testCoroutineDispatchers
@@ -276,6 +281,7 @@ class AddRoomToSpacePresenterTest {
     private fun TestScope.createAddRoomToSpacePresenter(
         spaceRoomList: FakeSpaceRoomList = FakeSpaceRoomList(
             paginateResult = { Result.success(Unit) },
+            resetResult = { Result.success(Unit) },
         ),
         spaceService: FakeSpaceService = FakeSpaceService(
             addChildToSpaceResult = { _, _ -> Result.success(Unit) },
@@ -301,3 +307,8 @@ class AddRoomToSpacePresenterTest {
         )
     }
 }
+
+private fun aSelectRoomInfoList(): ImmutableList<SelectRoomInfo> = listOf(
+    aSelectRoomInfo(roomId = A_ROOM_ID, name = "Room 1"),
+    aSelectRoomInfo(roomId = A_ROOM_ID_2, name = "Room 2"),
+).toImmutableList()

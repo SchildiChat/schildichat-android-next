@@ -58,8 +58,8 @@ fun AddRoomToSpaceView(
     onRoomsAdded: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    fun onRoomRemoved(roomInfo: SelectRoomInfo) {
-        state.eventSink(AddRoomToSpaceEvent.ToggleRoom(roomInfo))
+    fun onRoomToggled(room: SelectRoomInfo) {
+        state.eventSink(AddRoomToSpaceEvent.ToggleRoom(room))
     }
 
     fun onBack() {
@@ -114,18 +114,18 @@ fun AddRoomToSpaceView(
                     if (state.selectedRooms.isNotEmpty()) {
                         SelectedRoomsRow(
                             selectedRooms = state.selectedRooms,
-                            onRemoveRoom = ::onRoomRemoved,
+                            onRemoveRoom = ::onRoomToggled,
                             modifier = Modifier.padding(vertical = 16.dp)
                         )
                     }
                 },
             ) { rooms ->
                 LazyColumn {
-                    items(rooms, key = { it.roomId.value }) { roomInfo ->
+                    items(rooms, key = { it.roomId }) { roomInfo ->
                         RoomListItem(
                             roomInfo = roomInfo,
                             isSelected = state.selectedRooms.any { it.roomId == roomInfo.roomId },
-                            onToggle = { state.eventSink(AddRoomToSpaceEvent.ToggleRoom(it)) }
+                            onToggle = ::onRoomToggled
                         )
                     }
                 }
@@ -142,7 +142,7 @@ fun AddRoomToSpaceView(
                 if (state.selectedRooms.isNotEmpty()) {
                     SelectedRoomsRow(
                         selectedRooms = state.selectedRooms,
-                        onRemoveRoom = ::onRoomRemoved,
+                        onRemoveRoom = ::onRoomToggled,
                         modifier = Modifier.padding(vertical = 16.dp)
                     )
                 }
@@ -159,7 +159,7 @@ fun AddRoomToSpaceView(
                             RoomListItem(
                                 roomInfo = roomInfo,
                                 isSelected = state.selectedRooms.any { it.roomId == roomInfo.roomId },
-                                onToggle = { state.eventSink(AddRoomToSpaceEvent.ToggleRoom(it)) }
+                                onToggle = ::onRoomToggled
                             )
                         }
                     }
@@ -205,8 +205,8 @@ private fun SelectedRoomsRow(
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(32.dp)
     ) {
-        items(selectedRooms, key = { it.roomId.value }) { roomInfo ->
-            SelectedRoom(roomInfo = roomInfo, onRemoveRoom = onRemoveRoom)
+        items(selectedRooms, key = { it.roomId }) { roomInfo ->
+            SelectedRoom(roomInfo = roomInfo, onRemoveRoom = { onRemoveRoom(roomInfo) })
         }
     }
 }

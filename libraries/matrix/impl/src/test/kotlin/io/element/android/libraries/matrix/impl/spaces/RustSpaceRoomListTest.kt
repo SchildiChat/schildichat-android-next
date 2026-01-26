@@ -94,7 +94,7 @@ class RustSpaceRoomListTest {
         spaceRoomMapper: SpaceRoomMapper = SpaceRoomMapper(),
     ): RustSpaceRoomList {
         return RustSpaceRoomList(
-            roomId = roomId,
+            spaceId = roomId,
             innerProvider = innerProvider,
             coroutineScope = backgroundScope,
             spaceRoomMapper = spaceRoomMapper,

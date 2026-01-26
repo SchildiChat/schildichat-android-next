@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.util.Optional
 
 class FakeSpaceRoomList(
-    override val roomId: RoomId = A_ROOM_ID,
+    override val spaceId: RoomId = A_ROOM_ID,
     initialSpaceFlowValue: SpaceRoom? = null,
     initialSpaceRoomsValue: List<SpaceRoom> = emptyList(),
     initialSpaceRoomList: SpaceRoomList.PaginationStatus = SpaceRoomList.PaginationStatus.Loading,
@@ -35,7 +35,8 @@ class FakeSpaceRoomList(
         currentSpaceMutableStateFlow.value = Optional.ofNullable(value)
     }
 
-    private val _spaceRoomsFlow: MutableStateFlow<List<SpaceRoom>> = MutableStateFlow(initialSpaceRoomsValue)
+    private val _spaceRoomsFlow = MutableStateFlow<List<SpaceRoom>>(initialSpaceRoomsValue)
+
     override val spaceRoomsFlow: Flow<List<SpaceRoom>> = _spaceRoomsFlow.asStateFlow()
 
     fun emitSpaceRooms(value: List<SpaceRoom>) {

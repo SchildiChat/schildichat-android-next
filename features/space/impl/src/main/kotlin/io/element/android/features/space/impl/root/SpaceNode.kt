@@ -54,7 +54,7 @@ class SpaceNode(
     private val callback: Callback = callback()
 
     private fun onShareRoom(context: Context) = lifecycleScope.launch {
-        matrixClient.getRoom(spaceRoomList.roomId)?.use { room ->
+        matrixClient.getRoom(spaceRoomList.spaceId)?.use { room ->
             room.getPermalink()
                 .onSuccess { permalink ->
                     context.startSharePlainTextIntent(

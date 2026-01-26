@@ -79,7 +79,7 @@ class RustSpaceService(
     override fun spaceRoomList(id: RoomId): SpaceRoomList {
         val childCoroutineScope = sessionCoroutineScope.childScope(sessionDispatcher, "SpaceRoomListScope-$this")
         return RustSpaceRoomList(
-            roomId = id,
+            spaceId = id,
             innerProvider = { innerSpaceService.spaceRoomList(id.value) },
             coroutineScope = childCoroutineScope,
             spaceRoomMapper = spaceRoomMapper,

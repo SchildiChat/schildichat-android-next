@@ -25,38 +25,31 @@ interface SpaceRoomList {
         data class Idle(val hasMoreToLoad: Boolean) : PaginationStatus
     }
 
-    val roomId: RoomId
+    val spaceId: RoomId
 
     val currentSpaceFlow: StateFlow<Optional<SpaceRoom>>
 
     val spaceRoomsFlow: Flow<List<SpaceRoom>>
     val paginationStatusFlow: StateFlow<PaginationStatus>
+
     suspend fun paginate(): Result<Unit>
     suspend fun reset(): Result<Unit>
 
     fun destroy()
 }
 
+/**
+ * Loads all space rooms incrementally by automatically paginating whenever more data is available.
+ * This function observes the pagination status and triggers [paginate] calls until the entire list is loaded.
+ *
+ * @param coroutineScope The scope in which the pagination flow will be collected.
+ */
 fun SpaceRoomList.loadAllIncrementally(coroutineScope: CoroutineScope) {
     paginationStatusFlow
         .onEach { paginationStatus ->
-            when (paginationStatus) {
-                is SpaceRoomList.PaginationStatus.Idle -> {
-                    if (paginationStatus.hasMoreToLoad) {
-                        paginate()
-                    }
-                }
-                SpaceRoomList.PaginationStatus.Loading -> Unit
+            if (paginationStatus is SpaceRoomList.PaginationStatus.Idle && paginationStatus.hasMoreToLoad) {
+                paginate()
             }
         }
         .launchIn(coroutineScope)
-}
-
-suspend fun SpaceRoomList.resetAndWaitForFullReload(timeout: Duration) {
-    reset()
-    withTimeoutOrNull(timeout) {
-        paginationStatusFlow.first { status ->
-            status is SpaceRoomList.PaginationStatus.Idle && !status.hasMoreToLoad
-        }
-    }
 }

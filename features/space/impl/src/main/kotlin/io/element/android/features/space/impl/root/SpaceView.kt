@@ -139,6 +139,7 @@ fun SpaceView(
                     SpaceViewTopBar(
                         spaceInfo = state.spaceInfo,
                         canAccessSpaceSettings = state.canAccessSpaceSettings,
+                        canEditSpaceGraph = state.canEditSpaceGraph,
                         showManageRoomsAction = state.showManageRoomsAction,
                         onBackClick = onBackClick,
                         onLeaveSpaceClick = onLeaveSpaceClick,
@@ -376,6 +377,7 @@ private fun LoadingMoreIndicator(
 private fun SpaceViewTopBar(
     spaceInfo: RoomInfo,
     canAccessSpaceSettings: Boolean,
+    canEditSpaceGraph: Boolean,
     showManageRoomsAction: Boolean,
     onBackClick: () -> Unit,
     onLeaveSpaceClick: () -> Unit,
@@ -416,7 +418,7 @@ private fun SpaceViewTopBar(
                 expanded = showMenu,
                 onDismissRequest = { showMenu = false }
             ) {
-                if (showManageRoomsAction) {
+                if (canEditSpaceGraph) {
                     SpaceMenuItem(
                         titleRes = CommonStrings.action_create_room,
                         icon = CompoundIcons.Plus(),
@@ -433,14 +435,16 @@ private fun SpaceViewTopBar(
                             onAddRoomClick()
                         }
                     )
-                    SpaceMenuItem(
-                        titleRes = CommonStrings.action_manage_rooms,
-                        icon = CompoundIcons.Edit(),
-                        onClick = {
-                            showMenu = false
-                            onManageRoomsClick()
-                        }
-                    )
+                    if (showManageRoomsAction) {
+                        SpaceMenuItem(
+                            titleRes = CommonStrings.action_manage_rooms,
+                            icon = CompoundIcons.Edit(),
+                            onClick = {
+                                showMenu = false
+                                onManageRoomsClick()
+                            }
+                        )
+                    }
                     HorizontalDivider()
                 }
                 SpaceMenuItem(

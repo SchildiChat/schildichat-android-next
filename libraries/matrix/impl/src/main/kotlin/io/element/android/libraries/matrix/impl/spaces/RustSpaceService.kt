@@ -87,6 +87,12 @@ class RustSpaceService(
         )
     }
 
+    override suspend fun editableSpaces(): Result<List<SpaceRoom>> = withContext(sessionDispatcher) {
+        runCatchingExceptions {
+            innerSpaceService.editableSpaces().map(spaceRoomMapper::map)
+        }
+    }
+
     override fun getLeaveSpaceHandle(spaceId: RoomId): LeaveSpaceHandle {
         return RustLeaveSpaceHandle(
             id = spaceId,

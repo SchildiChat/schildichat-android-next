@@ -311,7 +311,6 @@
   <string name="error_missing_location_rationale_android">"%1$s няма разрешение за достъп до вашето местоположение. Активирайте достъпа по-долу."</string>
   <string name="error_some_messages_have_not_been_sent">"Някои съобщения не са изпратени"</string>
   <string name="error_unknown">"Съжаляваме, възникна грешка"</string>
-  <string name="event_shield_reason_sent_in_clear">"Без шифроване"</string>
   <string name="invite_friends_rich_title">"🔐️ Присъединете се към мен в %1$s"</string>
   <string name="invite_friends_text">"Хей, говорете с мен в %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>

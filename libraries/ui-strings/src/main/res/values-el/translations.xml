@@ -347,13 +347,6 @@
   <string name="error_room_address_invalid_symbols">"Ορισμένοι χαρακτήρες δεν επιτρέπονται. Υποστηρίζονται μόνο γράμματα, ψηφία και τα ακόλουθα σύμβολα ! $ &amp; \'() * +/; = ? @ [] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Ορισμένα μηνύματα δεν έχουν σταλεί"</string>
   <string name="error_unknown">"Λυπούμαστε, παρουσιάστηκε σφάλμα"</string>
-  <string name="event_shield_mismatched_sender">"Ο αποστολέας του συμβάντος δεν ταιριάζει με τον κάτοχο της συσκευής που το έστειλε."</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"Η αυθεντικότητα αυτού του κρυπτογραφημένου μηνύματος δεν είναι εγγυημένη σε αυτήν τη συσκευή."</string>
-  <string name="event_shield_reason_previously_verified">"Κρυπτογραφημένο από έναν προηγουμένως επαληθευμένο χρήστη."</string>
-  <string name="event_shield_reason_sent_in_clear">"Μη κρυπτογραφημένο."</string>
-  <string name="event_shield_reason_unknown_device">"Κρυπτογραφημένο από άγνωστη ή διαγεγραμμένη συσκευή."</string>
-  <string name="event_shield_reason_unsigned_device">"Κρυπτογραφημένο από μια συσκευή που δεν έχει επαληθευτεί από τον ιδιοκτήτη της."</string>
-  <string name="event_shield_reason_unverified_identity">"Κρυπτογραφημένο από μη επαληθευμένο χρήστη."</string>
   <string name="invite_friends_rich_title">"🔐️ Έλα μαζί μου στο %1$s"</string>
   <string name="invite_friends_text">"Γεια, μίλα μου στην εφαρμογή %1$s :%2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>

@@ -442,13 +442,6 @@ Naozaj chcete pokračovať?"</string>
   <string name="error_room_address_invalid_symbols">"Niektoré znaky nie sú povolené. Podporované sú iba písmená, číslice a nasledujúce symboly ! $ &amp; \'() * +/; =? @ [] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Niektoré správy neboli odoslané"</string>
   <string name="error_unknown">"Prepáčte, vyskytla sa chyba"</string>
-  <string name="event_shield_mismatched_sender">"Odosielateľ udalosti sa nezhoduje s vlastníkom zariadenia, ktoré ju odoslalo."</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"Pravosť tejto šifrovanej správy nie je možné zaručiť na tomto zariadení."</string>
-  <string name="event_shield_reason_previously_verified">"Šifrované predtým overeným používateľom."</string>
-  <string name="event_shield_reason_sent_in_clear">"Nie je šifrované."</string>
-  <string name="event_shield_reason_unknown_device">"Zašifrované neznámym alebo odstráneným zariadením."</string>
-  <string name="event_shield_reason_unsigned_device">"Šifrované zariadením, ktoré nie je overené jeho majiteľom."</string>
-  <string name="event_shield_reason_unverified_identity">"Šifrované neovereným používateľom."</string>
   <string name="invite_friends_rich_title">"🔐️ Pripojte sa ku mne na %1$s"</string>
   <string name="invite_friends_text">"Ahoj, porozprávajte sa so mnou na %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>

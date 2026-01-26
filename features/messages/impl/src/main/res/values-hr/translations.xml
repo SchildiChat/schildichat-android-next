@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="crypto_event_authenticity_mismatched_sender">"Pošiljatelj događaja ne podudara se s vlasnikom uređaja koji ga je poslao."</string>
+  <string name="crypto_event_authenticity_not_guaranteed">"Autentičnost ove šifrirane poruke ne može se jamčiti na ovom uređaju"</string>
+  <string name="crypto_event_authenticity_previously_verified">"Šifrirao je prethodno provjereni korisnik."</string>
+  <string name="crypto_event_authenticity_sent_in_clear">"Nije šifrirano."</string>
+  <string name="crypto_event_authenticity_unknown_device">"Šifrirano nepoznatim ili izbrisanim uređajem."</string>
+  <string name="crypto_event_authenticity_unsigned_device">"Šifrirano uređajem koji vlasnik nije potvrdio."</string>
+  <string name="crypto_event_authenticity_unverified_identity">"Šifrirao neprovjereni korisnik."</string>
   <string name="emoji_picker_category_activity">"Aktivnosti"</string>
   <string name="emoji_picker_category_flags">"Zastave"</string>
   <string name="emoji_picker_category_foods">"Hrana i piće"</string>

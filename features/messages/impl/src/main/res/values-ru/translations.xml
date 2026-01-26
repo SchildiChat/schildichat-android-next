@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="crypto_event_authenticity_mismatched_sender">"Отправитель события и владелец устройства не совпадают."</string>
+  <string name="crypto_event_authenticity_not_guaranteed">"Подлинность этого зашифрованного сообщения не может быть гарантирована на этом устройстве."</string>
+  <string name="crypto_event_authenticity_previously_verified">"Зашифровано ранее проверенным пользователем."</string>
+  <string name="crypto_event_authenticity_sent_in_clear">"Не зашифровано."</string>
+  <string name="crypto_event_authenticity_unknown_device">"Зашифровано неизвестным или удаленным устройством."</string>
+  <string name="crypto_event_authenticity_unsigned_device">"Зашифровано устройством, не проверенным его владельцем."</string>
+  <string name="crypto_event_authenticity_unverified_identity">"Зашифровано непроверенным пользователем."</string>
   <string name="emoji_picker_category_activity">"Деятельность"</string>
   <string name="emoji_picker_category_flags">"Флаги"</string>
   <string name="emoji_picker_category_foods">"Еда и напитки"</string>

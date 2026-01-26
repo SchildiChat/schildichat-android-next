@@ -431,13 +431,6 @@ Er du sikker på, at du vil fortsætte?"</string>
   <string name="error_room_address_invalid_symbols">"Nogle tegn er ikke tilladt. Kun bogstaver, cifre og følgende symboler understøttes! $ &amp; \'() * +/; =? @ [] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Nogle beskeder er ikke blevet sendt"</string>
   <string name="error_unknown">"Beklager, der opstod en fejl"</string>
-  <string name="event_shield_mismatched_sender">"Afsenderen af begivenheden matcher ikke ejeren af den enhed, der sendte den."</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"Ægtheden af denne krypterede besked kan ikke garanteres på denne enhed."</string>
-  <string name="event_shield_reason_previously_verified">"Krypteret af en tidligere verificeret bruger."</string>
-  <string name="event_shield_reason_sent_in_clear">"Ikke krypteret."</string>
-  <string name="event_shield_reason_unknown_device">"Krypteret af en ukendt eller slettet enhed."</string>
-  <string name="event_shield_reason_unsigned_device">"Krypteret af en enhed, der ikke er verificeret af sin ejer."</string>
-  <string name="event_shield_reason_unverified_identity">"Krypteret af en ikke-verificeret bruger."</string>
   <string name="invite_friends_rich_title">"🔐️ Kom med mig til %1$s"</string>
   <string name="invite_friends_text">"Hej, lad os snakkes på %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>

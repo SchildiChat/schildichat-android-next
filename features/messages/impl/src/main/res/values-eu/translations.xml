@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="crypto_event_authenticity_sent_in_clear">"Ez dago zifratuta."</string>
   <string name="emoji_picker_category_activity">"Jarduerak"</string>
   <string name="emoji_picker_category_flags">"Banderak"</string>
   <string name="emoji_picker_category_foods">"Jana eta edana"</string>

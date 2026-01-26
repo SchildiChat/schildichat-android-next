@@ -433,13 +433,6 @@ Você tem certeza de que deseja continuar?"</string>
   <string name="error_room_address_invalid_symbols">"Alguns caracteres não são permitidos. Somente letras, dígitos e os seguintes símbolos são aceitos ! $ &amp; ‘ ( ) * + / ; = ? @ [ ] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Algumas mensagens não foram enviadas"</string>
   <string name="error_unknown">"Desculpe, ocorreu um erro"</string>
-  <string name="event_shield_mismatched_sender">"O remetente do evento não corresponde com o proprietário do dispositivo que o enviou."</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"A autenticidade desta mensagem criptografada não pode ser garantida neste aparelho."</string>
-  <string name="event_shield_reason_previously_verified">"Criptografado por um usuário verificado previamente."</string>
-  <string name="event_shield_reason_sent_in_clear">"Não criptografado."</string>
-  <string name="event_shield_reason_unknown_device">"Criptografado por um dispositivo desconhecido ou apagado."</string>
-  <string name="event_shield_reason_unsigned_device">"Criptografado por um dispositivo que não foi verificado pelo seu dono."</string>
-  <string name="event_shield_reason_unverified_identity">"Criptografado por um usuário não verificado."</string>
   <string name="invite_friends_rich_title">"🔐️ Junte-se a mim no %1$s"</string>
   <string name="invite_friends_text">"Ei, fale comigo em %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s (Android)"</string>

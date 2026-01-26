@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="crypto_event_authenticity_not_guaranteed">"اعتبار این پیام رمز شده نمی‌تواند روی این افزاره تأیید شود."</string>
+  <string name="crypto_event_authenticity_previously_verified">"رمز شده به دست کاربری از پیش تأیید شده."</string>
+  <string name="crypto_event_authenticity_sent_in_clear">"رمز نشده."</string>
+  <string name="crypto_event_authenticity_unknown_device">"رمز شده به دست افزاره‌ای ناشناخته یا حذف شده."</string>
+  <string name="crypto_event_authenticity_unsigned_device">"رمز شده به دست افزاره‌ای که از سوی مالکش تأیید نشده."</string>
+  <string name="crypto_event_authenticity_unverified_identity">"رمز شده به دست کاربری تأیید نشده."</string>
   <string name="emoji_picker_category_activity">"فعّالیت‌ها"</string>
   <string name="emoji_picker_category_flags">"پرچم‌ها"</string>
   <string name="emoji_picker_category_foods">"غذا و نوشیدنی"</string>

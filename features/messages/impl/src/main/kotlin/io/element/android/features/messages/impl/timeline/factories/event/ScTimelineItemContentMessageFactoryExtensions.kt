@@ -1,6 +1,5 @@
 package io.element.android.features.messages.impl.timeline.factories.event
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
@@ -9,6 +8,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
@@ -99,6 +99,8 @@ fun matrixBodyFormatter(
     val linkColor = ElementTheme.colors.textLinkExternal
     val mentionColor = ScTheme.exposures.mentionFg
     val mentionHighlightColor = ScTheme.exposures.mentionFgHighlight
+    val localUriHandler = LocalUriHandler.current
+    val safeOnLinkClick = onLinkClick ?: localUriHandler::openUri
     return remember(
         density,
         textMeasurer,
@@ -107,22 +109,26 @@ fun matrixBodyFormatter(
         mentionColor,
         mentionHighlightColor,
         sessionId,
-        onLinkClick,
+        safeOnLinkClick,
         onMatrixLinkClick,
     ) {
-        fun clickableMatrixToLinkAnnotation(link: MatrixToLink, styles: TextLinkStyles? = TextLinkStyles()): LinkAnnotation? {
-            return when {
-                onMatrixLinkClick != null -> {
-                    LinkAnnotation.Clickable("mto_${link.rawUrl}", styles = styles) {
-                        onMatrixLinkClick(link)
+        fun clickableMatrixToLinkAnnotation(
+            link: MatrixToLink,
+            styles: TextLinkStyles? = TextLinkStyles(),
+            interceptLinkClick: () -> Boolean,
+        ): LinkAnnotation? {
+            return onMatrixLinkClick?.let {
+                LinkAnnotation.Clickable("mto_${link.rawUrl}", styles = styles) {
+                    if (interceptLinkClick()) {
+                        return@Clickable
                     }
+                    onMatrixLinkClick(link)
                 }
-                onLinkClick != null -> {
-                    LinkAnnotation.Clickable("mto_${link.rawUrl}", styles = styles) {
-                        onLinkClick(link.rawUrl)
-                    }
+            } ?: LinkAnnotation.Clickable("mto_${link.rawUrl}", styles = styles) {
+                if (interceptLinkClick()) {
+                    return@Clickable
                 }
-                else -> null
+                safeOnLinkClick(link.rawUrl)
             }
         }
         object : DefaultMatrixBodyStyledFormatter(
@@ -131,9 +137,10 @@ fun matrixBodyFormatter(
             textStyle,
             urlStyle = TextLinkStyles(SpanStyle(color = linkColor)),
             blockIndention = MessageFormatDefaults.blockIndention,
+            handleWebLinkClick = safeOnLinkClick,
         ) {
             override fun formatUserMention(mention: MatrixToLink.UserMention, context: FormatContext) = listOfNotNull(
-                clickableMatrixToLinkAnnotation(mention),
+                clickableMatrixToLinkAnnotation(mention) { interceptLinkClicks(context) },
                 SpanStyle(
                     color = if (sessionId?.value == mention.userId) mentionHighlightColor else mentionColor,
                     fontWeight = FontWeight.Bold,
@@ -143,11 +150,15 @@ fun matrixBodyFormatter(
                 SpanStyle(color = mentionHighlightColor, fontWeight = FontWeight.Bold)
             )
             override fun formatRoomLink(roomLink: MatrixToLink.RoomLink, context: FormatContext) = listOfNotNull(
-                clickableMatrixToLinkAnnotation(roomLink, styles = TextLinkStyles(style = SpanStyle(color = linkColor))),
+                clickableMatrixToLinkAnnotation(roomLink, styles = TextLinkStyles(style = SpanStyle(color = linkColor))) {
+                    interceptLinkClicks(context)
+                },
             )
 
             override fun formatMessageLink(messageLink: MatrixToLink.MessageLink, context: FormatContext) = listOfNotNull(
-                clickableMatrixToLinkAnnotation(messageLink, styles = TextLinkStyles(style = SpanStyle(color = linkColor))),
+                clickableMatrixToLinkAnnotation(messageLink, styles = TextLinkStyles(style = SpanStyle(color = linkColor))) {
+                    interceptLinkClicks(context)
+                },
             )
         }
     }

@@ -28,12 +28,13 @@ import com.beeper.android.messageformat.MatrixHtmlParser
 import com.beeper.android.messageformat.MatrixToLink
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.libraries.matrix.api.core.SessionId
+import io.element.android.libraries.matrix.api.timeline.item.event.EmoteMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageFormat
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageTypeWithAttachment
 import io.element.android.libraries.matrix.api.timeline.item.event.TextLikeMessageType
 import org.jsoup.nodes.Document
 
-private const val ALLOW_PREPARSED = false
+private const val ALLOW_PREPARSED = true
 
 object MessageFormatDefaults {
     val blockIndention = 16.sp
@@ -54,7 +55,7 @@ object MessageFormatDefaults {
     )
 }
 
-fun scFormattedBody(message: TextLikeMessageType, doc: Document?): MatrixBodyParseResult {
+fun scFormattedBody(message: TextLikeMessageType, doc: Document?, plaintextBody: String = message.body): MatrixBodyParseResult {
     val allowRoomMentions = true // TODO
     return doc?.takeIf { ALLOW_PREPARSED }?.let {
         MessageFormatDefaults.parser.parseHtml(doc, MessageFormatDefaults.parseStyle, allowRoomMentions)
@@ -62,7 +63,11 @@ fun scFormattedBody(message: TextLikeMessageType, doc: Document?): MatrixBodyPar
         formatted.body.takeIf { formatted.format == MessageFormat.HTML }?.let {
             MessageFormatDefaults.parser.parseHtml(it, MessageFormatDefaults.parseStyle, allowRoomMentions)
         }
-    } ?: MessageFormatDefaults.parser.parsePlaintext(message.body, MessageFormatDefaults.parseStyle, allowRoomMentions)
+    } ?: MessageFormatDefaults.parser.parsePlaintext(
+        plaintextBody,
+        MessageFormatDefaults.parseStyle,
+        allowRoomMentions,
+    )
 }
 
 fun scFormattedBody(message: MessageTypeWithAttachment, doc: Document?): MatrixBodyParseResult? {

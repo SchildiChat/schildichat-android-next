@@ -76,7 +76,7 @@ class TimelineItemContentMessageFactory(
                     body = emoteBody,
                     htmlDocument = dom,
                     formattedBody = formattedBody,
-                    formattedBodySc = scFormattedBody(messageType, dom),
+                    formattedBodySc = scFormattedBody(messageType, dom, emoteBody),
                     isEdited = content.isEdited,
                 )
             }

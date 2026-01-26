@@ -34,15 +34,13 @@ fun FormattedBody.toHtmlDocument(
         ?.trimEnd()
         ?.let { formattedBody ->
             val dom = if (prefix != null) {
-                HtmlToDomParser.document("$prefix $formattedBody")
+                ScHtmlToDomParser.document("$prefix $formattedBody")
             } else {
-                HtmlToDomParser.document(formattedBody)
+                ScHtmlToDomParser.document(formattedBody)
             }
 
             // Prepend `@` to mentions
             fixMentions(dom, permalinkParser)
-
-            fixInlineImages(dom) // SC
 
             dom
         }

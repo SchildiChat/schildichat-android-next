@@ -11,10 +11,10 @@ package io.element.android.features.messages.impl.actionlist
 import io.element.android.features.messages.impl.UserEventPermissions
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 
-sealed interface ActionListEvents {
-    data object Clear : ActionListEvents
+sealed interface ActionListEvent {
+    data object Clear : ActionListEvent
     data class ComputeForMessage(
         val event: TimelineItem.Event,
         val userEventPermissions: UserEventPermissions,
-    ) : ActionListEvents
+    ) : ActionListEvent
 }

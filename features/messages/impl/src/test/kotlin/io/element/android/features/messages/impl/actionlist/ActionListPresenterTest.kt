@@ -79,7 +79,7 @@ class ActionListPresenterTest {
             val initialState = awaitItem()
             val messageEvent = aMessageEvent(isMine = true, isEditable = false, content = TimelineItemRedactedContent)
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = false,
@@ -103,7 +103,7 @@ class ActionListPresenterTest {
                     recentEmojis = suggestedEmojis,
                 )
             )
-            initialState.eventSink.invoke(ActionListEvents.Clear)
+            initialState.eventSink.invoke(ActionListEvent.Clear)
             assertThat(awaitItem().target).isEqualTo(ActionListState.Target.None)
         }
     }
@@ -121,7 +121,7 @@ class ActionListPresenterTest {
                 content = TimelineItemRedactedContent
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = false,
@@ -145,7 +145,7 @@ class ActionListPresenterTest {
                     recentEmojis = suggestedEmojis,
                 )
             )
-            initialState.eventSink.invoke(ActionListEvents.Clear)
+            initialState.eventSink.invoke(ActionListEvent.Clear)
             assertThat(awaitItem().target).isEqualTo(ActionListState.Target.None)
         }
     }
@@ -163,7 +163,7 @@ class ActionListPresenterTest {
                 content = TimelineItemTextContent(body = A_MESSAGE, htmlDocument = null, isEdited = false, formattedBody = A_MESSAGE)
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = false,
@@ -193,7 +193,7 @@ class ActionListPresenterTest {
                     recentEmojis = suggestedEmojis,
                 )
             )
-            initialState.eventSink.invoke(ActionListEvents.Clear)
+            initialState.eventSink.invoke(ActionListEvent.Clear)
             assertThat(awaitItem().target).isEqualTo(ActionListState.Target.None)
         }
     }
@@ -210,7 +210,7 @@ class ActionListPresenterTest {
                 content = TimelineItemTextContent(body = A_MESSAGE, htmlDocument = null, isEdited = false, formattedBody = A_MESSAGE)
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = false,
@@ -240,7 +240,7 @@ class ActionListPresenterTest {
                     recentEmojis = suggestedEmojis,
                 )
             )
-            initialState.eventSink.invoke(ActionListEvents.Clear)
+            initialState.eventSink.invoke(ActionListEvent.Clear)
             assertThat(awaitItem().target).isEqualTo(ActionListState.Target.None)
         }
     }
@@ -258,7 +258,7 @@ class ActionListPresenterTest {
                 content = TimelineItemTextContent(body = A_MESSAGE, htmlDocument = null, isEdited = false, formattedBody = A_MESSAGE)
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = true,
@@ -287,7 +287,7 @@ class ActionListPresenterTest {
                     recentEmojis = suggestedEmojis,
                 )
             )
-            initialState.eventSink.invoke(ActionListEvents.Clear)
+            initialState.eventSink.invoke(ActionListEvent.Clear)
             assertThat(awaitItem().target).isEqualTo(ActionListState.Target.None)
         }
     }
@@ -305,7 +305,7 @@ class ActionListPresenterTest {
                 content = TimelineItemTextContent(body = A_MESSAGE, htmlDocument = null, isEdited = false, formattedBody = A_MESSAGE)
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = false,
@@ -336,7 +336,7 @@ class ActionListPresenterTest {
                     recentEmojis = suggestedEmojis,
                 )
             )
-            initialState.eventSink.invoke(ActionListEvents.Clear)
+            initialState.eventSink.invoke(ActionListEvent.Clear)
             assertThat(awaitItem().target).isEqualTo(ActionListState.Target.None)
         }
     }
@@ -354,7 +354,7 @@ class ActionListPresenterTest {
                 content = TimelineItemTextContent(body = A_MESSAGE, htmlDocument = null, isEdited = false, formattedBody = A_MESSAGE)
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = false,
@@ -385,7 +385,7 @@ class ActionListPresenterTest {
                     recentEmojis = suggestedEmojis,
                 )
             )
-            initialState.eventSink.invoke(ActionListEvents.Clear)
+            initialState.eventSink.invoke(ActionListEvent.Clear)
             assertThat(awaitItem().target).isEqualTo(ActionListState.Target.None)
         }
     }
@@ -402,7 +402,7 @@ class ActionListPresenterTest {
                 content = TimelineItemTextContent(body = A_MESSAGE, htmlDocument = null, isEdited = false, formattedBody = A_MESSAGE)
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = true,
@@ -433,7 +433,7 @@ class ActionListPresenterTest {
                     recentEmojis = suggestedEmojis,
                 )
             )
-            initialState.eventSink.invoke(ActionListEvents.Clear)
+            initialState.eventSink.invoke(ActionListEvent.Clear)
             assertThat(awaitItem().target).isEqualTo(ActionListState.Target.None)
         }
     }
@@ -449,7 +449,7 @@ class ActionListPresenterTest {
                 content = TimelineItemTextContent(body = A_MESSAGE, htmlDocument = null, isEdited = false, formattedBody = A_MESSAGE)
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = true,
@@ -480,7 +480,7 @@ class ActionListPresenterTest {
                     recentEmojis = suggestedEmojis,
                 )
             )
-            initialState.eventSink.invoke(ActionListEvents.Clear)
+            initialState.eventSink.invoke(ActionListEvent.Clear)
             assertThat(awaitItem().target).isEqualTo(ActionListState.Target.None)
         }
     }
@@ -497,7 +497,7 @@ class ActionListPresenterTest {
                 content = TimelineItemTextContent(body = A_MESSAGE, htmlDocument = null, isEdited = false, formattedBody = A_MESSAGE)
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = false,
@@ -527,7 +527,7 @@ class ActionListPresenterTest {
                     recentEmojis = suggestedEmojis,
                 )
             )
-            initialState.eventSink.invoke(ActionListEvents.Clear)
+            initialState.eventSink.invoke(ActionListEvent.Clear)
             assertThat(awaitItem().target).isEqualTo(ActionListState.Target.None)
         }
     }
@@ -544,7 +544,7 @@ class ActionListPresenterTest {
                 content = TimelineItemTextContent(body = A_MESSAGE, htmlDocument = null, isEdited = false, formattedBody = A_MESSAGE)
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = false,
@@ -571,7 +571,7 @@ class ActionListPresenterTest {
                     recentEmojis = suggestedEmojis,
                 )
             )
-            initialState.eventSink.invoke(ActionListEvents.Clear)
+            initialState.eventSink.invoke(ActionListEvent.Clear)
             assertThat(awaitItem().target).isEqualTo(ActionListState.Target.None)
         }
     }
@@ -589,7 +589,7 @@ class ActionListPresenterTest {
                 content = aTimelineItemImageContent(),
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = true,
@@ -619,7 +619,7 @@ class ActionListPresenterTest {
                     recentEmojis = suggestedEmojis,
                 )
             )
-            initialState.eventSink.invoke(ActionListEvents.Clear)
+            initialState.eventSink.invoke(ActionListEvent.Clear)
             assertThat(awaitItem().target).isEqualTo(ActionListState.Target.None)
         }
     }
@@ -639,7 +639,7 @@ class ActionListPresenterTest {
                 ),
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = true,
@@ -671,7 +671,7 @@ class ActionListPresenterTest {
                     recentEmojis = suggestedEmojis,
                 )
             )
-            initialState.eventSink.invoke(ActionListEvents.Clear)
+            initialState.eventSink.invoke(ActionListEvent.Clear)
             assertThat(awaitItem().target).isEqualTo(ActionListState.Target.None)
         }
     }
@@ -691,7 +691,7 @@ class ActionListPresenterTest {
                 ),
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = true,
@@ -721,7 +721,7 @@ class ActionListPresenterTest {
                     recentEmojis = suggestedEmojis,
                 )
             )
-            initialState.eventSink.invoke(ActionListEvents.Clear)
+            initialState.eventSink.invoke(ActionListEvent.Clear)
             assertThat(awaitItem().target).isEqualTo(ActionListState.Target.None)
         }
     }
@@ -738,7 +738,7 @@ class ActionListPresenterTest {
                 content = aTimelineItemStateEventContent(),
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = stateEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = false,
@@ -762,7 +762,7 @@ class ActionListPresenterTest {
                     recentEmojis = suggestedEmojis,
                 )
             )
-            initialState.eventSink.invoke(ActionListEvents.Clear)
+            initialState.eventSink.invoke(ActionListEvent.Clear)
             assertThat(awaitItem().target).isEqualTo(ActionListState.Target.None)
         }
     }
@@ -779,7 +779,7 @@ class ActionListPresenterTest {
                 content = aTimelineItemStateEventContent(),
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = stateEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = false,
@@ -806,7 +806,7 @@ class ActionListPresenterTest {
                 content = TimelineItemTextContent(body = A_MESSAGE, htmlDocument = null, isEdited = false, formattedBody = A_MESSAGE)
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = true,
@@ -836,7 +836,7 @@ class ActionListPresenterTest {
                     recentEmojis = suggestedEmojis,
                 )
             )
-            initialState.eventSink.invoke(ActionListEvents.Clear)
+            initialState.eventSink.invoke(ActionListEvent.Clear)
             assertThat(awaitItem().target).isEqualTo(ActionListState.Target.None)
         }
     }
@@ -853,7 +853,7 @@ class ActionListPresenterTest {
                 content = TimelineItemTextContent(body = A_MESSAGE, htmlDocument = null, isEdited = false, formattedBody = A_MESSAGE)
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = true,
@@ -883,7 +883,7 @@ class ActionListPresenterTest {
                     recentEmojis = suggestedEmojis,
                 )
             )
-            initialState.eventSink.invoke(ActionListEvents.Clear)
+            initialState.eventSink.invoke(ActionListEvent.Clear)
             assertThat(awaitItem().target).isEqualTo(ActionListState.Target.None)
         }
     }
@@ -906,7 +906,7 @@ class ActionListPresenterTest {
                 content = TimelineItemTextContent(body = A_MESSAGE, htmlDocument = null, isEdited = false, formattedBody = A_MESSAGE)
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = true,
@@ -937,7 +937,7 @@ class ActionListPresenterTest {
                     recentEmojis = suggestedEmojis,
                 )
             )
-            initialState.eventSink.invoke(ActionListEvents.Clear)
+            initialState.eventSink.invoke(ActionListEvent.Clear)
             assertThat(awaitItem().target).isEqualTo(ActionListState.Target.None)
         }
     }
@@ -959,7 +959,7 @@ class ActionListPresenterTest {
             )
 
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = false,
@@ -973,7 +973,7 @@ class ActionListPresenterTest {
             assertThat(awaitItem().target).isInstanceOf(ActionListState.Target.Success::class.java)
 
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = redactedEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = false,
@@ -1005,7 +1005,7 @@ class ActionListPresenterTest {
             )
 
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = true,
@@ -1047,7 +1047,7 @@ class ActionListPresenterTest {
                 content = aTimelineItemPollContent(answerItems = aPollAnswerItemList(hasVotes = false)),
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = true,
@@ -1092,7 +1092,7 @@ class ActionListPresenterTest {
                 content = aTimelineItemPollContent(answerItems = aPollAnswerItemList(hasVotes = true)),
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = true,
@@ -1136,7 +1136,7 @@ class ActionListPresenterTest {
                 content = aTimelineItemPollContent(isEnded = true),
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = true,
@@ -1181,7 +1181,7 @@ class ActionListPresenterTest {
                 ),
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = true,
@@ -1224,7 +1224,7 @@ class ActionListPresenterTest {
                 content = TimelineItemRtcNotificationContent(),
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = true,
@@ -1264,7 +1264,7 @@ class ActionListPresenterTest {
                 sendState = LocalEventSendState.Failed.VerifiedUserChangedIdentity(users = listOf(A_USER_ID)),
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(),
                 )
@@ -1296,7 +1296,7 @@ class ActionListPresenterTest {
                 threadInfo = TimelineItemThreadInfo.ThreadResponse(threadRootId = A_THREAD_ID)
             )
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = true,
@@ -1350,7 +1350,7 @@ class ActionListPresenterTest {
             assertThat(messageEvent.isRemote).isTrue()
 
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = true,
@@ -1405,7 +1405,7 @@ class ActionListPresenterTest {
             assertThat(messageEvent.isRemote).isTrue()
 
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = true,
@@ -1460,7 +1460,7 @@ class ActionListPresenterTest {
             assertThat(messageEvent.isRemote).isFalse()
 
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = true,
@@ -1513,7 +1513,7 @@ class ActionListPresenterTest {
             )
 
             initialState.eventSink.invoke(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = messageEvent,
                     userEventPermissions = aUserEventPermissions(
                         canRedactOwn = true,

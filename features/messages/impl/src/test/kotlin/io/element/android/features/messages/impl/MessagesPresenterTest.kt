@@ -13,7 +13,7 @@ package io.element.android.features.messages.impl
 import androidx.lifecycle.Lifecycle
 import com.google.common.truth.Truth.assertThat
 import im.vector.app.features.analytics.plan.PinUnpinAction
-import io.element.android.features.messages.impl.actionlist.ActionListEvents
+import io.element.android.features.messages.impl.actionlist.ActionListEvent
 import io.element.android.features.messages.impl.actionlist.ActionListState
 import io.element.android.features.messages.impl.actionlist.anActionListState
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemAction
@@ -1276,7 +1276,7 @@ class MessagesPresenterTest {
         },
         encryptionService: FakeEncryptionService = FakeEncryptionService(),
         featureFlagService: FakeFeatureFlagService = FakeFeatureFlagService(),
-        actionListEventSink: (ActionListEvents) -> Unit = {},
+        actionListEventSink: (ActionListEvent) -> Unit = {},
         addRecentEmoji: AddRecentEmoji = AddRecentEmoji { _ -> lambdaError() },
         markAsFullyRead: MarkAsFullyRead = FakeMarkAsFullyRead(),
     ): MessagesPresenter {

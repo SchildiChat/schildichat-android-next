@@ -30,7 +30,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.element.android.emojibasebindings.Emoji
 import io.element.android.emojibasebindings.EmojibaseCategory
 import io.element.android.emojibasebindings.EmojibaseStore
-import io.element.android.features.messages.impl.actionlist.ActionListEvents
+import io.element.android.features.messages.impl.actionlist.ActionListEvent
 import io.element.android.features.messages.impl.actionlist.ActionListState
 import io.element.android.features.messages.impl.actionlist.anActionListState
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemAction
@@ -183,7 +183,7 @@ class MessagesViewTest {
         userHasPermissionToSendReaction: Boolean = false,
         userCanPinEvent: Boolean = false,
     ) {
-        val eventsRecorder = EventsRecorder<ActionListEvents>()
+        val eventsRecorder = EventsRecorder<ActionListEvent>()
         val state = aMessagesState(
             actionListState = anActionListState(
                 eventSink = eventsRecorder
@@ -206,7 +206,7 @@ class MessagesViewTest {
         // Cannot perform click on "Text", it's not detected. Use tag instead
         rule.onAllNodesWithTag(TestTags.messageBubble.value).onFirst().performTouchInput { longClick() }
         eventsRecorder.assertSingle(
-            ActionListEvents.ComputeForMessage(
+            ActionListEvent.ComputeForMessage(
                 event = timelineItem,
                 userEventPermissions = state.userEventPermissions,
             )

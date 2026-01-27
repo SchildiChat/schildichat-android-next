@@ -17,7 +17,7 @@ import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import io.element.android.features.messages.impl.actionlist.ActionListEvents
+import io.element.android.features.messages.impl.actionlist.ActionListEvent
 import io.element.android.features.messages.impl.actionlist.anActionListState
 import io.element.android.features.messages.impl.timeline.aTimelineItemList
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
@@ -77,7 +77,7 @@ class PinnedMessagesListViewTest {
 
     @Test
     fun `long click on an event emits the expected event`() {
-        val eventsRecorder = EventsRecorder<ActionListEvents>(expectEvents = true)
+        val eventsRecorder = EventsRecorder<ActionListEvent>(expectEvents = true)
         val content = aTimelineItemFileContent()
         val state = aLoadedPinnedMessagesListState(
             timelineItems = aTimelineItemList(content),
@@ -92,7 +92,7 @@ class PinnedMessagesListViewTest {
                 longClick()
             }
         val event = state.timelineItems.first() as TimelineItem.Event
-        eventsRecorder.assertSingle(ActionListEvents.ComputeForMessage(event, state.userEventPermissions))
+        eventsRecorder.assertSingle(ActionListEvent.ComputeForMessage(event, state.userEventPermissions))
     }
 }
 

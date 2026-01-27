@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import im.vector.app.features.analytics.plan.Interaction
 import io.element.android.compound.tokens.generated.CompoundIcons
-import io.element.android.features.messages.impl.actionlist.ActionListEvents
+import io.element.android.features.messages.impl.actionlist.ActionListEvent
 import io.element.android.features.messages.impl.actionlist.ActionListView
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemAction
 import io.element.android.features.messages.impl.link.LinkEvents
@@ -175,7 +175,7 @@ private fun PinnedMessagesListLoaded(
 ) {
     fun onActionSelected(timelineItemAction: TimelineItemAction, event: TimelineItem.Event) {
         state.actionListState.eventSink(
-            ActionListEvents.Clear
+            ActionListEvent.Clear
         )
         state.eventSink(
             PinnedMessagesListEvents.HandleAction(
@@ -187,7 +187,7 @@ private fun PinnedMessagesListLoaded(
 
     fun onMessageLongClick(event: TimelineItem.Event) {
         state.actionListState.eventSink(
-            ActionListEvents.ComputeForMessage(
+            ActionListEvent.ComputeForMessage(
                 event = event,
                 userEventPermissions = state.userEventPermissions,
             )

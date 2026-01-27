@@ -52,7 +52,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.messages.api.timeline.voicemessages.composer.VoiceMessageComposerEvent
-import io.element.android.features.messages.impl.actionlist.ActionListEvents
+import io.element.android.features.messages.impl.actionlist.ActionListEvent
 import io.element.android.features.messages.impl.actionlist.ActionListView
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemAction
 import io.element.android.features.messages.impl.crypto.historyvisible.HistoryVisibleStateView
@@ -169,7 +169,7 @@ fun MessagesView(
         Timber.v("OnMessageLongClicked= ${event.id}")
         hidingKeyboard {
             state.actionListState.eventSink(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = event,
                     userEventPermissions = state.userEventPermissions,
                 )

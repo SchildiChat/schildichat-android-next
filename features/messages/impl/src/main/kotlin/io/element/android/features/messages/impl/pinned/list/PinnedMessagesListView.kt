@@ -178,7 +178,7 @@ private fun PinnedMessagesListLoaded(
             ActionListEvent.Clear
         )
         state.eventSink(
-            PinnedMessagesListEvents.HandleAction(
+            PinnedMessagesListEvent.HandleAction(
                 action = timelineItemAction,
                 event = event,
             )

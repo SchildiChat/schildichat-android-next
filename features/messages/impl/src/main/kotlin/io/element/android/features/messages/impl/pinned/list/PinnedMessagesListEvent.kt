@@ -11,6 +11,6 @@ package io.element.android.features.messages.impl.pinned.list
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemAction
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 
-sealed interface PinnedMessagesListEvents {
-    data class HandleAction(val action: TimelineItemAction, val event: TimelineItem.Event) : PinnedMessagesListEvents
+sealed interface PinnedMessagesListEvent {
+    data class HandleAction(val action: TimelineItemAction, val event: TimelineItem.Event) : PinnedMessagesListEvent
 }

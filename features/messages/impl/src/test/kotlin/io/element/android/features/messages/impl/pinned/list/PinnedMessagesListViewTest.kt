@@ -43,7 +43,7 @@ class PinnedMessagesListViewTest {
 
     @Test
     fun `clicking on back calls the expected callback`() {
-        val eventsRecorder = EventsRecorder<PinnedMessagesListEvents>(expectEvents = false)
+        val eventsRecorder = EventsRecorder<PinnedMessagesListEvent>(expectEvents = false)
         val state = aLoadedPinnedMessagesListState(
             eventSink = eventsRecorder
         )
@@ -58,7 +58,7 @@ class PinnedMessagesListViewTest {
 
     @Test
     fun `click on an event calls the expected callback`() {
-        val eventsRecorder = EventsRecorder<PinnedMessagesListEvents>(expectEvents = false)
+        val eventsRecorder = EventsRecorder<PinnedMessagesListEvent>(expectEvents = false)
         val content = aTimelineItemFileContent()
         val state = aLoadedPinnedMessagesListState(
             timelineItems = aTimelineItemList(content),

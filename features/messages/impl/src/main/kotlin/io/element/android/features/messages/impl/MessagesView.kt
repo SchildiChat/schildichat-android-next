@@ -57,7 +57,7 @@ import io.element.android.features.messages.impl.actionlist.ActionListView
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemAction
 import io.element.android.features.messages.impl.crypto.historyvisible.HistoryVisibleStateView
 import io.element.android.features.messages.impl.crypto.identity.IdentityChangeStateView
-import io.element.android.features.messages.impl.link.LinkEvents
+import io.element.android.features.messages.impl.link.LinkEvent
 import io.element.android.features.messages.impl.link.LinkView
 import io.element.android.features.messages.impl.messagecomposer.AttachmentsBottomSheet
 import io.element.android.features.messages.impl.messagecomposer.DisabledComposerView
@@ -252,7 +252,7 @@ fun MessagesView(
                                     onLinkClick(link.url, true)
                                     // Do not check those links, they are internal link only
                                 } else {
-                                    state.linkState.eventSink(LinkEvents.OnLinkClick(link))
+                                    state.linkState.eventSink(LinkEvent.OnLinkClick(link))
                                 }
                             },
                             onReactionClick = ::onEmojiReactionClick,

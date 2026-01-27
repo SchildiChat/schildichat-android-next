@@ -28,7 +28,7 @@ import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.messages.impl.actionlist.ActionListEvent
 import io.element.android.features.messages.impl.actionlist.ActionListView
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemAction
-import io.element.android.features.messages.impl.link.LinkEvents
+import io.element.android.features.messages.impl.link.LinkEvent
 import io.element.android.features.messages.impl.link.LinkView
 import io.element.android.features.messages.impl.timeline.components.TimelineItemRow
 import io.element.android.features.messages.impl.timeline.components.event.TimelineItemEventContentView
@@ -222,7 +222,7 @@ private fun PinnedMessagesListLoaded(
                 focusedEventId = null,
                 onUserDataClick = onUserDataClick,
                 onLinkClick = { link ->
-                    state.linkState.eventSink(LinkEvents.OnLinkClick(link))
+                    state.linkState.eventSink(LinkEvent.OnLinkClick(link))
                 },
                 onLinkLongClick = onLinkLongClick,
                 onContentClick = onEventClick,
@@ -243,7 +243,7 @@ private fun PinnedMessagesListLoaded(
                         onContentClick = { onEventClick(event) },
                         onLongClick = { onMessageLongClick(event) },
                         onLinkClick = { link ->
-                            state.linkState.eventSink(LinkEvents.OnLinkClick(link))
+                            state.linkState.eventSink(LinkEvent.OnLinkClick(link))
                         },
                         onLinkLongClick = onLinkLongClick,
                         modifier = contentModifier,

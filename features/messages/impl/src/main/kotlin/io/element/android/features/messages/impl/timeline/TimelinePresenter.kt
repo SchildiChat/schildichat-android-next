@@ -150,9 +150,9 @@ class TimelinePresenter(
             value = featureFlagService.isFeatureEnabled(FeatureFlags.Threads)
         }
 
-        fun handleEvent(event: TimelineEvents) {
+        fun handleEvent(event: TimelineEvent) {
             when (event) {
-                is TimelineEvents.LoadMore -> {
+                is TimelineEvent.LoadMore -> {
                     if (event.direction == Timeline.PaginationDirection.FORWARDS && timelineMode is Timeline.Mode.Thread) {
                         // Do not paginate forwards in thread mode, as it's not supported
                         return
@@ -161,7 +161,7 @@ class TimelinePresenter(
                         timelineController.paginate(direction = event.direction)
                     }
                 }
-                is TimelineEvents.OnScrollFinished -> {
+                is TimelineEvent.OnScrollFinished -> {
                     if (isLive) {
                         if (event.firstIndex == 0) {
                             newEventState.value = NewEventState.None
@@ -177,7 +177,7 @@ class TimelinePresenter(
                         newEventState.value = NewEventState.None
                     }
                 }
-                is TimelineEvents.SelectPollAnswer -> sessionCoroutineScope.launch {
+                is TimelineEvent.SelectPollAnswer -> sessionCoroutineScope.launch {
                     timelineController.invokeOnCurrentTimeline {
                         sendPollResponseAction.execute(
                             timeline = this,
@@ -186,7 +186,7 @@ class TimelinePresenter(
                         )
                     }
                 }
-                is TimelineEvents.EndPoll -> sessionCoroutineScope.launch {
+                is TimelineEvent.EndPoll -> sessionCoroutineScope.launch {
                     timelineController.invokeOnCurrentTimeline {
                         endPollAction.execute(
                             timeline = this,
@@ -194,38 +194,38 @@ class TimelinePresenter(
                         )
                     }
                 }
-                is TimelineEvents.EditPoll -> {
+                is TimelineEvent.EditPoll -> {
                     navigator.navigateToEditPoll(event.pollStartId)
                 }
-                is TimelineEvents.FocusOnEvent -> sessionCoroutineScope.launch {
+                is TimelineEvent.FocusOnEvent -> sessionCoroutineScope.launch {
                     focusRequestState.value = FocusRequestState.Requested(event.eventId, event.debounce)
                     delay(event.debounce)
                     Timber.tag(tag).d("Started focus on ${event.eventId}")
                     focusOnEvent(event.eventId, focusRequestState)
                 }.start()
-                is TimelineEvents.OnFocusEventRender -> {
+                is TimelineEvent.OnFocusEventRender -> {
                     // If there was a pending 'notification tap opens timeline' transaction, finish it now we're focused in the required event
                     analyticsService.finishLongRunningTransaction(NotificationToMessage)
 
                     focusRequestState.value = focusRequestState.value.onFocusEventRender()
                 }
-                is TimelineEvents.ClearFocusRequestState -> {
+                is TimelineEvent.ClearFocusRequestState -> {
                     focusRequestState.value = FocusRequestState.None
                 }
-                is TimelineEvents.JumpToLive -> {
+                is TimelineEvent.JumpToLive -> {
                     timelineController.focusOnLive()
                 }
-                TimelineEvents.HideShieldDialog -> messageShieldDialogData.value = null
-                is TimelineEvents.ShowShieldDialog -> messageShieldDialogData.value = event.messageShieldData
-                is TimelineEvents.ComputeVerifiedUserSendFailure -> {
+                TimelineEvent.HideShieldDialog -> messageShieldDialogData.value = null
+                is TimelineEvent.ShowShieldDialog -> messageShieldDialogData.value = event.messageShieldData
+                is TimelineEvent.ComputeVerifiedUserSendFailure -> {
                     resolveVerifiedUserSendFailureState.eventSink(ResolveVerifiedUserSendFailureEvents.ComputeForMessage(event.event))
                 }
-                is TimelineEvents.NavigateToPredecessorOrSuccessorRoom -> {
+                is TimelineEvent.NavigateToPredecessorOrSuccessorRoom -> {
                     // Navigate to the predecessor or successor room
                     val serverNames = calculateServerNamesForRoom(room)
                     navigator.navigateToRoom(event.roomId, null, serverNames)
                 }
-                is TimelineEvents.OpenThread -> {
+                is TimelineEvent.OpenThread -> {
                     navigator.navigateToThread(
                         threadRootId = event.threadRootEventId,
                         focusedEventId = event.focusedEvent,

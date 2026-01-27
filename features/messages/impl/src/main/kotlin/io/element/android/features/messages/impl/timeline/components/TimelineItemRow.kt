@@ -26,7 +26,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
-import io.element.android.features.messages.impl.timeline.TimelineEvents
+import io.element.android.features.messages.impl.timeline.TimelineEvent
 import io.element.android.features.messages.impl.timeline.TimelineRoomInfo
 import io.element.android.features.messages.impl.timeline.components.event.TimelineItemEventContentView
 import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayoutData
@@ -73,7 +73,7 @@ internal fun TimelineItemRow(
     onReadReceiptClick: (TimelineItem.Event) -> Unit,
     onSwipeToReply: (TimelineItem.Event) -> Unit,
     onJoinCallClick: () -> Unit,
-    eventSink: (TimelineEvents.EventFromTimelineItem) -> Unit,
+    eventSink: (TimelineEvent.EventFromTimelineItem) -> Unit,
     modifier: Modifier = Modifier,
     eventContentView: @Composable (TimelineItem.Event, Modifier, (ContentAvoidingLayoutData) -> Unit) -> Unit =
         { event, contentModifier, onContentLayoutChange ->

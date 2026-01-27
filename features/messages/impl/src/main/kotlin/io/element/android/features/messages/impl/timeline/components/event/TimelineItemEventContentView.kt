@@ -10,7 +10,7 @@ package io.element.android.features.messages.impl.timeline.components.event
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import io.element.android.features.messages.impl.timeline.TimelineEvents
+import io.element.android.features.messages.impl.timeline.TimelineEvent
 import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayoutData
 import io.element.android.features.messages.impl.timeline.di.LocalTimelineItemPresenterFactories
 import io.element.android.features.messages.impl.timeline.di.rememberPresenter
@@ -43,7 +43,7 @@ fun TimelineItemEventContentView(
     onShowContentClick: () -> Unit,
     onLinkClick: (Link) -> Unit,
     onLinkLongClick: (Link) -> Unit,
-    eventSink: (TimelineEvents.EventFromTimelineItem) -> Unit,
+    eventSink: (TimelineEvent.EventFromTimelineItem) -> Unit,
     modifier: Modifier = Modifier,
     onContentLayoutChange: (ContentAvoidingLayoutData) -> Unit = {},
 ) {

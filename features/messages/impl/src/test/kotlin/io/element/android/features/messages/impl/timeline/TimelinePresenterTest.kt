@@ -9,7 +9,6 @@
 package io.element.android.features.messages.impl.timeline
 
 import app.cash.turbine.ReceiveTurbine
-import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.messages.impl.FakeMessagesNavigator
 import io.element.android.features.messages.impl.crypto.sendfailure.resolve.aResolveVerifiedUserSendFailureState
@@ -120,8 +119,8 @@ class TimelinePresenterTest {
         val presenter = createTimelinePresenter(timeline = timeline)
         presenter.test {
             val initialState = awaitItem()
-            initialState.eventSink.invoke(TimelineEvents.LoadMore(Timeline.PaginationDirection.BACKWARDS))
-            initialState.eventSink.invoke(TimelineEvents.LoadMore(Timeline.PaginationDirection.FORWARDS))
+            initialState.eventSink.invoke(TimelineEvent.LoadMore(Timeline.PaginationDirection.BACKWARDS))
+            initialState.eventSink.invoke(TimelineEvent.LoadMore(Timeline.PaginationDirection.FORWARDS))
             assert(paginateLambda)
                 .isCalledExactly(2)
                 .withSequence(
@@ -173,7 +172,7 @@ class TimelinePresenterTest {
         )
         presenter.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink.invoke(TimelineEvents.OnScrollFinished(0))
+            initialState.eventSink.invoke(TimelineEvent.OnScrollFinished(0))
             runCurrent()
             assert(markAsReadResult)
                 .isCalledOnce()
@@ -207,7 +206,7 @@ class TimelinePresenterTest {
         presenter.test {
             skipItems(1)
             awaitItem().run {
-                eventSink.invoke(TimelineEvents.OnScrollFinished(1))
+                eventSink.invoke(TimelineEvent.OnScrollFinished(1))
             }
             advanceUntilIdle()
             assert(sendReadReceiptsLambda)
@@ -246,8 +245,8 @@ class TimelinePresenterTest {
         presenter.test {
             skipItems(1)
             awaitItem().run {
-                eventSink.invoke(TimelineEvents.OnScrollFinished(0))
-                eventSink.invoke(TimelineEvents.OnScrollFinished(1))
+                eventSink.invoke(TimelineEvent.OnScrollFinished(0))
+                eventSink.invoke(TimelineEvent.OnScrollFinished(1))
             }
             advanceUntilIdle()
             assert(sendReadReceiptsLambda)
@@ -282,8 +281,8 @@ class TimelinePresenterTest {
         presenter.test {
             skipItems(1)
             awaitItem().run {
-                eventSink.invoke(TimelineEvents.OnScrollFinished(1))
-                eventSink.invoke(TimelineEvents.OnScrollFinished(1))
+                eventSink.invoke(TimelineEvent.OnScrollFinished(1))
+                eventSink.invoke(TimelineEvent.OnScrollFinished(1))
             }
             advanceUntilIdle()
             cancelAndIgnoreRemainingEvents()
@@ -310,7 +309,7 @@ class TimelinePresenterTest {
         presenter.test {
             skipItems(1)
             val initialState = awaitFirstItem()
-            initialState.eventSink.invoke(TimelineEvents.OnScrollFinished(1))
+            initialState.eventSink.invoke(TimelineEvent.OnScrollFinished(1))
             cancelAndIgnoreRemainingEvents()
             assert(sendReadReceiptsLambda).isNeverCalled()
         }
@@ -349,7 +348,7 @@ class TimelinePresenterTest {
             consumeItemsUntilPredicate { it.timelineItems.size == 3 }
 
             // Scroll to bottom to clear previous FromMe
-            initialState.eventSink.invoke(TimelineEvents.OnScrollFinished(0))
+            initialState.eventSink.invoke(TimelineEvent.OnScrollFinished(0))
             awaitLastSequentialItem().also { state ->
                 assertThat(state.newEventState).isEqualTo(NewEventState.None)
             }
@@ -429,7 +428,7 @@ class TimelinePresenterTest {
         )
         presenter.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink.invoke(TimelineEvents.SelectPollAnswer(AN_EVENT_ID, "anAnswerId"))
+            initialState.eventSink.invoke(TimelineEvent.SelectPollAnswer(AN_EVENT_ID, "anAnswerId"))
         }
         delay(1)
         sendPollResponseAction.verifyExecutionCount(1)
@@ -443,7 +442,7 @@ class TimelinePresenterTest {
         )
         presenter.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink.invoke(TimelineEvents.EndPoll(AN_EVENT_ID))
+            initialState.eventSink.invoke(TimelineEvent.EndPoll(AN_EVENT_ID))
         }
         delay(1)
         endPollAction.verifyExecutionCount(1)
@@ -459,7 +458,7 @@ class TimelinePresenterTest {
             messagesNavigator = navigator,
         )
         presenter.test {
-            awaitFirstItem().eventSink(TimelineEvents.EditPoll(AN_EVENT_ID))
+            awaitFirstItem().eventSink(TimelineEvent.EditPoll(AN_EVENT_ID))
             onEditPollClickLambda.assertions().isCalledOnce().with(value(AN_EVENT_ID))
         }
     }
@@ -510,7 +509,7 @@ class TimelinePresenterTest {
         )
         presenter.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink.invoke(TimelineEvents.FocusOnEvent(AN_EVENT_ID))
+            initialState.eventSink.invoke(TimelineEvent.FocusOnEvent(AN_EVENT_ID))
             awaitItem().also { state ->
                 assertThat(state.focusedEventId).isEqualTo(AN_EVENT_ID)
                 assertThat(state.focusRequestState).isEqualTo(FocusRequestState.Requested(AN_EVENT_ID, Duration.ZERO))
@@ -524,7 +523,7 @@ class TimelinePresenterTest {
                 assertThat(state.focusRequestState).isEqualTo(FocusRequestState.Success(AN_EVENT_ID))
                 assertThat(state.timelineItems).isNotEmpty()
             }
-            initialState.eventSink.invoke(TimelineEvents.JumpToLive)
+            initialState.eventSink.invoke(TimelineEvent.JumpToLive)
             skipItems(2)
             awaitItem().also { state ->
                 // Event stays focused
@@ -564,7 +563,7 @@ class TimelinePresenterTest {
             // Pre-populate the indexer after the first items have been retrieved
             timelineItemIndexer.process(listOf(aMessageEvent(eventId = AN_EVENT_ID)))
 
-            initialState.eventSink.invoke(TimelineEvents.FocusOnEvent(AN_EVENT_ID))
+            initialState.eventSink.invoke(TimelineEvent.FocusOnEvent(AN_EVENT_ID))
 
             advanceUntilIdle()
 
@@ -595,7 +594,7 @@ class TimelinePresenterTest {
         )
         presenter.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink(TimelineEvents.FocusOnEvent(AN_EVENT_ID))
+            initialState.eventSink(TimelineEvent.FocusOnEvent(AN_EVENT_ID))
             awaitItem().also { state ->
                 assertThat(state.focusedEventId).isEqualTo(AN_EVENT_ID)
                 assertThat(state.focusRequestState).isEqualTo(FocusRequestState.Requested(AN_EVENT_ID, Duration.ZERO))
@@ -606,7 +605,7 @@ class TimelinePresenterTest {
             }
             awaitItem().also { state ->
                 assertThat(state.focusRequestState).isInstanceOf(FocusRequestState.Failure::class.java)
-                state.eventSink(TimelineEvents.ClearFocusRequestState)
+                state.eventSink(TimelineEvent.ClearFocusRequestState)
             }
             awaitItem().also { state ->
                 assertThat(state.focusRequestState).isEqualTo(FocusRequestState.None)
@@ -648,7 +647,7 @@ class TimelinePresenterTest {
         )
         presenter.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink.invoke(TimelineEvents.FocusOnEvent(AN_EVENT_ID))
+            initialState.eventSink.invoke(TimelineEvent.FocusOnEvent(AN_EVENT_ID))
 
             awaitItem().also { state ->
                 assertThat(state.focusedEventId).isEqualTo(AN_EVENT_ID)
@@ -707,7 +706,7 @@ class TimelinePresenterTest {
         )
         presenter.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink.invoke(TimelineEvents.FocusOnEvent(AN_EVENT_ID))
+            initialState.eventSink.invoke(TimelineEvent.FocusOnEvent(AN_EVENT_ID))
 
             awaitItem().also { state ->
                 assertThat(state.focusedEventId).isEqualTo(AN_EVENT_ID)
@@ -762,7 +761,7 @@ class TimelinePresenterTest {
         )
         presenter.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink.invoke(TimelineEvents.FocusOnEvent(AN_EVENT_ID))
+            initialState.eventSink.invoke(TimelineEvent.FocusOnEvent(AN_EVENT_ID))
 
             awaitItem().also { state ->
                 assertThat(state.focusedEventId).isEqualTo(AN_EVENT_ID)
@@ -821,7 +820,7 @@ class TimelinePresenterTest {
         )
         presenter.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink.invoke(TimelineEvents.FocusOnEvent(AN_EVENT_ID))
+            initialState.eventSink.invoke(TimelineEvent.FocusOnEvent(AN_EVENT_ID))
 
             awaitItem().also { state ->
                 assertThat(state.focusedEventId).isEqualTo(AN_EVENT_ID)
@@ -854,10 +853,10 @@ class TimelinePresenterTest {
             val initialState = awaitFirstItem()
             assertThat(initialState.messageShieldDialogData).isNull()
             val shieldData = MessageShieldData(shield, null, null)
-            initialState.eventSink(TimelineEvents.ShowShieldDialog(shieldData))
+            initialState.eventSink(TimelineEvent.ShowShieldDialog(shieldData))
             awaitItem().also { state ->
                 assertThat(state.messageShieldDialogData).isEqualTo(shieldData)
-                state.eventSink(TimelineEvents.HideShieldDialog)
+                state.eventSink(TimelineEvent.HideShieldDialog)
             }
             awaitItem().also { state ->
                 assertThat(state.messageShieldDialogData).isNull()
@@ -963,7 +962,7 @@ class TimelinePresenterTest {
         val presenter = createTimelinePresenter(room = room, messagesNavigator = navigator)
         presenter.test {
             val initialState = awaitFirstItem()
-            initialState.eventSink(TimelineEvents.NavigateToPredecessorOrSuccessorRoom(A_ROOM_ID))
+            initialState.eventSink(TimelineEvent.NavigateToPredecessorOrSuccessorRoom(A_ROOM_ID))
             assert(onNavigateToRoomLambda)
                 .isCalledOnce()
                 .with(

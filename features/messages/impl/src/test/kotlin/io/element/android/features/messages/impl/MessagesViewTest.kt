@@ -40,7 +40,7 @@ import io.element.android.features.messages.impl.messagecomposer.aMessageCompose
 import io.element.android.features.messages.impl.pinned.banner.PinnedMessagesBannerItem
 import io.element.android.features.messages.impl.pinned.banner.aLoadedPinnedMessagesBannerState
 import io.element.android.features.messages.impl.timeline.FOCUS_ON_PINNED_EVENT_DEBOUNCE_DURATION_IN_MILLIS
-import io.element.android.features.messages.impl.timeline.TimelineEvents
+import io.element.android.features.messages.impl.timeline.TimelineEvent
 import io.element.android.features.messages.impl.timeline.aTimelineItemEvent
 import io.element.android.features.messages.impl.timeline.aTimelineItemList
 import io.element.android.features.messages.impl.timeline.aTimelineItemReadReceipts
@@ -483,7 +483,7 @@ class MessagesViewTest {
 
     @Test
     fun `clicking on verified user send failure from action list emits the expected Event`() {
-        val eventsRecorder = EventsRecorder<TimelineEvents>()
+        val eventsRecorder = EventsRecorder<TimelineEvent>()
         val state = aMessagesState()
         val timelineItem = state.timelineState.timelineItems.first() as TimelineItem.Event
         val stateWithActionListState = state.copy(
@@ -506,7 +506,7 @@ class MessagesViewTest {
         rule.onNodeWithText(verifiedUserSendFailure).performClick()
         // Give time for the close animation to complete
         rule.mainClock.advanceTimeBy(milliseconds = 1_000)
-        eventsRecorder.assertSingle(TimelineEvents.ComputeVerifiedUserSendFailure(timelineItem))
+        eventsRecorder.assertSingle(TimelineEvent.ComputeVerifiedUserSendFailure(timelineItem))
     }
 
     @Test
@@ -552,7 +552,7 @@ class MessagesViewTest {
 
     @Test
     fun `clicking on pinned messages banner emits the expected Event`() {
-        val eventsRecorder = EventsRecorder<TimelineEvents>()
+        val eventsRecorder = EventsRecorder<TimelineEvent>()
         val state = aMessagesState(
             timelineState = aTimelineState(eventSink = eventsRecorder),
             pinnedMessagesBannerState = aLoadedPinnedMessagesBannerState(
@@ -566,12 +566,12 @@ class MessagesViewTest {
         )
         rule.setMessagesView(state = state)
         rule.onNodeWithText("This is a pinned message").performClick()
-        eventsRecorder.assertSingle(TimelineEvents.FocusOnEvent(AN_EVENT_ID, debounce = FOCUS_ON_PINNED_EVENT_DEBOUNCE_DURATION_IN_MILLIS.milliseconds))
+        eventsRecorder.assertSingle(TimelineEvent.FocusOnEvent(AN_EVENT_ID, debounce = FOCUS_ON_PINNED_EVENT_DEBOUNCE_DURATION_IN_MILLIS.milliseconds))
     }
 
     @Test
     fun `clicking on successor room button emits expected event`() {
-        val eventsRecorder = EventsRecorder<TimelineEvents>()
+        val eventsRecorder = EventsRecorder<TimelineEvent>()
         val successorRoomId = RoomId("!successor:server.org")
         val state = aMessagesState(
             successorRoom = SuccessorRoom(
@@ -584,7 +584,7 @@ class MessagesViewTest {
         val text = rule.activity.getString(R.string.screen_room_timeline_tombstoned_room_action)
         // The bottomsheet subcompose seems to make the node to appear twice
         rule.onAllNodesWithText(text).onFirst().performClick()
-        eventsRecorder.assertSingle(TimelineEvents.NavigateToPredecessorOrSuccessorRoom(successorRoomId))
+        eventsRecorder.assertSingle(TimelineEvent.NavigateToPredecessorOrSuccessorRoom(successorRoomId))
     }
 
     @Test

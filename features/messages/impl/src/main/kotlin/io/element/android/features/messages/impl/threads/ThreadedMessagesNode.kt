@@ -36,7 +36,7 @@ import io.element.android.features.messages.impl.attachments.Attachment
 import io.element.android.features.messages.impl.messagecomposer.MessageComposerEvent
 import io.element.android.features.messages.impl.messagecomposer.MessageComposerPresenter
 import io.element.android.features.messages.impl.timeline.TimelineController
-import io.element.android.features.messages.impl.timeline.TimelineEvents
+import io.element.android.features.messages.impl.timeline.TimelineEvent
 import io.element.android.features.messages.impl.timeline.TimelinePresenter
 import io.element.android.features.messages.impl.timeline.di.LocalTimelineItemPresenterFactories
 import io.element.android.features.messages.impl.timeline.di.TimelineItemPresenterFactories
@@ -148,7 +148,7 @@ class ThreadedMessagesNode(
         activity: Activity,
         darkTheme: Boolean,
         url: String,
-        eventSink: (TimelineEvents) -> Unit,
+        eventSink: (TimelineEvent) -> Unit,
         customTab: Boolean
     ) {
         when (val permalink = permalinkParser.parse(url)) {
@@ -175,12 +175,12 @@ class ThreadedMessagesNode(
 
     private fun handleRoomLinkClick(
         roomLink: PermalinkData.RoomLink,
-        eventSink: (TimelineEvents) -> Unit,
+        eventSink: (TimelineEvent) -> Unit,
     ) {
         if (room.matches(roomLink.roomIdOrAlias)) {
             val eventId = roomLink.eventId
             if (eventId != null) {
-                eventSink(TimelineEvents.FocusOnEvent(eventId))
+                eventSink(TimelineEvent.FocusOnEvent(eventId))
             } else {
                 // Click on the same room, navigate up
                 // Note that it can not be enough to go back to the room if the thread has been opened
@@ -277,7 +277,7 @@ class ThreadedMessagesNode(
             }
             LaunchedEffect(Unit) {
                 focusedEventId?.also { eventId ->
-                    state.timelineState.eventSink(TimelineEvents.FocusOnEvent(eventId))
+                    state.timelineState.eventSink(TimelineEvent.FocusOnEvent(eventId))
                 }
                 // Reset the focused event id to null to avoid refocusing when restoring node.
                 focusedEventId = null

@@ -68,7 +68,7 @@ import io.element.android.features.messages.impl.pinned.banner.PinnedMessagesBan
 import io.element.android.features.messages.impl.pinned.banner.PinnedMessagesBannerView
 import io.element.android.features.messages.impl.pinned.banner.PinnedMessagesBannerViewDefaults
 import io.element.android.features.messages.impl.timeline.FOCUS_ON_PINNED_EVENT_DEBOUNCE_DURATION_IN_MILLIS
-import io.element.android.features.messages.impl.timeline.TimelineEvents
+import io.element.android.features.messages.impl.timeline.TimelineEvent
 import io.element.android.features.messages.impl.timeline.TimelineView
 import io.element.android.features.messages.impl.timeline.aGroupedEvents
 import io.element.android.features.messages.impl.timeline.aTimelineItemDaySeparator
@@ -301,7 +301,7 @@ fun MessagesView(
                 state = state,
                 onLinkClick = { url, customTab -> onLinkClick(url, customTab) },
                 onRoomSuccessorClick = { roomId ->
-                    state.timelineState.eventSink(TimelineEvents.NavigateToPredecessorOrSuccessorRoom(roomId = roomId))
+                    state.timelineState.eventSink(TimelineEvent.NavigateToPredecessorOrSuccessorRoom(roomId = roomId))
                 },
             )
         },
@@ -371,7 +371,7 @@ fun MessagesView(
         },
         onEmojiReactionClick = ::onEmojiReactionClick,
         onVerifiedUserSendFailureClick = { event ->
-            state.timelineState.eventSink(TimelineEvents.ComputeVerifiedUserSendFailure(event))
+            state.timelineState.eventSink(TimelineEvent.ComputeVerifiedUserSendFailure(event))
         },
     )
 
@@ -489,7 +489,7 @@ private fun MessagesViewContent(
                 ) {
                     fun focusOnPinnedEvent(eventId: EventId) {
                         state.timelineState.eventSink(
-                            TimelineEvents.FocusOnEvent(eventId = eventId, debounce = FOCUS_ON_PINNED_EVENT_DEBOUNCE_DURATION_IN_MILLIS.milliseconds)
+                            TimelineEvent.FocusOnEvent(eventId = eventId, debounce = FOCUS_ON_PINNED_EVENT_DEBOUNCE_DURATION_IN_MILLIS.milliseconds)
                         )
                     }
                     PinnedMessagesBannerView(

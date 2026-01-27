@@ -50,7 +50,7 @@ class TimelineViewTest {
 
     @Test
     fun `reaching the end of the timeline with more events to load emits a LoadMore event`() {
-        val eventsRecorder = EventsRecorder<TimelineEvents>()
+        val eventsRecorder = EventsRecorder<TimelineEvent>()
         rule.setTimelineView(
             state = aTimelineState(
                 timelineItems = persistentListOf<TimelineItem>(
@@ -62,12 +62,12 @@ class TimelineViewTest {
                 eventSink = eventsRecorder,
             ),
         )
-        eventsRecorder.assertSingle(TimelineEvents.LoadMore(Timeline.PaginationDirection.BACKWARDS))
+        eventsRecorder.assertSingle(TimelineEvent.LoadMore(Timeline.PaginationDirection.BACKWARDS))
     }
 
     @Test
     fun `reaching the end of the timeline does not send a LoadMore event`() {
-        val eventsRecorder = EventsRecorder<TimelineEvents>(expectEvents = false)
+        val eventsRecorder = EventsRecorder<TimelineEvent>(expectEvents = false)
         rule.setTimelineView(
             state = aTimelineState(
                 eventSink = eventsRecorder,
@@ -77,7 +77,7 @@ class TimelineViewTest {
 
     @Test
     fun `scroll to bottom on live timeline does not emit the Event`() {
-        val eventsRecorder = EventsRecorder<TimelineEvents>(expectEvents = false)
+        val eventsRecorder = EventsRecorder<TimelineEvent>(expectEvents = false)
         rule.setTimelineView(
             state = aTimelineState(
                 isLive = true,
@@ -91,7 +91,7 @@ class TimelineViewTest {
 
     @Test
     fun `scroll to bottom on detached timeline emits the expected Event`() {
-        val eventsRecorder = EventsRecorder<TimelineEvents>()
+        val eventsRecorder = EventsRecorder<TimelineEvent>()
         rule.setTimelineView(
             state = aTimelineState(
                 isLive = false,
@@ -100,12 +100,12 @@ class TimelineViewTest {
         )
         val contentDescription = rule.activity.getString(CommonStrings.a11y_jump_to_bottom)
         rule.onNodeWithContentDescription(contentDescription).performClick()
-        eventsRecorder.assertSingle(TimelineEvents.JumpToLive)
+        eventsRecorder.assertSingle(TimelineEvent.JumpToLive)
     }
 
     @Test
     fun `show shield dialog`() {
-        val eventsRecorder = EventsRecorder<TimelineEvents>()
+        val eventsRecorder = EventsRecorder<TimelineEvent>()
         rule.setTimelineView(
             state = aTimelineState(
                 timelineItems = persistentListOf<TimelineItem>(
@@ -122,15 +122,15 @@ class TimelineViewTest {
         rule.onNodeWithContentDescription(contentDescription).performClick()
         eventsRecorder.assertList(
             listOf(
-                TimelineEvents.OnScrollFinished(0),
-                TimelineEvents.ShowShieldDialog(MessageShieldData(MessageShield.UnverifiedIdentity(true))),
+                TimelineEvent.OnScrollFinished(0),
+                TimelineEvent.ShowShieldDialog(MessageShieldData(MessageShield.UnverifiedIdentity(true))),
             )
         )
     }
 
     @Test
     fun `hide shield dialog`() {
-        val eventsRecorder = EventsRecorder<TimelineEvents>()
+        val eventsRecorder = EventsRecorder<TimelineEvent>()
         rule.setTimelineView(
             state = aTimelineState(
                 isLive = false,
@@ -139,12 +139,12 @@ class TimelineViewTest {
             ),
         )
         rule.clickOn(CommonStrings.action_ok)
-        eventsRecorder.assertSingle(TimelineEvents.HideShieldDialog)
+        eventsRecorder.assertSingle(TimelineEvent.HideShieldDialog)
     }
 
     @Test
     fun `scrolling near to the start of the loaded items triggers a pre-fetch`() {
-        val eventsRecorder = EventsRecorder<TimelineEvents>()
+        val eventsRecorder = EventsRecorder<TimelineEvent>()
         val items = List<TimelineItem>(200) {
             aTimelineItemEvent(
                 eventId = EventId("\$event_$it"),
@@ -167,8 +167,8 @@ class TimelineViewTest {
 
         eventsRecorder.assertList(
             listOf(
-                TimelineEvents.OnScrollFinished(firstIndex = 0),
-                TimelineEvents.LoadMore(Timeline.PaginationDirection.BACKWARDS),
+                TimelineEvent.OnScrollFinished(firstIndex = 0),
+                TimelineEvent.LoadMore(Timeline.PaginationDirection.BACKWARDS),
             )
         )
     }

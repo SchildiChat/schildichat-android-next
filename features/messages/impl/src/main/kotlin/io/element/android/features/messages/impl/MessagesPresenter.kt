@@ -37,7 +37,7 @@ import io.element.android.features.messages.impl.messagecomposer.MessageComposer
 import io.element.android.features.messages.impl.pinned.banner.PinnedMessagesBannerState
 import io.element.android.features.messages.impl.timeline.MarkAsFullyRead
 import io.element.android.features.messages.impl.timeline.TimelineController
-import io.element.android.features.messages.impl.timeline.TimelineEvents
+import io.element.android.features.messages.impl.timeline.TimelineEvent
 import io.element.android.features.messages.impl.timeline.TimelineState
 import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionState
 import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryState
@@ -527,7 +527,7 @@ class MessagesPresenter(
         event: TimelineItem.Event,
         timelineState: TimelineState,
     ) {
-        event.eventId?.let { timelineState.eventSink(TimelineEvents.EndPoll(it)) }
+        event.eventId?.let { timelineState.eventSink(TimelineEvent.EndPoll(it)) }
     }
 
     private suspend fun handleCopyLink(event: TimelineItem.Event) {

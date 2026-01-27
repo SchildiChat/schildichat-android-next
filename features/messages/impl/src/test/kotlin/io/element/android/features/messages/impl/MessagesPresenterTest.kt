@@ -28,7 +28,7 @@ import io.element.android.features.messages.impl.pinned.banner.aLoadedPinnedMess
 import io.element.android.features.messages.impl.timeline.FakeMarkAsFullyRead
 import io.element.android.features.messages.impl.timeline.MarkAsFullyRead
 import io.element.android.features.messages.impl.timeline.TimelineController
-import io.element.android.features.messages.impl.timeline.TimelineEvents
+import io.element.android.features.messages.impl.timeline.TimelineEvent
 import io.element.android.features.messages.impl.timeline.aTimelineState
 import io.element.android.features.messages.impl.timeline.model.TimelineItemThreadInfo
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemFileContent
@@ -482,13 +482,13 @@ class MessagesPresenterTest {
 
     @Test
     fun `present - handle action end poll`() = runTest {
-        val timelineEventSink = EventsRecorder<TimelineEvents>()
+        val timelineEventSink = EventsRecorder<TimelineEvent>()
         val presenter = createMessagesPresenter(timelineEventSink = timelineEventSink)
         presenter.testWithLifecycleOwner {
             val initialState = awaitItem()
             initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.EndPoll, aMessageEvent(content = aTimelineItemPollContent())))
             delay(1)
-            timelineEventSink.assertSingle(TimelineEvents.EndPoll(AN_EVENT_ID))
+            timelineEventSink.assertSingle(TimelineEvent.EndPoll(AN_EVENT_ID))
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -1263,7 +1263,7 @@ class MessagesPresenterTest {
         navigator: FakeMessagesNavigator = FakeMessagesNavigator(),
         clipboardHelper: FakeClipboardHelper = FakeClipboardHelper(),
         analyticsService: FakeAnalyticsService = FakeAnalyticsService(),
-        timelineEventSink: (TimelineEvents) -> Unit = {},
+        timelineEventSink: (TimelineEvent) -> Unit = {},
         permalinkParser: PermalinkParser = FakePermalinkParser(),
         messageComposerPresenter: Presenter<MessageComposerState> = Presenter {
             aMessageComposerState(

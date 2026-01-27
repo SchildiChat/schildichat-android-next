@@ -589,9 +589,14 @@ private fun FavoriteItem(
     isFavorite: Boolean,
     onFavoriteChanges: (Boolean) -> Unit,
 ) {
+    val (textResId, icon) = if (isFavorite) {
+        CommonStrings.common_favourited to CompoundIcons.FavouriteSolid()
+    } else {
+        CommonStrings.common_favourite to CompoundIcons.Favourite()
+    }
     PreferenceSwitch(
-        icon = CompoundIcons.Favourite(),
-        title = stringResource(id = CommonStrings.common_favourite),
+        icon = icon,
+        title = stringResource(id = textResId),
         isChecked = isFavorite,
         onCheckedChange = onFavoriteChanges
     )

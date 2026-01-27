@@ -131,16 +131,21 @@ private fun RoomListModalBottomSheetContent(
                 style = ListItemStyle.Primary,
             )
         }
+        val (textResId, icon) = if (contextMenu.isFavorite) {
+            CommonStrings.common_favourited to CompoundIcons.FavouriteSolid()
+        } else {
+            CommonStrings.common_favourite to CompoundIcons.Favourite()
+        }
         ListItem(
             headlineContent = {
                 Text(
-                    text = stringResource(id = CommonStrings.common_favourite),
+                    text = stringResource(id = textResId),
                     style = MaterialTheme.typography.bodyLarge,
                 )
             },
             leadingContent = ListItemContent.Icon(
                 iconSource = IconSource.Vector(
-                    CompoundIcons.Favourite(),
+                    icon,
                 )
             ),
             trailingContent = ListItemContent.Switch(

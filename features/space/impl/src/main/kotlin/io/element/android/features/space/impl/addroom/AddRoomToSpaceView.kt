@@ -66,6 +66,7 @@ fun AddRoomToSpaceView(
         if (state.isSearchActive) {
             state.eventSink(AddRoomToSpaceEvent.OnSearchActiveChanged(false))
         } else {
+            state.eventSink(AddRoomToSpaceEvent.Dismiss)
             onBackClick()
         }
     }

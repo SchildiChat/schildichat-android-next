@@ -27,7 +27,6 @@ import io.element.android.libraries.designsystem.theme.components.SearchBarResul
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
 import io.element.android.libraries.matrix.api.spaces.SpaceService
-import io.element.android.libraries.matrix.api.spaces.resetAndWaitForFullReload
 import io.element.android.libraries.matrix.ui.model.SelectRoomInfo
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -50,6 +49,8 @@ class AddRoomToSpacePresenter(
         val searchQuery = rememberTextFieldState()
         var isSearchActive by remember { mutableStateOf(false) }
         val saveAction = remember { mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized) }
+        // Track whether any rooms were added (for conditional reset on Dismiss)
+        var hasAddedRooms by remember { mutableStateOf(false) }
 
         val coroutineScope = rememberCoroutineScope()
         val dataSource = remember { dataSourceFactory.create(coroutineScope) }
@@ -96,12 +97,20 @@ class AddRoomToSpacePresenter(
                         dataSource = dataSource,
                         saveAction = saveAction,
                         onPartialSuccess = { successfullyAdded ->
+                            if (successfullyAdded.isNotEmpty()) {
+                                hasAddedRooms = true
+                            }
                             selectedRooms = selectedRooms.filterNot { it.roomId in successfullyAdded }.toImmutableList()
                         },
                     )
                 }
                 AddRoomToSpaceEvent.ResetSaveAction -> {
                     saveAction.value = AsyncAction.Uninitialized
+                }
+                AddRoomToSpaceEvent.Dismiss -> {
+                    if (hasAddedRooms) {
+                        coroutineScope.launch { spaceRoomList.reset() }
+                    }
                 }
             }
         }

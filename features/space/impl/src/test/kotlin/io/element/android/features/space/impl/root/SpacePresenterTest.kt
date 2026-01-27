@@ -350,16 +350,24 @@ class SpacePresenterTest {
     }
 
     @Test
-    fun `present - exit manage mode clears selection`() = runTest {
-        val presenter = createSpacePresenter()
+    fun `present - exit manage mode without removals does not call reset`() = runTest {
+        val resetResult = lambdaRecorder<Result<Unit>>(ensureNeverCalled = true) { Result.success(Unit) }
+        val fakeSpaceRoomList = FakeSpaceRoomList(
+            paginateResult = { Result.success(Unit) },
+            resetResult = resetResult,
+        )
+        val presenter = createSpacePresenter(spaceRoomList = fakeSpaceRoomList)
         presenter.test {
             val initialState = awaitItem()
             initialState.eventSink(SpaceEvents.EnterManageMode)
             initialState.eventSink(SpaceEvents.ToggleRoomSelection(A_ROOM_ID))
             initialState.eventSink(SpaceEvents.ExitManageMode)
+            advanceUntilIdle()
             val finalState = expectMostRecentItem()
             assertThat(finalState.isManageMode).isFalse()
             assertThat(finalState.selectedRoomIds).isEmpty()
+            // reset should NOT be called since no rooms were actually removed
+            assert(resetResult).isNeverCalled()
         }
     }
 
@@ -464,6 +472,56 @@ class SpacePresenterTest {
             // Failed room should still be present
             assertThat(failureState.children.map { it.roomId }).contains(A_ROOM_ID_2)
             assert(removeChildFromSpaceResult).isCalledExactly(2)
+        }
+    }
+
+    @Test
+    fun `present - exit manage mode after partial failure calls reset`() = runTest {
+        val aRoom1 = aSpaceRoom(
+            roomId = A_ROOM_ID,
+            roomType = RoomType.Room,
+        )
+        val aRoom2 = aSpaceRoom(
+            roomId = A_ROOM_ID_2,
+            roomType = RoomType.Room,
+        )
+        // Room 1 succeeds, Room 2 fails
+        val removeChildFromSpaceResult = lambdaRecorder<RoomId, RoomId, Result<Unit>> { _, childId ->
+            if (childId == A_ROOM_ID_2) {
+                Result.failure(AN_EXCEPTION)
+            } else {
+                Result.success(Unit)
+            }
+        }
+        val resetResult = lambdaRecorder<Result<Unit>> { Result.success(Unit) }
+        val fakeSpaceRoomList = FakeSpaceRoomList(
+            initialSpaceRoomsValue = listOf(aRoom1, aRoom2),
+            paginateResult = { Result.success(Unit) },
+            resetResult = resetResult,
+        )
+        val presenter = createSpacePresenter(
+            spaceRoomList = fakeSpaceRoomList,
+            spaceService = FakeSpaceService(
+                removeChildFromSpaceResult = removeChildFromSpaceResult,
+            ),
+        )
+        presenter.test {
+            awaitItem() // Initial empty state
+            advanceUntilIdle()
+            val stateWithChildren = awaitItem()
+            stateWithChildren.eventSink(SpaceEvents.EnterManageMode)
+            stateWithChildren.eventSink(SpaceEvents.ToggleRoomSelection(A_ROOM_ID))
+            stateWithChildren.eventSink(SpaceEvents.ToggleRoomSelection(A_ROOM_ID_2))
+            stateWithChildren.eventSink(SpaceEvents.RemoveSelectedRooms)
+            stateWithChildren.eventSink(SpaceEvents.ConfirmRoomRemoval)
+            advanceUntilIdle()
+            val failureState = expectMostRecentItem()
+            assertThat(failureState.removeRoomsAction.isFailure()).isTrue()
+            // Exit manage mode after partial failure - reset should be called
+            failureState.eventSink(SpaceEvents.ExitManageMode)
+            advanceUntilIdle()
+            expectMostRecentItem()
+            assert(resetResult).isCalledOnce()
         }
     }
 

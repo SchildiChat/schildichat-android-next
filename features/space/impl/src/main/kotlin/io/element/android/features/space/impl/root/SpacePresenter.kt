@@ -49,7 +49,6 @@ import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -136,6 +135,16 @@ class SpacePresenter(
 
         val acceptDeclineInviteState = acceptDeclineInvitePresenter.present()
 
+        suspend fun exitManageMode(shouldReset: Boolean) {
+            isManageMode = false
+            selectedRoomIds = emptySet()
+            removedRoomIds = emptySet()
+            if (shouldReset) {
+                // Reset the space room list to see the updates.
+                spaceRoomList.reset()
+            }
+        }
+
         fun handleEvent(event: SpaceEvents) {
             when (event) {
                 // SpaceRoomList is loaded automatically as backend is really slow. Event is kept for future.
@@ -168,8 +177,7 @@ class SpacePresenter(
                     selectedRoomIds = emptySet()
                 }
                 SpaceEvents.ExitManageMode -> {
-                    isManageMode = false
-                    selectedRoomIds = emptySet()
+                    localCoroutineScope.launch { exitManageMode(shouldReset = removedRoomIds.isNotEmpty()) }
                 }
                 is SpaceEvents.ToggleRoomSelection -> {
                     selectedRoomIds = if (event.roomId in selectedRoomIds) {
@@ -202,10 +210,7 @@ class SpacePresenter(
                             removeRoomsAction = AsyncAction.Failure(Exception("Failed to remove some rooms"))
                         } else {
                             removeRoomsAction = AsyncAction.Success(Unit)
-                            isManageMode = false
-                            selectedRoomIds = emptySet()
-                            // Reset the space room list to see the updates.
-                            spaceRoomList.reset()
+                            exitManageMode(shouldReset = true)
                         }
                     }
                 }

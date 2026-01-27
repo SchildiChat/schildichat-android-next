@@ -27,6 +27,7 @@ import io.element.android.libraries.matrix.ui.components.aSelectRoomInfo
 import io.element.android.libraries.matrix.ui.model.SelectRoomInfo
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import io.element.android.tests.testutils.lambda.assert
 import io.element.android.tests.testutils.lambda.lambdaRecorder
 import io.element.android.tests.testutils.test
 import io.element.android.tests.testutils.testCoroutineDispatchers
@@ -275,6 +276,67 @@ class AddRoomToSpacePresenterTest {
             val loadingState = awaitItem()
             assertThat(loadingState.saveAction).isEqualTo(AsyncAction.Loading)
             assertThat(loadingState.canSave).isFalse()
+        }
+    }
+
+    @Test
+    fun `present - Dismiss without additions does not call reset`() = runTest {
+        val resetResult = lambdaRecorder<Result<Unit>>(ensureNeverCalled = true) { Result.success(Unit) }
+        val spaceRoomList = FakeSpaceRoomList(
+            paginateResult = { Result.success(Unit) },
+            resetResult = resetResult,
+        )
+        val presenter = createAddRoomToSpacePresenter(spaceRoomList = spaceRoomList)
+        presenter.test {
+            val state = awaitItem()
+            state.eventSink(AddRoomToSpaceEvent.Dismiss)
+            advanceUntilIdle()
+            // reset should NOT be called since no rooms were added
+            assert(resetResult).isNeverCalled()
+        }
+    }
+
+    @Test
+    fun `present - Dismiss after partial success calls reset`() = runTest {
+        val resetResult = lambdaRecorder<Result<Unit>> { Result.success(Unit) }
+        val spaceRoomList = FakeSpaceRoomList(
+            paginateResult = { Result.success(Unit) },
+            resetResult = resetResult,
+        )
+        // Room 1 succeeds, Room 2 fails
+        val addChildToSpaceResult = lambdaRecorder<RoomId, RoomId, Result<Unit>> { _, childId ->
+            if (childId == A_ROOM_ID_2) {
+                Result.failure(AN_EXCEPTION)
+            } else {
+                Result.success(Unit)
+            }
+        }
+        val spaceService = FakeSpaceService(
+            addChildToSpaceResult = addChildToSpaceResult,
+        )
+        val presenter = createAddRoomToSpacePresenter(
+            spaceRoomList = spaceRoomList,
+            spaceService = spaceService,
+        )
+        presenter.test {
+            val state = awaitItem()
+            // Select two rooms
+            val room1 = aSelectRoomInfoList()[0]
+            val room2 = aSelectRoomInfoList()[1]
+            state.eventSink(AddRoomToSpaceEvent.ToggleRoom(room1))
+            awaitItem()
+            state.eventSink(AddRoomToSpaceEvent.ToggleRoom(room2))
+            awaitItem()
+            // Save - partial success (one room added, one failed)
+            state.eventSink(AddRoomToSpaceEvent.Save)
+            skipItems(1) // Loading
+            advanceUntilIdle()
+            val failureState = expectMostRecentItem()
+            assertThat(failureState.saveAction).isInstanceOf(AsyncAction.Failure::class.java)
+            // Dismiss after partial success - reset should be called
+            failureState.eventSink(AddRoomToSpaceEvent.Dismiss)
+            advanceUntilIdle()
+            assert(resetResult).isCalledOnce()
         }
     }
 

@@ -45,7 +45,7 @@ class RoomNotificationSettingsPresenterTest {
         moleculeFlow(RecompositionMode.Immediate) {
             presenter.present()
         }.test {
-            awaitItem().eventSink(RoomNotificationSettingsEvents.ChangeRoomNotificationMode(RoomNotificationMode.MENTIONS_AND_KEYWORDS_ONLY))
+            awaitItem().eventSink(RoomNotificationSettingsEvent.ChangeRoomNotificationMode(RoomNotificationMode.MENTIONS_AND_KEYWORDS_ONLY))
             val updatedState = consumeItemsUntilPredicate {
                 it.roomNotificationSettings.dataOrNull()?.mode == RoomNotificationMode.MENTIONS_AND_KEYWORDS_ONLY
             }.last()
@@ -78,7 +78,7 @@ class RoomNotificationSettingsPresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitItem()
-            initialState.eventSink(RoomNotificationSettingsEvents.SetNotificationMode(false))
+            initialState.eventSink(RoomNotificationSettingsEvent.SetNotificationMode(false))
             val failedState = consumeItemsUntilPredicate {
                 it.setNotificationSettingAction.isFailure()
             }.last()
@@ -87,7 +87,7 @@ class RoomNotificationSettingsPresenterTest {
             assertThat(failedState.pendingSetDefault).isNull()
             assertThat(failedState.setNotificationSettingAction.isFailure()).isTrue()
 
-            failedState.eventSink(RoomNotificationSettingsEvents.ClearSetNotificationError)
+            failedState.eventSink(RoomNotificationSettingsEvent.ClearSetNotificationError)
 
             val errorClearedState = consumeItemsUntilPredicate {
                 it.setNotificationSettingAction.isUninitialized()
@@ -104,7 +104,7 @@ class RoomNotificationSettingsPresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitItem()
-            initialState.eventSink(RoomNotificationSettingsEvents.SetNotificationMode(false))
+            initialState.eventSink(RoomNotificationSettingsEvent.SetNotificationMode(false))
             skipItems(3)
             val defaultState = awaitItem()
             assertThat(defaultState.roomNotificationSettings.dataOrNull()?.isDefault).isFalse()
@@ -119,8 +119,8 @@ class RoomNotificationSettingsPresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitItem()
-            initialState.eventSink(RoomNotificationSettingsEvents.ChangeRoomNotificationMode(RoomNotificationMode.MENTIONS_AND_KEYWORDS_ONLY))
-            initialState.eventSink(RoomNotificationSettingsEvents.SetNotificationMode(true))
+            initialState.eventSink(RoomNotificationSettingsEvent.ChangeRoomNotificationMode(RoomNotificationMode.MENTIONS_AND_KEYWORDS_ONLY))
+            initialState.eventSink(RoomNotificationSettingsEvent.SetNotificationMode(true))
             val defaultState = consumeItemsUntilPredicate {
                 it.roomNotificationSettings.dataOrNull()?.mode == RoomNotificationMode.MENTIONS_AND_KEYWORDS_ONLY
             }.last()
@@ -138,13 +138,13 @@ class RoomNotificationSettingsPresenterTest {
             presenter.present()
         }.test {
             val initialState = awaitItem()
-            initialState.eventSink(RoomNotificationSettingsEvents.ChangeRoomNotificationMode(RoomNotificationMode.MENTIONS_AND_KEYWORDS_ONLY))
-            initialState.eventSink(RoomNotificationSettingsEvents.SetNotificationMode(true))
+            initialState.eventSink(RoomNotificationSettingsEvent.ChangeRoomNotificationMode(RoomNotificationMode.MENTIONS_AND_KEYWORDS_ONLY))
+            initialState.eventSink(RoomNotificationSettingsEvent.SetNotificationMode(true))
             val failedState = consumeItemsUntilPredicate {
                 it.restoreDefaultAction.isFailure()
             }.last()
             assertThat(failedState.restoreDefaultAction.isFailure()).isTrue()
-            failedState.eventSink(RoomNotificationSettingsEvents.ClearRestoreDefaultError)
+            failedState.eventSink(RoomNotificationSettingsEvent.ClearRestoreDefaultError)
 
             val errorClearedState = consumeItemsUntilPredicate {
                 it.restoreDefaultAction.isUninitialized()

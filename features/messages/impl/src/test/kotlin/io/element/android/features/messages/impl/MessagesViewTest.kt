@@ -48,7 +48,7 @@ import io.element.android.features.messages.impl.timeline.aTimelineRoomInfo
 import io.element.android.features.messages.impl.timeline.aTimelineState
 import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionEvent
 import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionState
-import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryEvents
+import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryEvent
 import io.element.android.features.messages.impl.timeline.components.receipt.aReadReceiptData
 import io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet.ReadReceiptBottomSheetEvents
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
@@ -406,7 +406,7 @@ class MessagesViewTest {
 
     @Test
     fun `long clicking on a reaction emits the expected Event`() {
-        val eventsRecorder = EventsRecorder<ReactionSummaryEvents>()
+        val eventsRecorder = EventsRecorder<ReactionSummaryEvent>()
         val state = aMessagesState(
             timelineState = aTimelineState(
                 timelineItems = aTimelineItemList(aTimelineItemTextContent()),
@@ -424,7 +424,7 @@ class MessagesViewTest {
             text = "👍️",
             useUnmergedTree = true,
         ).onFirst().performTouchInput { longClick() }
-        eventsRecorder.assertSingle(ReactionSummaryEvents.ShowReactionSummary(timelineItem.eventId!!, timelineItem.reactionsState.reactions, "👍️"))
+        eventsRecorder.assertSingle(ReactionSummaryEvent.ShowReactionSummary(timelineItem.eventId!!, timelineItem.reactionsState.reactions, "👍️"))
     }
 
     @Test

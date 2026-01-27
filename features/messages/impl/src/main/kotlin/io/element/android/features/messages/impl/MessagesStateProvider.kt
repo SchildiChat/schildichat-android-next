@@ -30,7 +30,7 @@ import io.element.android.features.messages.impl.timeline.aTimelineItemList
 import io.element.android.features.messages.impl.timeline.aTimelineState
 import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionEvent
 import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionState
-import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryEvents
+import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryEvent
 import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryState
 import io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet.ReadReceiptBottomSheetEvents
 import io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet.ReadReceiptBottomSheetState
@@ -187,7 +187,7 @@ fun aUserEventPermissions(
 
 fun aReactionSummaryState(
     target: ReactionSummaryState.Summary? = null,
-    eventSink: (ReactionSummaryEvents) -> Unit = {}
+    eventSink: (ReactionSummaryEvent) -> Unit = {}
 ) = ReactionSummaryState(
     target = target,
     eventSink = eventSink,

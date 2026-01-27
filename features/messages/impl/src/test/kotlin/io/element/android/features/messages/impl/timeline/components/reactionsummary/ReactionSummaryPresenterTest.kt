@@ -32,7 +32,7 @@ class ReactionSummaryPresenterTest {
 
     private val aggregatedReaction = anAggregatedReaction(userId = A_USER_ID, key = "👍", isHighlighted = true)
     private val roomMember = aRoomMember(userId = A_USER_ID, avatarUrl = AN_AVATAR_URL, displayName = A_USER_NAME)
-    private val summaryEvent = ReactionSummaryEvents.ShowReactionSummary(AN_EVENT_ID, listOf(aggregatedReaction), aggregatedReaction.key)
+    private val summaryEvent = ReactionSummaryEvent.ShowReactionSummary(AN_EVENT_ID, listOf(aggregatedReaction), aggregatedReaction.key)
     private val room = FakeBaseRoom().apply {
         givenRoomMembersState(RoomMembersState.Ready(persistentListOf(roomMember)))
     }
@@ -49,7 +49,7 @@ class ReactionSummaryPresenterTest {
             initialState.eventSink(summaryEvent)
             assertThat(awaitItem().target).isNotNull()
 
-            initialState.eventSink(ReactionSummaryEvents.Clear)
+            initialState.eventSink(ReactionSummaryEvent.Clear)
             assertThat(awaitItem().target).isNull()
         }
     }

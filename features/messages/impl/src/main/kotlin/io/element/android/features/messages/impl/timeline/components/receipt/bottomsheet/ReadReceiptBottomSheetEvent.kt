@@ -10,7 +10,7 @@ package io.element.android.features.messages.impl.timeline.components.receipt.bo
 
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 
-sealed interface ReadReceiptBottomSheetEvents {
-    data class EventSelected(val event: TimelineItem.Event) : ReadReceiptBottomSheetEvents
-    data object Dismiss : ReadReceiptBottomSheetEvents
+sealed interface ReadReceiptBottomSheetEvent {
+    data class EventSelected(val event: TimelineItem.Event) : ReadReceiptBottomSheetEvent
+    data object Dismiss : ReadReceiptBottomSheetEvent
 }

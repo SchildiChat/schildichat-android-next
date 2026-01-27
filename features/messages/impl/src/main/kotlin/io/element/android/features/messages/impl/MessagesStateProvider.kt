@@ -32,7 +32,7 @@ import io.element.android.features.messages.impl.timeline.components.customreact
 import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionState
 import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryEvent
 import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryState
-import io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet.ReadReceiptBottomSheetEvents
+import io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet.ReadReceiptBottomSheetEvent
 import io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet.ReadReceiptBottomSheetState
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.features.messages.impl.timeline.model.event.aTimelineItemTextContent
@@ -206,7 +206,7 @@ fun aCustomReactionState(
 
 fun aReadReceiptBottomSheetState(
     selectedEvent: TimelineItem.Event? = null,
-    eventSink: (ReadReceiptBottomSheetEvents) -> Unit = {},
+    eventSink: (ReadReceiptBottomSheetEvent) -> Unit = {},
 ) = ReadReceiptBottomSheetState(
     selectedEvent = selectedEvent,
     eventSink = eventSink,

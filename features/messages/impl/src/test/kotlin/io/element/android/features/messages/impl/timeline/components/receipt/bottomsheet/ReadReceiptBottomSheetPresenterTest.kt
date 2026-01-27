@@ -30,7 +30,7 @@ class ReadReceiptBottomSheetPresenterTest {
         }.test {
             val initialState = awaitItem()
             val selectedEvent = aTimelineItemEvent()
-            initialState.eventSink(ReadReceiptBottomSheetEvents.EventSelected(selectedEvent))
+            initialState.eventSink(ReadReceiptBottomSheetEvent.EventSelected(selectedEvent))
             assertThat(awaitItem().selectedEvent).isSameInstanceAs(selectedEvent)
         }
     }
@@ -43,9 +43,9 @@ class ReadReceiptBottomSheetPresenterTest {
         }.test {
             val initialState = awaitItem()
             val selectedEvent = aTimelineItemEvent()
-            initialState.eventSink(ReadReceiptBottomSheetEvents.EventSelected(selectedEvent))
+            initialState.eventSink(ReadReceiptBottomSheetEvent.EventSelected(selectedEvent))
             skipItems(1)
-            initialState.eventSink(ReadReceiptBottomSheetEvents.Dismiss)
+            initialState.eventSink(ReadReceiptBottomSheetEvent.Dismiss)
             assertThat(awaitItem().selectedEvent).isNull()
         }
     }

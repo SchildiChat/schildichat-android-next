@@ -50,7 +50,7 @@ import io.element.android.features.messages.impl.timeline.components.customreact
 import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionState
 import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryEvent
 import io.element.android.features.messages.impl.timeline.components.receipt.aReadReceiptData
-import io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet.ReadReceiptBottomSheetEvents
+import io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet.ReadReceiptBottomSheetEvent
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.features.messages.impl.timeline.model.event.aTimelineItemTextContent
 import io.element.android.libraries.matrix.api.core.RoomId
@@ -216,7 +216,7 @@ class MessagesViewTest {
     @Test
     @Config(qualifiers = "h1024dp")
     fun `clicking on a read receipt list emits the expected Event`() {
-        val eventsRecorder = EventsRecorder<ReadReceiptBottomSheetEvents>()
+        val eventsRecorder = EventsRecorder<ReadReceiptBottomSheetEvent>()
         val state = aMessagesState(
             timelineState = aTimelineState(
                 renderReadReceipts = true,
@@ -239,7 +239,7 @@ class MessagesViewTest {
             state = state,
         )
         rule.onNodeWithTag(TestTags.messageReadReceipts.value, useUnmergedTree = true).performClick()
-        eventsRecorder.assertSingle(ReadReceiptBottomSheetEvents.EventSelected(timelineItem))
+        eventsRecorder.assertSingle(ReadReceiptBottomSheetEvent.EventSelected(timelineItem))
     }
 
     @Test

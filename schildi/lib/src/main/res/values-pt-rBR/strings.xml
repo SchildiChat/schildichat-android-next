@@ -192,4 +192,6 @@
     <string name="sc_pref_view_hidden_events_title">Mostrar eventos escondidos</string>
     <string name="sc_pref_view_redactions_title">Mostrar mensagens excluídas</string>
     <string name="sc_pref_view_redactions_summary">Renderizar espaço reservado para mensagens excluídas em vez de as esconder completamente</string>
+    <string name="sc_pref_legacy_message_rendering_title">Renderizador legado de mensagens</string>
+    <string name="sc_pref_legacy_message_rendering_summary">Maneira \"Element\" de renderizar mensagens formatadas</string>
 </resources>

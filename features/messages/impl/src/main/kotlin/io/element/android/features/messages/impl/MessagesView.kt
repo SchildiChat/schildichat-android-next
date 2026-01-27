@@ -75,7 +75,7 @@ import io.element.android.features.messages.impl.timeline.aTimelineItemDaySepara
 import io.element.android.features.messages.impl.timeline.aTimelineItemEvent
 import io.element.android.features.messages.impl.timeline.aTimelineState
 import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionBottomSheet
-import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionEvents
+import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionEvent
 import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryEvents
 import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryView
 import io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet.ReadReceiptBottomSheet
@@ -191,7 +191,7 @@ fun MessagesView(
     }
 
     fun onMoreReactionsClick(event: TimelineItem.Event) {
-        state.customReactionState.eventSink(CustomReactionEvents.ShowCustomReactionSheet(event))
+        state.customReactionState.eventSink(CustomReactionEvent.ShowCustomReactionSheet(event))
     }
 
     val expandableState = rememberExpandableBottomSheetLayoutState()
@@ -367,7 +367,7 @@ fun MessagesView(
             }
         },
         onCustomReactionClick = { event ->
-            state.customReactionState.eventSink(CustomReactionEvents.ShowCustomReactionSheet(event))
+            state.customReactionState.eventSink(CustomReactionEvent.ShowCustomReactionSheet(event))
         },
         onEmojiReactionClick = ::onEmojiReactionClick,
         onVerifiedUserSendFailureClick = { event ->

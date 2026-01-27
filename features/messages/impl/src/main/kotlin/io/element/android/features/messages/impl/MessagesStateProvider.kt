@@ -28,7 +28,7 @@ import io.element.android.features.messages.impl.pinned.banner.aLoadedPinnedMess
 import io.element.android.features.messages.impl.timeline.TimelineState
 import io.element.android.features.messages.impl.timeline.aTimelineItemList
 import io.element.android.features.messages.impl.timeline.aTimelineState
-import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionEvents
+import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionEvent
 import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionState
 import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryEvents
 import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryState
@@ -196,7 +196,7 @@ fun aReactionSummaryState(
 fun aCustomReactionState(
     target: CustomReactionState.Target = CustomReactionState.Target.None,
     recentEmojis: ImmutableList<String> = persistentListOf(),
-    eventSink: (CustomReactionEvents) -> Unit = {},
+    eventSink: (CustomReactionEvent) -> Unit = {},
 ) = CustomReactionState(
     target = target,
     recentEmojis = recentEmojis,

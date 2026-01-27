@@ -40,14 +40,14 @@ class CustomReactionPresenterTest {
             val initialState = awaitItem()
             assertThat(initialState.target).isEqualTo(CustomReactionState.Target.None)
 
-            initialState.eventSink(CustomReactionEvents.ShowCustomReactionSheet(event))
+            initialState.eventSink(CustomReactionEvent.ShowCustomReactionSheet(event))
 
             assertThat(awaitItem().target).isEqualTo(CustomReactionState.Target.Loading(event))
 
             val eventId = (awaitItem().target as? CustomReactionState.Target.Success)?.event?.eventId
             assertThat(eventId).isEqualTo(AN_EVENT_ID)
 
-            initialState.eventSink(CustomReactionEvents.DismissCustomReactionSheet)
+            initialState.eventSink(CustomReactionEvent.DismissCustomReactionSheet)
             assertThat(awaitItem().target).isEqualTo(CustomReactionState.Target.None)
         }
     }
@@ -63,7 +63,7 @@ class CustomReactionPresenterTest {
             assertThat(initialState.target).isEqualTo(CustomReactionState.Target.None)
 
             val key = reactions.reactions.first().key
-            initialState.eventSink(CustomReactionEvents.ShowCustomReactionSheet(event))
+            initialState.eventSink(CustomReactionEvent.ShowCustomReactionSheet(event))
 
             assertThat(awaitItem().target).isEqualTo(CustomReactionState.Target.Loading(event))
 

@@ -46,7 +46,7 @@ import io.element.android.features.messages.impl.timeline.aTimelineItemList
 import io.element.android.features.messages.impl.timeline.aTimelineItemReadReceipts
 import io.element.android.features.messages.impl.timeline.aTimelineRoomInfo
 import io.element.android.features.messages.impl.timeline.aTimelineState
-import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionEvents
+import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionEvent
 import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionState
 import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryEvents
 import io.element.android.features.messages.impl.timeline.components.receipt.aReadReceiptData
@@ -429,7 +429,7 @@ class MessagesViewTest {
 
     @Test
     fun `clicking on more reaction emits the expected Event`() {
-        val eventsRecorder = EventsRecorder<CustomReactionEvents>()
+        val eventsRecorder = EventsRecorder<CustomReactionEvent>()
         val state = aMessagesState(
             timelineState = aTimelineState(
                 timelineItems = aTimelineItemList(aTimelineItemTextContent()),
@@ -444,12 +444,12 @@ class MessagesViewTest {
         )
         val moreReactionContentDescription = rule.activity.getString(R.string.screen_room_timeline_add_reaction)
         rule.onAllNodesWithContentDescription(moreReactionContentDescription).onFirst().performClick()
-        eventsRecorder.assertSingle(CustomReactionEvents.ShowCustomReactionSheet(timelineItem))
+        eventsRecorder.assertSingle(CustomReactionEvent.ShowCustomReactionSheet(timelineItem))
     }
 
     @Test
     fun `clicking on more reaction from action list emits the expected Event`() {
-        val eventsRecorder = EventsRecorder<CustomReactionEvents>()
+        val eventsRecorder = EventsRecorder<CustomReactionEvent>()
         val state = aMessagesState(
             timelineState = aTimelineState(
                 timelineItems = aTimelineItemList(aTimelineItemTextContent()),
@@ -478,7 +478,7 @@ class MessagesViewTest {
         rule.onNodeWithContentDescription(moreReactionContentDescription).performClick()
         // Give time for the close animation to complete
         rule.mainClock.advanceTimeBy(milliseconds = 1_000)
-        eventsRecorder.assertSingle(CustomReactionEvents.ShowCustomReactionSheet(timelineItem))
+        eventsRecorder.assertSingle(CustomReactionEvent.ShowCustomReactionSheet(timelineItem))
     }
 
     @Test
@@ -512,7 +512,7 @@ class MessagesViewTest {
     @Test
     fun `clicking on a custom emoji emits the expected Events`() {
         val aUnicode = "🙈"
-        val customReactionStateEventsRecorder = EventsRecorder<CustomReactionEvents>()
+        val customReactionStateEventsRecorder = EventsRecorder<CustomReactionEvent>()
         val eventsRecorder = EventsRecorder<MessagesEvent>()
         val state = aMessagesState(
             eventSink = eventsRecorder,
@@ -546,7 +546,7 @@ class MessagesViewTest {
         rule.onNodeWithText(aUnicode, useUnmergedTree = true).performClick()
         // Give time for the close animation to complete
         rule.mainClock.advanceTimeBy(milliseconds = 1_000)
-        customReactionStateEventsRecorder.assertSingle(CustomReactionEvents.DismissCustomReactionSheet)
+        customReactionStateEventsRecorder.assertSingle(CustomReactionEvent.DismissCustomReactionSheet)
         eventsRecorder.assertSingle(MessagesEvent.ToggleReaction(aUnicode, timelineItem.eventOrTransactionId))
     }
 

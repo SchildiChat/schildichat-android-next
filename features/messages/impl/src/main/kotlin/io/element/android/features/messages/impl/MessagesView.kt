@@ -178,11 +178,11 @@ fun MessagesView(
     }
 
     fun onActionSelected(action: TimelineItemAction, event: TimelineItem.Event) {
-        state.eventSink(MessagesEvents.HandleAction(action, event))
+        state.eventSink(MessagesEvent.HandleAction(action, event))
     }
 
     fun onEmojiReactionClick(emoji: String, event: TimelineItem.Event) {
-        state.eventSink(MessagesEvents.ToggleReaction(emoji, event.eventOrTransactionId))
+        state.eventSink(MessagesEvent.ToggleReaction(emoji, event.eventOrTransactionId))
     }
 
     fun onEmojiReactionLongClick(emoji: String, event: TimelineItem.Event) {
@@ -244,7 +244,7 @@ fun MessagesView(
                             onMessageLongClick = ::onMessageLongClick,
                             onUserDataClick = {
                                 hidingKeyboard {
-                                    state.eventSink(MessagesEvents.OnUserClicked(it))
+                                    state.eventSink(MessagesEvent.OnUserClicked(it))
                                 }
                             },
                             onLinkClick = { link, customTab ->
@@ -264,7 +264,7 @@ fun MessagesView(
                             onSendLocationClick = onSendLocationClick,
                             onCreatePollClick = onCreatePollClick,
                             onSwipeToReply = { targetEvent ->
-                                state.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Reply, targetEvent))
+                                state.eventSink(MessagesEvent.HandleAction(TimelineItemAction.Reply, targetEvent))
                             },
                             forceJumpToBottomVisibility = forceJumpToBottomVisibility,
                             onJoinCallClick = onJoinCallClick,
@@ -378,7 +378,7 @@ fun MessagesView(
     CustomReactionBottomSheet(
         state = state.customReactionState,
         onSelectEmoji = { uniqueId, emoji ->
-            state.eventSink(MessagesEvents.ToggleReaction(emoji.unicode, uniqueId))
+            state.eventSink(MessagesEvent.ToggleReaction(emoji.unicode, uniqueId))
         }
     )
 
@@ -404,8 +404,8 @@ private fun ReinviteDialog(state: MessagesState) {
             content = stringResource(id = R.string.screen_room_invite_again_alert_message),
             cancelText = stringResource(id = CommonStrings.action_cancel),
             submitText = stringResource(id = CommonStrings.action_invite),
-            onSubmitClick = { state.eventSink(MessagesEvents.InviteDialogDismissed(InviteDialogAction.Invite)) },
-            onDismiss = { state.eventSink(MessagesEvents.InviteDialogDismissed(InviteDialogAction.Cancel)) }
+            onSubmitClick = { state.eventSink(MessagesEvent.InviteDialogDismissed(InviteDialogAction.Invite)) },
+            onDismiss = { state.eventSink(MessagesEvent.InviteDialogDismissed(InviteDialogAction.Cancel)) }
         )
     }
 }

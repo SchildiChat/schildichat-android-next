@@ -220,9 +220,9 @@ class MessagesPresenter(
             onPauseOrDispose {}
         }
 
-        fun handleEvent(event: MessagesEvents) {
+        fun handleEvent(event: MessagesEvent) {
             when (event) {
-                is MessagesEvents.HandleAction -> {
+                is MessagesEvent.HandleAction -> {
                     localCoroutineScope.handleTimelineAction(
                         action = event.action,
                         targetEvent = event.event,
@@ -232,20 +232,20 @@ class MessagesPresenter(
                         timelineProtectionState = timelineProtectionState,
                     )
                 }
-                is MessagesEvents.ToggleReaction -> {
+                is MessagesEvent.ToggleReaction -> {
                     localCoroutineScope.toggleReaction(event.emoji, event.eventOrTransactionId)
                 }
-                is MessagesEvents.InviteDialogDismissed -> {
+                is MessagesEvent.InviteDialogDismissed -> {
                     hasDismissedInviteDialog = true
 
                     if (event.action == InviteDialogAction.Invite) {
                         localCoroutineScope.reinviteOtherUser(inviteProgress)
                     }
                 }
-                is MessagesEvents.OnUserClicked -> {
+                is MessagesEvent.OnUserClicked -> {
                     roomMemberModerationState.eventSink(RoomMemberModerationEvents.ShowActionsForUser(event.user))
                 }
-                is MessagesEvents.MarkAsFullyReadAndExit -> coroutineScope.launch {
+                is MessagesEvent.MarkAsFullyReadAndExit -> coroutineScope.launch {
                     if (!markingAsReadAndExiting.getAndSet(true)) {
                         val latestEventId = room.liveTimeline.getLatestEventId().getOrElse {
                             Timber.w(it, "Failed to get latest event id to mark as fully read")

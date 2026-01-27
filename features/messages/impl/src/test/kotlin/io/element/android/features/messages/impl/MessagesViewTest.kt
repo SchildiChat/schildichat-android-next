@@ -88,7 +88,7 @@ class MessagesViewTest {
 
     @Test
     fun `clicking on back invoke expected callback`() {
-        val eventsRecorder = EventsRecorder<MessagesEvents>(expectEvents = false)
+        val eventsRecorder = EventsRecorder<MessagesEvent>(expectEvents = false)
         val state = aMessagesState(
             eventSink = eventsRecorder
         )
@@ -103,7 +103,7 @@ class MessagesViewTest {
 
     @Test
     fun `clicking on room name invoke expected callback`() {
-        val eventsRecorder = EventsRecorder<MessagesEvents>(expectEvents = false)
+        val eventsRecorder = EventsRecorder<MessagesEvent>(expectEvents = false)
         val state = aMessagesState(
             eventSink = eventsRecorder
         )
@@ -118,7 +118,7 @@ class MessagesViewTest {
 
     @Test
     fun `clicking on join call invoke expected callback`() {
-        val eventsRecorder = EventsRecorder<MessagesEvents>(expectEvents = false)
+        val eventsRecorder = EventsRecorder<MessagesEvent>(expectEvents = false)
         val state = aMessagesState(
             eventSink = eventsRecorder
         )
@@ -134,7 +134,7 @@ class MessagesViewTest {
 
     @Test
     fun `clicking on an Event invoke expected callback`() {
-        val eventsRecorder = EventsRecorder<MessagesEvents>(expectEvents = false)
+        val eventsRecorder = EventsRecorder<MessagesEvent>(expectEvents = false)
         val state = aMessagesState(
             timelineState = aTimelineState(
                 timelineItems = aTimelineItemList(aTimelineItemTextContent()),
@@ -253,7 +253,7 @@ class MessagesViewTest {
     }
 
     private fun swipeTest(userHasPermissionToSendMessage: Boolean) {
-        val eventsRecorder = EventsRecorder<MessagesEvents>()
+        val eventsRecorder = EventsRecorder<MessagesEvent>()
         val canBeRepliedEvent = aTimelineItemEvent(canBeRepliedTo = true)
         val cannotBeRepliedEvent = aTimelineItemEvent(canBeRepliedTo = false)
         val state = aMessagesState(
@@ -273,7 +273,7 @@ class MessagesViewTest {
             onLast().performTouchInput { swipeRight(endX = 200f) }
         }
         if (userHasPermissionToSendMessage) {
-            eventsRecorder.assertSingle(MessagesEvents.HandleAction(TimelineItemAction.Reply, canBeRepliedEvent))
+            eventsRecorder.assertSingle(MessagesEvent.HandleAction(TimelineItemAction.Reply, canBeRepliedEvent))
         } else {
             eventsRecorder.assertEmpty()
         }
@@ -281,7 +281,7 @@ class MessagesViewTest {
 
     @Test
     fun `clicking on send location invoke expected callback`() {
-        val eventsRecorder = EventsRecorder<MessagesEvents>(expectEvents = false)
+        val eventsRecorder = EventsRecorder<MessagesEvent>(expectEvents = false)
         val state = aMessagesState(
             composerState = aMessageComposerState(
                 showAttachmentSourcePicker = true
@@ -299,7 +299,7 @@ class MessagesViewTest {
 
     @Test
     fun `clicking on create poll invoke expected callback`() {
-        val eventsRecorder = EventsRecorder<MessagesEvents>(expectEvents = false)
+        val eventsRecorder = EventsRecorder<MessagesEvent>(expectEvents = false)
         val state = aMessagesState(
             composerState = aMessageComposerState(
                 showAttachmentSourcePicker = true
@@ -319,7 +319,7 @@ class MessagesViewTest {
     @Test
     @Config(qualifiers = "h1024dp")
     fun `clicking on the avatar of the sender of an Event emits the expected event`() {
-        val eventsRecorder = EventsRecorder<MessagesEvents>()
+        val eventsRecorder = EventsRecorder<MessagesEvent>()
         val state = aMessagesState(
             eventSink = eventsRecorder
         )
@@ -327,7 +327,7 @@ class MessagesViewTest {
         rule.setMessagesView(state = state)
         rule.onNodeWithTag(TestTags.timelineItemSenderAvatar.value, useUnmergedTree = true).performClick()
         eventsRecorder.assertSingle(
-            MessagesEvents.OnUserClicked(
+            MessagesEvent.OnUserClicked(
                 MatrixUser(
                     userId = timelineEvent.senderId,
                     displayName = timelineEvent.senderProfile.getDisplayName(),
@@ -340,13 +340,13 @@ class MessagesViewTest {
     @Test
     @Config(qualifiers = "h1024dp")
     fun `clicking on the display name of the sender of an Event emits expected event`() {
-        val eventsRecorder = EventsRecorder<MessagesEvents>()
+        val eventsRecorder = EventsRecorder<MessagesEvent>()
         val state = aMessagesState(eventSink = eventsRecorder)
         val timelineEvent = state.timelineState.timelineItems.filterIsInstance<TimelineItem.Event>().first()
         rule.setMessagesView(state = state)
         rule.onNodeWithTag(TestTags.timelineItemSenderAvatar.value, useUnmergedTree = true).performClick()
         eventsRecorder.assertSingle(
-            MessagesEvents.OnUserClicked(
+            MessagesEvent.OnUserClicked(
                 MatrixUser(
                     userId = timelineEvent.senderId,
                     displayName = timelineEvent.senderProfile.getDisplayName(),
@@ -358,7 +358,7 @@ class MessagesViewTest {
 
     @Test
     fun `selecting a action on a message emits the expected Event`() {
-        val eventsRecorder = EventsRecorder<MessagesEvents>()
+        val eventsRecorder = EventsRecorder<MessagesEvent>()
         val state = aMessagesState(
             eventSink = eventsRecorder
         )
@@ -381,12 +381,12 @@ class MessagesViewTest {
         rule.clickOn(CommonStrings.action_edit)
         // Give time for the close animation to complete
         rule.mainClock.advanceTimeBy(milliseconds = 1_000)
-        eventsRecorder.assertSingle(MessagesEvents.HandleAction(TimelineItemAction.Edit, timelineItem))
+        eventsRecorder.assertSingle(MessagesEvent.HandleAction(TimelineItemAction.Edit, timelineItem))
     }
 
     @Test
     fun `clicking on a reaction emits the expected Event`() {
-        val eventsRecorder = EventsRecorder<MessagesEvents>()
+        val eventsRecorder = EventsRecorder<MessagesEvent>()
         val state = aMessagesState(
             timelineState = aTimelineState(
                 timelineItems = aTimelineItemList(aTimelineItemTextContent()),
@@ -401,7 +401,7 @@ class MessagesViewTest {
             text = "👍️",
             useUnmergedTree = true,
         ).onFirst().performClick()
-        eventsRecorder.assertSingle(MessagesEvents.ToggleReaction("👍️", timelineItem.eventOrTransactionId))
+        eventsRecorder.assertSingle(MessagesEvent.ToggleReaction("👍️", timelineItem.eventOrTransactionId))
     }
 
     @Test
@@ -513,7 +513,7 @@ class MessagesViewTest {
     fun `clicking on a custom emoji emits the expected Events`() {
         val aUnicode = "🙈"
         val customReactionStateEventsRecorder = EventsRecorder<CustomReactionEvents>()
-        val eventsRecorder = EventsRecorder<MessagesEvents>()
+        val eventsRecorder = EventsRecorder<MessagesEvent>()
         val state = aMessagesState(
             eventSink = eventsRecorder,
         )
@@ -547,7 +547,7 @@ class MessagesViewTest {
         // Give time for the close animation to complete
         rule.mainClock.advanceTimeBy(milliseconds = 1_000)
         customReactionStateEventsRecorder.assertSingle(CustomReactionEvents.DismissCustomReactionSheet)
-        eventsRecorder.assertSingle(MessagesEvents.ToggleReaction(aUnicode, timelineItem.eventOrTransactionId))
+        eventsRecorder.assertSingle(MessagesEvent.ToggleReaction(aUnicode, timelineItem.eventOrTransactionId))
     }
 
     @Test
@@ -589,7 +589,7 @@ class MessagesViewTest {
 
     @Test
     fun `no banner shown when there is no successor room`() {
-        val eventsRecorder = EventsRecorder<MessagesEvents>(expectEvents = false)
+        val eventsRecorder = EventsRecorder<MessagesEvent>(expectEvents = false)
         val state = aMessagesState(
             successorRoom = null,
             eventSink = eventsRecorder

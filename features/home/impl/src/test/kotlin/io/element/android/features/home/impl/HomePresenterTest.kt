@@ -164,7 +164,7 @@ class HomePresenterTest {
         }.test {
             val initialState = awaitItem()
             assertThat(initialState.currentHomeNavigationBarItem).isEqualTo(HomeNavigationBarItem.Chats)
-            initialState.eventSink(HomeEvents.SelectHomeNavigationBarItem(HomeNavigationBarItem.Spaces))
+            initialState.eventSink(HomeEvent.SelectHomeNavigationBarItem(HomeNavigationBarItem.Spaces))
             val finalState = awaitItem()
             assertThat(finalState.currentHomeNavigationBarItem).isEqualTo(HomeNavigationBarItem.Spaces)
             showAnnouncementResult.assertions().isCalledOnce()
@@ -189,7 +189,7 @@ class HomePresenterTest {
             assertThat(initialState.currentHomeNavigationBarItem).isEqualTo(HomeNavigationBarItem.Chats)
             assertThat(initialState.showNavigationBar).isTrue()
             // User navigate to Spaces
-            initialState.eventSink(HomeEvents.SelectHomeNavigationBarItem(HomeNavigationBarItem.Spaces))
+            initialState.eventSink(HomeEvent.SelectHomeNavigationBarItem(HomeNavigationBarItem.Spaces))
             val spaceState = awaitItem()
             assertThat(spaceState.currentHomeNavigationBarItem).isEqualTo(HomeNavigationBarItem.Spaces)
             // The last space is left

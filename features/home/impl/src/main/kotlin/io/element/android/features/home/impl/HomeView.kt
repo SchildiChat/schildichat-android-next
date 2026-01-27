@@ -156,7 +156,7 @@ private fun HomeScaffold(
     BackHandler(
         enabled = state.currentHomeNavigationBarItem != HomeNavigationBarItem.Chats,
     ) {
-        state.eventSink(HomeEvents.SelectHomeNavigationBarItem(HomeNavigationBarItem.Chats))
+        state.eventSink(HomeEvent.SelectHomeNavigationBarItem(HomeNavigationBarItem.Chats))
     }
 
     val hazeState = rememberHazeState()
@@ -176,7 +176,7 @@ private fun HomeScaffold(
                 onMenuActionClick = onMenuActionClick,
                 onOpenSettings = onOpenSettings,
                 onAccountSwitch = {
-                    state.eventSink(HomeEvents.SwitchToAccount(it))
+                    state.eventSink(HomeEvent.SwitchToAccount(it))
                 },
                 onCreateSpace = onCreateSpaceClick,
                 scrollBehavior = scrollBehavior,
@@ -211,7 +211,7 @@ private fun HomeScaffold(
                                 lazyListStateTarget.animateScrollToItem(0)
                             }
                         } else {
-                            state.eventSink(HomeEvents.SelectHomeNavigationBarItem(item))
+                            state.eventSink(HomeEvent.SelectHomeNavigationBarItem(item))
                         }
                     },
                     modifier = Modifier.hazeEffect(

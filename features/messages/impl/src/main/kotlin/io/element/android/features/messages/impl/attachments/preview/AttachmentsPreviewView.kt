@@ -82,15 +82,15 @@ fun AttachmentsPreviewView(
     modifier: Modifier = Modifier,
 ) {
     fun postSendAttachment() {
-        state.eventSink(AttachmentsPreviewEvents.SendAttachment)
+        state.eventSink(AttachmentsPreviewEvent.SendAttachment)
     }
 
     fun postCancel() {
-        state.eventSink(AttachmentsPreviewEvents.CancelAndDismiss)
+        state.eventSink(AttachmentsPreviewEvent.CancelAndDismiss)
     }
 
     fun postClearSendState() {
-        state.eventSink(AttachmentsPreviewEvents.CancelAndClearSendState)
+        state.eventSink(AttachmentsPreviewEvent.CancelAndClearSendState)
     }
 
     BackHandler(enabled = state.sendActionState !is SendActionState.Sending.Uploading && state.sendActionState !is SendActionState.Done) {
@@ -199,7 +199,7 @@ private fun AttachmentPreviewContent(
                 AlertDialog(
                     title = stringResource(CommonStrings.dialog_file_too_large_to_upload_title),
                     content = content,
-                    onDismiss = { state.eventSink(AttachmentsPreviewEvents.CancelAndDismiss) },
+                    onDismiss = { state.eventSink(AttachmentsPreviewEvent.CancelAndDismiss) },
                 )
             }
         }

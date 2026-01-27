@@ -20,7 +20,7 @@ import io.element.android.tests.testutils.EventsRecorder
 import io.element.android.tests.testutils.clickOn
 import io.element.android.tests.testutils.ensureCalledOnce
 import io.element.android.tests.testutils.pressBack
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
@@ -65,7 +65,7 @@ class AddRoomToSpaceViewTest {
         val eventsRecorder = EventsRecorder<AddRoomToSpaceEvent>()
         rule.setAddRoomToSpaceView(
             anAddRoomToSpaceState(
-                selectedRooms = aSelectRoomInfoList().take(1).toPersistentList(),
+                selectedRooms = aSelectRoomInfoList().take(1).toImmutableList(),
                 eventSink = eventsRecorder,
             ),
         )

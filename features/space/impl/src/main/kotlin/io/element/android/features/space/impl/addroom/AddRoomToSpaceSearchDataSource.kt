@@ -16,14 +16,14 @@ import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
 import io.element.android.libraries.matrix.api.room.RoomInfo
 import io.element.android.libraries.matrix.api.room.isDm
-import io.element.android.libraries.matrix.ui.model.SelectRoomInfo
-import io.element.android.libraries.matrix.ui.model.toSelectRoomInfo
 import io.element.android.libraries.matrix.api.room.recent.getRecentlyVisitedRoomInfoFlow
 import io.element.android.libraries.matrix.api.roomlist.RoomList
 import io.element.android.libraries.matrix.api.roomlist.RoomListFilter
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
 import io.element.android.libraries.matrix.api.roomlist.loadAllIncrementally
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
+import io.element.android.libraries.matrix.ui.model.SelectRoomInfo
+import io.element.android.libraries.matrix.ui.model.toSelectRoomInfo
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
@@ -67,15 +67,15 @@ class AddRoomToSpaceSearchDataSource(
         rooms.map { it.roomId }.toSet()
     }
 
-    // Track locally added rooms for partial failure cases
-    private val addedRoomIds = MutableStateFlow<Set<RoomId>>(emptySet())
+    // Track locally added rooms for partial success handling.
+    // These rooms will be filtered out from search results and suggestions.
+    private val addedRoomIdsFlow = MutableStateFlow<Set<RoomId>>(emptySet())
 
     /**
-     * Marks rooms as added to the space (for partial failure handling).
-     * These rooms will be filtered out from search results and suggestions.
+     * Marks rooms as added to the space (for partial success handling).
      */
     fun markAsAdded(roomIds: Set<RoomId>) {
-        addedRoomIds.value += roomIds
+        addedRoomIdsFlow.value += roomIds
     }
 
     private val filterRoomPredicate: (RoomInfo, Set<RoomId>, Set<RoomId>) -> Boolean = { info, childIds, addedIds ->
@@ -89,7 +89,7 @@ class AddRoomToSpaceSearchDataSource(
     val roomInfoList: Flow<ImmutableList<SelectRoomInfo>> = combine(
         roomList.filteredSummaries,
         spaceChildrenFlow,
-        addedRoomIds,
+        addedRoomIdsFlow,
     ) { roomSummaries, childIds, addedIds ->
         roomSummaries
             .filter { filterRoomPredicate(it.info, childIds, addedIds) }
@@ -99,7 +99,7 @@ class AddRoomToSpaceSearchDataSource(
 
     val suggestions: Flow<ImmutableList<SelectRoomInfo>> = combine(
         spaceChildrenFlow,
-        addedRoomIds,
+        addedRoomIdsFlow,
     ) { childIds, addedIds ->
         matrixClient
             .getRecentlyVisitedRoomInfoFlow { filterRoomPredicate(it, childIds, addedIds) }

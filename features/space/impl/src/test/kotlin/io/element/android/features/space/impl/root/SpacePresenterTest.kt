@@ -30,7 +30,6 @@ import io.element.android.libraries.matrix.api.room.CurrentUserMembership
 import io.element.android.libraries.matrix.api.room.RoomType
 import io.element.android.libraries.matrix.api.room.join.JoinRoom
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomList
-import io.element.android.libraries.matrix.api.spaces.loadAllIncrementally
 import io.element.android.libraries.matrix.test.AN_EXCEPTION
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_ROOM_ID_2
@@ -50,7 +49,6 @@ import io.element.android.tests.testutils.test
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import im.vector.app.features.analytics.plan.JoinedRoom as AnalyticsJoinedRoom
@@ -393,7 +391,7 @@ class SpacePresenterTest {
         val removeChildFromSpaceResult = lambdaRecorder<RoomId, RoomId, Result<Unit>> { _, _ ->
             Result.success(Unit)
         }
-        val resetResult = lambdaRecorder<Result<Unit>> {  Result.success(Unit) }
+        val resetResult = lambdaRecorder<Result<Unit>> { Result.success(Unit) }
         val aRoom = aSpaceRoom(
             roomId = A_ROOM_ID,
             roomType = RoomType.Room,

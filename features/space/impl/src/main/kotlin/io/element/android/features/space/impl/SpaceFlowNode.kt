@@ -166,7 +166,7 @@ class SpaceFlowNode(
                         buildContext = buildContext,
                         callback = callback,
                     )
-                    .setParentSpace(spaceRoomList.roomId)
+                    .setParentSpace(spaceRoomList.spaceId)
                     .build()
             }
             NavTarget.AddRoom -> {

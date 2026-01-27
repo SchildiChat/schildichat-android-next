@@ -8,15 +8,13 @@
 
 package io.element.android.features.messages.impl.timeline.components.customreaction
 
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.moleculeFlow
-import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.messages.impl.timeline.aTimelineItemEvent
 import io.element.android.features.messages.impl.timeline.aTimelineItemReactions
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
 import io.element.android.libraries.recentemojis.test.FakeEmojibaseProvider
 import io.element.android.tests.testutils.WarmUpRule
+import io.element.android.tests.testutils.test
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
@@ -33,9 +31,7 @@ class CustomReactionPresenterTest {
 
     @Test
     fun `present - handle selecting and de-selecting an event`() = runTest {
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val event = aTimelineItemEvent(eventId = AN_EVENT_ID)
             val initialState = awaitItem()
             assertThat(initialState.target).isEqualTo(CustomReactionState.Target.None)
@@ -54,9 +50,7 @@ class CustomReactionPresenterTest {
 
     @Test
     fun `present - handle selected emojis`() = runTest {
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val reactions = aTimelineItemReactions(count = 1, isHighlighted = true)
             val event = aTimelineItemEvent(eventId = AN_EVENT_ID, timelineItemReactions = reactions)
             val initialState = awaitItem()

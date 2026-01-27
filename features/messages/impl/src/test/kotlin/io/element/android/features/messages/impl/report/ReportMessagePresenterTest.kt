@@ -8,9 +8,6 @@
 
 package io.element.android.features.messages.impl.report
 
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.moleculeFlow
-import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarDispatcher
@@ -22,6 +19,7 @@ import io.element.android.libraries.matrix.test.A_USER_ID
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
 import io.element.android.tests.testutils.WarmUpRule
 import io.element.android.tests.testutils.lambda.lambdaRecorder
+import io.element.android.tests.testutils.test
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -33,9 +31,7 @@ class ReportMessagePresenterTest {
     @Test
     fun `presenter - initial state`() = runTest {
         val presenter = createReportMessagePresenter()
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.reason).isEmpty()
             assertThat(initialState.blockUser).isFalse()
@@ -46,9 +42,7 @@ class ReportMessagePresenterTest {
     @Test
     fun `presenter - update reason`() = runTest {
         val presenter = createReportMessagePresenter()
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             val reason = "This user is making the chat very toxic."
             initialState.eventSink(ReportMessageEvent.UpdateReason(reason))
@@ -60,9 +54,7 @@ class ReportMessagePresenterTest {
     @Test
     fun `presenter - toggle block user`() = runTest {
         val presenter = createReportMessagePresenter()
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink(ReportMessageEvent.ToggleBlockUser)
 
@@ -83,9 +75,7 @@ class ReportMessagePresenterTest {
             reportContentResult = reportContentResult
         )
         val presenter = createReportMessagePresenter(joinedRoom = room)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink(ReportMessageEvent.ToggleBlockUser)
             skipItems(1)
@@ -105,9 +95,7 @@ class ReportMessagePresenterTest {
             reportContentResult = reportContentResult
         )
         val presenter = createReportMessagePresenter(joinedRoom = room)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink(ReportMessageEvent.Report)
             assertThat(awaitItem().result).isInstanceOf(AsyncAction.Loading::class.java)
@@ -125,9 +113,7 @@ class ReportMessagePresenterTest {
             reportContentResult = reportContentResult
         )
         val presenter = createReportMessagePresenter(joinedRoom = room)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink(ReportMessageEvent.Report)
             assertThat(awaitItem().result).isInstanceOf(AsyncAction.Loading::class.java)

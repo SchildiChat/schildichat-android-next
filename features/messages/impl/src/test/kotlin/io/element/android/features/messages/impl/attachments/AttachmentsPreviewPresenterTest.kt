@@ -11,9 +11,6 @@
 package io.element.android.features.messages.impl.attachments
 
 import android.net.Uri
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.moleculeFlow
-import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.messages.impl.attachments.preview.AttachmentsPreviewEvent
 import io.element.android.features.messages.impl.attachments.preview.AttachmentsPreviewPresenter
@@ -111,9 +108,7 @@ class AttachmentsPreviewPresenterTest {
             mediaPreProcessor = mediaPreProcessor,
             onDoneListener = { onDoneListener() },
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.Processing(displayProgress = false))
@@ -147,9 +142,7 @@ class AttachmentsPreviewPresenterTest {
             mediaPreProcessor = mediaPreProcessor,
             onDoneListener = { onDoneListener() },
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
             // Pre-processing finishes
@@ -185,9 +178,7 @@ class AttachmentsPreviewPresenterTest {
             mediaPreProcessor = mediaPreProcessor,
             onDoneListener = { onDoneListener() },
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.Processing(displayProgress = false))
@@ -216,9 +207,7 @@ class AttachmentsPreviewPresenterTest {
             },
             onDoneListener = { onDoneListener() },
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
             initialState.eventSink(AttachmentsPreviewEvent.SendAttachment)
@@ -241,9 +230,7 @@ class AttachmentsPreviewPresenterTest {
             },
             onDoneListener = { onDoneListener() },
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
             // Pre-processing finishes
@@ -265,9 +252,7 @@ class AttachmentsPreviewPresenterTest {
             temporaryUriDeleter = FakeTemporaryUriDeleter(deleteCallback),
             onDoneListener = { onDoneListener() },
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
             initialState.eventSink(AttachmentsPreviewEvent.CancelAndDismiss)
@@ -298,9 +283,7 @@ class AttachmentsPreviewPresenterTest {
             mediaPreProcessor = mediaPreProcessor,
             onDoneListener = { onDoneListener() },
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
             initialState.textEditorState.setMarkdown(A_CAPTION)
@@ -341,9 +324,7 @@ class AttachmentsPreviewPresenterTest {
             mediaPreProcessor = mediaPreProcessor,
             onDoneListener = { onDoneListener() },
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
             initialState.textEditorState.setMarkdown(A_CAPTION)
@@ -418,9 +399,7 @@ class AttachmentsPreviewPresenterTest {
             },
         )
         val presenter = createAttachmentsPreviewPresenter(room = room, onDoneListener = onDoneListenerResult)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
             initialState.eventSink(AttachmentsPreviewEvent.SendAttachment)
@@ -453,9 +432,7 @@ class AttachmentsPreviewPresenterTest {
             ),
             onDoneListener = onDoneListenerResult,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
             initialState.eventSink(AttachmentsPreviewEvent.SendAttachment)
@@ -503,9 +480,7 @@ class AttachmentsPreviewPresenterTest {
             }
         )
 
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             assertThat(localMedia.info.fileSize).isGreaterThan(maxUploadSize)
 
             consumeItemsUntilPredicate { it.mediaOptimizationSelectorState.maxUploadSize.isSuccess() }
@@ -563,9 +538,7 @@ class AttachmentsPreviewPresenterTest {
             }
         )
 
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             consumeItemsUntilPredicate {
                 it.mediaOptimizationSelectorState.maxUploadSize.isSuccess() &&
                     it.mediaOptimizationSelectorState.videoSizeEstimations.dataOrNull()?.isNotEmpty() == true

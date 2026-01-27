@@ -8,9 +8,6 @@
 
 package io.element.android.features.messages.impl.timeline.components.reactionsummary
 
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.moleculeFlow
-import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.messages.impl.timeline.model.anAggregatedReaction
 import io.element.android.libraries.matrix.api.room.RoomMembersState
@@ -21,6 +18,7 @@ import io.element.android.libraries.matrix.test.A_USER_NAME
 import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.aRoomMember
 import io.element.android.tests.testutils.WarmUpRule
+import io.element.android.tests.testutils.test
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
@@ -40,9 +38,7 @@ class ReactionSummaryPresenterTest {
 
     @Test
     fun `present - handle showing and hiding the reaction summary`() = runTest {
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.target).isNull()
 
@@ -56,9 +52,7 @@ class ReactionSummaryPresenterTest {
 
     @Test
     fun `present - handle reaction summary content and avatars populated`() = runTest {
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.target).isNull()
 

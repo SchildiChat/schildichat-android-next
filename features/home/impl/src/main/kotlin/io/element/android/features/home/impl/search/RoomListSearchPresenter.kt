@@ -45,12 +45,12 @@ class RoomListSearchPresenter(
             dataSource.setSearchQuery(searchQuery.text.toString())
         }
 
-        fun handleEvent(event: RoomListSearchEvents) {
+        fun handleEvent(event: RoomListSearchEvent) {
             when (event) {
-                RoomListSearchEvents.ClearQuery -> {
+                RoomListSearchEvent.ClearQuery -> {
                     searchQuery.clearText()
                 }
-                RoomListSearchEvents.ToggleSearchVisibility -> {
+                RoomListSearchEvent.ToggleSearchVisibility -> {
                     isSearchActive = !isSearchActive
                     searchQuery.clearText()
                 }

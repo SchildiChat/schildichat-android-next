@@ -48,11 +48,11 @@ class RoomListSearchPresenterTest {
         }.test {
             awaitItem().let { state ->
                 assertThat(state.isSearchActive).isFalse()
-                state.eventSink(RoomListSearchEvents.ToggleSearchVisibility)
+                state.eventSink(RoomListSearchEvent.ToggleSearchVisibility)
             }
             awaitItem().let { state ->
                 assertThat(state.isSearchActive).isTrue()
-                state.eventSink(RoomListSearchEvents.ToggleSearchVisibility)
+                state.eventSink(RoomListSearchEvent.ToggleSearchVisibility)
             }
             awaitItem().let { state ->
                 assertThat(state.isSearchActive).isFalse()
@@ -82,7 +82,7 @@ class RoomListSearchPresenterTest {
                 ).isEqualTo(
                     RoomListFilter.NormalizedMatchRoomName("Search")
                 )
-                state.eventSink(RoomListSearchEvents.ClearQuery)
+                state.eventSink(RoomListSearchEvent.ClearQuery)
             }
             awaitItem().let { state ->
                 assertThat(state.query.text.toString()).isEmpty()

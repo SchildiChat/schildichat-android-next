@@ -8,7 +8,7 @@
 
 package io.element.android.features.home.impl.search
 
-sealed interface RoomListSearchEvents {
-    data object ToggleSearchVisibility : RoomListSearchEvents
-    data object ClearQuery : RoomListSearchEvents
+sealed interface RoomListSearchEvent {
+    data object ToggleSearchVisibility : RoomListSearchEvent
+    data object ClearQuery : RoomListSearchEvent
 }

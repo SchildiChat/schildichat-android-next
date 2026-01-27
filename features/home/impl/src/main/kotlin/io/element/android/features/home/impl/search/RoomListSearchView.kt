@@ -59,7 +59,7 @@ internal fun RoomListSearchView(
     modifier: Modifier = Modifier,
 ) {
     BackHandler(enabled = state.isSearchActive) {
-        state.eventSink(RoomListSearchEvents.ToggleSearchVisibility)
+        state.eventSink(RoomListSearchEvent.ToggleSearchVisibility)
     }
 
     AnimatedVisibility(
@@ -89,7 +89,7 @@ private fun RoomListSearchContent(
     val borderColor = MaterialTheme.colorScheme.tertiary
     val strokeWidth = 1.dp
     fun onBackButtonClick() {
-        state.eventSink(RoomListSearchEvents.ToggleSearchVisibility)
+        state.eventSink(RoomListSearchEvent.ToggleSearchVisibility)
     }
 
     fun onRoomClick(room: RoomListRoomSummary) {
@@ -127,7 +127,7 @@ private fun RoomListSearchContent(
                         ),
                         trailingIcon = if (state.query.text.isNotEmpty()) {
                             @Composable {
-                                IconButton(onClick = { state.eventSink(RoomListSearchEvents.ClearQuery) }) {
+                                IconButton(onClick = { state.eventSink(RoomListSearchEvent.ClearQuery) }) {
                                     Icon(
                                         imageVector = CompoundIcons.Close(),
                                         contentDescription = stringResource(CommonStrings.action_cancel)

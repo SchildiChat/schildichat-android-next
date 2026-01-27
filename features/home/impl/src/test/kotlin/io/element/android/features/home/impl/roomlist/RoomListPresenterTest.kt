@@ -21,7 +21,7 @@ import io.element.android.features.home.impl.datasource.aRoomListRoomSummaryFact
 import io.element.android.features.home.impl.filters.RoomListFiltersState
 import io.element.android.features.home.impl.filters.aRoomListFiltersState
 import io.element.android.features.home.impl.model.createRoomListRoomSummary
-import io.element.android.features.home.impl.search.RoomListSearchEvents
+import io.element.android.features.home.impl.search.RoomListSearchEvent
 import io.element.android.features.home.impl.search.RoomListSearchState
 import io.element.android.features.home.impl.search.aRoomListSearchState
 import io.element.android.features.invite.api.SeenInvitesStore
@@ -327,7 +327,7 @@ class RoomListPresenterTest {
 
     @Test
     fun `present - toggle search menu`() = runTest {
-        val eventRecorder = EventsRecorder<RoomListSearchEvents>()
+        val eventRecorder = EventsRecorder<RoomListSearchEvent>()
         val searchPresenter: Presenter<RoomListSearchState> = Presenter {
             aRoomListSearchState(
                 eventSink = eventRecorder
@@ -343,13 +343,13 @@ class RoomListPresenterTest {
             eventRecorder.assertEmpty()
             initialState.eventSink(RoomListEvent.ToggleSearchResults)
             eventRecorder.assertSingle(
-                RoomListSearchEvents.ToggleSearchVisibility
+                RoomListSearchEvent.ToggleSearchVisibility
             )
             initialState.eventSink(RoomListEvent.ToggleSearchResults)
             eventRecorder.assertList(
                 listOf(
-                    RoomListSearchEvents.ToggleSearchVisibility,
-                    RoomListSearchEvents.ToggleSearchVisibility
+                    RoomListSearchEvent.ToggleSearchVisibility,
+                    RoomListSearchEvent.ToggleSearchVisibility
                 )
             )
         }

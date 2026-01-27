@@ -33,7 +33,7 @@ class PinnedMessagesBannerViewTest {
 
     @Test
     fun `clicking on the banner invoke expected callback`() {
-        val eventsRecorder = EventsRecorder<PinnedMessagesBannerEvents>()
+        val eventsRecorder = EventsRecorder<PinnedMessagesBannerEvent>()
         val state = aLoadedPinnedMessagesBannerState(
             eventSink = eventsRecorder
         )
@@ -44,13 +44,13 @@ class PinnedMessagesBannerViewTest {
                 onClick = callback
             )
             rule.onRoot().performClick()
-            eventsRecorder.assertSingle(PinnedMessagesBannerEvents.MoveToNextPinned)
+            eventsRecorder.assertSingle(PinnedMessagesBannerEvent.MoveToNextPinned)
         }
     }
 
     @Test
     fun `clicking on view all emit the expected event`() {
-        val eventsRecorder = EventsRecorder<PinnedMessagesBannerEvents>(expectEvents = true)
+        val eventsRecorder = EventsRecorder<PinnedMessagesBannerEvent>(expectEvents = true)
         val state = aLoadedPinnedMessagesBannerState(
             eventSink = eventsRecorder
         )

@@ -8,6 +8,6 @@
 
 package io.element.android.features.messages.impl.pinned.banner
 
-sealed interface PinnedMessagesBannerEvents {
-    data object MoveToNextPinned : PinnedMessagesBannerEvents
+sealed interface PinnedMessagesBannerEvent {
+    data object MoveToNextPinned : PinnedMessagesBannerEvent
 }

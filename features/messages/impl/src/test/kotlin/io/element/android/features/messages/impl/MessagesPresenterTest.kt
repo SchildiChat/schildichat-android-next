@@ -540,16 +540,6 @@ class MessagesPresenterTest {
     }
 
     @Test
-    fun `present - handle dismiss action`() = runTest {
-        val presenter = createMessagesPresenter()
-        presenter.testWithLifecycleOwner {
-            val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.Dismiss)
-            assertThat(awaitItem().actionListState.target).isEqualTo(ActionListState.Target.None)
-        }
-    }
-
-    @Test
     fun `present - handle action show developer info`() = runTest {
         val onShowEventDebugInfoClickLambda = lambdaRecorder { _: EventId?, _: TimelineItemDebugInfo -> }
         val navigator = FakeMessagesNavigator(

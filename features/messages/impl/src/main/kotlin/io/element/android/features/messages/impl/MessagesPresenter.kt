@@ -27,7 +27,6 @@ import dev.zacsweers.metro.AssistedInject
 import im.vector.app.features.analytics.plan.PinUnpinAction
 import io.element.android.appconfig.MessageComposerConfig
 import io.element.android.features.messages.api.timeline.HtmlConverterProvider
-import io.element.android.features.messages.impl.actionlist.ActionListEvents
 import io.element.android.features.messages.impl.actionlist.ActionListState
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemAction
 import io.element.android.features.messages.impl.crypto.historyvisible.HistoryVisibleState
@@ -243,7 +242,6 @@ class MessagesPresenter(
                         localCoroutineScope.reinviteOtherUser(inviteProgress)
                     }
                 }
-                is MessagesEvents.Dismiss -> actionListState.eventSink(ActionListEvents.Clear)
                 is MessagesEvents.OnUserClicked -> {
                     roomMemberModerationState.eventSink(RoomMemberModerationEvents.ShowActionsForUser(event.user))
                 }

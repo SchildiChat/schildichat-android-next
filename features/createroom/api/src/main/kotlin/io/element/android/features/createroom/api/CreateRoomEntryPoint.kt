@@ -15,12 +15,13 @@ import io.element.android.libraries.architecture.FeatureEntryPoint
 import io.element.android.libraries.matrix.api.core.RoomId
 
 interface CreateRoomEntryPoint : FeatureEntryPoint {
-    fun createNode(
-        isSpace: Boolean,
-        parentNode: Node,
-        buildContext: BuildContext,
-        callback: Callback,
-    ): Node
+    interface Builder {
+        fun setIsSpace(isSpace: Boolean): Builder
+        fun setParentSpace(parentSpaceId: RoomId): Builder
+        fun build(): Node
+    }
+
+    fun builder(parentNode: Node, buildContext: BuildContext, callback: Callback): Builder
 
     interface Callback : Plugin {
         fun onRoomCreated(roomId: RoomId)

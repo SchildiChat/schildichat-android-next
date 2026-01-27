@@ -8,9 +8,6 @@
 
 package io.element.android.features.home.impl.roomlist
 
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.moleculeFlow
-import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import im.vector.app.features.analytics.plan.Interaction
 import io.element.android.features.announcement.api.Announcement
@@ -141,9 +138,7 @@ class RoomListPresenterTest {
         val presenter = createRoomListPresenter(
             client = FakeMatrixClient(roomListService = roomListService, encryptionService = encryptionService, syncService = syncService),
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val eventWithContentAsRooms = consumeItemsUntilPredicate {
                 it.contentState is RoomListContentState.Rooms
             }.last()
@@ -173,9 +168,7 @@ class RoomListPresenterTest {
         val presenter = createRoomListPresenter(
             client = matrixClient,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = consumeItemsUntilPredicate {
                 it.contentState is RoomListContentState.Rooms
             }.last()
@@ -207,9 +200,7 @@ class RoomListPresenterTest {
             givenGetRoomResult(A_ROOM_ID, room)
         }
         val presenter = createRoomListPresenter(client = client)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             val summary = createRoomListRoomSummary()
             initialState.eventSink(RoomListEvent.ShowContextMenu(summary))
@@ -282,9 +273,7 @@ class RoomListPresenterTest {
             givenGetRoomResult(A_ROOM_ID, room)
         }
         val presenter = createRoomListPresenter(client = client)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             val summary = createRoomListRoomSummary()
             initialState.eventSink(RoomListEvent.ShowContextMenu(summary))
@@ -315,9 +304,7 @@ class RoomListPresenterTest {
         val presenter = createRoomListPresenter(
             leaveRoomState = aLeaveRoomState(eventSink = leaveRoomEventsRecorder),
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink(RoomListEvent.LeaveRoom(A_ROOM_ID, needsConfirmation = true))
             leaveRoomEventsRecorder.assertSingle(LeaveRoomEvent.LeaveRoom(A_ROOM_ID, needsConfirmation = true))
@@ -336,9 +323,7 @@ class RoomListPresenterTest {
         val presenter = createRoomListPresenter(
             searchPresenter = searchPresenter,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             eventRecorder.assertEmpty()
             initialState.eventSink(RoomListEvent.ToggleSearchResults)
@@ -367,9 +352,7 @@ class RoomListPresenterTest {
             notificationSettingsService = notificationSettingsService
         )
         val presenter = createRoomListPresenter(client = matrixClient)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             notificationSettingsService.setRoomNotificationMode(A_ROOM_ID, userDefinedMode)
             val updatedState = consumeItemsUntilPredicate { state ->
                 (state.contentState as? RoomListContentState.Rooms)?.summaries.orEmpty().any { summary ->
@@ -394,9 +377,7 @@ class RoomListPresenterTest {
             givenGetRoomResult(A_ROOM_ID, room)
         }
         val presenter = createRoomListPresenter(client = client, analyticsService = analyticsService)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             initialState.eventSink(RoomListEvent.SetRoomIsFavorite(A_ROOM_ID, true))
             setIsFavoriteResult.assertions().isCalledOnce().with(value(true))
@@ -424,9 +405,7 @@ class RoomListPresenterTest {
         val presenter = createRoomListPresenter(
             client = matrixClient,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             assertThat(awaitItem().contentState).isInstanceOf(RoomListContentState.Empty::class.java)
         }
     }
@@ -463,9 +442,7 @@ class RoomListPresenterTest {
             analyticsService = analyticsService,
             notificationCleaner = notificationCleaner,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             allRooms.forEach {
                 assertThat(it.setUnreadFlagCalls).isEmpty()

@@ -47,15 +47,15 @@ fun ResolveVerifiedUserSendFailureView(
     var showSheet by remember { mutableStateOf(false) }
 
     fun dismiss() {
-        state.eventSink(ResolveVerifiedUserSendFailureEvents.Dismiss)
+        state.eventSink(ResolveVerifiedUserSendFailureEvent.Dismiss)
     }
 
     fun onRetryClick() {
-        state.eventSink(ResolveVerifiedUserSendFailureEvents.Retry)
+        state.eventSink(ResolveVerifiedUserSendFailureEvent.Retry)
     }
 
     fun onResolveAndResendClick() {
-        state.eventSink(ResolveVerifiedUserSendFailureEvents.ResolveAndResend)
+        state.eventSink(ResolveVerifiedUserSendFailureEvent.ResolveAndResend)
     }
 
     LaunchedEffect(state.verifiedUserSendFailure) {

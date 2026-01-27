@@ -57,7 +57,7 @@ data class MessagesState(
     val dmUserVerificationState: IdentityState?,
     val roomMemberModerationState: RoomMemberModerationState,
     val successorRoom: SuccessorRoom?,
-    val eventSink: (MessagesEvents) -> Unit
+    val eventSink: (MessagesEvent) -> Unit
 ) {
     val isTombstoned = successorRoom != null
 }

@@ -134,9 +134,9 @@ class PinnedMessagesListPresenter(
             }
         )
 
-        fun handleEvent(event: PinnedMessagesListEvents) {
+        fun handleEvent(event: PinnedMessagesListEvent) {
             when (event) {
-                is PinnedMessagesListEvents.HandleAction -> sessionCoroutineScope.handleTimelineAction(event.action, event.event)
+                is PinnedMessagesListEvent.HandleAction -> sessionCoroutineScope.handleTimelineAction(event.action, event.event)
             }
         }
 
@@ -232,7 +232,7 @@ class PinnedMessagesListPresenter(
         linkState: LinkState,
         userEventPermissions: UserEventPermissions,
         timelineItems: AsyncData<ImmutableList<TimelineItem>>,
-        eventSink: (PinnedMessagesListEvents) -> Unit
+        eventSink: (PinnedMessagesListEvent) -> Unit
     ): PinnedMessagesListState {
         return when (timelineItems) {
             AsyncData.Uninitialized, is AsyncData.Loading -> PinnedMessagesListState.Loading

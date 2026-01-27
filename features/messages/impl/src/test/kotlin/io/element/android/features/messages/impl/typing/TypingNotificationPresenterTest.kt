@@ -8,10 +8,7 @@
 
 package io.element.android.features.messages.impl.typing
 
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.moleculeFlow
 import app.cash.turbine.Event
-import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.room.JoinedRoom
@@ -26,6 +23,7 @@ import io.element.android.libraries.matrix.test.room.aRoomMember
 import io.element.android.libraries.preferences.api.store.SessionPreferencesStore
 import io.element.android.libraries.preferences.test.InMemorySessionPreferencesStore
 import io.element.android.tests.testutils.WarmUpRule
+import io.element.android.tests.testutils.test
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
@@ -40,9 +38,7 @@ class TypingNotificationPresenterTest {
     @Test
     fun `present - initial state`() = runTest {
         val presenter = createPresenter()
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.renderTypingNotifications).isTrue()
             assertThat(initialState.typingMembers).isEmpty()
@@ -61,9 +57,7 @@ class TypingNotificationPresenterTest {
             joinedRoom = room,
             sessionPreferencesStore = sessionPreferencesStore,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             skipItems(1)
             val initialState = awaitItem()
             assertThat(initialState.renderTypingNotifications).isFalse()
@@ -95,9 +89,7 @@ class TypingNotificationPresenterTest {
         val typingMembersFlow = MutableStateFlow<List<UserId>>(emptyList())
         val room = FakeJoinedRoom(roomTypingMembersFlow = typingMembersFlow)
         val presenter = createPresenter(joinedRoom = room)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.typingMembers).isEmpty()
             typingMembersFlow.emit(listOf(A_USER_ID_2))
@@ -133,9 +125,7 @@ class TypingNotificationPresenterTest {
             )
         }
         val presenter = createPresenter(joinedRoom = room)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.typingMembers).isEmpty()
             typingMembersFlow.emit(listOf(A_USER_ID_2))
@@ -160,9 +150,7 @@ class TypingNotificationPresenterTest {
         val typingMembersFlow = MutableStateFlow<List<UserId>>(emptyList())
         val room = FakeJoinedRoom(roomTypingMembersFlow = typingMembersFlow)
         val presenter = createPresenter(joinedRoom = room)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.typingMembers).isEmpty()
             typingMembersFlow.emit(listOf(A_USER_ID_2))
@@ -194,9 +182,7 @@ class TypingNotificationPresenterTest {
         val typingMembersFlow = MutableStateFlow<List<UserId>>(emptyList())
         val room = FakeJoinedRoom(roomTypingMembersFlow = typingMembersFlow)
         val presenter = createPresenter(joinedRoom = room)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.typingMembers).isEmpty()
             typingMembersFlow.emit(listOf(A_USER_ID_2))

@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -51,12 +52,12 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.messages.api.timeline.voicemessages.composer.VoiceMessageComposerEvent
-import io.element.android.features.messages.impl.actionlist.ActionListEvents
+import io.element.android.features.messages.impl.actionlist.ActionListEvent
 import io.element.android.features.messages.impl.actionlist.ActionListView
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemAction
 import io.element.android.features.messages.impl.crypto.historyvisible.HistoryVisibleStateView
 import io.element.android.features.messages.impl.crypto.identity.IdentityChangeStateView
-import io.element.android.features.messages.impl.link.LinkEvents
+import io.element.android.features.messages.impl.link.LinkEvent
 import io.element.android.features.messages.impl.link.LinkView
 import io.element.android.features.messages.impl.messagecomposer.AttachmentsBottomSheet
 import io.element.android.features.messages.impl.messagecomposer.DisabledComposerView
@@ -67,18 +68,18 @@ import io.element.android.features.messages.impl.pinned.banner.PinnedMessagesBan
 import io.element.android.features.messages.impl.pinned.banner.PinnedMessagesBannerView
 import io.element.android.features.messages.impl.pinned.banner.PinnedMessagesBannerViewDefaults
 import io.element.android.features.messages.impl.timeline.FOCUS_ON_PINNED_EVENT_DEBOUNCE_DURATION_IN_MILLIS
-import io.element.android.features.messages.impl.timeline.TimelineEvents
+import io.element.android.features.messages.impl.timeline.TimelineEvent
 import io.element.android.features.messages.impl.timeline.TimelineView
 import io.element.android.features.messages.impl.timeline.aGroupedEvents
 import io.element.android.features.messages.impl.timeline.aTimelineItemDaySeparator
 import io.element.android.features.messages.impl.timeline.aTimelineItemEvent
 import io.element.android.features.messages.impl.timeline.aTimelineState
 import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionBottomSheet
-import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionEvents
-import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryEvents
+import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionEvent
+import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryEvent
 import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryView
 import io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet.ReadReceiptBottomSheet
-import io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet.ReadReceiptBottomSheetEvents
+import io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet.ReadReceiptBottomSheetEvent
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.features.messages.impl.timeline.model.TimelineItemGroupPosition
 import io.element.android.features.messages.impl.timeline.model.event.aTimelineItemStateEventContent
@@ -168,7 +169,7 @@ fun MessagesView(
         Timber.v("OnMessageLongClicked= ${event.id}")
         hidingKeyboard {
             state.actionListState.eventSink(
-                ActionListEvents.ComputeForMessage(
+                ActionListEvent.ComputeForMessage(
                     event = event,
                     userEventPermissions = state.userEventPermissions,
                 )
@@ -177,20 +178,20 @@ fun MessagesView(
     }
 
     fun onActionSelected(action: TimelineItemAction, event: TimelineItem.Event) {
-        state.eventSink(MessagesEvents.HandleAction(action, event))
+        state.eventSink(MessagesEvent.HandleAction(action, event))
     }
 
     fun onEmojiReactionClick(emoji: String, event: TimelineItem.Event) {
-        state.eventSink(MessagesEvents.ToggleReaction(emoji, event.eventOrTransactionId))
+        state.eventSink(MessagesEvent.ToggleReaction(emoji, event.eventOrTransactionId))
     }
 
     fun onEmojiReactionLongClick(emoji: String, event: TimelineItem.Event) {
         if (event.eventId == null) return
-        state.reactionSummaryState.eventSink(ReactionSummaryEvents.ShowReactionSummary(event.eventId, event.reactionsState.reactions, emoji))
+        state.reactionSummaryState.eventSink(ReactionSummaryEvent.ShowReactionSummary(event.eventId, event.reactionsState.reactions, emoji))
     }
 
     fun onMoreReactionsClick(event: TimelineItem.Event) {
-        state.customReactionState.eventSink(CustomReactionEvents.ShowCustomReactionSheet(event))
+        state.customReactionState.eventSink(CustomReactionEvent.ShowCustomReactionSheet(event))
     }
 
     val expandableState = rememberExpandableBottomSheetLayoutState()
@@ -243,7 +244,7 @@ fun MessagesView(
                             onMessageLongClick = ::onMessageLongClick,
                             onUserDataClick = {
                                 hidingKeyboard {
-                                    state.eventSink(MessagesEvents.OnUserClicked(it))
+                                    state.eventSink(MessagesEvent.OnUserClicked(it))
                                 }
                             },
                             onLinkClick = { link, customTab ->
@@ -251,19 +252,19 @@ fun MessagesView(
                                     onLinkClick(link.url, true)
                                     // Do not check those links, they are internal link only
                                 } else {
-                                    state.linkState.eventSink(LinkEvents.OnLinkClick(link))
+                                    state.linkState.eventSink(LinkEvent.OnLinkClick(link))
                                 }
                             },
                             onReactionClick = ::onEmojiReactionClick,
                             onReactionLongClick = ::onEmojiReactionLongClick,
                             onMoreReactionsClick = ::onMoreReactionsClick,
                             onReadReceiptClick = { event ->
-                                state.readReceiptBottomSheetState.eventSink(ReadReceiptBottomSheetEvents.EventSelected(event))
+                                state.readReceiptBottomSheetState.eventSink(ReadReceiptBottomSheetEvent.EventSelected(event))
                             },
                             onSendLocationClick = onSendLocationClick,
                             onCreatePollClick = onCreatePollClick,
                             onSwipeToReply = { targetEvent ->
-                                state.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Reply, targetEvent))
+                                state.eventSink(MessagesEvent.HandleAction(TimelineItemAction.Reply, targetEvent))
                             },
                             forceJumpToBottomVisibility = forceJumpToBottomVisibility,
                             onJoinCallClick = onJoinCallClick,
@@ -300,7 +301,7 @@ fun MessagesView(
                 state = state,
                 onLinkClick = { url, customTab -> onLinkClick(url, customTab) },
                 onRoomSuccessorClick = { roomId ->
-                    state.timelineState.eventSink(TimelineEvents.NavigateToPredecessorOrSuccessorRoom(roomId = roomId))
+                    state.timelineState.eventSink(TimelineEvent.NavigateToPredecessorOrSuccessorRoom(roomId = roomId))
                 },
             )
         },
@@ -341,22 +342,43 @@ fun MessagesView(
         maxBottomSheetContentHeight = maxComposerHeightPx.toDp(),
     )
 
+    var endPollConfirmingEvent: TimelineItem.Event? by remember { mutableStateOf(null) }
+
+    if (endPollConfirmingEvent != null) {
+        ConfirmationDialog(
+            content = stringResource(id = CommonStrings.common_poll_end_confirmation),
+            onSubmitClick = {
+                endPollConfirmingEvent?.let { event ->
+                    onActionSelected(TimelineItemAction.EndPoll, event)
+                }
+                endPollConfirmingEvent = null
+            },
+            onDismiss = { endPollConfirmingEvent = null },
+        )
+    }
+
     ActionListView(
         state = state.actionListState,
-        onSelectAction = ::onActionSelected,
+        onSelectAction = { action: TimelineItemAction, event: TimelineItem.Event ->
+            if (action == TimelineItemAction.EndPoll) {
+                endPollConfirmingEvent = event
+            } else {
+                onActionSelected(action, event)
+            }
+        },
         onCustomReactionClick = { event ->
-            state.customReactionState.eventSink(CustomReactionEvents.ShowCustomReactionSheet(event))
+            state.customReactionState.eventSink(CustomReactionEvent.ShowCustomReactionSheet(event))
         },
         onEmojiReactionClick = ::onEmojiReactionClick,
         onVerifiedUserSendFailureClick = { event ->
-            state.timelineState.eventSink(TimelineEvents.ComputeVerifiedUserSendFailure(event))
+            state.timelineState.eventSink(TimelineEvent.ComputeVerifiedUserSendFailure(event))
         },
     )
 
     CustomReactionBottomSheet(
         state = state.customReactionState,
         onSelectEmoji = { uniqueId, emoji ->
-            state.eventSink(MessagesEvents.ToggleReaction(emoji.unicode, uniqueId))
+            state.eventSink(MessagesEvent.ToggleReaction(emoji.unicode, uniqueId))
         }
     )
 
@@ -382,8 +404,8 @@ private fun ReinviteDialog(state: MessagesState) {
             content = stringResource(id = R.string.screen_room_invite_again_alert_message),
             cancelText = stringResource(id = CommonStrings.action_cancel),
             submitText = stringResource(id = CommonStrings.action_invite),
-            onSubmitClick = { state.eventSink(MessagesEvents.InviteDialogDismissed(InviteDialogAction.Invite)) },
-            onDismiss = { state.eventSink(MessagesEvents.InviteDialogDismissed(InviteDialogAction.Cancel)) }
+            onSubmitClick = { state.eventSink(MessagesEvent.InviteDialogDismissed(InviteDialogAction.Invite)) },
+            onDismiss = { state.eventSink(MessagesEvent.InviteDialogDismissed(InviteDialogAction.Cancel)) }
         )
     }
 }
@@ -467,7 +489,7 @@ private fun MessagesViewContent(
                 ) {
                     fun focusOnPinnedEvent(eventId: EventId) {
                         state.timelineState.eventSink(
-                            TimelineEvents.FocusOnEvent(eventId = eventId, debounce = FOCUS_ON_PINNED_EVENT_DEBOUNCE_DURATION_IN_MILLIS.milliseconds)
+                            TimelineEvent.FocusOnEvent(eventId = eventId, debounce = FOCUS_ON_PINNED_EVENT_DEBOUNCE_DURATION_IN_MILLIS.milliseconds)
                         )
                     }
                     PinnedMessagesBannerView(

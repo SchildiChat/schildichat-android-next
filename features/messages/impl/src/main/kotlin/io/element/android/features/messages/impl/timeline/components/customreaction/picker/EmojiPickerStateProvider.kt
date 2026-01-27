@@ -73,7 +73,7 @@ internal fun anEmojiPickerState(
     searchQuery: String = "",
     isSearchActive: Boolean = false,
     searchResults: SearchBarResultState<ImmutableList<Emoji>> = SearchBarResultState.Initial(),
-    eventSink: (EmojiPickerEvents) -> Unit = {},
+    eventSink: (EmojiPickerEvent) -> Unit = {},
 ) = EmojiPickerState(
     categories = categories,
     allEmojis = allEmojis,

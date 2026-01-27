@@ -20,7 +20,7 @@ data class AttachmentsPreviewState(
     val textEditorState: TextEditorState,
     val mediaOptimizationSelectorState: MediaOptimizationSelectorState,
     val displayFileTooLargeError: Boolean,
-    val eventSink: (AttachmentsPreviewEvents) -> Unit
+    val eventSink: (AttachmentsPreviewEvent) -> Unit,
 )
 
 @Immutable

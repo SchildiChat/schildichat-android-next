@@ -50,7 +50,7 @@ internal fun aLoadedPinnedMessagesBannerState(
         eventId = EventId("\$" + Random.nextInt().toString()),
         formatted = AnnotatedString(message)
     ),
-    eventSink: (PinnedMessagesBannerEvents) -> Unit = {}
+    eventSink: (PinnedMessagesBannerEvent) -> Unit = {}
 ) = PinnedMessagesBannerState.Loaded(
     currentPinnedMessage = currentPinnedMessage,
     currentPinnedMessageIndex = currentPinnedMessageIndex,

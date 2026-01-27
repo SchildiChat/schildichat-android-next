@@ -8,8 +8,8 @@
 
 package io.element.android.features.messages.impl.attachments.preview
 
-sealed interface AttachmentsPreviewEvents {
-    data object SendAttachment : AttachmentsPreviewEvents
-    data object CancelAndDismiss : AttachmentsPreviewEvents
-    data object CancelAndClearSendState : AttachmentsPreviewEvents
+sealed interface AttachmentsPreviewEvent {
+    data object SendAttachment : AttachmentsPreviewEvent
+    data object CancelAndDismiss : AttachmentsPreviewEvent
+    data object CancelAndClearSendState : AttachmentsPreviewEvent
 }

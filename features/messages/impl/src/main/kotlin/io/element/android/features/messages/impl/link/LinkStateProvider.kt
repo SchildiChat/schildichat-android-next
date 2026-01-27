@@ -29,7 +29,7 @@ open class LinkStateProvider : PreviewParameterProvider<LinkState> {
 
 fun aLinkState(
     linkClick: AsyncAction<Link> = AsyncAction.Uninitialized,
-    eventSink: (LinkEvents) -> Unit = {},
+    eventSink: (LinkEvent) -> Unit = {},
 ) = LinkState(
     linkClick = linkClick,
     eventSink = eventSink,

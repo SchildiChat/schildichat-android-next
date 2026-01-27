@@ -10,8 +10,8 @@ package io.element.android.features.messages.impl.link
 
 import io.element.android.wysiwyg.link.Link
 
-sealed interface LinkEvents {
-    data class OnLinkClick(val link: Link) : LinkEvents
-    data object Confirm : LinkEvents
-    data object Cancel : LinkEvents
+sealed interface LinkEvent {
+    data class OnLinkClick(val link: Link) : LinkEvent
+    data object Confirm : LinkEvent
+    data object Cancel : LinkEvent
 }

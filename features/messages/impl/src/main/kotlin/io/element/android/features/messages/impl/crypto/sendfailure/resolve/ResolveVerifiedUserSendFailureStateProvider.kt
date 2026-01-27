@@ -29,7 +29,7 @@ fun aResolveVerifiedUserSendFailureState(
     verifiedUserSendFailure: VerifiedUserSendFailure = VerifiedUserSendFailure.None,
     resolveAction: AsyncAction<Unit> = AsyncAction.Uninitialized,
     retryAction: AsyncAction<Unit> = AsyncAction.Uninitialized,
-    eventSink: (ResolveVerifiedUserSendFailureEvents) -> Unit = {}
+    eventSink: (ResolveVerifiedUserSendFailureEvent) -> Unit = {}
 ) = ResolveVerifiedUserSendFailureState(
     verifiedUserSendFailure = verifiedUserSendFailure,
     resolveAction = resolveAction,

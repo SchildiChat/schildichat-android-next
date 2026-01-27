@@ -10,12 +10,12 @@ package io.element.android.features.messages.impl.crypto.sendfailure.resolve
 
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 
-sealed interface ResolveVerifiedUserSendFailureEvents {
+sealed interface ResolveVerifiedUserSendFailureEvent {
     data class ComputeForMessage(
         val messageEvent: TimelineItem.Event,
-    ) : ResolveVerifiedUserSendFailureEvents
+    ) : ResolveVerifiedUserSendFailureEvent
 
-    data object ResolveAndResend : ResolveVerifiedUserSendFailureEvents
-    data object Retry : ResolveVerifiedUserSendFailureEvents
-    data object Dismiss : ResolveVerifiedUserSendFailureEvents
+    data object ResolveAndResend : ResolveVerifiedUserSendFailureEvent
+    data object Retry : ResolveVerifiedUserSendFailureEvent
+    data object Dismiss : ResolveVerifiedUserSendFailureEvent
 }

@@ -140,9 +140,9 @@ class AttachmentsPreviewPresenter(
             }
         }
 
-        fun handleEvent(event: AttachmentsPreviewEvents) {
+        fun handleEvent(event: AttachmentsPreviewEvent) {
             when (event) {
-                is AttachmentsPreviewEvents.SendAttachment -> {
+                is AttachmentsPreviewEvent.SendAttachment -> {
                     ongoingSendAttachmentJob.value = coroutineScope.launch {
                         // If the media optimization selector is displayed, we need to wait for the user to select the options
                         // before we can pre-process the media.
@@ -191,7 +191,7 @@ class AttachmentsPreviewPresenter(
                         }
                     }
                 }
-                AttachmentsPreviewEvents.CancelAndDismiss -> {
+                AttachmentsPreviewEvent.CancelAndDismiss -> {
                     displayFileTooLargeError = false
 
                     // Cancel media preprocessing and sending
@@ -206,7 +206,7 @@ class AttachmentsPreviewPresenter(
                         sendActionState,
                     )
                 }
-                AttachmentsPreviewEvents.CancelAndClearSendState -> {
+                AttachmentsPreviewEvent.CancelAndClearSendState -> {
                     // Cancel media sending
                     ongoingSendAttachmentJob.value?.let {
                         it.cancel()

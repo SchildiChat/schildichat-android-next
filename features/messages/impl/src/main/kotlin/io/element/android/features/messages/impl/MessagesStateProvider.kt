@@ -28,11 +28,11 @@ import io.element.android.features.messages.impl.pinned.banner.aLoadedPinnedMess
 import io.element.android.features.messages.impl.timeline.TimelineState
 import io.element.android.features.messages.impl.timeline.aTimelineItemList
 import io.element.android.features.messages.impl.timeline.aTimelineState
-import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionEvents
+import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionEvent
 import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionState
-import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryEvents
+import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryEvent
 import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryState
-import io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet.ReadReceiptBottomSheetEvents
+import io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet.ReadReceiptBottomSheetEvent
 import io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet.ReadReceiptBottomSheetState
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.features.messages.impl.timeline.model.event.aTimelineItemTextContent
@@ -133,7 +133,7 @@ fun aMessagesState(
     dmUserVerificationState: IdentityState? = null,
     roomMemberModerationState: RoomMemberModerationState = aRoomMemberModerationState(),
     successorRoom: SuccessorRoom? = null,
-    eventSink: (MessagesEvents) -> Unit = {},
+    eventSink: (MessagesEvent) -> Unit = {},
 ) = MessagesState(
     roomId = RoomId("!id:domain"),
     roomName = roomName,
@@ -187,7 +187,7 @@ fun aUserEventPermissions(
 
 fun aReactionSummaryState(
     target: ReactionSummaryState.Summary? = null,
-    eventSink: (ReactionSummaryEvents) -> Unit = {}
+    eventSink: (ReactionSummaryEvent) -> Unit = {}
 ) = ReactionSummaryState(
     target = target,
     eventSink = eventSink,
@@ -196,7 +196,7 @@ fun aReactionSummaryState(
 fun aCustomReactionState(
     target: CustomReactionState.Target = CustomReactionState.Target.None,
     recentEmojis: ImmutableList<String> = persistentListOf(),
-    eventSink: (CustomReactionEvents) -> Unit = {},
+    eventSink: (CustomReactionEvent) -> Unit = {},
 ) = CustomReactionState(
     target = target,
     recentEmojis = recentEmojis,
@@ -206,7 +206,7 @@ fun aCustomReactionState(
 
 fun aReadReceiptBottomSheetState(
     selectedEvent: TimelineItem.Event? = null,
-    eventSink: (ReadReceiptBottomSheetEvents) -> Unit = {},
+    eventSink: (ReadReceiptBottomSheetEvent) -> Unit = {},
 ) = ReadReceiptBottomSheetState(
     selectedEvent = selectedEvent,
     eventSink = eventSink,

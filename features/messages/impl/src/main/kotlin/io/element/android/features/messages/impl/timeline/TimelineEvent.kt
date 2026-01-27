@@ -16,45 +16,45 @@ import io.element.android.libraries.matrix.api.core.ThreadId
 import io.element.android.libraries.matrix.api.timeline.Timeline
 import kotlin.time.Duration
 
-sealed interface TimelineEvents {
-    data class OnScrollFinished(val firstIndex: Int) : TimelineEvents
-    data class FocusOnEvent(val eventId: EventId, val debounce: Duration = Duration.ZERO) : TimelineEvents
-    data object ClearFocusRequestState : TimelineEvents
-    data object OnFocusEventRender : TimelineEvents
-    data object JumpToLive : TimelineEvents
+sealed interface TimelineEvent {
+    data class OnScrollFinished(val firstIndex: Int) : TimelineEvent
+    data class FocusOnEvent(val eventId: EventId, val debounce: Duration = Duration.ZERO) : TimelineEvent
+    data object ClearFocusRequestState : TimelineEvent
+    data object OnFocusEventRender : TimelineEvent
+    data object JumpToLive : TimelineEvent
 
-    data object HideShieldDialog : TimelineEvents
+    data object HideShieldDialog : TimelineEvent
 
     /**
      * Events coming from a timeline item.
      */
-    sealed interface EventFromTimelineItem : TimelineEvents
+    sealed interface TimelineItemEvent : TimelineEvent
 
-    data class ComputeVerifiedUserSendFailure(val event: TimelineItem.Event) : EventFromTimelineItem
-    data class ShowShieldDialog(val messageShieldData: MessageShieldData) : EventFromTimelineItem
-    data class LoadMore(val direction: Timeline.PaginationDirection) : EventFromTimelineItem
-    data class OpenThread(val threadRootEventId: ThreadId, val focusedEvent: EventId?) : EventFromTimelineItem
+    data class ComputeVerifiedUserSendFailure(val event: TimelineItem.Event) : TimelineItemEvent
+    data class ShowShieldDialog(val messageShieldData: MessageShieldData) : TimelineItemEvent
+    data class LoadMore(val direction: Timeline.PaginationDirection) : TimelineItemEvent
+    data class OpenThread(val threadRootEventId: ThreadId, val focusedEvent: EventId?) : TimelineItemEvent
 
     /**
      * Navigate to the predecessor or successor room of the current room.
      */
-    data class NavigateToPredecessorOrSuccessorRoom(val roomId: RoomId) : EventFromTimelineItem
+    data class NavigateToPredecessorOrSuccessorRoom(val roomId: RoomId) : TimelineItemEvent
 
     /**
      * Events coming from a poll item.
      */
-    sealed interface TimelineItemPollEvents : EventFromTimelineItem
+    sealed interface TimelineItemPollEvent : TimelineItemEvent
 
     data class SelectPollAnswer(
         val pollStartId: EventId,
         val answerId: String
-    ) : TimelineItemPollEvents
+    ) : TimelineItemPollEvent
 
     data class EndPoll(
         val pollStartId: EventId,
-    ) : TimelineItemPollEvents
+    ) : TimelineItemPollEvent
 
     data class EditPoll(
         val pollStartId: EventId,
-    ) : TimelineItemPollEvents
+    ) : TimelineItemPollEvent
 }

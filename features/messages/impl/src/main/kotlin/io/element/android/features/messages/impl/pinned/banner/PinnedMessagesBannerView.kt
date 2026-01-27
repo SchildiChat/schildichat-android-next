@@ -96,7 +96,7 @@ private fun PinnedMessagesBannerRow(
                 if (state is PinnedMessagesBannerState.Loaded) {
                     analyticsService.captureInteraction(Interaction.Name.PinnedMessageBannerClick)
                     onClick(state.currentPinnedMessage.eventId)
-                    state.eventSink(PinnedMessagesBannerEvents.MoveToNextPinned)
+                    state.eventSink(PinnedMessagesBannerEvent.MoveToNextPinned)
                 }
             },
         verticalAlignment = Alignment.CenterVertically,

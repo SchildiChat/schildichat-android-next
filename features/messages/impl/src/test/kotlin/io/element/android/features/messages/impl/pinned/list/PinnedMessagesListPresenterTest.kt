@@ -152,11 +152,11 @@ class PinnedMessagesListPresenterTest {
             val eventItem = filledState.timelineItems.first() as TimelineItem.Event
 
             pinnedEventsTimeline.unpinEventLambda = successUnpinEventLambda
-            filledState.eventSink(PinnedMessagesListEvents.HandleAction(TimelineItemAction.Unpin, eventItem))
+            filledState.eventSink(PinnedMessagesListEvent.HandleAction(TimelineItemAction.Unpin, eventItem))
             advanceUntilIdle()
 
             pinnedEventsTimeline.unpinEventLambda = failureUnpinEventLambda
-            filledState.eventSink(PinnedMessagesListEvents.HandleAction(TimelineItemAction.Unpin, eventItem))
+            filledState.eventSink(PinnedMessagesListEvent.HandleAction(TimelineItemAction.Unpin, eventItem))
             advanceUntilIdle()
 
             cancelAndIgnoreRemainingEvents()
@@ -196,7 +196,7 @@ class PinnedMessagesListPresenterTest {
             skipItems(3)
             val filledState = awaitItem() as PinnedMessagesListState.Filled
             val eventItem = filledState.timelineItems.first() as TimelineItem.Event
-            filledState.eventSink(PinnedMessagesListEvents.HandleAction(TimelineItemAction.ViewInTimeline, eventItem))
+            filledState.eventSink(PinnedMessagesListEvent.HandleAction(TimelineItemAction.ViewInTimeline, eventItem))
             advanceUntilIdle()
             cancelAndIgnoreRemainingEvents()
             assert(onViewInTimelineClickLambda)
@@ -225,7 +225,7 @@ class PinnedMessagesListPresenterTest {
             skipItems(3)
             val filledState = awaitItem() as PinnedMessagesListState.Filled
             val eventItem = filledState.timelineItems.first() as TimelineItem.Event
-            filledState.eventSink(PinnedMessagesListEvents.HandleAction(TimelineItemAction.ViewSource, eventItem))
+            filledState.eventSink(PinnedMessagesListEvent.HandleAction(TimelineItemAction.ViewSource, eventItem))
             advanceUntilIdle()
             cancelAndIgnoreRemainingEvents()
             assert(onShowEventDebugInfoClickLambda)
@@ -254,7 +254,7 @@ class PinnedMessagesListPresenterTest {
             skipItems(3)
             val filledState = awaitItem() as PinnedMessagesListState.Filled
             val eventItem = filledState.timelineItems.first() as TimelineItem.Event
-            filledState.eventSink(PinnedMessagesListEvents.HandleAction(TimelineItemAction.Forward, eventItem))
+            filledState.eventSink(PinnedMessagesListEvent.HandleAction(TimelineItemAction.Forward, eventItem))
             advanceUntilIdle()
             cancelAndIgnoreRemainingEvents()
             assert(onForwardEventClickLambda)

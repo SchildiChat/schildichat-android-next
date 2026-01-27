@@ -47,7 +47,7 @@ import io.element.android.features.home.impl.components.RoomListMenuAction
 import io.element.android.features.home.impl.model.RoomListRoomSummary
 import io.element.android.features.home.impl.roomlist.RoomListContextMenu
 import io.element.android.features.home.impl.roomlist.RoomListDeclineInviteMenu
-import io.element.android.features.home.impl.roomlist.RoomListEvents
+import io.element.android.features.home.impl.roomlist.RoomListEvent
 import io.element.android.features.home.impl.roomlist.RoomListState
 import io.element.android.features.home.impl.search.RoomListSearchView
 import io.element.android.features.home.impl.spaces.HomeSpacesView
@@ -172,7 +172,7 @@ private fun HomeScaffold(
                 currentUserAndNeighbors = state.currentUserAndNeighbors,
                 showAvatarIndicator = state.showAvatarIndicator,
                 areSearchResultsDisplayed = roomListState.searchState.isSearchActive,
-                onToggleSearch = { roomListState.eventSink(RoomListEvents.ToggleSearchResults) },
+                onToggleSearch = { roomListState.eventSink(RoomListEvent.ToggleSearchResults) },
                 onMenuActionClick = onMenuActionClick,
                 onOpenSettings = onOpenSettings,
                 onAccountSwitch = {

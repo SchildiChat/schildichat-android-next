@@ -38,7 +38,7 @@ import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.home.impl.components.RoomSummaryRow
 import io.element.android.features.home.impl.contentType
 import io.element.android.features.home.impl.model.RoomListRoomSummary
-import io.element.android.features.home.impl.roomlist.RoomListEvents
+import io.element.android.features.home.impl.roomlist.RoomListEvent
 import io.element.android.libraries.designsystem.components.button.BackButton
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
@@ -54,7 +54,7 @@ import io.element.android.libraries.ui.strings.CommonStrings
 internal fun RoomListSearchView(
     state: RoomListSearchState,
     hideInvitesAvatars: Boolean,
-    eventSink: (RoomListEvents) -> Unit,
+    eventSink: (RoomListEvent) -> Unit,
     onRoomClick: (RoomId) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -83,7 +83,7 @@ internal fun RoomListSearchView(
 private fun RoomListSearchContent(
     state: RoomListSearchState,
     hideInvitesAvatars: Boolean,
-    eventSink: (RoomListEvents) -> Unit,
+    eventSink: (RoomListEvent) -> Unit,
     onRoomClick: (RoomId) -> Unit,
 ) {
     val borderColor = MaterialTheme.colorScheme.tertiary

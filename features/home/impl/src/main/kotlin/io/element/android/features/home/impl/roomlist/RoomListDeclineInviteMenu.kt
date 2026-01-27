@@ -38,27 +38,27 @@ fun RoomListDeclineInviteMenu(
     menu: RoomListState.DeclineInviteMenu.Shown,
     canReportRoom: Boolean,
     onDeclineAndBlockClick: (RoomListRoomSummary) -> Unit,
-    eventSink: (RoomListEvents) -> Unit,
+    eventSink: (RoomListEvent) -> Unit,
 ) {
     ModalBottomSheet(
-        onDismissRequest = { eventSink(RoomListEvents.HideDeclineInviteMenu) },
+        onDismissRequest = { eventSink(RoomListEvent.HideDeclineInviteMenu) },
     ) {
         RoomListDeclineInviteMenuContent(
             roomName = menu.roomSummary.name ?: menu.roomSummary.roomId.value,
             onDeclineClick = {
-                eventSink(RoomListEvents.HideDeclineInviteMenu)
-                eventSink(RoomListEvents.DeclineInvite(menu.roomSummary, false))
+                eventSink(RoomListEvent.HideDeclineInviteMenu)
+                eventSink(RoomListEvent.DeclineInvite(menu.roomSummary, false))
             },
             onDeclineAndBlockClick = {
-                eventSink(RoomListEvents.HideDeclineInviteMenu)
+                eventSink(RoomListEvent.HideDeclineInviteMenu)
                 if (canReportRoom) {
                     onDeclineAndBlockClick(menu.roomSummary)
                 } else {
-                    eventSink(RoomListEvents.DeclineInvite(menu.roomSummary, true))
+                    eventSink(RoomListEvent.DeclineInvite(menu.roomSummary, true))
                 }
             },
             onCancelClick = {
-                eventSink(RoomListEvents.HideDeclineInviteMenu)
+                eventSink(RoomListEvent.HideDeclineInviteMenu)
             }
         )
     }

@@ -116,42 +116,42 @@ class RoomListPresenter(
         val contextMenu = remember { mutableStateOf<RoomListState.ContextMenu>(RoomListState.ContextMenu.Hidden) }
         val declineInviteMenu = remember { mutableStateOf<RoomListState.DeclineInviteMenu>(RoomListState.DeclineInviteMenu.Hidden) }
 
-        fun handleEvent(event: RoomListEvents) {
+        fun handleEvent(event: RoomListEvent) {
             when (event) {
-                is RoomListEvents.UpdateVisibleRange -> coroutineScope.launch {
+                is RoomListEvent.UpdateVisibleRange -> coroutineScope.launch {
                     updateVisibleRange(event.range)
                 }
-                RoomListEvents.DismissRequestVerificationPrompt -> securityBannerDismissed = true
-                RoomListEvents.DismissBanner -> securityBannerDismissed = true
-                RoomListEvents.DismissNewNotificationSoundBanner -> coroutineScope.launch {
+                RoomListEvent.DismissRequestVerificationPrompt -> securityBannerDismissed = true
+                RoomListEvent.DismissBanner -> securityBannerDismissed = true
+                RoomListEvent.DismissNewNotificationSoundBanner -> coroutineScope.launch {
                     announcementService.onAnnouncementDismissed(Announcement.NewNotificationSound)
                 }
-                RoomListEvents.ToggleSearchResults -> searchState.eventSink(RoomListSearchEvents.ToggleSearchVisibility)
-                is RoomListEvents.ShowContextMenu -> {
+                RoomListEvent.ToggleSearchResults -> searchState.eventSink(RoomListSearchEvents.ToggleSearchVisibility)
+                is RoomListEvent.ShowContextMenu -> {
                     coroutineScope.showContextMenu(event, contextMenu)
                 }
-                is RoomListEvents.HideContextMenu -> {
+                is RoomListEvent.HideContextMenu -> {
                     contextMenu.value = RoomListState.ContextMenu.Hidden
                 }
-                is RoomListEvents.LeaveRoom -> {
+                is RoomListEvent.LeaveRoom -> {
                     leaveRoomState.eventSink(LeaveRoomEvent.LeaveRoom(event.roomId, needsConfirmation = event.needsConfirmation))
                 }
-                is RoomListEvents.SetRoomIsFavorite -> coroutineScope.setRoomIsFavorite(event.roomId, event.isFavorite)
-                is RoomListEvents.MarkAsRead -> coroutineScope.markAsRead(event.roomId)
-                is RoomListEvents.MarkAsUnread -> coroutineScope.markAsUnread(event.roomId)
-                is RoomListEvents.AcceptInvite -> {
+                is RoomListEvent.SetRoomIsFavorite -> coroutineScope.setRoomIsFavorite(event.roomId, event.isFavorite)
+                is RoomListEvent.MarkAsRead -> coroutineScope.markAsRead(event.roomId)
+                is RoomListEvent.MarkAsUnread -> coroutineScope.markAsUnread(event.roomId)
+                is RoomListEvent.AcceptInvite -> {
                     acceptDeclineInviteState.eventSink(
                         AcceptInvite(event.roomSummary.toInviteData())
                     )
                 }
-                is RoomListEvents.DeclineInvite -> {
+                is RoomListEvent.DeclineInvite -> {
                     acceptDeclineInviteState.eventSink(
                         DeclineInvite(event.roomSummary.toInviteData(), blockUser = event.blockUser, shouldConfirm = false)
                     )
                 }
-                is RoomListEvents.ShowDeclineInviteMenu -> declineInviteMenu.value = RoomListState.DeclineInviteMenu.Shown(event.roomSummary)
-                RoomListEvents.HideDeclineInviteMenu -> declineInviteMenu.value = RoomListState.DeclineInviteMenu.Hidden
-                is RoomListEvents.ClearCacheOfRoom -> coroutineScope.clearCacheOfRoom(event.roomId)
+                is RoomListEvent.ShowDeclineInviteMenu -> declineInviteMenu.value = RoomListState.DeclineInviteMenu.Shown(event.roomSummary)
+                RoomListEvent.HideDeclineInviteMenu -> declineInviteMenu.value = RoomListState.DeclineInviteMenu.Hidden
+                is RoomListEvent.ClearCacheOfRoom -> coroutineScope.clearCacheOfRoom(event.roomId)
             }
         }
 
@@ -253,7 +253,7 @@ class RoomListPresenter(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun CoroutineScope.showContextMenu(event: RoomListEvents.ShowContextMenu, contextMenuState: MutableState<RoomListState.ContextMenu>) = launch {
+    private fun CoroutineScope.showContextMenu(event: RoomListEvent.ShowContextMenu, contextMenuState: MutableState<RoomListState.ContextMenu>) = launch {
         val initialState = RoomListState.ContextMenu.Shown(
             roomId = event.roomSummary.roomId,
             roomName = event.roomSummary.name,

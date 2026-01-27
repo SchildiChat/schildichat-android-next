@@ -35,7 +35,7 @@ import timber.log.Timber
 fun TimelineItemVirtualRow(
     virtual: TimelineItem.Virtual,
     timelineRoomInfo: TimelineRoomInfo,
-    eventSink: (TimelineEvent.EventFromTimelineItem) -> Unit,
+    eventSink: (TimelineEvent.TimelineItemEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {

@@ -153,7 +153,7 @@ fun TimelineItemEventRow(
     onMoreReactionsClick: (eventId: TimelineItem.Event) -> Unit,
     onReadReceiptClick: (event: TimelineItem.Event) -> Unit,
     onSwipeToReply: () -> Unit,
-    eventSink: (TimelineEvent.EventFromTimelineItem) -> Unit,
+    eventSink: (TimelineEvent.TimelineItemEvent) -> Unit,
     modifier: Modifier = Modifier,
     eventContentView: @Composable (Modifier, (ContentAvoidingLayoutData) -> Unit) -> Unit = { contentModifier, onContentLayoutChange ->
         // Only pass down a custom clickable lambda if the content can be clicked separately
@@ -410,7 +410,7 @@ private fun TimelineItemEventRowContent(
     onReactionClick: (emoji: String) -> Unit,
     onReactionLongClick: (emoji: String) -> Unit,
     onMoreReactionsClick: (event: TimelineItem.Event) -> Unit,
-    eventSink: (TimelineEvent.EventFromTimelineItem) -> Unit,
+    eventSink: (TimelineEvent.TimelineItemEvent) -> Unit,
     modifier: Modifier = Modifier,
     eventContentView: @Composable (Modifier, (ContentAvoidingLayoutData) -> Unit) -> Unit,
 ) {
@@ -585,7 +585,7 @@ private fun MessageEventBubbleContent(
     timelineProtectionState: TimelineProtectionState,
     onMessageLongClick: () -> Unit,
     inReplyToClick: () -> Unit,
-    eventSink: (TimelineEvent.EventFromTimelineItem) -> Unit,
+    eventSink: (TimelineEvent.TimelineItemEvent) -> Unit,
     @SuppressLint("ModifierParameter")
     // need to rename this modifier to prevent linter false positives
     @Suppress("ModifierNaming")
@@ -623,7 +623,7 @@ private fun MessageEventBubbleContent(
     @Composable
     fun WithTimestampLayout(
         timestampPosition: TimestampPosition,
-        eventSink: (TimelineEvent.EventFromTimelineItem) -> Unit,
+        eventSink: (TimelineEvent.TimelineItemEvent) -> Unit,
         modifier: Modifier = Modifier,
         canShrinkContent: Boolean = false,
         content: @Composable (onContentLayoutChange: (ContentAvoidingLayoutData) -> Unit) -> Unit,

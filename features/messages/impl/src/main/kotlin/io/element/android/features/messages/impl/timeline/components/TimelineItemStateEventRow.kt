@@ -44,7 +44,7 @@ fun TimelineItemStateEventRow(
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     onReadReceiptsClick: (event: TimelineItem.Event) -> Unit,
-    eventSink: (TimelineEvent.EventFromTimelineItem) -> Unit,
+    eventSink: (TimelineEvent.TimelineItemEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val interactionSource = remember { MutableInteractionSource() }

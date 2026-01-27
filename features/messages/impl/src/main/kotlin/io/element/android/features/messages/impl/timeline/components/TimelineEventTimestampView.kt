@@ -38,7 +38,7 @@ import io.element.android.libraries.ui.strings.CommonStrings
 @Composable
 fun TimelineEventTimestampView(
     event: TimelineItem.Event,
-    eventSink: (TimelineEvent.EventFromTimelineItem) -> Unit,
+    eventSink: (TimelineEvent.TimelineItemEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val formattedTime = event.sentTime

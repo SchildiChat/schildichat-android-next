@@ -28,22 +28,22 @@ sealed interface TimelineEvent {
     /**
      * Events coming from a timeline item.
      */
-    sealed interface EventFromTimelineItem : TimelineEvent
+    sealed interface TimelineItemEvent : TimelineEvent
 
-    data class ComputeVerifiedUserSendFailure(val event: TimelineItem.Event) : EventFromTimelineItem
-    data class ShowShieldDialog(val messageShieldData: MessageShieldData) : EventFromTimelineItem
-    data class LoadMore(val direction: Timeline.PaginationDirection) : EventFromTimelineItem
-    data class OpenThread(val threadRootEventId: ThreadId, val focusedEvent: EventId?) : EventFromTimelineItem
+    data class ComputeVerifiedUserSendFailure(val event: TimelineItem.Event) : TimelineItemEvent
+    data class ShowShieldDialog(val messageShieldData: MessageShieldData) : TimelineItemEvent
+    data class LoadMore(val direction: Timeline.PaginationDirection) : TimelineItemEvent
+    data class OpenThread(val threadRootEventId: ThreadId, val focusedEvent: EventId?) : TimelineItemEvent
 
     /**
      * Navigate to the predecessor or successor room of the current room.
      */
-    data class NavigateToPredecessorOrSuccessorRoom(val roomId: RoomId) : EventFromTimelineItem
+    data class NavigateToPredecessorOrSuccessorRoom(val roomId: RoomId) : TimelineItemEvent
 
     /**
      * Events coming from a poll item.
      */
-    sealed interface TimelineItemPollEvent : EventFromTimelineItem
+    sealed interface TimelineItemPollEvent : TimelineItemEvent
 
     data class SelectPollAnswer(
         val pollStartId: EventId,

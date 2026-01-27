@@ -125,11 +125,11 @@ class RoomMemberListPresenter(
             }
         }
 
-        fun handleEvent(event: RoomMemberListEvents) {
+        fun handleEvent(event: RoomMemberListEvent) {
             when (event) {
-                is RoomMemberListEvents.RoomMemberSelected ->
+                is RoomMemberListEvent.RoomMemberSelected ->
                     roomModerationState.eventSink(ShowActionsForUser(event.roomMember.toMatrixUser()))
-                is RoomMemberListEvents.ChangeSelectedSection -> selectedSection = event.section
+                is RoomMemberListEvent.ChangeSelectedSection -> selectedSection = event.section
             }
         }
 

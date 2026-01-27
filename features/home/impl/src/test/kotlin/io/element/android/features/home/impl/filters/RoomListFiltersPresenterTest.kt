@@ -49,7 +49,7 @@ class RoomListFiltersPresenterTest {
         moleculeFlow(RecompositionMode.Immediate) {
             presenter.present()
         }.test {
-            awaitItem().eventSink.invoke(RoomListFiltersEvents.ToggleFilter(RoomListFilter.Rooms))
+            awaitItem().eventSink.invoke(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Rooms))
             awaitLastSequentialItem().let { state ->
 
                 assertThat(state.hasAnyFilterSelected).isTrue()
@@ -66,7 +66,7 @@ class RoomListFiltersPresenterTest {
                 assertThat(roomListCurrentFilter.filters).containsExactly(
                     MatrixRoomListFilter.Category.Group,
                 )
-                state.eventSink.invoke(RoomListFiltersEvents.ToggleFilter(RoomListFilter.Rooms))
+                state.eventSink.invoke(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Rooms))
             }
             awaitLastSequentialItem().let { state ->
                 assertThat(state.hasAnyFilterSelected).isFalse()
@@ -91,10 +91,10 @@ class RoomListFiltersPresenterTest {
         moleculeFlow(RecompositionMode.Immediate) {
             presenter.present()
         }.test {
-            awaitItem().eventSink.invoke(RoomListFiltersEvents.ToggleFilter(RoomListFilter.Rooms))
+            awaitItem().eventSink.invoke(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Rooms))
             awaitLastSequentialItem().let { state ->
                 assertThat(state.hasAnyFilterSelected).isTrue()
-                state.eventSink.invoke(RoomListFiltersEvents.ClearSelectedFilters)
+                state.eventSink.invoke(RoomListFiltersEvent.ClearSelectedFilters)
             }
             awaitLastSequentialItem().let { state ->
                 assertThat(state.hasAnyFilterSelected).isFalse()

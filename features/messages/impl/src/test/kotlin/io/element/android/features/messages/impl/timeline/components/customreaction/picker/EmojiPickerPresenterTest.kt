@@ -66,10 +66,10 @@ class EmojiPickerPresenterTest {
             val initialState = awaitItem()
             assertThat(initialState.isSearchActive).isFalse()
 
-            initialState.eventSink(EmojiPickerEvents.ToggleSearchActive(true))
+            initialState.eventSink(EmojiPickerEvent.ToggleSearchActive(true))
             assertThat(awaitItem().isSearchActive).isTrue()
 
-            initialState.eventSink(EmojiPickerEvents.ToggleSearchActive(false))
+            initialState.eventSink(EmojiPickerEvent.ToggleSearchActive(false))
             assertThat(awaitItem().isSearchActive).isFalse()
         }
     }

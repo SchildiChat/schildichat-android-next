@@ -8,6 +8,6 @@
 
 package io.element.android.features.messages.impl.timeline.components.customreaction.picker
 
-sealed interface EmojiPickerEvents {
-    data class ToggleSearchActive(val isActive: Boolean) : EmojiPickerEvents
+sealed interface EmojiPickerEvent {
+    data class ToggleSearchActive(val isActive: Boolean) : EmojiPickerEvent
 }

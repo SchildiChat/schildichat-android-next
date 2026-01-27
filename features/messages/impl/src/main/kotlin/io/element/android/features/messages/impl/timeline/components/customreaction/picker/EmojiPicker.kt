@@ -60,7 +60,7 @@ fun EmojiPicker(
             queryState = state.searchQuery,
             resultState = state.searchResults,
             active = state.isSearchActive,
-            onActiveChange = { state.eventSink(EmojiPickerEvents.ToggleSearchActive(it)) },
+            onActiveChange = { state.eventSink(EmojiPickerEvent.ToggleSearchActive(it)) },
             windowInsets = WindowInsets(0, 0, 0, 0),
             placeHolderTitle = stringResource(CommonStrings.emoji_picker_search_placeholder),
         ) { emojis ->

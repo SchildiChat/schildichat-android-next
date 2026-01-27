@@ -24,7 +24,7 @@ data class EmojiPickerState(
     val searchQuery: TextFieldState,
     val isSearchActive: Boolean,
     val searchResults: SearchBarResultState<ImmutableList<Emoji>>,
-    val eventSink: (EmojiPickerEvents) -> Unit,
+    val eventSink: (EmojiPickerEvent) -> Unit,
 )
 
 /**

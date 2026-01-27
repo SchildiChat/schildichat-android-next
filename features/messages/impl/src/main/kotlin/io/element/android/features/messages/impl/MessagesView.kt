@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -341,9 +342,30 @@ fun MessagesView(
         maxBottomSheetContentHeight = maxComposerHeightPx.toDp(),
     )
 
+    var endPollConfirmingEvent: TimelineItem.Event? by remember { mutableStateOf(null) }
+
+    if (endPollConfirmingEvent != null) {
+        ConfirmationDialog(
+            content = stringResource(id = CommonStrings.common_poll_end_confirmation),
+            onSubmitClick = {
+                endPollConfirmingEvent?.let { event ->
+                    onActionSelected(TimelineItemAction.EndPoll, event)
+                }
+                endPollConfirmingEvent = null
+            },
+            onDismiss = { endPollConfirmingEvent = null },
+        )
+    }
+
     ActionListView(
         state = state.actionListState,
-        onSelectAction = ::onActionSelected,
+        onSelectAction = { action: TimelineItemAction, event: TimelineItem.Event ->
+            if (action == TimelineItemAction.EndPoll) {
+                endPollConfirmingEvent = event
+            } else {
+                onActionSelected(action, event)
+            }
+        },
         onCustomReactionClick = { event ->
             state.customReactionState.eventSink(CustomReactionEvents.ShowCustomReactionSheet(event))
         },

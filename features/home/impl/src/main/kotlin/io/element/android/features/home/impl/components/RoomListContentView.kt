@@ -47,7 +47,7 @@ import io.element.android.features.home.impl.model.RoomListRoomSummary
 import io.element.android.features.home.impl.model.RoomSummaryDisplayType
 import io.element.android.features.home.impl.roomlist.RoomListContentState
 import io.element.android.features.home.impl.roomlist.RoomListContentStateProvider
-import io.element.android.features.home.impl.roomlist.RoomListEvents
+import io.element.android.features.home.impl.roomlist.RoomListEvent
 import io.element.android.features.home.impl.roomlist.SecurityBannerState
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
@@ -64,7 +64,7 @@ fun RoomListContentView(
     filtersState: RoomListFiltersState,
     lazyListState: LazyListState,
     hideInvitesAvatars: Boolean,
-    eventSink: (RoomListEvents) -> Unit,
+    eventSink: (RoomListEvent) -> Unit,
     onSetUpRecoveryClick: () -> Unit,
     onConfirmRecoveryKeyClick: () -> Unit,
     onRoomClick: (RoomListRoomSummary) -> Unit,
@@ -131,7 +131,7 @@ private fun SkeletonView(
 @Composable
 private fun EmptyView(
     state: RoomListContentState.Empty,
-    eventSink: (RoomListEvents) -> Unit,
+    eventSink: (RoomListEvent) -> Unit,
     onSetUpRecoveryClick: () -> Unit,
     onConfirmRecoveryKeyClick: () -> Unit,
     onCreateRoomClick: () -> Unit,
@@ -155,13 +155,13 @@ private fun EmptyView(
                 SecurityBannerState.SetUpRecovery -> {
                     SetUpRecoveryKeyBanner(
                         onContinueClick = onSetUpRecoveryClick,
-                        onDismissClick = { eventSink(RoomListEvents.DismissBanner) },
+                        onDismissClick = { eventSink(RoomListEvent.DismissBanner) },
                     )
                 }
                 SecurityBannerState.RecoveryKeyConfirmation -> {
                     ConfirmRecoveryKeyBanner(
                         onContinueClick = onConfirmRecoveryKeyClick,
-                        onDismissClick = { eventSink(RoomListEvents.DismissBanner) },
+                        onDismissClick = { eventSink(RoomListEvent.DismissBanner) },
                     )
                 }
                 SecurityBannerState.None -> Unit
@@ -175,7 +175,7 @@ private fun RoomsView(
     state: RoomListContentState.Rooms,
     hideInvitesAvatars: Boolean,
     filtersState: RoomListFiltersState,
-    eventSink: (RoomListEvents) -> Unit,
+    eventSink: (RoomListEvent) -> Unit,
     onSetUpRecoveryClick: () -> Unit,
     onConfirmRecoveryKeyClick: () -> Unit,
     onRoomClick: (RoomListRoomSummary) -> Unit,
@@ -207,7 +207,7 @@ private fun RoomsView(
 private fun RoomsViewList(
     state: RoomListContentState.Rooms,
     hideInvitesAvatars: Boolean,
-    eventSink: (RoomListEvents) -> Unit,
+    eventSink: (RoomListEvent) -> Unit,
     onSetUpRecoveryClick: () -> Unit,
     onConfirmRecoveryKeyClick: () -> Unit,
     onRoomClick: (RoomListRoomSummary) -> Unit,
@@ -225,7 +225,7 @@ private fun RoomsViewList(
     }
     val updatedEventSink by rememberUpdatedState(newValue = eventSink)
     LaunchedEffect(visibleRange) {
-        updatedEventSink(RoomListEvents.UpdateVisibleRange(visibleRange))
+        updatedEventSink(RoomListEvent.UpdateVisibleRange(visibleRange))
     }
     LazyColumn(
         state = lazyListState,
@@ -237,7 +237,7 @@ private fun RoomsViewList(
                 item {
                     SetUpRecoveryKeyBanner(
                         onContinueClick = onSetUpRecoveryClick,
-                        onDismissClick = { updatedEventSink(RoomListEvents.DismissBanner) },
+                        onDismissClick = { updatedEventSink(RoomListEvent.DismissBanner) },
                     )
                 }
             }
@@ -245,7 +245,7 @@ private fun RoomsViewList(
                 item {
                     ConfirmRecoveryKeyBanner(
                         onContinueClick = onConfirmRecoveryKeyClick,
-                        onDismissClick = { updatedEventSink(RoomListEvents.DismissBanner) },
+                        onDismissClick = { updatedEventSink(RoomListEvent.DismissBanner) },
                     )
                 }
             }
@@ -260,7 +260,7 @@ private fun RoomsViewList(
             } else if (state.showNewNotificationSoundBanner) {
                 item {
                     NewNotificationSoundBanner(
-                        onDismissClick = { updatedEventSink(RoomListEvents.DismissNewNotificationSoundBanner) },
+                        onDismissClick = { updatedEventSink(RoomListEvent.DismissNewNotificationSoundBanner) },
                     )
                 }
             }

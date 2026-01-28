@@ -47,7 +47,7 @@ import io.element.android.features.home.impl.components.RoomListMenuAction
 import io.element.android.features.home.impl.model.RoomListRoomSummary
 import io.element.android.features.home.impl.roomlist.RoomListContextMenu
 import io.element.android.features.home.impl.roomlist.RoomListDeclineInviteMenu
-import io.element.android.features.home.impl.roomlist.RoomListEvents
+import io.element.android.features.home.impl.roomlist.RoomListEvent
 import io.element.android.features.home.impl.roomlist.RoomListState
 import io.element.android.features.home.impl.search.RoomListSearchView
 import io.element.android.features.home.impl.spaces.HomeSpacesView
@@ -156,7 +156,7 @@ private fun HomeScaffold(
     BackHandler(
         enabled = state.currentHomeNavigationBarItem != HomeNavigationBarItem.Chats,
     ) {
-        state.eventSink(HomeEvents.SelectHomeNavigationBarItem(HomeNavigationBarItem.Chats))
+        state.eventSink(HomeEvent.SelectHomeNavigationBarItem(HomeNavigationBarItem.Chats))
     }
 
     val hazeState = rememberHazeState()
@@ -172,11 +172,11 @@ private fun HomeScaffold(
                 currentUserAndNeighbors = state.currentUserAndNeighbors,
                 showAvatarIndicator = state.showAvatarIndicator,
                 areSearchResultsDisplayed = roomListState.searchState.isSearchActive,
-                onToggleSearch = { roomListState.eventSink(RoomListEvents.ToggleSearchResults) },
+                onToggleSearch = { roomListState.eventSink(RoomListEvent.ToggleSearchResults) },
                 onMenuActionClick = onMenuActionClick,
                 onOpenSettings = onOpenSettings,
                 onAccountSwitch = {
-                    state.eventSink(HomeEvents.SwitchToAccount(it))
+                    state.eventSink(HomeEvent.SwitchToAccount(it))
                 },
                 onCreateSpace = onCreateSpaceClick,
                 scrollBehavior = scrollBehavior,
@@ -211,7 +211,7 @@ private fun HomeScaffold(
                                 lazyListStateTarget.animateScrollToItem(0)
                             }
                         } else {
-                            state.eventSink(HomeEvents.SelectHomeNavigationBarItem(item))
+                            state.eventSink(HomeEvent.SelectHomeNavigationBarItem(item))
                         }
                     },
                     modifier = Modifier.hazeEffect(

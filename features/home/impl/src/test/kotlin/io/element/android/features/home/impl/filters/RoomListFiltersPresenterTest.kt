@@ -8,15 +8,13 @@
 
 package io.element.android.features.home.impl.filters
 
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.moleculeFlow
-import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.home.impl.filters.selection.DefaultFilterSelectionStrategy
 import io.element.android.features.home.impl.filters.selection.FilterSelectionState
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
 import io.element.android.libraries.matrix.test.roomlist.FakeRoomListService
 import io.element.android.tests.testutils.awaitLastSequentialItem
+import io.element.android.tests.testutils.test
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import io.element.android.libraries.matrix.api.roomlist.RoomListFilter as MatrixRoomListFilter
@@ -25,9 +23,7 @@ class RoomListFiltersPresenterTest {
     @Test
     fun `present - initial state`() = runTest {
         val presenter = createRoomListFiltersPresenter()
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             awaitItem().let { state ->
                 assertThat(state.hasAnyFilterSelected).isFalse()
                 assertThat(state.filterSelectionStates).containsExactly(
@@ -46,10 +42,8 @@ class RoomListFiltersPresenterTest {
     fun `present - toggle rooms filter`() = runTest {
         val roomListService = FakeRoomListService()
         val presenter = createRoomListFiltersPresenter(roomListService)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
-            awaitItem().eventSink.invoke(RoomListFiltersEvents.ToggleFilter(RoomListFilter.Rooms))
+        presenter.test {
+            awaitItem().eventSink.invoke(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Rooms))
             awaitLastSequentialItem().let { state ->
 
                 assertThat(state.hasAnyFilterSelected).isTrue()
@@ -66,7 +60,7 @@ class RoomListFiltersPresenterTest {
                 assertThat(roomListCurrentFilter.filters).containsExactly(
                     MatrixRoomListFilter.Category.Group,
                 )
-                state.eventSink.invoke(RoomListFiltersEvents.ToggleFilter(RoomListFilter.Rooms))
+                state.eventSink.invoke(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Rooms))
             }
             awaitLastSequentialItem().let { state ->
                 assertThat(state.hasAnyFilterSelected).isFalse()
@@ -88,13 +82,11 @@ class RoomListFiltersPresenterTest {
     fun `present - clear filters event`() = runTest {
         val roomListService = FakeRoomListService()
         val presenter = createRoomListFiltersPresenter(roomListService)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
-            awaitItem().eventSink.invoke(RoomListFiltersEvents.ToggleFilter(RoomListFilter.Rooms))
+        presenter.test {
+            awaitItem().eventSink.invoke(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Rooms))
             awaitLastSequentialItem().let { state ->
                 assertThat(state.hasAnyFilterSelected).isTrue()
-                state.eventSink.invoke(RoomListFiltersEvents.ClearSelectedFilters)
+                state.eventSink.invoke(RoomListFiltersEvent.ClearSelectedFilters)
             }
             awaitLastSequentialItem().let { state ->
                 assertThat(state.hasAnyFilterSelected).isFalse()

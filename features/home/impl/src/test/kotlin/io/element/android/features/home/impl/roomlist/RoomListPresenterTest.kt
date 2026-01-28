@@ -8,9 +8,6 @@
 
 package io.element.android.features.home.impl.roomlist
 
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.moleculeFlow
-import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import im.vector.app.features.analytics.plan.Interaction
 import io.element.android.features.announcement.api.Announcement
@@ -21,7 +18,7 @@ import io.element.android.features.home.impl.datasource.aRoomListRoomSummaryFact
 import io.element.android.features.home.impl.filters.RoomListFiltersState
 import io.element.android.features.home.impl.filters.aRoomListFiltersState
 import io.element.android.features.home.impl.model.createRoomListRoomSummary
-import io.element.android.features.home.impl.search.RoomListSearchEvents
+import io.element.android.features.home.impl.search.RoomListSearchEvent
 import io.element.android.features.home.impl.search.RoomListSearchState
 import io.element.android.features.home.impl.search.aRoomListSearchState
 import io.element.android.features.invite.api.SeenInvitesStore
@@ -141,15 +138,13 @@ class RoomListPresenterTest {
         val presenter = createRoomListPresenter(
             client = FakeMatrixClient(roomListService = roomListService, encryptionService = encryptionService, syncService = syncService),
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val eventWithContentAsRooms = consumeItemsUntilPredicate {
                 it.contentState is RoomListContentState.Rooms
             }.last()
             val eventSink = eventWithContentAsRooms.eventSink
             assertThat(eventWithContentAsRooms.contentAsRooms().securityBannerState).isEqualTo(SecurityBannerState.RecoveryKeyConfirmation)
-            eventSink(RoomListEvents.DismissRequestVerificationPrompt)
+            eventSink(RoomListEvent.DismissRequestVerificationPrompt)
             assertThat(awaitItem().contentAsRooms().securityBannerState).isEqualTo(SecurityBannerState.None)
         }
     }
@@ -173,9 +168,7 @@ class RoomListPresenterTest {
         val presenter = createRoomListPresenter(
             client = matrixClient,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = consumeItemsUntilPredicate {
                 it.contentState is RoomListContentState.Rooms
             }.last()
@@ -194,7 +187,7 @@ class RoomListPresenterTest {
             assertThat(awaitItem().contentAsRooms().securityBannerState).isEqualTo(SecurityBannerState.None)
             encryptionService.emitRecoveryState(RecoveryState.DISABLED)
             assertThat(awaitItem().contentAsRooms().securityBannerState).isEqualTo(SecurityBannerState.SetUpRecovery)
-            nextState.eventSink(RoomListEvents.DismissBanner)
+            nextState.eventSink(RoomListEvent.DismissBanner)
             val finalState = awaitItem()
             assertThat(finalState.contentAsRooms().securityBannerState).isEqualTo(SecurityBannerState.None)
         }
@@ -207,12 +200,10 @@ class RoomListPresenterTest {
             givenGetRoomResult(A_ROOM_ID, room)
         }
         val presenter = createRoomListPresenter(client = client)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             val summary = createRoomListRoomSummary()
-            initialState.eventSink(RoomListEvents.ShowContextMenu(summary))
+            initialState.eventSink(RoomListEvent.ShowContextMenu(summary))
 
             awaitItem().also { state ->
                 assertThat(state.contextMenu)
@@ -257,7 +248,7 @@ class RoomListPresenterTest {
         presenter.test {
             val initialState = awaitItem()
             val summary = createRoomListRoomSummary()
-            initialState.eventSink(RoomListEvents.ShowContextMenu(summary))
+            initialState.eventSink(RoomListEvent.ShowContextMenu(summary))
             awaitItem().also { state ->
                 assertThat(state.contextMenu)
                     .isEqualTo(
@@ -282,12 +273,10 @@ class RoomListPresenterTest {
             givenGetRoomResult(A_ROOM_ID, room)
         }
         val presenter = createRoomListPresenter(client = client)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             val summary = createRoomListRoomSummary()
-            initialState.eventSink(RoomListEvents.ShowContextMenu(summary))
+            initialState.eventSink(RoomListEvent.ShowContextMenu(summary))
 
             val shownState = awaitItem()
             assertThat(shownState.contextMenu)
@@ -302,7 +291,7 @@ class RoomListPresenterTest {
                     )
                 )
 
-            shownState.eventSink(RoomListEvents.HideContextMenu)
+            shownState.eventSink(RoomListEvent.HideContextMenu)
 
             val hiddenState = awaitItem()
             assertThat(hiddenState.contextMenu).isEqualTo(RoomListState.ContextMenu.Hidden)
@@ -315,11 +304,9 @@ class RoomListPresenterTest {
         val presenter = createRoomListPresenter(
             leaveRoomState = aLeaveRoomState(eventSink = leaveRoomEventsRecorder),
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
-            initialState.eventSink(RoomListEvents.LeaveRoom(A_ROOM_ID, needsConfirmation = true))
+            initialState.eventSink(RoomListEvent.LeaveRoom(A_ROOM_ID, needsConfirmation = true))
             leaveRoomEventsRecorder.assertSingle(LeaveRoomEvent.LeaveRoom(A_ROOM_ID, needsConfirmation = true))
             cancelAndIgnoreRemainingEvents()
         }
@@ -327,7 +314,7 @@ class RoomListPresenterTest {
 
     @Test
     fun `present - toggle search menu`() = runTest {
-        val eventRecorder = EventsRecorder<RoomListSearchEvents>()
+        val eventRecorder = EventsRecorder<RoomListSearchEvent>()
         val searchPresenter: Presenter<RoomListSearchState> = Presenter {
             aRoomListSearchState(
                 eventSink = eventRecorder
@@ -336,20 +323,18 @@ class RoomListPresenterTest {
         val presenter = createRoomListPresenter(
             searchPresenter = searchPresenter,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             eventRecorder.assertEmpty()
-            initialState.eventSink(RoomListEvents.ToggleSearchResults)
+            initialState.eventSink(RoomListEvent.ToggleSearchResults)
             eventRecorder.assertSingle(
-                RoomListSearchEvents.ToggleSearchVisibility
+                RoomListSearchEvent.ToggleSearchVisibility
             )
-            initialState.eventSink(RoomListEvents.ToggleSearchResults)
+            initialState.eventSink(RoomListEvent.ToggleSearchResults)
             eventRecorder.assertList(
                 listOf(
-                    RoomListSearchEvents.ToggleSearchVisibility,
-                    RoomListSearchEvents.ToggleSearchVisibility
+                    RoomListSearchEvent.ToggleSearchVisibility,
+                    RoomListSearchEvent.ToggleSearchVisibility
                 )
             )
         }
@@ -367,9 +352,7 @@ class RoomListPresenterTest {
             notificationSettingsService = notificationSettingsService
         )
         val presenter = createRoomListPresenter(client = matrixClient)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             notificationSettingsService.setRoomNotificationMode(A_ROOM_ID, userDefinedMode)
             val updatedState = consumeItemsUntilPredicate { state ->
                 (state.contentState as? RoomListContentState.Rooms)?.summaries.orEmpty().any { summary ->
@@ -394,13 +377,11 @@ class RoomListPresenterTest {
             givenGetRoomResult(A_ROOM_ID, room)
         }
         val presenter = createRoomListPresenter(client = client, analyticsService = analyticsService)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
-            initialState.eventSink(RoomListEvents.SetRoomIsFavorite(A_ROOM_ID, true))
+            initialState.eventSink(RoomListEvent.SetRoomIsFavorite(A_ROOM_ID, true))
             setIsFavoriteResult.assertions().isCalledOnce().with(value(true))
-            initialState.eventSink(RoomListEvents.SetRoomIsFavorite(A_ROOM_ID, false))
+            initialState.eventSink(RoomListEvent.SetRoomIsFavorite(A_ROOM_ID, false))
             setIsFavoriteResult.assertions().isCalledExactly(2)
                 .withSequence(
                     listOf(value(true)),
@@ -424,9 +405,7 @@ class RoomListPresenterTest {
         val presenter = createRoomListPresenter(
             client = matrixClient,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             assertThat(awaitItem().contentState).isInstanceOf(RoomListContentState.Empty::class.java)
         }
     }
@@ -463,23 +442,21 @@ class RoomListPresenterTest {
             analyticsService = analyticsService,
             notificationCleaner = notificationCleaner,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             allRooms.forEach {
                 assertThat(it.setUnreadFlagCalls).isEmpty()
             }
-            initialState.eventSink.invoke(RoomListEvents.MarkAsRead(A_ROOM_ID))
+            initialState.eventSink.invoke(RoomListEvent.MarkAsRead(A_ROOM_ID))
             markAsReadResult.assertions().isCalledOnce().with(value(ReceiptType.READ))
             assertThat(room.setUnreadFlagCalls).isEqualTo(listOf(false))
             clearMessagesForRoomLambda.assertions().isCalledOnce()
                 .with(value(A_SESSION_ID), value(A_ROOM_ID))
-            initialState.eventSink.invoke(RoomListEvents.MarkAsUnread(A_ROOM_ID_2))
+            initialState.eventSink.invoke(RoomListEvent.MarkAsUnread(A_ROOM_ID_2))
             assertThat(room2.setUnreadFlagCalls).isEqualTo(listOf(true))
             // Test again with private read receipts
             sessionPreferencesStore.setSendPublicReadReceipts(false)
-            initialState.eventSink.invoke(RoomListEvents.MarkAsRead(A_ROOM_ID_3))
+            initialState.eventSink.invoke(RoomListEvent.MarkAsRead(A_ROOM_ID_3))
             markAsReadResult3.assertions().isCalledOnce().with(value(ReceiptType.READ_PRIVATE))
             assertThat(room3.setUnreadFlagCalls).isEqualTo(listOf(false))
             clearMessagesForRoomLambda.assertions().isCalledExactly(2)
@@ -525,8 +502,8 @@ class RoomListPresenterTest {
                 it.id == roomSummary.roomId.value
             }
 
-            state.eventSink(RoomListEvents.AcceptInvite(roomListRoomSummary))
-            state.eventSink(RoomListEvents.DeclineInvite(roomListRoomSummary, blockUser = false))
+            state.eventSink(RoomListEvent.AcceptInvite(roomListRoomSummary))
+            state.eventSink(RoomListEvent.DeclineInvite(roomListRoomSummary, blockUser = false))
 
             val inviteData = roomListRoomSummary.toInviteData()
             assert(eventSinkRecorder)
@@ -559,9 +536,9 @@ class RoomListPresenterTest {
                 it.contentState is RoomListContentState.Rooms
             }.last()
 
-            state.eventSink(RoomListEvents.UpdateVisibleRange(IntRange(0, 10)))
+            state.eventSink(RoomListEvent.UpdateVisibleRange(IntRange(0, 10)))
             // If called again, it will cancel the current one, which should not result in a test failure
-            state.eventSink(RoomListEvents.UpdateVisibleRange(IntRange(0, 11)))
+            state.eventSink(RoomListEvent.UpdateVisibleRange(IntRange(0, 11)))
             advanceTimeBy(1.seconds)
             subscribeToVisibleRoomsLambda.assertions().isCalledOnce()
         }
@@ -588,12 +565,12 @@ class RoomListPresenterTest {
                 it.contentState is RoomListContentState.Rooms
             }.last()
 
-            state.eventSink(RoomListEvents.UpdateVisibleRange(IntRange(0, 10)))
+            state.eventSink(RoomListEvent.UpdateVisibleRange(IntRange(0, 10)))
             advanceTimeBy(1.seconds)
             subscribeToVisibleRoomsLambda.assertions().isCalledOnce()
 
             // If called again, it will subscribe to the next items
-            state.eventSink(RoomListEvents.UpdateVisibleRange(IntRange(0, 11)))
+            state.eventSink(RoomListEvent.UpdateVisibleRange(IntRange(0, 11)))
             advanceTimeBy(1.seconds)
             subscribeToVisibleRoomsLambda.assertions().isCalledExactly(2)
         }
@@ -626,7 +603,7 @@ class RoomListPresenterTest {
             assertThat(state.contentAsRooms().showNewNotificationSoundBanner).isFalse()
             announcementService.emitAnnouncementsToShow(listOf(Announcement.NewNotificationSound))
             assertThat(awaitItem().contentAsRooms().showNewNotificationSoundBanner).isTrue()
-            state.eventSink(RoomListEvents.DismissNewNotificationSoundBanner)
+            state.eventSink(RoomListEvent.DismissNewNotificationSoundBanner)
             onAnnouncementDismissedResult.assertions().isCalledOnce()
                 .with(value(Announcement.NewNotificationSound))
             // Simulate service updating the value

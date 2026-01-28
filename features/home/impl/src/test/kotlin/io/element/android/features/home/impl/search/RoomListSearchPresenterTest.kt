@@ -8,9 +8,6 @@
 
 package io.element.android.features.home.impl.search
 
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.moleculeFlow
-import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.home.impl.datasource.aRoomListRoomSummaryFactory
 import io.element.android.libraries.dateformatter.test.FakeDateFormatter
@@ -19,6 +16,7 @@ import io.element.android.libraries.matrix.api.roomlist.RoomListFilter
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
 import io.element.android.libraries.matrix.test.room.aRoomSummary
 import io.element.android.libraries.matrix.test.roomlist.FakeRoomListService
+import io.element.android.tests.testutils.test
 import io.element.android.tests.testutils.testCoroutineDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.TestScope
@@ -29,9 +27,7 @@ class RoomListSearchPresenterTest {
     @Test
     fun `present - initial state`() = runTest {
         val presenter = createRoomListSearchPresenter()
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             awaitItem().let { state ->
                 assertThat(state.isSearchActive).isFalse()
                 assertThat(state.query.text.toString()).isEmpty()
@@ -43,16 +39,14 @@ class RoomListSearchPresenterTest {
     @Test
     fun `present - toggle search visibility`() = runTest {
         val presenter = createRoomListSearchPresenter()
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             awaitItem().let { state ->
                 assertThat(state.isSearchActive).isFalse()
-                state.eventSink(RoomListSearchEvents.ToggleSearchVisibility)
+                state.eventSink(RoomListSearchEvent.ToggleSearchVisibility)
             }
             awaitItem().let { state ->
                 assertThat(state.isSearchActive).isTrue()
-                state.eventSink(RoomListSearchEvents.ToggleSearchVisibility)
+                state.eventSink(RoomListSearchEvent.ToggleSearchVisibility)
             }
             awaitItem().let { state ->
                 assertThat(state.isSearchActive).isFalse()
@@ -64,9 +58,7 @@ class RoomListSearchPresenterTest {
     fun `present - query search changes`() = runTest {
         val roomListService = FakeRoomListService()
         val presenter = createRoomListSearchPresenter(roomListService)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             awaitItem().let { state ->
                 assertThat(
                     roomListService.allRooms.currentFilter.value
@@ -82,7 +74,7 @@ class RoomListSearchPresenterTest {
                 ).isEqualTo(
                     RoomListFilter.NormalizedMatchRoomName("Search")
                 )
-                state.eventSink(RoomListSearchEvents.ClearQuery)
+                state.eventSink(RoomListSearchEvent.ClearQuery)
             }
             awaitItem().let { state ->
                 assertThat(state.query.text.toString()).isEmpty()
@@ -99,9 +91,7 @@ class RoomListSearchPresenterTest {
     fun `present - room list changes`() = runTest {
         val roomListService = FakeRoomListService()
         val presenter = createRoomListSearchPresenter(roomListService)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             awaitItem().let { state ->
                 assertThat(state.results).isEmpty()
             }

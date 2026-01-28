@@ -6,9 +6,9 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.features.home.impl.filters
+package io.element.android.features.home.impl.search
 
-sealed interface RoomListFiltersEvents {
-    data class ToggleFilter(val filter: RoomListFilter) : RoomListFiltersEvents
-    data object ClearSelectedFilters : RoomListFiltersEvents
+sealed interface RoomListSearchEvent {
+    data object ToggleSearchVisibility : RoomListSearchEvent
+    data object ClearQuery : RoomListSearchEvent
 }

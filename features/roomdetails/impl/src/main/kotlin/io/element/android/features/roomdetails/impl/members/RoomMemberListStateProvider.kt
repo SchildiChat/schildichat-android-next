@@ -85,7 +85,7 @@ internal fun aRoomMemberListState(
     selectedSection: SelectedSection = SelectedSection.MEMBERS,
     searchQuery: String = "",
     canInvite: Boolean = false,
-    eventSink: (RoomMemberListEvents) -> Unit = {},
+    eventSink: (RoomMemberListEvent) -> Unit = {},
 ) = RoomMemberListState(
     roomMembers = roomMembers,
     filteredRoomMembers = roomMembers.map { it.filter(searchQuery) },

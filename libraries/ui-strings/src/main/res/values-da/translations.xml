@@ -56,6 +56,7 @@
   <string name="a11y_your_avatar">"Din avatar"</string>
   <string name="action_accept">"Accepter"</string>
   <string name="action_add_caption">"Tilføj billedtekst"</string>
+  <string name="action_add_existing_rooms">"Tilføj eksisterende rum"</string>
   <string name="action_add_to_timeline">"Føj til tidslinje"</string>
   <string name="action_back">"Tilbage"</string>
   <string name="action_call">"Opkald"</string>
@@ -74,7 +75,8 @@
   <string name="action_copy_link_to_message">"Kopiér link til besked"</string>
   <string name="action_copy_text">"Kopiér tekst"</string>
   <string name="action_create">"Opret"</string>
-  <string name="action_create_a_room">"Opret et rum"</string>
+  <string name="action_create_room">"Opret et rum"</string>
+  <string name="action_create_space">"Opret en gruppe"</string>
   <string name="action_deactivate">"Deaktiver"</string>
   <string name="action_deactivate_account">"Deaktiver konto"</string>
   <string name="action_decline">"Afvis"</string>
@@ -91,6 +93,7 @@
   <string name="action_enable">"Slå til"</string>
   <string name="action_end_poll">"Afslut afstemning"</string>
   <string name="action_enter_pin">"Indtast PIN-kode"</string>
+  <string name="action_explore_public_spaces">"Udforsk offentlige grupper"</string>
   <string name="action_finish">"Afslut"</string>
   <string name="action_forgot_password">"Har du glemt din adgangskode?"</string>
   <string name="action_forward">"Videresend"</string>
@@ -162,6 +165,7 @@
   <string name="action_static_map_load">"Tryk for at indlæse kort"</string>
   <string name="action_take_photo">"Tag billede"</string>
   <string name="action_tap_for_options">"Tryk for indstillinger"</string>
+  <string name="action_translate">"Oversæt"</string>
   <string name="action_try_again">"Prøv igen"</string>
   <string name="action_unpin">"Frigør"</string>
   <string name="action_view">"Vis"</string>
@@ -191,6 +195,7 @@
   <string name="common_copied_to_clipboard">"Kopieret til udklipsholder"</string>
   <string name="common_copyright">"Ophavsret"</string>
   <string name="common_creating_room">"Opretter rum…"</string>
+  <string name="common_creating_space">"Opretter gruppe…"</string>
   <string name="common_current_user_canceled_knock">"Anmodning annulleret"</string>
   <string name="common_current_user_left_room">"Forlod rummet"</string>
   <string name="common_current_user_left_space">"Forlod gruppe"</string>
@@ -236,6 +241,7 @@
   <string name="common_light">"Lyst tema"</string>
   <string name="common_line_copied_to_clipboard">"Linje kopieret til udklipsholder"</string>
   <string name="common_link_copied_to_clipboard">"Linket er kopieret til udklipsholderen"</string>
+  <string name="common_link_new_device">"Forbind ny enhed"</string>
   <string name="common_loading">"Indlæser…"</string>
   <string name="common_loading_more">"Indlæser flere…"</string>
   <plurals name="common_many_members">
@@ -248,10 +254,12 @@
   </plurals>
   <string name="common_message">"Besked"</string>
   <string name="common_message_actions">"Beskedhandlinger"</string>
+  <string name="common_message_failed_to_send">"Beskeden blev ikke sendt"</string>
   <string name="common_message_layout">"Layout på beskeder"</string>
   <string name="common_message_removed">"Beskeden er fjernet"</string>
   <string name="common_modern">"Moderne"</string>
   <string name="common_mute">"Lydløs"</string>
+  <string name="common_name">"Navn"</string>
   <string name="common_name_and_id">"%1$s (%2$s)"</string>
   <string name="common_no_results">"Ingen resultater"</string>
   <string name="common_no_room_name">"Intet rumnavn"</string>
@@ -286,6 +294,7 @@
   <string name="common_reason">"Årsag"</string>
   <string name="common_recovery_key">"Gendannelsesnøgle"</string>
   <string name="common_refreshing">"Opdaterer…"</string>
+  <string name="common_removing">"Fjerner…"</string>
   <plurals name="common_replies">
     <item quantity="other">"%1$d svar"</item>
   </plurals>
@@ -309,6 +318,10 @@
   <string name="common_security">"Sikkerhed"</string>
   <string name="common_seen_by">"Set af"</string>
   <string name="common_select_account">"Vælg en konto"</string>
+  <plurals name="common_selected_count">
+    <item quantity="one">"%1$d valgt"</item>
+    <item quantity="other">"%1$d valgt"</item>
+  </plurals>
   <string name="common_send_to">"Send til"</string>
   <string name="common_sending">"Sender…"</string>
   <string name="common_sending_failed">"Afsendelse mislykkedes"</string>
@@ -325,6 +338,7 @@
   <string name="common_something_went_wrong">"Noget gik galt"</string>
   <string name="common_something_went_wrong_message">"Vi stødte på et problem. Prøv venligst igen."</string>
   <string name="common_space">"Gruppe"</string>
+  <string name="common_space_topic_placeholder">"Hvad handler denne gruppe om?"</string>
   <plurals name="common_spaces">
     <item quantity="one">"%1$d Gruppe"</item>
     <item quantity="other">"%1$d Grupper"</item>
@@ -332,6 +346,7 @@
   <string name="common_starting_chat">"Starter samtale…"</string>
   <string name="common_sticker">"Klistermærke"</string>
   <string name="common_success">"Succes"</string>
+  <string name="common_suggested">"Forslag"</string>
   <string name="common_suggestions">"Forslag"</string>
   <string name="common_syncing">"Synkroniserer"</string>
   <string name="common_system">"System"</string>
@@ -369,6 +384,9 @@
   <string name="common_waiting">"Venter…"</string>
   <string name="common_waiting_for_decryption_key">"Venter på denne besked"</string>
   <string name="common_you">"Dig"</string>
+  <string name="crypto_event_key_forwarded_known_profile_dialog_content">"%1$s(%2$s ) har delt denne besked siden du ikke var i rummet da den blev sendt."</string>
+  <string name="crypto_event_key_forwarded_unknown_profile_dialog_content">"%1$s delte denne besked, siden du ikke var i rummet da den blev sendt."</string>
+  <string name="crypto_history_visible">"Dette rum er konfigureret, så nye medlemmer kan læse historikken.%1$s"</string>
   <string name="crypto_identity_change_pin_violation">"%1$ss identitet blev nulstillet. %2$s"</string>
   <string name="crypto_identity_change_pin_violation_new">"%1$ss %2$s identitet blev nulstillet. %3$s"</string>
   <string name="crypto_identity_change_pin_violation_new_user_id">"(%1$s)"</string>
@@ -413,13 +431,6 @@ Er du sikker på, at du vil fortsætte?"</string>
   <string name="error_room_address_invalid_symbols">"Nogle tegn er ikke tilladt. Kun bogstaver, cifre og følgende symboler understøttes! $ &amp; \'() * +/; =? @ [] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Nogle beskeder er ikke blevet sendt"</string>
   <string name="error_unknown">"Beklager, der opstod en fejl"</string>
-  <string name="event_shield_mismatched_sender">"Afsenderen af begivenheden matcher ikke ejeren af den enhed, der sendte den."</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"Ægtheden af denne krypterede besked kan ikke garanteres på denne enhed."</string>
-  <string name="event_shield_reason_previously_verified">"Krypteret af en tidligere verificeret bruger."</string>
-  <string name="event_shield_reason_sent_in_clear">"Ikke krypteret."</string>
-  <string name="event_shield_reason_unknown_device">"Krypteret af en ukendt eller slettet enhed."</string>
-  <string name="event_shield_reason_unsigned_device">"Krypteret af en enhed, der ikke er verificeret af sin ejer."</string>
-  <string name="event_shield_reason_unverified_identity">"Krypteret af en ikke-verificeret bruger."</string>
   <string name="invite_friends_rich_title">"🔐️ Kom med mig til %1$s"</string>
   <string name="invite_friends_text">"Hej, lad os snakkes på %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>
@@ -467,6 +478,7 @@ Er du sikker på, at du vil fortsætte?"</string>
   <string name="screen_share_this_location_action">"Del denne lokation"</string>
   <string name="screen_space_list_description">"Grupper, du har oprettet eller deltager i"</string>
   <string name="screen_space_list_details">"%1$s•%2$s"</string>
+  <string name="screen_space_list_empty_state_title">"Opret grupper til at organisere rum"</string>
   <string name="screen_space_list_parent_space">"%1$s gruppe"</string>
   <string name="screen_space_list_title">"Grupper"</string>
   <string name="screen_timeline_item_menu_send_failure_changed_identity">"Beskeden blev ikke sendt fordi %1$s s bekræftede identitet blev nulstillet."</string>

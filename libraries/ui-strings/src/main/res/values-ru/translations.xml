@@ -58,6 +58,7 @@
   <string name="a11y_your_avatar">"Ваш аватар"</string>
   <string name="action_accept">"Разрешить"</string>
   <string name="action_add_caption">"Добавить подпись"</string>
+  <string name="action_add_existing_rooms">"Добавить существующие комнаты"</string>
   <string name="action_add_to_timeline">"Добавить в хронологию"</string>
   <string name="action_back">"Назад"</string>
   <string name="action_call">"Позвонить"</string>
@@ -76,7 +77,8 @@
   <string name="action_copy_link_to_message">"Скопировать ссылку в сообщение"</string>
   <string name="action_copy_text">"Копировать текст"</string>
   <string name="action_create">"Создать"</string>
-  <string name="action_create_a_room">"Создать комнату"</string>
+  <string name="action_create_room">"Создать комнату"</string>
+  <string name="action_create_space">"Создать пространство"</string>
   <string name="action_deactivate">"Отключить"</string>
   <string name="action_deactivate_account">"Отключить учётную запись"</string>
   <string name="action_decline">"Отклонить"</string>
@@ -164,6 +166,7 @@
   <string name="action_static_map_load">"Нажмите, чтобы загрузить карту"</string>
   <string name="action_take_photo">"Сделать фото"</string>
   <string name="action_tap_for_options">"Нажмите для просмотра вариантов"</string>
+  <string name="action_translate">"Перевод"</string>
   <string name="action_try_again">"Повторить попытку"</string>
   <string name="action_unpin">"Открепить"</string>
   <string name="action_view">"Просмотр"</string>
@@ -193,6 +196,7 @@
   <string name="common_copied_to_clipboard">"Скопировано в буфер обмена"</string>
   <string name="common_copyright">"Авторское право"</string>
   <string name="common_creating_room">"Создание комнаты…"</string>
+  <string name="common_creating_space">"Создание пространства…"</string>
   <string name="common_current_user_canceled_knock">"Запрос отменен"</string>
   <string name="common_current_user_left_room">"Покинул комнату"</string>
   <string name="common_current_user_left_space">"Покинуть пространство"</string>
@@ -238,6 +242,7 @@
   <string name="common_light">"Светлое"</string>
   <string name="common_line_copied_to_clipboard">"Строка скопирована в буфер обмена"</string>
   <string name="common_link_copied_to_clipboard">"Ссылка скопирована в буфер обмена"</string>
+  <string name="common_link_new_device">"Привязать новое устройство"</string>
   <string name="common_loading">"Загрузка…"</string>
   <string name="common_loading_more">"Загрузить больше…"</string>
   <plurals name="common_many_members">
@@ -252,10 +257,12 @@
   </plurals>
   <string name="common_message">"Сообщение"</string>
   <string name="common_message_actions">"Действия с сообщением"</string>
+  <string name="common_message_failed_to_send">"Ошибка отправки сообщения"</string>
   <string name="common_message_layout">"Оформление сообщения"</string>
   <string name="common_message_removed">"Сообщение удалено"</string>
   <string name="common_modern">"Современный"</string>
   <string name="common_mute">"Выкл. звук"</string>
+  <string name="common_name">"Имя"</string>
   <string name="common_name_and_id">"%1$s (%2$s)"</string>
   <string name="common_no_results">"Ничего не найдено"</string>
   <string name="common_no_room_name">"Название комнаты отсутствует"</string>
@@ -291,6 +298,7 @@
   <string name="common_reason">"Причина"</string>
   <string name="common_recovery_key">"Ключ восстановления"</string>
   <string name="common_refreshing">"Обновление…"</string>
+  <string name="common_removing">"Удаление…"</string>
   <plurals name="common_replies">
     <item quantity="one">"%1$d ответ"</item>
     <item quantity="few">"%1$d ответа"</item>
@@ -317,6 +325,11 @@
   <string name="common_security">"Безопасность"</string>
   <string name="common_seen_by">"Просмотрено"</string>
   <string name="common_select_account">"Выберите учетную запись"</string>
+  <plurals name="common_selected_count">
+    <item quantity="one">"%1$d выбран"</item>
+    <item quantity="few">"%1$d выбрано"</item>
+    <item quantity="many">"%1$d выбрано"</item>
+  </plurals>
   <string name="common_send_to">"Отправить"</string>
   <string name="common_sending">"Отправка…"</string>
   <string name="common_sending_failed">"Сбой отправки"</string>
@@ -333,6 +346,7 @@
   <string name="common_something_went_wrong">"Что-то пошло не так"</string>
   <string name="common_something_went_wrong_message">"Мы столкнулись с проблемой. Пожалуйста, попробуйте еще раз."</string>
   <string name="common_space">"Пространство"</string>
+  <string name="common_space_topic_placeholder">"О чём это пространство?"</string>
   <plurals name="common_spaces">
     <item quantity="one">"%1$d Пространство"</item>
     <item quantity="few">"%1$d Пространств"</item>
@@ -341,6 +355,7 @@
   <string name="common_starting_chat">"Чат запускается…"</string>
   <string name="common_sticker">"Стикер"</string>
   <string name="common_success">"Успешно"</string>
+  <string name="common_suggested">"Рекомендуемые"</string>
   <string name="common_suggestions">"Предложения"</string>
   <string name="common_syncing">"Синхронизация"</string>
   <string name="common_system">"Системное"</string>
@@ -378,6 +393,8 @@
   <string name="common_waiting">"Ожидание…"</string>
   <string name="common_waiting_for_decryption_key">"Ожидание ключа расшифровки"</string>
   <string name="common_you">"Вы"</string>
+  <string name="crypto_event_key_forwarded_unknown_profile_dialog_content">"%1$s поделился этим сообщением, поскольку вас не было в комнате, когда оно было отправлено."</string>
+  <string name="crypto_history_visible">"Эта комната оборудована таким образом, чтобы новые участники могли ознакомиться с историей. %1$s"</string>
   <string name="crypto_identity_change_pin_violation">"Идентификатор %1$s изменился. %2$s"</string>
   <string name="crypto_identity_change_pin_violation_new">"Пользователь %1$s сменил имя на %2$s. %3$s"</string>
   <string name="crypto_identity_change_pin_violation_new_user_id">"(%1$s)"</string>
@@ -422,13 +439,6 @@
   <string name="error_room_address_invalid_symbols">"Некоторые символы не допускаются. Поддерживаются только буквы, цифры и следующие символы! $ &amp; \'() * +/; =? @ [] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Некоторые сообщения не были отправлены"</string>
   <string name="error_unknown">"Извините, произошла ошибка"</string>
-  <string name="event_shield_mismatched_sender">"Отправитель события и владелец устройства не совпадают."</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"Подлинность этого зашифрованного сообщения не может быть гарантирована на этом устройстве."</string>
-  <string name="event_shield_reason_previously_verified">"Зашифровано ранее проверенным пользователем."</string>
-  <string name="event_shield_reason_sent_in_clear">"Не зашифровано."</string>
-  <string name="event_shield_reason_unknown_device">"Зашифровано неизвестным или удаленным устройством."</string>
-  <string name="event_shield_reason_unsigned_device">"Зашифровано устройством, не проверенным его владельцем."</string>
-  <string name="event_shield_reason_unverified_identity">"Зашифровано непроверенным пользователем."</string>
   <string name="invite_friends_rich_title">"🔐️ Присоединяйтесь ко мне в %1$s"</string>
   <string name="invite_friends_text">"Привет, поговори со мной по %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>
@@ -477,6 +487,7 @@
   <string name="screen_share_this_location_action">"Поделиться этим местоположением"</string>
   <string name="screen_space_list_description">"Пространства, которые вы создали или к которым присоединились."</string>
   <string name="screen_space_list_details">"%1$s • %2$s"</string>
+  <string name="screen_space_list_empty_state_title">"Создавайте пространства для организации комнат"</string>
   <string name="screen_space_list_parent_space">"%1$s пространство"</string>
   <string name="screen_space_list_title">"Пространства"</string>
   <string name="screen_timeline_item_menu_send_failure_changed_identity">"Сообщение не отправлено, потому что подтвержденная личность %1$s была сброшена."</string>

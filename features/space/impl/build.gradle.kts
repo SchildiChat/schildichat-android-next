@@ -38,6 +38,7 @@ dependencies {
     implementation(projects.services.analytics.api)
     implementation(libs.coil.compose)
     implementation(projects.libraries.featureflag.api)
+    implementation(projects.features.createroom.api)
     implementation(projects.features.invite.api)
     implementation(projects.libraries.previewutils)
     implementation(projects.features.securityandprivacy.api)
@@ -49,5 +50,6 @@ dependencies {
     testImplementation(projects.services.analytics.test)
     testImplementation(projects.libraries.matrix.test)
     testImplementation(projects.libraries.featureflag.test)
+    testImplementation(projects.features.createroom.test)
     testImplementation(projects.features.invite.test)
 }

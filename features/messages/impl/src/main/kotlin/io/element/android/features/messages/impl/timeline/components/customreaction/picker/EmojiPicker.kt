@@ -32,7 +32,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import io.element.android.emojibasebindings.Emoji
 import io.element.android.features.messages.impl.timeline.components.customreaction.EmojiItem
-import io.element.android.features.messages.impl.timeline.components.customreaction.icon
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.text.toSp
@@ -58,11 +57,10 @@ fun EmojiPicker(
     Column(modifier) {
         SearchBar(
             modifier = Modifier.padding(bottom = 10.dp),
-            query = state.searchQuery,
-            onQueryChange = { state.eventSink(EmojiPickerEvents.UpdateSearchQuery(it)) },
+            queryState = state.searchQuery,
             resultState = state.searchResults,
             active = state.isSearchActive,
-            onActiveChange = { state.eventSink(EmojiPickerEvents.ToggleSearchActive(it)) },
+            onActiveChange = { state.eventSink(EmojiPickerEvent.ToggleSearchActive(it)) },
             windowInsets = WindowInsets(0, 0, 0, 0),
             placeHolderTitle = stringResource(CommonStrings.emoji_picker_search_placeholder),
         ) { emojis ->

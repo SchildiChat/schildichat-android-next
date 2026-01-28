@@ -46,10 +46,10 @@ fun LinkView(
                     ),
                     submitText = stringResource(CommonStrings.action_continue),
                     onSubmitClick = {
-                        state.eventSink(LinkEvents.Confirm)
+                        state.eventSink(LinkEvent.Confirm)
                     },
                     onDismiss = {
-                        state.eventSink(LinkEvents.Cancel)
+                        state.eventSink(LinkEvent.Cancel)
                     },
                 )
             }
@@ -58,7 +58,7 @@ fun LinkView(
             val latestOnLinkValid by rememberUpdatedState(onLinkValid)
             LaunchedEffect(state.linkClick.data) {
                 latestOnLinkValid(state.linkClick.data)
-                state.eventSink(LinkEvents.Cancel)
+                state.eventSink(LinkEvent.Cancel)
             }
         }
     }

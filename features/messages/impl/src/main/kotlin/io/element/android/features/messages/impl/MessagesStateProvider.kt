@@ -14,8 +14,6 @@ import io.element.android.features.messages.api.timeline.voicemessages.composer.
 import io.element.android.features.messages.api.timeline.voicemessages.composer.aVoiceMessagePreviewState
 import io.element.android.features.messages.impl.actionlist.ActionListState
 import io.element.android.features.messages.impl.actionlist.anActionListState
-import io.element.android.features.messages.impl.crypto.historyvisible.HistoryVisibleState
-import io.element.android.features.messages.impl.crypto.historyvisible.aHistoryVisibleState
 import io.element.android.features.messages.impl.crypto.identity.IdentityChangeState
 import io.element.android.features.messages.impl.crypto.identity.aRoomMemberIdentityStateChange
 import io.element.android.features.messages.impl.crypto.identity.anIdentityChangeState
@@ -28,11 +26,11 @@ import io.element.android.features.messages.impl.pinned.banner.aLoadedPinnedMess
 import io.element.android.features.messages.impl.timeline.TimelineState
 import io.element.android.features.messages.impl.timeline.aTimelineItemList
 import io.element.android.features.messages.impl.timeline.aTimelineState
-import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionEvents
+import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionEvent
 import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionState
-import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryEvents
+import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryEvent
 import io.element.android.features.messages.impl.timeline.components.reactionsummary.ReactionSummaryState
-import io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet.ReadReceiptBottomSheetEvents
+import io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet.ReadReceiptBottomSheetEvent
 import io.element.android.features.messages.impl.timeline.components.receipt.bottomsheet.ReadReceiptBottomSheetState
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.features.messages.impl.timeline.model.event.aTimelineItemTextContent
@@ -92,15 +90,6 @@ open class MessagesStateProvider : PreviewParameterProvider<MessagesState> {
                 composerState = aMessageComposerState(textEditorState = aTextEditorStateMarkdown()),
                 identityChangeState = anIdentityChangeState(listOf(aRoomMemberIdentityStateChange()))
             ),
-            aMessagesState(
-                composerState = aMessageComposerState(textEditorState = aTextEditorStateMarkdown()),
-                historyVisibleState = aHistoryVisibleState(showAlert = true)
-            ),
-            aMessagesState(
-                composerState = aMessageComposerState(textEditorState = aTextEditorStateMarkdown()),
-                identityChangeState = anIdentityChangeState(listOf(aRoomMemberIdentityStateChange())),
-                historyVisibleState = aHistoryVisibleState(showAlert = true)
-            )
         )
 }
 
@@ -121,7 +110,6 @@ fun aMessagesState(
     ),
     timelineProtectionState: TimelineProtectionState = aTimelineProtectionState(),
     identityChangeState: IdentityChangeState = anIdentityChangeState(),
-    historyVisibleState: HistoryVisibleState = aHistoryVisibleState(),
     linkState: LinkState = aLinkState(),
     readReceiptBottomSheetState: ReadReceiptBottomSheetState = aReadReceiptBottomSheetState(),
     actionListState: ActionListState = anActionListState(),
@@ -132,8 +120,9 @@ fun aMessagesState(
     pinnedMessagesBannerState: PinnedMessagesBannerState = aLoadedPinnedMessagesBannerState(),
     dmUserVerificationState: IdentityState? = null,
     roomMemberModerationState: RoomMemberModerationState = aRoomMemberModerationState(),
+    showSharedHistoryIcon: Boolean = false,
     successorRoom: SuccessorRoom? = null,
-    eventSink: (MessagesEvents) -> Unit = {},
+    eventSink: (MessagesEvent) -> Unit = {},
 ) = MessagesState(
     roomId = RoomId("!id:domain"),
     roomName = roomName,
@@ -144,7 +133,6 @@ fun aMessagesState(
     voiceMessageComposerState = voiceMessageComposerState,
     timelineProtectionState = timelineProtectionState,
     identityChangeState = identityChangeState,
-    historyVisibleState = historyVisibleState,
     linkState = linkState,
     timelineState = timelineState,
     readReceiptBottomSheetState = readReceiptBottomSheetState,
@@ -160,6 +148,7 @@ fun aMessagesState(
     pinnedMessagesBannerState = pinnedMessagesBannerState,
     dmUserVerificationState = dmUserVerificationState,
     roomMemberModerationState = roomMemberModerationState,
+    showSharedHistoryIcon = showSharedHistoryIcon,
     successorRoom = successorRoom,
     eventSink = eventSink,
 )
@@ -187,7 +176,7 @@ fun aUserEventPermissions(
 
 fun aReactionSummaryState(
     target: ReactionSummaryState.Summary? = null,
-    eventSink: (ReactionSummaryEvents) -> Unit = {}
+    eventSink: (ReactionSummaryEvent) -> Unit = {}
 ) = ReactionSummaryState(
     target = target,
     eventSink = eventSink,
@@ -196,7 +185,7 @@ fun aReactionSummaryState(
 fun aCustomReactionState(
     target: CustomReactionState.Target = CustomReactionState.Target.None,
     recentEmojis: ImmutableList<String> = persistentListOf(),
-    eventSink: (CustomReactionEvents) -> Unit = {},
+    eventSink: (CustomReactionEvent) -> Unit = {},
 ) = CustomReactionState(
     target = target,
     recentEmojis = recentEmojis,
@@ -206,7 +195,7 @@ fun aCustomReactionState(
 
 fun aReadReceiptBottomSheetState(
     selectedEvent: TimelineItem.Event? = null,
-    eventSink: (ReadReceiptBottomSheetEvents) -> Unit = {},
+    eventSink: (ReadReceiptBottomSheetEvent) -> Unit = {},
 ) = ReadReceiptBottomSheetState(
     selectedEvent = selectedEvent,
     eventSink = eventSink,

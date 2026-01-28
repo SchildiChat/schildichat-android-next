@@ -17,7 +17,7 @@ constraintlayout = "2.2.1"
 constraintlayout_compose = "1.1.1"
 lifecycle = "2.10.0"
 activity = "1.12.2"
-media3 = "1.9.0"
+media3 = "1.9.1"
 camera = "1.5.2"
 work = "2.11.0"
 
@@ -32,11 +32,11 @@ accompanist = "0.37.3"
 
 # Test
 test_core = "1.7.0"
-roborazzi = "1.56.0"
+roborazzi = "1.57.0"
 
 # Jetbrain
 datetime = "0.7.1"
-serialization_json = "1.9.0"
+serialization_json = "1.10.0"
 
 #other
 coil = "3.3.0"
@@ -44,7 +44,7 @@ coil = "3.3.0"
 showkase = "1.0.5"
 appyx = "1.7.1"
 sqldelight = "2.2.1"
-wysiwyg = "2.41.0"
+wysiwyg = "2.41.1"
 telephoto = "0.18.0"
 haze = "1.7.1"
 
@@ -52,7 +52,7 @@ haze = "1.7.1"
 dependencyAnalysis = "3.5.1"
 
 # DI
-metro = "0.9.4"
+metro = "0.10.1"
 
 # Auto service
 autoservice = "1.1.1"
@@ -160,12 +160,12 @@ test_corektx = { module = "androidx.test:core-ktx", version.ref = "test_core" }
 test_arch_core = "androidx.arch.core:core-testing:2.2.0"
 test_junit = "junit:junit:4.13.2"
 test_runner = "androidx.test:runner:1.7.0"
-test_mockk = "io.mockk:mockk:1.14.7"
+test_mockk = "io.mockk:mockk:1.14.9"
 test_konsist = "com.lemonappdev:konsist:0.17.3"
 test_turbine = "app.cash.turbine:turbine:1.2.1"
 test_truth = "com.google.truth:truth:1.4.5"
-test_parameter_injector = "com.google.testparameterinjector:test-parameter-injector:1.20"
-test_robolectric = "org.robolectric:robolectric:4.16"
+test_parameter_injector = "com.google.testparameterinjector:test-parameter-injector:1.21"
+test_robolectric = "org.robolectric:robolectric:4.16.1"
 test_appyx_junit = { module = "com.bumble.appyx:testing-junit4", version.ref = "appyx" }
 test_composable_preview_scanner = "io.github.sergio-sastre.ComposablePreviewScanner:android:0.8.1"
 test_detekt_api = { module = "io.gitlab.arturbosch.detekt:detekt-api", version.ref = "detekt" }
@@ -177,7 +177,7 @@ test_detekt_test = { module = "io.gitlab.arturbosch.detekt:detekt-test", version
 # https://github.com/matrix-org/matrix-rust-components-kotlin/commits/main/sdk/sdk-android/src/main/kotlin/org/matrix/rustcomponents/sdk/matrix_sdk_ffi.kt
 # All new features should not be implemented in the pull request that upgrades the version, developers should
 # only fix API breaks and may add some TODOs.
-matrix_sdk = "org.matrix.rustcomponents:sdk-android:26.1.12"
+matrix_sdk = "org.matrix.rustcomponents:sdk-android:26.1.27"
 
 # Others
 coil = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
@@ -199,7 +199,7 @@ matrix_richtexteditor_compose = { module = "io.element.android:wysiwyg-compose",
 sqldelight-driver-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-driver-jvm = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
 sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
-sqlcipher = "net.zetetic:sqlcipher-android:4.12.0"
+sqlcipher = "net.zetetic:sqlcipher-android:4.13.0"
 sqlite = "androidx.sqlite:sqlite-ktx:2.6.2"
 unifiedpush = "org.unifiedpush.android:connector:3.2.0"
 vanniktech_blurhash = "com.vanniktech:blurhash:0.3.0"
@@ -218,8 +218,8 @@ haze_materials = { module = "dev.chrisbanes.haze:haze-materials", version.ref = 
 color_picker = "io.mhssn:colorpicker:1.0.0"
 
 # Analytics
-posthog = "com.posthog:posthog-android:3.28.1"
-sentry = "io.sentry:sentry-android:8.30.0"
+posthog = "com.posthog:posthog-android:3.29.1"
+sentry = "io.sentry:sentry-android:8.31.0"
 # main branch can be tested replacing the version with main-SNAPSHOT
 matrix_analytics_events = "com.github.matrix-org:matrix-analytics-events:0.29.2"
 
@@ -259,13 +259,13 @@ metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 ktlint = "org.jlleitschuh.gradle.ktlint:14.0.1"
 dependencygraph = "com.savvasdalkitsis.module-dependency-graph:0.12"
-dependencycheck = "org.owasp.dependencycheck:12.1.9"
+dependencycheck = "org.owasp.dependencycheck:12.2.0"
 dependencyanalysis = { id = "com.autonomousapps.dependency-analysis", version.ref = "dependencyAnalysis" }
 paparazzi = "app.cash.paparazzi:2.0.0-alpha02"
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 firebaseAppDistribution = { id = "com.google.firebase.appdistribution", version.ref = "firebaseAppDistribution" }
-knit = { id = "org.jetbrains.kotlinx.knit", version = "0.5.0" }
+knit = { id = "org.jetbrains.kotlinx.knit", version = "0.5.1" }
 sonarqube = "org.sonarqube:7.2.2.6593"
 licensee = "app.cash.licensee:1.14.1"
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

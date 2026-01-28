@@ -118,7 +118,7 @@ fun ActionListView(
     ) {
         if (targetItem == null) return
         sheetState.hide(coroutineScope) {
-            state.eventSink(ActionListEvents.Clear)
+            state.eventSink(ActionListEvent.Clear)
             onSelectAction(itemAction, targetItem)
         }
     }
@@ -126,7 +126,7 @@ fun ActionListView(
     fun onEmojiReactionClick(emoji: String) {
         if (targetItem == null) return
         sheetState.hide(coroutineScope) {
-            state.eventSink(ActionListEvents.Clear)
+            state.eventSink(ActionListEvent.Clear)
             onEmojiReactionClick(emoji, targetItem)
         }
     }
@@ -134,19 +134,19 @@ fun ActionListView(
     fun onCustomReactionClick() {
         if (targetItem == null) return
         sheetState.hide(coroutineScope) {
-            state.eventSink(ActionListEvents.Clear)
+            state.eventSink(ActionListEvent.Clear)
             onCustomReactionClick(targetItem)
         }
     }
 
     fun onDismiss() {
-        state.eventSink(ActionListEvents.Clear)
+        state.eventSink(ActionListEvent.Clear)
     }
 
     fun onVerifiedUserSendFailureClick() {
         if (targetItem == null) return
         sheetState.hide(coroutineScope) {
-            state.eventSink(ActionListEvents.Clear)
+            state.eventSink(ActionListEvent.Clear)
             onVerifiedUserSendFailureClick(targetItem)
         }
     }

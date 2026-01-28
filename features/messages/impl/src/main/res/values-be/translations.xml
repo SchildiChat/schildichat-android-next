@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="crypto_event_authenticity_not_guaranteed">"Сапраўднасць гэтага зашыфраванага паведамлення не можа быць гарантаваная на гэтай прыладзе."</string>
+  <string name="crypto_event_authenticity_previously_verified">"Зашыфравана раней правераным карыстальнікам."</string>
+  <string name="crypto_event_authenticity_sent_in_clear">"Не зашыфраваны."</string>
+  <string name="crypto_event_authenticity_unknown_device">"Зашыфравана невядомай ці выдаленай прыладай."</string>
+  <string name="crypto_event_authenticity_unsigned_device">"Зашыфравана прыладай, не пацверджанай яе ўладальнікам."</string>
+  <string name="crypto_event_authenticity_unverified_identity">"Зашыфравана неправераным карыстальнікам."</string>
   <string name="emoji_picker_category_activity">"Актыўнасці"</string>
   <string name="emoji_picker_category_flags">"Сцягі"</string>
   <string name="emoji_picker_category_foods">"Ежа &amp; Напоі"</string>

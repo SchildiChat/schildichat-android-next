@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="crypto_event_authenticity_mismatched_sender">"Expeditorul evenimentului nu corespunde proprietarului dispozitivului care l-a trimis."</string>
+  <string name="crypto_event_authenticity_not_guaranteed">"Autenticitatea acestui mesaj criptat nu poate fi garantată pe acest dispozitiv."</string>
+  <string name="crypto_event_authenticity_previously_verified">"Criptat de un utilizator verificat anterior."</string>
+  <string name="crypto_event_authenticity_sent_in_clear">"Necriptat"</string>
+  <string name="crypto_event_authenticity_unknown_device">"Criptat de un dispozitiv necunoscut sau șters."</string>
+  <string name="crypto_event_authenticity_unsigned_device">"Criptat de un dispozitiv care nu este verificat de proprietarul său."</string>
+  <string name="crypto_event_authenticity_unverified_identity">"Criptat de un utilizator neverificat."</string>
   <string name="emoji_picker_category_activity">"Activități"</string>
   <string name="emoji_picker_category_flags">"Steaguri"</string>
   <string name="emoji_picker_category_foods">"Mâncare &amp; Băutură"</string>

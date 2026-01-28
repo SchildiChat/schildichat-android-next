@@ -13,11 +13,10 @@ package io.element.android.features.messages.impl
 import androidx.lifecycle.Lifecycle
 import com.google.common.truth.Truth.assertThat
 import im.vector.app.features.analytics.plan.PinUnpinAction
-import io.element.android.features.messages.impl.actionlist.ActionListEvents
+import io.element.android.features.messages.impl.actionlist.ActionListEvent
 import io.element.android.features.messages.impl.actionlist.ActionListState
 import io.element.android.features.messages.impl.actionlist.anActionListState
 import io.element.android.features.messages.impl.actionlist.model.TimelineItemAction
-import io.element.android.features.messages.impl.crypto.historyvisible.aHistoryVisibleState
 import io.element.android.features.messages.impl.crypto.identity.anIdentityChangeState
 import io.element.android.features.messages.impl.fixtures.aMessageEvent
 import io.element.android.features.messages.impl.link.aLinkState
@@ -28,7 +27,7 @@ import io.element.android.features.messages.impl.pinned.banner.aLoadedPinnedMess
 import io.element.android.features.messages.impl.timeline.FakeMarkAsFullyRead
 import io.element.android.features.messages.impl.timeline.MarkAsFullyRead
 import io.element.android.features.messages.impl.timeline.TimelineController
-import io.element.android.features.messages.impl.timeline.TimelineEvents
+import io.element.android.features.messages.impl.timeline.TimelineEvent
 import io.element.android.features.messages.impl.timeline.aTimelineState
 import io.element.android.features.messages.impl.timeline.model.TimelineItemThreadInfo
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemFileContent
@@ -65,6 +64,7 @@ import io.element.android.libraries.matrix.api.room.MessageEventType
 import io.element.android.libraries.matrix.api.room.RoomMembersState
 import io.element.android.libraries.matrix.api.room.RoomMembershipState
 import io.element.android.libraries.matrix.api.room.StateEventType
+import io.element.android.libraries.matrix.api.room.history.RoomHistoryVisibility
 import io.element.android.libraries.matrix.api.room.tombstone.SuccessorRoom
 import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.matrix.api.timeline.item.TimelineItemDebugInfo
@@ -185,14 +185,14 @@ class MessagesPresenterTest {
         presenter.testWithLifecycleOwner {
             skipItems(1)
             val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.ToggleReaction("👍", AN_EVENT_ID.toEventOrTransactionId()))
+            initialState.eventSink(MessagesEvent.ToggleReaction("👍", AN_EVENT_ID.toEventOrTransactionId()))
             advanceUntilIdle()
             assert(toggleReactionSuccess)
                 .isCalledOnce()
                 .with(value("👍"), value(AN_EVENT_ID.toEventOrTransactionId()))
             // No crashes when sending a reaction failed
             timeline.toggleReactionLambda = toggleReactionFailure
-            initialState.eventSink(MessagesEvents.ToggleReaction("👍", AN_EVENT_ID.toEventOrTransactionId()))
+            initialState.eventSink(MessagesEvent.ToggleReaction("👍", AN_EVENT_ID.toEventOrTransactionId()))
             advanceUntilIdle()
             assert(toggleReactionFailure)
                 .isCalledOnce()
@@ -230,8 +230,8 @@ class MessagesPresenterTest {
         )
         presenter.testWithLifecycleOwner {
             val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.ToggleReaction("👍", AN_EVENT_ID.toEventOrTransactionId()))
-            initialState.eventSink(MessagesEvents.ToggleReaction("👍", AN_EVENT_ID.toEventOrTransactionId()))
+            initialState.eventSink(MessagesEvent.ToggleReaction("👍", AN_EVENT_ID.toEventOrTransactionId()))
+            initialState.eventSink(MessagesEvent.ToggleReaction("👍", AN_EVENT_ID.toEventOrTransactionId()))
             advanceUntilIdle()
             assert(toggleReactionSuccess)
                 .isCalledExactly(2)
@@ -253,7 +253,7 @@ class MessagesPresenterTest {
         val presenter = createMessagesPresenter(navigator = navigator)
         presenter.testWithLifecycleOwner {
             val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Forward, aMessageEvent()))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.Forward, aMessageEvent()))
             assertThat(awaitItem().actionListState.target).isEqualTo(ActionListState.Target.None)
             onForwardEventClickLambda.assertions().isCalledOnce().with(value(AN_EVENT_ID))
         }
@@ -266,7 +266,7 @@ class MessagesPresenterTest {
         val presenter = createMessagesPresenter(clipboardHelper = clipboardHelper)
         presenter.testWithLifecycleOwner {
             val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.CopyText, event))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.CopyText, event))
             skipItems(2)
             assertThat(clipboardHelper.clipboardContents).isEqualTo((event.content as TimelineItemTextContent).body)
         }
@@ -289,7 +289,7 @@ class MessagesPresenterTest {
         )
         presenter.testWithLifecycleOwner {
             val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.CopyLink, event))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.CopyLink, event))
             skipItems(2)
             assertThat(clipboardHelper.clipboardContents).isEqualTo("a link")
         }
@@ -303,7 +303,7 @@ class MessagesPresenterTest {
         )
         presenter.testWithLifecycleOwner {
             val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Reply, aMessageEvent()))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.Reply, aMessageEvent()))
             awaitItem()
             composerRecorder.assertSingle(
                 MessageComposerEvent.SetMode(
@@ -321,7 +321,7 @@ class MessagesPresenterTest {
         val presenter = createMessagesPresenter()
         presenter.testWithLifecycleOwner {
             val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Reply, aMessageEvent(eventId = null)))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.Reply, aMessageEvent(eventId = null)))
             skipItems(1)
         }
     }
@@ -354,7 +354,7 @@ class MessagesPresenterTest {
                     formattedFileSize = "4MB"
                 )
             )
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Reply, mediaMessage))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.Reply, mediaMessage))
             awaitItem()
             composerRecorder.assertSingle(
                 MessageComposerEvent.SetMode(
@@ -396,7 +396,7 @@ class MessagesPresenterTest {
                     formattedFileSize = "50MB"
                 )
             )
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Reply, mediaMessage))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.Reply, mediaMessage))
             awaitItem()
             composerRecorder.assertSingle(
                 MessageComposerEvent.SetMode(
@@ -431,7 +431,7 @@ class MessagesPresenterTest {
                     fileExtension = "pdf",
                 )
             )
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Reply, mediaMessage))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.Reply, mediaMessage))
             awaitItem()
             composerRecorder.assertSingle(
                 MessageComposerEvent.SetMode(
@@ -452,7 +452,7 @@ class MessagesPresenterTest {
         )
         presenter.testWithLifecycleOwner {
             val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Edit, aMessageEvent()))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.Edit, aMessageEvent()))
             awaitItem()
             composerRecorder.assertSingle(
                 MessageComposerEvent.SetMode(
@@ -474,7 +474,7 @@ class MessagesPresenterTest {
         val presenter = createMessagesPresenter(navigator = navigator)
         presenter.testWithLifecycleOwner {
             val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.EditPoll, aMessageEvent(content = aTimelineItemPollContent())))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.EditPoll, aMessageEvent(content = aTimelineItemPollContent())))
             awaitItem()
             onEditPollClickLambda.assertions().isCalledOnce().with(value(AN_EVENT_ID))
         }
@@ -482,13 +482,13 @@ class MessagesPresenterTest {
 
     @Test
     fun `present - handle action end poll`() = runTest {
-        val timelineEventSink = EventsRecorder<TimelineEvents>()
+        val timelineEventSink = EventsRecorder<TimelineEvent>()
         val presenter = createMessagesPresenter(timelineEventSink = timelineEventSink)
         presenter.testWithLifecycleOwner {
             val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.EndPoll, aMessageEvent(content = aTimelineItemPollContent())))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.EndPoll, aMessageEvent(content = aTimelineItemPollContent())))
             delay(1)
-            timelineEventSink.assertSingle(TimelineEvents.EndPoll(AN_EVENT_ID))
+            timelineEventSink.assertSingle(TimelineEvent.EndPoll(AN_EVENT_ID))
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -516,7 +516,7 @@ class MessagesPresenterTest {
         presenter.testWithLifecycleOwner {
             val initialState = awaitItem()
             val messageEvent = aMessageEvent()
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Redact, messageEvent))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.Redact, messageEvent))
             awaitItem()
             assert(redactEventLambda)
                 .isCalledOnce()
@@ -533,19 +533,9 @@ class MessagesPresenterTest {
         val presenter = createMessagesPresenter(navigator = navigator)
         presenter.testWithLifecycleOwner {
             val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.ReportContent, aMessageEvent()))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.ReportContent, aMessageEvent()))
             assertThat(awaitItem().actionListState.target).isEqualTo(ActionListState.Target.None)
             onReportContentClickLambda.assertions().isCalledOnce().with(value(AN_EVENT_ID), value(A_USER_ID))
-        }
-    }
-
-    @Test
-    fun `present - handle dismiss action`() = runTest {
-        val presenter = createMessagesPresenter()
-        presenter.testWithLifecycleOwner {
-            val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.Dismiss)
-            assertThat(awaitItem().actionListState.target).isEqualTo(ActionListState.Target.None)
         }
     }
 
@@ -558,7 +548,7 @@ class MessagesPresenterTest {
         val presenter = createMessagesPresenter(navigator = navigator)
         presenter.testWithLifecycleOwner {
             val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.ViewSource, aMessageEvent()))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.ViewSource, aMessageEvent()))
             assertThat(awaitItem().actionListState.target).isEqualTo(ActionListState.Target.None)
             onShowEventDebugInfoClickLambda.assertions().isCalledOnce().with(value(AN_EVENT_ID), value(aTimelineItemDebugInfo()))
         }
@@ -586,7 +576,7 @@ class MessagesPresenterTest {
             val focusedState = awaitItem()
             assertThat(focusedState.showReinvitePrompt).isTrue()
             // If it's dismissed then we stop showing the alert
-            initialState.eventSink(MessagesEvents.InviteDialogDismissed(InviteDialogAction.Cancel))
+            initialState.eventSink(MessagesEvent.InviteDialogDismissed(InviteDialogAction.Cancel))
             skipItems(1)
             val dismissedState = awaitItem()
             assertThat(dismissedState.showReinvitePrompt).isFalse()
@@ -658,7 +648,7 @@ class MessagesPresenterTest {
         val presenter = createMessagesPresenter(joinedRoom = room)
         presenter.testWithLifecycleOwner {
             val initialState = consumeItemsUntilTimeout().last()
-            initialState.eventSink(MessagesEvents.InviteDialogDismissed(InviteDialogAction.Invite))
+            initialState.eventSink(MessagesEvent.InviteDialogDismissed(InviteDialogAction.Invite))
             skipItems(1)
             val loadingState = awaitItem()
             assertThat(loadingState.inviteProgress.isLoading()).isTrue()
@@ -690,7 +680,7 @@ class MessagesPresenterTest {
         val presenter = createMessagesPresenter(joinedRoom = room)
         presenter.testWithLifecycleOwner {
             val initialState = consumeItemsUntilTimeout().last()
-            initialState.eventSink(MessagesEvents.InviteDialogDismissed(InviteDialogAction.Invite))
+            initialState.eventSink(MessagesEvent.InviteDialogDismissed(InviteDialogAction.Invite))
             skipItems(1)
             val loadingState = consumeItemsUntilPredicate { state ->
                 state.inviteProgress.isLoading()
@@ -714,7 +704,7 @@ class MessagesPresenterTest {
         val presenter = createMessagesPresenter(joinedRoom = room)
         presenter.testWithLifecycleOwner {
             val initialState = consumeItemsUntilTimeout().last()
-            initialState.eventSink(MessagesEvents.InviteDialogDismissed(InviteDialogAction.Invite))
+            initialState.eventSink(MessagesEvent.InviteDialogDismissed(InviteDialogAction.Invite))
             skipItems(1)
             val loadingState = awaitItem()
             assertThat(loadingState.inviteProgress.isLoading()).isTrue()
@@ -743,7 +733,7 @@ class MessagesPresenterTest {
         val presenter = createMessagesPresenter(joinedRoom = room)
         presenter.testWithLifecycleOwner {
             val initialState = consumeItemsUntilTimeout().last()
-            initialState.eventSink(MessagesEvents.InviteDialogDismissed(InviteDialogAction.Invite))
+            initialState.eventSink(MessagesEvent.InviteDialogDismissed(InviteDialogAction.Invite))
 
             val loadingState = consumeItemsUntilPredicate { state ->
                 state.inviteProgress.isLoading()
@@ -840,7 +830,7 @@ class MessagesPresenterTest {
             val poll = aMessageEvent(
                 content = aTimelineItemPollContent()
             )
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Reply, poll))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.Reply, poll))
             skipItems(1)
             composerRecorder.assertSingle(
                 MessageComposerEvent.SetMode(
@@ -878,11 +868,11 @@ class MessagesPresenterTest {
             val initialState = awaitItem()
 
             timeline.pinEventLambda = successPinEventLambda
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Pin, messageEvent))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.Pin, messageEvent))
             assert(successPinEventLambda).isCalledOnce().with(value(messageEvent.eventId))
 
             timeline.pinEventLambda = failurePinEventLambda
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Pin, messageEvent))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.Pin, messageEvent))
             assert(failurePinEventLambda).isCalledOnce().with(value(messageEvent.eventId))
             skipItems(1)
             assertThat(awaitItem().snackbarMessage).isNotNull()
@@ -918,11 +908,11 @@ class MessagesPresenterTest {
             val initialState = awaitItem()
 
             timeline.unpinEventLambda = successUnpinEventLambda
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Unpin, messageEvent))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.Unpin, messageEvent))
             assert(successUnpinEventLambda).isCalledOnce().with(value(messageEvent.eventId))
 
             timeline.unpinEventLambda = failureUnpinEventLambda
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.Unpin, messageEvent))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.Unpin, messageEvent))
             assert(failureUnpinEventLambda).isCalledOnce().with(value(messageEvent.eventId))
             skipItems(1)
             assertThat(awaitItem().snackbarMessage).isNotNull()
@@ -946,7 +936,7 @@ class MessagesPresenterTest {
         )
         presenter.testWithLifecycleOwner {
             val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.EditCaption, messageEvent))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.EditCaption, messageEvent))
             awaitItem()
             composerRecorder.assertSingle(
                 MessageComposerEvent.SetMode(
@@ -972,7 +962,7 @@ class MessagesPresenterTest {
         )
         presenter.testWithLifecycleOwner {
             val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.AddCaption, messageEvent))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.AddCaption, messageEvent))
             awaitItem()
             composerRecorder.assertSingle(
                 MessageComposerEvent.SetMode(
@@ -1010,7 +1000,7 @@ class MessagesPresenterTest {
         presenter.testWithLifecycleOwner {
             skipItems(1)
             val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.RemoveCaption, messageEvent))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.RemoveCaption, messageEvent))
             editCaptionLambda.assertions().isCalledOnce().with(value(AN_EVENT_ID.toEventOrTransactionId()), value(null), value(null))
         }
     }
@@ -1024,7 +1014,7 @@ class MessagesPresenterTest {
         presenter.testWithLifecycleOwner {
             skipItems(1)
             val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.ViewInTimeline, messageEvent))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.ViewInTimeline, messageEvent))
             // No op!
         }
     }
@@ -1118,7 +1108,7 @@ class MessagesPresenterTest {
         presenter.testWithLifecycleOwner {
             val initialState = awaitItem()
             initialState.eventSink(
-                MessagesEvents.HandleAction(
+                MessagesEvent.HandleAction(
                     action = TimelineItemAction.ReplyInThread,
                     event = aMessageEvent(threadInfo = TimelineItemThreadInfo.ThreadResponse(A_THREAD_ID))
                 )
@@ -1140,7 +1130,7 @@ class MessagesPresenterTest {
         presenter.testWithLifecycleOwner {
             val initialState = awaitItem()
             initialState.eventSink(
-                MessagesEvents.HandleAction(
+                MessagesEvent.HandleAction(
                     action = TimelineItemAction.ReplyInThread,
                     event = aMessageEvent(
                         // The event id will be used as the thread id instead
@@ -1165,7 +1155,7 @@ class MessagesPresenterTest {
         )
         presenter.testWithLifecycleOwner {
             val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.HandleAction(TimelineItemAction.ReplyInThread, aMessageEvent()))
+            initialState.eventSink(MessagesEvent.HandleAction(TimelineItemAction.ReplyInThread, aMessageEvent()))
             awaitItem()
             composerRecorder.assertSingle(
                 MessageComposerEvent.SetMode(
@@ -1192,7 +1182,7 @@ class MessagesPresenterTest {
         )
         presenter.testWithLifecycleOwner {
             val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.MarkAsFullyReadAndExit)
+            initialState.eventSink(MessagesEvent.MarkAsFullyReadAndExit)
 
             runCurrent()
 
@@ -1216,13 +1206,34 @@ class MessagesPresenterTest {
         )
         presenter.testWithLifecycleOwner {
             val initialState = awaitItem()
-            initialState.eventSink(MessagesEvents.MarkAsFullyReadAndExit)
+            initialState.eventSink(MessagesEvent.MarkAsFullyReadAndExit)
 
             runCurrent()
 
             closeLambda.assertions().isCalledOnce()
 
             cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `present - shows a "history" icon if the room is encrypted and history is shared`() = runTest {
+        val presenter = createMessagesPresenter(
+            joinedRoom = FakeJoinedRoom(
+                baseRoom = FakeBaseRoom(
+                    roomPermissions = roomPermissions(),
+                    initialRoomInfo = aRoomInfo(isEncrypted = true, historyVisibility = RoomHistoryVisibility.Shared),
+                ),
+            ),
+            featureFlagService = FakeFeatureFlagService(
+                initialState = mapOf(FeatureFlags.EnableKeyShareOnInvite.key to true)
+            )
+        )
+        presenter.testWithLifecycleOwner {
+            awaitItem()
+            runCurrent()
+            val state = awaitItem()
+            assertThat(state.showSharedHistoryIcon).isTrue()
         }
     }
 
@@ -1273,7 +1284,7 @@ class MessagesPresenterTest {
         navigator: FakeMessagesNavigator = FakeMessagesNavigator(),
         clipboardHelper: FakeClipboardHelper = FakeClipboardHelper(),
         analyticsService: FakeAnalyticsService = FakeAnalyticsService(),
-        timelineEventSink: (TimelineEvents) -> Unit = {},
+        timelineEventSink: (TimelineEvent) -> Unit = {},
         permalinkParser: PermalinkParser = FakePermalinkParser(),
         messageComposerPresenter: Presenter<MessageComposerState> = Presenter {
             aMessageComposerState(
@@ -1286,7 +1297,7 @@ class MessagesPresenterTest {
         },
         encryptionService: FakeEncryptionService = FakeEncryptionService(),
         featureFlagService: FakeFeatureFlagService = FakeFeatureFlagService(),
-        actionListEventSink: (ActionListEvents) -> Unit = {},
+        actionListEventSink: (ActionListEvent) -> Unit = {},
         addRecentEmoji: AddRecentEmoji = AddRecentEmoji { _ -> lambdaError() },
         markAsFullyRead: MarkAsFullyRead = FakeMarkAsFullyRead(),
     ): MessagesPresenter {
@@ -1298,7 +1309,6 @@ class MessagesPresenterTest {
             timelinePresenter = { aTimelineState(eventSink = timelineEventSink) },
             timelineProtectionPresenter = { aTimelineProtectionState() },
             identityChangeStatePresenter = { anIdentityChangeState() },
-            historyVisibleStatePresenter = { aHistoryVisibleState() },
             linkPresenter = { aLinkState() },
             actionListPresenter = { anActionListState(eventSink = actionListEventSink) },
             customReactionPresenter = { aCustomReactionState() },

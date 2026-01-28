@@ -31,7 +31,7 @@ class LinkViewTest {
 
     @Test
     fun `clicking on cancel emits the expected event`() {
-        val eventsRecorder = EventsRecorder<LinkEvents>()
+        val eventsRecorder = EventsRecorder<LinkEvent>()
         rule.setLinkView(
             aLinkState(
                 linkClick = ConfirmingLinkClick(aLink),
@@ -40,13 +40,13 @@ class LinkViewTest {
         )
         rule.clickOn(CommonStrings.action_cancel)
         eventsRecorder.assertSingle(
-            LinkEvents.Cancel
+            LinkEvent.Cancel
         )
     }
 
     @Test
     fun `clicking on continue emits the expected event`() {
-        val eventsRecorder = EventsRecorder<LinkEvents>()
+        val eventsRecorder = EventsRecorder<LinkEvent>()
         rule.setLinkView(
             aLinkState(
                 linkClick = ConfirmingLinkClick(aLink),
@@ -55,13 +55,13 @@ class LinkViewTest {
         )
         rule.clickOn(CommonStrings.action_continue)
         eventsRecorder.assertSingle(
-            LinkEvents.Confirm
+            LinkEvent.Confirm
         )
     }
 
     @Test
     fun `success state invokes the callback and emits the expected event`() {
-        val eventsRecorder = EventsRecorder<LinkEvents>()
+        val eventsRecorder = EventsRecorder<LinkEvent>()
         ensureCalledOnceWithParam(aLink) { callback ->
             rule.setLinkView(
                 aLinkState(
@@ -72,7 +72,7 @@ class LinkViewTest {
             )
         }
         eventsRecorder.assertSingle(
-            LinkEvents.Cancel
+            LinkEvent.Cancel
         )
     }
 }

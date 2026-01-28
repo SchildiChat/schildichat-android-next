@@ -75,7 +75,7 @@
   <string name="action_copy_link_to_message">"Copier le lien vers le message"</string>
   <string name="action_copy_text">"Copier le texte"</string>
   <string name="action_create">"Créer"</string>
-  <string name="action_create_a_room">"Créer un salon"</string>
+  <string name="action_create_room">"Créer un salon"</string>
   <string name="action_create_space">"Créer un espace"</string>
   <string name="action_deactivate">"Désactiver"</string>
   <string name="action_deactivate_account">"Désactiver le compte"</string>
@@ -93,6 +93,7 @@
   <string name="action_enable">"Activer"</string>
   <string name="action_end_poll">"Terminer le sondage"</string>
   <string name="action_enter_pin">"Saisir le code PIN"</string>
+  <string name="action_explore_public_spaces">"Explorer les espaces publics"</string>
   <string name="action_finish">"Terminer"</string>
   <string name="action_forgot_password">"Mot de passe oublié ?"</string>
   <string name="action_forward">"Transférer"</string>
@@ -293,6 +294,7 @@ Raison : %1$s."</string>
   <string name="common_reason">"Raison"</string>
   <string name="common_recovery_key">"Clé de récupération"</string>
   <string name="common_refreshing">"Actualisation…"</string>
+  <string name="common_removing">"Suppression…"</string>
   <plurals name="common_replies">
     <item quantity="one">"%1$d réponse"</item>
     <item quantity="other">"%1$d réponses"</item>
@@ -302,6 +304,7 @@ Raison : %1$s."</string>
   <string name="common_report_a_problem">"Remonter un problème"</string>
   <string name="common_report_submitted">"Rapport soumis"</string>
   <string name="common_rich_text_editor">"Éditeur de texte enrichi"</string>
+  <string name="common_role">"Rôle"</string>
   <string name="common_room">"Salon"</string>
   <string name="common_room_name">"Nom du salon"</string>
   <string name="common_room_name_placeholder">"par exemple, le nom de votre projet"</string>
@@ -317,6 +320,10 @@ Raison : %1$s."</string>
   <string name="common_security">"Sécurité"</string>
   <string name="common_seen_by">"Vu par"</string>
   <string name="common_select_account">"Choisir un compte"</string>
+  <plurals name="common_selected_count">
+    <item quantity="one">"%1$d élément sélectionné"</item>
+    <item quantity="other">"%1$d éléments sélectionnés"</item>
+  </plurals>
   <string name="common_send_to">"Envoyer vers"</string>
   <string name="common_sending">"Envoi en cours…"</string>
   <string name="common_sending_failed">"Échec de l’envoi"</string>
@@ -426,13 +433,6 @@ Raison : %1$s."</string>
   <string name="error_room_address_invalid_symbols">"Certains caractères ne sont pas autorisés. Seuls les lettres, les chiffres et les symboles suivants sont utilisables ! $ &amp; ‘ ( ) * + / ; = ? @ [ ] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Certains messages n’ont pas été envoyés"</string>
   <string name="error_unknown">"Désolé, une erreur s’est produite"</string>
-  <string name="event_shield_mismatched_sender">"L’expéditeur de ce message ne correspond pas au propriétaire de l’appareil qui l’a envoyé."</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"L’authenticité de ce message chiffré ne peut être garantie sur cet appareil."</string>
-  <string name="event_shield_reason_previously_verified">"Chiffré par un utilisateur précédemment vérifié."</string>
-  <string name="event_shield_reason_sent_in_clear">"Non chiffré."</string>
-  <string name="event_shield_reason_unknown_device">"Chiffré par un appareil inconnu ou supprimé."</string>
-  <string name="event_shield_reason_unsigned_device">"Chiffré par un appareil non vérifié par son propriétaire."</string>
-  <string name="event_shield_reason_unverified_identity">"Chiffré par un utilisateur non vérifié."</string>
   <string name="invite_friends_rich_title">"🔐️ Rejoignez-moi sur %1$s"</string>
   <string name="invite_friends_text">"Salut, parle-moi sur %1$s : %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>

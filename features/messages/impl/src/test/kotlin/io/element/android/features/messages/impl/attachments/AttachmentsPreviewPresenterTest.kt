@@ -11,11 +11,8 @@
 package io.element.android.features.messages.impl.attachments
 
 import android.net.Uri
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.moleculeFlow
-import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
-import io.element.android.features.messages.impl.attachments.preview.AttachmentsPreviewEvents
+import io.element.android.features.messages.impl.attachments.preview.AttachmentsPreviewEvent
 import io.element.android.features.messages.impl.attachments.preview.AttachmentsPreviewPresenter
 import io.element.android.features.messages.impl.attachments.preview.OnDoneListener
 import io.element.android.features.messages.impl.attachments.preview.SendActionState
@@ -111,13 +108,11 @@ class AttachmentsPreviewPresenterTest {
             mediaPreProcessor = mediaPreProcessor,
             onDoneListener = { onDoneListener() },
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.Processing(displayProgress = false))
-            initialState.eventSink(AttachmentsPreviewEvents.SendAttachment)
+            initialState.eventSink(AttachmentsPreviewEvent.SendAttachment)
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.Processing(displayProgress = true))
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.ReadyToUpload(mediaUploadInfo))
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.Uploading(mediaUploadInfo))
@@ -147,16 +142,14 @@ class AttachmentsPreviewPresenterTest {
             mediaPreProcessor = mediaPreProcessor,
             onDoneListener = { onDoneListener() },
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
             // Pre-processing finishes
             processLatch.complete(Unit)
             advanceUntilIdle()
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.Processing(displayProgress = false))
-            initialState.eventSink(AttachmentsPreviewEvents.SendAttachment)
+            initialState.eventSink(AttachmentsPreviewEvent.SendAttachment)
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.ReadyToUpload(mediaUploadInfo))
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.Uploading(mediaUploadInfo))
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Done)
@@ -185,13 +178,11 @@ class AttachmentsPreviewPresenterTest {
             mediaPreProcessor = mediaPreProcessor,
             onDoneListener = { onDoneListener() },
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.Processing(displayProgress = false))
-            initialState.eventSink(AttachmentsPreviewEvents.SendAttachment)
+            initialState.eventSink(AttachmentsPreviewEvent.SendAttachment)
             // Pre-processing finishes
             processLatch.complete(Unit)
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.Processing(displayProgress = true))
@@ -216,12 +207,10 @@ class AttachmentsPreviewPresenterTest {
             },
             onDoneListener = { onDoneListener() },
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
-            initialState.eventSink(AttachmentsPreviewEvents.SendAttachment)
+            initialState.eventSink(AttachmentsPreviewEvent.SendAttachment)
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.Processing(displayProgress = false))
             // Pre-processing finishes
             processLatch.complete(Unit)
@@ -241,15 +230,13 @@ class AttachmentsPreviewPresenterTest {
             },
             onDoneListener = { onDoneListener() },
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
             // Pre-processing finishes
             processLatch.complete(Unit)
             advanceUntilIdle()
-            initialState.eventSink(AttachmentsPreviewEvents.SendAttachment)
+            initialState.eventSink(AttachmentsPreviewEvent.SendAttachment)
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.Processing(displayProgress = false))
             assertThat(awaitItem().sendActionState).isInstanceOf(SendActionState.Failure::class.java)
         }
@@ -265,12 +252,10 @@ class AttachmentsPreviewPresenterTest {
             temporaryUriDeleter = FakeTemporaryUriDeleter(deleteCallback),
             onDoneListener = { onDoneListener() },
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
-            initialState.eventSink(AttachmentsPreviewEvents.CancelAndDismiss)
+            initialState.eventSink(AttachmentsPreviewEvent.CancelAndDismiss)
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Done)
             deleteCallback.assertions().isCalledOnce()
             onDoneListener.assertions().isCalledOnce()
@@ -298,13 +283,11 @@ class AttachmentsPreviewPresenterTest {
             mediaPreProcessor = mediaPreProcessor,
             onDoneListener = { onDoneListener() },
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
             initialState.textEditorState.setMarkdown(A_CAPTION)
-            initialState.eventSink(AttachmentsPreviewEvents.SendAttachment)
+            initialState.eventSink(AttachmentsPreviewEvent.SendAttachment)
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.Processing(displayProgress = false))
             assertThat(awaitItem().sendActionState).isInstanceOf(SendActionState.Sending.ReadyToUpload::class.java)
             assertThat(awaitItem().sendActionState).isInstanceOf(SendActionState.Sending.Uploading::class.java)
@@ -341,13 +324,11 @@ class AttachmentsPreviewPresenterTest {
             mediaPreProcessor = mediaPreProcessor,
             onDoneListener = { onDoneListener() },
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
             initialState.textEditorState.setMarkdown(A_CAPTION)
-            initialState.eventSink(AttachmentsPreviewEvents.SendAttachment)
+            initialState.eventSink(AttachmentsPreviewEvent.SendAttachment)
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.Processing(displayProgress = false))
             assertThat(awaitItem().sendActionState).isInstanceOf(SendActionState.Sending.ReadyToUpload::class.java)
             assertThat(awaitItem().sendActionState).isInstanceOf(SendActionState.Sending.Uploading::class.java)
@@ -388,7 +369,7 @@ class AttachmentsPreviewPresenterTest {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
             initialState.textEditorState.setMarkdown(A_CAPTION)
-            initialState.eventSink(AttachmentsPreviewEvents.SendAttachment)
+            initialState.eventSink(AttachmentsPreviewEvent.SendAttachment)
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.Processing(displayProgress = false))
             assertThat(awaitItem().sendActionState).isInstanceOf(SendActionState.Sending.ReadyToUpload::class.java)
             assertThat(awaitItem().sendActionState).isInstanceOf(SendActionState.Sending.Uploading::class.java)
@@ -418,12 +399,10 @@ class AttachmentsPreviewPresenterTest {
             },
         )
         val presenter = createAttachmentsPreviewPresenter(room = room, onDoneListener = onDoneListenerResult)
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
-            initialState.eventSink(AttachmentsPreviewEvents.SendAttachment)
+            initialState.eventSink(AttachmentsPreviewEvent.SendAttachment)
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.Processing(displayProgress = false))
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.ReadyToUpload(mediaUploadInfo))
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.Uploading(mediaUploadInfo))
@@ -434,7 +413,7 @@ class AttachmentsPreviewPresenterTest {
             val failureState = awaitItem()
             assertThat(failureState.sendActionState).isEqualTo(SendActionState.Failure(failure, mediaUploadInfo))
             sendFileResult.assertions().isCalledOnce()
-            failureState.eventSink(AttachmentsPreviewEvents.CancelAndClearSendState)
+            failureState.eventSink(AttachmentsPreviewEvent.CancelAndClearSendState)
             val clearedState = awaitLastSequentialItem()
             assertThat(clearedState.sendActionState).isEqualTo(SendActionState.Sending.ReadyToUpload(mediaUploadInfo))
         }
@@ -453,16 +432,14 @@ class AttachmentsPreviewPresenterTest {
             ),
             onDoneListener = onDoneListenerResult,
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.sendActionState).isEqualTo(SendActionState.Idle)
-            initialState.eventSink(AttachmentsPreviewEvents.SendAttachment)
+            initialState.eventSink(AttachmentsPreviewEvent.SendAttachment)
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.Processing(displayProgress = false))
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.ReadyToUpload(mediaUploadInfo))
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.Uploading(mediaUploadInfo))
-            initialState.eventSink(AttachmentsPreviewEvents.CancelAndClearSendState)
+            initialState.eventSink(AttachmentsPreviewEvent.CancelAndClearSendState)
             assertThat(awaitItem().sendActionState).isEqualTo(SendActionState.Sending.ReadyToUpload(mediaUploadInfo))
             // The sending is cancelled and the state is kept at ReadyToUpload
             ensureAllEventsConsumed()
@@ -503,9 +480,7 @@ class AttachmentsPreviewPresenterTest {
             }
         )
 
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             assertThat(localMedia.info.fileSize).isGreaterThan(maxUploadSize)
 
             consumeItemsUntilPredicate { it.mediaOptimizationSelectorState.maxUploadSize.isSuccess() }
@@ -563,9 +538,7 @@ class AttachmentsPreviewPresenterTest {
             }
         )
 
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             consumeItemsUntilPredicate {
                 it.mediaOptimizationSelectorState.maxUploadSize.isSuccess() &&
                     it.mediaOptimizationSelectorState.videoSizeEstimations.dataOrNull()?.isNotEmpty() == true

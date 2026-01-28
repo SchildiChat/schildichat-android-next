@@ -74,7 +74,7 @@
   <string name="action_copy_link_to_message">"Kopier lenke til melding"</string>
   <string name="action_copy_text">"Kopier tekst"</string>
   <string name="action_create">"Opprett"</string>
-  <string name="action_create_a_room">"Opprett et rom"</string>
+  <string name="action_create_room">"Opprett rom"</string>
   <string name="action_deactivate">"Deaktiver"</string>
   <string name="action_deactivate_account">"Deaktiver kontoen"</string>
   <string name="action_decline">"Avslå"</string>
@@ -112,6 +112,7 @@
   <string name="action_load_more">"Last inn mer"</string>
   <string name="action_manage_account">"Administrer konto"</string>
   <string name="action_manage_devices">"Administrer enheter"</string>
+  <string name="action_manage_rooms">"Administrer rom"</string>
   <string name="action_message">"Melding"</string>
   <string name="action_minimize">"Minimer"</string>
   <string name="action_next">"Neste"</string>
@@ -411,13 +412,6 @@ Er du sikker på at du vil fortsette?"</string>
   <string name="error_room_address_invalid_symbols">"Noen tegn er ikke tillatt. Bare bokstaver, sifre og følgende symboler støttes! $ &amp; \'() * +/; =? @ [] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Noen meldinger er ikke sendt"</string>
   <string name="error_unknown">"Beklager, det oppstod en feil"</string>
-  <string name="event_shield_mismatched_sender">"Avsenderen av hendelsen samsvarer ikke med eieren av enheten som sendte den."</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"Ektheten til denne krypterte meldingen kan ikke garanteres på denne enheten."</string>
-  <string name="event_shield_reason_previously_verified">"Kryptert av en tidligere verifisert bruker."</string>
-  <string name="event_shield_reason_sent_in_clear">"Ikke kryptert."</string>
-  <string name="event_shield_reason_unknown_device">"Kryptert av en ukjent eller slettet enhet."</string>
-  <string name="event_shield_reason_unsigned_device">"Kryptert med en enhet som ikke er verifisert av eieren."</string>
-  <string name="event_shield_reason_unverified_identity">"Kryptert av en ubekreftet bruker."</string>
   <string name="invite_friends_rich_title">"🔐️ Bli med meg på %1$s"</string>
   <string name="invite_friends_text">"Hei, snakk med meg på %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>

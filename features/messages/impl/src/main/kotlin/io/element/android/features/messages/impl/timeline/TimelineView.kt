@@ -107,19 +107,19 @@ fun TimelineView(
     nestedScrollConnection: NestedScrollConnection = rememberNestedScrollInteropConnection(),
 ) {
     fun clearFocusRequestState() {
-        state.eventSink(TimelineEvents.ClearFocusRequestState)
+        state.eventSink(TimelineEvent.ClearFocusRequestState)
     }
 
     fun onScrollFinishAt(firstVisibleIndex: Int) {
-        state.eventSink(TimelineEvents.OnScrollFinished(firstVisibleIndex))
+        state.eventSink(TimelineEvent.OnScrollFinished(firstVisibleIndex))
     }
 
     fun onFocusEventRender() {
-        state.eventSink(TimelineEvents.OnFocusEventRender)
+        state.eventSink(TimelineEvent.OnFocusEventRender)
     }
 
     fun onJumpToLive() {
-        state.eventSink(TimelineEvents.JumpToLive)
+        state.eventSink(TimelineEvent.JumpToLive)
     }
 
     val context = LocalContext.current
@@ -129,7 +129,7 @@ fun TimelineView(
     val useReverseLayout = !isTalkbackActive()
 
     fun inReplyToClick(eventId: EventId) {
-        state.eventSink(TimelineEvents.FocusOnEvent(eventId))
+        state.eventSink(TimelineEvent.FocusOnEvent(eventId))
     }
 
     fun onLinkLongClick(link: Link) {
@@ -143,7 +143,7 @@ fun TimelineView(
     }
 
     fun prefetchMoreItems() {
-        state.eventSink(TimelineEvents.LoadMore(Timeline.PaginationDirection.BACKWARDS))
+        state.eventSink(TimelineEvent.LoadMore(Timeline.PaginationDirection.BACKWARDS))
     }
 
     // Animate alpha when timeline is first displayed, to avoid flashes or glitching when viewing rooms
@@ -220,10 +220,10 @@ fun TimelineView(
 
 @Composable
 private fun MessageShieldDialog(state: TimelineState) {
-    val messageShield = state.messageShield ?: return
+    val messageShield = state.messageShieldDialogData ?: return
     AlertDialog(
         content = messageShield.toText(),
-        onDismiss = { state.eventSink.invoke(TimelineEvents.HideShieldDialog) },
+        onDismiss = { state.eventSink.invoke(TimelineEvent.HideShieldDialog) },
     )
 }
 

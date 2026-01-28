@@ -63,6 +63,7 @@ internal fun MessagesViewTopBar(
     heroes: ImmutableList<AvatarData>,
     roomCallState: RoomCallState,
     dmUserIdentityState: IdentityState?,
+    showSharedHistoryIcon: Boolean,
     onRoomDetailsClick: () -> Unit,
     onJoinCallClick: () -> Unit,
     onBackClick: () -> Unit,
@@ -107,6 +108,14 @@ internal fun MessagesViewTopBar(
                         )
                     }
                     else -> Unit
+                }
+
+                if (showSharedHistoryIcon) {
+                    Icon(
+                        imageVector = CompoundIcons.History(),
+                        tint = ElementTheme.colors.iconInfoPrimary,
+                        contentDescription = stringResource(CommonStrings.common_shared_history),
+                    )
                 }
             }
         },
@@ -169,6 +178,7 @@ internal fun MessagesViewTopBarPreview() = ElementPreview {
         heroes: ImmutableList<AvatarData> = persistentListOf(),
         roomCallState: RoomCallState = RoomCallState.Unavailable,
         dmUserIdentityState: IdentityState? = null,
+        showSharedHistoryIcon: Boolean = false,
     ) = MessagesViewTopBar(
         roomName = roomName,
         roomAvatar = roomAvatar,
@@ -176,6 +186,7 @@ internal fun MessagesViewTopBarPreview() = ElementPreview {
         heroes = heroes,
         roomCallState = roomCallState,
         dmUserIdentityState = dmUserIdentityState,
+        showSharedHistoryIcon = showSharedHistoryIcon,
         onRoomDetailsClick = {},
         onJoinCallClick = {},
         onBackClick = {},
@@ -207,6 +218,12 @@ internal fun MessagesViewTopBarPreview() = ElementPreview {
             roomName = "A DM with a very very very long name",
             isTombstoned = true,
             dmUserIdentityState = IdentityState.VerificationViolation
+        )
+        HorizontalDivider()
+        AMessagesViewTopBar(
+            roomName = "A DM with shared history",
+            dmUserIdentityState = IdentityState.Verified,
+            showSharedHistoryIcon = true,
         )
     }
 }

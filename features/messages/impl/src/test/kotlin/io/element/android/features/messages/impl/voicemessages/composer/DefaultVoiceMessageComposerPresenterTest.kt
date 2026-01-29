@@ -551,9 +551,10 @@ class DefaultVoiceMessageComposerPresenterTest {
             // Dialog is hidden, user accepts permissions
             assertThat(awaitItem().showPermissionRationaleDialog).isFalse()
 
+            // Permission is granted, recording starts automatically
             permissionsPresenter.setPermissionGranted()
 
-            awaitItem().eventSink(VoiceMessageComposerEvent.RecorderEvent(VoiceMessageRecorderEvent.Start))
+            skipItems(1)
             val finalState = awaitItem()
             assertThat(finalState.voiceMessageState).isEqualTo(RECORDING_STATE)
             voiceRecorder.assertCalls(started = 1)

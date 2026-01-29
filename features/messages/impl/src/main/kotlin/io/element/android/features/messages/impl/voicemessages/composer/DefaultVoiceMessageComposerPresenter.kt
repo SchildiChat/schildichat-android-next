@@ -69,6 +69,7 @@ class DefaultVoiceMessageComposerPresenter(
     }
 
     private val permissionsPresenter = permissionsPresenterFactory.create(Manifest.permission.RECORD_AUDIO)
+    private var pendingEvent: VoiceMessageRecorderEvent.Start? = null
     private val mediaSender = mediaSenderFactory.create(timelineMode)
 
     @Composable
@@ -88,6 +89,15 @@ class DefaultVoiceMessageComposerPresenter(
             player.setMedia(recording.file.path)
         }
 
+        LaunchedEffect(permissionState.permissionGranted) {
+            if (permissionState.permissionGranted) {
+                pendingEvent?.let {
+                    localCoroutineScope.startRecording()
+                    pendingEvent = null
+                }
+            }
+        }
+
         fun handleLifecycleEvent(event: Lifecycle.Event) {
             when (event) {
                 Lifecycle.Event.ON_PAUSE -> {
@@ -102,6 +112,7 @@ class DefaultVoiceMessageComposerPresenter(
         }
 
         fun handleVoiceMessageRecorderEvent(event: VoiceMessageRecorderEvent) {
+            pendingEvent = null
             when (event) {
                 VoiceMessageRecorderEvent.Start -> {
                     Timber.v("Voice message record button pressed")
@@ -111,6 +122,7 @@ class DefaultVoiceMessageComposerPresenter(
                         }
                         else -> {
                             Timber.i("Voice message permission needed")
+                            pendingEvent = VoiceMessageRecorderEvent.Start
                             permissionState.eventSink(PermissionsEvent.RequestPermissions)
                         }
                     }

@@ -14,4 +14,5 @@ sealed interface AddRoomToSpaceEvent {
     data class OnSearchActiveChanged(val active: Boolean) : AddRoomToSpaceEvent
     data object Save : AddRoomToSpaceEvent
     data object ResetSaveAction : AddRoomToSpaceEvent
+    data object Dismiss : AddRoomToSpaceEvent
 }

@@ -14,6 +14,7 @@ import android.os.Parcelable
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.lifecycleScope
 import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
@@ -40,6 +41,7 @@ import io.element.android.libraries.di.RoomScope
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.spaces.SpaceService
+import io.element.android.libraries.matrix.api.spaces.loadAllIncrementally
 import kotlinx.parcelize.Parcelize
 
 @ContributesNode(RoomScope::class)
@@ -83,6 +85,9 @@ class SpaceFlowNode(
     override fun onBuilt() {
         super.onBuilt()
         lifecycle.subscribe(
+            onCreate = {
+                spaceRoomList.loadAllIncrementally(lifecycleScope)
+            },
             onDestroy = {
                 spaceRoomList.destroy()
             }
@@ -161,7 +166,7 @@ class SpaceFlowNode(
                         buildContext = buildContext,
                         callback = callback,
                     )
-                    .setParentSpace(spaceRoomList.roomId)
+                    .setParentSpace(spaceRoomList.spaceId)
                     .build()
             }
             NavTarget.AddRoom -> {

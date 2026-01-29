@@ -69,7 +69,6 @@ class SpacePresenter(
     @Composable
     override fun present(): SpaceState {
         LaunchedEffect(Unit) {
-            paginate()
             spaceRoomList.spaceRoomsFlow.collect { children = it.toImmutableList() }
         }
 
@@ -111,21 +110,18 @@ class SpacePresenter(
         var isManageMode by remember { mutableStateOf(false) }
         var selectedRoomIds by remember { mutableStateOf<Set<RoomId>>(emptySet()) }
         var removeRoomsAction by remember { mutableStateOf<AsyncAction<Unit>>(AsyncAction.Uninitialized) }
+        // Track locally removed rooms for partial failure cases
         var removedRoomIds by remember { mutableStateOf<Set<RoomId>>(emptySet()) }
 
         val filteredChildren by remember {
             derivedStateOf {
-                children
-                    .filterNot { it.roomId in removedRoomIds }
-                    .let { list ->
-                        if (isManageMode) {
-                            // In manage mode, only show rooms (not spaces)
-                            list.filter { !it.isSpace }
-                        } else {
-                            list
-                        }
-                    }
-                    .toImmutableList()
+                val notRemoved = children.filterNot { it.roomId in removedRoomIds }
+                if (isManageMode) {
+                    // In manage mode, only show rooms (not spaces)
+                    notRemoved.filter { !it.isSpace }.toImmutableList()
+                } else {
+                    notRemoved.toImmutableList()
+                }
             }
         }
 
@@ -139,9 +135,20 @@ class SpacePresenter(
 
         val acceptDeclineInviteState = acceptDeclineInvitePresenter.present()
 
+        suspend fun exitManageMode(shouldReset: Boolean) {
+            isManageMode = false
+            selectedRoomIds = emptySet()
+            removedRoomIds = emptySet()
+            if (shouldReset) {
+                // Reset the space room list to see the updates.
+                spaceRoomList.reset()
+            }
+        }
+
         fun handleEvent(event: SpaceEvents) {
             when (event) {
-                SpaceEvents.LoadMore -> localCoroutineScope.paginate()
+                // SpaceRoomList is loaded automatically as backend is really slow. Event is kept for future.
+                SpaceEvents.LoadMore -> Unit
                 is SpaceEvents.Join -> {
                     sessionCoroutineScope.joinRoom(event.spaceRoom, joinActions, setJoinActions)
                 }
@@ -170,8 +177,7 @@ class SpacePresenter(
                     selectedRoomIds = emptySet()
                 }
                 SpaceEvents.ExitManageMode -> {
-                    isManageMode = false
-                    selectedRoomIds = emptySet()
+                    localCoroutineScope.launch { exitManageMode(shouldReset = removedRoomIds.isNotEmpty()) }
                 }
                 is SpaceEvents.ToggleRoomSelection -> {
                     selectedRoomIds = if (event.roomId in selectedRoomIds) {
@@ -186,7 +192,7 @@ class SpacePresenter(
                 SpaceEvents.ConfirmRoomRemoval -> {
                     localCoroutineScope.launch {
                         removeRoomsAction = AsyncAction.Loading
-                        val spaceId = spaceRoomList.roomId
+                        val spaceId = spaceRoomList.spaceId
                         val roomsToRemove = selectedRoomIds.toSet()
                         val successfullyRemoved = mutableSetOf<RoomId>()
                         val results = roomsToRemove.map { roomId ->
@@ -196,16 +202,15 @@ class SpacePresenter(
                             }
                         }
                         results.awaitAll()
-                        if (successfullyRemoved.isNotEmpty()) {
-                            removedRoomIds = removedRoomIds + successfullyRemoved
-                        }
                         val hasError = successfullyRemoved.size < roomsToRemove.size
                         if (hasError) {
+                            // On partial success, update selection to only keep failed rooms
+                            selectedRoomIds = selectedRoomIds - successfullyRemoved
+                            removedRoomIds = removedRoomIds + successfullyRemoved
                             removeRoomsAction = AsyncAction.Failure(Exception("Failed to remove some rooms"))
                         } else {
                             removeRoomsAction = AsyncAction.Success(Unit)
-                            isManageMode = false
-                            selectedRoomIds = emptySet()
+                            exitManageMode(shouldReset = true)
                         }
                     }
                 }
@@ -245,9 +250,5 @@ class SpacePresenter(
         ).onFailure {
             setJoinActions(joinActions + mapOf(spaceRoom.roomId to AsyncAction.Failure(it)))
         }
-    }
-
-    private fun CoroutineScope.paginate() = launch {
-        spaceRoomList.paginate()
     }
 }

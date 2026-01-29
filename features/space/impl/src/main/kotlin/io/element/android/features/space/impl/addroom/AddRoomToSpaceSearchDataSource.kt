@@ -29,6 +29,7 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -48,7 +49,7 @@ class AddRoomToSpaceSearchDataSource(
     roomListService: RoomListService,
     spaceRoomList: SpaceRoomList,
     private val matrixClient: MatrixClient,
-    private val coroutineDispatchers: CoroutineDispatchers,
+    coroutineDispatchers: CoroutineDispatchers,
 ) {
     @AssistedFactory
     interface Factory {
@@ -62,33 +63,49 @@ class AddRoomToSpaceSearchDataSource(
         coroutineScope = coroutineScope,
     )
 
-    private val spaceChildrenFlow = spaceRoomList.spaceRoomsFlow.map { spaceChildren ->
-        spaceChildren.map { it.roomId }.toSet()
+    private val spaceChildrenFlow = spaceRoomList.spaceRoomsFlow.map { rooms ->
+        rooms.map { it.roomId }.toSet()
     }
 
-    private val filterRoomPredicate: (RoomInfo, Set<RoomId>) -> Boolean = { info, childIds ->
+    // Track locally added rooms for partial success handling.
+    // These rooms will be filtered out from search results and suggestions.
+    private val addedRoomIdsFlow = MutableStateFlow<Set<RoomId>>(emptySet())
+
+    /**
+     * Marks rooms as added to the space (for partial success handling).
+     */
+    fun markAsAdded(roomIds: Set<RoomId>) {
+        addedRoomIdsFlow.value += roomIds
+    }
+
+    private val filterRoomPredicate: (RoomInfo, Set<RoomId>, Set<RoomId>) -> Boolean = { info, childIds, addedIds ->
         !info.isSpace &&
             !info.isDm &&
             info.currentUserMembership == CurrentUserMembership.JOINED &&
-            info.id !in childIds
+            info.id !in childIds &&
+            info.id !in addedIds
     }
 
     val roomInfoList: Flow<ImmutableList<SelectRoomInfo>> = combine(
         roomList.filteredSummaries,
         spaceChildrenFlow,
-    ) { roomSummaries, childIds ->
+        addedRoomIdsFlow,
+    ) { roomSummaries, childIds, addedIds ->
         roomSummaries
-            .filter { filterRoomPredicate(it.info, childIds) }
-            .map { it.toSelectRoomInfo() }
+            .filter { filterRoomPredicate(it.info, childIds, addedIds) }
+            .map { it.info.toSelectRoomInfo() }
             .toImmutableList()
     }.flowOn(coroutineDispatchers.computation)
 
-    val suggestions: Flow<ImmutableList<SelectRoomInfo>> = spaceChildrenFlow.map { childIds ->
+    val suggestions: Flow<ImmutableList<SelectRoomInfo>> = combine(
+        spaceChildrenFlow,
+        addedRoomIdsFlow,
+    ) { childIds, addedIds ->
         matrixClient
-            .getRecentlyVisitedRoomInfoFlow { filterRoomPredicate(it, childIds) }
+            .getRecentlyVisitedRoomInfoFlow { filterRoomPredicate(it, childIds, addedIds) }
             .take(MAX_SUGGESTIONS_COUNT)
-            .map { it.toSelectRoomInfo() }
             .toList()
+            .map { it.toSelectRoomInfo() }
             .toImmutableList()
     }.flowOn(coroutineDispatchers.computation)
 

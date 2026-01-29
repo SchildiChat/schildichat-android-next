@@ -32,16 +32,19 @@ class AddRoomToSpaceViewTest {
     @get:Rule val rule = createAndroidComposeRule<ComponentActivity>()
 
     @Test
-    fun `clicking back when search inactive invokes onBackClick`() {
+    fun `clicking back when search inactive emits Dismiss and invokes onBackClick`() {
+        val eventsRecorder = EventsRecorder<AddRoomToSpaceEvent>()
         ensureCalledOnce {
             rule.setAddRoomToSpaceView(
                 anAddRoomToSpaceState(
                     isSearchActive = false,
+                    eventSink = eventsRecorder,
                 ),
                 onBackClick = it,
             )
             rule.pressBack()
         }
+        eventsRecorder.assertSingle(AddRoomToSpaceEvent.Dismiss)
     }
 
     @Test

@@ -40,7 +40,7 @@ class AddRoomToSpaceNode(
         val state by stateFlow.collectAsState()
         AddRoomToSpaceView(
             state = state,
-            onBackClick = ::navigateUp,
+            onBackClick = callback::onFinish,
             onRoomsAdded = callback::onFinish,
             modifier = modifier
         )

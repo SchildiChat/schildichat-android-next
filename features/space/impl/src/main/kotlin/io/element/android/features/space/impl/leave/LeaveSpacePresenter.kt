@@ -92,6 +92,7 @@ class LeaveSpacePresenter(
                     SelectableSpaceRoom(
                         spaceRoom = room.spaceRoom,
                         isLastOwner = room.isLastOwner,
+                        joinedMembersCount = room.spaceRoom.numJoinedMembers,
                         isSelected = selectedRoomIds.contains(room.spaceRoom.roomId),
                     )
                 }.toImmutableList()
@@ -130,9 +131,11 @@ class LeaveSpacePresenter(
             }
         }
 
+        val currentSpaceToLeave = leaveSpaceRooms.dataOrNull()?.current
         return LeaveSpaceState(
-            spaceName = leaveSpaceRooms.dataOrNull()?.current?.spaceRoom?.displayName,
-            isLastOwner = leaveSpaceRooms.dataOrNull()?.current?.isLastOwner == true,
+            spaceName = currentSpaceToLeave?.spaceRoom?.displayName,
+            needsOwnerChange = currentSpaceToLeave?.let { it.spaceRoom.numJoinedMembers > 1 && it.isLastOwner } == true,
+            areCreatorsPrivileged = currentSpaceToLeave?.areCreatorsPrivileged == true,
             selectableSpaceRooms = selectableSpaceRooms,
             leaveSpaceAction = leaveSpaceAction.value,
             eventSink = ::handleEvent,

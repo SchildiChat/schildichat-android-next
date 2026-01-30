@@ -66,5 +66,4 @@ class RoomListSearchDataSource(
         }
         roomList.updateFilter(filter)
     }
-
 }

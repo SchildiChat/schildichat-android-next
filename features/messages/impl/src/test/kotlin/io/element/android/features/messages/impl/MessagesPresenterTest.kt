@@ -1217,7 +1217,7 @@ class MessagesPresenterTest {
     }
 
     @Test
-    fun `present - shows a "history" icon if the room is encrypted and history is shared`() = runTest {
+    fun `present - shows a history icon if the room is encrypted and history is shared`() = runTest {
         val presenter = createMessagesPresenter(
             joinedRoom = FakeJoinedRoom(
                 baseRoom = FakeBaseRoom(

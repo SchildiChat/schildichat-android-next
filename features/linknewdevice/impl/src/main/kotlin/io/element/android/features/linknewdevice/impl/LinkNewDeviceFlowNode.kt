@@ -193,7 +193,8 @@ class LinkNewDeviceFlowNode(
             is ErrorType.Unknown -> ErrorScreenType.UnknownError
             is ErrorType.UnsupportedProtocol -> ErrorScreenType.UnknownError
         }
-        // It is OK to push on backstack, since when user leaves the error screen, a new root will be set
+        // It is OK to push on backstack, since when user leaves the error screen, a new root will be set,
+        // or the whole flow will be popped.
         backstack.push(NavTarget.Error(error))
     }
 
@@ -262,6 +263,12 @@ class LinkNewDeviceFlowNode(
                         linkNewMobileHandler.reset()
                         linkNewDesktopHandler.reset()
                         backstack.newRoot(NavTarget.Root)
+                    }
+
+                    override fun onCancel() {
+                        linkNewMobileHandler.reset()
+                        linkNewDesktopHandler.reset()
+                        callback.onDone()
                     }
                 }
                 createNode<ErrorNode>(buildContext, listOf(callback, navTarget.errorScreenType))

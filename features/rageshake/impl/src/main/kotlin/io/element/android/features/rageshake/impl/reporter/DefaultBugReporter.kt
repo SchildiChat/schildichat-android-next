@@ -144,6 +144,10 @@ class DefaultBugReporter(
         // enumerate files to delete
         val bugReportFiles: MutableList<File> = ArrayList()
         var response: Response? = null
+
+        // Start at something like 1000 lines to have some 'buffer' in case unexpected lines were added
+        var totalLogLines = 1000L
+
         try {
             var serverError: String? = null
             withContext(coroutineDispatchers.io) {
@@ -156,18 +160,12 @@ class DefaultBugReporter(
                     }
                 }
                 val gzippedFiles = mutableListOf<File>()
-                if (withDevicesLogs) {
-                    val files = getLogFiles().sortedByDescending { it.lastModified() }
-                    files.mapNotNullTo(gzippedFiles) { file ->
-                        when {
-                            file.extension == "gz" -> file
-                            else -> compressFile(file)
-                        }
-                    }
-                }
+                var filesTooBig = emptyList<String>()
+
                 if (withCrashLogs || withDevicesLogs) {
                     saveLogCat()
                         ?.takeIf { it.length() < RageshakeConfig.MAX_LOG_CONTENT_SIZE }
+                        ?.takeIf { countLogLines(it) + totalLogLines < RageshakeConfig.MAX_LOG_LINES_SIZE }
                         ?.let { logCatFile ->
                             compressFile(logCatFile).also {
                                 logCatFile.safeDelete()
@@ -212,11 +210,17 @@ class DefaultBugReporter(
 
                         if (sendPushRules) {
                             client.notificationSettingsService.getRawPushRules().getOrNull()?.let { pushRules ->
-                                builder.addFormDataPart(
-                                    name = "file",
-                                    filename = "push_rules.json",
-                                    body = pushRules.toByteArray().toRequestBody(MimeTypes.Json.toMediaTypeOrNull())
-                                )
+                                val logLines = pushRules.lineSequence().count()
+
+                                if (totalLogLines + logLines < RageshakeConfig.MAX_LOG_LINES_SIZE) {
+                                    builder.addFormDataPart(
+                                        name = "file",
+                                        filename = "push_rules.json",
+                                        body = pushRules.toByteArray().toRequestBody(MimeTypes.Json.toMediaTypeOrNull())
+                                    )
+                                } else {
+                                    Timber.w("Could not upload push rules because it would exceed the max log lines size")
+                                }
                             }
                         }
                     }
@@ -264,6 +268,40 @@ class DefaultBugReporter(
                 val scPrefsString = changedScSettings.joinToString(separator = ",") { "${it.sKey}=${scPreferencesStore.getCachedOrDefaultValue(it)}" }
                 builder.addFormDataPart("sc_preferences", scPrefsString)
 
+                if (withDevicesLogs) {
+                    val files = getLogFiles().sortedByDescending { it.lastModified() }
+                    val filesBySize = files.groupBy {
+                        it.length() < RageshakeConfig.MAX_LOG_CONTENT_SIZE
+                    }.toMutableMap()
+
+                    filesBySize[true].orEmpty().mapNotNullTo(gzippedFiles) { file ->
+                        val logLines = countLogLines(file)
+                        totalLogLines += logLines
+
+                        when {
+                            totalLogLines > RageshakeConfig.MAX_LOG_LINES_SIZE -> {
+                                // Add it to the list of omitted files too
+                                (filesBySize.getOrPut(false) { mutableListOf() } as MutableList<File>).add(file)
+
+                                Timber.e(
+                                    "Could not upload file ${file.name} because it would exceed the max log lines size " +
+                                        "($totalLogLines/${RageshakeConfig.MAX_LOG_LINES_SIZE}"
+                                )
+
+                                totalLogLines -= logLines
+
+                                null
+                            }
+                            file.extension == "gz" -> file
+                            else -> compressFile(file)
+                        }
+                    }
+                    filesTooBig = filesBySize[false].orEmpty().map { it.name }
+                }
+
+                if (filesTooBig.isNotEmpty()) {
+                    builder.addFormDataPart("omitted_logs", filesTooBig.toString())
+                }
 
                 if (crashCallStack.isNotEmpty() && withCrashLogs) {
                     builder.addFormDataPart("label", "crash")
@@ -447,8 +485,7 @@ class DefaultBugReporter(
             logDirectory.listFiles()
                 ?.filter {
                     it.isFile &&
-                        !it.name.endsWith(LOG_CAT_FILENAME) &&
-                        it.length() < RageshakeConfig.MAX_LOG_CONTENT_SIZE
+                        !it.name.endsWith(LOG_CAT_FILENAME)
                 }
         }.orEmpty()
     }
@@ -499,6 +536,10 @@ class DefaultBugReporter(
         } catch (e: IOException) {
             Timber.e(e, "getLogCatContent fails")
         }
+    }
+
+    private fun countLogLines(file: File): Int {
+        return file.reader().useLines { it.count() }
     }
 }
 

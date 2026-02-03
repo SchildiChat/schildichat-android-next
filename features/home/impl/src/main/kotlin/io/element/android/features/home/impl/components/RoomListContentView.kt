@@ -71,9 +71,13 @@ import kotlinx.coroutines.launch
 fun RoomListContentView(
     contentState: RoomListContentState,
     filtersState: RoomListFiltersState,
-    homeState: HomeState, // SC
-    onUpstreamSpaceClick: (RoomId) -> Unit, // SC
-    onMeasureSpaceBarHeight: (Int) -> Unit = {}, // SC
+    // SC start
+    homeState: HomeState,
+    onUpstreamSpaceClick: (RoomId) -> Unit,
+    onCreateSpaceClick: () -> Unit,
+    onExploreSpaceClick: () -> Unit,
+    onMeasureSpaceBarHeight: (Int) -> Unit = {},
+    // SC end
     lazyListState: LazyListState,
     hideInvitesAvatars: Boolean,
     eventSink: (RoomListEvents) -> Unit,
@@ -108,9 +112,13 @@ fun RoomListContentView(
                 state = contentState,
                 hideInvitesAvatars = hideInvitesAvatars,
                 filtersState = filtersState,
-                homeState = homeState, // SC
-                onUpstreamSpaceClick = onUpstreamSpaceClick, // SC
-                onMeasureSpaceBarHeight = onMeasureSpaceBarHeight, // SC
+                // SC start
+                homeState = homeState,
+                onUpstreamSpaceClick = onUpstreamSpaceClick,
+                onCreateSpaceClick = onCreateSpaceClick,
+                onExploreSpaceClick = onExploreSpaceClick,
+                onMeasureSpaceBarHeight = onMeasureSpaceBarHeight,
+                // SC end
                 eventSink = eventSink,
                 onSetUpRecoveryClick = onSetUpRecoveryClick,
                 onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
@@ -190,9 +198,13 @@ private fun RoomsView(
     state: RoomListContentState.Rooms,
     hideInvitesAvatars: Boolean,
     filtersState: RoomListFiltersState,
-    homeState: HomeState, // SC
-    onUpstreamSpaceClick: (RoomId) -> Unit, // SC
-    onMeasureSpaceBarHeight: (Int) -> Unit, // SC
+    // SC start
+    homeState: HomeState,
+    onUpstreamSpaceClick: (RoomId) -> Unit,
+    onCreateSpaceClick: () -> Unit,
+    onExploreSpaceClick: () -> Unit,
+    onMeasureSpaceBarHeight: (Int) -> Unit,
+    // SC end
     eventSink: (RoomListEvents) -> Unit,
     onSetUpRecoveryClick: () -> Unit,
     onConfirmRecoveryKeyClick: () -> Unit,
@@ -209,10 +221,14 @@ private fun RoomsView(
     } else {
         RoomsViewList(
             state = state,
-            filtersState = filtersState, // SC
-            homeState = homeState, // SC
-            onUpstreamSpaceClick = onUpstreamSpaceClick, // SC
-            onMeasureSpaceBarHeight = onMeasureSpaceBarHeight, // SC
+            // SC start
+            filtersState = filtersState,
+            homeState = homeState,
+            onUpstreamSpaceClick = onUpstreamSpaceClick,
+            onCreateSpaceClick = onCreateSpaceClick,
+            onExploreSpaceClick = onExploreSpaceClick,
+            onMeasureSpaceBarHeight = onMeasureSpaceBarHeight,
+            // SC end
             hideInvitesAvatars = hideInvitesAvatars,
             eventSink = eventSink,
             onSetUpRecoveryClick = onSetUpRecoveryClick,
@@ -228,10 +244,14 @@ private fun RoomsView(
 @Composable
 private fun RoomsViewList(
     state: RoomListContentState.Rooms,
-    filtersState: RoomListFiltersState, // SC
-    homeState: HomeState, // SC
-    onUpstreamSpaceClick: (RoomId) -> Unit, // SC
-    onMeasureSpaceBarHeight: (Int) -> Unit, // SC
+    // SC start
+    filtersState: RoomListFiltersState,
+    homeState: HomeState,
+    onUpstreamSpaceClick: (RoomId) -> Unit,
+    onCreateSpaceClick: () -> Unit,
+    onExploreSpaceClick: () -> Unit,
+    onMeasureSpaceBarHeight: (Int) -> Unit,
+    // SC end
     hideInvitesAvatars: Boolean,
     eventSink: (RoomListEvents) -> Unit,
     onSetUpRecoveryClick: () -> Unit,
@@ -265,6 +285,8 @@ private fun RoomsViewList(
             coroutineScope.launch { lazyListState.scrollToItem(0) }
         },
         onUpstreamSpaceClick = onUpstreamSpaceClick,
+        onCreateSpaceClick = onCreateSpaceClick,
+        onExploreClick = onExploreSpaceClick,
         onMeasureSpaceBarHeight = onMeasureSpaceBarHeight,
         modifier = modifier,
     ) { modifier ->
@@ -406,6 +428,8 @@ internal fun RoomListContentViewPreview(@PreviewParameter(RoomListContentStatePr
         ),
         homeState = aHomeState(), // SC
         onUpstreamSpaceClick = {}, // SC
+        onCreateSpaceClick = {}, // SC
+        onExploreSpaceClick = {}, // SC
         hideInvitesAvatars = false,
         eventSink = {},
         onSetUpRecoveryClick = {},

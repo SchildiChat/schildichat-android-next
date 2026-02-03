@@ -41,20 +41,22 @@ internal class RustRoomListService(
     private val roomListFactory: RoomListFactory,
     private val roomSyncSubscriber: RoomSyncSubscriber,
     private val scPreferencesStore: ScPreferencesStore,
-    sessionCoroutineScope: CoroutineScope,
+    private val sessionCoroutineScope: CoroutineScope,
 ) : RoomListService {
 
     override fun createRoomList(
         pageSize: Int,
         initialFilter: RoomListFilter,
-        isSpaceList: Boolean,
-        source: RoomList.Source
+        isSpaceList: Boolean, // SC
+        source: RoomList.Source,
+        coroutineScope: CoroutineScope,
     ): DynamicRoomList {
         return roomListFactory.createRoomList(
             pageSize = pageSize,
             initialFilter = initialFilter,
             isSpaceList = isSpaceList,
             coroutineContext = sessionDispatcher,
+            coroutineScope = coroutineScope,
         ) {
             when (source) {
                 RoomList.Source.All -> innerRoomListService.allRooms()
@@ -69,6 +71,7 @@ internal class RustRoomListService(
     override val allRooms: DynamicRoomList = roomListFactory.createRoomList(
         pageSize = DEFAULT_PAGE_SIZE,
         coroutineContext = sessionDispatcher,
+        coroutineScope = sessionCoroutineScope,
         isSpaceList = false,
         initialInboxSettings = ScSdkInboxSettings(
             sortOrder = ScSdkRoomSortOrder(
@@ -87,6 +90,7 @@ internal class RustRoomListService(
         pageSize = DEFAULT_PAGE_SIZE,
         isSpaceList = true,
         coroutineContext = sessionDispatcher,
+        coroutineScope = sessionCoroutineScope,
     ) {
         innerRoomListService.allRooms()
     }

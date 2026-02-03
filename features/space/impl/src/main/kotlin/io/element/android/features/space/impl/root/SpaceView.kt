@@ -50,7 +50,9 @@ import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.space.impl.R
 import io.element.android.libraries.architecture.AsyncAction
+import io.element.android.libraries.designsystem.atomic.molecules.IconTitleSubtitleMolecule
 import io.element.android.libraries.designsystem.atomic.molecules.InviteButtonsRowMolecule
+import io.element.android.libraries.designsystem.components.BigIcon
 import io.element.android.libraries.designsystem.components.ClickableLinkText
 import io.element.android.libraries.designsystem.components.SimpleModalBottomSheet
 import io.element.android.libraries.designsystem.components.async.AsyncActionView
@@ -65,6 +67,7 @@ import io.element.android.libraries.designsystem.components.button.BackButton
 import io.element.android.libraries.designsystem.components.dialogs.ConfirmationDialog
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
+import io.element.android.libraries.designsystem.theme.components.Button
 import io.element.android.libraries.designsystem.theme.components.Checkbox
 import io.element.android.libraries.designsystem.theme.components.CircularProgressIndicator
 import io.element.android.libraries.designsystem.theme.components.DropdownMenu
@@ -72,6 +75,7 @@ import io.element.android.libraries.designsystem.theme.components.DropdownMenuIt
 import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconButton
+import io.element.android.libraries.designsystem.theme.components.IconSource
 import io.element.android.libraries.designsystem.theme.components.Scaffold
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TextButton
@@ -98,6 +102,8 @@ fun SpaceView(
     onLeaveSpaceClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onViewMembersClick: () -> Unit,
+    onCreateRoomClick: () -> Unit,
+    onAddRoomClick: () -> Unit,
     modifier: Modifier = Modifier,
     acceptDeclineInviteView: @Composable () -> Unit,
 ) {
@@ -140,6 +146,8 @@ fun SpaceView(
                         onShareSpace = onShareSpace,
                         onViewMembersClick = onViewMembersClick,
                         onManageRoomsClick = { state.eventSink(SpaceEvents.EnterManageMode) },
+                        onAddRoomClick = onAddRoomClick,
+                        onCreateRoomClick = onCreateRoomClick,
                     )
                 }
             }
@@ -159,7 +167,8 @@ fun SpaceView(
                     },
                     onTopicClick = { topic ->
                         state.eventSink(SpaceEvents.ShowTopicViewer(topic))
-                    }
+                    },
+                    onCreateRoomClick = onCreateRoomClick,
                 )
                 JoinFailuresEffect(
                     hasAnyFailure = state.hasAnyJoinFailures,
@@ -232,6 +241,7 @@ private fun SpaceViewContent(
     state: SpaceState,
     onRoomClick: (spaceRoom: SpaceRoom) -> Unit,
     onTopicClick: (String) -> Unit,
+    onCreateRoomClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier.fillMaxSize()) {
@@ -257,58 +267,87 @@ private fun SpaceViewContent(
                 }
             }
         }
-        itemsIndexed(
-            items = state.children,
-            key = { _, spaceRoom -> spaceRoom.roomId }
-        ) { index, spaceRoom ->
-            val isInvitation = spaceRoom.state == CurrentUserMembership.INVITED
-            val isCurrentlyJoining = state.isJoining(spaceRoom.roomId)
-            val isSelected = state.isSelected(spaceRoom.roomId)
-            val showUnreadIndicator = isInvitation && spaceRoom.roomId !in state.seenSpaceInvites && !state.isManageMode
-            SpaceRoomItemView(
-                spaceRoom = spaceRoom,
-                showUnreadIndicator = showUnreadIndicator,
-                hideAvatars = isInvitation && state.hideInvitesAvatar,
-                onClick = {
-                    onRoomClick(spaceRoom)
-                },
-                onLongClick = {
-                    // TODO
-                },
-                trailingAction = if (state.isManageMode) {
-                    {
-                        Checkbox(
-                            checked = isSelected,
-                            onCheckedChange = null,
+
+        if (state.children.isEmpty() && state.canEditSpaceGraph && !state.hasMoreToLoad) {
+            item {
+                EmptySpaceView(onCreateRoomClick = onCreateRoomClick)
+            }
+        } else {
+            itemsIndexed(
+                items = state.children,
+                key = { _, spaceRoom -> spaceRoom.roomId }
+            ) { index, spaceRoom ->
+                val isInvitation = spaceRoom.state == CurrentUserMembership.INVITED
+                val isCurrentlyJoining = state.isJoining(spaceRoom.roomId)
+                val isSelected = state.isSelected(spaceRoom.roomId)
+                val showUnreadIndicator = isInvitation && spaceRoom.roomId !in state.seenSpaceInvites && !state.isManageMode
+                SpaceRoomItemView(
+                    spaceRoom = spaceRoom,
+                    showUnreadIndicator = showUnreadIndicator,
+                    hideAvatars = isInvitation && state.hideInvitesAvatar,
+                    onClick = {
+                        onRoomClick(spaceRoom)
+                    },
+                    onLongClick = {
+                        // TODO
+                    },
+                    trailingAction = if (state.isManageMode) {
+                        {
+                            Checkbox(
+                                checked = isSelected,
+                                onCheckedChange = null,
+                            )
+                        }
+                    } else {
+                        spaceRoom.trailingAction(isCurrentlyJoining = isCurrentlyJoining) {
+                            state.eventSink(SpaceEvents.Join(spaceRoom))
+                        }
+                    },
+                    bottomAction = if (state.isManageMode) {
+                        null
+                    } else {
+                        spaceRoom.inviteButtons(
+                            onAcceptClick = {
+                                state.eventSink(SpaceEvents.AcceptInvite(spaceRoom))
+                            },
+                            onDeclineClick = {
+                                state.eventSink(SpaceEvents.DeclineInvite(spaceRoom))
+                            }
                         )
                     }
-                } else {
-                    spaceRoom.trailingAction(isCurrentlyJoining = isCurrentlyJoining) {
-                        state.eventSink(SpaceEvents.Join(spaceRoom))
-                    }
-                },
-                bottomAction = if (state.isManageMode) {
-                    null
-                } else {
-                    spaceRoom.inviteButtons(
-                        onAcceptClick = {
-                            state.eventSink(SpaceEvents.AcceptInvite(spaceRoom))
-                        },
-                        onDeclineClick = {
-                            state.eventSink(SpaceEvents.DeclineInvite(spaceRoom))
-                        }
-                    )
+                )
+                if (index != state.children.lastIndex) {
+                    HorizontalDivider()
                 }
-            )
-            if (index != state.children.lastIndex) {
-                HorizontalDivider()
+            }
+
+            if (state.hasMoreToLoad) {
+                item {
+                    LoadingMoreIndicator(eventSink = state.eventSink)
+                }
             }
         }
-        if (state.hasMoreToLoad) {
-            item {
-                LoadingMoreIndicator(eventSink = state.eventSink)
-            }
-        }
+    }
+}
+
+@Composable
+private fun EmptySpaceView(onCreateRoomClick: () -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(bottom = 24.dp),
+    ) {
+        IconTitleSubtitleMolecule(
+            title = stringResource(R.string.screen_space_empty_state_title),
+            subTitle = null,
+            iconStyle = BigIcon.Style.Default(CompoundIcons.Room()),
+            modifier = Modifier.fillMaxWidth()
+                .padding(top = 40.dp, start = 24.dp, end = 24.dp, bottom = 24.dp),
+        )
+        Button(
+            text = stringResource(R.string.screen_space_add_room_action),
+            leadingIcon = IconSource.Vector(CompoundIcons.Plus()),
+            onClick = onCreateRoomClick,
+        )
     }
 }
 
@@ -344,6 +383,8 @@ private fun SpaceViewTopBar(
     onShareSpace: () -> Unit,
     onViewMembersClick: () -> Unit,
     onManageRoomsClick: () -> Unit,
+    onAddRoomClick: () -> Unit,
+    onCreateRoomClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     TopAppBar(
@@ -376,6 +417,22 @@ private fun SpaceViewTopBar(
                 onDismissRequest = { showMenu = false }
             ) {
                 if (showManageRoomsAction) {
+                    SpaceMenuItem(
+                        titleRes = CommonStrings.action_create_room,
+                        icon = CompoundIcons.Plus(),
+                        onClick = {
+                            showMenu = false
+                            onCreateRoomClick()
+                        }
+                    )
+                    SpaceMenuItem(
+                        titleRes = CommonStrings.action_add_existing_rooms,
+                        icon = CompoundIcons.Room(),
+                        onClick = {
+                            showMenu = false
+                            onAddRoomClick()
+                        }
+                    )
                     SpaceMenuItem(
                         titleRes = CommonStrings.action_manage_rooms,
                         icon = CompoundIcons.Edit(),
@@ -600,6 +657,8 @@ internal fun SpaceViewPreview(
         acceptDeclineInviteView = {},
         onSettingsClick = {},
         onViewMembersClick = {},
+        onCreateRoomClick = {},
+        onAddRoomClick = {},
         onBackClick = {},
     )
 }

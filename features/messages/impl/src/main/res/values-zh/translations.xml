@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="crypto_event_authenticity_mismatched_sender">"事件发送者与发送设备的所有者不匹配。"</string>
+  <string name="crypto_event_authenticity_not_guaranteed">"此加密消息的真实性无法在此设备上保证。"</string>
+  <string name="crypto_event_authenticity_previously_verified">"由先前验证过的用户加密。"</string>
+  <string name="crypto_event_authenticity_sent_in_clear">"未加密。"</string>
+  <string name="crypto_event_authenticity_unknown_device">"由未知或已删除的设备加密。"</string>
+  <string name="crypto_event_authenticity_unsigned_device">"由未经其所有者验证的设备加密。"</string>
+  <string name="crypto_event_authenticity_unverified_identity">"由未经验证的用户加密。"</string>
   <string name="emoji_picker_category_activity">"活动"</string>
   <string name="emoji_picker_category_flags">"旗帜"</string>
   <string name="emoji_picker_category_foods">"食物和饮料"</string>

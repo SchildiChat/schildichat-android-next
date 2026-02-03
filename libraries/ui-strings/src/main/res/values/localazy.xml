@@ -75,7 +75,7 @@
   <string name="action_copy_link_to_message">"Copy link to message"</string>
   <string name="action_copy_text">"Copy text"</string>
   <string name="action_create">"Create"</string>
-  <string name="action_create_a_room">"Create a room"</string>
+  <string name="action_create_room">"Create room"</string>
   <string name="action_create_space">"Create space"</string>
   <string name="action_deactivate">"Deactivate"</string>
   <string name="action_deactivate_account">"Deactivate account"</string>
@@ -93,6 +93,7 @@
   <string name="action_enable">"Enable"</string>
   <string name="action_end_poll">"End poll"</string>
   <string name="action_enter_pin">"Enter PIN"</string>
+  <string name="action_explore_public_spaces">"Explore public spaces"</string>
   <string name="action_finish">"Finish"</string>
   <string name="action_forgot_password">"Forgot password?"</string>
   <string name="action_forward">"Forward"</string>
@@ -293,6 +294,7 @@ Reason: %1$s."</string>
   <string name="common_reason">"Reason"</string>
   <string name="common_recovery_key">"Recovery key"</string>
   <string name="common_refreshing">"Refreshing…"</string>
+  <string name="common_removing">"Removing…"</string>
   <plurals name="common_replies">
     <item quantity="one">"%1$d reply"</item>
     <item quantity="other">"%1$d replies"</item>
@@ -302,6 +304,7 @@ Reason: %1$s."</string>
   <string name="common_report_a_problem">"Report a problem"</string>
   <string name="common_report_submitted">"Report submitted"</string>
   <string name="common_rich_text_editor">"Rich text editor"</string>
+  <string name="common_role">"Role"</string>
   <string name="common_room">"Room"</string>
   <string name="common_room_name">"Room name"</string>
   <string name="common_room_name_placeholder">"e.g. your project name"</string>
@@ -331,6 +334,7 @@ Reason: %1$s."</string>
   <string name="common_server_url">"Server URL"</string>
   <string name="common_settings">"Settings"</string>
   <string name="common_share_space">"Share space"</string>
+  <string name="common_shared_history">"New members see history"</string>
   <string name="common_shared_location">"Shared location"</string>
   <string name="common_shared_space">"Shared space"</string>
   <string name="common_signing_out">"Signing out"</string>
@@ -430,13 +434,6 @@ Are you sure you want to continue?"</string>
   <string name="error_room_address_invalid_symbols">"Some characters are not allowed. Only letters, digits and the following symbols are supported ! $ &amp; ‘ ( ) * + / ; = ? @ [ ] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Some messages have not been sent"</string>
   <string name="error_unknown">"Sorry, an error occurred"</string>
-  <string name="event_shield_mismatched_sender">"The sender of the event does not match the owner of the device that sent it."</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"The authenticity of this encrypted message can\'t be guaranteed on this device."</string>
-  <string name="event_shield_reason_previously_verified">"Encrypted by a previously-verified user."</string>
-  <string name="event_shield_reason_sent_in_clear">"Not encrypted."</string>
-  <string name="event_shield_reason_unknown_device">"Encrypted by an unknown or deleted device."</string>
-  <string name="event_shield_reason_unsigned_device">"Encrypted by a device not verified by its owner."</string>
-  <string name="event_shield_reason_unverified_identity">"Encrypted by an unverified user."</string>
   <string name="invite_friends_rich_title">"🔐️ Join me on %1$s"</string>
   <string name="invite_friends_text">"Hey, talk to me on %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>
@@ -482,7 +479,6 @@ Are you sure you want to continue?"</string>
   <string name="screen_share_open_google_maps">"Open in Google Maps"</string>
   <string name="screen_share_open_osm_maps">"Open in OpenStreetMap"</string>
   <string name="screen_share_this_location_action">"Share this location"</string>
-  <string name="screen_space_add_rooms_room_access_description">"Adding a room will not affect the room access. To change the access go to Room info &gt; Privacy &amp; security."</string>
   <string name="screen_space_list_description">"Spaces you have created or joined."</string>
   <string name="screen_space_list_details">"%1$s • %2$s"</string>
   <string name="screen_space_list_empty_state_title">"Create spaces to organize rooms"</string>

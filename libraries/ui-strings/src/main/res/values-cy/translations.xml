@@ -82,7 +82,7 @@
   <string name="action_copy_link_to_message">"Copïo dolen i\'r neges"</string>
   <string name="action_copy_text">"Copïo testun"</string>
   <string name="action_create">"Creu"</string>
-  <string name="action_create_a_room">"Creu ystafell"</string>
+  <string name="action_create_room">"Creu ystafell"</string>
   <string name="action_deactivate">"Dadweithredu"</string>
   <string name="action_deactivate_account">"Cau cyfrif"</string>
   <string name="action_decline">"Gwrthod"</string>
@@ -439,13 +439,6 @@ Ydych chi\'n siŵr eich bod am barhau?"</string>
   <string name="error_room_address_invalid_symbols">"Dyw rhai nodau ddim yn cael eu caniatáu. Dim ond llythrennau, digidau a\'r symbolau canlynol sy\'n cael eu cefnogi ! $ &amp; ‘ ( ) * + / ; = ? @ [ ] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Nid yw rhai negeseuon wedi\'u hanfon"</string>
   <string name="error_unknown">"Ymddiheuriadau, mae gwall wedi digwydd"</string>
-  <string name="event_shield_mismatched_sender">"Nid yw anfonwr y digwyddiad yn cyfateb i berchennog y ddyfais a\'i hanfonodd."</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"Nid oes modd gwarantu dilysrwydd y neges hon sydd wedi\'i hamgryptio ar y ddyfais hon."</string>
-  <string name="event_shield_reason_previously_verified">"Wedi\'i amgryptio gan ddefnyddiwr a wiriwyd gynt."</string>
-  <string name="event_shield_reason_sent_in_clear">"Heb ei amgryptio."</string>
-  <string name="event_shield_reason_unknown_device">"Wedi\'i amgryptio gan ddyfais anhysbys neu wedi\'i dileu."</string>
-  <string name="event_shield_reason_unsigned_device">"Wedi\'i amgryptio gan ddyfais nad yw wedi\'i wirio gan ei pherchennog."</string>
-  <string name="event_shield_reason_unverified_identity">"Wedi\'i amgryptio gan ddefnyddiwr heb ei wirio."</string>
   <string name="invite_friends_rich_title">"🔐️ Ymunwch â mi ar %1$s"</string>
   <string name="invite_friends_text">"Hei, siaradwch â mi ar %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"Android %1$s"</string>

@@ -94,7 +94,7 @@ fun aLoadedPinnedMessagesListState(
     actionListState: ActionListState = anActionListState(),
     aUserEventPermissions: UserEventPermissions = UserEventPermissions.DEFAULT,
     displayThreadSummaries: Boolean = false,
-    eventSink: (PinnedMessagesListEvents) -> Unit = {}
+    eventSink: (PinnedMessagesListEvent) -> Unit = {}
 ) = PinnedMessagesListState.Filled(
     timelineRoomInfo = timelineRoomInfo,
     timelineProtectionState = timelineProtectionState,

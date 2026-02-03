@@ -17,6 +17,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.clearText
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarColors
@@ -25,9 +28,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -55,8 +56,7 @@ import io.element.android.libraries.ui.strings.CommonStrings
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> SearchBar(
-    query: String,
-    onQueryChange: (String) -> Unit,
+    queryState: TextFieldState,
     active: Boolean,
     onActiveChange: (Boolean) -> Unit,
     placeHolderTitle: String,
@@ -77,10 +77,9 @@ fun <T> SearchBar(
 ) {
     val focusManager = LocalFocusManager.current
     val colors = if (active) activeBarColors else inactiveBarColors
-    val updatedOnQueryChange by rememberUpdatedState(onQueryChange)
     LaunchedEffect(active) {
         if (!active) {
-            updatedOnQueryChange("")
+            queryState.clearText()
             focusManager.clearFocus()
         }
     }
@@ -89,8 +88,7 @@ fun <T> SearchBar(
         inputField = {
             SearchBarDefaults.InputField(
                 modifier = Modifier.focusRequester(focusRequester), // SC
-                query = query,
-                onQueryChange = updatedOnQueryChange,
+                state = queryState,
                 onSearch = { focusManager.clearFocus() },
                 expanded = active,
                 onExpandedChange = onActiveChange,
@@ -104,9 +102,9 @@ fun <T> SearchBar(
                     null
                 },
                 trailingIcon = when {
-                    active && query.isNotEmpty() -> {
+                    active && queryState.text.isNotEmpty() -> {
                         {
-                            IconButton(onClick = { onQueryChange("") }) {
+                            IconButton(onClick = { queryState.clearText() }) {
                                 Icon(
                                     imageVector = CompoundIcons.Close(),
                                     contentDescription = stringResource(CommonStrings.action_clear),
@@ -227,7 +225,7 @@ internal fun SearchBarInactivePreview() = ElementThemedPreview { ContentToPrevie
 @Composable
 internal fun SearchBarActiveNoneQueryPreview() = ElementThemedPreview {
     ContentToPreview(
-        query = "",
+        initialQuery = "",
         active = true,
     )
 }
@@ -236,7 +234,7 @@ internal fun SearchBarActiveNoneQueryPreview() = ElementThemedPreview {
 @Composable
 internal fun SearchBarActiveWithQueryPreview() = ElementThemedPreview {
     ContentToPreview(
-        query = "search term",
+        initialQuery = "search term",
         active = true,
     )
 }
@@ -245,7 +243,7 @@ internal fun SearchBarActiveWithQueryPreview() = ElementThemedPreview {
 @Composable
 internal fun SearchBarActiveWithQueryNoBackButtonPreview() = ElementThemedPreview {
     ContentToPreview(
-        query = "search term",
+        initialQuery = "search term",
         active = true,
         showBackButton = false,
     )
@@ -255,7 +253,7 @@ internal fun SearchBarActiveWithQueryNoBackButtonPreview() = ElementThemedPrevie
 @Composable
 internal fun SearchBarActiveWithNoResultsPreview() = ElementThemedPreview {
     ContentToPreview(
-        query = "search term",
+        initialQuery = "search term",
         active = true,
         resultState = SearchBarResultState.NoResultsFound<String>(),
     )
@@ -265,7 +263,7 @@ internal fun SearchBarActiveWithNoResultsPreview() = ElementThemedPreview {
 @Composable
 internal fun SearchBarActiveWithContentPreview() = ElementThemedPreview {
     ContentToPreview(
-        query = "search term",
+        initialQuery = "search term",
         active = true,
         resultState = SearchBarResultState.Results("result!"),
         contentPrefix = {
@@ -298,7 +296,7 @@ internal fun SearchBarActiveWithContentPreview() = ElementThemedPreview {
 @Composable
 @ExcludeFromCoverage
 private fun ContentToPreview(
-    query: String = "",
+    initialQuery: String = "",
     active: Boolean = false,
     showBackButton: Boolean = true,
     resultState: SearchBarResultState<String> = SearchBarResultState.Initial(),
@@ -306,13 +304,13 @@ private fun ContentToPreview(
     contentSuffix: @Composable ColumnScope.() -> Unit = {},
     resultHandler: @Composable ColumnScope.(String) -> Unit = {},
 ) {
+    val queryState = rememberTextFieldState(initialText = initialQuery)
     SearchBar(
         modifier = Modifier.heightIn(max = 200.dp),
-        query = query,
+        queryState = queryState,
         active = active,
         resultState = resultState,
         showBackButton = showBackButton,
-        onQueryChange = {},
         onActiveChange = {},
         placeHolderTitle = "Search for things",
         contentPrefix = contentPrefix,

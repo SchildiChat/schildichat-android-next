@@ -40,7 +40,7 @@ import io.element.android.features.messages.impl.moveCallButtonToOverflow
 import io.element.android.features.messages.impl.pinned.banner.PinnedMessagesBannerState
 import io.element.android.features.messages.impl.showMarkAsReadQuickAction
 import io.element.android.features.messages.impl.takeIfIsValidEventId
-import io.element.android.features.messages.impl.timeline.TimelineEvents
+import io.element.android.features.messages.impl.timeline.TimelineEvent
 import io.element.android.features.roomcall.api.RoomCallState
 import io.element.android.libraries.designsystem.icons.CompoundDrawables
 import io.element.android.libraries.designsystem.theme.components.DropdownMenu
@@ -72,7 +72,7 @@ internal fun RowScope.scMessagesViewTopBarActions(
 ) {
     val markAsReadAsQuickAction = showMarkAsReadQuickAction()
     if (markAsReadAsQuickAction) {
-        IconButton(onClick = { state.timelineState.eventSink(TimelineEvents.MarkAsRead) }) {
+        IconButton(onClick = { state.timelineState.eventSink(TimelineEvent.MarkAsRead) }) {
             Icon(
                 imageVector = Icons.Default.RemoveRedEye,
                 contentDescription = stringResource(R.string.sc_action_mark_as_read),
@@ -97,7 +97,7 @@ internal fun RowScope.scMessagesViewTopBarActions(
         // TODO maybe later something like
         //  val isFullyRead = state.timelineState.isLive && state.timelineState.timelineItems.first().isEvent(fullyReadEventId)
         if (fullyReadEventId != null) {
-            IconButton(onClick = { state.timelineState.eventSink(TimelineEvents.FocusOnEvent(EventId(fullyReadEventId), forReadMarker = true)) }) {
+            IconButton(onClick = { state.timelineState.eventSink(TimelineEvent.FocusOnEvent(EventId(fullyReadEventId), forReadMarker = true)) }) {
                 Icon(
                     imageVector = Icons.Default.Update, // There may be a better icon
                     contentDescription = stringResource(R.string.sc_action_jump_to_unread),
@@ -136,7 +136,7 @@ internal fun RowScope.scMessagesViewTopBarActions(
                     DropdownMenuItem(
                         onClick = {
                             showMenu = false
-                            state.timelineState.eventSink(TimelineEvents.MarkAsRead)
+                            state.timelineState.eventSink(TimelineEvent.MarkAsRead)
                         },
                         text = { Text(stringResource(id = R.string.sc_action_mark_as_read)) },
                     )

@@ -244,9 +244,13 @@ private fun HomeScaffold(
                     RoomListContentView(
                         contentState = roomListState.contentState,
                         filtersState = roomListState.filtersState,
-                        homeState = state, // SC
-                        onUpstreamSpaceClick = onRoomClick, // SC
-                        onMeasureSpaceBarHeight = { spaceBarHeight.intValue = it }, // SC
+                        // SC start
+                        homeState = state,
+                        onUpstreamSpaceClick = onRoomClick,
+                        onCreateSpaceClick = onCreateSpaceClick,
+                        onExploreSpaceClick = {}, // TODO use once upstream implements this
+                        onMeasureSpaceBarHeight = { spaceBarHeight.intValue = it },
+                        // SC end
                         lazyListState = roomsLazyListState,
                         hideInvitesAvatars = roomListState.hideInvitesAvatars,
                         eventSink = roomListState.eventSink,
@@ -289,7 +293,10 @@ private fun HomeScaffold(
                         lazyListState = spacesLazyListState,
                         onSpaceClick = { spaceId ->
                             onRoomClick(spaceId)
-                        }
+                        },
+                        onCreateSpaceClick = onCreateSpaceClick,
+                        // TODO use actual callbacks for this
+                        onExploreClick = {}, // SC merge conflict canary: need to update for onExploreSpacesClick above too when this line changes
                     )
                 }
             }

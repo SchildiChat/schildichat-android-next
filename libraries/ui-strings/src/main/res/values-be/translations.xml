@@ -53,7 +53,7 @@
   <string name="action_copy_link">"Скапіраваць спасылку"</string>
   <string name="action_copy_link_to_message">"Скапіраваць спасылку на паведамленне"</string>
   <string name="action_create">"Стварыць"</string>
-  <string name="action_create_a_room">"Стварыце пакой"</string>
+  <string name="action_create_room">"Стварыце пакой"</string>
   <string name="action_deactivate">"Дэактываваць"</string>
   <string name="action_deactivate_account">"Дэактываваць уліковы запіс"</string>
   <string name="action_decline">"Адхіліць"</string>
@@ -289,12 +289,6 @@
   <string name="error_missing_microphone_voice_rationale_android">"%1$s не мае дазволу на доступ да вашага мікрафона. Дазвольце доступ да запісу галасавога паведамлення."</string>
   <string name="error_some_messages_have_not_been_sent">"Некаторыя паведамленні не былі адпраўлены"</string>
   <string name="error_unknown">"Выбачце, адбылася памылка"</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"Сапраўднасць гэтага зашыфраванага паведамлення не можа быць гарантаваная на гэтай прыладзе."</string>
-  <string name="event_shield_reason_previously_verified">"Зашыфравана раней правераным карыстальнікам."</string>
-  <string name="event_shield_reason_sent_in_clear">"Не зашыфраваны."</string>
-  <string name="event_shield_reason_unknown_device">"Зашыфравана невядомай ці выдаленай прыладай."</string>
-  <string name="event_shield_reason_unsigned_device">"Зашыфравана прыладай, не пацверджанай яе ўладальнікам."</string>
-  <string name="event_shield_reason_unverified_identity">"Зашыфравана неправераным карыстальнікам."</string>
   <string name="invite_friends_rich_title">"🔐️ Далучайцеся да мяне %1$s"</string>
   <string name="invite_friends_text">"Гэй, пагавары са мной у %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>

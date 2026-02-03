@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="crypto_event_authenticity_mismatched_sender">"Sündmuse saatja ja seadme omanik pole vastavuses."</string>
+  <string name="crypto_event_authenticity_not_guaranteed">"Selle krüptitud sõnumi tõepärasus pole selles seadmes tagatud."</string>
+  <string name="crypto_event_authenticity_previously_verified">"Krüptitud varem verifitseeritud kasutaja poolt"</string>
+  <string name="crypto_event_authenticity_sent_in_clear">"Pole krüptitud."</string>
+  <string name="crypto_event_authenticity_unknown_device">"Krüptitud tundmatu või kustutatud seadme poolt."</string>
+  <string name="crypto_event_authenticity_unsigned_device">"Krüptitud seadme poolt, mida tema omanik pole verifitseerinud."</string>
+  <string name="crypto_event_authenticity_unverified_identity">"Krüptitud verifitseerimata kasutaja poolt."</string>
   <string name="emoji_picker_category_activity">"Tegevused"</string>
   <string name="emoji_picker_category_flags">"Lipud"</string>
   <string name="emoji_picker_category_foods">"Toit ja jook"</string>

@@ -2,6 +2,7 @@ package io.element.android.features.messages.impl.timeline.components.customreac
 
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.runtime.Composable
@@ -17,8 +18,7 @@ import io.element.android.libraries.designsystem.theme.components.SearchBarResul
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> ScEmojiPickerSearchBar(
-    query: String,
-    onQueryChange: (String) -> Unit,
+    queryState: TextFieldState,
     active: Boolean,
     onActiveChange: (Boolean) -> Unit,
     placeHolderTitle: String,
@@ -40,8 +40,7 @@ fun <T> ScEmojiPickerSearchBar(
 
     SearchBar(
         modifier = modifier,
-        query = query,
-        onQueryChange = onQueryChange,
+        queryState = queryState,
         resultState = resultState,
         active = active,
         onActiveChange = onActiveChange,

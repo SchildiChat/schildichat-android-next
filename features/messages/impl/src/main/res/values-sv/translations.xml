@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="crypto_event_authenticity_mismatched_sender">"Avsändaren av händelsen matchar inte ägaren av den enhet som skickade den."</string>
+  <string name="crypto_event_authenticity_not_guaranteed">"Detta krypterade meddelandes äkthet kan inte garanteras på den här enheten."</string>
+  <string name="crypto_event_authenticity_previously_verified">"Krypterat av en tidigare verifierad användare."</string>
+  <string name="crypto_event_authenticity_sent_in_clear">"Inte krypterad."</string>
+  <string name="crypto_event_authenticity_unknown_device">"Krypterad av en okänd eller raderad enhet."</string>
+  <string name="crypto_event_authenticity_unsigned_device">"Krypterad av en enhet som inte verifierats av ägaren."</string>
+  <string name="crypto_event_authenticity_unverified_identity">"Krypterad av en overifierad användare."</string>
   <string name="emoji_picker_category_activity">"Aktiviteter"</string>
   <string name="emoji_picker_category_flags">"Flaggor"</string>
   <string name="emoji_picker_category_foods">"Mat &amp; dryck"</string>

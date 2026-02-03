@@ -72,7 +72,7 @@
   <string name="action_copy_link_to_message">"메시지에 링크 복사"</string>
   <string name="action_copy_text">"텍스트 복사"</string>
   <string name="action_create">"만들기"</string>
-  <string name="action_create_a_room">"방 만들기"</string>
+  <string name="action_create_room">"방 만들기"</string>
   <string name="action_deactivate">"비활성화"</string>
   <string name="action_deactivate_account">"계정 비활성화"</string>
   <string name="action_decline">"거절"</string>
@@ -388,13 +388,6 @@
   <string name="error_room_address_invalid_symbols">"일부 문자는 허용되지 않습니다. 로마자, 숫자 및 다음 기호만 지원됩니다! $ &amp;amp; ' ( ) * + / ; = ? @ [ ] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"일부 메시지가 전송되지 않았습니다"</string>
   <string name="error_unknown">"이런, 오류가 발생했어요"</string>
-  <string name="event_shield_mismatched_sender">"이벤트의 발신자가 이벤트를 보낸 장치의 소유자와 일치하지 않습니다."</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"이 장치에서는 이 암호화된 메시지의 진위 여부를 보장할 수 없습니다."</string>
-  <string name="event_shield_reason_previously_verified">"이전에 검증된 사용자에 의해 암호화되었습니다."</string>
-  <string name="event_shield_reason_sent_in_clear">"암호화되지 않음."</string>
-  <string name="event_shield_reason_unknown_device">"알 수 없거나 삭제된 장치에 의해 암호화됩니다."</string>
-  <string name="event_shield_reason_unsigned_device">"소유자가 확인하지 않은 장치에 의해 암호화되었습니다."</string>
-  <string name="event_shield_reason_unverified_identity">"검증되지 않은 사용자에 의해 암호화되었습니다."</string>
   <string name="invite_friends_rich_title">"🔐️ %1$s에 참여하기"</string>
   <string name="invite_friends_text">"%1$s에서 대화해요: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>

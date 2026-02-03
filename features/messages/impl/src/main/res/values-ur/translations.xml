@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="crypto_event_authenticity_not_guaranteed">"اس آلہ پر اس مرموز کردہ پیغام کی صداقت کی ضمانت نہیں دی جا سکتی۔"</string>
+  <string name="crypto_event_authenticity_previously_verified">"پہلے سے تصدیق شدہ صارف کے ذریعہ خفیہ کردہ۔"</string>
+  <string name="crypto_event_authenticity_sent_in_clear">"مرموز کردہ نہیں۔"</string>
+  <string name="crypto_event_authenticity_unknown_device">"کسی نامعلوم یا حذف شدہ آلے کے ذریعے مرموز کردہ۔"</string>
+  <string name="crypto_event_authenticity_unsigned_device">"کسی ایسے آلے کے ذریعے مرموز کردہ جس کی توثیق اسکے مالک سے نہیں ہوئی۔"</string>
+  <string name="crypto_event_authenticity_unverified_identity">"ایک غیر توثیق شدہ صارف کے ذریعے مرموز کردہ۔"</string>
   <string name="emoji_picker_category_activity">"سرگرمیاں"</string>
   <string name="emoji_picker_category_flags">"جھنڈے"</string>
   <string name="emoji_picker_category_foods">"طعم و مشروب"</string>

@@ -1,3 +1,26 @@
+Changes in Element X v26.01.1
+=============================
+
+<!-- Release notes generated using configuration in .github/release.yml at v26.01.1 -->
+
+## What's Changed
+### 🐛 Bugfixes
+* Ensure that log files are not too big. by @bmarty in https://github.com/element-hq/element-x-android/pull/6003
+* Make the number view scrollable by @bmarty in https://github.com/element-hq/element-x-android/pull/6017
+* Ensure that room with long names are rendered correctly in the room list. by @bmarty in https://github.com/element-hq/element-x-android/pull/6019
+* Create `AppMigration09` to remove the cached `well-known` config from the SDK by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6026
+### 🚧 In development 🚧
+* [POC] Signin with Element Classic by @bmarty in https://github.com/element-hq/element-x-android/pull/6013
+* Space : manage rooms by @ganfra in https://github.com/element-hq/element-x-android/pull/6022
+### Dependency upgrades
+* fix(deps): update dependency androidx.compose:compose-bom to v2026 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6010
+* fix(deps): update dependency io.sentry:sentry-android to v8.30.0 - autoclosed by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6014
+* fix(deps): update dependency com.google.firebase:firebase-bom to v34.8.0 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6018
+* Upgrade androidx.biometric:biometric-ktx to 1.4.0-alpha02 by @bmarty in https://github.com/element-hq/element-x-android/pull/6020
+
+
+**Full Changelog**: https://github.com/element-hq/element-x-android/compare/v26.01.0...v26.01.1
+
 Changes in Element X v26.01.0
 =============================
 

@@ -76,7 +76,7 @@
   <string name="action_copy_link_to_message">"Kopiraj poveznicu u poruku"</string>
   <string name="action_copy_text">"Kopiraj tekst"</string>
   <string name="action_create">"Stvori"</string>
-  <string name="action_create_a_room">"Stvori sobu"</string>
+  <string name="action_create_room">"Stvori sobu"</string>
   <string name="action_deactivate">"Deaktiviraj"</string>
   <string name="action_deactivate_account">"Deaktiviraj račun"</string>
   <string name="action_decline">"Odbij"</string>
@@ -428,13 +428,6 @@ Jeste li sigurni da želite nastaviti?"</string>
   <string name="error_room_address_invalid_symbols">"Neki znakovi nisu dopušteni. Podržana su samo slova, brojke i simboli ! $ &amp; ‘ ( ) * + / ; = ? @ [ ] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Neke poruke nisu poslane"</string>
   <string name="error_unknown">"Žao nam je, došlo je do pogreške"</string>
-  <string name="event_shield_mismatched_sender">"Pošiljatelj događaja ne podudara se s vlasnikom uređaja koji ga je poslao."</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"Autentičnost ove šifrirane poruke ne može se jamčiti na ovom uređaju"</string>
-  <string name="event_shield_reason_previously_verified">"Šifrirao je prethodno provjereni korisnik."</string>
-  <string name="event_shield_reason_sent_in_clear">"Nije šifrirano."</string>
-  <string name="event_shield_reason_unknown_device">"Šifrirano nepoznatim ili izbrisanim uređajem."</string>
-  <string name="event_shield_reason_unsigned_device">"Šifrirano uređajem koji vlasnik nije potvrdio."</string>
-  <string name="event_shield_reason_unverified_identity">"Šifrirao neprovjereni korisnik."</string>
   <string name="invite_friends_rich_title">"🔐️ Pridruži mi se u %1$s"</string>
   <string name="invite_friends_text">"Hej, razgovaraj sa mnom u aplikaciji %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>

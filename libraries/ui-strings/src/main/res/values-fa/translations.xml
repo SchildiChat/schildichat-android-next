@@ -71,7 +71,7 @@
   <string name="action_copy_link_to_message">"رونوشت از پیوند پیام"</string>
   <string name="action_copy_text">"رونوشت از متن"</string>
   <string name="action_create">"ایجاد"</string>
-  <string name="action_create_a_room">"ایجاد اتاق"</string>
+  <string name="action_create_room">"ایجاد اتاق"</string>
   <string name="action_deactivate">"غیرفعّال"</string>
   <string name="action_deactivate_account">"غیرفعّال‌سازی حساب"</string>
   <string name="action_decline">"رد"</string>
@@ -361,12 +361,6 @@
   <string name="error_missing_microphone_voice_rationale_android">"%1$s اجازه دسترسی به میکروفون شما را ندارد. دسترسی را برای ضبط پیام صوتی فعال کنید."</string>
   <string name="error_some_messages_have_not_been_sent">"برخی پیام‌ها ارسال نشده‌اند"</string>
   <string name="error_unknown">"متأسفیم ، خطایی رخ داد"</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"اعتبار این پیام رمز شده نمی‌تواند روی این افزاره تأیید شود."</string>
-  <string name="event_shield_reason_previously_verified">"رمز شده به دست کاربری از پیش تأیید شده."</string>
-  <string name="event_shield_reason_sent_in_clear">"رمز نشده."</string>
-  <string name="event_shield_reason_unknown_device">"رمز شده به دست افزاره‌ای ناشناخته یا حذف شده."</string>
-  <string name="event_shield_reason_unsigned_device">"رمز شده به دست افزاره‌ای که از سوی مالکش تأیید نشده."</string>
-  <string name="event_shield_reason_unverified_identity">"رمز شده به دست کاربری تأیید نشده."</string>
   <string name="invite_friends_rich_title">"🔐️ پییوستن به من روی %1$s"</string>
   <string name="invite_friends_text">"درود. با من روی %1$s صحبت کن: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s اندروید"</string>

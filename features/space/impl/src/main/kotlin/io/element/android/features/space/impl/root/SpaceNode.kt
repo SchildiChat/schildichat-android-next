@@ -46,6 +46,9 @@ class SpaceNode(
         fun navigateToSpaceSettings()
         fun navigateToRoomMemberList()
         fun startLeaveSpaceFlow()
+        fun navigateToAddRoom()
+
+        fun onCreateRoom()
     }
 
     private val callback: Callback = callback()
@@ -89,6 +92,9 @@ class SpaceNode(
             onViewMembersClick = {
                 callback.navigateToRoomMemberList()
             },
+            onAddRoomClick = {
+                callback.navigateToAddRoom()
+            },
             acceptDeclineInviteView = {
                 acceptDeclineInviteView.Render(
                     state = state.acceptDeclineInviteState,
@@ -101,6 +107,7 @@ class SpaceNode(
                     modifier = Modifier
                 )
             },
+            onCreateRoomClick = callback::onCreateRoom,
             modifier = modifier
         )
     }

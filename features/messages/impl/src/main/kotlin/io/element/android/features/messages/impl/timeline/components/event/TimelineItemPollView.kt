@@ -11,7 +11,7 @@ package io.element.android.features.messages.impl.timeline.components.event
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import io.element.android.features.messages.impl.timeline.TimelineEvents
+import io.element.android.features.messages.impl.timeline.TimelineEvent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemPollContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemPollContentProvider
 import io.element.android.features.poll.api.pollcontent.PollContentView
@@ -23,19 +23,19 @@ import kotlinx.collections.immutable.toImmutableList
 @Composable
 fun TimelineItemPollView(
     content: TimelineItemPollContent,
-    eventSink: (TimelineEvents.TimelineItemPollEvents) -> Unit,
+    eventSink: (TimelineEvent.TimelineItemPollEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     fun onSelectAnswer(pollStartId: EventId, answerId: String) {
-        eventSink(TimelineEvents.SelectPollAnswer(pollStartId, answerId))
+        eventSink(TimelineEvent.SelectPollAnswer(pollStartId, answerId))
     }
 
     fun onEndPoll(pollStartId: EventId) {
-        eventSink(TimelineEvents.EndPoll(pollStartId))
+        eventSink(TimelineEvent.EndPoll(pollStartId))
     }
 
     fun onEditPoll(pollStartId: EventId) {
-        eventSink(TimelineEvents.EditPoll(pollStartId))
+        eventSink(TimelineEvent.EditPoll(pollStartId))
     }
 
     PollContentView(

@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="crypto_event_authenticity_mismatched_sender">"Az esemény feladója nem egyezik az eseményt küldő eszköz tulajdonosával."</string>
+  <string name="crypto_event_authenticity_not_guaranteed">"A titkosított üzenetek valódiságát ezen az eszközön nem lehet garantálni."</string>
+  <string name="crypto_event_authenticity_previously_verified">"Egy korábban ellenőrzött felhasználó által titkosítva."</string>
+  <string name="crypto_event_authenticity_sent_in_clear">"Nincs titkosítva."</string>
+  <string name="crypto_event_authenticity_unknown_device">"Ismeretlen vagy törölt eszköz által titkosítva."</string>
+  <string name="crypto_event_authenticity_unsigned_device">"A tulajdonos által nem ellenőrzött eszköz által titkosítva."</string>
+  <string name="crypto_event_authenticity_unverified_identity">"Nem ellenőrzött felhasználó által titkosítva."</string>
   <string name="emoji_picker_category_activity">"Tevékenységek"</string>
   <string name="emoji_picker_category_flags">"Zászlók"</string>
   <string name="emoji_picker_category_foods">"Étel és ital"</string>

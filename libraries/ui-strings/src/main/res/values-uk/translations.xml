@@ -76,7 +76,7 @@
   <string name="action_copy_link_to_message">"Скопіювати посилання на повідомлення"</string>
   <string name="action_copy_text">"Скопіювати текст"</string>
   <string name="action_create">"Створити"</string>
-  <string name="action_create_a_room">"Створити кімнату"</string>
+  <string name="action_create_room">"Створити кімнату"</string>
   <string name="action_deactivate">"Деактивувати"</string>
   <string name="action_deactivate_account">"Деактивувати обліковий запис"</string>
   <string name="action_decline">"Відхилити"</string>
@@ -407,13 +407,6 @@
   <string name="error_room_address_invalid_symbols">"Деякі символи не допускаються. Підтримуються тільки букви, цифри і наступні символи! $ &amp; ‘ ( ) * + / ; = ? @ [ ] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Деякі повідомлення не були надіслані"</string>
   <string name="error_unknown">"Вибачте, сталася помилка"</string>
-  <string name="event_shield_mismatched_sender">"Відправник події не збігається з власником пристрою, який його надіслав."</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"Автентичність цього зашифрованого повідомлення не може бути гарантована на цьому пристрої."</string>
-  <string name="event_shield_reason_previously_verified">"Зашифровано попередньо перевіреним користувачем."</string>
-  <string name="event_shield_reason_sent_in_clear">"Не зашифровано."</string>
-  <string name="event_shield_reason_unknown_device">"Зашифровано невідомим або видаленим пристроєм."</string>
-  <string name="event_shield_reason_unsigned_device">"Зашифровано пристроєм, який не верифіковано його власником."</string>
-  <string name="event_shield_reason_unverified_identity">"Зашифровано неверифікованим користувачем."</string>
   <string name="invite_friends_rich_title">"🔐️ Приєднуйтеся до мене в %1$s"</string>
   <string name="invite_friends_text">"Вітаю, поспілкуйтеся зі мною в %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>

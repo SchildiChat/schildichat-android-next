@@ -8,6 +8,7 @@
 
 package io.element.android.features.messages.impl.timeline.components.customreaction.picker
 
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -38,7 +39,7 @@ class EmojiPickerPresenter(
 ) : Presenter<EmojiPickerState> {
     @Composable
     override fun present(): EmojiPickerState {
-        var searchQuery by remember { mutableStateOf("") }
+        val queryState = rememberTextFieldState()
         var isSearchActive by remember { mutableStateOf(false) }
         var emojiResults by remember { mutableStateOf<SearchBarResultState<ImmutableList<Emoji>>>(SearchBarResultState.Initial()) }
 
@@ -67,6 +68,7 @@ class EmojiPickerPresenter(
             }
         }
 
+        val searchQuery = queryState.text.toString()
         LaunchedEffect(searchQuery) {
             emojiResults = if (searchQuery.isEmpty()) {
                 SearchBarResultState.Initial()
@@ -91,20 +93,19 @@ class EmojiPickerPresenter(
         }
 
         val isInPreview = LocalInspectionMode.current
-        fun handleEvent(event: EmojiPickerEvents) {
+        fun handleEvent(event: EmojiPickerEvent) {
             when (event) {
                 // For some reason, in preview mode the SearchBar emits this event with an `isActive = true` value automatically
-                is EmojiPickerEvents.ToggleSearchActive -> if (!isInPreview) {
+                is EmojiPickerEvent.ToggleSearchActive -> if (!isInPreview) {
                     isSearchActive = event.isActive
                 }
-                is EmojiPickerEvents.UpdateSearchQuery -> searchQuery = event.query
             }
         }
 
         return EmojiPickerState(
             categories = categories,
             allEmojis = emojibaseStore.allEmojis,
-            searchQuery = searchQuery,
+            searchQuery = queryState,
             isSearchActive = isSearchActive,
             searchResults = emojiResults,
             eventSink = ::handleEvent,

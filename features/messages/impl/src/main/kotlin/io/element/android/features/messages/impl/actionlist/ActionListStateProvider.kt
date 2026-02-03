@@ -192,7 +192,7 @@ open class ActionListStateProvider : PreviewParameterProvider<ActionListState> {
 
 fun anActionListState(
     target: ActionListState.Target = ActionListState.Target.None,
-    eventSink: (ActionListEvents) -> Unit = {},
+    eventSink: (ActionListEvent) -> Unit = {},
 ) = ActionListState(
     target = target,
     eventSink = eventSink

@@ -63,11 +63,10 @@ fun EmojiPicker(
     Column(modifier) {
         ScEmojiPickerSearchBar(
             modifier = Modifier.padding(bottom = 10.dp),
-            query = state.searchQuery,
-            onQueryChange = { state.eventSink(EmojiPickerEvents.UpdateSearchQuery(it)) },
+            queryState = state.searchQuery,
             resultState = state.searchResults,
             active = state.isSearchActive,
-            onActiveChange = { state.eventSink(EmojiPickerEvents.ToggleSearchActive(it)) },
+            onActiveChange = { state.eventSink(EmojiPickerEvent.ToggleSearchActive(it)) },
             windowInsets = WindowInsets(0, 0, 0, 0),
             placeHolderTitle = stringResource(CommonStrings.emoji_picker_search_placeholder),
         ) { emojis ->
@@ -102,7 +101,7 @@ fun EmojiPicker(
                         }
                     )
                 }
-                ScEmojiPickerTabsEnd(state, pagerState) { state.eventSink(EmojiPickerEvents.ToggleSearchActive(true)) }
+                ScEmojiPickerTabsEnd(state, pagerState) { state.eventSink(EmojiPickerEvent.ToggleSearchActive(true)) }
             }
 
             HorizontalPager(
@@ -116,7 +115,7 @@ fun EmojiPicker(
                         pagerState.currentPage,
                         onSelectCustomEmoji
                 ) {
-                    state.eventSink(EmojiPickerEvents.ToggleSearchActive(true))
+                    state.eventSink(EmojiPickerEvent.ToggleSearchActive(true))
                     pagerState.requestScrollToPage(0)
                 }) {
                     return@HorizontalPager

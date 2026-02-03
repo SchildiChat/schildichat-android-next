@@ -72,7 +72,7 @@
   <string name="action_copy_link_to_message">"复制消息链接"</string>
   <string name="action_copy_text">"复制文本"</string>
   <string name="action_create">"创建"</string>
-  <string name="action_create_a_room">"创建聊天室"</string>
+  <string name="action_create_room">"创建聊天室"</string>
   <string name="action_deactivate">"停用"</string>
   <string name="action_deactivate_account">"停用账户"</string>
   <string name="action_decline">"拒绝"</string>
@@ -405,13 +405,6 @@
   <string name="error_room_address_invalid_symbols">"不允许使用某些字符。仅支持字母、数字和以下符号 $ &amp; ‘ ( ) * + / ; = ? @ [ ] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"某些信息尚未发送"</string>
   <string name="error_unknown">"抱歉，发生了错误"</string>
-  <string name="event_shield_mismatched_sender">"事件发送者与发送设备的所有者不匹配。"</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"此加密消息的真实性无法在此设备上保证。"</string>
-  <string name="event_shield_reason_previously_verified">"由先前验证过的用户加密。"</string>
-  <string name="event_shield_reason_sent_in_clear">"未加密。"</string>
-  <string name="event_shield_reason_unknown_device">"由未知或已删除的设备加密。"</string>
-  <string name="event_shield_reason_unsigned_device">"由未经其所有者验证的设备加密。"</string>
-  <string name="event_shield_reason_unverified_identity">"由未经验证的用户加密。"</string>
   <string name="invite_friends_rich_title">"🔐️ 加入我 %1$s"</string>
   <string name="invite_friends_text">"嗨！请通过 %1$s 与我联系：%2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>

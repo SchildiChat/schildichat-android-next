@@ -38,14 +38,14 @@ fun CustomReactionBottomSheet(
     val target = state.target as? CustomReactionState.Target.Success
 
     fun onDismiss() {
-        state.eventSink(CustomReactionEvents.DismissCustomReactionSheet)
+        state.eventSink(CustomReactionEvent.DismissCustomReactionSheet)
     }
 
     fun onEmojiSelectedDismiss(emoji: Emoji) {
         if (target?.event == null) return
 
         sheetState.hide(coroutineScope) {
-            state.eventSink(CustomReactionEvents.DismissCustomReactionSheet)
+            state.eventSink(CustomReactionEvent.DismissCustomReactionSheet)
             onSelectEmoji(target.event.eventOrTransactionId, emoji)
         }
     }
@@ -56,7 +56,7 @@ fun CustomReactionBottomSheet(
         val wasSelected = state.selectedEmoji.contains(emoji)
 
         sheetState.hide(coroutineScope) {
-            state.eventSink(CustomReactionEvents.DismissCustomReactionSheet)
+            state.eventSink(CustomReactionEvent.DismissCustomReactionSheet)
             onSelectCustomEmoji(target.event.eventOrTransactionId, emoji)
         }
     }

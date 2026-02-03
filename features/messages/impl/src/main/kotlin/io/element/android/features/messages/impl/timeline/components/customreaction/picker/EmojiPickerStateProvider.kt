@@ -8,6 +8,7 @@
 
 package io.element.android.features.messages.impl.timeline.components.customreaction.picker
 
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.element.android.emojibasebindings.Emoji
 import io.element.android.emojibasebindings.EmojibaseCategory
@@ -72,11 +73,11 @@ internal fun anEmojiPickerState(
     searchQuery: String = "",
     isSearchActive: Boolean = false,
     searchResults: SearchBarResultState<ImmutableList<Emoji>> = SearchBarResultState.Initial(),
-    eventSink: (EmojiPickerEvents) -> Unit = {},
+    eventSink: (EmojiPickerEvent) -> Unit = {},
 ) = EmojiPickerState(
     categories = categories,
     allEmojis = allEmojis,
-    searchQuery = searchQuery,
+    searchQuery = TextFieldState(initialText = searchQuery),
     isSearchActive = isSearchActive,
     searchResults = searchResults,
     eventSink = eventSink,

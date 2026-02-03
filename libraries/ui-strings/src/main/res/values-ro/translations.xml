@@ -76,7 +76,7 @@
   <string name="action_copy_link_to_message">"Copiați linkul către mesaj"</string>
   <string name="action_copy_text">"Copiați textul"</string>
   <string name="action_create">"Creați"</string>
-  <string name="action_create_a_room">"Creați o cameră"</string>
+  <string name="action_create_room">"Creați o cameră"</string>
   <string name="action_deactivate">"Dezactivați"</string>
   <string name="action_deactivate_account">"Dezactivați contul"</string>
   <string name="action_decline">"Refuzați"</string>
@@ -427,13 +427,6 @@ Sunteți sigur că doriți să continuați?"</string>
   <string name="error_room_address_invalid_symbols">"Unele caractere nu sunt permise. Sunt acceptate doar literele, cifrele și următoarele simboluri ! $ &amp; ‘ ( ) * + / ; = ? @ [ ] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Unele mesaje nu au fost trimise"</string>
   <string name="error_unknown">"Ne pare rău, a apărut o eroare"</string>
-  <string name="event_shield_mismatched_sender">"Expeditorul evenimentului nu corespunde proprietarului dispozitivului care l-a trimis."</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"Autenticitatea acestui mesaj criptat nu poate fi garantată pe acest dispozitiv."</string>
-  <string name="event_shield_reason_previously_verified">"Criptat de un utilizator verificat anterior."</string>
-  <string name="event_shield_reason_sent_in_clear">"Necriptat"</string>
-  <string name="event_shield_reason_unknown_device">"Criptat de un dispozitiv necunoscut sau șters."</string>
-  <string name="event_shield_reason_unsigned_device">"Criptat de un dispozitiv care nu este verificat de proprietarul său."</string>
-  <string name="event_shield_reason_unverified_identity">"Criptat de un utilizator neverificat."</string>
   <string name="invite_friends_rich_title">"🔐️ Alăturați-vă mie în %1$s"</string>
   <string name="invite_friends_text">"Hei, vorbește cu mine pe %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>

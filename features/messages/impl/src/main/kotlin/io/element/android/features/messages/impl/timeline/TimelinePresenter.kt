@@ -29,8 +29,9 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.features.messages.impl.MessagesNavigator
 import io.element.android.features.messages.impl.UserEventPermissions
-import io.element.android.features.messages.impl.crypto.sendfailure.resolve.ResolveVerifiedUserSendFailureEvents
+import io.element.android.features.messages.impl.crypto.sendfailure.resolve.ResolveVerifiedUserSendFailureEvent
 import io.element.android.features.messages.impl.crypto.sendfailure.resolve.ResolveVerifiedUserSendFailureState
+import io.element.android.features.messages.impl.timeline.components.MessageShieldData
 import io.element.android.features.messages.impl.timeline.factories.TimelineItemsFactory
 import io.element.android.features.messages.impl.timeline.factories.TimelineItemsFactoryConfig
 import io.element.android.features.messages.impl.timeline.model.NewEventState
@@ -56,7 +57,6 @@ import io.element.android.libraries.matrix.api.room.powerlevels.permissionsAsSta
 import io.element.android.libraries.matrix.api.room.roomMembers
 import io.element.android.libraries.matrix.api.timeline.ReceiptType
 import io.element.android.libraries.matrix.api.timeline.Timeline
-import io.element.android.libraries.matrix.api.timeline.item.event.MessageShield
 import io.element.android.libraries.matrix.api.timeline.item.event.TimelineItemEventOrigin
 import io.element.android.libraries.preferences.api.store.SessionPreferencesStore
 import io.element.android.services.analytics.api.AnalyticsLongRunningTransaction.DisplayFirstTimelineItems
@@ -137,7 +137,7 @@ class TimelinePresenter(
         val prevMostRecentItemId = rememberSaveable { mutableStateOf<UniqueId?>(null) }
 
         val newEventState = remember { mutableStateOf(NewEventState.None) }
-        val messageShield: MutableState<MessageShield?> = remember { mutableStateOf(null) }
+        val messageShieldDialogData: MutableState<MessageShieldData?> = remember { mutableStateOf(null) }
 
         val resolveVerifiedUserSendFailureState = resolveVerifiedUserSendFailurePresenter.present()
         val isSendPublicReadReceiptsEnabled by remember {
@@ -160,13 +160,13 @@ class TimelinePresenter(
             value = featureFlagService.isFeatureEnabled(FeatureFlags.Threads)
         }
 
-        fun handleEvent(event: TimelineEvents) {
+        fun handleEvent(event: TimelineEvent) {
             when (event) {
                 // SC start
-                is TimelineEvents.OnUnreadLineVisible -> scReadState.sawUnreadLine.value = true
-                is TimelineEvents.MarkAsRead -> forceSetReceipts(context, sessionCoroutineScope, room, scReadState, isSendPublicReadReceiptsEnabled)
+                is TimelineEvent.OnUnreadLineVisible -> scReadState.sawUnreadLine.value = true
+                is TimelineEvent.MarkAsRead -> forceSetReceipts(context, sessionCoroutineScope, room, scReadState, isSendPublicReadReceiptsEnabled)
                 // SC end
-                is TimelineEvents.LoadMore -> {
+                is TimelineEvent.LoadMore -> {
                     if (event.direction == Timeline.PaginationDirection.FORWARDS && timelineMode is Timeline.Mode.Thread) {
                         // Do not paginate forwards in thread mode, as it's not supported
                         return
@@ -175,7 +175,7 @@ class TimelinePresenter(
                         timelineController.paginate(direction = event.direction)
                     }
                 }
-                is TimelineEvents.OnScrollFinished -> {
+                is TimelineEvent.OnScrollFinished -> {
                     if (isLive) {
                         if (event.firstIndex == 0) {
                             newEventState.value = NewEventState.None
@@ -202,7 +202,7 @@ class TimelinePresenter(
                         newEventState.value = NewEventState.None
                     }
                 }
-                is TimelineEvents.SelectPollAnswer -> sessionCoroutineScope.launch {
+                is TimelineEvent.SelectPollAnswer -> sessionCoroutineScope.launch {
                     timelineController.invokeOnCurrentTimeline {
                         sendPollResponseAction.execute(
                             timeline = this,
@@ -211,7 +211,7 @@ class TimelinePresenter(
                         )
                     }
                 }
-                is TimelineEvents.EndPoll -> sessionCoroutineScope.launch {
+                is TimelineEvent.EndPoll -> sessionCoroutineScope.launch {
                     timelineController.invokeOnCurrentTimeline {
                         endPollAction.execute(
                             timeline = this,
@@ -219,38 +219,38 @@ class TimelinePresenter(
                         )
                     }
                 }
-                is TimelineEvents.EditPoll -> {
+                is TimelineEvent.EditPoll -> {
                     navigator.navigateToEditPoll(event.pollStartId)
                 }
-                is TimelineEvents.FocusOnEvent -> sessionCoroutineScope.launch {
+                is TimelineEvent.FocusOnEvent -> sessionCoroutineScope.launch {
                     focusRequestState.value = FocusRequestState.Requested(event.eventId, event.debounce, event.forReadMarker)
                     delay(event.debounce)
                     Timber.tag(tag).d("Started focus on ${event.eventId}")
                     focusOnEvent(event.eventId, focusRequestState, forReadMarker = event.forReadMarker)
                 }.start()
-                is TimelineEvents.OnFocusEventRender -> {
+                is TimelineEvent.OnFocusEventRender -> {
                     // If there was a pending 'notification tap opens timeline' transaction, finish it now we're focused in the required event
                     analyticsService.finishLongRunningTransaction(NotificationToMessage)
 
                     focusRequestState.value = focusRequestState.value.onFocusEventRender()
                 }
-                is TimelineEvents.ClearFocusRequestState -> {
+                is TimelineEvent.ClearFocusRequestState -> {
                     focusRequestState.value = FocusRequestState.None
                 }
-                is TimelineEvents.JumpToLive -> {
+                is TimelineEvent.JumpToLive -> {
                     timelineController.focusOnLive()
                 }
-                TimelineEvents.HideShieldDialog -> messageShield.value = null
-                is TimelineEvents.ShowShieldDialog -> messageShield.value = event.messageShield
-                is TimelineEvents.ComputeVerifiedUserSendFailure -> {
-                    resolveVerifiedUserSendFailureState.eventSink(ResolveVerifiedUserSendFailureEvents.ComputeForMessage(event.event))
+                TimelineEvent.HideShieldDialog -> messageShieldDialogData.value = null
+                is TimelineEvent.ShowShieldDialog -> messageShieldDialogData.value = event.messageShieldData
+                is TimelineEvent.ComputeVerifiedUserSendFailure -> {
+                    resolveVerifiedUserSendFailureState.eventSink(ResolveVerifiedUserSendFailureEvent.ComputeForMessage(event.event))
                 }
-                is TimelineEvents.NavigateToPredecessorOrSuccessorRoom -> {
+                is TimelineEvent.NavigateToPredecessorOrSuccessorRoom -> {
                     // Navigate to the predecessor or successor room
                     val serverNames = calculateServerNamesForRoom(room)
                     navigator.navigateToRoom(event.roomId, null, serverNames)
                 }
-                is TimelineEvents.OpenThread -> {
+                is TimelineEvent.OpenThread -> {
                     navigator.navigateToThread(
                         threadRootId = event.threadRootEventId,
                         focusedEventId = event.focusedEvent,
@@ -338,7 +338,7 @@ class TimelinePresenter(
             newEventState = newEventState.value,
             isLive = isLive,
             focusRequestState = focusRequestState.value,
-            messageShield = messageShield.value,
+            messageShieldDialogData = messageShieldDialogData.value,
             resolveVerifiedUserSendFailureState = resolveVerifiedUserSendFailureState,
             displayThreadSummaries = displayThreadSummaries,
             eventSink = ::handleEvent,

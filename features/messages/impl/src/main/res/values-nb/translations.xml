@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="crypto_event_authenticity_mismatched_sender">"Avsenderen av hendelsen samsvarer ikke med eieren av enheten som sendte den."</string>
+  <string name="crypto_event_authenticity_not_guaranteed">"Ektheten til denne krypterte meldingen kan ikke garanteres på denne enheten."</string>
+  <string name="crypto_event_authenticity_previously_verified">"Kryptert av en tidligere verifisert bruker."</string>
+  <string name="crypto_event_authenticity_sent_in_clear">"Ikke kryptert."</string>
+  <string name="crypto_event_authenticity_unknown_device">"Kryptert av en ukjent eller slettet enhet."</string>
+  <string name="crypto_event_authenticity_unsigned_device">"Kryptert med en enhet som ikke er verifisert av eieren."</string>
+  <string name="crypto_event_authenticity_unverified_identity">"Kryptert av en ubekreftet bruker."</string>
   <string name="emoji_picker_category_activity">"Aktiviteter"</string>
   <string name="emoji_picker_category_flags">"Flagg"</string>
   <string name="emoji_picker_category_foods">"Mat og drikke"</string>

@@ -76,7 +76,7 @@
   <string name="action_copy_link_to_message">"Kopiuj link do wiadomości"</string>
   <string name="action_copy_text">"Kopiuj tekst"</string>
   <string name="action_create">"Utwórz"</string>
-  <string name="action_create_a_room">"Utwórz pokój"</string>
+  <string name="action_create_room">"Utwórz pokój"</string>
   <string name="action_deactivate">"Dezaktywuj"</string>
   <string name="action_deactivate_account">"Dezaktywuj konto"</string>
   <string name="action_decline">"Odrzuć"</string>
@@ -420,13 +420,6 @@ Czy na pewno chcesz kontynuować?"</string>
   <string name="error_room_address_invalid_symbols">"Niektóre znaki są niedozwolone. Obsługiwane są tylko litery, cyfry i następujące symbole ! $ &amp; ‘ ( ) * + / ; = ? @ [ ] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Niektóre wiadomości nie zostały wysłane"</string>
   <string name="error_unknown">"Przepraszamy, wystąpił błąd"</string>
-  <string name="event_shield_mismatched_sender">"Nadawca zdarzenia nie pasuje do właściciela urządzenia, które je wysłał."</string>
-  <string name="event_shield_reason_authenticity_not_guaranteed">"Autentyczność tej wiadomości szyfrowanej nie jest gwarantowana na tym urządzeniu."</string>
-  <string name="event_shield_reason_previously_verified">"Zaszyfrowane przez wcześniej zweryfikowanego użytkownika."</string>
-  <string name="event_shield_reason_sent_in_clear">"Nieszyfrowany."</string>
-  <string name="event_shield_reason_unknown_device">"Zaszyfrowana przez nieznane lub usunięte urządzenie."</string>
-  <string name="event_shield_reason_unsigned_device">"Zaszyfrowana przez urządzenie niezweryfikowane przez jego właściciela."</string>
-  <string name="event_shield_reason_unverified_identity">"Zaszyfrowana przez niezweryfikowanego użytkownika."</string>
   <string name="invite_friends_rich_title">"🔐️ Dołącz do mnie na %1$s"</string>
   <string name="invite_friends_text">"Hej, porozmawiajmy na %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>

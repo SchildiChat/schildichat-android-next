@@ -17,7 +17,7 @@ data class CustomReactionState(
     val target: Target,
     val selectedEmoji: ImmutableSet<String>,
     val recentEmojis: ImmutableList<String>,
-    val eventSink: (CustomReactionEvents) -> Unit,
+    val eventSink: (CustomReactionEvent) -> Unit,
 ) {
     sealed interface Target {
         data object None : Target

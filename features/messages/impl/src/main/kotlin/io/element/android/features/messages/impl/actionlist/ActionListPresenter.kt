@@ -107,10 +107,10 @@ class DefaultActionListPresenter(
 
         val isThreadsEnabled = featureFlagService.isFeatureEnabledFlow(FeatureFlags.Threads).collectAsState(false)
 
-        fun handleEvent(event: ActionListEvents) {
+        fun handleEvent(event: ActionListEvent) {
             when (event) {
-                ActionListEvents.Clear -> target.value = ActionListState.Target.None
-                is ActionListEvents.ComputeForMessage -> localCoroutineScope.computeForMessage(
+                ActionListEvent.Clear -> target.value = ActionListState.Target.None
+                is ActionListEvent.ComputeForMessage -> localCoroutineScope.computeForMessage(
                     timelineItem = event.event,
                     usersEventPermissions = event.userEventPermissions,
                     isDeveloperModeEnabled = isDeveloperModeEnabled,

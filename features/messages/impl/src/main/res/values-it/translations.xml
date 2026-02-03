@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="crypto_event_authenticity_mismatched_sender">"Il mittente dell\'evento non corrisponde al proprietario del dispositivo che lo ha inviato."</string>
+  <string name="crypto_event_authenticity_not_guaranteed">"L\'autenticità di questo messaggio cifrato non può essere garantita su questo dispositivo."</string>
+  <string name="crypto_event_authenticity_previously_verified">"Cifrato da un utente precedentemente verificato."</string>
+  <string name="crypto_event_authenticity_sent_in_clear">"Non cifrato."</string>
+  <string name="crypto_event_authenticity_unknown_device">"Cifrato da un dispositivo sconosciuto o eliminato."</string>
+  <string name="crypto_event_authenticity_unsigned_device">"Cifrato da un dispositivo non verificato dal proprietario."</string>
+  <string name="crypto_event_authenticity_unverified_identity">"Cifrato da un utente non verificato."</string>
   <string name="emoji_picker_category_activity">"Attività"</string>
   <string name="emoji_picker_category_flags">"Bandiere"</string>
   <string name="emoji_picker_category_foods">"Cibi &amp; Bevande"</string>

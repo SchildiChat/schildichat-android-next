@@ -98,6 +98,8 @@ fun SpacesPager(
     spaceSelectionHierarchy: ImmutableList<String>,
     onSpaceSelected: (List<String>) -> Unit,
     onUpstreamSpaceClick: (RoomId) -> Unit,
+    onCreateSpaceClick: () -> Unit,
+    onExploreClick: () -> Unit,
     onMeasureSpaceBarHeight: (Int) -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable (Modifier) -> Unit,
@@ -125,6 +127,8 @@ fun SpacesPager(
             },
             compactTabs = ScPrefs.COMPACT_ROOT_SPACES.value(),
             onUpstreamSpaceClick = onUpstreamSpaceClick,
+            onCreateSpaceClick = onCreateSpaceClick,
+            onExploreClick = onExploreClick,
             onMeasureSpaceBarHeight = onMeasureSpaceBarHeight,
             content = content,
         )
@@ -144,6 +148,8 @@ private fun ColumnScope.SpacesPager(
     selectSpace: (SpaceListDataSource.AbstractSpaceHierarchyItem?, ImmutableList<String>) -> Unit,
     compactTabs: Boolean,
     onUpstreamSpaceClick: (RoomId) -> Unit,
+    onCreateSpaceClick: () -> Unit,
+    onExploreClick: () -> Unit,
     onMeasureSpaceBarHeight: (Int) -> Unit,
     content: @Composable (Modifier) -> Unit,
 ) {
@@ -192,6 +198,8 @@ private fun ColumnScope.SpacesPager(
                 parentSelection = (parentSelection + listOf(spacesList[selectedSpaceIndex].selectionId)).toImmutableList(),
                 compactTabs = false,
                 onUpstreamSpaceClick = onUpstreamSpaceClick,
+                onCreateSpaceClick = onCreateSpaceClick,
+                onExploreClick = onExploreClick,
                 onMeasureSpaceBarHeight = {
                     childrenSpaceBarHeight.intValue = it
                     onSpaceBarHeightUpdate()
@@ -244,6 +252,8 @@ private fun ColumnScope.SpacesPager(
                         state = homeState.homeSpacesState,
                         lazyListState = lazyListState,
                         onSpaceClick = onUpstreamSpaceClick,
+                        onCreateSpaceClick = onCreateSpaceClick,
+                        onExploreClick = onExploreClick,
                     )
                 } else {
                     content(Modifier.fillMaxWidth())

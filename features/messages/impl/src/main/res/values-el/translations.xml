@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="crypto_event_authenticity_mismatched_sender">"Ο αποστολέας του συμβάντος δεν ταιριάζει με τον κάτοχο της συσκευής που το έστειλε."</string>
+  <string name="crypto_event_authenticity_not_guaranteed">"Η αυθεντικότητα αυτού του κρυπτογραφημένου μηνύματος δεν είναι εγγυημένη σε αυτήν τη συσκευή."</string>
+  <string name="crypto_event_authenticity_previously_verified">"Κρυπτογραφημένο από έναν προηγουμένως επαληθευμένο χρήστη."</string>
+  <string name="crypto_event_authenticity_sent_in_clear">"Μη κρυπτογραφημένο."</string>
+  <string name="crypto_event_authenticity_unknown_device">"Κρυπτογραφημένο από άγνωστη ή διαγεγραμμένη συσκευή."</string>
+  <string name="crypto_event_authenticity_unsigned_device">"Κρυπτογραφημένο από μια συσκευή που δεν έχει επαληθευτεί από τον ιδιοκτήτη της."</string>
+  <string name="crypto_event_authenticity_unverified_identity">"Κρυπτογραφημένο από μη επαληθευμένο χρήστη."</string>
   <string name="emoji_picker_category_activity">"Δραστηριότητες"</string>
   <string name="emoji_picker_category_flags">"Σημαίες"</string>
   <string name="emoji_picker_category_foods">"Φαγητό &amp; Ποτό"</string>

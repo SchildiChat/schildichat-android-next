@@ -12,6 +12,7 @@ import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.element.android.libraries.ui.strings.CommonStrings
+import io.element.android.tests.testutils.EnsureNeverCalled
 import io.element.android.tests.testutils.clickOn
 import io.element.android.tests.testutils.ensureCalledOnce
 import io.element.android.tests.testutils.pressBackKey
@@ -26,33 +27,45 @@ class ErrorViewTest {
     val rule = createAndroidComposeRule<ComponentActivity>()
 
     @Test
-    fun `on back pressed - calls the onRetry callback`() {
+    fun `on back pressed - calls the onCancel callback`() {
         ensureCalledOnce { callback ->
             rule.setErrorView(
-                onRetry = callback
+                onCancel = callback,
             )
             rule.pressBackKey()
         }
     }
 
     @Test
-    fun `on start over button clicked - calls the expected callback`() {
+    fun `on try again button clicked - calls the expected callback`() {
         ensureCalledOnce { callback ->
             rule.setErrorView(
                 onRetry = callback
             )
-            rule.clickOn(CommonStrings.action_start_over)
+            rule.clickOn(CommonStrings.action_try_again)
+        }
+    }
+
+    @Test
+    fun `on cancel button clicked - calls the expected callback`() {
+        ensureCalledOnce { callback ->
+            rule.setErrorView(
+                onCancel = callback
+            )
+            rule.clickOn(CommonStrings.action_cancel)
         }
     }
 
     private fun <R : TestRule> AndroidComposeTestRule<R, ComponentActivity>.setErrorView(
-        onRetry: () -> Unit,
+        onRetry: () -> Unit = EnsureNeverCalled(),
+        onCancel: () -> Unit = EnsureNeverCalled(),
         errorScreenType: ErrorScreenType = ErrorScreenType.UnknownError,
     ) {
         setContent {
             ErrorView(
                 errorScreenType = errorScreenType,
                 onRetry = onRetry,
+                onCancel = onCancel,
             )
         }
     }

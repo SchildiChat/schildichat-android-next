@@ -37,6 +37,7 @@ import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.NodeInputs
 import io.element.android.libraries.architecture.bindings
+import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.di.DependencyInjectionGraphOwner
@@ -64,6 +65,12 @@ class QrCodeLoginFlowNode(
     buildContext = buildContext,
     plugins = plugins,
 ), DependencyInjectionGraphOwner {
+    interface Callback : Plugin {
+        fun navigateBack()
+    }
+
+    private val callback: Callback = callback()
+
     private var authenticationJob: Job? = null
 
     override val graph = qrCodeLoginGraphFactory.create()
@@ -85,7 +92,6 @@ class QrCodeLoginFlowNode(
 
     override fun onBuilt() {
         super.onBuilt()
-
         observeLoginStep()
     }
 
@@ -178,7 +184,13 @@ class QrCodeLoginFlowNode(
             }
             is NavTarget.Error -> {
                 val callback = object : QrCodeErrorNode.Callback {
-                    override fun onRetry() = reset()
+                    override fun onRetry() {
+                        reset()
+                    }
+
+                    override fun onCancel() {
+                        callback.navigateBack()
+                    }
                 }
                 createNode<QrCodeErrorNode>(buildContext, plugins = listOf(navTarget.errorType, callback))
             }

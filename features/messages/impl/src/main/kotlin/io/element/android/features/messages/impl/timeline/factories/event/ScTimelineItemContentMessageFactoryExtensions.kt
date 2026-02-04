@@ -28,7 +28,6 @@ import com.beeper.android.messageformat.MatrixHtmlParser
 import com.beeper.android.messageformat.MatrixToLink
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.libraries.matrix.api.core.SessionId
-import io.element.android.libraries.matrix.api.timeline.item.event.EmoteMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageFormat
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageTypeWithAttachment
 import io.element.android.libraries.matrix.api.timeline.item.event.TextLikeMessageType

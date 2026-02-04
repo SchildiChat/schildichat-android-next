@@ -79,7 +79,7 @@ class DefaultVoiceMessageComposerPresenter(
         val recorderState by voiceRecorder.state.collectAsState(initial = VoiceRecorderState.Idle)
         val playerState by player.state.collectAsState(initial = VoiceMessageComposerPlayer.State.Initial)
         val keepScreenOn by remember { derivedStateOf { recorderState is VoiceRecorderState.Recording } }
-        val permissionState by rememberUpdatedState (permissionsPresenter.present())
+        val permissionState by rememberUpdatedState(permissionsPresenter.present())
         var isSending by remember { mutableStateOf(false) }
         var showSendFailureDialog by remember { mutableStateOf(false) }
 

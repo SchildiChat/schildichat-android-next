@@ -23,11 +23,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -55,6 +51,7 @@ import io.element.android.libraries.designsystem.theme.components.Button
 import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
 import io.element.android.libraries.designsystem.theme.components.IconSource
 import io.element.android.libraries.designsystem.theme.components.Text
+import io.element.android.libraries.designsystem.utils.OnVisibleRangeChangeEffect
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.ImmutableList
 
@@ -215,17 +212,8 @@ private fun RoomsViewList(
     lazyListState: LazyListState,
     modifier: Modifier = Modifier,
 ) {
-    val visibleRange by remember {
-        derivedStateOf {
-            val layoutInfo = lazyListState.layoutInfo
-            val firstItemIndex = layoutInfo.visibleItemsInfo.firstOrNull()?.index ?: 0
-            val size = layoutInfo.visibleItemsInfo.size
-            firstItemIndex until firstItemIndex + size
-        }
-    }
-    val updatedEventSink by rememberUpdatedState(newValue = eventSink)
-    LaunchedEffect(visibleRange) {
-        updatedEventSink(RoomListEvent.UpdateVisibleRange(visibleRange))
+    OnVisibleRangeChangeEffect(lazyListState) { visibleRange ->
+        eventSink(RoomListEvent.UpdateVisibleRange(visibleRange))
     }
     LazyColumn(
         state = lazyListState,
@@ -237,7 +225,7 @@ private fun RoomsViewList(
                 item {
                     SetUpRecoveryKeyBanner(
                         onContinueClick = onSetUpRecoveryClick,
-                        onDismissClick = { updatedEventSink(RoomListEvent.DismissBanner) },
+                        onDismissClick = { eventSink(RoomListEvent.DismissBanner) },
                     )
                 }
             }
@@ -245,7 +233,7 @@ private fun RoomsViewList(
                 item {
                     ConfirmRecoveryKeyBanner(
                         onContinueClick = onConfirmRecoveryKeyClick,
-                        onDismissClick = { updatedEventSink(RoomListEvent.DismissBanner) },
+                        onDismissClick = { eventSink(RoomListEvent.DismissBanner) },
                     )
                 }
             }
@@ -260,7 +248,7 @@ private fun RoomsViewList(
             } else if (state.showNewNotificationSoundBanner) {
                 item {
                     NewNotificationSoundBanner(
-                        onDismissClick = { updatedEventSink(RoomListEvent.DismissNewNotificationSoundBanner) },
+                        onDismissClick = { eventSink(RoomListEvent.DismissNewNotificationSoundBanner) },
                     )
                 }
             }

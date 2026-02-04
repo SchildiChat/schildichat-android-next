@@ -33,6 +33,7 @@ import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.LocalBuildMeta
 import io.element.android.libraries.designsystem.theme.components.Button
+import io.element.android.libraries.designsystem.theme.components.OutlinedButton
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.persistentListOf
@@ -41,17 +42,23 @@ import kotlinx.collections.immutable.persistentListOf
 fun ErrorView(
     errorScreenType: ErrorScreenType,
     onRetry: () -> Unit,
+    onCancel: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val appName = LocalBuildMeta.current.applicationName
-    BackHandler(onBack = onRetry)
+    BackHandler(onBack = onCancel)
     FlowStepPage(
         modifier = modifier,
         iconStyle = BigIcon.Style.AlertSolid,
         title = titleText(errorScreenType, appName),
         subTitle = subtitleText(errorScreenType, appName),
         content = { Content(errorScreenType) },
-        buttons = { Buttons(onRetry) },
+        buttons = {
+            Buttons(
+                onRetry = onRetry,
+                onCancel = onCancel,
+            )
+        },
     )
 }
 
@@ -118,11 +125,19 @@ private fun Content(errorScreenType: ErrorScreenType) {
 }
 
 @Composable
-private fun Buttons(onRetry: () -> Unit) {
+private fun Buttons(
+    onRetry: () -> Unit,
+    onCancel: () -> Unit,
+) {
     Button(
         modifier = Modifier.fillMaxWidth(),
-        text = stringResource(CommonStrings.action_start_over),
-        onClick = onRetry
+        text = stringResource(CommonStrings.action_try_again),
+        onClick = onRetry,
+    )
+    OutlinedButton(
+        modifier = Modifier.fillMaxWidth(),
+        text = stringResource(CommonStrings.action_cancel),
+        onClick = onCancel,
     )
 }
 
@@ -133,6 +148,7 @@ internal fun ErrorViewPreview(@PreviewParameter(ErrorScreenTypeProvider::class) 
         ErrorView(
             errorScreenType = errorScreenType,
             onRetry = {},
+            onCancel = {},
         )
     }
 }

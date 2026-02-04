@@ -180,7 +180,7 @@ private fun HomeScaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             HomeTopBar(
-                selectedNavigationItem = state.currentHomeNavigationBarItem,
+                selectedNavigationItem = state.scSelectedNavigationBarItem(), // state.currentHomeNavigationBarItem,
                 title = stringResource(state.currentHomeNavigationBarItem.labelRes),
                 currentUserAndNeighbors = state.currentUserAndNeighbors,
                 showAvatarIndicator = state.showAvatarIndicator,

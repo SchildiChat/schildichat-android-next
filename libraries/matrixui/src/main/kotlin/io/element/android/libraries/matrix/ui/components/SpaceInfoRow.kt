@@ -117,7 +117,7 @@ internal fun SpaceInfoRowPreview() = ElementPreview {
             visibility = SpaceRoomVisibility.Public
         )
         SpaceInfoRow(
-            visibility = SpaceRoomVisibility.Restricted
+            visibility = SpaceRoomVisibility.SpaceMembers
         )
     }
 }

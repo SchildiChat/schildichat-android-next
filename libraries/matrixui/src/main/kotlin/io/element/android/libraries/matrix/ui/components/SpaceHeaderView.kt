@@ -9,14 +9,18 @@
 package io.element.android.libraries.matrix.ui.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import io.element.android.libraries.designsystem.atomic.atoms.RoomPreviewDescriptionAtom
+import io.element.android.libraries.designsystem.atomic.atoms.RoomPreviewAliasAtom
 import io.element.android.libraries.designsystem.atomic.atoms.RoomPreviewTitleAtom
 import io.element.android.libraries.designsystem.atomic.organisms.RoomPreviewOrganism
 import io.element.android.libraries.designsystem.components.avatar.Avatar
@@ -26,6 +30,7 @@ import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.components.avatar.anAvatarData
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
+import io.element.android.libraries.matrix.api.core.RoomAlias
 import io.element.android.libraries.matrix.api.spaces.SpaceRoomVisibility
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.ui.strings.CommonStrings
@@ -39,6 +44,7 @@ import kotlinx.collections.immutable.persistentListOf
 fun SpaceHeaderView(
     avatarData: AvatarData,
     name: String?,
+    alias: RoomAlias?,
     topic: String?,
     visibility: SpaceRoomVisibility,
     heroes: ImmutableList<MatrixUser>,
@@ -66,7 +72,15 @@ fun SpaceHeaderView(
             }
         },
         subtitle = {
-            SpaceInfoRow(visibility = visibility)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ){
+                if(alias != null){
+                    RoomPreviewAliasAtom(alias = alias.value)
+                }
+                SpaceInfoRow(visibility = visibility)
+            }
         },
         description = if (topic.isNullOrBlank()) {
             null
@@ -100,6 +114,7 @@ internal fun SpaceHeaderViewPreview() = ElementPreview {
             url = "anUrl",
             size = AvatarSize.SpaceHeader,
         ),
+        alias = RoomAlias("#spaceAlias:matrix.org"),
         name = "Space name",
         topic = "Space topic: " + LoremIpsum(40).values.first(),
         topicMaxLines = 2,

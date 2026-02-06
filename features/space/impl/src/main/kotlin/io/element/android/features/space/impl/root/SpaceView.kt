@@ -260,6 +260,7 @@ private fun SpaceViewContent(
                 Column {
                     SpaceHeaderView(
                         avatarData = spaceInfo.getAvatarData(AvatarSize.SpaceHeader),
+                        alias = spaceInfo.canonicalAlias,
                         name = spaceInfo.name,
                         topic = spaceInfo.topic,
                         topicMaxLines = 2,

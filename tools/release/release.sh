@@ -97,14 +97,17 @@ git pull
 printf "\n================================================================================\n"
 # Guessing version to propose a default version
 versionsFile="./plugins/src/main/kotlin/Versions.kt"
-# Get current year on 2 digits
-versionYearCandidate=$(date +%y)
+# The version of the release must match the date of next monday, where the release is supposed to go live
+# The command below gets the date of next monday
+newtMondayDateCommand="date -v +1w -v -monday"
+# Get release year on 2 digits
+versionYearCandidate=$(${newtMondayDateCommand} +%y)
 currentVersionMonth=$(grep "val versionMonth" ${versionsFile} | cut  -d " " -f6)
-# Get current month on 2 digits
-versionMonthCandidate=$(date +%m)
+# Get release month on 2 digits
+versionMonthCandidate=$(${newtMondayDateCommand} +%m)
 versionMonthCandidateNoLeadingZero=${versionMonthCandidate/#0/}
 currentVersionReleaseNumber=$(grep "val versionReleaseNumber" ${versionsFile} | cut  -d " " -f6)
-# if the current month is the same as the current version, we increment the release number, else we reset it to 0
+# if the release month is the same as the current version, we increment the release number, else we reset it to 0
 if [[ ${currentVersionMonth} -eq ${versionMonthCandidateNoLeadingZero} ]]; then
   versionReleaseNumberCandidate=$((currentVersionReleaseNumber + 1))
 else
@@ -112,7 +115,7 @@ else
 fi
 versionCandidate="${versionYearCandidate}.${versionMonthCandidate}.${versionReleaseNumberCandidate}"
 
-read -r -p "Please enter the release version (example: ${versionCandidate}). Format must be 'YY.MM.x' or 'YY.MM.xy'. Just press enter if ${versionCandidate} is correct. " version
+read -r -p "Please enter the release version (example: ${versionCandidate}). Format must be 'YY.MM.x' or 'YY.MM.xy', with year and month matching next Monday. Just press enter if ${versionCandidate} is correct. " version
 version=${version:-${versionCandidate}}
 
 # extract year, month and release number for future use

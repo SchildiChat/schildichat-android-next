@@ -99,12 +99,12 @@ printf "\n======================================================================
 versionsFile="./plugins/src/main/kotlin/Versions.kt"
 # The version of the release must match the date of next monday, where the release is supposed to go live
 # The command below gets the date of next monday
-newtMondayDateCommand="date -v +1w -v -monday"
+nextMondayDateCommand="date -v +1w -v -monday"
 # Get release year on 2 digits
-versionYearCandidate=$(${newtMondayDateCommand} +%y)
+versionYearCandidate=$(${nextMondayDateCommand} +%y)
 currentVersionMonth=$(grep "val versionMonth" ${versionsFile} | cut  -d " " -f6)
 # Get release month on 2 digits
-versionMonthCandidate=$(${newtMondayDateCommand} +%m)
+versionMonthCandidate=$(${nextMondayDateCommand} +%m)
 versionMonthCandidateNoLeadingZero=${versionMonthCandidate/#0/}
 currentVersionReleaseNumber=$(grep "val versionReleaseNumber" ${versionsFile} | cut  -d " " -f6)
 # if the release month is the same as the current version, we increment the release number, else we reset it to 0

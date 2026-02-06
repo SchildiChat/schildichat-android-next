@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -105,7 +107,6 @@ fun ConfigureRoomView(
                 .imePadding()
                 .verticalScroll(rememberScrollState())
                 .consumeWindowInsets(padding),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             RoomNameWithAvatar(
                 isSpace = isSpace,
@@ -115,6 +116,7 @@ fun ConfigureRoomView(
                 onAvatarClick = ::onAvatarClick,
                 onChangeRoomName = { state.eventSink(ConfigureRoomEvents.RoomNameChanged(it)) },
             )
+            Spacer(modifier = Modifier.height(16.dp))
             RoomTopic(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 topic = state.config.topic.orEmpty(),
@@ -122,6 +124,7 @@ fun ConfigureRoomView(
             )
 
             if (!state.config.isSpace && state.spaces.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(16.dp))
                 SelectParentSpaceOptions(
                     spaces = state.spaces,
                     selectedSpace = state.config.parentSpace,
@@ -272,12 +275,13 @@ private fun RoomTopic(
 internal fun ConfigureRoomOptions(
     title: String,
     modifier: Modifier = Modifier,
+    hasDivider: Boolean = true,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
         modifier = modifier.selectableGroup()
     ) {
-        ListSectionHeader(title = title)
+        ListSectionHeader(title = title, hasDivider = hasDivider)
         content()
     }
 }

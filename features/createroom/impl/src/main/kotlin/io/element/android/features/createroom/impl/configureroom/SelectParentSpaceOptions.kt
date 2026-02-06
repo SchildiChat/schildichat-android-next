@@ -8,7 +8,6 @@
 package io.element.android.features.createroom.impl.configureroom
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,7 +20,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import io.element.android.compound.tokens.generated.CompoundIcons
+import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.createroom.impl.R
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
@@ -30,7 +29,6 @@ import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.components.list.ListItemContent
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
-import io.element.android.libraries.designsystem.theme.components.IconSource
 import io.element.android.libraries.designsystem.theme.components.ListItem
 import io.element.android.libraries.designsystem.theme.components.ListSectionHeader
 import io.element.android.libraries.designsystem.theme.components.ModalBottomSheet
@@ -55,6 +53,7 @@ internal fun SelectParentSpaceOptions(
     var displaySelectSpaceBottomSheet by remember { mutableStateOf(false) }
     ConfigureRoomOptions(
         title = stringResource(CommonStrings.common_space),
+        hasDivider = false,
         modifier = modifier
     ) {
         ListItem(
@@ -62,22 +61,20 @@ internal fun SelectParentSpaceOptions(
                 Text(
                     text = selectedSpace?.displayName
                         ?: stringResource(R.string.screen_create_room_space_selection_no_space_title),
-                    maxLines = 1
-                )
-            },
-            supportingContent = {
-                Text(
-                    text = if (selectedSpace != null) {
-                        selectedSpace.canonicalAlias?.value.orEmpty()
+                    maxLines = 1,
+                    color = if (selectedSpace != null) {
+                        ElementTheme.colors.textPrimary
                     } else {
-                        stringResource(R.string.screen_create_room_space_selection_no_space_description)
-                    },
-                    maxLines = 1
+                        ElementTheme.colors.textSecondary
+                    }
                 )
             },
-            leadingContent = if (selectedSpace == null) {
-                ListItemContent.Icon(IconSource.Vector(CompoundIcons.Home()))
-            } else {
+            supportingContent = selectedSpace?.canonicalAlias?.let { alias ->
+                {
+                    Text(text = alias.value, maxLines = 1)
+                }
+            },
+            leadingContent = selectedSpace?.let {
                 ListItemContent.Custom({
                     val avatarData = AvatarData(
                         id = selectedSpace.roomId.value,
@@ -119,7 +116,7 @@ internal fun SelectParentSpaceOptions(
 }
 
 @Composable
-private fun ColumnScope.SelectParentSpaceBottomSheet(
+private fun SelectParentSpaceBottomSheet(
     spaces: ImmutableList<SpaceRoom>,
     selectedSpace: SpaceRoom?,
     onSelectSpace: (SpaceRoom?) -> Unit,
@@ -133,19 +130,10 @@ private fun ColumnScope.SelectParentSpaceBottomSheet(
             ListItem(
                 headlineContent = {
                     Text(
-                        stringResource(R.string.screen_create_room_space_selection_no_space_title),
+                        text = stringResource(R.string.screen_create_room_space_selection_no_space_option),
                         maxLines = 1
                     )
                 },
-                supportingContent = {
-                    Text(
-                        stringResource(R.string.screen_create_room_space_selection_no_space_description),
-                        maxLines = 1
-                    )
-                },
-                leadingContent = ListItemContent.Icon(
-                    IconSource.Vector(CompoundIcons.Home())
-                ),
                 trailingContent = ListItemContent.RadioButton(
                     selected = selectedSpace == null
                 ),
@@ -157,29 +145,31 @@ private fun ColumnScope.SelectParentSpaceBottomSheet(
                 ListItem(
                     headlineContent = {
                         Text(
-                            space.displayName,
+                            text = space.displayName,
                             maxLines = 1
                         )
                     },
-                    supportingContent = {
-                        Text(
-                            space.canonicalAlias?.value.orEmpty(),
-                            maxLines = 1
-                        )
+                    supportingContent = space.canonicalAlias?.let { alias ->
+                        {
+                            Text(
+                                text = alias.value,
+                                maxLines = 1
+                            )
+                        }
                     },
                     leadingContent = ListItemContent.Custom({
-                            val avatarData =
-                                AvatarData(
-                                    id = space.roomId.value,
-                                    name = space.displayName,
-                                    url = space.avatarUrl,
-                                    size = AvatarSize.SelectParentSpace,
-                                )
-                            Avatar(
-                                avatarData = avatarData,
-                                avatarType = AvatarType.Space()
+                        val avatarData =
+                            AvatarData(
+                                id = space.roomId.value,
+                                name = space.displayName,
+                                url = space.avatarUrl,
+                                size = AvatarSize.SelectParentSpace,
                             )
-                        }),
+                        Avatar(
+                            avatarData = avatarData,
+                            avatarType = AvatarType.Space()
+                        )
+                    }),
                     trailingContent = ListItemContent.RadioButton(
                         selected = selectedSpace == space
                     ),
@@ -201,7 +191,8 @@ internal fun SelectParentSpaceBottomSheetPreview() =
                         canonicalAlias = RoomAlias(
                             "#a-room-alias:example.org"
                         )
-                    )
+                    ),
+                    aSpaceRoom()
                 ),
                 selectedSpace = null,
             ) {}

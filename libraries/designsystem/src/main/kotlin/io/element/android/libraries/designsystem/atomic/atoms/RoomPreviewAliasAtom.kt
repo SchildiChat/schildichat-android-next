@@ -81,4 +81,3 @@ internal fun RoomPreviewAliasAtomPreview() = ElementPreview {
         copiable = true
     )
 }
-

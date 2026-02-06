@@ -246,7 +246,7 @@ private fun SpaceViewContent(
     onRoomClick: (spaceRoom: SpaceRoom) -> Unit,
     onTopicClick: (String) -> Unit,
     onCreateRoomClick: () -> Unit,
-    onAddRoomClick: ()->Unit,
+    onAddRoomClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier.fillMaxSize()) {
@@ -278,7 +278,7 @@ private fun SpaceViewContent(
             item {
                 EmptySpaceView(
                     onCreateRoomClick = onCreateRoomClick,
-                    onAddRoomClick =onAddRoomClick,
+                    onAddRoomClick = onAddRoomClick,
                 )
             }
         } else {
@@ -342,7 +342,7 @@ private fun SpaceViewContent(
 @Composable
 private fun EmptySpaceView(
     onCreateRoomClick: () -> Unit,
-    onAddRoomClick: ()->Unit,
+    onAddRoomClick: () -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -356,7 +356,7 @@ private fun EmptySpaceView(
                 .padding(top = 40.dp, start = 24.dp, end = 24.dp, bottom = 24.dp),
         )
         ButtonColumnMolecule(
-            modifier  = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp)
         ) {
             Button(
                 text = stringResource(CommonStrings.action_add_existing_rooms),

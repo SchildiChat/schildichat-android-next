@@ -61,6 +61,9 @@ class QrCodeLoginFlowNodeTest {
         qrCodeLoginManager.currentLoginStep.value = QrCodeLoginStep.Failed(QrLoginException.Expired)
         assertThat(flowNode.currentNavTarget()).isEqualTo(QrCodeLoginFlowNode.NavTarget.Error(QrCodeErrorScreenType.Expired))
 
+        qrCodeLoginManager.currentLoginStep.value = QrCodeLoginStep.Failed(QrLoginException.NotFound)
+        assertThat(flowNode.currentNavTarget()).isEqualTo(QrCodeLoginFlowNode.NavTarget.Error(QrCodeErrorScreenType.Expired))
+
         qrCodeLoginManager.currentLoginStep.value = QrCodeLoginStep.Failed(QrLoginException.Declined)
         assertThat(flowNode.currentNavTarget()).isEqualTo(QrCodeLoginFlowNode.NavTarget.Error(QrCodeErrorScreenType.Declined))
 

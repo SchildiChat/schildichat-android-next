@@ -62,11 +62,7 @@ internal fun SelectParentSpaceOptions(
                     text = selectedSpace?.displayName
                         ?: stringResource(R.string.screen_create_room_space_selection_no_space_title),
                     maxLines = 1,
-                    color = if (selectedSpace != null) {
-                        ElementTheme.colors.textPrimary
-                    } else {
-                        ElementTheme.colors.textSecondary
-                    }
+                    color = ElementTheme.colors.textPrimary
                 )
             },
             supportingContent = selectedSpace?.canonicalAlias?.let { alias ->

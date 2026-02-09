@@ -6,6 +6,8 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
+@file:OptIn(FlowPreview::class)
+
 package io.element.android.features.space.impl.root
 
 import androidx.compose.runtime.Composable
@@ -47,10 +49,13 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 @Inject
 class SpacePresenter(
@@ -80,13 +85,16 @@ class SpacePresenter(
         val localCoroutineScope = rememberCoroutineScope()
 
         val hasMoreToLoad by remember {
-            spaceRoomList.paginationStatusFlow.mapState { status ->
-                when (status) {
-                    is SpaceRoomList.PaginationStatus.Idle -> status.hasMoreToLoad
-                    SpaceRoomList.PaginationStatus.Loading -> true
+            spaceRoomList.paginationStatusFlow
+                .mapState { status ->
+                    when (status) {
+                        is SpaceRoomList.PaginationStatus.Idle -> status.hasMoreToLoad
+                        SpaceRoomList.PaginationStatus.Loading -> true
+                    }
                 }
-            }
-        }.collectAsState()
+                // Debounce to give more time for spaceRoomList to updates
+                .debounce(100.milliseconds)
+        }.collectAsState(true)
 
         val permissions by room.permissionsAsState(SpacePermissions.DEFAULT) { perms ->
             perms.spacePermissions()

@@ -78,7 +78,7 @@ fun ConfigureRoomView(
     onCreateRoomSuccess: (RoomId) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val isSpace = state.config.isSpace
+    val isSpace = state.isSpace
     val focusManager = LocalFocusManager.current
     val isAvatarActionsSheetVisible = remember { mutableStateOf(false) }
 
@@ -122,16 +122,14 @@ fun ConfigureRoomView(
                 topic = state.config.topic.orEmpty(),
                 onTopicChange = { state.eventSink(ConfigureRoomEvents.TopicChanged(it)) },
             )
-
-            if (!state.config.isSpace && state.spaces.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+            if (!state.isSpace && state.spaces.isNotEmpty()) {
                 SelectParentSpaceOptions(
                     spaces = state.spaces,
                     selectedSpace = state.config.parentSpace,
                     onSelectSpace = { state.eventSink(ConfigureRoomEvents.SetParentSpace(it)) },
                 )
             }
-
             RoomJoinRuleOptions(
                 options = state.availableJoinRules,
                 selected = state.config.visibilityState.joinRuleItem,
@@ -141,20 +139,17 @@ fun ConfigureRoomView(
                     state.eventSink(ConfigureRoomEvents.JoinRuleChanged(it))
                 },
             )
-
             if (state.config.visibilityState !is RoomVisibilityState.Private) {
-                Column {
-                    ListSectionHeader(title = stringResource(R.string.screen_create_room_room_address_section_title))
-                    RoomAddressField(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        address = state.config.visibilityState.roomAddress().getOrNull().orEmpty(),
-                        homeserverName = state.homeserverName,
-                        addressValidity = state.roomAddressValidity,
-                        onAddressChange = { state.eventSink(ConfigureRoomEvents.RoomAddressChanged(it)) },
-                        label = null,
-                        supportingText = stringResource(R.string.screen_create_room_room_address_section_footer),
-                    )
-                }
+                ListSectionHeader(title = stringResource(R.string.screen_create_room_room_address_section_title))
+                RoomAddressField(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    address = state.config.visibilityState.roomAddress().getOrNull().orEmpty(),
+                    homeserverName = state.homeserverName,
+                    addressValidity = state.roomAddressValidity,
+                    onAddressChange = { state.eventSink(ConfigureRoomEvents.RoomAddressChanged(it)) },
+                    label = null,
+                    supportingText = stringResource(R.string.screen_create_room_room_address_section_footer),
+                )
             }
         }
     }
@@ -220,7 +215,9 @@ private fun RoomNameWithAvatar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
-            modifier = Modifier.padding(end = 8.dp).size(AvatarSize.EditRoomDetails.dp),
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .size(AvatarSize.EditRoomDetails.dp),
             contentAlignment = Alignment.Center,
         ) {
             val avatarState = remember(avatarUri) {
@@ -306,10 +303,10 @@ private fun RoomJoinRuleOptions(
                         size = RoundedIconAtomSize.Big,
                         imageVector = when (item) {
                             JoinRuleItem.PublicVisibility.Public -> CompoundIcons.Public()
-                            is JoinRuleItem.PublicVisibility.Restricted -> CompoundIcons.Space()
+                            is JoinRuleItem.PrivateVisibility.Restricted -> CompoundIcons.Space()
                             JoinRuleItem.PublicVisibility.AskToJoin,
-                            is JoinRuleItem.PublicVisibility.AskToJoinRestricted -> CompoundIcons.UserAdd()
-                            JoinRuleItem.Private -> CompoundIcons.Lock()
+                            is JoinRuleItem.PrivateVisibility.AskToJoinRestricted -> CompoundIcons.UserAdd()
+                            JoinRuleItem.PrivateVisibility.Private -> CompoundIcons.Lock()
                         },
                         tint = if (isSelected) ElementTheme.colors.iconPrimary else ElementTheme.colors.iconSecondary,
                         backgroundTint = Color.Transparent,
@@ -318,28 +315,28 @@ private fun RoomJoinRuleOptions(
                 headlineContent = {
                     val title = when (item) {
                         JoinRuleItem.PublicVisibility.Public -> stringResource(R.string.screen_create_room_room_access_section_public_option_title)
-                        is JoinRuleItem.PublicVisibility.Restricted -> stringResource(R.string.screen_create_room_room_access_section_restricted_option_title)
+                        is JoinRuleItem.PrivateVisibility.Restricted -> stringResource(R.string.screen_create_room_room_access_section_restricted_option_title)
                         JoinRuleItem.PublicVisibility.AskToJoin -> stringResource(R.string.screen_create_room_room_access_section_knocking_option_title)
-                        is JoinRuleItem.PublicVisibility.AskToJoinRestricted -> stringResource(
+                        is JoinRuleItem.PrivateVisibility.AskToJoinRestricted -> stringResource(
                             R.string.screen_create_room_room_access_section_knocking_restricted_option_title
                         )
-                        JoinRuleItem.Private -> stringResource(R.string.screen_create_room_room_access_section_private_option_title)
+                        JoinRuleItem.PrivateVisibility.Private -> stringResource(R.string.screen_create_room_room_access_section_private_option_title)
                     }
                     Text(text = title)
                 },
                 supportingContent = {
                     val description = when (item) {
                         JoinRuleItem.PublicVisibility.Public -> stringResource(R.string.screen_create_room_room_access_section_public_option_description)
-                        is JoinRuleItem.PublicVisibility.Restricted -> stringResource(
+                        is JoinRuleItem.PrivateVisibility.Restricted -> stringResource(
                             R.string.screen_create_room_room_access_section_restricted_option_description,
                             parentSpace?.displayName.orEmpty()
                         )
                         JoinRuleItem.PublicVisibility.AskToJoin -> stringResource(R.string.screen_create_room_room_access_section_knocking_option_description)
-                        is JoinRuleItem.PublicVisibility.AskToJoinRestricted -> stringResource(
+                        is JoinRuleItem.PrivateVisibility.AskToJoinRestricted -> stringResource(
                             R.string.screen_create_room_room_access_section_knocking_restricted_option_description,
                             parentSpace?.displayName.orEmpty()
                         )
-                        JoinRuleItem.Private -> stringResource(R.string.screen_create_room_room_access_section_private_option_description)
+                        JoinRuleItem.PrivateVisibility.Private -> stringResource(R.string.screen_create_room_room_access_section_private_option_description)
                     }
                     Text(text = description)
                 },

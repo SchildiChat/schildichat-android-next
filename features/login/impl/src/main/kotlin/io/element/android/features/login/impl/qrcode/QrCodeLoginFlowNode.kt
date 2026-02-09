@@ -119,7 +119,8 @@ class QrCodeLoginFlowNode(
                                 is QrLoginException.Cancelled -> {
                                     backstack.replace(NavTarget.Error(QrCodeErrorScreenType.Cancelled))
                                 }
-                                is QrLoginException.Expired -> {
+                                is QrLoginException.Expired,
+                                is QrLoginException.NotFound -> {
                                     backstack.replace(NavTarget.Error(QrCodeErrorScreenType.Expired))
                                 }
                                 is QrLoginException.Declined -> {
@@ -138,7 +139,9 @@ class QrCodeLoginFlowNode(
                                     Timber.e(error, "OIDC metadata is invalid")
                                     backstack.replace(NavTarget.Error(QrCodeErrorScreenType.UnknownError))
                                 }
-                                else -> {
+                                QrLoginException.CheckCodeAlreadySent,
+                                QrLoginException.CheckCodeCannotBeSent,
+                                QrLoginException.Unknown -> {
                                     Timber.e(error, "Unknown error found")
                                     backstack.replace(NavTarget.Error(QrCodeErrorScreenType.UnknownError))
                                 }

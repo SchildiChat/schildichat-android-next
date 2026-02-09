@@ -522,7 +522,9 @@ class DefaultVoiceMessageComposerPresenterTest {
             permissionsPresenter.setPermissionGranted()
 
             awaitItem().eventSink(VoiceMessageComposerEvent.RecorderEvent(VoiceMessageRecorderEvent.Start))
-            val finalState = awaitItem()
+            advanceUntilIdle()
+
+            val finalState = expectMostRecentItem()
             assertThat(finalState.voiceMessageState).isEqualTo(RECORDING_STATE)
             voiceRecorder.assertCalls(stopped = 1, started = 1)
 
@@ -547,14 +549,16 @@ class DefaultVoiceMessageComposerPresenterTest {
                 assertThat(it.showPermissionRationaleDialog).isTrue()
                 it.eventSink(VoiceMessageComposerEvent.AcceptPermissionRationale)
             }
+            skipItems(1)
 
             // Dialog is hidden, user accepts permissions
             assertThat(awaitItem().showPermissionRationaleDialog).isFalse()
 
+            // Permission is granted, recording starts automatically
             permissionsPresenter.setPermissionGranted()
+            advanceUntilIdle()
 
-            awaitItem().eventSink(VoiceMessageComposerEvent.RecorderEvent(VoiceMessageRecorderEvent.Start))
-            val finalState = awaitItem()
+            val finalState = expectMostRecentItem()
             assertThat(finalState.voiceMessageState).isEqualTo(RECORDING_STATE)
             voiceRecorder.assertCalls(started = 1)
 
@@ -579,12 +583,14 @@ class DefaultVoiceMessageComposerPresenterTest {
                 assertThat(it.showPermissionRationaleDialog).isTrue()
                 it.eventSink(VoiceMessageComposerEvent.DismissPermissionsRationale)
             }
+            skipItems(1)
 
             // Dialog is hidden, user tries to record again
             awaitItem().also {
                 assertThat(it.showPermissionRationaleDialog).isFalse()
                 it.eventSink(VoiceMessageComposerEvent.RecorderEvent(VoiceMessageRecorderEvent.Start))
             }
+            skipItems(1)
 
             // Dialog is shown once again
             val finalState = awaitItem().also {
@@ -593,6 +599,7 @@ class DefaultVoiceMessageComposerPresenterTest {
             }
             voiceRecorder.assertCalls(started = 0)
 
+            cancelAndIgnoreRemainingEvents()
             testPauseAndDestroy(finalState)
         }
     }

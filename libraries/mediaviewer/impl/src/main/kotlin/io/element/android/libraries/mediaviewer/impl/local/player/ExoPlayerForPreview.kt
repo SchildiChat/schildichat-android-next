@@ -142,7 +142,9 @@ class ExoPlayerForPreview(
     override fun getMediaItemCount(): Int = throw NotImplementedError()
     override fun getMediaItemAt(index: Int): MediaItem = throw NotImplementedError()
     override fun getDuration(): Long = throw NotImplementedError()
-    override fun getCurrentPosition(): Long = throw NotImplementedError()
+
+    // Cannot throw, this method is invoked when recording Paparazzi screenshots.
+    override fun getCurrentPosition(): Long = 0L
     override fun getBufferedPosition(): Long = throw NotImplementedError()
     override fun getBufferedPercentage(): Int = throw NotImplementedError()
     override fun getTotalBufferedDuration(): Long = throw NotImplementedError()

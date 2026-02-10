@@ -114,8 +114,10 @@ private fun ReactionSummaryViewContent(
     LaunchedEffect(pagerState.currentPage) {
         selectedReactionKey = summary.reactions[pagerState.currentPage].key
         val visibleInfo = reactionListState.layoutInfo.visibleItemsInfo
-        if (selectedReactionIndex <= visibleInfo.first().index || selectedReactionIndex >= visibleInfo.last().index) {
-            reactionListState.animateScrollToItem(selectedReactionIndex)
+        if (visibleInfo.isNotEmpty()) {
+            if (selectedReactionIndex <= visibleInfo.first().index || selectedReactionIndex >= visibleInfo.last().index) {
+                reactionListState.animateScrollToItem(selectedReactionIndex)
+            }
         }
     }
 

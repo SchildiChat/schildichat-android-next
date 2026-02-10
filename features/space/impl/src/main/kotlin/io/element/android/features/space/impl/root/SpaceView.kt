@@ -50,6 +50,7 @@ import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.space.impl.R
 import io.element.android.libraries.architecture.AsyncAction
+import io.element.android.libraries.designsystem.atomic.molecules.ButtonColumnMolecule
 import io.element.android.libraries.designsystem.atomic.molecules.IconTitleSubtitleMolecule
 import io.element.android.libraries.designsystem.atomic.molecules.InviteButtonsRowMolecule
 import io.element.android.libraries.designsystem.components.BigIcon
@@ -76,6 +77,7 @@ import io.element.android.libraries.designsystem.theme.components.HorizontalDivi
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconButton
 import io.element.android.libraries.designsystem.theme.components.IconSource
+import io.element.android.libraries.designsystem.theme.components.OutlinedButton
 import io.element.android.libraries.designsystem.theme.components.Scaffold
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TextButton
@@ -170,6 +172,7 @@ fun SpaceView(
                         state.eventSink(SpaceEvents.ShowTopicViewer(topic))
                     },
                     onCreateRoomClick = onCreateRoomClick,
+                    onAddRoomClick = onAddRoomClick,
                 )
                 JoinFailuresEffect(
                     hasAnyFailure = state.hasAnyJoinFailures,
@@ -243,6 +246,7 @@ private fun SpaceViewContent(
     onRoomClick: (spaceRoom: SpaceRoom) -> Unit,
     onTopicClick: (String) -> Unit,
     onCreateRoomClick: () -> Unit,
+    onAddRoomClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier.fillMaxSize()) {
@@ -256,6 +260,7 @@ private fun SpaceViewContent(
                 Column {
                     SpaceHeaderView(
                         avatarData = spaceInfo.getAvatarData(AvatarSize.SpaceHeader),
+                        alias = spaceInfo.canonicalAlias,
                         name = spaceInfo.name,
                         topic = spaceInfo.topic,
                         topicMaxLines = 2,
@@ -271,7 +276,10 @@ private fun SpaceViewContent(
 
         if (state.children.isEmpty() && state.canEditSpaceGraph && !state.hasMoreToLoad) {
             item {
-                EmptySpaceView(onCreateRoomClick = onCreateRoomClick)
+                EmptySpaceView(
+                    onCreateRoomClick = onCreateRoomClick,
+                    onAddRoomClick = onAddRoomClick,
+                )
             }
         } else {
             itemsIndexed(
@@ -332,7 +340,10 @@ private fun SpaceViewContent(
 }
 
 @Composable
-private fun EmptySpaceView(onCreateRoomClick: () -> Unit) {
+private fun EmptySpaceView(
+    onCreateRoomClick: () -> Unit,
+    onAddRoomClick: () -> Unit,
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(bottom = 24.dp),
@@ -340,15 +351,25 @@ private fun EmptySpaceView(onCreateRoomClick: () -> Unit) {
         IconTitleSubtitleMolecule(
             title = stringResource(R.string.screen_space_empty_state_title),
             subTitle = null,
-            iconStyle = BigIcon.Style.Default(CompoundIcons.Room()),
+            iconStyle = BigIcon.Style.Default(vectorIcon = CompoundIcons.Room(), usePrimaryTint = true),
             modifier = Modifier.fillMaxWidth()
                 .padding(top = 40.dp, start = 24.dp, end = 24.dp, bottom = 24.dp),
         )
-        Button(
-            text = stringResource(R.string.screen_space_add_room_action),
-            leadingIcon = IconSource.Vector(CompoundIcons.Plus()),
-            onClick = onCreateRoomClick,
-        )
+        ButtonColumnMolecule(
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            Button(
+                text = stringResource(CommonStrings.action_add_existing_rooms),
+                leadingIcon = IconSource.Vector(CompoundIcons.Plus()),
+                onClick = onAddRoomClick,
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedButton(
+                text = stringResource(CommonStrings.action_create_room),
+                onClick = onCreateRoomClick,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
     }
 }
 

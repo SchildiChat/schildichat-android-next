@@ -17,6 +17,7 @@ import io.element.android.libraries.permissions.api.PermissionsState
 import kotlinx.collections.immutable.ImmutableList
 
 data class ConfigureRoomState(
+    val isSpace: Boolean,
     val config: CreateRoomConfig,
     val avatarActions: ImmutableList<AvatarAction>,
     val createRoomAction: AsyncAction<RoomId>,
@@ -28,5 +29,6 @@ data class ConfigureRoomState(
     val eventSink: (ConfigureRoomEvents) -> Unit
 ) {
     val isValid: Boolean = config.roomName?.isNotEmpty() == true &&
-        (config.visibilityState is RoomVisibilityState.Private || roomAddressValidity == RoomAddressValidity.Valid)
+        (config.visibilityState is RoomVisibilityState.Private || roomAddressValidity == RoomAddressValidity.Valid) &&
+        config.visibilityState.joinRuleItem in availableJoinRules
 }

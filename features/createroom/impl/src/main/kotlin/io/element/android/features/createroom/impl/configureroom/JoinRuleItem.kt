@@ -18,7 +18,11 @@ import kotlinx.collections.immutable.persistentListOf
  */
 @Immutable
 sealed interface JoinRuleItem {
-    data object Private : JoinRuleItem
+    sealed interface PrivateVisibility : JoinRuleItem {
+        data object Private : PrivateVisibility
+        data class Restricted(val parentSpaceId: RoomId) : PrivateVisibility
+        data class AskToJoinRestricted(val parentSpaceId: RoomId) : PrivateVisibility
+    }
 
     /**
      * Those join rule items that represent public visibility of the room/space.
@@ -27,18 +31,16 @@ sealed interface JoinRuleItem {
     sealed interface PublicVisibility : JoinRuleItem {
         data object Public : PublicVisibility
         data object AskToJoin : PublicVisibility
-        data class Restricted(val parentSpaceId: RoomId) : PublicVisibility
-        data class AskToJoinRestricted(val parentSpaceId: RoomId) : PublicVisibility
     }
 
     /**
      * Transforms a [JoinRuleItem] option into a [JoinRule].
      */
     fun toJoinRule(): JoinRule = when (this) {
-        Private -> JoinRule.Invite
+        PrivateVisibility.Private -> JoinRule.Invite
+        is PrivateVisibility.Restricted -> JoinRule.Restricted(persistentListOf(AllowRule.RoomMembership(parentSpaceId)))
+        is PrivateVisibility.AskToJoinRestricted -> JoinRule.KnockRestricted(persistentListOf(AllowRule.RoomMembership(parentSpaceId)))
         PublicVisibility.Public -> JoinRule.Public
         PublicVisibility.AskToJoin -> JoinRule.Knock
-        is PublicVisibility.Restricted -> JoinRule.Restricted(persistentListOf(AllowRule.RoomMembership(parentSpaceId)))
-        is PublicVisibility.AskToJoinRestricted -> JoinRule.KnockRestricted(persistentListOf(AllowRule.RoomMembership(parentSpaceId)))
     }
 }

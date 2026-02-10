@@ -12,7 +12,7 @@ import java.util.Optional
 
 sealed interface RoomVisibilityState {
     val joinRuleItem: JoinRuleItem
-    data class Private(override val joinRuleItem: JoinRuleItem.Private = JoinRuleItem.Private) : RoomVisibilityState
+    data class Private(override val joinRuleItem: JoinRuleItem.PrivateVisibility) : RoomVisibilityState
 
     data class Public(
         val roomAddress: RoomAddress,

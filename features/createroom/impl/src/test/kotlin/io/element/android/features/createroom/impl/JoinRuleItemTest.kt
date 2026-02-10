@@ -18,12 +18,12 @@ import org.junit.Test
 class JoinRuleItemTest {
     @Test
     fun `toJoinRule works as expected`() {
-        assertThat(JoinRuleItem.Private.toJoinRule()).isEqualTo(JoinRule.Invite)
+        assertThat(JoinRuleItem.PrivateVisibility.Private.toJoinRule()).isEqualTo(JoinRule.Invite)
         assertThat(JoinRuleItem.PublicVisibility.Public.toJoinRule()).isEqualTo(JoinRule.Public)
         assertThat(JoinRuleItem.PublicVisibility.AskToJoin.toJoinRule()).isEqualTo(JoinRule.Knock)
-        assertThat(JoinRuleItem.PublicVisibility.Restricted(A_ROOM_ID).toJoinRule())
+        assertThat(JoinRuleItem.PrivateVisibility.Restricted(A_ROOM_ID).toJoinRule())
             .isEqualTo(JoinRule.Restricted(persistentListOf(AllowRule.RoomMembership(A_ROOM_ID))))
-        assertThat(JoinRuleItem.PublicVisibility.AskToJoinRestricted(A_ROOM_ID).toJoinRule())
+        assertThat(JoinRuleItem.PrivateVisibility.AskToJoinRestricted(A_ROOM_ID).toJoinRule())
             .isEqualTo(JoinRule.KnockRestricted(persistentListOf(AllowRule.RoomMembership(A_ROOM_ID))))
     }
 }

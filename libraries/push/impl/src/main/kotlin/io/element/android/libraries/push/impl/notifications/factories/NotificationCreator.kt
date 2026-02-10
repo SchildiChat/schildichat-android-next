@@ -240,11 +240,13 @@ class DefaultNotificationCreator(
             .addAction(rejectInvitationActionFactory.create(inviteNotifiableEvent))
             .addAction(acceptInvitationActionFactory.create(inviteNotifiableEvent))
             // Build the pending intent for when the notification is clicked
-            .setContentIntent(pendingIntentFactory.createOpenRoomPendingIntent(
-                sessionId = inviteNotifiableEvent.sessionId,
-                roomId = inviteNotifiableEvent.roomId,
-                eventId = null,
-            ))
+            .setContentIntent(
+                pendingIntentFactory.createOpenRoomPendingIntent(
+                    sessionId = inviteNotifiableEvent.sessionId,
+                    roomId = inviteNotifiableEvent.roomId,
+                    eventId = null,
+                )
+            )
             .apply {
                 if (inviteNotifiableEvent.noisy) {
                     // Compat
@@ -276,12 +278,14 @@ class DefaultNotificationCreator(
             .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
             .configureWith(notificationAccountParams)
             .setAutoCancel(true)
-            .setContentIntent(pendingIntentFactory.createOpenRoomPendingIntent(
-                sessionId = simpleNotifiableEvent.sessionId,
-                roomId = simpleNotifiableEvent.roomId,
-                eventId = null,
-                extras = bundleOf(ROOM_OPENED_FROM_NOTIFICATION to true),
-            ))
+            .setContentIntent(
+                pendingIntentFactory.createOpenRoomPendingIntent(
+                    sessionId = simpleNotifiableEvent.sessionId,
+                    roomId = simpleNotifiableEvent.roomId,
+                    eventId = null,
+                    extras = bundleOf(ROOM_OPENED_FROM_NOTIFICATION to true),
+                )
+            )
             .apply {
                 if (simpleNotifiableEvent.noisy) {
                     // Compat

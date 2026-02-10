@@ -219,6 +219,7 @@ class ConfigureRoomPresenterTest {
     fun `present - when creating a room in a space if the room doesn't receive the power levels value it can't be added to the space`() = runTest {
         val addChildToSpaceResult = lambdaRecorder<RoomId, RoomId, Result<Unit>> { _, _ -> Result.success(Unit) }
         val spaceService = FakeSpaceService(
+            editableSpacesResult = { Result.success(emptyList()) },
             addChildToSpaceResult = addChildToSpaceResult,
         )
         val roomInfoFlow = MutableStateFlow<Optional<RoomInfo>>(Optional.empty())
@@ -261,6 +262,7 @@ class ConfigureRoomPresenterTest {
     fun `present - creating a room and adding it into a parent space works when all the data is available`() = runTest {
         val addChildToSpaceResult = lambdaRecorder<RoomId, RoomId, Result<Unit>> { _, _ -> Result.success(Unit) }
         val spaceService = FakeSpaceService(
+            editableSpacesResult = { Result.success(emptyList()) },
             addChildToSpaceResult = addChildToSpaceResult,
         )
         val roomInfoFlow = MutableStateFlow<Optional<RoomInfo>>(Optional.empty())
@@ -522,7 +524,9 @@ class ConfigureRoomPresenterTest {
 
     private fun createMatrixClient(
         isAliasAvailable: Boolean = true,
-        spaceService: FakeSpaceService = FakeSpaceService(),
+        spaceService: FakeSpaceService = FakeSpaceService(
+            editableSpacesResult = { Result.success(emptyList()) }
+        ),
     ) = FakeMatrixClient(
         userIdServerNameLambda = { "matrix.org" },
         resolveRoomAliasResult = {

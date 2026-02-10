@@ -164,7 +164,7 @@ class ConfigureRoomPresenter(
                 ).toImmutableList()
             }
         }
-        val currentJoinRule = createRoomConfig.visibilityState?.joinRuleItem
+        val currentJoinRule = createRoomConfig.visibilityState.joinRuleItem
         LaunchedEffect(availableJoinRules, currentJoinRule) {
             // Find matching rule by type (ignoring parentSpaceId parameter for Restricted types)
             val matchingRule = when (currentJoinRule) {

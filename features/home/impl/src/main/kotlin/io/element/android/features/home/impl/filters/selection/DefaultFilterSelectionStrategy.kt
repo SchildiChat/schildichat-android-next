@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 @ContributesBinding(SessionScope::class)
 class DefaultFilterSelectionStrategy : FilterSelectionStrategy {
     private val selectedFilters = LinkedHashSet<RoomListFilter>()
+    private val availableFilters
+        get() = RoomListFilter.entries.toSet()
 
     override val filterSelectionStates = MutableStateFlow(buildFilters())
 
@@ -45,7 +47,7 @@ class DefaultFilterSelectionStrategy : FilterSelectionStrategy {
                 isSelected = true
             )
         }
-        val unselectedFilters = RoomListFilter.entries - selectedFilters - selectedFilters.flatMap { it.incompatibleFilters }.toSet()
+        val unselectedFilters = availableFilters - selectedFilters - selectedFilters.flatMap { it.incompatibleFilters }.toSet()
         val unselectedFilterStates = unselectedFilters.map {
             FilterSelectionState(
                 filter = it,

@@ -82,19 +82,22 @@ class DefaultNotificationCreatorTest {
     fun `test createFallbackNotification`() {
         val sut = createNotificationCreator()
         val result = sut.createFallbackNotification(
+            existingNotification = null,
             notificationAccountParams = aNotificationAccountParams(),
-            FallbackNotifiableEvent(
-                sessionId = A_SESSION_ID,
-                roomId = A_ROOM_ID,
-                eventId = AN_EVENT_ID,
-                editedEventId = null,
-                description = "description",
-                canBeReplaced = false,
-                isRedacted = false,
-                isUpdated = false,
-                timestamp = A_FAKE_TIMESTAMP,
-                cause = null,
-            ),
+            fallbackNotifiableEvents = listOf(
+                FallbackNotifiableEvent(
+                    sessionId = A_SESSION_ID,
+                    roomId = A_ROOM_ID,
+                    eventId = AN_EVENT_ID,
+                    editedEventId = null,
+                    description = "description",
+                    canBeReplaced = false,
+                    isRedacted = false,
+                    isUpdated = false,
+                    timestamp = A_FAKE_TIMESTAMP,
+                    cause = null,
+                ),
+            )
         )
         result.commonAssertions(
             expectedCategory = null,

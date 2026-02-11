@@ -23,7 +23,6 @@ import io.element.android.libraries.push.impl.notifications.fake.FakeSummaryGrou
 import io.element.android.libraries.push.impl.notifications.fixtures.aNotifiableMessageEvent
 import io.element.android.libraries.push.impl.notifications.fixtures.aSimpleNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.fixtures.anInviteNotifiableEvent
-import io.element.android.services.toolbox.test.strings.FakeStringProvider
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,7 +46,6 @@ class NotificationDataFactoryTest {
         roomGroupMessageCreator = fakeRoomGroupMessageCreator,
         summaryGroupMessageCreator = fakeSummaryGroupMessageCreator,
         activeNotificationsProvider = activeNotificationsProvider,
-        stringProvider = FakeStringProvider(),
     )
 
     @Test

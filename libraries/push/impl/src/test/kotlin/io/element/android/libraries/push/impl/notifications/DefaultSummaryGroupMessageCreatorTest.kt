@@ -47,7 +47,6 @@ class DefaultSummaryGroupMessageCreatorTest {
             ),
             invitationNotifications = emptyList(),
             simpleNotifications = emptyList(),
-            fallbackNotifications = emptyList(),
         )
 
         notificationCreator.createSummaryListNotificationResult.assertions()

@@ -21,7 +21,6 @@ import io.element.android.libraries.push.impl.notifications.model.FallbackNotifi
 import io.element.android.libraries.push.impl.notifications.model.InviteNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.NotifiableMessageEvent
 import io.element.android.libraries.push.impl.notifications.model.SimpleNotifiableEvent
-import io.element.android.services.toolbox.api.strings.StringProvider
 
 interface NotificationDataFactory {
     suspend fun toNotifications(
@@ -46,16 +45,15 @@ interface NotificationDataFactory {
 
     @JvmName("toNotificationFallbackEvents")
     @Suppress("INAPPLICABLE_JVM_NAME")
-    fun toNotifications(
+    fun toNotification(
         fallback: List<FallbackNotifiableEvent>,
         notificationAccountParams: NotificationAccountParams,
-    ): List<OneShotNotification>
+    ): OneShotNotification?
 
     fun createSummaryNotification(
         roomNotifications: List<RoomNotification>,
         invitationNotifications: List<OneShotNotification>,
         simpleNotifications: List<OneShotNotification>,
-        fallbackNotifications: List<OneShotNotification>,
         notificationAccountParams: NotificationAccountParams,
     ): SummaryNotification
 }
@@ -66,7 +64,6 @@ class DefaultNotificationDataFactory(
     private val roomGroupMessageCreator: RoomGroupMessageCreator,
     private val summaryGroupMessageCreator: SummaryGroupMessageCreator,
     private val activeNotificationsProvider: ActiveNotificationsProvider,
-    private val stringProvider: StringProvider,
 ) : NotificationDataFactory {
     override suspend fun toNotifications(
         messages: List<NotifiableMessageEvent>,
@@ -141,25 +138,31 @@ class DefaultNotificationDataFactory(
 
     @JvmName("toNotificationFallbackEvents")
     @Suppress("INAPPLICABLE_JVM_NAME")
-    override fun toNotifications(
+    override fun toNotification(
         fallback: List<FallbackNotifiableEvent>,
         notificationAccountParams: NotificationAccountParams,
-    ): List<OneShotNotification> {
-        return fallback.map { event ->
-            OneShotNotification(
-                tag = event.eventId.value,
-                notification = notificationCreator.createFallbackNotification(notificationAccountParams, event),
-                isNoisy = false,
-                timestamp = event.timestamp
-            )
-        }
+    ): OneShotNotification? {
+        if (fallback.isEmpty()) return null
+        val existingNotification = activeNotificationsProvider
+            .getFallbackNotification(notificationAccountParams.user.userId)
+            ?.notification
+        val notification = notificationCreator.createFallbackNotification(
+            existingNotification,
+            notificationAccountParams,
+            fallback,
+        )
+        return OneShotNotification(
+            tag = "FALLBACK",
+            notification = notification,
+            isNoisy = false,
+            timestamp = fallback.first().timestamp
+        )
     }
 
     override fun createSummaryNotification(
         roomNotifications: List<RoomNotification>,
         invitationNotifications: List<OneShotNotification>,
         simpleNotifications: List<OneShotNotification>,
-        fallbackNotifications: List<OneShotNotification>,
         notificationAccountParams: NotificationAccountParams,
     ): SummaryNotification {
         return when {
@@ -169,7 +172,6 @@ class DefaultNotificationDataFactory(
                     roomNotifications = roomNotifications,
                     invitationNotifications = invitationNotifications,
                     simpleNotifications = simpleNotifications,
-                    fallbackNotifications = fallbackNotifications,
                     notificationAccountParams = notificationAccountParams,
                 )
             )

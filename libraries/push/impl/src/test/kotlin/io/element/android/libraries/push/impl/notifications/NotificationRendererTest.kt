@@ -29,7 +29,6 @@ import io.element.android.libraries.push.impl.notifications.fixtures.anInviteNot
 import io.element.android.libraries.push.impl.notifications.model.NotifiableEvent
 import io.element.android.libraries.sessionstorage.api.SessionStore
 import io.element.android.libraries.sessionstorage.test.InMemorySessionStore
-import io.element.android.services.toolbox.test.strings.FakeStringProvider
 import io.element.android.tests.testutils.lambda.lambdaRecorder
 import io.element.android.tests.testutils.lambda.value
 import kotlinx.coroutines.test.runTest
@@ -57,7 +56,6 @@ class NotificationRendererTest {
         roomGroupMessageCreator = roomGroupMessageCreator,
         summaryGroupMessageCreator = summaryGroupMessageCreator,
         activeNotificationsProvider = FakeActiveNotificationsProvider(),
-        stringProvider = FakeStringProvider(),
     )
     private val notificationIdProvider = NotificationIdProvider
 

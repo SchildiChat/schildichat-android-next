@@ -43,7 +43,7 @@ private const val USE_COMPLETE_NOTIFICATION_FORMAT = true
 
 private val A_SUMMARY_NOTIFICATION = SummaryNotification.Update(A_NOTIFICATION)
 private val ONE_SHOT_NOTIFICATION =
-    OneShotNotification(notification = A_NOTIFICATION, tag = "ignored", summaryLine = "ignored", isNoisy = false, timestamp = -1)
+    OneShotNotification(notification = A_NOTIFICATION, tag = "ignored", isNoisy = false, timestamp = -1)
 
 @RunWith(RobolectricTestRunner::class)
 class NotificationRendererTest {

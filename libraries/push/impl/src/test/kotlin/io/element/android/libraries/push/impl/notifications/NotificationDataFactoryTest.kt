@@ -64,7 +64,6 @@ class NotificationDataFactoryTest {
                 OneShotNotification(
                     notification = expectedNotification,
                     tag = A_ROOM_ID.value,
-                    summaryLine = AN_INVITATION_EVENT.description,
                     isNoisy = AN_INVITATION_EVENT.noisy,
                     timestamp = AN_INVITATION_EVENT.timestamp
                 )
@@ -83,7 +82,6 @@ class NotificationDataFactoryTest {
             OneShotNotification(
                 notification = expectedNotification,
                 tag = AN_EVENT_ID.value,
-                summaryLine = A_SIMPLE_EVENT.description,
                 isNoisy = A_SIMPLE_EVENT.noisy,
                 timestamp = AN_INVITATION_EVENT.timestamp
             )
@@ -105,7 +103,6 @@ class NotificationDataFactoryTest {
                 existingNotification = null,
             ),
             roomId = A_ROOM_ID,
-            summaryLine = "A room name: Bob Hello world!",
             messageCount = events.size,
             latestTimestamp = events.maxOf { it.timestamp },
             shouldBing = events.any { it.noisy },
@@ -161,7 +158,6 @@ class NotificationDataFactoryTest {
                 existingNotification = null,
             ),
             roomId = A_ROOM_ID,
-            summaryLine = "A room name: Bob Hello world!",
             messageCount = withRedactedRemoved.size,
             latestTimestamp = withRedactedRemoved.maxOf { it.timestamp },
             shouldBing = withRedactedRemoved.any { it.noisy },

@@ -9,17 +9,12 @@
 package io.element.android.libraries.push.impl.notifications
 
 import android.app.Notification
-import android.graphics.Typeface
-import android.text.style.StyleSpan
-import androidx.core.text.buildSpannedString
-import androidx.core.text.inSpans
 import coil3.ImageLoader
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.core.ThreadId
-import io.element.android.libraries.push.impl.R
 import io.element.android.libraries.push.impl.notifications.factories.NotificationAccountParams
 import io.element.android.libraries.push.impl.notifications.factories.NotificationCreator
 import io.element.android.libraries.push.impl.notifications.model.FallbackNotifiableEvent
@@ -98,7 +93,6 @@ class DefaultNotificationDataFactory(
                     notification = notification,
                     roomId = roomId,
                     threadId = threadId,
-                    summaryLine = createRoomMessagesGroupSummaryLine(events, roomName, isDm),
                     messageCount = events.size,
                     latestTimestamp = events.maxOf { it.timestamp },
                     shouldBing = events.any { it.noisy }
@@ -123,7 +117,6 @@ class DefaultNotificationDataFactory(
             OneShotNotification(
                 tag = event.roomId.value,
                 notification = notificationCreator.createRoomInvitationNotification(notificationAccountParams, event),
-                summaryLine = event.description,
                 isNoisy = event.noisy,
                 timestamp = event.timestamp
             )
@@ -140,7 +133,6 @@ class DefaultNotificationDataFactory(
             OneShotNotification(
                 tag = event.eventId.value,
                 notification = notificationCreator.createSimpleEventNotification(notificationAccountParams, event),
-                summaryLine = event.description,
                 isNoisy = event.noisy,
                 timestamp = event.timestamp
             )
@@ -157,7 +149,6 @@ class DefaultNotificationDataFactory(
             OneShotNotification(
                 tag = event.eventId.value,
                 notification = notificationCreator.createFallbackNotification(notificationAccountParams, event),
-                summaryLine = event.description.orEmpty(),
                 isNoisy = false,
                 timestamp = event.timestamp
             )
@@ -184,53 +175,12 @@ class DefaultNotificationDataFactory(
             )
         }
     }
-
-    private fun createRoomMessagesGroupSummaryLine(events: List<NotifiableMessageEvent>, roomName: String, roomIsDm: Boolean): CharSequence {
-        return when (events.size) {
-            1 -> createFirstMessageSummaryLine(events.first(), roomName, roomIsDm)
-            else -> {
-                stringProvider.getQuantityString(
-                    R.plurals.notification_compat_summary_line_for_room,
-                    events.size,
-                    roomName,
-                    events.size
-                )
-            }
-        }
-    }
-
-    private fun createFirstMessageSummaryLine(event: NotifiableMessageEvent, roomName: String, roomIsDm: Boolean): CharSequence {
-        return if (roomIsDm) {
-            buildSpannedString {
-                event.senderDisambiguatedDisplayName?.let {
-                    inSpans(StyleSpan(Typeface.BOLD)) {
-                        append(it)
-                        append(": ")
-                    }
-                }
-                append(event.description)
-            }
-        } else {
-            buildSpannedString {
-                inSpans(StyleSpan(Typeface.BOLD)) {
-                    append(roomName)
-                    append(": ")
-                    event.senderDisambiguatedDisplayName?.let {
-                        append(it)
-                        append(" ")
-                    }
-                }
-                append(event.description)
-            }
-        }
-    }
 }
 
 data class RoomNotification(
     val notification: Notification,
     val roomId: RoomId,
     val threadId: ThreadId?,
-    val summaryLine: CharSequence,
     val messageCount: Int,
     val latestTimestamp: Long,
     val shouldBing: Boolean,
@@ -239,7 +189,6 @@ data class RoomNotification(
         return notification == other.notification &&
             roomId == other.roomId &&
             threadId == other.threadId &&
-            summaryLine.toString() == other.summaryLine.toString() &&
             messageCount == other.messageCount &&
             latestTimestamp == other.latestTimestamp &&
             shouldBing == other.shouldBing
@@ -249,7 +198,6 @@ data class RoomNotification(
 data class OneShotNotification(
     val notification: Notification,
     val tag: String,
-    val summaryLine: CharSequence,
     val isNoisy: Boolean,
     val timestamp: Long,
 )

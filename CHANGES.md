@@ -1,3 +1,77 @@
+Changes in Element X v26.02.0
+=============================
+
+<!-- Release notes generated using configuration in .github/release.yml at v26.02.0 -->
+
+## What's Changed
+### ✨ Features
+* When a background SDK task fails, react in the client by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6166
+* Enable space feature flags by default by @ganfra in https://github.com/element-hq/element-x-android/pull/6171
+### 🙌 Improvements
+* Improve space management with pagination and partial failure handling by @ganfra in https://github.com/element-hq/element-x-android/pull/6099
+* Iterate on QrCode login error buttons by @bmarty in https://github.com/element-hq/element-x-android/pull/6101
+* Update icon shown for world_readable rooms by @richvdh in https://github.com/element-hq/element-x-android/pull/6111
+* QRCode login: treat not found error as expired error. by @bmarty in https://github.com/element-hq/element-x-android/pull/6161
+* Iterate on Space related UI by @ganfra in https://github.com/element-hq/element-x-android/pull/6150
+### 🔒 Security
+* Ensure aspect ratio of images in the timeline is restricted by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6168
+### 🐛 Bugfixes
+* Ensure that Element Call activity is not closed when using an external link by @bmarty in https://github.com/element-hq/element-x-android/pull/6114
+* Refresh a Space's room list after creating a room in it by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6135
+* When creating a DM, set room history visibility to `invited` by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6138
+* Fix back navigation after creating a room in a space by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6134
+* Fix `LinkifyHelper` index out of bounds with parenthesis by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6140
+* Change role screen won't be dismissed until changes take effect by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6141
+### 🗣 Translations
+* Sync Strings by @ElementBot in https://github.com/element-hq/element-x-android/pull/6122
+* Sync Strings by @ElementBot in https://github.com/element-hq/element-x-android/pull/6155
+### 🧱 Build
+* Try fixing Maestro tests (again) by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6149
+* Add a stale bot for X-Needs-Info issues. by @bmarty in https://github.com/element-hq/element-x-android/pull/6153
+* [Release script] Ensure that the release version will match the next Monday date by @bmarty in https://github.com/element-hq/element-x-android/pull/6152
+### 🚧 In development 🚧
+* Add Space Filters feature for Room List by @ganfra in https://github.com/element-hq/element-x-android/pull/6136
+* Add history sharing badges to room details by @kaylendog in https://github.com/element-hq/element-x-android/pull/6132
+### Dependency upgrades
+* Update dependency androidx.work:work-runtime-ktx to v2.11.1 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6105
+* Update metro to v0.10.2 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6106
+* Update camera to v1.5.3 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6103
+* Update activity to v1.12.3 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6104
+* Update dependency com.posthog:posthog-android to v3.30.0 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6120
+* Update kotlin by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6102
+* Update roborazzi to v1.58.0 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6124
+* Update kover by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6139
+* Update dependency com.posthog:posthog-android to v3.31.0 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6145
+* Update kotlin by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6142
+* Update media3 to v1.9.2 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6151
+* Update dependency org.matrix.rustcomponents:sdk-android to v26.02.6 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6144
+* Update firebaseAppDistribution to v5.2.1 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6146
+* Update dependency com.google.firebase:firebase-bom to v34.9.0 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6148
+* Update dependency io.sentry:sentry-android to v8.32.0 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6157
+* Update metro to v0.10.3 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6164
+* Update dependency org.matrix.rustcomponents:sdk-android to v26.2.10 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6169
+* chore(deps): update plugin paparazzi to v2.0.0-alpha04 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6048
+* fix(deps): update dependency org.jetbrains.kotlinx:kover-gradle-plugin to v0.9.7 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6173
+* fix(deps): update haze to v1.7.2 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6175
+### Others
+* Improve favorite wording and icon of room by @bmarty in https://github.com/element-hq/element-x-android/pull/6097
+* Add special flow for leaving a space as the last owner by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6112
+* Remove `runBlocking` in `ThreadedMessagesNode` by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6108
+* Revert "Add "call.pro.element.io" in the list of known hosts for Element Call." by @bmarty in https://github.com/element-hq/element-x-android/pull/6118
+* Refactor room list filtering to use Rust SDK by @ganfra in https://github.com/element-hq/element-x-android/pull/6117
+* Ensure http 429 are retried 3 times before failing. by @bmarty in https://github.com/element-hq/element-x-android/pull/6119
+* Remove `JoinRule.Private` from the codebase by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6129
+* Fix voice message recording not starting after permission is granted by @kknappe in https://github.com/element-hq/element-x-android/pull/6109
+* Use correct bg color. by @bmarty in https://github.com/element-hq/element-x-android/pull/6165
+* Document "Developer options" and remove outdated instructions by @MadLittleMods in https://github.com/element-hq/element-x-android/pull/6162
+* Update SpaceFilterButton selected state color by @ganfra in https://github.com/element-hq/element-x-android/pull/6178
+
+## New Contributors
+* @kknappe made their first contribution in https://github.com/element-hq/element-x-android/pull/6109
+* @MadLittleMods made their first contribution in https://github.com/element-hq/element-x-android/pull/6162
+
+**Full Changelog**: https://github.com/element-hq/element-x-android/compare/v26.01.2...v26.02.0
+
 Changes in Element X v26.01.2
 =============================
 

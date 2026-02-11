@@ -24,9 +24,10 @@ import io.element.android.libraries.push.api.notifications.NotificationIdProvide
 import io.element.android.libraries.push.impl.notifications.factories.NotificationCreator
 import io.element.android.libraries.push.impl.notifications.model.NotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.shouldIgnoreEventInRoom
+import io.element.android.libraries.sessionstorage.api.observer.SessionListener
+import io.element.android.libraries.sessionstorage.api.observer.SessionObserver
 import io.element.android.services.appnavstate.api.AppNavigationStateService
 import io.element.android.services.appnavstate.api.NavigationState
-import io.element.android.services.appnavstate.api.currentSessionId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -46,9 +47,17 @@ class DefaultNotificationDrawerManager(
     private val matrixClientProvider: MatrixClientProvider,
     private val imageLoaderHolder: ImageLoaderHolder,
     private val activeNotificationsProvider: ActiveNotificationsProvider,
+    sessionObserver: SessionObserver,
 ) : NotificationCleaner {
     // TODO EAx add a setting per user for this
     private var useCompleteNotificationFormat = true
+
+    private val sessionListener = object : SessionListener {
+        override suspend fun onSessionDeleted(userId: String, wasLastSession: Boolean) {
+            // User signed out, clear all notifications related to the session.
+            clearAllEvents(SessionId(userId))
+        }
+    }
 
     init {
         // Observe application state
@@ -56,18 +65,12 @@ class DefaultNotificationDrawerManager(
             appNavigationStateService.appNavigationState
                 .collect { onAppNavigationStateChange(it.navigationState) }
         }
+        sessionObserver.addListener(sessionListener)
     }
-
-    private var currentAppNavigationState: NavigationState? = null
 
     private fun onAppNavigationStateChange(navigationState: NavigationState) {
         when (navigationState) {
-            NavigationState.Root -> {
-                currentAppNavigationState?.currentSessionId()?.let { sessionId ->
-                    // User signed out, clear all notifications related to the session.
-                    clearAllEvents(sessionId)
-                }
-            }
+            NavigationState.Root -> {}
             is NavigationState.Session -> {}
             is NavigationState.Space -> {}
             is NavigationState.Room -> {
@@ -85,7 +88,6 @@ class DefaultNotificationDrawerManager(
                 )
             }
         }
-        currentAppNavigationState = navigationState
     }
 
     /**

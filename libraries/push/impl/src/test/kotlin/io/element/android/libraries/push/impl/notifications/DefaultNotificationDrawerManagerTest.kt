@@ -31,7 +31,9 @@ import io.element.android.libraries.push.impl.notifications.fake.FakeRoomGroupMe
 import io.element.android.libraries.push.impl.notifications.fake.FakeSummaryGroupMessageCreator
 import io.element.android.libraries.push.impl.notifications.fixtures.aNotifiableMessageEvent
 import io.element.android.libraries.sessionstorage.api.SessionStore
+import io.element.android.libraries.sessionstorage.api.observer.SessionObserver
 import io.element.android.libraries.sessionstorage.test.InMemorySessionStore
+import io.element.android.libraries.sessionstorage.test.observer.FakeSessionObserver
 import io.element.android.services.appnavstate.api.AppNavigationState
 import io.element.android.services.appnavstate.api.AppNavigationStateService
 import io.element.android.services.appnavstate.api.NavigationState
@@ -204,34 +206,69 @@ class DefaultNotificationDrawerManagerTest {
         )
     }
 
-    private fun TestScope.createDefaultNotificationDrawerManager(
-        notificationDisplayer: NotificationDisplayer = FakeNotificationDisplayer(),
-        appNavigationStateService: AppNavigationStateService = FakeAppNavigationStateService(),
-        roomGroupMessageCreator: RoomGroupMessageCreator = FakeRoomGroupMessageCreator(),
-        summaryGroupMessageCreator: SummaryGroupMessageCreator = FakeSummaryGroupMessageCreator(),
-        activeNotificationsProvider: FakeActiveNotificationsProvider = FakeActiveNotificationsProvider(),
-        matrixClientProvider: FakeMatrixClientProvider = FakeMatrixClientProvider(),
-        sessionStore: SessionStore = InMemorySessionStore(),
-        enterpriseService: EnterpriseService = FakeEnterpriseService(),
-    ): DefaultNotificationDrawerManager {
-        return DefaultNotificationDrawerManager(
+    @Test
+    fun `when a session is signed out, clearAllEvent is invoked`() = runTest {
+        val cancelNotificationResult = lambdaRecorder<String?, Int, Unit> { _, _ -> }
+        val notificationDisplayer = FakeNotificationDisplayer(
+            cancelNotificationResult = cancelNotificationResult,
+        )
+        val summaryId = NotificationIdProvider.getSummaryNotificationId(A_SESSION_ID)
+        val activeNotificationsProvider = FakeActiveNotificationsProvider(
+            getNotificationsForSessionResult = {
+                listOf(
+                    mockk {
+                        every { id } returns summaryId
+                        every { tag } returns null
+                    },
+                )
+            },
+            countResult = { 1 },
+        )
+        val sessionObserver = FakeSessionObserver()
+        createDefaultNotificationDrawerManager(
             notificationDisplayer = notificationDisplayer,
-            notificationRenderer = NotificationRenderer(
-                notificationDisplayer = FakeNotificationDisplayer(),
-                notificationDataFactory = DefaultNotificationDataFactory(
-                    notificationCreator = FakeNotificationCreator(),
-                    roomGroupMessageCreator = roomGroupMessageCreator,
-                    summaryGroupMessageCreator = summaryGroupMessageCreator,
-                    activeNotificationsProvider = activeNotificationsProvider,
-                ),
-                enterpriseService = enterpriseService,
-                sessionStore = sessionStore,
-            ),
-            appNavigationStateService = appNavigationStateService,
-            coroutineScope = backgroundScope,
-            matrixClientProvider = matrixClientProvider,
-            imageLoaderHolder = FakeImageLoaderHolder(),
             activeNotificationsProvider = activeNotificationsProvider,
+            sessionObserver = sessionObserver,
+        )
+        // Simulate a session sign out
+        sessionObserver.onSessionDeleted(A_SESSION_ID.value)
+        // Verify we asked to cancel the notification with summaryId
+        cancelNotificationResult.assertions().isCalledExactly(1).withSequence(
+            listOf(value(null), value(summaryId)),
         )
     }
+}
+
+fun TestScope.createDefaultNotificationDrawerManager(
+    notificationDisplayer: NotificationDisplayer = FakeNotificationDisplayer(),
+    notificationRenderer: NotificationRenderer? = null,
+    appNavigationStateService: AppNavigationStateService = FakeAppNavigationStateService(),
+    roomGroupMessageCreator: RoomGroupMessageCreator = FakeRoomGroupMessageCreator(),
+    summaryGroupMessageCreator: SummaryGroupMessageCreator = FakeSummaryGroupMessageCreator(),
+    activeNotificationsProvider: FakeActiveNotificationsProvider = FakeActiveNotificationsProvider(),
+    matrixClientProvider: FakeMatrixClientProvider = FakeMatrixClientProvider(),
+    sessionStore: SessionStore = InMemorySessionStore(),
+    enterpriseService: EnterpriseService = FakeEnterpriseService(),
+    sessionObserver: SessionObserver = FakeSessionObserver(),
+): DefaultNotificationDrawerManager {
+    return DefaultNotificationDrawerManager(
+        notificationDisplayer = notificationDisplayer,
+        notificationRenderer = notificationRenderer ?: NotificationRenderer(
+            notificationDisplayer = FakeNotificationDisplayer(),
+            notificationDataFactory = DefaultNotificationDataFactory(
+                notificationCreator = FakeNotificationCreator(),
+                roomGroupMessageCreator = roomGroupMessageCreator,
+                summaryGroupMessageCreator = summaryGroupMessageCreator,
+                activeNotificationsProvider = activeNotificationsProvider,
+            ),
+            enterpriseService = enterpriseService,
+            sessionStore = sessionStore,
+        ),
+        appNavigationStateService = appNavigationStateService,
+        coroutineScope = backgroundScope,
+        matrixClientProvider = matrixClientProvider,
+        imageLoaderHolder = FakeImageLoaderHolder(),
+        activeNotificationsProvider = activeNotificationsProvider,
+        sessionObserver = sessionObserver,
+    )
 }

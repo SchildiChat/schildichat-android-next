@@ -2,7 +2,7 @@
 <resources>
     <string name="sc_action_low_priority">Низкий приоритет</string>
     <string name="sc_pref_sc_floating_date_title">Плавающая дата</string>
-    <string name="sc_pref_sc_floating_date_summary">Показать дату над сообщением во время прокрутки</string>
+    <string name="sc_pref_sc_floating_date_summary">Показать дату над сообщениями во время прокрутки</string>
     <string name="sc_pref_pl_display_name_title">Назовите цвета по уровню мощности</string>
     <string name="sc_pref_fast_transitions_title">Быстрый переход</string>
     <string name="sc_pref_fast_transitions_summary">Ускорить анимацию окна</string>
@@ -34,7 +34,7 @@
     <string name="sc_onboarding_welcome_summary">Привносим черепах в Matrix</string>
     <string name="sc_pref_el_typography_title">Типография Element</string>
     <string name="sc_pref_sc_overview_layout_title">SC компановка обзора</string>
-    <string name="sc_pref_tweaks_title">Настройка черепахи</string>
+    <string name="sc_pref_tweaks_title">Черепашьи настройки</string>
     <string name="sc_push_info_summary">Просмотр информации об отладке push-уведомлений</string>
     <string name="sc_pref_notification_only_alert_once_summary">Отключить звуковые оповещения для новых сообщений, если для этого чата уже есть открытое оповещение</string>
     <string name="sc_pref_sc_themes_title">SC тема</string>

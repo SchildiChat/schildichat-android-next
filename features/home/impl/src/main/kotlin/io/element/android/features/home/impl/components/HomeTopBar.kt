@@ -263,7 +263,7 @@ private fun SpaceFilterButton(
         onClick = ::onClick,
         colors = if (isSelected) {
             IconButtonDefaults.iconButtonColors(
-                containerColor = ElementTheme.colors.bgAccentRest,
+                containerColor = ElementTheme.colors.bgActionPrimaryRest,
                 contentColor = ElementTheme.colors.iconOnSolidPrimary,
             )
         } else {

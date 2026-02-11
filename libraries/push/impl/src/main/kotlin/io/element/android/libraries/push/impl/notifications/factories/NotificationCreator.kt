@@ -151,7 +151,10 @@ class DefaultNotificationCreator(
         val channelId = if (containsMissedCall) {
             notificationChannels.getChannelForIncomingCall(false)
         } else {
-            notificationChannels.getChannelIdForMessage(noisy = roomInfo.shouldBing)
+            notificationChannels.getChannelIdForMessage(
+                sessionId = roomInfo.sessionId,
+                noisy = roomInfo.shouldBing,
+            )
         }
         // A category allows groups of notifications to be ranked and filtered – per user or system settings.
         // For example, alarm notifications should display before promo notifications, or message from known contact
@@ -230,7 +233,10 @@ class DefaultNotificationCreator(
         notificationAccountParams: NotificationAccountParams,
         inviteNotifiableEvent: InviteNotifiableEvent,
     ): Notification {
-        val channelId = notificationChannels.getChannelIdForMessage(inviteNotifiableEvent.noisy)
+        val channelId = notificationChannels.getChannelIdForMessage(
+            sessionId = inviteNotifiableEvent.sessionId,
+            noisy = inviteNotifiableEvent.noisy,
+        )
         return NotificationCompat.Builder(context, channelId)
             .setOnlyAlertOnce(true)
             .setContentTitle((inviteNotifiableEvent.roomName ?: buildMeta.applicationName).annotateForDebug(5))
@@ -270,7 +276,10 @@ class DefaultNotificationCreator(
         notificationAccountParams: NotificationAccountParams,
         simpleNotifiableEvent: SimpleNotifiableEvent,
     ): Notification {
-        val channelId = notificationChannels.getChannelIdForMessage(simpleNotifiableEvent.noisy)
+        val channelId = notificationChannels.getChannelIdForMessage(
+            sessionId = simpleNotifiableEvent.sessionId,
+            noisy = simpleNotifiableEvent.noisy,
+        )
         return NotificationCompat.Builder(context, channelId)
             .setOnlyAlertOnce(true)
             .setContentTitle(buildMeta.applicationName.annotateForDebug(7))
@@ -302,7 +311,10 @@ class DefaultNotificationCreator(
         notificationAccountParams: NotificationAccountParams,
         fallbackNotifiableEvent: FallbackNotifiableEvent,
     ): Notification {
-        val channelId = notificationChannels.getChannelIdForMessage(false)
+        val channelId = notificationChannels.getChannelIdForMessage(
+            sessionId = fallbackNotifiableEvent.sessionId,
+            noisy = false,
+        )
         return NotificationCompat.Builder(context, channelId)
             .setOnlyAlertOnce(true)
             .setContentTitle(buildMeta.applicationName.annotateForDebug(7))
@@ -334,8 +346,11 @@ class DefaultNotificationCreator(
         noisy: Boolean,
         lastMessageTimestamp: Long,
     ): Notification {
-        val channelId = notificationChannels.getChannelIdForMessage(noisy)
         val userId = notificationAccountParams.user.userId
+        val channelId = notificationChannels.getChannelIdForMessage(
+            sessionId = userId,
+            noisy = noisy,
+        )
         return NotificationCompat.Builder(context, channelId)
             .setOnlyAlertOnce(true)
             // used in compat < N, after summary is built based on child notifications

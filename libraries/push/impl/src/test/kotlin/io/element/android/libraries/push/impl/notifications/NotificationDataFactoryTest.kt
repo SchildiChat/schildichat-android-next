@@ -20,6 +20,7 @@ import io.element.android.libraries.push.impl.notifications.fake.FakeActiveNotif
 import io.element.android.libraries.push.impl.notifications.fake.FakeNotificationCreator
 import io.element.android.libraries.push.impl.notifications.fake.FakeRoomGroupMessageCreator
 import io.element.android.libraries.push.impl.notifications.fake.FakeSummaryGroupMessageCreator
+import io.element.android.libraries.push.impl.notifications.fixtures.aFallbackNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.fixtures.aNotifiableMessageEvent
 import io.element.android.libraries.push.impl.notifications.fixtures.aSimpleNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.fixtures.anInviteNotifiableEvent
@@ -33,6 +34,7 @@ private val MY_AVATAR_URL: String? = null
 private val AN_INVITATION_EVENT = anInviteNotifiableEvent(roomId = A_ROOM_ID)
 private val A_SIMPLE_EVENT = aSimpleNotifiableEvent(eventId = AN_EVENT_ID)
 private val A_MESSAGE_EVENT = aNotifiableMessageEvent(eventId = AN_EVENT_ID, roomId = A_ROOM_ID)
+private val A_FALLBACK_EVENT = aFallbackNotifiableEvent()
 
 @RunWith(RobolectricTestRunner::class)
 class NotificationDataFactoryTest {
@@ -65,6 +67,25 @@ class NotificationDataFactoryTest {
                     isNoisy = AN_INVITATION_EVENT.noisy,
                     timestamp = AN_INVITATION_EVENT.timestamp
                 )
+            )
+        )
+    }
+
+    @Test
+    fun `given a fallback invitation when mapping to notification then it's added`() = testWith(notificationDataFactory) {
+        val fallbackEvents = listOf(A_FALLBACK_EVENT)
+        val expectedNotification = notificationCreator.createFallbackNotificationResult(
+            null,
+            aNotificationAccountParams(),
+            fallbackEvents,
+        )
+        val result = toNotification(fallbackEvents, aNotificationAccountParams())
+        assertThat(result).isEqualTo(
+            OneShotNotification(
+                notification = expectedNotification,
+                tag = "FALLBACK",
+                isNoisy = false,
+                timestamp = A_FALLBACK_EVENT.timestamp
             )
         )
     }

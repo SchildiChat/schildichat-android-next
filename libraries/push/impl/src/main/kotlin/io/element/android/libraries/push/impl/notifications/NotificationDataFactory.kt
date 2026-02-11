@@ -73,10 +73,7 @@ class DefaultNotificationDataFactory(
         val messagesToDisplay = messages.filterNot { it.canNotBeDisplayed() }
             .groupBy { it.roomId }
         return messagesToDisplay.flatMap { (roomId, events) ->
-            val roomName = events.lastOrNull()?.roomName ?: roomId.value
-            val isDm = events.lastOrNull()?.roomIsDm ?: false
             val eventsByThreadId = events.groupBy { it.threadId }
-
             eventsByThreadId.map { (threadId, events) ->
                 val notification = roomGroupMessageCreator.createRoomMessage(
                     events = events,

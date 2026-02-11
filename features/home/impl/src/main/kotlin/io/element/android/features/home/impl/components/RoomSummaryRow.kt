@@ -44,7 +44,7 @@ import io.element.android.features.home.impl.model.LatestEvent
 import io.element.android.features.home.impl.model.RoomListRoomSummary
 import io.element.android.features.home.impl.model.RoomListRoomSummaryProvider
 import io.element.android.features.home.impl.model.RoomSummaryDisplayType
-import io.element.android.features.home.impl.roomlist.RoomListEvents
+import io.element.android.features.home.impl.roomlist.RoomListEvent
 import io.element.android.libraries.core.extensions.orEmpty
 import io.element.android.libraries.core.extensions.toSafeLength
 import io.element.android.libraries.designsystem.atomic.atoms.UnreadIndicatorAtom
@@ -74,7 +74,7 @@ internal fun RoomSummaryRow(
     hideInviteAvatars: Boolean,
     isInviteSeen: Boolean,
     onClick: (RoomListRoomSummary) -> Unit,
-    eventSink: (RoomListEvents) -> Unit,
+    eventSink: (RoomListEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {
@@ -104,10 +104,10 @@ internal fun RoomSummaryRow(
                     Spacer(modifier = Modifier.height(12.dp))
                     InviteButtonsRowMolecule(
                         onAcceptClick = {
-                            eventSink(RoomListEvents.AcceptInvite(room))
+                            eventSink(RoomListEvent.AcceptInvite(room))
                         },
                         onDeclineClick = {
-                            eventSink(RoomListEvents.ShowDeclineInviteMenu(room))
+                            eventSink(RoomListEvent.ShowDeclineInviteMenu(room))
                         }
                     )
                 }
@@ -117,7 +117,7 @@ internal fun RoomSummaryRow(
                     room = room,
                     onClick = onClick,
                     onLongClick = {
-                        eventSink(RoomListEvents.ShowContextMenu(room))
+                        eventSink(RoomListEvent.ShowContextMenu(room))
                     },
                 ) {
                     NameAndTimestampRow(

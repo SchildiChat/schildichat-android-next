@@ -27,6 +27,7 @@ class ErrorNode(
 ) : Node(buildContext = buildContext, plugins = plugins) {
     interface Callback : Plugin {
         fun onRetry()
+        fun onCancel()
     }
 
     private val callback: Callback = callback()
@@ -38,6 +39,7 @@ class ErrorNode(
             modifier = modifier,
             errorScreenType = errorScreenType,
             onRetry = callback::onRetry,
+            onCancel = callback::onCancel,
         )
     }
 }

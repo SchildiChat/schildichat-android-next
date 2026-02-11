@@ -100,12 +100,12 @@ class RoomNotificationSettingsPresenter(
                 !notificationSettingsService.canHomeServerPushEncryptedEventsToDevice().getOrDefault(true)
         }
 
-        fun handleEvent(event: RoomNotificationSettingsEvents) {
+        fun handleEvent(event: RoomNotificationSettingsEvent) {
             when (event) {
-                is RoomNotificationSettingsEvents.ChangeRoomNotificationMode -> {
+                is RoomNotificationSettingsEvent.ChangeRoomNotificationMode -> {
                     localCoroutineScope.setRoomNotificationMode(event.mode, pendingRoomNotificationMode, pendingSetDefault, setNotificationSettingAction)
                 }
-                is RoomNotificationSettingsEvents.SetNotificationMode -> {
+                is RoomNotificationSettingsEvent.SetNotificationMode -> {
                     if (event.isDefault) {
                         localCoroutineScope.restoreDefaultRoomNotificationMode(restoreDefaultAction, pendingSetDefault)
                     } else {
@@ -114,13 +114,13 @@ class RoomNotificationSettingsPresenter(
                         }
                     }
                 }
-                is RoomNotificationSettingsEvents.DeleteCustomNotification -> {
+                is RoomNotificationSettingsEvent.DeleteCustomNotification -> {
                     localCoroutineScope.restoreDefaultRoomNotificationMode(restoreDefaultAction, pendingSetDefault)
                 }
-                RoomNotificationSettingsEvents.ClearSetNotificationError -> {
+                RoomNotificationSettingsEvent.ClearSetNotificationError -> {
                     setNotificationSettingAction.value = AsyncAction.Uninitialized
                 }
-                RoomNotificationSettingsEvents.ClearRestoreDefaultError -> {
+                RoomNotificationSettingsEvent.ClearRestoreDefaultError -> {
                     restoreDefaultAction.value = AsyncAction.Uninitialized
                 }
             }

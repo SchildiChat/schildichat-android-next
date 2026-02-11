@@ -47,9 +47,12 @@ import io.element.android.features.home.impl.components.RoomListMenuAction
 import io.element.android.features.home.impl.model.RoomListRoomSummary
 import io.element.android.features.home.impl.roomlist.RoomListContextMenu
 import io.element.android.features.home.impl.roomlist.RoomListDeclineInviteMenu
-import io.element.android.features.home.impl.roomlist.RoomListEvents
+import io.element.android.features.home.impl.roomlist.RoomListEvent
 import io.element.android.features.home.impl.roomlist.RoomListState
 import io.element.android.features.home.impl.search.RoomListSearchView
+import io.element.android.features.home.impl.spacefilters.SpaceFiltersEvent
+import io.element.android.features.home.impl.spacefilters.SpaceFiltersState
+import io.element.android.features.home.impl.spacefilters.SpaceFiltersView
 import io.element.android.features.home.impl.spaces.HomeSpacesView
 import io.element.android.libraries.androidutils.throttler.FirstThrottler
 import io.element.android.libraries.designsystem.preview.ElementPreview
@@ -153,10 +156,15 @@ private fun HomeScaffold(
     val snackbarHostState = rememberSnackbarHostState(snackbarMessage = state.snackbarMessage)
     val roomListState: RoomListState = state.roomListState
 
-    BackHandler(
-        enabled = state.currentHomeNavigationBarItem != HomeNavigationBarItem.Chats,
-    ) {
-        state.eventSink(HomeEvents.SelectHomeNavigationBarItem(HomeNavigationBarItem.Chats))
+    BackHandler(enabled = state.isBackHandlerEnabled) {
+        if (state.currentHomeNavigationBarItem != HomeNavigationBarItem.Chats) {
+            state.eventSink(HomeEvent.SelectHomeNavigationBarItem(HomeNavigationBarItem.Chats))
+        } else {
+            val spaceFiltersState = state.roomListState.spaceFiltersState
+            if (spaceFiltersState is SpaceFiltersState.Selected) {
+                spaceFiltersState.eventSink(SpaceFiltersEvent.Selected.ClearSelection)
+            }
+        }
     }
 
     val hazeState = rememberHazeState()
@@ -168,20 +176,20 @@ private fun HomeScaffold(
         topBar = {
             HomeTopBar(
                 selectedNavigationItem = state.currentHomeNavigationBarItem,
-                title = stringResource(state.currentHomeNavigationBarItem.labelRes),
                 currentUserAndNeighbors = state.currentUserAndNeighbors,
                 showAvatarIndicator = state.showAvatarIndicator,
                 areSearchResultsDisplayed = roomListState.searchState.isSearchActive,
-                onToggleSearch = { roomListState.eventSink(RoomListEvents.ToggleSearchResults) },
+                onToggleSearch = { roomListState.eventSink(RoomListEvent.ToggleSearchResults) },
                 onMenuActionClick = onMenuActionClick,
                 onOpenSettings = onOpenSettings,
                 onAccountSwitch = {
-                    state.eventSink(HomeEvents.SwitchToAccount(it))
+                    state.eventSink(HomeEvent.SwitchToAccount(it))
                 },
                 onCreateSpace = onCreateSpaceClick,
                 scrollBehavior = scrollBehavior,
                 displayFilters = state.displayRoomListFilters,
                 filtersState = roomListState.filtersState,
+                spaceFiltersState = roomListState.spaceFiltersState,
                 canCreateSpaces = state.homeSpacesState.canCreateSpaces,
                 canReportBug = state.canReportBug,
                 modifier = Modifier.hazeEffect(
@@ -211,7 +219,7 @@ private fun HomeScaffold(
                                 lazyListStateTarget.animateScrollToItem(0)
                             }
                         } else {
-                            state.eventSink(HomeEvents.SelectHomeNavigationBarItem(item))
+                            state.eventSink(HomeEvent.SelectHomeNavigationBarItem(item))
                         }
                     },
                     modifier = Modifier.hazeEffect(
@@ -227,6 +235,7 @@ private fun HomeScaffold(
                     RoomListContentView(
                         contentState = roomListState.contentState,
                         filtersState = roomListState.filtersState,
+                        spaceFiltersState = roomListState.spaceFiltersState,
                         lazyListState = roomsLazyListState,
                         hideInvitesAvatars = roomListState.hideInvitesAvatars,
                         eventSink = roomListState.eventSink,
@@ -256,6 +265,7 @@ private fun HomeScaffold(
                             .consumeWindowInsets(padding)
                             .hazeSource(state = hazeState)
                     )
+                    SpaceFiltersView(roomListState.spaceFiltersState)
                 }
                 HomeNavigationBarItem.Spaces -> {
                     HomeSpacesView(

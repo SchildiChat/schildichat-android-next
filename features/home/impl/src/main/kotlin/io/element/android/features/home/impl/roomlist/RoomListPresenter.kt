@@ -28,9 +28,14 @@ import im.vector.app.features.analytics.plan.Interaction
 import io.element.android.features.announcement.api.Announcement
 import io.element.android.features.announcement.api.AnnouncementService
 import io.element.android.features.home.impl.datasource.RoomListDataSource
+import io.element.android.features.home.impl.filters.RoomListFilter.Rooms
 import io.element.android.features.home.impl.filters.RoomListFiltersState
-import io.element.android.features.home.impl.search.RoomListSearchEvents
+import io.element.android.features.home.impl.filters.into
+import io.element.android.features.home.impl.search.RoomListSearchEvent
 import io.element.android.features.home.impl.search.RoomListSearchState
+import io.element.android.features.home.impl.spacefilters.SpaceFiltersState
+import io.element.android.features.home.impl.spacefilters.into
+import io.element.android.features.home.impl.spacefilters.selectedFilter
 import io.element.android.features.invite.api.SeenInvitesStore
 import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteEvents.AcceptInvite
 import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteEvents.DeclineInvite
@@ -44,6 +49,7 @@ import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.encryption.RecoveryState
 import io.element.android.libraries.matrix.api.roomlist.RoomList
+import io.element.android.libraries.matrix.api.roomlist.RoomListFilter
 import io.element.android.libraries.matrix.api.timeline.ReceiptType
 import io.element.android.libraries.matrix.ui.safety.rememberHideInvitesAvatar
 import io.element.android.libraries.preferences.api.store.AppPreferencesStore
@@ -57,8 +63,6 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
@@ -67,9 +71,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
-
-private const val EXTENDED_RANGE_SIZE = 40
-private const val SUBSCRIBE_TO_VISIBLE_ROOMS_DEBOUNCE_IN_MILLIS = 300L
 
 @Inject
 class RoomListPresenter(
@@ -88,6 +89,7 @@ class RoomListPresenter(
     private val seenInvitesStore: SeenInvitesStore,
     private val announcementService: AnnouncementService,
     private val coldStartWatcher: AnalyticsColdStartWatcher,
+    private val spaceFiltersPresenter: Presenter<SpaceFiltersState>,
 ) : Presenter<RoomListState> {
     private val encryptionService = client.encryptionService
 
@@ -97,6 +99,7 @@ class RoomListPresenter(
         val leaveRoomState = leaveRoomPresenter.present()
         val filtersState = filtersPresenter.present()
         val searchState = searchPresenter.present()
+        val spaceFiltersState = spaceFiltersPresenter.present()
         val acceptDeclineInviteState = acceptDeclineInvitePresenter.present()
 
         LaunchedEffect(Unit) {
@@ -116,43 +119,50 @@ class RoomListPresenter(
         val contextMenu = remember { mutableStateOf<RoomListState.ContextMenu>(RoomListState.ContextMenu.Hidden) }
         val declineInviteMenu = remember { mutableStateOf<RoomListState.DeclineInviteMenu>(RoomListState.DeclineInviteMenu.Hidden) }
 
-        fun handleEvent(event: RoomListEvents) {
+        fun handleEvent(event: RoomListEvent) {
             when (event) {
-                is RoomListEvents.UpdateVisibleRange -> coroutineScope.launch {
-                    updateVisibleRange(event.range)
+                is RoomListEvent.UpdateVisibleRange -> coroutineScope.launch {
+                    roomListDataSource.updateVisibleRange(event.range)
                 }
-                RoomListEvents.DismissRequestVerificationPrompt -> securityBannerDismissed = true
-                RoomListEvents.DismissBanner -> securityBannerDismissed = true
-                RoomListEvents.DismissNewNotificationSoundBanner -> coroutineScope.launch {
+                RoomListEvent.DismissRequestVerificationPrompt -> securityBannerDismissed = true
+                RoomListEvent.DismissBanner -> securityBannerDismissed = true
+                RoomListEvent.DismissNewNotificationSoundBanner -> coroutineScope.launch {
                     announcementService.onAnnouncementDismissed(Announcement.NewNotificationSound)
                 }
-                RoomListEvents.ToggleSearchResults -> searchState.eventSink(RoomListSearchEvents.ToggleSearchVisibility)
-                is RoomListEvents.ShowContextMenu -> {
+                RoomListEvent.ToggleSearchResults -> searchState.eventSink(RoomListSearchEvent.ToggleSearchVisibility)
+                is RoomListEvent.ShowContextMenu -> {
                     coroutineScope.showContextMenu(event, contextMenu)
                 }
-                is RoomListEvents.HideContextMenu -> {
+                is RoomListEvent.HideContextMenu -> {
                     contextMenu.value = RoomListState.ContextMenu.Hidden
                 }
-                is RoomListEvents.LeaveRoom -> {
+                is RoomListEvent.LeaveRoom -> {
                     leaveRoomState.eventSink(LeaveRoomEvent.LeaveRoom(event.roomId, needsConfirmation = event.needsConfirmation))
                 }
-                is RoomListEvents.SetRoomIsFavorite -> coroutineScope.setRoomIsFavorite(event.roomId, event.isFavorite)
-                is RoomListEvents.MarkAsRead -> coroutineScope.markAsRead(event.roomId)
-                is RoomListEvents.MarkAsUnread -> coroutineScope.markAsUnread(event.roomId)
-                is RoomListEvents.AcceptInvite -> {
+                is RoomListEvent.SetRoomIsFavorite -> coroutineScope.setRoomIsFavorite(event.roomId, event.isFavorite)
+                is RoomListEvent.MarkAsRead -> coroutineScope.markAsRead(event.roomId)
+                is RoomListEvent.MarkAsUnread -> coroutineScope.markAsUnread(event.roomId)
+                is RoomListEvent.AcceptInvite -> {
                     acceptDeclineInviteState.eventSink(
                         AcceptInvite(event.roomSummary.toInviteData())
                     )
                 }
-                is RoomListEvents.DeclineInvite -> {
+                is RoomListEvent.DeclineInvite -> {
                     acceptDeclineInviteState.eventSink(
                         DeclineInvite(event.roomSummary.toInviteData(), blockUser = event.blockUser, shouldConfirm = false)
                     )
                 }
-                is RoomListEvents.ShowDeclineInviteMenu -> declineInviteMenu.value = RoomListState.DeclineInviteMenu.Shown(event.roomSummary)
-                RoomListEvents.HideDeclineInviteMenu -> declineInviteMenu.value = RoomListState.DeclineInviteMenu.Hidden
-                is RoomListEvents.ClearCacheOfRoom -> coroutineScope.clearCacheOfRoom(event.roomId)
+                is RoomListEvent.ShowDeclineInviteMenu -> declineInviteMenu.value = RoomListState.DeclineInviteMenu.Shown(event.roomSummary)
+                RoomListEvent.HideDeclineInviteMenu -> declineInviteMenu.value = RoomListState.DeclineInviteMenu.Hidden
+                is RoomListEvent.ClearCacheOfRoom -> coroutineScope.clearCacheOfRoom(event.roomId)
             }
+        }
+
+        LaunchedEffect(filtersState.filterSelectionStates, spaceFiltersState.selectedFilter()) {
+            val selectedFilters = filtersState.selectedFilters().map { filter -> filter.into() }
+            val selectedSpaceFilter = spaceFiltersState.selectedFilter().into()
+            val allFilters = RoomListFilter.All(selectedFilters + listOfNotNull(selectedSpaceFilter))
+            roomListDataSource.updateFilter(allFilters)
         }
 
         val contentState = roomListContentState(
@@ -168,6 +178,7 @@ class RoomListPresenter(
             leaveRoomState = leaveRoomState,
             filtersState = filtersState,
             searchState = searchState,
+            spaceFiltersState = spaceFiltersState,
             contentState = contentState,
             acceptDeclineInviteState = acceptDeclineInviteState,
             hideInvitesAvatars = hideInvitesAvatar,
@@ -217,7 +228,7 @@ class RoomListPresenter(
         showNewNotificationSoundBanner: Boolean,
     ): RoomListContentState {
         val roomSummaries by produceState(initialValue = AsyncData.Loading()) {
-            roomListDataSource.allRooms.collect { value = AsyncData.Success(it) }
+            roomListDataSource.roomSummariesFlow.collect { value = AsyncData.Success(it) }
         }
         val loadingState by roomListDataSource.loadingState.collectAsState()
         val showEmpty by remember {
@@ -253,7 +264,7 @@ class RoomListPresenter(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun CoroutineScope.showContextMenu(event: RoomListEvents.ShowContextMenu, contextMenuState: MutableState<RoomListState.ContextMenu>) = launch {
+    private fun CoroutineScope.showContextMenu(event: RoomListEvent.ShowContextMenu, contextMenuState: MutableState<RoomListState.ContextMenu>) = launch {
         val initialState = RoomListState.ContextMenu.Shown(
             roomId = event.roomSummary.roomId,
             roomName = event.roomSummary.name,
@@ -320,25 +331,6 @@ class RoomListPresenter(
     private fun CoroutineScope.clearCacheOfRoom(roomId: RoomId) = launch {
         client.getRoom(roomId)?.use { room ->
             room.clearEventCacheStorage()
-        }
-    }
-
-    private var currentUpdateVisibleRangeJob: Job? = null
-    private fun CoroutineScope.updateVisibleRange(range: IntRange) {
-        currentUpdateVisibleRangeJob?.cancel()
-        currentUpdateVisibleRangeJob = launch {
-            // Debounce the subscription to avoid subscribing to too many rooms
-            delay(SUBSCRIBE_TO_VISIBLE_ROOMS_DEBOUNCE_IN_MILLIS)
-
-            if (range.isEmpty()) return@launch
-            val currentRoomList = roomListDataSource.allRooms.first()
-            // Use extended range to 'prefetch' the next rooms info
-            val midExtendedRangeSize = EXTENDED_RANGE_SIZE / 2
-            val extendedRange = range.first until range.last + midExtendedRangeSize
-            val roomIds = extendedRange.mapNotNull { index ->
-                currentRoomList.getOrNull(index)?.roomId
-            }
-            roomListDataSource.subscribeToVisibleRooms(roomIds)
         }
     }
 }

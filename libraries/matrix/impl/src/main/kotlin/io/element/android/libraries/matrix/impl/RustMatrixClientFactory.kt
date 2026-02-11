@@ -21,7 +21,7 @@ import io.element.android.libraries.matrix.impl.certificates.UserCertificatesPro
 import io.element.android.libraries.matrix.impl.paths.SessionPaths
 import io.element.android.libraries.matrix.impl.paths.getSessionPaths
 import io.element.android.libraries.matrix.impl.proxy.ProxyProvider
-import io.element.android.libraries.matrix.impl.room.TimelineEventTypeFilterFactory
+import io.element.android.libraries.matrix.impl.room.TimelineEventFilterFactory
 import io.element.android.libraries.matrix.impl.storage.SqliteStoreBuilderProvider
 import io.element.android.libraries.matrix.impl.util.anonymizedTokens
 import io.element.android.libraries.network.useragent.UserAgentProvider
@@ -61,12 +61,17 @@ class RustMatrixClientFactory(
     private val clock: SystemClock,
     private val analyticsService: AnalyticsService,
     private val featureFlagService: FeatureFlagService,
-    private val timelineEventTypeFilterFactory: TimelineEventTypeFilterFactory,
+    private val timelineEventFilterFactory: TimelineEventFilterFactory,
     private val clientBuilderProvider: ClientBuilderProvider,
     private val sqliteStoreBuilderProvider: SqliteStoreBuilderProvider,
     private val workManagerScheduler: WorkManagerScheduler,
 ) {
-    private val sessionDelegate = RustClientSessionDelegate(sessionStore, appCoroutineScope, coroutineDispatchers)
+    private val sessionDelegate = RustClientSessionDelegate(
+        sessionStore = sessionStore,
+        appCoroutineScope = appCoroutineScope,
+        analyticsService = analyticsService,
+        coroutineDispatchers = coroutineDispatchers
+    )
 
     suspend fun create(sessionData: SessionData): RustMatrixClient = withContext(coroutineDispatchers.io) {
         val client = getBaseClientBuilder(
@@ -115,7 +120,7 @@ class RustMatrixClientFactory(
             dispatchers = coroutineDispatchers,
             baseCacheDirectory = cacheDirectory,
             clock = clock,
-            timelineEventTypeFilterFactory = timelineEventTypeFilterFactory,
+            timelineEventFilterFactory = timelineEventFilterFactory,
             featureFlagService = featureFlagService,
             analyticsService = analyticsService,
             workManagerScheduler = workManagerScheduler,
@@ -161,7 +166,8 @@ class RustMatrixClientFactory(
             .requestConfig(
                 RequestConfig(
                     timeout = 30_000uL,
-                    retryLimit = 0u,
+                    // retryLimit must be non-zero for the SDK to retry API calls in case of error (including 429 Too Many Requests error).
+                    retryLimit = 3u,
                     // Use default values for the rest
                     maxConcurrentRequests = null,
                     maxRetryTime = null,

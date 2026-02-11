@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
@@ -69,6 +70,7 @@ class DefaultVoiceMessageComposerPresenter(
     }
 
     private val permissionsPresenter = permissionsPresenterFactory.create(Manifest.permission.RECORD_AUDIO)
+    private var pendingEvent: VoiceMessageRecorderEvent.Start? = null
     private val mediaSender = mediaSenderFactory.create(timelineMode)
 
     @Composable
@@ -77,8 +79,7 @@ class DefaultVoiceMessageComposerPresenter(
         val recorderState by voiceRecorder.state.collectAsState(initial = VoiceRecorderState.Idle)
         val playerState by player.state.collectAsState(initial = VoiceMessageComposerPlayer.State.Initial)
         val keepScreenOn by remember { derivedStateOf { recorderState is VoiceRecorderState.Recording } }
-
-        val permissionState = permissionsPresenter.present()
+        val permissionState by rememberUpdatedState(permissionsPresenter.present())
         var isSending by remember { mutableStateOf(false) }
         var showSendFailureDialog by remember { mutableStateOf(false) }
 
@@ -86,6 +87,15 @@ class DefaultVoiceMessageComposerPresenter(
             val recording = recorderState as? VoiceRecorderState.Finished
                 ?: return@LaunchedEffect
             player.setMedia(recording.file.path)
+        }
+
+        LaunchedEffect(permissionState.permissionGranted) {
+            if (permissionState.permissionGranted) {
+                pendingEvent?.let {
+                    localCoroutineScope.startRecording()
+                    pendingEvent = null
+                }
+            }
         }
 
         fun handleLifecycleEvent(event: Lifecycle.Event) {
@@ -102,6 +112,7 @@ class DefaultVoiceMessageComposerPresenter(
         }
 
         fun handleVoiceMessageRecorderEvent(event: VoiceMessageRecorderEvent) {
+            pendingEvent = null
             when (event) {
                 VoiceMessageRecorderEvent.Start -> {
                     Timber.v("Voice message record button pressed")
@@ -111,6 +122,7 @@ class DefaultVoiceMessageComposerPresenter(
                         }
                         else -> {
                             Timber.i("Voice message permission needed")
+                            pendingEvent = VoiceMessageRecorderEvent.Start
                             permissionState.eventSink(PermissionsEvent.RequestPermissions)
                         }
                     }

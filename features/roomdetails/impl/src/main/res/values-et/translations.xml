@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="crypto_history_sharing_room_info_hidden_badge_content">"Uued liikmed ei näe ajalugu"</string>
+  <string name="crypto_history_sharing_room_info_shared_badge_content">"Uued liikmed näevad ajalugu"</string>
+  <string name="crypto_history_sharing_room_info_world_readable_badge_content">"Kõik võivad ajalugu näha"</string>
   <string name="screen_edit_room_address_room_address_section_footer">"Selleks, et jututuba oleks nähtav jututubade avalikus kataloogis, vajab ta aadressi."</string>
   <string name="screen_edit_room_address_title">"Muuda aadressi"</string>
   <string name="screen_notification_settings_edit_failed_updating_default_mode">"Teavituste seadistamisel tekkis viga"</string>
@@ -142,7 +145,7 @@ Me ei soovita krüptimise kasutamist selliste avalike jututubade puhul, millega 
   <string name="screen_security_and_privacy_encryption_section_header">"Krüptimine"</string>
   <string name="screen_security_and_privacy_encryption_toggle_title">"Võta läbiv krüptimine kasutusele"</string>
   <string name="screen_security_and_privacy_room_access_anyone_option_description">"Kõik võivad jututoaga liituda"</string>
-  <string name="screen_security_and_privacy_room_access_anyone_option_title">"Avalik"</string>
+  <string name="screen_security_and_privacy_room_access_anyone_option_title">"Kõik"</string>
   <string name="screen_security_and_privacy_room_access_footer">"Vali kogukonnad, mille liikmed saavad selle jututoaga liituda ilma kutseta. %1$s"</string>
   <string name="screen_security_and_privacy_room_access_footer_manage_spaces_action">"Halda kogukondi"</string>
   <string name="screen_security_and_privacy_room_access_invite_only_option_description">"Liituda saab vaid kutse olemasolul"</string>

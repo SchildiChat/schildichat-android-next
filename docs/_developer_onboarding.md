@@ -24,6 +24,7 @@
     * [Logging](#logging)
     * [Translations](#translations)
     * [Rageshake](#rageshake)
+    * [Developer options](#developer-options)
   * [Tips](#tips)
 * [Happy coding!](#happy-coding)
 
@@ -409,14 +410,31 @@ The data will be sent to an internal server, which is not publicly accessible. A
 
 Rageshake can be very useful to get logs from a release version of the application.
 
+
+#### Developer options
+
+> [!WARNING]
+> Developer options can result in unexpected application behavior or destructive
+> actions. Use with caution and only if you are instructed by someone at Element or are
+> already familiar.
+
+These options provide advanced controls for testing and debugging. They are visible by
+default in debug and nightly builds but are hidden in release versions.
+
+**Enabling in release builds:** Navigate to application settings and tap the version
+number at the bottom 7 times. After tapping, a new "Developer options" entry will appear
+at the bottom of the list.
+
+The developer options include feature flags, notification/push history, Element call
+customization, Rust SDK log levels, per-feature tracing toggles, Showkase to debug UI
+components, rageshake controls, app crash controls, cache details/controls, persistent
+storage maintenance tasks.
+
+Keywords: Developer settings, developer mode
+
+
 ### Tips
 
-- Element Android has a `developer mode` in the `Settings/Advanced settings`. Other useful options are available here; (TODO Not supported yet!)
-- Show hidden Events can also help to debug feature. When developer mode is enabled, it is possible to view the source (= the Json content) of any Events; (TODO
-  Not supported yet!)
-- Type `/devtools` in a Room composer to access a developer menu. There are some other entry points. Developer mode has to be enabled; (TODO Not supported yet!)
-- Hidden debug menu: when developer mode is enabled and on debug build, there are some extra screens that can be accessible using the green wheel. In those
-  screens, it will be possible to toggle some feature flags; (TODO Not supported yet!)
 - Using logcat, filtering with `Compositions` can help you to understand what screen are currently displayed on your device. Searching for string displayed on
   the screen can also help to find the running code in the codebase.
 - When this is possible, prefer using `sealed interface` instead of `sealed class`;

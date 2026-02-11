@@ -66,7 +66,7 @@ class RoomMemberListPresenterTest {
             skipItems(1)
             val loadedState = awaitItem()
             assertThat(loadedState.showBannedSection).isTrue()
-            loadedState.eventSink(RoomMemberListEvents.ChangeSelectedSection(SelectedSection.BANNED))
+            loadedState.eventSink(RoomMemberListEvent.ChangeSelectedSection(SelectedSection.BANNED))
             val bannedSectionState = awaitItem()
             assertThat(bannedSectionState.selectedSection).isEqualTo(SelectedSection.BANNED)
             // Now update the room members to have no banned users
@@ -188,7 +188,7 @@ class RoomMemberListPresenterTest {
         )
         presenter.test {
             skipItems(1)
-            awaitItem().eventSink(RoomMemberListEvents.RoomMemberSelected(anInvitedVictor()))
+            awaitItem().eventSink(RoomMemberListEvent.RoomMemberSelected(anInvitedVictor()))
         }
     }
 }

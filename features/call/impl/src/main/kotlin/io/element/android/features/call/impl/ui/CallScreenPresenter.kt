@@ -100,7 +100,7 @@ class CallScreenPresenter(
                 )
             }
             onDispose {
-                appCoroutineScope.launch { activeCallManager.hungUpCall(callType) }
+                appCoroutineScope.launch { activeCallManager.hangUpCall(callType) }
             }
         }
 

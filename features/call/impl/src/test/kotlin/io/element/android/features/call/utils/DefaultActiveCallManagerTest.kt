@@ -155,7 +155,7 @@ class DefaultActiveCallManagerTest {
     }
 
     @Test
-    fun `hungUpCall - removes existing call if the CallType matches`() = runTest {
+    fun `hangUpCall - removes existing call if the CallType matches`() = runTest {
         setupShadowPowerManager()
         val notificationManagerCompat = mockk<NotificationManagerCompat>(relaxed = true)
         val manager = createActiveCallManager(notificationManagerCompat = notificationManagerCompat)
@@ -165,7 +165,7 @@ class DefaultActiveCallManagerTest {
         assertThat(manager.activeCall.value).isNotNull()
         assertThat(manager.activeWakeLock?.isHeld).isTrue()
 
-        manager.hungUpCall(CallType.RoomCall(notificationData.sessionId, notificationData.roomId))
+        manager.hangUpCall(CallType.RoomCall(notificationData.sessionId, notificationData.roomId))
         assertThat(manager.activeCall.value).isNull()
         assertThat(manager.activeWakeLock?.isHeld).isFalse()
 
@@ -192,7 +192,7 @@ class DefaultActiveCallManagerTest {
         val notificationData = aCallNotificationData(roomId = A_ROOM_ID)
         manager.registerIncomingCall(notificationData)
 
-        manager.hungUpCall(CallType.RoomCall(notificationData.sessionId, notificationData.roomId))
+        manager.hangUpCall(CallType.RoomCall(notificationData.sessionId, notificationData.roomId))
 
         coVerify {
             room.declineCall(notificationEventId = notificationData.eventId)
@@ -269,7 +269,7 @@ class DefaultActiveCallManagerTest {
     }
 
     @Test
-    fun `hungUpCall - does nothing if the CallType doesn't match`() = runTest {
+    fun `hangUpCall - does nothing if the CallType doesn't match`() = runTest {
         setupShadowPowerManager()
         val notificationManagerCompat = mockk<NotificationManagerCompat>(relaxed = true)
         val manager = createActiveCallManager(notificationManagerCompat = notificationManagerCompat)
@@ -278,7 +278,7 @@ class DefaultActiveCallManagerTest {
         assertThat(manager.activeCall.value).isNotNull()
         assertThat(manager.activeWakeLock?.isHeld).isTrue()
 
-        manager.hungUpCall(CallType.ExternalUrl("https://example.com"))
+        manager.hangUpCall(CallType.ExternalUrl("https://example.com"))
         assertThat(manager.activeCall.value).isNotNull()
         assertThat(manager.activeWakeLock?.isHeld).isTrue()
 

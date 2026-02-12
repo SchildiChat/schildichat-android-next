@@ -72,10 +72,10 @@ interface ActiveCallManager {
     suspend fun registerIncomingCall(notificationData: CallNotificationData)
 
     /**
-     * Called when the active call has been hung up. It will remove any existing UI and the active call.
-     * @param callType The type of call that the user hung up, either an external url one or a room one.
+     * Called to hang up the active call. It will hang up the call and remove any existing UI and the active call.
+     * @param callType The type of call that the user hangs up, either an external url one or a room one.
      */
-    suspend fun hungUpCall(callType: CallType)
+    suspend fun hangUpCall(callType: CallType)
 
     /**
      * Called after the user joined a call. It will remove any existing UI and set the call state as [CallState.InCall].
@@ -192,8 +192,9 @@ class DefaultActiveCallManager(
         }
     }
 
-    override suspend fun hungUpCall(callType: CallType) = mutex.withLock {
+    override suspend fun hangUpCall(callType: CallType) = mutex.withLock {
         Timber.tag(tag).d("Hung up call: $callType")
+        Timber.tag(tag).d("Hang up call: $callType")
         val currentActiveCall = activeCall.value ?: run {
             Timber.tag(tag).w("No active call, ignoring hang up")
             return@withLock

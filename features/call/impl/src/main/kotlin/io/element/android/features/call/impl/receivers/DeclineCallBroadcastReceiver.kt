@@ -40,7 +40,7 @@ class DeclineCallBroadcastReceiver : BroadcastReceiver() {
             ?: return
         context.bindings<CallBindings>().inject(this)
         appCoroutineScope.launch {
-            activeCallManager.hungUpCall(callType = CallType.RoomCall(notificationData.sessionId, notificationData.roomId))
+            activeCallManager.hangUpCall(callType = CallType.RoomCall(notificationData.sessionId, notificationData.roomId))
         }
     }
 }

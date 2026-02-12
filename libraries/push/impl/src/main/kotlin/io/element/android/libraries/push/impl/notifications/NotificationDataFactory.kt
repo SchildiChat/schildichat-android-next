@@ -144,9 +144,9 @@ class DefaultNotificationDataFactory(
             .getFallbackNotification(notificationAccountParams.user.userId)
             ?.notification
         val notification = notificationCreator.createFallbackNotification(
-            existingNotification,
-            notificationAccountParams,
-            fallback,
+            existingNotification = existingNotification,
+            notificationAccountParams = notificationAccountParams,
+            fallbackNotifiableEvents = fallback,
         )
         return OneShotNotification(
             tag = FALLBACK_NOTIFICATION_TAG,

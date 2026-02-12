@@ -249,7 +249,7 @@ class DefaultVoiceMessageComposerPresenter(
 
     private fun CoroutineScope.startRecording() = launch {
         try {
-            audioFocus.requestAudioFocus(AudioFocusRequester.VoiceMessage) {}
+            audioFocus.requestAudioFocus(AudioFocusRequester.RecordVoiceMessage) {}
             voiceRecorder.startRecord()
         } catch (e: SecurityException) {
             audioFocus.releaseAudioFocus()

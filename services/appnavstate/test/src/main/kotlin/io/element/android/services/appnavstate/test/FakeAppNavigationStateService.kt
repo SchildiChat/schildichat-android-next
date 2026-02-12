@@ -15,15 +15,21 @@ import io.element.android.services.appnavstate.api.AppNavigationState
 import io.element.android.services.appnavstate.api.AppNavigationStateService
 import io.element.android.services.appnavstate.api.NavigationState
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class FakeAppNavigationStateService(
-    override val appNavigationState: MutableStateFlow<AppNavigationState> = MutableStateFlow(
-        AppNavigationState(
-            navigationState = NavigationState.Root,
-            isInForeground = true,
-        )
+    initialAppNavigationState: AppNavigationState = AppNavigationState(
+        navigationState = NavigationState.Root,
+        isInForeground = true,
     ),
 ) : AppNavigationStateService {
+    private val _appNavigationState: MutableStateFlow<AppNavigationState> = MutableStateFlow(initialAppNavigationState)
+    override val appNavigationState = _appNavigationState.asStateFlow()
+
+    fun emitNavigationState(state: AppNavigationState) {
+        _appNavigationState.value = state
+    }
+
     override fun onNavigateToSession(owner: String, sessionId: SessionId) = Unit
     override fun onLeavingSession(owner: String) = Unit
 

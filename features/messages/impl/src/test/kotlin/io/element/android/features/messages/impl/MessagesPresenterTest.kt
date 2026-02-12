@@ -1238,7 +1238,7 @@ class MessagesPresenterTest {
     }
 
     @Test
-    fun `present - shows a "world_readable" icon if the room is encrypted and history is world_readable`() = runTest {
+    fun `present - shows a 'world_readable' icon if the room is encrypted and history is world_readable`() = runTest {
         val presenter = createMessagesPresenter(
             joinedRoom = FakeJoinedRoom(
                 baseRoom = FakeBaseRoom(

@@ -144,12 +144,12 @@ class DefaultNotificationDataFactory(
             .getFallbackNotification(notificationAccountParams.user.userId)
             ?.notification
         val notification = notificationCreator.createFallbackNotification(
-            existingNotification,
-            notificationAccountParams,
-            fallback,
+            existingNotification = existingNotification,
+            notificationAccountParams = notificationAccountParams,
+            fallbackNotifiableEvents = fallback,
         )
         return OneShotNotification(
-            tag = "FALLBACK",
+            tag = FALLBACK_NOTIFICATION_TAG,
             notification = notification,
             isNoisy = false,
             timestamp = fallback.first().timestamp
@@ -173,6 +173,10 @@ class DefaultNotificationDataFactory(
                 )
             )
         }
+    }
+
+    companion object {
+        const val FALLBACK_NOTIFICATION_TAG = "FALLBACK"
     }
 }
 

@@ -22,12 +22,20 @@ import io.element.android.libraries.matrix.ui.media.ImageLoaderHolder
 import io.element.android.libraries.push.api.notifications.NotificationCleaner
 import io.element.android.libraries.push.api.notifications.NotificationIdProvider
 import io.element.android.libraries.push.impl.notifications.factories.NotificationCreator
+import io.element.android.libraries.push.impl.notifications.model.FallbackNotifiableEvent
+import io.element.android.libraries.push.impl.notifications.model.InviteNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.NotifiableEvent
-import io.element.android.libraries.push.impl.notifications.model.shouldIgnoreEventInRoom
+import io.element.android.libraries.push.impl.notifications.model.NotifiableMessageEvent
+import io.element.android.libraries.push.impl.notifications.model.NotifiableRingingCallEvent
+import io.element.android.libraries.push.impl.notifications.model.SimpleNotifiableEvent
 import io.element.android.libraries.sessionstorage.api.observer.SessionListener
 import io.element.android.libraries.sessionstorage.api.observer.SessionObserver
+import io.element.android.services.appnavstate.api.AppNavigationState
 import io.element.android.services.appnavstate.api.AppNavigationStateService
 import io.element.android.services.appnavstate.api.NavigationState
+import io.element.android.services.appnavstate.api.currentRoomId
+import io.element.android.services.appnavstate.api.currentSessionId
+import io.element.android.services.appnavstate.api.currentThreadId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -71,7 +79,10 @@ class DefaultNotificationDrawerManager(
     private fun onAppNavigationStateChange(navigationState: NavigationState) {
         when (navigationState) {
             NavigationState.Root -> {}
-            is NavigationState.Session -> {}
+            is NavigationState.Session -> {
+                // Cleanup the fallback notification
+                clearFallbackForSession(navigationState.sessionId)
+            }
             is NavigationState.Room -> {
                 // Cleanup notification for current room
                 clearMessagesForRoom(
@@ -94,14 +105,11 @@ class DefaultNotificationDrawerManager(
      * Events might be grouped and there might not be one notification per event!
      */
     suspend fun onNotifiableEventReceived(notifiableEvent: NotifiableEvent) {
-        if (notifiableEvent.shouldIgnoreEventInRoom(appNavigationStateService.appNavigationState.value)) {
-            return
-        }
-        renderEvents(listOf(notifiableEvent))
+        onNotifiableEventsReceived(listOf(notifiableEvent))
     }
 
     suspend fun onNotifiableEventsReceived(notifiableEvents: List<NotifiableEvent>) {
-        val eventsToNotify = notifiableEvents.filter { !it.shouldIgnoreEventInRoom(appNavigationStateService.appNavigationState.value) }
+        val eventsToNotify = notifiableEvents.filter { !appNavigationStateService.appNavigationState.value.shouldIgnoreEvent(it) }
         renderEvents(eventsToNotify)
     }
 
@@ -119,6 +127,17 @@ class DefaultNotificationDrawerManager(
     fun clearAllEvents(sessionId: SessionId) {
         activeNotificationsProvider.getNotificationsForSession(sessionId)
             .forEach { notificationDisplayer.cancelNotification(it.tag, it.id) }
+    }
+
+    /**
+     * Remove the fallback notification for the session.
+     */
+    fun clearFallbackForSession(sessionId: SessionId) {
+        notificationDisplayer.cancelNotification(
+            DefaultNotificationDataFactory.FALLBACK_NOTIFICATION_TAG,
+            NotificationIdProvider.getFallbackNotificationId(sessionId),
+        )
+        clearSummaryNotificationIfNeeded(sessionId)
     }
 
     /**
@@ -191,4 +210,31 @@ class DefaultNotificationDrawerManager(
             notificationRenderer.render(currentUser, useCompleteNotificationFormat, notifiableEvents, imageLoader)
         }
     }
+}
+
+/**
+ * Used to check if a notifiableEvent should be ignored based on the current application navigation state.
+ */
+private fun AppNavigationState.shouldIgnoreEvent(event: NotifiableEvent): Boolean {
+    if (!isInForeground) return false
+    return navigationState.currentSessionId() == event.sessionId &&
+        when (event) {
+            is NotifiableRingingCallEvent -> {
+                // Never ignore ringing call notifications
+                // Note that NotifiableRingingCallEvent are not handled by DefaultNotificationDrawerManager
+                false
+            }
+            is FallbackNotifiableEvent -> {
+                // Ignore if the room list is currently displayed
+                navigationState is NavigationState.Session
+            }
+            is InviteNotifiableEvent,
+            is SimpleNotifiableEvent -> {
+                event.roomId == navigationState.currentRoomId()
+            }
+            is NotifiableMessageEvent -> {
+                event.roomId == navigationState.currentRoomId() &&
+                    event.threadId == navigationState.currentThreadId()
+            }
+        }
 }

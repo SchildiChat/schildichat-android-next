@@ -144,8 +144,10 @@ fun aNotifiableCallEvent(
     rtcNotificationType = rtcNotificationType,
 )
 
-fun aFallbackNotifiableEvent() = FallbackNotifiableEvent(
-    sessionId = A_SESSION_ID,
+fun aFallbackNotifiableEvent(
+    sessionId: SessionId = A_SESSION_ID,
+) = FallbackNotifiableEvent(
+    sessionId = sessionId,
     roomId = A_ROOM_ID,
     eventId = AN_EVENT_ID,
     editedEventId = null,

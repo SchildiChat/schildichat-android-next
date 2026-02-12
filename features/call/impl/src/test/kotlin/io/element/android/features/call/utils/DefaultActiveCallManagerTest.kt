@@ -199,6 +199,34 @@ class DefaultActiveCallManagerTest {
         }
     }
 
+    @Test
+    fun `Decline event - Hangup on a unknown call should send a decline event`() = runTest {
+        setupShadowPowerManager()
+        val notificationManagerCompat = mockk<NotificationManagerCompat>(relaxed = true)
+
+        val room = mockk<JoinedRoom>(relaxed = true)
+
+        val matrixClient = FakeMatrixClient().apply {
+            givenGetRoomResult(A_ROOM_ID, room)
+        }
+        val clientProvider = FakeMatrixClientProvider({ Result.success(matrixClient) })
+
+        val manager = createActiveCallManager(
+            matrixClientProvider = clientProvider,
+            notificationManagerCompat = notificationManagerCompat
+        )
+
+        val notificationData = aCallNotificationData(roomId = A_ROOM_ID)
+        // Do not register the incoming call, so the manager doesn't know about it
+        manager.hangUpCall(
+            callType = CallType.RoomCall(notificationData.sessionId, notificationData.roomId),
+            notificationData = notificationData,
+        )
+        coVerify {
+            room.declineCall(notificationEventId = notificationData.eventId)
+        }
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `Decline event - Declining from another session should stop ringing`() = runTest {
@@ -282,7 +310,8 @@ class DefaultActiveCallManagerTest {
         assertThat(manager.activeCall.value).isNotNull()
         assertThat(manager.activeWakeLock?.isHeld).isTrue()
 
-        verify(exactly = 0) { notificationManagerCompat.cancel(notificationId) }
+        // The notification is always cancelled do not block the user
+        verify(exactly = 1) { notificationManagerCompat.cancel(notificationId) }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

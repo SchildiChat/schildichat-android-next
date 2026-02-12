@@ -82,6 +82,13 @@ class WebViewAudioManager(
         AudioDeviceInfo.TYPE_BUILTIN_EARPIECE,
     )
 
+    private val audioDeviceComparator = Comparator<AudioDeviceInfo> { a, b ->
+        // If the device type is not in the wantedDeviceTypes list, we give it a high index, (i.e. low priority)
+        val indexOfA = wantedDeviceTypes.indexOf(a.type).let { if (it == -1) Int.MAX_VALUE else it }
+        val indexOfB = wantedDeviceTypes.indexOf(b.type).let { if (it == -1) Int.MAX_VALUE else it }
+        indexOfA.compareTo(indexOfB)
+    }
+
     private val audioManager = webView.context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
     /**
@@ -134,7 +141,7 @@ class WebViewAudioManager(
             if (validNewDevices.isEmpty()) return
 
             // We need to calculate the available devices ourselves, since calling `listAudioDevices` will return an outdated list
-            val audioDevices = (listAudioDevices() + validNewDevices).distinctBy { it.id }
+            val audioDevices = (listAudioDevices() + validNewDevices).distinctBy { it.id }.sortedWith(audioDeviceComparator)
             setAvailableAudioDevices(audioDevices.map(SerializableAudioDevice::fromAudioDeviceInfo))
             // This should automatically switch to a new device if it has a higher priority than the current one
             selectDefaultAudioDevice(audioDevices)
@@ -294,7 +301,7 @@ class WebViewAudioManager(
     }
 
     /**
-     * Returns the list of available audio devices.
+     * Returns the list of available audio devices, sorted by likelihood of it being used for communication.
      *
      * On Android 11 ([Build.VERSION_CODES.R]) and lower, it returns the list of output devices as a fallback.
      */
@@ -304,7 +311,7 @@ class WebViewAudioManager(
         } else {
             val rawAudioDevices = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
             rawAudioDevices.filter { it.type in wantedDeviceTypes && it.isSink }
-        }
+        }.sortedWith(audioDeviceComparator)
     }
 
     /**
@@ -323,19 +330,12 @@ class WebViewAudioManager(
     }
 
     /**
-     * Selects the default audio device based on the available devices.
+     * Selects the default audio device based on the sorted available devices.
      *
      * @param availableDevices The list of available audio devices to select from. If not provided, it will use the current list of audio devices.
      */
     private fun selectDefaultAudioDevice(availableDevices: List<AudioDeviceInfo> = listAudioDevices()) {
-        val selectedDevice = availableDevices
-            .minByOrNull {
-                wantedDeviceTypes.indexOf(it.type).let { index ->
-                    // If the device type is not in the wantedDeviceTypes list, we give it a low priority
-                    if (index == -1) Int.MAX_VALUE else index
-                }
-            }
-
+        val selectedDevice = availableDevices.firstOrNull()
         expectedNewCommunicationDeviceId = selectedDevice?.id
         audioManager.selectAudioDevice(selectedDevice)
 

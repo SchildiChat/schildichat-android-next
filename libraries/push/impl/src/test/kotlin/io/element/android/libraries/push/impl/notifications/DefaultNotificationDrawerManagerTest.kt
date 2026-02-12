@@ -35,7 +35,6 @@ import io.element.android.libraries.sessionstorage.test.InMemorySessionStore
 import io.element.android.libraries.sessionstorage.test.observer.FakeSessionObserver
 import io.element.android.services.appnavstate.api.AppNavigationState
 import io.element.android.services.appnavstate.api.AppNavigationStateService
-import io.element.android.services.appnavstate.api.NavigationState
 import io.element.android.services.appnavstate.test.FakeAppNavigationStateService
 import io.element.android.services.appnavstate.test.aNavigationState
 import io.element.android.tests.testutils.lambda.any
@@ -44,7 +43,6 @@ import io.element.android.tests.testutils.lambda.value
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
@@ -92,26 +90,25 @@ class DefaultNotificationDrawerManagerTest {
     @Test
     fun `react to applicationStateChange`() = runTest {
         // For now just call all the API. Later, add more valuable tests.
-        val appNavigationStateFlow: MutableStateFlow<AppNavigationState> = MutableStateFlow(
-            AppNavigationState(
-                navigationState = NavigationState.Root,
-                isInForeground = true,
-            )
-        )
-        val appNavigationStateService = FakeAppNavigationStateService(appNavigationState = appNavigationStateFlow)
+        val appNavigationStateService = FakeAppNavigationStateService()
         createDefaultNotificationDrawerManager(
             appNavigationStateService = appNavigationStateService
         )
-        appNavigationStateFlow.emit(AppNavigationState(aNavigationState(), isInForeground = true))
+        appNavigationStateService.emitNavigationState(AppNavigationState(aNavigationState(), isInForeground = true))
         runCurrent()
-        appNavigationStateFlow.emit(AppNavigationState(aNavigationState(A_SESSION_ID), isInForeground = true))
+        appNavigationStateService.emitNavigationState(AppNavigationState(aNavigationState(A_SESSION_ID), isInForeground = true))
         runCurrent()
-        appNavigationStateFlow.emit(AppNavigationState(aNavigationState(A_SESSION_ID, A_ROOM_ID), isInForeground = true))
+        appNavigationStateService.emitNavigationState(AppNavigationState(aNavigationState(A_SESSION_ID, A_ROOM_ID), isInForeground = true))
         runCurrent()
-        appNavigationStateFlow.emit(AppNavigationState(aNavigationState(A_SESSION_ID, A_ROOM_ID, A_THREAD_ID), isInForeground = true))
+        appNavigationStateService.emitNavigationState(
+            AppNavigationState(
+                aNavigationState(A_SESSION_ID, A_ROOM_ID, A_THREAD_ID),
+                isInForeground = true
+            )
+        )
         runCurrent()
         // Like a user sign out
-        appNavigationStateFlow.emit(AppNavigationState(aNavigationState(), isInForeground = true))
+        appNavigationStateService.emitNavigationState(AppNavigationState(aNavigationState(), isInForeground = true))
         runCurrent()
     }
 

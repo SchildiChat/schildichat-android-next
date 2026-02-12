@@ -63,9 +63,9 @@ class DefaultAnalyticsRoomListStateWatcherTest {
 
     @Test
     fun `Opening the app in a cold state does nothing`() = runTest {
-        val navigationStateService = FakeAppNavigationStateService().apply {
-            appNavigationState.emit(AppNavigationState(NavigationState.Root, false))
-        }
+        val navigationStateService = FakeAppNavigationStateService(
+            initialAppNavigationState = AppNavigationState(NavigationState.Root, false)
+        )
         val roomListService = FakeRoomListService().apply {
             postState(RoomListService.State.Idle)
         }

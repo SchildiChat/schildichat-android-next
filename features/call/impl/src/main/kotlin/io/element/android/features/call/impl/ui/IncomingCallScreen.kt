@@ -51,6 +51,9 @@ import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.ui.strings.CommonStrings
 
+/**
+ * Ref: https://www.figma.com/design/0MMNu7cTOzLOlWb7ctTkv3/Element-X?node-id=16501-5740
+ */
 @Composable
 internal fun IncomingCallScreen(
     notificationData: CallNotificationData,
@@ -94,11 +97,8 @@ internal fun IncomingCallScreen(
             )
         }
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 24.dp, end = 24.dp, bottom = 64.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.padding(bottom = 64.dp),
+            horizontalArrangement = Arrangement.spacedBy(48.dp),
         ) {
             ActionButton(
                 size = 64.dp,
@@ -108,7 +108,6 @@ internal fun IncomingCallScreen(
                 backgroundColor = ElementTheme.colors.iconSuccessPrimary,
                 borderColor = ElementTheme.colors.borderSuccessSubtle
             )
-
             ActionButton(
                 size = 64.dp,
                 onClick = onCancel,
@@ -143,7 +142,7 @@ private fun ActionButton(
             onClick = onClick,
             colors = IconButtonDefaults.filledIconButtonColors(
                 containerColor = backgroundColor,
-                contentColor = Color.White,
+                contentColor = ElementTheme.colors.iconOnSolidPrimary,
             )
         ) {
             Icon(

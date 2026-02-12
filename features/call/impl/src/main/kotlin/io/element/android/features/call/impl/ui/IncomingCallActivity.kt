@@ -118,7 +118,7 @@ class IncomingCallActivity : AppCompatActivity() {
     private fun onCancel() {
         val activeCall = activeCallManager.activeCall.value ?: return
         appCoroutineScope.launch {
-            activeCallManager.hungUpCall(callType = activeCall.callType)
+            activeCallManager.hangUpCall(callType = activeCall.callType)
         }
     }
 }

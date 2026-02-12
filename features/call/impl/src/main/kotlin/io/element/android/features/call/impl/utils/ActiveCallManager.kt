@@ -74,6 +74,7 @@ interface ActiveCallManager {
     /**
      * Called to hang up the active call. It will hang up the call and remove any existing UI and the active call.
      * @param callType The type of call that the user hangs up, either an external url one or a room one.
+     * @param notificationData The data for the incoming call notification.
      */
     suspend fun hangUpCall(
         callType: CallType,
@@ -204,15 +205,13 @@ class DefaultActiveCallManager(
         val currentActiveCall = activeCall.value ?: run {
             // activeCall.value can be null if the application has been killed while the call was ringing
             // Build a currentActiveCall with the provided parameters.
-            if (notificationData != null) {
+            notificationData?.let {
                 ActiveCall(
                     callType = callType,
                     callState = CallState.Ringing(
                         notificationData = notificationData,
                     )
                 )
-            } else {
-                null
             }
         } ?: run {
             Timber.tag(tag).w("No active call, ignoring hang up")

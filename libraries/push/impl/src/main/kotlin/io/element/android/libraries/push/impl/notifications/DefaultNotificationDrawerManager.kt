@@ -109,7 +109,7 @@ class DefaultNotificationDrawerManager(
     }
 
     suspend fun onNotifiableEventsReceived(notifiableEvents: List<NotifiableEvent>) {
-        val eventsToNotify = notifiableEvents.filter { !it.shouldIgnoreRegardingApplicationState(appNavigationStateService.appNavigationState.value) }
+        val eventsToNotify = notifiableEvents.filter { !appNavigationStateService.appNavigationState.value.shouldIgnoreEvent(it) }
         renderEvents(eventsToNotify)
     }
 
@@ -213,12 +213,12 @@ class DefaultNotificationDrawerManager(
 }
 
 /**
- * Used to check if a notification should be ignored based on the current application navigation state.
+ * Used to check if a notifiableEvent should be ignored based on the current application navigation state.
  */
-private fun NotifiableEvent.shouldIgnoreRegardingApplicationState(appNavigationState: AppNavigationState): Boolean {
-    if (!appNavigationState.isInForeground) return false
-    return appNavigationState.navigationState.currentSessionId() == sessionId &&
-        when (this) {
+private fun AppNavigationState.shouldIgnoreEvent(event: NotifiableEvent): Boolean {
+    if (!isInForeground) return false
+    return navigationState.currentSessionId() == event.sessionId &&
+        when (event) {
             is NotifiableRingingCallEvent -> {
                 // Never ignore ringing call notifications
                 // Note that NotifiableRingingCallEvent are not handled by DefaultNotificationDrawerManager
@@ -226,15 +226,15 @@ private fun NotifiableEvent.shouldIgnoreRegardingApplicationState(appNavigationS
             }
             is FallbackNotifiableEvent -> {
                 // Ignore if the room list is currently displayed
-                appNavigationState.navigationState is NavigationState.Session
+                navigationState is NavigationState.Session
             }
             is InviteNotifiableEvent,
             is SimpleNotifiableEvent -> {
-                roomId == appNavigationState.navigationState.currentRoomId()
+                event.roomId == navigationState.currentRoomId()
             }
             is NotifiableMessageEvent -> {
-                roomId == appNavigationState.navigationState.currentRoomId() &&
-                    threadId == appNavigationState.navigationState.currentThreadId()
+                event.roomId == navigationState.currentRoomId() &&
+                    event.threadId == navigationState.currentThreadId()
             }
         }
 }

@@ -221,7 +221,7 @@ private fun NotifiableEvent.shouldIgnoreRegardingApplicationState(appNavigationS
         when (this) {
             is NotifiableRingingCallEvent -> {
                 // Never ignore ringing call notifications
-                // Note that NotifiableRingingCallEvent are not handled by DefaultNotificationDrawerManage
+                // Note that NotifiableRingingCallEvent are not handled by DefaultNotificationDrawerManager
                 false
             }
             is FallbackNotifiableEvent -> {

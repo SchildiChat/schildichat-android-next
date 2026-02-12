@@ -71,7 +71,10 @@ class DefaultNotificationDrawerManager(
     private fun onAppNavigationStateChange(navigationState: NavigationState) {
         when (navigationState) {
             NavigationState.Root -> {}
-            is NavigationState.Session -> {}
+            is NavigationState.Session -> {
+                // Cleanup the fallback notification
+                clearFallbackForSession(navigationState.sessionId)
+            }
             is NavigationState.Room -> {
                 // Cleanup notification for current room
                 clearMessagesForRoom(
@@ -119,6 +122,17 @@ class DefaultNotificationDrawerManager(
     fun clearAllEvents(sessionId: SessionId) {
         activeNotificationsProvider.getNotificationsForSession(sessionId)
             .forEach { notificationDisplayer.cancelNotification(it.tag, it.id) }
+    }
+
+    /**
+     * Remove the fallback notification for the session.
+     */
+    fun clearFallbackForSession(sessionId: SessionId) {
+        notificationDisplayer.cancelNotification(
+            DefaultNotificationDataFactory.FALLBACK_NOTIFICATION_TAG,
+            NotificationIdProvider.getFallbackNotificationId(sessionId),
+        )
+        clearSummaryNotificationIfNeeded(sessionId)
     }
 
     /**

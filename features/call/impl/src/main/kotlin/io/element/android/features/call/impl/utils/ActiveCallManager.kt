@@ -75,7 +75,10 @@ interface ActiveCallManager {
      * Called to hang up the active call. It will hang up the call and remove any existing UI and the active call.
      * @param callType The type of call that the user hangs up, either an external url one or a room one.
      */
-    suspend fun hangUpCall(callType: CallType)
+    suspend fun hangUpCall(
+        callType: CallType,
+        notificationData: CallNotificationData? = null,
+    )
 
     /**
      * Called after the user joined a call. It will remove any existing UI and set the call state as [CallState.InCall].
@@ -192,13 +195,30 @@ class DefaultActiveCallManager(
         }
     }
 
-    override suspend fun hangUpCall(callType: CallType) = mutex.withLock {
-        Timber.tag(tag).d("Hung up call: $callType")
+    override suspend fun hangUpCall(
+        callType: CallType,
+        notificationData: CallNotificationData?,
+    ) = mutex.withLock {
         Timber.tag(tag).d("Hang up call: $callType")
+        cancelIncomingCallNotification()
         val currentActiveCall = activeCall.value ?: run {
+            // activeCall.value can be null if the application has been killed while the call was ringing
+            // Build a currentActiveCall with the provided parameters.
+            if (notificationData != null) {
+                ActiveCall(
+                    callType = callType,
+                    callState = CallState.Ringing(
+                        notificationData = notificationData,
+                    )
+                )
+            } else {
+                null
+            }
+        } ?: run {
             Timber.tag(tag).w("No active call, ignoring hang up")
             return@withLock
         }
+
         if (currentActiveCall.callType != callType) {
             Timber.tag(tag).w("Call type $callType does not match the active call type, ignoring")
             return@withLock
@@ -209,9 +229,13 @@ class DefaultActiveCallManager(
             matrixClientProvider.getOrRestore(notificationData.sessionId).getOrNull()
                 ?.getRoom(notificationData.roomId)
                 ?.declineCall(notificationData.eventId)
+                ?.onFailure {
+                    Timber.e(it, "Failed to decline incoming call")
+                }
+                ?: run {
+                    Timber.tag(tag).d("Couldn't find session or room to decline call for incoming call")
+                }
         }
-
-        cancelIncomingCallNotification()
         if (activeWakeLock?.isHeld == true) {
             Timber.tag(tag).d("Releasing partial wakelock after hang up")
             activeWakeLock.release()
@@ -222,7 +246,6 @@ class DefaultActiveCallManager(
 
     override suspend fun joinedCall(callType: CallType) = mutex.withLock {
         Timber.tag(tag).d("Joined call: $callType")
-
         cancelIncomingCallNotification()
         if (activeWakeLock?.isHeld == true) {
             Timber.tag(tag).d("Releasing partial wakelock after joining call")

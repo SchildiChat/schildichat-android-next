@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 class FakeActiveCallManager(
     var registerIncomingCallResult: (CallNotificationData) -> Unit = {},
-    var hangUpCallResult: (CallType) -> Unit = {},
+    var hangUpCallResult: (CallType, CallNotificationData?) -> Unit = { _, _ -> },
     var joinedCallResult: (CallType) -> Unit = {},
 ) : ActiveCallManager {
     override val activeCall = MutableStateFlow<ActiveCall?>(null)
@@ -26,8 +26,8 @@ class FakeActiveCallManager(
         registerIncomingCallResult(notificationData)
     }
 
-    override suspend fun hangUpCall(callType: CallType) = simulateLongTask {
-        hangUpCallResult(callType)
+    override suspend fun hangUpCall(callType: CallType, notificationData: CallNotificationData?) = simulateLongTask {
+        hangUpCallResult(callType, notificationData)
     }
 
     override suspend fun joinedCall(callType: CallType) = simulateLongTask {

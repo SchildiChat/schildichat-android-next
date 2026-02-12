@@ -39,7 +39,6 @@ import io.element.android.services.appnavstate.api.AppNavigationStateService
 import io.element.android.services.appnavstate.api.NavigationState
 import io.element.android.services.appnavstate.test.FakeAppNavigationStateService
 import io.element.android.services.appnavstate.test.aNavigationState
-import io.element.android.services.toolbox.test.strings.FakeStringProvider
 import io.element.android.tests.testutils.lambda.any
 import io.element.android.tests.testutils.lambda.lambdaRecorder
 import io.element.android.tests.testutils.lambda.value
@@ -261,7 +260,6 @@ fun TestScope.createDefaultNotificationDrawerManager(
                 roomGroupMessageCreator = roomGroupMessageCreator,
                 summaryGroupMessageCreator = summaryGroupMessageCreator,
                 activeNotificationsProvider = activeNotificationsProvider,
-                stringProvider = FakeStringProvider(),
             ),
             enterpriseService = enterpriseService,
             sessionStore = sessionStore,

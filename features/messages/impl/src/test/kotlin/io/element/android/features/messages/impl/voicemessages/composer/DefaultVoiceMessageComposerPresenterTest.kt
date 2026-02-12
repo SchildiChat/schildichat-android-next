@@ -200,6 +200,30 @@ class DefaultVoiceMessageComposerPresenterTest {
     }
 
     @Test
+    fun `present - audio focus loss during recording finishes gracefully`() = runTest {
+        var onFocusLost: (() -> Unit)? = null
+        val testAudioFocus = FakeAudioFocus(
+            requestAudioFocusResult = { _, callback -> onFocusLost = callback },
+            releaseAudioFocusResult = { },
+        )
+        val presenter = createDefaultVoiceMessageComposerPresenter(audioFocus = testAudioFocus)
+        presenter.test {
+            awaitItem().eventSink(VoiceMessageComposerEvent.RecorderEvent(VoiceMessageRecorderEvent.Start))
+            awaitItem()
+
+            // simulate focus loss (phone call, etc)
+            onFocusLost?.invoke()
+            advanceUntilIdle()
+
+            val finalState = awaitItem()
+            assertThat(finalState.voiceMessageState).isEqualTo(aPreviewState())
+            voiceRecorder.assertCalls(started = 1, stopped = 1)
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
     fun `present - abort recording`() = runTest {
         val presenter = createDefaultVoiceMessageComposerPresenter()
         presenter.test {
@@ -687,6 +711,7 @@ class DefaultVoiceMessageComposerPresenterTest {
     private fun TestScope.createDefaultVoiceMessageComposerPresenter(
         permissionsPresenter: PermissionsPresenter = createFakePermissionsPresenter(),
         voiceRecorder: VoiceRecorder = this@DefaultVoiceMessageComposerPresenterTest.voiceRecorder,
+        audioFocus: AudioFocus = this@DefaultVoiceMessageComposerPresenterTest.audioFocus,
     ): DefaultVoiceMessageComposerPresenter {
         return DefaultVoiceMessageComposerPresenter(
             sessionCoroutineScope = backgroundScope,

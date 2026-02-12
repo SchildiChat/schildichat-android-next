@@ -249,7 +249,11 @@ class DefaultVoiceMessageComposerPresenter(
 
     private fun CoroutineScope.startRecording() = launch {
         try {
-            audioFocus.requestAudioFocus(AudioFocusRequester.RecordVoiceMessage) {}
+            audioFocus.requestAudioFocus(AudioFocusRequester.RecordVoiceMessage) {
+                // something else grabbed focus (phone call, etc) - finish gracefully
+                // so the user keeps their partial recording
+                sessionCoroutineScope.finishRecording()
+            }
             voiceRecorder.startRecord()
         } catch (e: SecurityException) {
             audioFocus.releaseAudioFocus()

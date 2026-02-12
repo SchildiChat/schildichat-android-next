@@ -97,11 +97,8 @@ internal fun IncomingCallScreen(
             )
         }
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 24.dp, end = 24.dp, bottom = 64.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.padding(bottom = 64.dp),
+            horizontalArrangement = Arrangement.spacedBy(48.dp),
         ) {
             ActionButton(
                 size = 64.dp,
@@ -111,7 +108,6 @@ internal fun IncomingCallScreen(
                 backgroundColor = ElementTheme.colors.iconSuccessPrimary,
                 borderColor = ElementTheme.colors.borderSuccessSubtle
             )
-
             ActionButton(
                 size = 64.dp,
                 onClick = onCancel,

@@ -100,10 +100,8 @@ private fun AudioFocusRequester.willPausedWhenDucked(): Boolean {
     return when (this) {
         // (note that for Element Call, there is no action when the focus is lost)
         AudioFocusRequester.ElementCall,
-        AudioFocusRequester.VoiceMessage -> true
-        // no audio output to duck when recording, and we don't want notification
-        // sounds to interrupt a recording via transient focus loss
-        AudioFocusRequester.RecordVoiceMessage -> false
+        AudioFocusRequester.VoiceMessage,
+        AudioFocusRequester.RecordVoiceMessage -> true
         // For the MediaViewer, we let the system automatically handle the ducking
         // https://developer.android.com/media/optimize/audio-focus#automatic-ducking
         AudioFocusRequester.MediaViewer -> false

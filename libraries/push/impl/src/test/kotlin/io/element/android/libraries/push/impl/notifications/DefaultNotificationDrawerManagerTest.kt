@@ -16,7 +16,6 @@ import io.element.android.features.enterprise.test.FakeEnterpriseService
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_SESSION_ID
-import io.element.android.libraries.matrix.test.A_SPACE_ID
 import io.element.android.libraries.matrix.test.A_THREAD_ID
 import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.libraries.matrix.test.FakeMatrixClientProvider
@@ -107,11 +106,9 @@ class DefaultNotificationDrawerManagerTest {
         runCurrent()
         appNavigationStateFlow.emit(AppNavigationState(aNavigationState(A_SESSION_ID), isInForeground = true))
         runCurrent()
-        appNavigationStateFlow.emit(AppNavigationState(aNavigationState(A_SESSION_ID, A_SPACE_ID), isInForeground = true))
+        appNavigationStateFlow.emit(AppNavigationState(aNavigationState(A_SESSION_ID, A_ROOM_ID), isInForeground = true))
         runCurrent()
-        appNavigationStateFlow.emit(AppNavigationState(aNavigationState(A_SESSION_ID, A_SPACE_ID, A_ROOM_ID), isInForeground = true))
-        runCurrent()
-        appNavigationStateFlow.emit(AppNavigationState(aNavigationState(A_SESSION_ID, A_SPACE_ID, A_ROOM_ID, A_THREAD_ID), isInForeground = true))
+        appNavigationStateFlow.emit(AppNavigationState(aNavigationState(A_SESSION_ID, A_ROOM_ID, A_THREAD_ID), isInForeground = true))
         runCurrent()
         // Like a user sign out
         appNavigationStateFlow.emit(AppNavigationState(aNavigationState(), isInForeground = true))

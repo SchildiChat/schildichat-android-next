@@ -51,6 +51,9 @@ import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.ui.strings.CommonStrings
 
+/**
+ * Ref: https://www.figma.com/design/0MMNu7cTOzLOlWb7ctTkv3/Element-X?node-id=16501-5740
+ */
 @Composable
 internal fun IncomingCallScreen(
     notificationData: CallNotificationData,
@@ -143,7 +146,7 @@ private fun ActionButton(
             onClick = onClick,
             colors = IconButtonDefaults.filledIconButtonColors(
                 containerColor = backgroundColor,
-                contentColor = Color.White,
+                contentColor = ElementTheme.colors.iconOnSolidPrimary,
             )
         ) {
             Icon(

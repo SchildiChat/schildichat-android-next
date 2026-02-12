@@ -56,7 +56,6 @@ import io.element.android.libraries.push.impl.notifications.model.NotifiableMess
 import io.element.android.libraries.push.impl.notifications.model.ResolvedPushEvent
 import io.element.android.libraries.push.test.notifications.FakeCallNotificationEventResolver
 import io.element.android.services.toolbox.impl.strings.AndroidStringProvider
-import io.element.android.services.toolbox.test.strings.FakeStringProvider
 import io.element.android.services.toolbox.test.systemclock.A_FAKE_TIMESTAMP
 import io.element.android.services.toolbox.test.systemclock.FakeSystemClock
 import kotlinx.coroutines.test.runTest
@@ -663,7 +662,7 @@ class DefaultNotifiableEventResolverTest {
                 roomId = A_ROOM_ID,
                 eventId = AN_EVENT_ID,
                 editedEventId = null,
-                description = "You have new messages.",
+                description = "",
                 canBeReplaced = true,
                 isRedacted = false,
                 isUpdated = false,
@@ -895,7 +894,6 @@ class DefaultNotifiableEventResolverTest {
             callNotificationEventResolver = callNotificationEventResolver,
             fallbackNotificationFactory = FallbackNotificationFactory(
                 clock = FakeSystemClock(),
-                stringProvider = FakeStringProvider(defaultResult = "You have new messages.")
             ),
             featureFlagService = FakeFeatureFlagService(),
         )

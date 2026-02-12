@@ -75,8 +75,9 @@ interface NotificationCreator {
     ): Notification
 
     fun createFallbackNotification(
+        existingNotification: Notification?,
         notificationAccountParams: NotificationAccountParams,
-        fallbackNotifiableEvent: FallbackNotifiableEvent,
+        fallbackNotifiableEvents: List<FallbackNotifiableEvent>,
     ): Notification
 
     /**
@@ -240,11 +241,13 @@ class DefaultNotificationCreator(
             .addAction(rejectInvitationActionFactory.create(inviteNotifiableEvent))
             .addAction(acceptInvitationActionFactory.create(inviteNotifiableEvent))
             // Build the pending intent for when the notification is clicked
-            .setContentIntent(pendingIntentFactory.createOpenRoomPendingIntent(
-                sessionId = inviteNotifiableEvent.sessionId,
-                roomId = inviteNotifiableEvent.roomId,
-                eventId = null,
-            ))
+            .setContentIntent(
+                pendingIntentFactory.createOpenRoomPendingIntent(
+                    sessionId = inviteNotifiableEvent.sessionId,
+                    roomId = inviteNotifiableEvent.roomId,
+                    eventId = null,
+                )
+            )
             .apply {
                 if (inviteNotifiableEvent.noisy) {
                     // Compat
@@ -276,12 +279,14 @@ class DefaultNotificationCreator(
             .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
             .configureWith(notificationAccountParams)
             .setAutoCancel(true)
-            .setContentIntent(pendingIntentFactory.createOpenRoomPendingIntent(
-                sessionId = simpleNotifiableEvent.sessionId,
-                roomId = simpleNotifiableEvent.roomId,
-                eventId = null,
-                extras = bundleOf(ROOM_OPENED_FROM_NOTIFICATION to true),
-            ))
+            .setContentIntent(
+                pendingIntentFactory.createOpenRoomPendingIntent(
+                    sessionId = simpleNotifiableEvent.sessionId,
+                    roomId = simpleNotifiableEvent.roomId,
+                    eventId = null,
+                    extras = bundleOf(ROOM_OPENED_FROM_NOTIFICATION to true),
+                )
+            )
             .apply {
                 if (simpleNotifiableEvent.noisy) {
                     // Compat
@@ -295,28 +300,35 @@ class DefaultNotificationCreator(
     }
 
     override fun createFallbackNotification(
+        existingNotification: Notification?,
         notificationAccountParams: NotificationAccountParams,
-        fallbackNotifiableEvent: FallbackNotifiableEvent,
+        fallbackNotifiableEvents: List<FallbackNotifiableEvent>,
     ): Notification {
         val channelId = notificationChannels.getChannelIdForMessage(false)
+        val existingCounter = existingNotification
+            ?.extras
+            ?.getInt(FALLBACK_COUNTER_EXTRA)
+            ?: 0
+        val counter = existingCounter + fallbackNotifiableEvents.size
+        val fallbackNotifiableEvent = fallbackNotifiableEvents.first()
         return NotificationCompat.Builder(context, channelId)
             .setOnlyAlertOnce(true)
             .setContentTitle(buildMeta.applicationName.annotateForDebug(7))
-            .setContentText(fallbackNotifiableEvent.description.orEmpty().annotateForDebug(8))
+            .setContentText(
+                stringProvider.getQuantityString(R.plurals.notification_fallback_n_content, counter, counter)
+                    .annotateForDebug(8)
+            )
+            .setExtras(
+                bundleOf(
+                    FALLBACK_COUNTER_EXTRA to counter
+                )
+            )
+            .setNumber(counter)
             .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
             .configureWith(notificationAccountParams)
             .setAutoCancel(true)
             .setWhen(fallbackNotifiableEvent.timestamp)
-            // Ideally we'd use `createOpenRoomPendingIntent` here, but the broken notification might apply to an invite
-            // and the user won't have access to the room yet, resulting in an error screen.
             .setContentIntent(pendingIntentFactory.createOpenSessionPendingIntent(fallbackNotifiableEvent.sessionId))
-            .setDeleteIntent(
-                pendingIntentFactory.createDismissEventPendingIntent(
-                    fallbackNotifiableEvent.sessionId,
-                    fallbackNotifiableEvent.roomId,
-                    fallbackNotifiableEvent.eventId
-                )
-            )
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
     }
@@ -503,6 +515,7 @@ class DefaultNotificationCreator(
 
     companion object {
         const val MESSAGE_EVENT_ID = "message_event_id"
+        private const val FALLBACK_COUNTER_EXTRA = "COUNTER"
     }
 }
 

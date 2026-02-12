@@ -16,13 +16,13 @@ datastore = "1.2.0"
 constraintlayout = "2.2.1"
 constraintlayout_compose = "1.1.1"
 lifecycle = "2.10.0"
-activity = "1.12.3"
+activity = "1.12.4"
 media3 = "1.9.2"
 camera = "1.5.3"
 work = "2.11.1"
 
 # Compose
-compose_bom = "2026.01.00"
+compose_bom = "2026.02.00"
 
 # Coroutines
 coroutines = "1.10.2"
@@ -32,7 +32,7 @@ accompanist = "0.37.3"
 
 # Test
 test_core = "1.7.0"
-roborazzi = "1.58.0"
+roborazzi = "1.59.0"
 
 # Jetbrain
 datetime = "0.7.1"

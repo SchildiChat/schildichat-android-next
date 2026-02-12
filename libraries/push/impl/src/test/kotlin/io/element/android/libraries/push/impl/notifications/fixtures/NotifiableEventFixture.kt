@@ -24,10 +24,12 @@ import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.matrix.test.A_TIMESTAMP
 import io.element.android.libraries.matrix.test.A_USER_ID_2
 import io.element.android.libraries.matrix.test.A_USER_NAME_2
+import io.element.android.libraries.push.impl.notifications.model.FallbackNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.InviteNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.NotifiableMessageEvent
 import io.element.android.libraries.push.impl.notifications.model.NotifiableRingingCallEvent
 import io.element.android.libraries.push.impl.notifications.model.SimpleNotifiableEvent
+import io.element.android.services.toolbox.test.systemclock.A_FAKE_TIMESTAMP
 
 fun aSimpleNotifiableEvent(
     sessionId: SessionId = A_SESSION_ID,
@@ -140,4 +142,17 @@ fun aNotifiableCallEvent(
     roomAvatarUrl = roomAvatarUrl,
     senderAvatarUrl = senderAvatarUrl,
     rtcNotificationType = rtcNotificationType,
+)
+
+fun aFallbackNotifiableEvent() = FallbackNotifiableEvent(
+    sessionId = A_SESSION_ID,
+    roomId = A_ROOM_ID,
+    eventId = AN_EVENT_ID,
+    editedEventId = null,
+    description = "A fallback notification",
+    canBeReplaced = false,
+    isRedacted = false,
+    isUpdated = false,
+    timestamp = A_FAKE_TIMESTAMP,
+    cause = "Unable to decrypt event",
 )

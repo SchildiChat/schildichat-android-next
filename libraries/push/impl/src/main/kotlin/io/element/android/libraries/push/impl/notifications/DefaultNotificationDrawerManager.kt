@@ -72,17 +72,16 @@ class DefaultNotificationDrawerManager(
         when (navigationState) {
             NavigationState.Root -> {}
             is NavigationState.Session -> {}
-            is NavigationState.Space -> {}
             is NavigationState.Room -> {
                 // Cleanup notification for current room
                 clearMessagesForRoom(
-                    sessionId = navigationState.parentSpace.parentSession.sessionId,
+                    sessionId = navigationState.parentSession.sessionId,
                     roomId = navigationState.roomId,
                 )
             }
             is NavigationState.Thread -> {
                 clearMessagesForThread(
-                    sessionId = navigationState.parentRoom.parentSpace.parentSession.sessionId,
+                    sessionId = navigationState.parentRoom.parentSession.sessionId,
                     roomId = navigationState.parentRoom.roomId,
                     threadId = navigationState.threadId,
                 )

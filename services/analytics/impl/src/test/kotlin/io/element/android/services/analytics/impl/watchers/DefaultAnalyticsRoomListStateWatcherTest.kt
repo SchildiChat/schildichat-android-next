@@ -43,9 +43,9 @@ class DefaultAnalyticsRoomListStateWatcherTest {
         runCurrent()
 
         // Make sure it's warm by changing its internal state
-        navigationStateService.appNavigationState.emit(AppNavigationState(navigationState = NavigationState.Root, isInForeground = false))
+        navigationStateService.emitNavigationState(AppNavigationState(navigationState = NavigationState.Root, isInForeground = false))
         runCurrent()
-        navigationStateService.appNavigationState.emit(AppNavigationState(navigationState = NavigationState.Root, isInForeground = true))
+        navigationStateService.emitNavigationState(AppNavigationState(navigationState = NavigationState.Root, isInForeground = true))
         runCurrent()
 
         // The transaction should be present now
@@ -110,9 +110,9 @@ class DefaultAnalyticsRoomListStateWatcherTest {
         runCurrent()
 
         // Make sure it's warm by changing its internal state
-        navigationStateService.appNavigationState.emit(AppNavigationState(navigationState = NavigationState.Root, isInForeground = false))
+        navigationStateService.emitNavigationState(AppNavigationState(navigationState = NavigationState.Root, isInForeground = false))
         runCurrent()
-        navigationStateService.appNavigationState.emit(AppNavigationState(navigationState = NavigationState.Root, isInForeground = true))
+        navigationStateService.emitNavigationState(AppNavigationState(navigationState = NavigationState.Root, isInForeground = true))
         runCurrent()
 
         // The transaction should be present now
@@ -145,9 +145,9 @@ class DefaultAnalyticsRoomListStateWatcherTest {
         runCurrent()
 
         // Make sure it's warm by changing its internal state
-        navigationStateService.appNavigationState.emit(AppNavigationState(navigationState = NavigationState.Root, isInForeground = false))
+        navigationStateService.emitNavigationState(AppNavigationState(navigationState = NavigationState.Root, isInForeground = false))
         runCurrent()
-        navigationStateService.appNavigationState.emit(AppNavigationState(navigationState = NavigationState.Root, isInForeground = true))
+        navigationStateService.emitNavigationState(AppNavigationState(navigationState = NavigationState.Root, isInForeground = true))
         runCurrent()
 
         // The transaction was never added

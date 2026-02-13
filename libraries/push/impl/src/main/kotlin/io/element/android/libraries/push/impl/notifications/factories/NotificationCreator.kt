@@ -313,6 +313,7 @@ class DefaultNotificationCreator(
         notificationAccountParams: NotificationAccountParams,
         fallbackNotifiableEvents: List<FallbackNotifiableEvent>,
     ): Notification {
+        val fallbackNotifiableEvent = fallbackNotifiableEvents.first()
         val channelId = notificationChannels.getChannelIdForMessage(
             sessionId = fallbackNotifiableEvent.sessionId,
             noisy = false,
@@ -322,7 +323,6 @@ class DefaultNotificationCreator(
             ?.getInt(FALLBACK_COUNTER_EXTRA)
             ?: 0
         val counter = existingCounter + fallbackNotifiableEvents.size
-        val fallbackNotifiableEvent = fallbackNotifiableEvents.first()
         return NotificationCompat.Builder(context, channelId)
             .setOnlyAlertOnce(true)
             .setContentTitle(buildMeta.applicationName.annotateForDebug(7))

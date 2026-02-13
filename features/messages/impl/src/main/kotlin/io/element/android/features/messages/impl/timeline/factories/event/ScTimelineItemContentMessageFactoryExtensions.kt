@@ -1,5 +1,6 @@
 package io.element.android.features.messages.impl.timeline.factories.event
 
+import android.view.HapticFeedbackConstants
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
@@ -7,8 +8,11 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
@@ -27,10 +31,13 @@ import com.beeper.android.messageformat.MatrixBodyStyledFormatter
 import com.beeper.android.messageformat.MatrixHtmlParser
 import com.beeper.android.messageformat.MatrixToLink
 import io.element.android.compound.theme.ElementTheme
+import io.element.android.libraries.androidutils.system.copyToClipboard
 import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageFormat
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageTypeWithAttachment
 import io.element.android.libraries.matrix.api.timeline.item.event.TextLikeMessageType
+import io.element.android.libraries.ui.strings.CommonStrings
+import io.element.android.wysiwyg.link.Link
 import org.jsoup.nodes.Document
 
 private const val ALLOW_PREPARSED = true

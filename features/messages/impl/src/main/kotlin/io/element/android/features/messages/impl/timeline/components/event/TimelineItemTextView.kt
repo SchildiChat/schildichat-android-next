@@ -48,6 +48,7 @@ fun TimelineItemTextView(
     if (!ScPrefs.LEGACY_MESSAGE_RENDERING.value()) {
         ScTimelineItemTextView(
             content = content,
+            onLinkLongClick = onLinkLongClick,
             modifier = modifier,
             onContentLayoutChange = onContentLayoutChange,
         )

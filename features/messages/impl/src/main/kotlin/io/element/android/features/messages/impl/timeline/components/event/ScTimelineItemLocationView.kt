@@ -78,6 +78,7 @@ fun ScTimelineItemLocationView(
                 if (!ScPrefs.LEGACY_MESSAGE_RENDERING.value()) {
                     ScTimelineItemTextView(
                         content = MatrixBodyParseResult(text),
+                        onLinkLongClick = {},
                         modifier = modifier,
                         onContentLayoutChange = onContentLayoutChange,
                     )

@@ -163,6 +163,7 @@ fun TimelineItemVideoView(
                 if (!ScPrefs.LEGACY_MESSAGE_RENDERING.value()) {
                     ScTimelineItemTextView(
                         content = content,
+                        onLinkLongClick = onLinkLongClick,
                         modifier = Modifier
                             .padding(horizontal = 4.dp) // This is (12.dp - 8.dp) contentPadding from CommonLayout
                             .widthIn(min = scLayoutDpUnspecified() ?: (MIN_HEIGHT_IN_DP.dp * aspectRatio), max = MAX_HEIGHT_IN_DP.dp * aspectRatio),

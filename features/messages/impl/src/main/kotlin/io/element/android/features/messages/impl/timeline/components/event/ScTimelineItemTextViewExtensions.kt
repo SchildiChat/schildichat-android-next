@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -55,11 +56,13 @@ private const val MIN_IMAGE_HEIGHT = 8
 @Composable
 fun ScTimelineItemTextView(
     content: TimelineItemTextBasedContent,
+    onLinkLongClick: (Link) -> Unit,
     modifier: Modifier = Modifier,
     onContentLayoutChange: (ContentAvoidingLayoutData) -> Unit = {},
 ) {
     ScTimelineItemTextView(
         content = content.formattedBodySc,
+        onLinkLongClick = onLinkLongClick,
         modifier = modifier,
         onContentLayoutChange = onContentLayoutChange,
     )
@@ -68,11 +71,13 @@ fun ScTimelineItemTextView(
 @Composable
 fun ScTimelineItemTextView(
     content: TimelineItemEventContentWithAttachment,
+    onLinkLongClick: (Link) -> Unit,
     modifier: Modifier = Modifier,
     onContentLayoutChange: (ContentAvoidingLayoutData) -> Unit = {},
 ) {
     ScTimelineItemTextView(
         content = content.formattedCaptionSc ?: MatrixBodyParseResult(content.caption ?: ""),
+        onLinkLongClick = onLinkLongClick,
         modifier = modifier,
         onContentLayoutChange = onContentLayoutChange,
     )
@@ -81,6 +86,7 @@ fun ScTimelineItemTextView(
 @Composable
 fun ScTimelineItemTextView(
     content: MatrixBodyParseResult,
+    onLinkLongClick: (Link) -> Unit,
     modifier: Modifier = Modifier,
     onContentLayoutChange: (ContentAvoidingLayoutData) -> Unit = {},
 ) {
@@ -127,6 +133,11 @@ fun ScTimelineItemTextView(
             maxHeight = MAX_IMAGE_HEIGHT.dp,
         ) { info, modifier ->
             InlineImage(info, textStyle, textColor, modifier)
+        },
+        onLinkLongPress = { link ->
+            (link as? LinkAnnotation.Url)?.url?.let { url ->
+                onLinkLongClick(Link(url))
+            }
         }
     )
 }

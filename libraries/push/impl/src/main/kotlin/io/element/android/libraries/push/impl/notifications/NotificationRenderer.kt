@@ -55,12 +55,11 @@ class NotificationRenderer(
         val roomNotifications = notificationDataFactory.toNotifications(groupedEvents.roomEvents, imageLoader, notificationAccountParams)
         val invitationNotifications = notificationDataFactory.toNotifications(groupedEvents.invitationEvents, notificationAccountParams)
         val simpleNotifications = notificationDataFactory.toNotifications(groupedEvents.simpleEvents, notificationAccountParams)
-        val fallbackNotifications = notificationDataFactory.toNotifications(groupedEvents.fallbackEvents, notificationAccountParams)
+        val fallbackNotification = notificationDataFactory.toNotification(groupedEvents.fallbackEvents, notificationAccountParams)
         val summaryNotification = notificationDataFactory.createSummaryNotification(
             roomNotifications = roomNotifications,
             invitationNotifications = invitationNotifications,
             simpleNotifications = simpleNotifications,
-            fallbackNotifications = fallbackNotifications,
             notificationAccountParams = notificationAccountParams,
         )
 
@@ -107,13 +106,12 @@ class NotificationRenderer(
             }
         }
 
-        // Show only the first fallback notification
-        if (fallbackNotifications.isNotEmpty()) {
-            Timber.tag(loggerTag.value).d("Showing fallback notification")
+        if (fallbackNotification != null) {
+            Timber.tag(loggerTag.value).d("Showing or updating fallback notification")
             notificationDisplayer.showNotification(
-                tag = "FALLBACK",
+                tag = fallbackNotification.tag,
                 id = NotificationIdProvider.getFallbackNotificationId(currentUser.userId),
-                notification = fallbackNotifications.first().notification
+                notification = fallbackNotification.notification,
             )
         }
 

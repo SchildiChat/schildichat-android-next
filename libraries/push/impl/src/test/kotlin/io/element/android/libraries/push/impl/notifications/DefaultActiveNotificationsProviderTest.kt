@@ -153,6 +153,19 @@ class DefaultActiveNotificationsProviderTest {
         assertThat(activeNotificationsProvider.getSummaryNotification(A_SESSION_ID_2)).isNull()
     }
 
+    @Test
+    fun `getFallbackNotification returns only the fallback notification for that session id if it exists`() {
+        val activeNotifications = listOf(
+            aStatusBarNotification(id = notificationIdProvider.getFallbackNotificationId(A_SESSION_ID), groupId = A_SESSION_ID.value),
+            aStatusBarNotification(id = notificationIdProvider.getSummaryNotificationId(A_SESSION_ID), groupId = A_SESSION_ID.value),
+            aStatusBarNotification(id = notificationIdProvider.getRoomInvitationNotificationId(A_SESSION_ID_2), groupId = A_SESSION_ID_2.value),
+        )
+        val activeNotificationsProvider = createActiveNotificationsProvider(activeNotifications = activeNotifications)
+
+        assertThat(activeNotificationsProvider.getFallbackNotification(A_SESSION_ID)).isNotNull()
+        assertThat(activeNotificationsProvider.getFallbackNotification(A_SESSION_ID_2)).isNull()
+    }
+
     private fun aStatusBarNotification(id: Int, groupId: String, tag: String? = null) = mockk<StatusBarNotification> {
         every { this@mockk.id } returns id
         every { this@mockk.tag } returns tag

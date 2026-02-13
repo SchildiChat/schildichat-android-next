@@ -809,14 +809,13 @@ class SecurityAndPrivacyPresenterTest {
                 )
             )
         )
-        // No spaces available, so isSpaceMemberSelectable should be false
+        // Room has SpaceMember access with existing space ID, so isSpaceMemberSelectable is true
         val presenter = createSecurityAndPrivacyPresenter(room = room)
         presenter.test {
             skipItems(1)
             with(awaitItem()) {
                 assertThat(savedSettings.roomAccess).isInstanceOf(SecurityAndPrivacyRoomAccess.SpaceMember::class.java)
-                assertThat(isSpaceMemberSelectable).isFalse()
-                // showSpaceMemberOption should still be true because savedSettings has SpaceMember
+                assertThat(isSpaceMemberSelectable).isTrue()
                 assertThat(showSpaceMemberOption).isTrue()
             }
             cancelAndIgnoreRemainingEvents()

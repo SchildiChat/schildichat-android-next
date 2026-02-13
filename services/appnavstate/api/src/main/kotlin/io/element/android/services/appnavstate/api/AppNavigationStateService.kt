@@ -10,7 +10,6 @@ package io.element.android.services.appnavstate.api
 
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.SessionId
-import io.element.android.libraries.matrix.api.core.SpaceId
 import io.element.android.libraries.matrix.api.core.ThreadId
 import kotlinx.coroutines.flow.StateFlow
 
@@ -22,9 +21,6 @@ interface AppNavigationStateService {
 
     fun onNavigateToSession(owner: String, sessionId: SessionId)
     fun onLeavingSession(owner: String)
-
-    fun onNavigateToSpace(owner: String, spaceId: SpaceId)
-    fun onLeavingSpace(owner: String)
 
     fun onNavigateToRoom(owner: String, roomId: RoomId)
     fun onLeavingRoom(owner: String)

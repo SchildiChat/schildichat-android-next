@@ -37,8 +37,8 @@ import io.element.android.libraries.push.impl.notifications.factories.action.Acc
 import io.element.android.libraries.push.impl.notifications.factories.action.MarkAsReadActionFactory
 import io.element.android.libraries.push.impl.notifications.factories.action.QuickReplyActionFactory
 import io.element.android.libraries.push.impl.notifications.factories.action.RejectInvitationActionFactory
+import io.element.android.libraries.push.impl.notifications.fixtures.aFallbackNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.fixtures.aNotifiableMessageEvent
-import io.element.android.libraries.push.impl.notifications.model.FallbackNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.InviteNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.SimpleNotifiableEvent
 import io.element.android.services.toolbox.test.sdk.FakeBuildVersionSdkIntProvider
@@ -84,19 +84,11 @@ class DefaultNotificationCreatorTest {
     fun `test createFallbackNotification`() {
         val sut = createNotificationCreator()
         val result = sut.createFallbackNotification(
+            existingNotification = null,
             notificationAccountParams = aNotificationAccountParams(),
-            FallbackNotifiableEvent(
-                sessionId = A_SESSION_ID,
-                roomId = A_ROOM_ID,
-                eventId = AN_EVENT_ID,
-                editedEventId = null,
-                description = "description",
-                canBeReplaced = false,
-                isRedacted = false,
-                isUpdated = false,
-                timestamp = A_FAKE_TIMESTAMP,
-                cause = null,
-            ),
+            fallbackNotifiableEvents = listOf(
+                aFallbackNotifiableEvent(),
+            )
         )
         result.commonAssertions(
             expectedCategory = null,

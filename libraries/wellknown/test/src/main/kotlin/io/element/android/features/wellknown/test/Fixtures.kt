@@ -15,9 +15,11 @@ fun anElementWellKnown(
     enforceElementPro: Boolean? = null,
     rageshakeUrl: String? = null,
     brandColor: String? = null,
+    notificationSound: String? = null,
 ) = ElementWellKnown(
     registrationHelperUrl = registrationHelperUrl,
     enforceElementPro = enforceElementPro,
     rageshakeUrl = rageshakeUrl,
     brandColor = brandColor,
+    notificationSound = notificationSound,
 )

@@ -8,17 +8,19 @@
 
 package io.element.android.libraries.push.impl.notifications.channels
 
+import io.element.android.libraries.matrix.api.core.SessionId
+
 class FakeNotificationChannels(
     var channelForIncomingCall: (ring: Boolean) -> String = { _ -> "" },
-    var channelIdForMessage: (noisy: Boolean) -> String = { _ -> "" },
+    var channelIdForMessage: (sessionId: SessionId, noisy: Boolean) -> String = { _, _ -> "" },
     var channelIdForTest: () -> String = { "" }
 ) : NotificationChannels {
     override fun getChannelForIncomingCall(ring: Boolean): String {
         return channelForIncomingCall(ring)
     }
 
-    override fun getChannelIdForMessage(noisy: Boolean): String {
-        return channelIdForMessage(noisy)
+    override fun getChannelIdForMessage(sessionId: SessionId, noisy: Boolean): String {
+        return channelIdForMessage(sessionId, noisy)
     }
 
     override fun getChannelIdForTest(): String {

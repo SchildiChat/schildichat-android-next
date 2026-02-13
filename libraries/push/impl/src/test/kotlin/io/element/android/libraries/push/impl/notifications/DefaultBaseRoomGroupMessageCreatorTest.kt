@@ -13,6 +13,8 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.google.common.truth.Truth.assertThat
 import io.element.android.appconfig.NotificationConfig
+import io.element.android.features.enterprise.api.EnterpriseService
+import io.element.android.features.enterprise.test.FakeEnterpriseService
 import io.element.android.libraries.matrix.api.media.MediaSource
 import io.element.android.libraries.matrix.test.A_ROOM_ID
 import io.element.android.libraries.matrix.test.A_TIMESTAMP
@@ -66,7 +68,11 @@ class DefaultBaseRoomGroupMessageCreatorTest {
 
     @Test
     fun `test createRoomMessage with one noisy Event`() = runTest {
-        val sut = createRoomGroupMessageCreator()
+        val sut = createRoomGroupMessageCreator(
+            enterpriseService = FakeEnterpriseService(
+                getNoisyNotificationChannelIdResult = { null }
+            )
+        )
         val fakeImageLoader = FakeImageLoader()
         val result = sut.createRoomMessage(
             notificationAccountParams = aNotificationAccountParams(),
@@ -228,6 +234,7 @@ class DefaultBaseRoomGroupMessageCreatorTest {
 
 fun createRoomGroupMessageCreator(
     sdkIntProvider: BuildVersionSdkIntProvider = FakeBuildVersionSdkIntProvider(Build.VERSION_CODES.O),
+    enterpriseService: EnterpriseService = FakeEnterpriseService(),
 ): RoomGroupMessageCreator {
     val context = RuntimeEnvironment.getApplication() as Context
     val bitmapLoader = DefaultNotificationBitmapLoader(
@@ -236,7 +243,10 @@ fun createRoomGroupMessageCreator(
         initialsAvatarBitmapGenerator = FakeInitialsAvatarBitmapGenerator(),
     )
     return DefaultRoomGroupMessageCreator(
-        notificationCreator = createNotificationCreator(bitmapLoader = bitmapLoader),
+        notificationCreator = createNotificationCreator(
+            bitmapLoader = bitmapLoader,
+            enterpriseService = enterpriseService,
+        ),
         bitmapLoader = bitmapLoader,
         stringProvider = AndroidStringProvider(context.resources)
     )

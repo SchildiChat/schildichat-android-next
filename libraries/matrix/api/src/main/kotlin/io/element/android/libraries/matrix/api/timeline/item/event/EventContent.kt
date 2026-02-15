@@ -24,6 +24,9 @@ sealed interface EventContent
 sealed interface EventCanBeEdited { // SC
     val isEdited: Boolean
 }
+sealed interface CanMentionRoom { // SC
+    val isRoomMention: Boolean?
+}
 
 data class MessageContent(
     val body: String,
@@ -31,7 +34,8 @@ data class MessageContent(
     override val isEdited: Boolean,
     val threadInfo: EventThreadInfo?,
     val type: MessageType,
-) : EventContent, EventCanBeEdited
+    override val isRoomMention: Boolean? = null, // SC
+) : EventContent, EventCanBeEdited, CanMentionRoom
 
 data object RedactedContent : EventContent
 

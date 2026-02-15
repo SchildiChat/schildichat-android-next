@@ -39,7 +39,7 @@ class TimelineItemContentStickerFactory(
             fileSize = content.info.size ?: 0L,
             caption = content.body,
             formattedCaption = null,
-            formattedCaptionSc = content.body?.let { scFormattedPlaintextBody(it) },
+            formattedCaptionSc = content.body?.let { scFormattedPlaintextBody(it, false) },
             isEdited = false,
             mediaSource = content.source,
             thumbnailSource = content.info.thumbnailSource,

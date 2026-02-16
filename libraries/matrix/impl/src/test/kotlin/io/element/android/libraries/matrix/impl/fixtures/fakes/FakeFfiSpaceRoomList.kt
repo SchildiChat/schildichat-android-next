@@ -21,6 +21,7 @@ import uniffi.matrix_sdk_ui.SpaceRoomListPaginationState
 
 class FakeFfiSpaceRoomList(
     private val paginateResult: () -> Unit = { lambdaError() },
+    private val resetResult: () -> Unit = { lambdaError() },
     private val paginationStateResult: () -> SpaceRoomListPaginationState = { lambdaError() },
     private val roomsResult: () -> List<SpaceRoom> = { lambdaError() },
 ) : SpaceRoomList(NoHandle) {
@@ -29,6 +30,10 @@ class FakeFfiSpaceRoomList(
 
     override suspend fun paginate() = simulateLongTask {
         paginateResult()
+    }
+
+    override suspend fun reset() = simulateLongTask {
+        resetResult()
     }
 
     override fun paginationState(): SpaceRoomListPaginationState {

@@ -1,3 +1,70 @@
+Changes in Element X v26.01.2
+=============================
+
+<!-- Release notes generated using configuration in .github/release.yml at v26.01.2 -->
+
+## What's Changed
+### ✨ Features
+* Display a badge for messages decrypted using shared keys by @richvdh in https://github.com/element-hq/element-x-android/pull/6023
+* Add empty state view for HomeSpacesView by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6047
+* Create a new room in a space by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6061
+* Add an empty state for the space screen if the user can modify its graph by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6064
+* Add 'Create room' option to menu in space screen by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6095
+### 🙌 Improvements
+* Add suggestions section to InvitePeopleView by @ganfra in https://github.com/element-hq/element-x-android/pull/6045
+* Show an icon in the room header for shared history by @richvdh in https://github.com/element-hq/element-x-android/pull/6090
+* Remove "history may be shared" banner. by @kaylendog in https://github.com/element-hq/element-x-android/pull/6087
+### 🐛 Bugfixes
+* Make `relatedTo` in `RoomSendQueueUpdate.MediaUpload` a transaction id by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6002
+* Tweak the power levels when creating a space by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6012
+* Keep the child state in `AttachmentsPreviewPresenter` up to date by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6039
+* Ensure screenshot is up to date by @bmarty in https://github.com/element-hq/element-x-android/pull/6040
+* First try to resolve the room before checking for the alias validity by @bmarty in https://github.com/element-hq/element-x-android/pull/6066
+* Use `MediaPreviewValue.Private` to check if media should be displayed in notifications by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6038
+* Fix RoomDetailsEditView avatar picker for spaces by @ganfra in https://github.com/element-hq/element-x-android/pull/6074
+* Try fixing performance metrics by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6046
+* Fix rageshakes not uploading if they are too long by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6075
+* Display a confirmation dialog when ending a poll from the event bottom sheet by @bmarty in https://github.com/element-hq/element-x-android/pull/6092
+### 🗣 Translations
+* Sync Strings by @ElementBot in https://github.com/element-hq/element-x-android/pull/6033
+* Sync Strings by @ElementBot in https://github.com/element-hq/element-x-android/pull/6042
+* Sync Strings by @ElementBot in https://github.com/element-hq/element-x-android/pull/6085
+### 🚧 In development 🚧
+* Implement Space 'Add existing rooms' feature by @ganfra in https://github.com/element-hq/element-x-android/pull/6063
+### Dependency upgrades
+* Update dependency org.matrix.rustcomponents:sdk-android to v26.1.16 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6025
+* chore(deps): update plugin dependencycheck to v12.2.0 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/5993
+* fix(deps): update wysiwyg to v2.41.1 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6037
+* fix(deps): update metro to v0.10.0 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6043
+* fix(deps): update dependency io.sentry:sentry-android to v8.31.0 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6057
+* chore(deps): update peter-evans/create-pull-request action to v8.1.0 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6055
+* fix(deps): update dependency org.robolectric:robolectric to v4.16.1 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6050
+* fix(deps): update kotlin by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6058
+* fix(deps): update dependency io.nlopez.compose.rules:detekt to v0.5.4 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6060
+* fix(deps): update dependency io.nlopez.compose.rules:detekt to v0.5.5 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6062
+* fix(deps): update dependency com.posthog:posthog-android to v3.29.1 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6056
+* fix(deps): update dependency org.matrix.rustcomponents:sdk-android to v26.1.22 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6065
+* fix(deps): update metro to v0.10.1 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6077
+* fix(deps): update kotlin by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6076
+* fix(deps): update roborazzi to v1.57.0 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6080
+* fix(deps): update media3 to v1.9.1 - autoclosed by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6086
+* fix(deps): update dependency io.mockk:mockk to v1.14.9 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6089
+* Update dependency io.nlopez.compose.rules:detekt to v0.5.6 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6093
+* Update dependency net.zetetic:sqlcipher-android to v4.13.0 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6094
+* Update dependency org.matrix.rustcomponents:sdk-android to v26.1.27 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6096
+* Update dependency com.google.testparameterinjector:test-parameter-injector to v1.21 by @renovate[bot] in https://github.com/element-hq/element-x-android/pull/6100
+### Others
+* Let rageshake description mention when a log file is missing by @bmarty in https://github.com/element-hq/element-x-android/pull/6027
+* Provide `ConfigureRoomState.availableVisibilityOptions` in presenter by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6024
+* Attempt to fix flaky test. by @bmarty in https://github.com/element-hq/element-x-android/pull/6016
+* sdk : allow passing coroutineScope to RoomList by @ganfra in https://github.com/element-hq/element-x-android/pull/6054
+* Let SearchBar/SearchField use TextFieldState by @ganfra in https://github.com/element-hq/element-x-android/pull/6072
+* Remove obfuscation in proguard by @jmartinesp in https://github.com/element-hq/element-x-android/pull/6067
+* Sync all strings and fix compilation issue. by @bmarty in https://github.com/element-hq/element-x-android/pull/6088
+
+
+**Full Changelog**: https://github.com/element-hq/element-x-android/compare/v26.01.1...v26.01.2
+
 Changes in Element X v26.01.1
 =============================
 

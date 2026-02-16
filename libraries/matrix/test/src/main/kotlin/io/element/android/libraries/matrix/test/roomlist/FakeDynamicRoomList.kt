@@ -14,36 +14,32 @@ import io.element.android.libraries.matrix.api.roomlist.RoomListFilter
 import io.element.android.libraries.matrix.api.roomlist.RoomSummary
 import io.element.android.libraries.matrix.api.roomlist.ScSdkInboxSettings
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.getAndUpdate
 
-data class SimplePagedRoomList(
-    override val summaries: MutableStateFlow<List<RoomSummary>>,
-    override val loadingState: StateFlow<RoomList.LoadingState>,
-    override val currentFilter: MutableStateFlow<RoomListFilter>
+class FakeDynamicRoomList(
+    override val summaries: MutableStateFlow<List<RoomSummary>> = MutableStateFlow(emptyList()),
+    override val loadingState: MutableStateFlow<RoomList.LoadingState> = MutableStateFlow(RoomList.LoadingState.NotLoaded),
+    override val pageSize: Int = Int.MAX_VALUE,
+    val currentFilter: MutableStateFlow<RoomListFilter> = MutableStateFlow(RoomListFilter.None),
+    private val loadMoreLambda: () -> Unit = {},
+    private val resetLambda: () -> Unit = {},
+    private val updateFilterLambda: (RoomListFilter) -> Unit = { filter -> currentFilter.value = filter },
+    private val rebuildSummariesLambda: () -> Unit = {},
 ) : DynamicRoomList {
-    override val pageSize: Int = Int.MAX_VALUE
-    override val loadedPages = MutableStateFlow(1)
-
-    override val filteredSummaries: SharedFlow<List<RoomSummary>> = summaries
-
     override suspend fun loadMore() {
-        // No-op
-        loadedPages.getAndUpdate { it + 1 }
+        loadMoreLambda()
     }
 
     override suspend fun reset() {
-        loadedPages.emit(1)
+        resetLambda()
     }
 
     override suspend fun updateFilter(filter: RoomListFilter) {
-        currentFilter.emit(filter)
+        updateFilterLambda(filter)
     }
 
-    override suspend fun updateSettings(settings: ScSdkInboxSettings) {}
+    override suspend fun updateSettings(filter: RoomListFilter, settings: ScSdkInboxSettings) = updateFilter(filter)
 
     override suspend fun rebuildSummaries() {
-        // No-op
+        rebuildSummariesLambda()
     }
 }

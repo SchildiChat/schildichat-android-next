@@ -15,7 +15,6 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import io.element.android.features.space.impl.R
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
 import io.element.android.libraries.matrix.api.spaces.SpaceRoom
@@ -215,8 +214,24 @@ class SpaceViewTest {
             ),
             onCreateRoomClick = onCreateRoomClick,
         )
-        rule.clickOn(R.string.screen_space_add_room_action)
+        rule.clickOn(CommonStrings.action_create_room)
         onCreateRoomClick.assertions().isCalledOnce()
+    }
+
+    @Test
+    fun `clicking add existing room button calls the expected callback`() {
+        val onAddRoomClick = lambdaRecorder<Unit> { }
+        rule.setSpaceView(
+            aSpaceState(
+                children = emptyList(),
+                hasMoreToLoad = false,
+                isManageMode = true,
+                canManageRooms = true,
+            ),
+            onAddRoomClick = onAddRoomClick,
+        )
+        rule.clickOn(CommonStrings.action_add_existing_rooms)
+        onAddRoomClick.assertions().isCalledOnce()
     }
 }
 

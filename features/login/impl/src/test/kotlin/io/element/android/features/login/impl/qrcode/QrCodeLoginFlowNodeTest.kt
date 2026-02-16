@@ -21,6 +21,7 @@ import io.element.android.libraries.matrix.api.auth.qrlogin.QrLoginException
 import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.matrix.test.auth.FakeMatrixAuthenticationService
 import io.element.android.libraries.matrix.test.auth.qrlogin.FakeMatrixQrCodeLoginData
+import io.element.android.tests.testutils.lambda.lambdaError
 import io.element.android.tests.testutils.testCoroutineDispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
@@ -58,6 +59,9 @@ class QrCodeLoginFlowNodeTest {
         assertThat(flowNode.currentNavTarget()).isEqualTo(QrCodeLoginFlowNode.NavTarget.Initial)
 
         qrCodeLoginManager.currentLoginStep.value = QrCodeLoginStep.Failed(QrLoginException.Expired)
+        assertThat(flowNode.currentNavTarget()).isEqualTo(QrCodeLoginFlowNode.NavTarget.Error(QrCodeErrorScreenType.Expired))
+
+        qrCodeLoginManager.currentLoginStep.value = QrCodeLoginStep.Failed(QrLoginException.NotFound)
         assertThat(flowNode.currentNavTarget()).isEqualTo(QrCodeLoginFlowNode.NavTarget.Error(QrCodeErrorScreenType.Expired))
 
         qrCodeLoginManager.currentLoginStep.value = QrCodeLoginStep.Failed(QrLoginException.Declined)
@@ -183,7 +187,11 @@ class QrCodeLoginFlowNodeTest {
         )
         return QrCodeLoginFlowNode(
             buildContext = buildContext,
-            plugins = emptyList(),
+            plugins = listOf(
+                object : QrCodeLoginFlowNode.Callback {
+                    override fun navigateBack() = lambdaError()
+                }
+            ),
             qrCodeLoginGraphFactory = FakeQrCodeLoginGraph.Builder(qrCodeLoginManager),
             coroutineDispatchers = coroutineDispatchers,
         )

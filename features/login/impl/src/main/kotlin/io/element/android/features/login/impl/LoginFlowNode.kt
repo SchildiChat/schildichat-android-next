@@ -20,6 +20,7 @@ import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
 import com.bumble.appyx.navmodel.backstack.BackStack
+import com.bumble.appyx.navmodel.backstack.operation.pop
 import com.bumble.appyx.navmodel.backstack.operation.push
 import com.bumble.appyx.navmodel.backstack.operation.singleTop
 import dev.zacsweers.metro.AppScope
@@ -196,7 +197,12 @@ class LoginFlowNode(
                 createNode<ChooseAccountProviderNode>(buildContext, listOf(callback))
             }
             NavTarget.QrCode -> {
-                createNode<QrCodeLoginFlowNode>(buildContext)
+                val callback = object : QrCodeLoginFlowNode.Callback {
+                    override fun navigateBack() {
+                        backstack.pop()
+                    }
+                }
+                createNode<QrCodeLoginFlowNode>(buildContext, listOf(callback))
             }
             is NavTarget.ConfirmAccountProvider -> {
                 val inputs = ConfirmAccountProviderNode.Inputs(

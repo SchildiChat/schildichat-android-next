@@ -104,6 +104,7 @@ class RoomListRoomSummaryFactory(
                     content = content,
                 )
             }
+            is LatestEventValue.RoomInvite -> LatestEvent.None
         }
     }
 }

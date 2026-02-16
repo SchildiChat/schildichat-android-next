@@ -74,14 +74,21 @@ enum class FeatureFlags(
         key = "feature.createSpaces",
         title = "Create spaces",
         description = "Allow creating spaces.",
-        defaultValue = { false },
+        defaultValue = { true },
         isFinished = false,
     ),
     SpaceSettings(
         key = "feature.spaceSettings",
         title = "Space settings",
         description = "Allow managing space settings such as details, permissions and privacy.",
-        defaultValue = { false },
+        defaultValue = { true },
+        isFinished = false,
+    ),
+    RoomListSpaceFilters(
+        key = "feature.roomListSpaceFilters",
+        title = "Room list space filters",
+        description = "Allow filtering the room list by space.",
+        defaultValue = { true },
         isFinished = false,
     ),
     PrintLogsToLogcat(

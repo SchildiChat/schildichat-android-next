@@ -11,6 +11,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -90,7 +91,7 @@ class SpaceAwareRoomListDataSource(
         // Filter by space with the room id list built in the previous flow
         combine(
             _selectedSpaceItem,
-            roomListDataSource.allRooms,
+            roomListDataSource.roomSummariesFlow,
             scPreferencesStore.settingFlow(ScPrefs.PSEUDO_SPACE_ALL_ROOMS),
         ) { selectedSpace, allRoomsValue, allowAllRooms ->
             // Do the actual filtering
@@ -104,5 +105,9 @@ class SpaceAwareRoomListDataSource(
 
     fun updateSpaceSelection(spaceSelectionHierarchy: ImmutableList<String>) {
         _spaceSelectionHierarchy.value = spaceSelectionHierarchy
+    }
+
+    fun updateVisibleRange(range: IntRange) {
+        // TODO
     }
 }

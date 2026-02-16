@@ -29,7 +29,7 @@ import java.util.Optional
 import org.matrix.rustcomponents.sdk.SpaceRoomList as InnerSpaceRoomList
 
 class RustSpaceRoomList(
-    override val roomId: RoomId,
+    override val spaceId: RoomId,
     private val innerProvider: suspend () -> InnerSpaceRoomList,
     private val coroutineScope: CoroutineScope,
     spaceRoomMapper: SpaceRoomMapper,
@@ -81,9 +81,15 @@ class RustSpaceRoomList(
         }
     }
 
+    override suspend fun reset(): Result<Unit> {
+        return runCatchingExceptions {
+            innerCompletable.await().reset()
+        }
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun destroy() {
-        Timber.d("Destroying SpaceRoomList $roomId")
+        Timber.d("Destroying SpaceRoomList $spaceId")
         coroutineScope.cancel()
         try {
             innerCompletable.getCompleted().destroy()

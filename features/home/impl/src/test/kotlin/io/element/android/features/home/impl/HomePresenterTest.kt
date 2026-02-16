@@ -8,9 +8,6 @@
 
 package io.element.android.features.home.impl
 
-import app.cash.molecule.RecompositionMode
-import app.cash.molecule.moleculeFlow
-import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import io.element.android.features.announcement.api.Announcement
 import io.element.android.features.announcement.api.AnnouncementService
@@ -70,9 +67,7 @@ class HomePresenterTest {
                 ),
             ),
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.currentUserAndNeighbors.first()).isEqualTo(
                 MatrixUser(A_USER_ID, null, null)
@@ -96,9 +91,7 @@ class HomePresenterTest {
                 updateUserProfileResult = { _, _, _ -> },
             ),
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.canReportBug).isFalse()
             val finalState = awaitItem()
@@ -115,9 +108,7 @@ class HomePresenterTest {
                 updateUserProfileResult = { _, _, _ -> },
             ),
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.showAvatarIndicator).isFalse()
             indicatorService.setShowRoomListTopBarIndicator(true)
@@ -139,9 +130,7 @@ class HomePresenterTest {
                 updateUserProfileResult = { _, _, _ -> },
             ),
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.currentUserAndNeighbors.first()).isEqualTo(MatrixUser(matrixClient.sessionId))
             // No new state is coming
@@ -159,12 +148,10 @@ class HomePresenterTest {
                 showAnnouncementResult = showAnnouncementResult,
             )
         )
-        moleculeFlow(RecompositionMode.Immediate) {
-            presenter.present()
-        }.test {
+        presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.currentHomeNavigationBarItem).isEqualTo(HomeNavigationBarItem.Chats)
-            initialState.eventSink(HomeEvents.SelectHomeNavigationBarItem(HomeNavigationBarItem.Spaces))
+            initialState.eventSink(HomeEvent.SelectHomeNavigationBarItem(HomeNavigationBarItem.Spaces))
             val finalState = awaitItem()
             assertThat(finalState.currentHomeNavigationBarItem).isEqualTo(HomeNavigationBarItem.Spaces)
             showAnnouncementResult.assertions().isCalledOnce()
@@ -189,7 +176,7 @@ class HomePresenterTest {
             assertThat(initialState.currentHomeNavigationBarItem).isEqualTo(HomeNavigationBarItem.Chats)
             assertThat(initialState.showNavigationBar).isTrue()
             // User navigate to Spaces
-            initialState.eventSink(HomeEvents.SelectHomeNavigationBarItem(HomeNavigationBarItem.Spaces))
+            initialState.eventSink(HomeEvent.SelectHomeNavigationBarItem(HomeNavigationBarItem.Spaces))
             val spaceState = awaitItem()
             assertThat(spaceState.currentHomeNavigationBarItem).isEqualTo(HomeNavigationBarItem.Spaces)
             // The last space is left

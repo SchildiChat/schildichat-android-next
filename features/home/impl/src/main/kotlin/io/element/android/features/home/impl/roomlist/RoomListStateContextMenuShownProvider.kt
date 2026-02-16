@@ -15,7 +15,7 @@ open class RoomListStateContextMenuShownProvider : PreviewParameterProvider<Room
     override val values: Sequence<RoomListState.ContextMenu.Shown>
         get() = sequenceOf(
             aContextMenuShown(hasNewContent = true),
-            aContextMenuShown(isDm = true),
+            aContextMenuShown(isDm = true, isFavorite = true),
             aContextMenuShown(roomName = null)
         )
 }

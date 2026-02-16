@@ -28,7 +28,7 @@ class RoomListDeclineInviteMenuTest {
 
     @Test
     fun `clicking on decline emits the expected Events`() {
-        val eventsRecorder = EventsRecorder<RoomListEvents>()
+        val eventsRecorder = EventsRecorder<RoomListEvent>()
         val menu = RoomListState.DeclineInviteMenu.Shown(roomSummary = aRoomListRoomSummary())
         rule.setSafeContent {
             RoomListDeclineInviteMenu(
@@ -41,15 +41,15 @@ class RoomListDeclineInviteMenuTest {
         rule.clickOn(CommonStrings.action_decline)
         eventsRecorder.assertList(
             listOf(
-                RoomListEvents.HideDeclineInviteMenu,
-                RoomListEvents.DeclineInvite(menu.roomSummary, blockUser = false),
+                RoomListEvent.HideDeclineInviteMenu,
+                RoomListEvent.DeclineInvite(menu.roomSummary, blockUser = false),
             )
         )
     }
 
     @Test
     fun `clicking on decline and block when canReportRoom=true, it emits the expected Events and callback`() {
-        val eventsRecorder = EventsRecorder<RoomListEvents>()
+        val eventsRecorder = EventsRecorder<RoomListEvent>()
         val menu = RoomListState.DeclineInviteMenu.Shown(roomSummary = aRoomListRoomSummary())
         rule.setSafeContent {
             RoomListDeclineInviteMenu(
@@ -60,13 +60,13 @@ class RoomListDeclineInviteMenuTest {
             )
         }
         rule.clickOn(CommonStrings.action_decline_and_block)
-        val expectedEvents = listOf(RoomListEvents.HideDeclineInviteMenu)
+        val expectedEvents = listOf(RoomListEvent.HideDeclineInviteMenu)
         eventsRecorder.assertList(expectedEvents)
     }
 
     @Test
     fun `clicking on decline and block when canReportRoom=false, it emits the expected Events`() {
-        val eventsRecorder = EventsRecorder<RoomListEvents>()
+        val eventsRecorder = EventsRecorder<RoomListEvent>()
         val menu = RoomListState.DeclineInviteMenu.Shown(roomSummary = aRoomListRoomSummary())
         rule.setSafeContent {
             RoomListDeclineInviteMenu(
@@ -78,15 +78,15 @@ class RoomListDeclineInviteMenuTest {
         }
         rule.clickOn(CommonStrings.action_decline_and_block)
         val expectedEvents = listOf(
-            RoomListEvents.HideDeclineInviteMenu,
-            RoomListEvents.DeclineInvite(menu.roomSummary, blockUser = true),
+            RoomListEvent.HideDeclineInviteMenu,
+            RoomListEvent.DeclineInvite(menu.roomSummary, blockUser = true),
         )
         eventsRecorder.assertList(expectedEvents)
     }
 
     @Test
     fun `clicking on cancel emits the expected Event`() {
-        val eventsRecorder = EventsRecorder<RoomListEvents>()
+        val eventsRecorder = EventsRecorder<RoomListEvent>()
         val menu = RoomListState.DeclineInviteMenu.Shown(roomSummary = aRoomListRoomSummary())
         rule.setSafeContent {
             RoomListDeclineInviteMenu(
@@ -97,6 +97,6 @@ class RoomListDeclineInviteMenuTest {
             )
         }
         rule.clickOn(CommonStrings.action_cancel)
-        eventsRecorder.assertList(listOf(RoomListEvents.HideDeclineInviteMenu))
+        eventsRecorder.assertList(listOf(RoomListEvent.HideDeclineInviteMenu))
     }
 }

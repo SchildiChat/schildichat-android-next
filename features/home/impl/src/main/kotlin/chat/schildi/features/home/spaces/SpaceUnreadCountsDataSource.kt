@@ -39,7 +39,7 @@ class SpaceUnreadCountsDataSource(
         spaceListDataSource: SpaceListDataSource
     ) {
         combine(
-            roomListDataSource.allRooms.throttleLatest(300),
+            roomListDataSource.roomSummariesFlow.throttleLatest(300),
             spaceListDataSource.allSpaces,
             spaceAwareRoomListDataSource.spaceSelectionHierarchy,
             scPreferencesStore.settingFlow(ScPrefs.CLIENT_GENERATED_UNREAD_COUNTS),

@@ -82,8 +82,8 @@ open class ConfigureRoomStateProvider : PreviewParameterProvider<ConfigureRoomSt
                 roomAddressValidity = RoomAddressValidity.Valid,
             ),
             aConfigureRoomState(
+                isSpace = true,
                 config = CreateRoomConfig(
-                    isSpace = true,
                     roomName = "Space 101",
                     topic = "Space topic for this space when the text goes onto multiple lines and is really long, there shouldn’t be more than 3 lines",
                     visibilityState = RoomVisibilityState.Public(
@@ -95,13 +95,11 @@ open class ConfigureRoomStateProvider : PreviewParameterProvider<ConfigureRoomSt
             ),
             aConfigureRoomState(
                 config = CreateRoomConfig(
-                    isSpace = false,
                     roomName = "Room 101",
                     topic = "Room topic for this room when the text goes onto multiple lines and is really long, there shouldn’t be more than 3 lines",
                     parentSpace = null,
-                    visibilityState = RoomVisibilityState.Public(
-                        roomAddress = RoomAddress.AutoFilled("Space-101"),
-                        joinRuleItem = JoinRuleItem.PublicVisibility.Restricted(aSpaceRoom().roomId),
+                    visibilityState = RoomVisibilityState.Private(
+                        joinRuleItem = JoinRuleItem.PrivateVisibility.Restricted(aSpaceRoom().roomId),
                     ),
                 ),
                 spaces = listOf(aSpaceRoom()),
@@ -109,13 +107,11 @@ open class ConfigureRoomStateProvider : PreviewParameterProvider<ConfigureRoomSt
             ),
             aConfigureRoomState(
                 config = CreateRoomConfig(
-                    isSpace = false,
                     roomName = "Room 101",
                     topic = "Room topic for this room when the text goes onto multiple lines and is really long, there shouldn’t be more than 3 lines",
                     parentSpace = aSpaceRoom(canonicalAlias = RoomAlias("#a-space-room:example.org")),
-                    visibilityState = RoomVisibilityState.Public(
-                        roomAddress = RoomAddress.AutoFilled("Space-101"),
-                        joinRuleItem = JoinRuleItem.PublicVisibility.Restricted(aSpaceRoom().roomId),
+                    visibilityState = RoomVisibilityState.Private(
+                        joinRuleItem = JoinRuleItem.PrivateVisibility.Restricted(aSpaceRoom().roomId),
                     ),
                 ),
                 spaces = listOf(aSpaceRoom()),
@@ -126,6 +122,7 @@ open class ConfigureRoomStateProvider : PreviewParameterProvider<ConfigureRoomSt
 
 fun aConfigureRoomState(
     config: CreateRoomConfig = CreateRoomConfig(),
+    isSpace: Boolean = false,
     isKnockFeatureEnabled: Boolean = true,
     avatarActions: List<AvatarAction> = emptyList(),
     createRoomAction: AsyncAction<RoomId> = AsyncAction.Uninitialized,
@@ -134,21 +131,22 @@ fun aConfigureRoomState(
     roomAddressValidity: RoomAddressValidity = RoomAddressValidity.Valid,
     availableVisibilityOptions: List<JoinRuleItem> = if (config.parentSpace != null) {
         listOfNotNull(
-            JoinRuleItem.PublicVisibility.Restricted(config.parentSpace.roomId),
-            JoinRuleItem.PublicVisibility.AskToJoinRestricted(config.parentSpace.roomId).takeIf { isKnockFeatureEnabled },
-            JoinRuleItem.Private,
+            JoinRuleItem.PrivateVisibility.Restricted(config.parentSpace.roomId),
+            JoinRuleItem.PrivateVisibility.AskToJoinRestricted(config.parentSpace.roomId).takeIf { isKnockFeatureEnabled },
+            JoinRuleItem.PrivateVisibility.Private,
         )
     } else {
         listOfNotNull(
             JoinRuleItem.PublicVisibility.Public,
             JoinRuleItem.PublicVisibility.AskToJoin.takeIf { isKnockFeatureEnabled },
-            JoinRuleItem.Private,
+            JoinRuleItem.PrivateVisibility.Private,
         )
     },
     spaces: List<SpaceRoom> = emptyList(),
     eventSink: (ConfigureRoomEvents) -> Unit = { },
 ) = ConfigureRoomState(
     config = config,
+    isSpace = isSpace,
     avatarActions = avatarActions.toImmutableList(),
     createRoomAction = createRoomAction,
     cameraPermissionState = cameraPermissionState,

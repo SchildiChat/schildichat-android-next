@@ -60,11 +60,11 @@ fun RoomListFiltersView(
     modifier: Modifier = Modifier
 ) {
     fun onClearFiltersClick() {
-        state.eventSink(RoomListFiltersEvents.ClearSelectedFilters)
+        state.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
     }
 
     fun onToggleFilter(filter: RoomListFilter) {
-        state.eventSink(RoomListFiltersEvents.ToggleFilter(filter))
+        state.eventSink(RoomListFiltersEvent.ToggleFilter(filter))
     }
 
     var scrollToStart by remember { mutableIntStateOf(0) }

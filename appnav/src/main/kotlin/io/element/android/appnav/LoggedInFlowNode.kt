@@ -636,7 +636,7 @@ class LoggedInFlowNode(
             ) { contentModifier ->
                 Box(modifier = contentModifier) {
                     val ftueState by ftueService.state.collectAsState()
-                    BackstackView()
+                    BackstackView(transitionHandler = rememberLoggedInFlowTransitionHandler(backstack))
                     if (ftueState is FtueState.Complete) {
                         PermanentChild(permanentNavModel = permanentNavModel, navTarget = NavTarget.LoggedInPermanent)
                     }

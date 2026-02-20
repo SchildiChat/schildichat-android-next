@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.core.text.getSpans
@@ -101,10 +102,10 @@ fun ScTimelineItemTextView(
         content,
         color = textColor,
         style = if (content.inlineImages.isEmpty()) {
-            textStyle
+            textStyle.copy(textDirection = TextDirection.Content)
         } else {
             // Allow inline images/content to increase the line height on demand by having this unspecified here
-            textStyle.copy(lineHeight = TextUnit.Unspecified)
+            textStyle.copy(lineHeight = TextUnit.Unspecified, textDirection = TextDirection.Content)
         },
         modifier = modifier,
         formatter = LocalMatrixBodyFormatter.current ?: matrixBodyFormatter(),

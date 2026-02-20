@@ -81,7 +81,7 @@ class TimelineItemContentMessageFactory(
                     body = emoteBody,
                     htmlDocument = dom,
                     formattedBody = formattedBody,
-                    formattedBodySc = scFormattedBody(messageType, dom, emoteBody),
+                    formattedBodySc = scFormattedBody(messageType, dom, content.isRoomMention, emoteBody),
                     isEdited = content.isEdited,
                 )
             }
@@ -98,7 +98,7 @@ class TimelineItemContentMessageFactory(
                     fileSize = messageType.info?.size ?: 0,
                     caption = messageType.caption?.trimEnd(),
                     formattedCaption = formattedCaption,
-                    formattedCaptionSc = scFormattedBody(messageType, dom),
+                    formattedCaptionSc = scFormattedBody(messageType, dom, content.isRoomMention),
                     isEdited = content.isEdited,
                     mediaSource = messageType.source,
                     thumbnailSource = messageType.info?.thumbnailSource,
@@ -123,7 +123,7 @@ class TimelineItemContentMessageFactory(
                     fileSize = messageType.info?.size ?: 0,
                     caption = messageType.caption?.trimEnd(),
                     formattedCaption = formattedCaption,
-                    formattedCaptionSc = scFormattedBody(messageType, dom),
+                    formattedCaptionSc = scFormattedBody(messageType, dom, content.isRoomMention),
                     isEdited = content.isEdited,
                     mediaSource = messageType.source,
                     thumbnailSource = messageType.info?.thumbnailSource,
@@ -144,7 +144,7 @@ class TimelineItemContentMessageFactory(
                         body = body,
                         htmlDocument = null,
                         formattedBody = body,
-                        formattedBodySc = scFormattedPlaintextBody(body),
+                        formattedBodySc = scFormattedPlaintextBody(body, content.isRoomMention),
                         isEdited = content.isEdited,
                     )
                 } else {
@@ -165,7 +165,7 @@ class TimelineItemContentMessageFactory(
                     fileSize = messageType.info?.size ?: 0,
                     caption = messageType.caption?.trimEnd(),
                     formattedCaption = formattedCaption,
-                    formattedCaptionSc = scFormattedBody(messageType, dom),
+                    formattedCaptionSc = scFormattedBody(messageType, dom, content.isRoomMention),
                     isEdited = content.isEdited,
                     thumbnailSource = messageType.info?.thumbnailSource,
                     mediaSource = messageType.source,
@@ -190,7 +190,7 @@ class TimelineItemContentMessageFactory(
                     fileSize = messageType.info?.size ?: 0,
                     caption = messageType.caption?.trimEnd(),
                     formattedCaption = formattedCaption,
-                    formattedCaptionSc = scFormattedBody(messageType, dom),
+                    formattedCaptionSc = scFormattedBody(messageType, dom, content.isRoomMention),
                     isEdited = content.isEdited,
                     mediaSource = messageType.source,
                     duration = messageType.info?.duration ?: Duration.ZERO,
@@ -209,7 +209,7 @@ class TimelineItemContentMessageFactory(
                     fileSize = messageType.info?.size ?: 0,
                     caption = messageType.caption?.trimEnd(),
                     formattedCaption = formattedCaption,
-                    formattedCaptionSc = scFormattedBody(messageType, dom),
+                    formattedCaptionSc = scFormattedBody(messageType, dom, content.isRoomMention),
                     isEdited = content.isEdited,
                     mediaSource = messageType.source,
                     duration = messageType.info?.duration ?: Duration.ZERO,
@@ -229,7 +229,7 @@ class TimelineItemContentMessageFactory(
                     fileSize = messageType.info?.size ?: 0,
                     caption = messageType.caption?.trimEnd(),
                     formattedCaption = formattedCaption,
-                    formattedCaptionSc = scFormattedBody(messageType, dom),
+                    formattedCaptionSc = scFormattedBody(messageType, dom, content.isRoomMention),
                     isEdited = content.isEdited,
                     thumbnailSource = messageType.info?.thumbnailSource,
                     mediaSource = messageType.source,
@@ -248,7 +248,7 @@ class TimelineItemContentMessageFactory(
                     body = body,
                     htmlDocument = htmlDocument,
                     formattedBody = formattedBody,
-                    formattedBodySc = scFormattedBody(messageType, htmlDocument),
+                    formattedBodySc = scFormattedBody(messageType, htmlDocument, content.isRoomMention),
                     isEdited = content.isEdited,
                 )
             }
@@ -262,7 +262,7 @@ class TimelineItemContentMessageFactory(
                     body = body,
                     htmlDocument = htmlDocument,
                     formattedBody = formattedBody,
-                    formattedBodySc = scFormattedBody(messageType, htmlDocument),
+                    formattedBodySc = scFormattedBody(messageType, htmlDocument, content.isRoomMention),
                     isEdited = content.isEdited,
                 )
             }
@@ -272,7 +272,7 @@ class TimelineItemContentMessageFactory(
                     body = body,
                     htmlDocument = null,
                     formattedBody = textPillificationHelper.pillify(body).safeLinkify(),
-                    formattedBodySc = scFormattedPlaintextBody(body),
+                    formattedBodySc = scFormattedPlaintextBody(body, content.isRoomMention),
                     isEdited = content.isEdited,
                 )
             }

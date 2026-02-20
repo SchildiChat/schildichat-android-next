@@ -1,6 +1,5 @@
 package io.element.android.features.messages.impl.timeline.factories.event
 
-import android.view.HapticFeedbackConstants
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
@@ -8,11 +7,8 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
@@ -31,13 +27,10 @@ import com.beeper.android.messageformat.MatrixBodyStyledFormatter
 import com.beeper.android.messageformat.MatrixHtmlParser
 import com.beeper.android.messageformat.MatrixToLink
 import io.element.android.compound.theme.ElementTheme
-import io.element.android.libraries.androidutils.system.copyToClipboard
 import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageFormat
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageTypeWithAttachment
 import io.element.android.libraries.matrix.api.timeline.item.event.TextLikeMessageType
-import io.element.android.libraries.ui.strings.CommonStrings
-import io.element.android.wysiwyg.link.Link
 import org.jsoup.nodes.Document
 
 private const val ALLOW_PREPARSED = true
@@ -61,37 +54,34 @@ object MessageFormatDefaults {
     )
 }
 
-fun scFormattedBody(message: TextLikeMessageType, doc: Document?, plaintextBody: String = message.body): MatrixBodyParseResult {
-    val allowRoomMentions = true // TODO
+fun scFormattedBody(message: TextLikeMessageType, doc: Document?, isRoomMention: Boolean?, plaintextBody: String = message.body): MatrixBodyParseResult {
     return doc?.takeIf { ALLOW_PREPARSED }?.let {
-        MessageFormatDefaults.parser.parseHtml(doc, MessageFormatDefaults.parseStyle, allowRoomMentions)
+        MessageFormatDefaults.parser.parseHtml(doc, MessageFormatDefaults.parseStyle, isRoomMention ?: true)
     } ?: message.formatted?.let { formatted ->
         formatted.body.takeIf { formatted.format == MessageFormat.HTML }?.let {
-            MessageFormatDefaults.parser.parseHtml(it, MessageFormatDefaults.parseStyle, allowRoomMentions)
+            MessageFormatDefaults.parser.parseHtml(it, MessageFormatDefaults.parseStyle, isRoomMention ?: true)
         }
     } ?: MessageFormatDefaults.parser.parsePlaintext(
         plaintextBody,
         MessageFormatDefaults.parseStyle,
-        allowRoomMentions,
+        isRoomMention ?: true,
     )
 }
 
-fun scFormattedBody(message: MessageTypeWithAttachment, doc: Document?): MatrixBodyParseResult? {
-    val allowRoomMentions = true // TODO
+fun scFormattedBody(message: MessageTypeWithAttachment, doc: Document?, isRoomMention: Boolean?): MatrixBodyParseResult? {
     return doc?.takeIf { ALLOW_PREPARSED }?.let {
-        MessageFormatDefaults.parser.parseHtml(doc, MessageFormatDefaults.parseStyle, allowRoomMentions)
+        MessageFormatDefaults.parser.parseHtml(doc, MessageFormatDefaults.parseStyle, isRoomMention ?: true)
     } ?: message.formattedCaption?.let { formatted ->
         formatted.body.takeIf { formatted.format == MessageFormat.HTML }?.let {
-            MessageFormatDefaults.parser.parseHtml(it, MessageFormatDefaults.parseStyle, allowRoomMentions)
+            MessageFormatDefaults.parser.parseHtml(it, MessageFormatDefaults.parseStyle, isRoomMention ?: true)
         }
     } ?: message.caption?.let {
-        MessageFormatDefaults.parser.parsePlaintext(it, MessageFormatDefaults.parseStyle, allowRoomMentions)
+        MessageFormatDefaults.parser.parsePlaintext(it, MessageFormatDefaults.parseStyle, isRoomMention ?: true)
     }
 }
 
-fun scFormattedPlaintextBody(body: String): MatrixBodyParseResult {
-    val allowRoomMentions = true // TODO
-    return MessageFormatDefaults.parser.parsePlaintext(body, MessageFormatDefaults.parseStyle, allowRoomMentions)
+fun scFormattedPlaintextBody(body: String, isRoomMention: Boolean?): MatrixBodyParseResult {
+    return MessageFormatDefaults.parser.parsePlaintext(body, MessageFormatDefaults.parseStyle, isRoomMention ?: true)
 }
 
 val LocalSessionId = compositionLocalOf<SessionId?> { null }

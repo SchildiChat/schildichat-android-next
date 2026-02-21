@@ -25,6 +25,7 @@ internal class RustDynamicRoomList(
     override val loadingState: MutableStateFlow<RoomList.LoadingState>,
     private val processor: RoomSummaryListProcessor,
     override val pageSize: Int,
+    private val isSpaceList: Boolean = false, // SC
     private val dynamicController: () -> RoomListDynamicEntriesController?,
     private val addPagesCount: Int = DEFAULT_ADD_PAGES_COUNT
 ) : DynamicRoomList {
@@ -39,7 +40,7 @@ internal class RustDynamicRoomList(
             dynamicController()?.let { controller ->
                 // Reset pagination when filter changes
                 controller.resetToOnePage()
-                val rustFilter = RoomListFilterMapper.toRustFilter(filter)
+                val rustFilter = RoomListFilterMapper.toRustFilter(filter, isSpaceList)
                 controller.setFilter(rustFilter)
                 // Then preload some pages
                 controller.addPages(addPagesCount)
@@ -52,7 +53,7 @@ internal class RustDynamicRoomList(
             dynamicController()?.let { controller ->
                 // Reset pagination when settings change
                 controller.resetToOnePage()
-                val rustFilter = RoomListFilterMapper.toRustFilter(filter)
+                val rustFilter = RoomListFilterMapper.toRustFilter(filter, isSpaceList)
                 controller.setScInboxSettings(rustFilter, settings.toSdkSettings())
                 // Then preload some pages
                 controller.addPages(addPagesCount)

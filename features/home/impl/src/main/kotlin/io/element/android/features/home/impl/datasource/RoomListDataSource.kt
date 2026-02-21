@@ -48,14 +48,14 @@ import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.seconds
 
 private const val PAGE_SIZE = 20
-private const val EXTENDED_VISIBILITY_RANGE_SIZE = 40
-private const val SUBSCRIBE_TO_VISIBLE_ROOMS_DEBOUNCE_IN_MILLIS = 300L
-private const val PAGINATION_THRESHOLD = 3 * PAGE_SIZE
+/*private*/ const val EXTENDED_VISIBILITY_RANGE_SIZE = 40
+/*private*/ const val SUBSCRIBE_TO_VISIBLE_ROOMS_DEBOUNCE_IN_MILLIS = 300L
+/*private*/ const val PAGINATION_THRESHOLD = 3 * PAGE_SIZE
 
 @Inject
 @SingleIn(SessionScope::class)
 class RoomListDataSource(
-    private val roomListService: RoomListService,
+    /*private*/ val roomListService: RoomListService,
     private val roomListRoomSummaryFactory: RoomListRoomSummaryFactory,
     private val coroutineDispatchers: CoroutineDispatchers,
     private val notificationSettingsService: NotificationSettingsService,
@@ -70,7 +70,7 @@ class RoomListDataSource(
         observeDateTimeChanges()
     }
 
-    private val roomList = roomListService.createRoomList(
+    /*private*/ val roomList = roomListService.createRoomList(
         pageSize = PAGE_SIZE,
         source = RoomList.Source.All,
         coroutineScope = sessionCoroutineScope

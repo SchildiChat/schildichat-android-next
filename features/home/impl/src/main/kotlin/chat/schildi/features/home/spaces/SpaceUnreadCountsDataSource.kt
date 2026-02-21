@@ -4,7 +4,6 @@ import androidx.compose.runtime.Immutable
 import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.lib.preferences.ScPrefs
 import dev.zacsweers.metro.Inject
-import io.element.android.features.home.impl.datasource.RoomListDataSource
 import io.element.android.features.home.impl.model.RoomListRoomSummary
 import io.element.android.features.home.impl.model.RoomSummaryDisplayType
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
@@ -34,14 +33,13 @@ class SpaceUnreadCountsDataSource(
 
     fun launchIn(
         coroutineScope: CoroutineScope,
-        roomListDataSource: RoomListDataSource,
-        spaceAwareRoomListDataSource: SpaceAwareRoomListDataSource,
+        scRoomListDataSource: ScRoomListDataSource,
         spaceListDataSource: SpaceListDataSource
     ) {
         combine(
-            roomListDataSource.roomSummariesFlow.throttleLatest(300),
+            scRoomListDataSource.unfilteredRoomSummariesFlow.throttleLatest(300),
             spaceListDataSource.allSpaces,
-            spaceAwareRoomListDataSource.spaceSelectionHierarchy,
+            scRoomListDataSource.spaceSelectionHierarchy,
             scPreferencesStore.settingFlow(ScPrefs.CLIENT_GENERATED_UNREAD_COUNTS),
             scPreferencesStore.settingFlow(ScPrefs.SPACE_NAV),
         ) { allRoomsValue, rootSpaces, spaceSelectionValue, useClientGeneratedCounts, spaceNavEnabled ->

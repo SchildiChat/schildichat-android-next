@@ -44,7 +44,10 @@ internal class RoomListFactory(
         coroutineContext: CoroutineContext,
         coroutineScope: CoroutineScope,
         initialFilter: RoomListFilter = all(),
+        // SC start
+        isSpaceList: Boolean = false,
         initialInboxSettings: ScSdkInboxSettings? = null,
+        // SC end
         innerProvider: suspend () -> InnerRoomList
     ): DynamicRoomList {
         val loadingStateFlow: MutableStateFlow<RoomList.LoadingState> = MutableStateFlow(RoomList.LoadingState.NotLoaded)
@@ -60,7 +63,7 @@ internal class RoomListFactory(
             innerRoomList.let { innerRoomList ->
                 innerRoomList.entriesFlow(
                     pageSize = pageSize,
-                    initialFilterKind = RoomListFilterMapper.toRustFilter(initialFilter),
+                    initialFilterKind = RoomListFilterMapper.toRustFilter(initialFilter, isSpaceList),
                     initialInboxSettings = initialInboxSettings,
                     onControllerCreated = { controller ->
                         dynamicController = controller
@@ -87,6 +90,7 @@ internal class RoomListFactory(
             summaries = summariesFlow,
             loadingState = loadingStateFlow,
             processor = processor,
+            isSpaceList = isSpaceList, // SC
             pageSize = pageSize,
             dynamicController = { dynamicController }
         )

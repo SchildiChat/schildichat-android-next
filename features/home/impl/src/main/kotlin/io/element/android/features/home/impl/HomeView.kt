@@ -206,7 +206,7 @@ private fun HomeScaffold(
                 scrollBehavior = scrollBehavior,
                 displayFilters = state.displayRoomListFilters && ScPrefs.ELEMENT_ROOM_LIST_FILTERS.value(),
                 filtersState = roomListState.filtersState,
-                spaceFiltersState = roomListState.spaceFiltersState,
+                spaceFiltersState = if (ScPrefs.SPACE_NAV.value()) SpaceFiltersState.Disabled else roomListState.spaceFiltersState,
                 canCreateSpaces = state.homeSpacesState.canCreateSpaces,
                 canReportBug = state.canReportBug,
                 modifier = Modifier.hazeEffect(

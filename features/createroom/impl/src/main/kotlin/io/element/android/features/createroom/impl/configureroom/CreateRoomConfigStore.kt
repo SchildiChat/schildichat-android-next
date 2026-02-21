@@ -72,7 +72,9 @@ class CreateRoomConfigStore(
         createRoomConfigFlow.getAndUpdate { config ->
             config.copy(
                 visibilityState = when (joinRule) {
-                    JoinRuleItem.Private -> RoomVisibilityState.Private()
+                    is JoinRuleItem.PrivateVisibility -> RoomVisibilityState.Private(
+                        joinRuleItem = joinRule
+                    )
                     is JoinRuleItem.PublicVisibility -> {
                         val roomAliasName = roomAliasHelper.roomAliasNameFromRoomDisplayName(config.roomName.orEmpty())
                         RoomVisibilityState.Public(
@@ -99,17 +101,16 @@ class CreateRoomConfigStore(
         }
     }
 
-    fun setIsSpace(isSpace: Boolean) {
+    fun setParentSpace(parentSpace: SpaceRoom?, updateVisibility: Boolean) {
         createRoomConfigFlow.getAndUpdate { config ->
-            config.copy(isSpace = isSpace)
-        }
-    }
-
-    fun setParentSpace(parentSpace: SpaceRoom?) {
-        createRoomConfigFlow.getAndUpdate { config ->
+            val visibilityState = if (parentSpace != null && updateVisibility) {
+                RoomVisibilityState.Private(JoinRuleItem.PrivateVisibility.Restricted(parentSpace.roomId))
+            } else {
+                config.visibilityState
+            }
             config.copy(
                 parentSpace = parentSpace,
-                visibilityState = RoomVisibilityState.Private(),
+                visibilityState = visibilityState
             )
         }
     }

@@ -41,8 +41,8 @@ import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.invite.api.InviteData
 import io.element.android.libraries.designsystem.atomic.atoms.PlaceholderAtom
+import io.element.android.libraries.designsystem.atomic.atoms.RoomPreviewAliasAtom
 import io.element.android.libraries.designsystem.atomic.atoms.RoomPreviewDescriptionAtom
-import io.element.android.libraries.designsystem.atomic.atoms.RoomPreviewSubtitleAtom
 import io.element.android.libraries.designsystem.atomic.atoms.RoomPreviewTitleAtom
 import io.element.android.libraries.designsystem.atomic.molecules.ButtonRowMolecule
 import io.element.android.libraries.designsystem.atomic.molecules.IconTitlePlaceholdersRowMolecule
@@ -514,7 +514,7 @@ private fun IncompleteContent(
         title = {
             when (roomIdOrAlias) {
                 is RoomIdOrAlias.Alias -> {
-                    RoomPreviewSubtitleAtom(roomIdOrAlias.identifier)
+                    RoomPreviewAliasAtom(roomIdOrAlias.identifier)
                 }
                 is RoomIdOrAlias.Id -> {
                     PlaceholderAtom(width = 200.dp, height = 22.dp)
@@ -566,13 +566,12 @@ private fun DefaultLoadedContent(
             }
         },
         subtitle = {
-            when {
-                contentState.details is LoadedDetails.Space -> {
-                    SpaceInfoRow(visibility = SpaceRoomVisibility.fromJoinRule(contentState.joinRule))
-                }
-                contentState.alias != null -> {
-                    RoomPreviewSubtitleAtom(contentState.alias.value)
-                }
+            if (contentState.alias != null) {
+                RoomPreviewAliasAtom(contentState.alias.value)
+            }
+            if (contentState.details is LoadedDetails.Space) {
+                Spacer(Modifier.height(8.dp))
+                SpaceInfoRow(visibility = SpaceRoomVisibility.fromJoinRule(contentState.joinRule))
             }
         },
         description = {

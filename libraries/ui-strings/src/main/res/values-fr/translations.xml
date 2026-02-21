@@ -224,7 +224,7 @@ Raison : %1$s."</string>
   <string name="common_everyone">"Tout le monde"</string>
   <string name="common_failed">"Échec"</string>
   <string name="common_favourite">"Favori"</string>
-  <string name="common_favourited">"Favorisé"</string>
+  <string name="common_favourited">"Ajouté aux favoris"</string>
   <string name="common_file">"Fichier"</string>
   <string name="common_file_deleted">"Fichier supprimé"</string>
   <string name="common_file_saved">"Fichier enregistré"</string>
@@ -285,8 +285,10 @@ Raison : %1$s."</string>
   </plurals>
   <string name="common_preparing">"Préparation…"</string>
   <string name="common_privacy_policy">"Politique de confidentialité"</string>
+  <string name="common_private">"Privé"</string>
   <string name="common_private_room">"Salon privé"</string>
   <string name="common_private_space">"Espace privé"</string>
+  <string name="common_public">"Public"</string>
   <string name="common_public_room">"Salon public"</string>
   <string name="common_public_space">"Espace public"</string>
   <string name="common_reaction">"Réaction"</string>
@@ -334,12 +336,14 @@ Raison : %1$s."</string>
   <string name="common_server_url">"URL du serveur"</string>
   <string name="common_settings">"Paramètres"</string>
   <string name="common_share_space">"Partager l’espace"</string>
+  <string name="common_shared_history">"Les nouveaux membres voient les anciens messages"</string>
   <string name="common_shared_location">"Position partagée"</string>
   <string name="common_shared_space">"Espace partagé"</string>
   <string name="common_signing_out">"Déconnexion"</string>
   <string name="common_something_went_wrong">"Une erreur s’est produite"</string>
   <string name="common_something_went_wrong_message">"Nous avons rencontré un problème. Veuillez réessayer."</string>
   <string name="common_space">"Espace"</string>
+  <string name="common_space_members">"Membres de l’espace"</string>
   <string name="common_space_topic_placeholder">"Quel est le sujet de cet espace ?"</string>
   <plurals name="common_spaces">
     <item quantity="one">"%1$d Espace"</item>
@@ -385,6 +389,7 @@ Raison : %1$s."</string>
   <string name="common_voice_message">"Message vocal"</string>
   <string name="common_waiting">"En attente…"</string>
   <string name="common_waiting_for_decryption_key">"En attente de la clé de déchiffrement"</string>
+  <string name="common_world_readable_history">"Tout le monde peut voir les anciens messages"</string>
   <string name="common_you">"Vous"</string>
   <string name="crypto_event_key_forwarded_known_profile_dialog_content">"%1$s (%2$s) a partagé ce message avec vous car vous n’étiez pas dans le salon lors de son envoi."</string>
   <string name="crypto_event_key_forwarded_unknown_profile_dialog_content">"%1$s a partagé ce message avec vous car vous n’étiez pas dans le salon lors de son envoi."</string>

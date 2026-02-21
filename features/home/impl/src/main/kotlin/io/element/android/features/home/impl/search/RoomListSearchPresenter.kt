@@ -23,6 +23,7 @@ import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.core.meta.isGplayBuild
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.launch
 
 @Inject
 class RoomListSearchPresenter(
@@ -39,22 +40,21 @@ class RoomListSearchPresenter(
         val coroutineScope = rememberCoroutineScope()
         val dataSource = remember { dataSourceFactory.create(coroutineScope) }
 
-        LaunchedEffect(isSearchActive) {
-            dataSource.setIsActive(isSearchActive)
-        }
-
         LaunchedEffect(searchQuery.text) {
             dataSource.setSearchQuery(searchQuery.text.toString())
         }
 
-        fun handleEvent(event: RoomListSearchEvents) {
+        fun handleEvent(event: RoomListSearchEvent) {
             when (event) {
-                RoomListSearchEvents.ClearQuery -> {
+                RoomListSearchEvent.ClearQuery -> {
                     searchQuery.clearText()
                 }
-                RoomListSearchEvents.ToggleSearchVisibility -> {
+                RoomListSearchEvent.ToggleSearchVisibility -> {
                     isSearchActive = !isSearchActive
                     searchQuery.clearText()
+                }
+                is RoomListSearchEvent.UpdateVisibleRange -> coroutineScope.launch {
+                    dataSource.updateVisibleRange(visibleRange = event.range)
                 }
             }
         }

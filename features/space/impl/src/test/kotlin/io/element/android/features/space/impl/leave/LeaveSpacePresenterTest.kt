@@ -29,11 +29,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class LeaveSpacePresenterTest {
-    private val aSpace = aSpaceRoom(
-        roomId = A_SPACE_ID,
-        displayName = A_SPACE_NAME,
-    )
-
     @Test
     fun `present - initial state`() = runTest {
         val presenter = createLeaveSpacePresenter(
@@ -44,7 +39,7 @@ class LeaveSpacePresenterTest {
         presenter.test {
             val state = awaitItem()
             assertThat(state.spaceName).isNull()
-            assertThat(state.isLastOwner).isFalse()
+            assertThat(state.needsOwnerChange).isFalse()
             assertThat(state.selectableSpaceRooms.isLoading()).isTrue()
             assertThat(state.leaveSpaceAction).isEqualTo(AsyncAction.Uninitialized)
             cancelAndIgnoreRemainingEvents()
@@ -87,7 +82,7 @@ class LeaveSpacePresenterTest {
             skipItems(2)
             val finalState = awaitItem()
             assertThat(finalState.spaceName).isEqualTo(A_SPACE_NAME)
-            assertThat(finalState.isLastOwner).isTrue()
+            assertThat(finalState.needsOwnerChange).isTrue()
             // The current state is not in the sub room list
             assertThat(finalState.selectableSpaceRooms.dataOrNull()!!).isEmpty()
         }
@@ -145,8 +140,8 @@ class LeaveSpacePresenterTest {
                 roomsResult = {
                     Result.success(
                         listOf(
-                            LeaveSpaceRoom(aSpaceRoom(roomId = A_ROOM_ID), isLastOwner = false),
-                            LeaveSpaceRoom(aSpaceRoom(roomId = A_ROOM_ID_2), isLastOwner = true),
+                            LeaveSpaceRoom(aSpaceRoom(roomId = A_ROOM_ID), isLastOwner = false, areCreatorsPrivileged = false),
+                            LeaveSpaceRoom(aSpaceRoom(roomId = A_ROOM_ID_2), isLastOwner = true, areCreatorsPrivileged = false),
                         )
                     )
                 },
@@ -157,7 +152,7 @@ class LeaveSpacePresenterTest {
             skipItems(3)
             val state = awaitItem()
             assertThat(state.spaceName).isNull()
-            assertThat(state.isLastOwner).isFalse()
+            assertThat(state.needsOwnerChange).isFalse()
             val data = state.selectableSpaceRooms.dataOrNull()!!
             assertThat(data.size).isEqualTo(2)
             // Only one room is selectable as the user is the last admin in the other one
@@ -232,6 +227,20 @@ class LeaveSpacePresenterTest {
         }
     }
 
+    @Test
+    fun `present - needsOwnerChange is false if user is the last joined member`() = runTest {
+        val presenter = createLeaveSpacePresenter(
+            leaveSpaceHandle = FakeLeaveSpaceHandle(
+                roomsResult = { Result.success(listOf(aLeaveSpaceRoom(spaceRoom = aSpaceRoom(numJoinedMembers = 1), isLastOwner = true))) },
+            )
+        )
+        presenter.test {
+            skipItems(3)
+            val state = awaitItem()
+            assertThat(state.needsOwnerChange).isFalse()
+        }
+    }
+
     private fun createLeaveSpacePresenter(
         leaveSpaceHandle: LeaveSpaceHandle = FakeLeaveSpaceHandle(),
     ): LeaveSpacePresenter {
@@ -241,13 +250,18 @@ class LeaveSpacePresenterTest {
     }
 }
 
+private val aSpace = aSpaceRoom(
+    roomId = A_SPACE_ID,
+    displayName = A_SPACE_NAME,
+    numJoinedMembers = 2,
+)
+
 private fun aLeaveSpaceRoom(
-    spaceRoom: SpaceRoom = aSpaceRoom(
-        roomId = A_SPACE_ID,
-        displayName = A_SPACE_NAME,
-    ),
+    spaceRoom: SpaceRoom = aSpace,
     isLastOwner: Boolean = false,
+    areCreatorsPrivileged: Boolean = false,
 ) = LeaveSpaceRoom(
     spaceRoom = spaceRoom,
     isLastOwner = isLastOwner,
+    areCreatorsPrivileged = areCreatorsPrivileged,
 )

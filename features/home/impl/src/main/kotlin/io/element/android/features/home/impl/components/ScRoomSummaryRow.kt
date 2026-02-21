@@ -62,7 +62,7 @@ import io.element.android.features.home.impl.model.LatestEvent
 import io.element.android.features.home.impl.model.RoomListRoomSummary
 import io.element.android.features.home.impl.model.RoomListRoomSummaryProvider
 import io.element.android.features.home.impl.model.RoomSummaryDisplayType
-import io.element.android.features.home.impl.roomlist.RoomListEvents
+import io.element.android.features.home.impl.roomlist.RoomListEvent
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.preview.ElementPreview
@@ -85,7 +85,7 @@ internal fun ScRoomSummaryRow(
     hideInviteAvatars: Boolean,
     isInviteSeen: Boolean,
     onClick: (RoomListRoomSummary) -> Unit,
-    eventSink: (RoomListEvents) -> Unit,
+    eventSink: (RoomListEvent) -> Unit,
     modifier: Modifier = Modifier,
     isLastIndex: Boolean,
 ) {
@@ -96,7 +96,7 @@ internal fun ScRoomSummaryRow(
                 isInviteSeen = isInviteSeen,
                 onClick = onClick,
                 onLongClick = {
-                    eventSink(RoomListEvents.ShowContextMenu(room))
+                    eventSink(RoomListEvent.ShowContextMenu(room))
                 },
                 modifier = modifier
             )

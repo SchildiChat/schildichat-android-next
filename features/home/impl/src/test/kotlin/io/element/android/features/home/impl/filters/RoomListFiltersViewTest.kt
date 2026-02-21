@@ -27,7 +27,7 @@ class RoomListFiltersViewTest {
 
     @Test
     fun `clicking on filters generates expected Event`() {
-        val eventsRecorder = EventsRecorder<RoomListFiltersEvents>()
+        val eventsRecorder = EventsRecorder<RoomListFiltersEvent>()
         rule.setContent {
             RoomListFiltersView(
                 state = aRoomListFiltersState(eventSink = eventsRecorder),
@@ -36,14 +36,14 @@ class RoomListFiltersViewTest {
         rule.clickOn(R.string.screen_roomlist_filter_rooms)
         eventsRecorder.assertList(
             listOf(
-                RoomListFiltersEvents.ToggleFilter(RoomListFilter.Rooms),
+                RoomListFiltersEvent.ToggleFilter(RoomListFilter.Rooms),
             )
         )
     }
 
     @Test
     fun `clicking on clear filters generates expected Event`() {
-        val eventsRecorder = EventsRecorder<RoomListFiltersEvents>()
+        val eventsRecorder = EventsRecorder<RoomListFiltersEvent>()
         rule.setContent {
             RoomListFiltersView(
                 state = aRoomListFiltersState(
@@ -55,7 +55,7 @@ class RoomListFiltersViewTest {
         rule.pressTag(TestTags.homeScreenClearFilters.value)
         eventsRecorder.assertList(
             listOf(
-                RoomListFiltersEvents.ClearSelectedFilters,
+                RoomListFiltersEvent.ClearSelectedFilters,
             )
         )
     }

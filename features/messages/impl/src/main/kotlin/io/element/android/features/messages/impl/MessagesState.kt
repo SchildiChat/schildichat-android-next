@@ -55,10 +55,22 @@ data class MessagesState(
     val dmUserVerificationState: IdentityState?,
     val isRoomEncrypted: Boolean? = null, // SC
     val roomMemberModerationState: RoomMemberModerationState,
-    /** Should the top bar include the "history" icon? */
-    val showSharedHistoryIcon: Boolean,
+    /** Type of "shared history" icon to show in the top bar. */
+    val topBarSharedHistoryIcon: SharedHistoryIcon,
     val successorRoom: SuccessorRoom?,
     val eventSink: (MessagesEvent) -> Unit
 ) {
     val isTombstoned = successorRoom != null
+}
+
+/** Type of "shared history" icon to show in the top bar. */
+enum class SharedHistoryIcon {
+    /** Show no icon at all. */
+    NONE,
+
+    /** history_visibility: shared. */
+    SHARED,
+
+    /** history_visibility: world_readable. */
+    WORLD_READABLE
 }

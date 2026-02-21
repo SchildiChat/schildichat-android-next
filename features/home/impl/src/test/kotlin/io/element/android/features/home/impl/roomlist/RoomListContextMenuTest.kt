@@ -30,7 +30,7 @@ class RoomListContextMenuTest {
 
     @Test
     fun `clicking on Mark as read generates expected Events`() {
-        val eventsRecorder = EventsRecorder<RoomListEvents>()
+        val eventsRecorder = EventsRecorder<RoomListEvent>()
         val contextMenu = aContextMenuShown(hasNewContent = true)
         rule.setRoomListContextMenu(
             contextMenu = contextMenu,
@@ -39,15 +39,15 @@ class RoomListContextMenuTest {
         rule.clickOn(R.string.screen_roomlist_mark_as_read)
         eventsRecorder.assertList(
             listOf(
-                RoomListEvents.HideContextMenu,
-                RoomListEvents.MarkAsRead(contextMenu.roomId),
+                RoomListEvent.HideContextMenu,
+                RoomListEvent.MarkAsRead(contextMenu.roomId),
             )
         )
     }
 
     @Test
     fun `clicking on Mark as unread generates expected Events`() {
-        val eventsRecorder = EventsRecorder<RoomListEvents>()
+        val eventsRecorder = EventsRecorder<RoomListEvent>()
         val contextMenu = aContextMenuShown(hasNewContent = false)
         rule.setRoomListContextMenu(
             contextMenu = contextMenu,
@@ -56,15 +56,15 @@ class RoomListContextMenuTest {
         rule.clickOn(R.string.screen_roomlist_mark_as_unread)
         eventsRecorder.assertList(
             listOf(
-                RoomListEvents.HideContextMenu,
-                RoomListEvents.MarkAsUnread(contextMenu.roomId),
+                RoomListEvent.HideContextMenu,
+                RoomListEvent.MarkAsUnread(contextMenu.roomId),
             )
         )
     }
 
     @Test
     fun `clicking on Leave room generates expected Events`() {
-        val eventsRecorder = EventsRecorder<RoomListEvents>()
+        val eventsRecorder = EventsRecorder<RoomListEvent>()
         val contextMenu = aContextMenuShown(isDm = false)
         rule.setRoomListContextMenu(
             contextMenu = contextMenu,
@@ -73,15 +73,15 @@ class RoomListContextMenuTest {
         rule.clickOn(CommonStrings.action_leave_room)
         eventsRecorder.assertList(
             listOf(
-                RoomListEvents.HideContextMenu,
-                RoomListEvents.LeaveRoom(contextMenu.roomId, needsConfirmation = true),
+                RoomListEvent.HideContextMenu,
+                RoomListEvent.LeaveRoom(contextMenu.roomId, needsConfirmation = true),
             )
         )
     }
 
     @Test
     fun `clicking on Report room invokes the expected callback and generates expected Event`() {
-        val eventsRecorder = EventsRecorder<RoomListEvents>()
+        val eventsRecorder = EventsRecorder<RoomListEvent>()
         val contextMenu = aContextMenuShown()
         val callback = EnsureCalledOnceWithParam(contextMenu.roomId, Unit)
         rule.setRoomListContextMenu(
@@ -92,13 +92,13 @@ class RoomListContextMenuTest {
             onReportRoomClick = callback,
         )
         rule.clickOn(CommonStrings.action_report_room)
-        eventsRecorder.assertSingle(RoomListEvents.HideContextMenu)
+        eventsRecorder.assertSingle(RoomListEvent.HideContextMenu)
         callback.assertSuccess()
     }
 
     @Test
     fun `clicking on Settings invokes the expected callback and generates expected Event`() {
-        val eventsRecorder = EventsRecorder<RoomListEvents>()
+        val eventsRecorder = EventsRecorder<RoomListEvent>()
         val contextMenu = aContextMenuShown()
         val callback = EnsureCalledOnceWithParam(contextMenu.roomId, Unit)
         rule.setRoomListContextMenu(
@@ -107,13 +107,13 @@ class RoomListContextMenuTest {
             onRoomSettingsClick = callback,
         )
         rule.clickOn(CommonStrings.common_settings)
-        eventsRecorder.assertSingle(RoomListEvents.HideContextMenu)
+        eventsRecorder.assertSingle(RoomListEvent.HideContextMenu)
         callback.assertSuccess()
     }
 
     @Test
     fun `clicking on Favourites generates expected Event`() {
-        val eventsRecorder = EventsRecorder<RoomListEvents>()
+        val eventsRecorder = EventsRecorder<RoomListEvent>()
         val contextMenu = aContextMenuShown(isDm = false, isFavorite = false)
         val callback = EnsureNeverCalledWithParam<RoomId>()
         rule.setRoomListContextMenu(
@@ -124,7 +124,7 @@ class RoomListContextMenuTest {
         rule.clickOn(CommonStrings.common_favourite)
         eventsRecorder.assertList(
             listOf(
-                RoomListEvents.SetRoomIsFavorite(contextMenu.roomId, true),
+                RoomListEvent.SetRoomIsFavorite(contextMenu.roomId, true),
             )
         )
     }
@@ -132,7 +132,7 @@ class RoomListContextMenuTest {
     private fun AndroidComposeTestRule<*, *>.setRoomListContextMenu(
         contextMenu: RoomListState.ContextMenu.Shown,
         canReportRoom: Boolean = false,
-        eventSink: (RoomListEvents) -> Unit,
+        eventSink: (RoomListEvent) -> Unit,
         onRoomSettingsClick: (RoomId) -> Unit = EnsureNeverCalledWithParam(),
         onReportRoomClick: (RoomId) -> Unit = EnsureNeverCalledWithParam(),
     ) {

@@ -76,6 +76,7 @@ fun HomeSpacesView(
                     item {
                         SpaceHeaderView(
                             avatarData = space.spaceRoom.getAvatarData(AvatarSize.SpaceHeader),
+                            alias = space.spaceRoom.canonicalAlias,
                             name = space.spaceRoom.displayName,
                             topic = space.spaceRoom.topic,
                             visibility = space.spaceRoom.visibility,

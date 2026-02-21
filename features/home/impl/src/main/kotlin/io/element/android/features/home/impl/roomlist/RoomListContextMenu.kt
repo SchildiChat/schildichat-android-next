@@ -49,45 +49,45 @@ fun RoomListContextMenu(
     roomListState: RoomListState, // SC
     matrixClient: MatrixClient?, // SC
     canReportRoom: Boolean,
-    eventSink: (RoomListEvents.ContextMenuEvents) -> Unit,
+    eventSink: (RoomListEvent.ContextMenuEvent) -> Unit,
     onRoomSettingsClick: (roomId: RoomId) -> Unit,
     onReportRoomClick: (roomId: RoomId) -> Unit
 ) {
     ModalBottomSheet(
-        onDismissRequest = { eventSink(RoomListEvents.HideContextMenu) },
+        onDismissRequest = { eventSink(RoomListEvent.HideContextMenu) },
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = ScPrefs.FULLY_EXPAND_MESSAGE_MENU.value()),
     ) {
         RoomListModalBottomSheetContent(
             contextMenu = contextMenu,
             roomListState = roomListState, // SC
             matrixClient = matrixClient, // SC
-            onLowPriorityChange = { eventSink(RoomListEvents.SetRoomIsLowPriority(contextMenu.roomId, it))}, // SC
+            onLowPriorityChange = { eventSink(RoomListEvent.SetRoomIsLowPriority(contextMenu.roomId, it))}, // SC
             canReportRoom = canReportRoom,
             onRoomMarkReadClick = {
-                eventSink(RoomListEvents.HideContextMenu)
-                eventSink(RoomListEvents.MarkAsRead(contextMenu.roomId))
+                eventSink(RoomListEvent.HideContextMenu)
+                eventSink(RoomListEvent.MarkAsRead(contextMenu.roomId))
             },
             onRoomMarkUnreadClick = {
-                eventSink(RoomListEvents.HideContextMenu)
-                eventSink(RoomListEvents.MarkAsUnread(contextMenu.roomId))
+                eventSink(RoomListEvent.HideContextMenu)
+                eventSink(RoomListEvent.MarkAsUnread(contextMenu.roomId))
             },
             onRoomSettingsClick = {
-                eventSink(RoomListEvents.HideContextMenu)
+                eventSink(RoomListEvent.HideContextMenu)
                 onRoomSettingsClick(contextMenu.roomId)
             },
             onLeaveRoomClick = {
-                eventSink(RoomListEvents.HideContextMenu)
-                eventSink(RoomListEvents.LeaveRoom(contextMenu.roomId, needsConfirmation = true))
+                eventSink(RoomListEvent.HideContextMenu)
+                eventSink(RoomListEvent.LeaveRoom(contextMenu.roomId, needsConfirmation = true))
             },
             onFavoriteChange = { isFavorite ->
-                eventSink(RoomListEvents.SetRoomIsFavorite(contextMenu.roomId, isFavorite))
+                eventSink(RoomListEvent.SetRoomIsFavorite(contextMenu.roomId, isFavorite))
             },
             onClearCacheRoomClick = {
-                eventSink(RoomListEvents.HideContextMenu)
-                eventSink(RoomListEvents.ClearCacheOfRoom(contextMenu.roomId))
+                eventSink(RoomListEvent.HideContextMenu)
+                eventSink(RoomListEvent.ClearCacheOfRoom(contextMenu.roomId))
             },
             onReportRoomClick = {
-                eventSink(RoomListEvents.HideContextMenu)
+                eventSink(RoomListEvent.HideContextMenu)
                 onReportRoomClick(contextMenu.roomId)
             },
         )
@@ -152,16 +152,21 @@ private fun RoomListModalBottomSheetContent(
                 style = ListItemStyle.Primary,
             )
         }
+        val (textResId, icon) = if (contextMenu.isFavorite) {
+            CommonStrings.common_favourited to CompoundIcons.FavouriteSolid()
+        } else {
+            CommonStrings.common_favourite to CompoundIcons.Favourite()
+        }
         ListItem(
             headlineContent = {
                 Text(
-                    text = stringResource(id = CommonStrings.common_favourite),
+                    text = stringResource(id = textResId),
                     style = MaterialTheme.typography.bodyLarge,
                 )
             },
             leadingContent = ListItemContent.Icon(
                 iconSource = IconSource.Vector(
-                    CompoundIcons.Favourite(),
+                    icon,
                 )
             ),
             trailingContent = ListItemContent.Switch(

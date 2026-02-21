@@ -638,11 +638,11 @@ private fun UnreadCountBox(unreadCounts: SpaceUnreadCountsDataSource.SpaceUnread
 }
 
 @Composable
-fun PersistSpaceOnPause(scAppStateStore: ScAppStateStore, spaceAwareRoomListDataSource: SpaceAwareRoomListDataSource) {
+fun PersistSpaceOnPause(scAppStateStore: ScAppStateStore, scRoomListDataSource: ScRoomListDataSource) {
     val scope = rememberCoroutineScope()
     OnLifecycleEvent { _, event ->
         when (event) {
-            Lifecycle.Event.ON_PAUSE -> spaceAwareRoomListDataSource.spaceSelectionHierarchy.value?.let {
+            Lifecycle.Event.ON_PAUSE -> scRoomListDataSource.spaceSelectionHierarchy.value?.let {
                 scope.launch { scAppStateStore.persistSpaceSelection(it) }
             }
             else -> Unit

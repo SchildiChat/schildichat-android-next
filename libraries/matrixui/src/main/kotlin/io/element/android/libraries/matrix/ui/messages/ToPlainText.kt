@@ -39,7 +39,7 @@ fun FormattedBody.toPlainText(
     return this.toHtmlDocument(
         permalinkParser = permalinkParser,
         prefix = prefix,
-    )?.toPlainText()
+    )?.stripSpoilers()?.toPlainText()
 }
 
 /**

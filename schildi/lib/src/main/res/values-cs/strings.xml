@@ -186,4 +186,12 @@
     <string name="sc_pref_always_show_reaction_search_bar_summary">Vždy zobrazovat vyhledávací lištu reakcí v horní části výběru reakcí</string>
     <string name="sc_pseudo_space_invites">Pozvánky</string>
     <string name="sc_pseudo_space_list">Seznam prostorů</string>
+    <string name="sc_pref_two_initials_avatar_fallback_title">Dvou písmenné avatary</string>
+    <string name="sc_pref_two_initials_avatar_fallback_summary">Zobrazit dvě písmena jako náhradní avatar pro místnosti a uživatele bez avataru</string>
+    <string name="sc_pref_category_timeline_short">Časová osa</string>
+    <string name="sc_pref_view_hidden_events_title">Zobrazit skryté události</string>
+    <string name="sc_pref_view_redactions_title">Zobrazit smazané zprávy</string>
+    <string name="sc_pref_view_redactions_summary">Zobrazit zástupné symboly pro smazané zprávy namísto jejich úplného skrytí</string>
+    <string name="sc_pref_legacy_message_rendering_title">Starší renderer zpráv</string>
+    <string name="sc_pref_legacy_message_rendering_summary">Způsob, jakým Element vykresluje formátované zprávy</string>
 </resources>

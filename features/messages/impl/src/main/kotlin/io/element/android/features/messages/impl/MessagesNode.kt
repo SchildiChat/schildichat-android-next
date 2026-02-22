@@ -86,6 +86,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @ContributesNode(RoomScope::class)
 @AssistedInject
@@ -279,7 +280,6 @@ class MessagesNode(
                                 EventId(it.messageId),
                                 viaParameters = it.via?.toImmutableList() ?: persistentListOf(),
                             )
-                            callback.handlePermalinkClick(permalinkData)
                             handleRoomLinkClick(permalinkData, state.timelineState.eventSink)
                         }
                         is MatrixToLink.RoomLink -> {
@@ -296,7 +296,6 @@ class MessagesNode(
                                 roomIdOrAlias,
                                 viaParameters = it.via?.toImmutableList() ?: persistentListOf(),
                             )
-                            callback.handlePermalinkClick(permalinkData)
                             handleRoomLinkClick(permalinkData, state.timelineState.eventSink)
                         }
                         is MatrixToLink.UserMention -> {

@@ -1,7 +1,5 @@
 package io.element.android.features.messages.impl.timeline.components.event
 
-import android.text.SpannableStringBuilder
-import android.text.Spanned
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -22,9 +20,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.core.text.getSpans
-import chat.schildi.lib.preferences.ScPrefs
-import chat.schildi.lib.preferences.value
 import chat.schildi.matrixsdk.containsOnlyEmojis
 import chat.schildi.theme.scBubbleFont
 import coil3.compose.AsyncImagePainter
@@ -45,7 +40,6 @@ import io.element.android.features.messages.impl.timeline.model.event.TimelineIt
 import io.element.android.libraries.matrix.api.media.MediaSource
 import io.element.android.libraries.matrix.ui.media.MediaRequestData
 import io.element.android.wysiwyg.link.Link
-import io.element.android.wysiwyg.view.spans.InlineImageSpan
 import kotlin.math.roundToInt
 
 // All values in DP here

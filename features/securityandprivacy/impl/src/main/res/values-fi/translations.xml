@@ -18,7 +18,6 @@ Emme suosittele salauksen ottamista käyttöön huoneissa, jotka kuka tahansa vo
   <string name="screen_security_and_privacy_room_access_invite_only_option_description">"Vain kutsutut henkilöt voivat liittyä."</string>
   <string name="screen_security_and_privacy_room_access_invite_only_option_title">"Vain kutsutut"</string>
   <string name="screen_security_and_privacy_room_access_section_header">"Pääsy"</string>
-  <string name="screen_security_and_privacy_room_access_space_members_option_title">"Tilan jäsenet"</string>
   <string name="screen_security_and_privacy_room_access_space_members_option_unavailable_description">"Tiloja ei tällä hetkellä tueta"</string>
   <string name="screen_security_and_privacy_room_address_section_footer">"Tarvitset osoitteen, jotta se näkyy julkisessa hakemistossa."</string>
   <string name="screen_security_and_privacy_room_address_section_header">"Osoite"</string>

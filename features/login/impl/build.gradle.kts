@@ -43,6 +43,7 @@ android {
             buildConfigFieldStr(elementClassicPackageKey, elementClassicPackageDebug)
         }
         register("nightly") {
+            matchingFallbacks += listOf("release")
             manifestPlaceholders[elementClassicPackageKey] = elementClassicPackageNightly
             buildConfigFieldStr(elementClassicPackageKey, elementClassicPackageNightly)
         }

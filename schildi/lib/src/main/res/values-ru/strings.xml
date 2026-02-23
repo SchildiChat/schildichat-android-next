@@ -187,4 +187,11 @@
     <string name="sc_pref_always_show_reaction_search_bar_title">Закрепить строку поиска реакций</string>
     <string name="sc_pref_always_show_reaction_search_bar_summary">Всегда показывать строку поиска реакций в верхней части селектора реакций</string>
     <string name="sc_pref_two_initials_avatar_fallback_summary">Показывать 2 буквы вместо аватара, если у участника нет аватара</string>
+    <string name="sc_pref_two_initials_avatar_fallback_title">Двухбуквенные аватары</string>
+    <string name="sc_pref_category_timeline_short">Хронология</string>
+    <string name="sc_pref_view_hidden_events_title">Показывать скрытые события</string>
+    <string name="sc_pref_view_redactions_title">Показывать удалённые сообщения</string>
+    <string name="sc_pref_view_redactions_summary">Отображать заполнители сообщений для удаленных сообщений, а не скрывать их полностью</string>
+    <string name="sc_pref_legacy_message_rendering_title">Устаревшее отображение сообщений</string>
+    <string name="sc_pref_legacy_message_rendering_summary">Способ отображения отформатированных сообщений из Element</string>
 </resources>

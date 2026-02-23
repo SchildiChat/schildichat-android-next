@@ -2,7 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="notification_channel_call">"Appel"</string>
   <string name="notification_channel_listening_for_events">"À l’écoute des événements"</string>
-  <string name="notification_channel_noisy">"Notifications bruyantes"</string>
+  <string name="notification_channel_noisy">"Notifications sonores"</string>
   <string name="notification_channel_ringing_calls">"Appels entrants"</string>
   <string name="notification_channel_silent">"Notifications silencieuses"</string>
   <plurals name="notification_compat_summary_line_for_room">

@@ -18,7 +18,6 @@
   <string name="screen_security_and_privacy_room_access_invite_only_option_description">"僅受邀者才能加入。"</string>
   <string name="screen_security_and_privacy_room_access_invite_only_option_title">"僅限邀請"</string>
   <string name="screen_security_and_privacy_room_access_section_header">"存取權"</string>
-  <string name="screen_security_and_privacy_room_access_space_members_option_title">"空間成員"</string>
   <string name="screen_security_and_privacy_room_access_space_members_option_unavailable_description">"目前不支援空間"</string>
   <string name="screen_security_and_privacy_room_address_section_footer">"您需要地址才能在公開目錄中顯示。"</string>
   <string name="screen_security_and_privacy_room_address_section_header">"地址"</string>

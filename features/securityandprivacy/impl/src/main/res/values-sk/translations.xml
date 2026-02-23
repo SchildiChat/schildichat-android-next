@@ -29,7 +29,6 @@ To môže brániť správnemu fungovaniu robotov a premostení. Neodporúčame p
   <string name="screen_security_and_privacy_room_access_section_header">"Prístup"</string>
   <string name="screen_security_and_privacy_room_access_space_members_option_multiple_parents_description">"Ktokoľvek v povolených priestoroch sa môže pripojiť."</string>
   <string name="screen_security_and_privacy_room_access_space_members_option_single_parent_description">"Ktokoľvek v %1$s sa môže pripojiť."</string>
-  <string name="screen_security_and_privacy_room_access_space_members_option_title">"Členovia priestoru"</string>
   <string name="screen_security_and_privacy_room_access_space_members_option_unavailable_description">"Priestory momentálne nie sú podporované"</string>
   <string name="screen_security_and_privacy_room_address_section_footer">"Budete potrebovať adresu, aby sa zobrazovala vo verejnom adresári."</string>
   <string name="screen_security_and_privacy_room_address_section_header">"Adresa"</string>

@@ -149,7 +149,6 @@ Não recomendamos que você ative a criptografia para salas que qualquer pessoa 
   <string name="screen_security_and_privacy_room_access_section_header">"Acesso"</string>
   <string name="screen_security_and_privacy_room_access_space_members_option_multiple_parents_description">"Qualquer um em espaços autorizados podem entrar."</string>
   <string name="screen_security_and_privacy_room_access_space_members_option_single_parent_description">"Qualquer pessoa em %1$s pode participar."</string>
-  <string name="screen_security_and_privacy_room_access_space_members_option_title">"Membros do espaço"</string>
   <string name="screen_security_and_privacy_room_access_space_members_option_unavailable_description">"No momento, não há suporte aos espaços"</string>
   <string name="screen_security_and_privacy_room_address_section_footer">"Você precisará de um endereço para torná-la visível no diretório."</string>
   <string name="screen_security_and_privacy_room_address_section_header">"Endereço publicado"</string>

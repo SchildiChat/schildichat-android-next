@@ -27,7 +27,6 @@ Nu recomandăm activarea criptării pentru camerele pe care oricine le poate gă
   <string name="screen_security_and_privacy_room_access_section_header">"Acces"</string>
   <string name="screen_security_and_privacy_room_access_space_members_option_multiple_parents_description">"Oricine se află într-un spațiu autorizat poate participa."</string>
   <string name="screen_security_and_privacy_room_access_space_members_option_single_parent_description">"Oricine din %1$s se poate alătura."</string>
-  <string name="screen_security_and_privacy_room_access_space_members_option_title">"Membrii spațiului"</string>
   <string name="screen_security_and_privacy_room_access_space_members_option_unavailable_description">"Spațiile nu sunt momentan suportate."</string>
   <string name="screen_security_and_privacy_room_address_section_footer">"Veți avea nevoie de o adresă pentru a o face vizibilă în directorul public."</string>
   <string name="screen_security_and_privacy_room_address_section_header">"Adresă"</string>

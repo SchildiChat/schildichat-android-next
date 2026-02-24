@@ -30,6 +30,8 @@ import io.element.android.features.messages.api.MessageComposerContext
 import io.element.android.features.messages.api.timeline.voicemessages.composer.VoiceMessageComposerEvent
 import io.element.android.features.messages.api.timeline.voicemessages.composer.VoiceMessageComposerPresenter
 import io.element.android.features.messages.api.timeline.voicemessages.composer.VoiceMessageComposerState
+import io.element.android.libraries.audio.api.AudioFocus
+import io.element.android.libraries.audio.api.AudioFocusRequester
 import io.element.android.libraries.di.RoomScope
 import io.element.android.libraries.di.annotations.SessionCoroutineScope
 import io.element.android.libraries.matrix.api.timeline.Timeline
@@ -58,6 +60,7 @@ class DefaultVoiceMessageComposerPresenter(
     @Assisted private val timelineMode: Timeline.Mode,
     private val voiceRecorder: VoiceRecorder,
     private val analyticsService: AnalyticsService,
+    private val audioFocus: AudioFocus,
     mediaSenderFactory: MediaSenderFactory,
     private val player: VoiceMessageComposerPlayer,
     private val messageComposerContext: MessageComposerContext,
@@ -246,8 +249,14 @@ class DefaultVoiceMessageComposerPresenter(
 
     private fun CoroutineScope.startRecording() = launch {
         try {
+            audioFocus.requestAudioFocus(AudioFocusRequester.RecordVoiceMessage) {
+                // something else grabbed focus (phone call, etc) - finish gracefully
+                // so the user keeps their partial recording
+                sessionCoroutineScope.finishRecording()
+            }
             voiceRecorder.startRecord()
         } catch (e: SecurityException) {
+            audioFocus.releaseAudioFocus()
             Timber.e(e, "Voice message error")
             analyticsService.trackError(VoiceMessageException.PermissionMissing("Expected permission to record but none", e))
         }
@@ -255,10 +264,12 @@ class DefaultVoiceMessageComposerPresenter(
 
     private fun CoroutineScope.finishRecording() = launch {
         voiceRecorder.stopRecord()
+        audioFocus.releaseAudioFocus()
     }
 
     private fun CoroutineScope.cancelRecording() = launch {
         voiceRecorder.stopRecord(cancelled = true)
+        audioFocus.releaseAudioFocus()
     }
 
     private fun CoroutineScope.deleteRecording() = launch {

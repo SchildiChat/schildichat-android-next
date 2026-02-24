@@ -15,6 +15,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.common.truth.Truth.assertThat
 import io.element.android.appconfig.NotificationConfig
+import io.element.android.features.enterprise.api.EnterpriseService
+import io.element.android.features.enterprise.test.FakeEnterpriseService
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
 import io.element.android.libraries.matrix.test.A_COLOR_INT
@@ -35,8 +37,8 @@ import io.element.android.libraries.push.impl.notifications.factories.action.Acc
 import io.element.android.libraries.push.impl.notifications.factories.action.MarkAsReadActionFactory
 import io.element.android.libraries.push.impl.notifications.factories.action.QuickReplyActionFactory
 import io.element.android.libraries.push.impl.notifications.factories.action.RejectInvitationActionFactory
+import io.element.android.libraries.push.impl.notifications.fixtures.aFallbackNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.fixtures.aNotifiableMessageEvent
-import io.element.android.libraries.push.impl.notifications.model.FallbackNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.InviteNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.SimpleNotifiableEvent
 import io.element.android.services.toolbox.test.sdk.FakeBuildVersionSdkIntProvider
@@ -82,19 +84,11 @@ class DefaultNotificationCreatorTest {
     fun `test createFallbackNotification`() {
         val sut = createNotificationCreator()
         val result = sut.createFallbackNotification(
+            existingNotification = null,
             notificationAccountParams = aNotificationAccountParams(),
-            FallbackNotifiableEvent(
-                sessionId = A_SESSION_ID,
-                roomId = A_ROOM_ID,
-                eventId = AN_EVENT_ID,
-                editedEventId = null,
-                description = "description",
-                canBeReplaced = false,
-                isRedacted = false,
-                isUpdated = false,
-                timestamp = A_FAKE_TIMESTAMP,
-                cause = null,
-            ),
+            fallbackNotifiableEvents = listOf(
+                aFallbackNotifiableEvent(),
+            )
         )
         result.commonAssertions(
             expectedCategory = null,
@@ -129,7 +123,11 @@ class DefaultNotificationCreatorTest {
 
     @Test
     fun `test createSimpleEventNotification noisy`() {
-        val sut = createNotificationCreator()
+        val sut = createNotificationCreator(
+            enterpriseService = FakeEnterpriseService(
+                getNoisyNotificationChannelIdResult = { null },
+            ),
+        )
         val result = sut.createSimpleEventNotification(
             notificationAccountParams = aNotificationAccountParams(),
             SimpleNotifiableEvent(
@@ -189,7 +187,11 @@ class DefaultNotificationCreatorTest {
 
     @Test
     fun `test createRoomInvitationNotification noisy`() {
-        val sut = createNotificationCreator()
+        val sut = createNotificationCreator(
+            enterpriseService = FakeEnterpriseService(
+                getNoisyNotificationChannelIdResult = { null },
+            ),
+        )
         val result = sut.createRoomInvitationNotification(
             notificationAccountParams = aNotificationAccountParams(),
             InviteNotifiableEvent(
@@ -231,7 +233,11 @@ class DefaultNotificationCreatorTest {
 
     @Test
     fun `test createSummaryListNotification noisy`() {
-        val sut = createNotificationCreator()
+        val sut = createNotificationCreator(
+            enterpriseService = FakeEnterpriseService(
+                getNoisyNotificationChannelIdResult = { null },
+            ),
+        )
         val matrixUser = aMatrixUser()
         val result = sut.createSummaryListNotification(
             notificationAccountParams = aNotificationAccountParams(user = matrixUser),
@@ -271,7 +277,11 @@ class DefaultNotificationCreatorTest {
 
     @Test
     fun `test createMessagesListNotification should bing and thread`() = runTest {
-        val sut = createNotificationCreator()
+        val sut = createNotificationCreator(
+            enterpriseService = FakeEnterpriseService(
+                getNoisyNotificationChannelIdResult = { null },
+            ),
+        )
         val result = sut.createMessagesListNotification(
             notificationAccountParams = aNotificationAccountParams(),
             roomInfo = RoomEventGroupInfo(
@@ -312,7 +322,8 @@ const val REJECT_INVITATION_ACTION_TITLE = "RejectInvitationAction"
 fun createNotificationCreator(
     context: Context = RuntimeEnvironment.getApplication(),
     buildMeta: BuildMeta = aBuildMeta(),
-    notificationChannels: NotificationChannels = createNotificationChannels(),
+    enterpriseService: EnterpriseService = FakeEnterpriseService(),
+    notificationChannels: NotificationChannels = createNotificationChannels(enterpriseService),
     bitmapLoader: NotificationBitmapLoader = DefaultNotificationBitmapLoader(
         context = context,
         sdkIntProvider = FakeBuildVersionSdkIntProvider(Build.VERSION_CODES.R),
@@ -358,11 +369,14 @@ fun createNotificationCreator(
     )
 }
 
-fun createNotificationChannels(): NotificationChannels {
+fun createNotificationChannels(
+    enterpriseService: EnterpriseService = FakeEnterpriseService(),
+): NotificationChannels {
     val context = RuntimeEnvironment.getApplication()
     return DefaultNotificationChannels(
         notificationManager = NotificationManagerCompat.from(context),
         stringProvider = FakeStringProvider(""),
         context = context,
+        enterpriseService = enterpriseService,
     )
 }

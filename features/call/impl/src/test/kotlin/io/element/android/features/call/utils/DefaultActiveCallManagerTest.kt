@@ -155,7 +155,7 @@ class DefaultActiveCallManagerTest {
     }
 
     @Test
-    fun `hungUpCall - removes existing call if the CallType matches`() = runTest {
+    fun `hangUpCall - removes existing call if the CallType matches`() = runTest {
         setupShadowPowerManager()
         val notificationManagerCompat = mockk<NotificationManagerCompat>(relaxed = true)
         val manager = createActiveCallManager(notificationManagerCompat = notificationManagerCompat)
@@ -165,7 +165,7 @@ class DefaultActiveCallManagerTest {
         assertThat(manager.activeCall.value).isNotNull()
         assertThat(manager.activeWakeLock?.isHeld).isTrue()
 
-        manager.hungUpCall(CallType.RoomCall(notificationData.sessionId, notificationData.roomId))
+        manager.hangUpCall(CallType.RoomCall(notificationData.sessionId, notificationData.roomId))
         assertThat(manager.activeCall.value).isNull()
         assertThat(manager.activeWakeLock?.isHeld).isFalse()
 
@@ -192,8 +192,36 @@ class DefaultActiveCallManagerTest {
         val notificationData = aCallNotificationData(roomId = A_ROOM_ID)
         manager.registerIncomingCall(notificationData)
 
-        manager.hungUpCall(CallType.RoomCall(notificationData.sessionId, notificationData.roomId))
+        manager.hangUpCall(CallType.RoomCall(notificationData.sessionId, notificationData.roomId))
 
+        coVerify {
+            room.declineCall(notificationEventId = notificationData.eventId)
+        }
+    }
+
+    @Test
+    fun `Decline event - Hangup on a unknown call should send a decline event`() = runTest {
+        setupShadowPowerManager()
+        val notificationManagerCompat = mockk<NotificationManagerCompat>(relaxed = true)
+
+        val room = mockk<JoinedRoom>(relaxed = true)
+
+        val matrixClient = FakeMatrixClient().apply {
+            givenGetRoomResult(A_ROOM_ID, room)
+        }
+        val clientProvider = FakeMatrixClientProvider({ Result.success(matrixClient) })
+
+        val manager = createActiveCallManager(
+            matrixClientProvider = clientProvider,
+            notificationManagerCompat = notificationManagerCompat
+        )
+
+        val notificationData = aCallNotificationData(roomId = A_ROOM_ID)
+        // Do not register the incoming call, so the manager doesn't know about it
+        manager.hangUpCall(
+            callType = CallType.RoomCall(notificationData.sessionId, notificationData.roomId),
+            notificationData = notificationData,
+        )
         coVerify {
             room.declineCall(notificationEventId = notificationData.eventId)
         }
@@ -269,7 +297,7 @@ class DefaultActiveCallManagerTest {
     }
 
     @Test
-    fun `hungUpCall - does nothing if the CallType doesn't match`() = runTest {
+    fun `hangUpCall - does nothing if the CallType doesn't match`() = runTest {
         setupShadowPowerManager()
         val notificationManagerCompat = mockk<NotificationManagerCompat>(relaxed = true)
         val manager = createActiveCallManager(notificationManagerCompat = notificationManagerCompat)
@@ -278,11 +306,12 @@ class DefaultActiveCallManagerTest {
         assertThat(manager.activeCall.value).isNotNull()
         assertThat(manager.activeWakeLock?.isHeld).isTrue()
 
-        manager.hungUpCall(CallType.ExternalUrl("https://example.com"))
+        manager.hangUpCall(CallType.ExternalUrl("https://example.com"))
         assertThat(manager.activeCall.value).isNotNull()
         assertThat(manager.activeWakeLock?.isHeld).isTrue()
 
-        verify(exactly = 0) { notificationManagerCompat.cancel(notificationId) }
+        // The notification is always cancelled do not block the user
+        verify(exactly = 1) { notificationManagerCompat.cancel(notificationId) }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

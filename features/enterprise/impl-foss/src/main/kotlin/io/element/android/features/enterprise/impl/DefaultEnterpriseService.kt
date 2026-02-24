@@ -43,4 +43,6 @@ class DefaultEnterpriseService : EnterpriseService {
     override fun bugReportUrlFlow(sessionId: SessionId?): Flow<BugReportUrl> {
         return flowOf(BugReportUrl.UseDefault)
     }
+
+    override fun getNoisyNotificationChannelId(sessionId: SessionId): String? = null
 }

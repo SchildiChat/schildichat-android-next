@@ -12,7 +12,7 @@
   <string name="screen_create_room_public_option_description">"N’importe qui peut trouver ce salon.
 Vous pouvez modifier cela à tout moment dans les paramètres du salon."</string>
   <string name="screen_create_room_public_option_short_description">"Tout le monde peut joindre"</string>
-  <string name="screen_create_room_public_option_title">"Salon public"</string>
+  <string name="screen_create_room_public_option_title">"Public"</string>
   <string name="screen_create_room_room_access_section_knocking_option_description">"Tout le monde peut demander à joindre, mais un administrateur ou un modérateur devra accepter la demande"</string>
   <string name="screen_create_room_room_access_section_knocking_option_title">"Autoriser la demande à joindre"</string>
   <string name="screen_create_room_room_access_section_knocking_restricted_option_description">"Tout membre de %1$s peut joindre, mais les autres doivent demander un accès."</string>

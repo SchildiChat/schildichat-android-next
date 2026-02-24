@@ -75,8 +75,9 @@ interface NotificationCreator {
     ): Notification
 
     fun createFallbackNotification(
+        existingNotification: Notification?,
         notificationAccountParams: NotificationAccountParams,
-        fallbackNotifiableEvent: FallbackNotifiableEvent,
+        fallbackNotifiableEvents: List<FallbackNotifiableEvent>,
     ): Notification
 
     /**
@@ -151,7 +152,10 @@ class DefaultNotificationCreator(
         val channelId = if (containsMissedCall) {
             notificationChannels.getChannelForIncomingCall(false)
         } else {
-            notificationChannels.getChannelIdForMessage(noisy = roomInfo.shouldBing)
+            notificationChannels.getChannelIdForMessage(
+                sessionId = roomInfo.sessionId,
+                noisy = roomInfo.shouldBing,
+            )
         }
         // A category allows groups of notifications to be ranked and filtered – per user or system settings.
         // For example, alarm notifications should display before promo notifications, or message from known contact
@@ -230,7 +234,10 @@ class DefaultNotificationCreator(
         notificationAccountParams: NotificationAccountParams,
         inviteNotifiableEvent: InviteNotifiableEvent,
     ): Notification {
-        val channelId = notificationChannels.getChannelIdForMessage(inviteNotifiableEvent.noisy)
+        val channelId = notificationChannels.getChannelIdForMessage(
+            sessionId = inviteNotifiableEvent.sessionId,
+            noisy = inviteNotifiableEvent.noisy,
+        )
         return NotificationCompat.Builder(context, channelId)
             .setOnlyAlertOnce(true)
             .setContentTitle((inviteNotifiableEvent.roomName ?: buildMeta.applicationName).annotateForDebug(5))
@@ -240,11 +247,13 @@ class DefaultNotificationCreator(
             .addAction(rejectInvitationActionFactory.create(inviteNotifiableEvent))
             .addAction(acceptInvitationActionFactory.create(inviteNotifiableEvent))
             // Build the pending intent for when the notification is clicked
-            .setContentIntent(pendingIntentFactory.createOpenRoomPendingIntent(
-                sessionId = inviteNotifiableEvent.sessionId,
-                roomId = inviteNotifiableEvent.roomId,
-                eventId = null,
-            ))
+            .setContentIntent(
+                pendingIntentFactory.createOpenRoomPendingIntent(
+                    sessionId = inviteNotifiableEvent.sessionId,
+                    roomId = inviteNotifiableEvent.roomId,
+                    eventId = null,
+                )
+            )
             .apply {
                 if (inviteNotifiableEvent.noisy) {
                     // Compat
@@ -268,7 +277,10 @@ class DefaultNotificationCreator(
         notificationAccountParams: NotificationAccountParams,
         simpleNotifiableEvent: SimpleNotifiableEvent,
     ): Notification {
-        val channelId = notificationChannels.getChannelIdForMessage(simpleNotifiableEvent.noisy)
+        val channelId = notificationChannels.getChannelIdForMessage(
+            sessionId = simpleNotifiableEvent.sessionId,
+            noisy = simpleNotifiableEvent.noisy,
+        )
         return NotificationCompat.Builder(context, channelId)
             .setOnlyAlertOnce(true)
             .setContentTitle(buildMeta.applicationName.annotateForDebug(7))
@@ -276,12 +288,14 @@ class DefaultNotificationCreator(
             .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
             .configureWith(notificationAccountParams)
             .setAutoCancel(true)
-            .setContentIntent(pendingIntentFactory.createOpenRoomPendingIntent(
-                sessionId = simpleNotifiableEvent.sessionId,
-                roomId = simpleNotifiableEvent.roomId,
-                eventId = null,
-                extras = bundleOf(ROOM_OPENED_FROM_NOTIFICATION to true),
-            ))
+            .setContentIntent(
+                pendingIntentFactory.createOpenRoomPendingIntent(
+                    sessionId = simpleNotifiableEvent.sessionId,
+                    roomId = simpleNotifiableEvent.roomId,
+                    eventId = null,
+                    extras = bundleOf(ROOM_OPENED_FROM_NOTIFICATION to true),
+                )
+            )
             .apply {
                 if (simpleNotifiableEvent.noisy) {
                     // Compat
@@ -295,28 +309,38 @@ class DefaultNotificationCreator(
     }
 
     override fun createFallbackNotification(
+        existingNotification: Notification?,
         notificationAccountParams: NotificationAccountParams,
-        fallbackNotifiableEvent: FallbackNotifiableEvent,
+        fallbackNotifiableEvents: List<FallbackNotifiableEvent>,
     ): Notification {
-        val channelId = notificationChannels.getChannelIdForMessage(false)
+        val fallbackNotifiableEvent = fallbackNotifiableEvents.first()
+        val channelId = notificationChannels.getChannelIdForMessage(
+            sessionId = fallbackNotifiableEvent.sessionId,
+            noisy = false,
+        )
+        val existingCounter = existingNotification
+            ?.extras
+            ?.getInt(FALLBACK_COUNTER_EXTRA)
+            ?: 0
+        val counter = existingCounter + fallbackNotifiableEvents.size
         return NotificationCompat.Builder(context, channelId)
             .setOnlyAlertOnce(true)
             .setContentTitle(buildMeta.applicationName.annotateForDebug(7))
-            .setContentText(fallbackNotifiableEvent.description.orEmpty().annotateForDebug(8))
+            .setContentText(
+                stringProvider.getQuantityString(R.plurals.notification_fallback_n_content, counter, counter)
+                    .annotateForDebug(8)
+            )
+            .setExtras(
+                bundleOf(
+                    FALLBACK_COUNTER_EXTRA to counter
+                )
+            )
+            .setNumber(counter)
             .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
             .configureWith(notificationAccountParams)
             .setAutoCancel(true)
             .setWhen(fallbackNotifiableEvent.timestamp)
-            // Ideally we'd use `createOpenRoomPendingIntent` here, but the broken notification might apply to an invite
-            // and the user won't have access to the room yet, resulting in an error screen.
             .setContentIntent(pendingIntentFactory.createOpenSessionPendingIntent(fallbackNotifiableEvent.sessionId))
-            .setDeleteIntent(
-                pendingIntentFactory.createDismissEventPendingIntent(
-                    fallbackNotifiableEvent.sessionId,
-                    fallbackNotifiableEvent.roomId,
-                    fallbackNotifiableEvent.eventId
-                )
-            )
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
     }
@@ -330,8 +354,11 @@ class DefaultNotificationCreator(
         noisy: Boolean,
         lastMessageTimestamp: Long,
     ): Notification {
-        val channelId = notificationChannels.getChannelIdForMessage(noisy)
         val userId = notificationAccountParams.user.userId
+        val channelId = notificationChannels.getChannelIdForMessage(
+            sessionId = userId,
+            noisy = noisy,
+        )
         return NotificationCompat.Builder(context, channelId)
             .setOnlyAlertOnce(true)
             // used in compat < N, after summary is built based on child notifications
@@ -503,6 +530,7 @@ class DefaultNotificationCreator(
 
     companion object {
         const val MESSAGE_EVENT_ID = "message_event_id"
+        private const val FALLBACK_COUNTER_EXTRA = "COUNTER"
     }
 }
 

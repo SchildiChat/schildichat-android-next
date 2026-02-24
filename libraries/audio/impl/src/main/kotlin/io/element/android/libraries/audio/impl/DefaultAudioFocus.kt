@@ -81,7 +81,8 @@ class DefaultAudioFocus(
 private fun AudioFocusRequester.toAudioUsage(): Int {
     return when (this) {
         AudioFocusRequester.ElementCall,
-        AudioFocusRequester.VoiceMessage -> AudioAttributes.USAGE_VOICE_COMMUNICATION
+        AudioFocusRequester.VoiceMessage,
+        AudioFocusRequester.RecordVoiceMessage -> AudioAttributes.USAGE_VOICE_COMMUNICATION
         AudioFocusRequester.MediaViewer -> AudioAttributes.USAGE_MEDIA
     }
 }
@@ -89,7 +90,8 @@ private fun AudioFocusRequester.toAudioUsage(): Int {
 private fun AudioFocusRequester.toAudioStream(): Int {
     return when (this) {
         AudioFocusRequester.ElementCall,
-        AudioFocusRequester.VoiceMessage -> AudioManager.STREAM_VOICE_CALL
+        AudioFocusRequester.VoiceMessage,
+        AudioFocusRequester.RecordVoiceMessage -> AudioManager.STREAM_VOICE_CALL
         AudioFocusRequester.MediaViewer -> AudioManager.STREAM_MUSIC
     }
 }
@@ -98,7 +100,8 @@ private fun AudioFocusRequester.willPausedWhenDucked(): Boolean {
     return when (this) {
         // (note that for Element Call, there is no action when the focus is lost)
         AudioFocusRequester.ElementCall,
-        AudioFocusRequester.VoiceMessage -> true
+        AudioFocusRequester.VoiceMessage,
+        AudioFocusRequester.RecordVoiceMessage -> true
         // For the MediaViewer, we let the system automatically handle the ducking
         // https://developer.android.com/media/optimize/audio-focus#automatic-ducking
         AudioFocusRequester.MediaViewer -> false

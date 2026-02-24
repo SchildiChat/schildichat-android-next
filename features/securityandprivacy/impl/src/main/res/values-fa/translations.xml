@@ -12,7 +12,6 @@
   <string name="screen_security_and_privacy_room_access_invite_only_option_description">"افراد فقط در صورت دعوت می‌توانند بپیوندند"</string>
   <string name="screen_security_and_privacy_room_access_invite_only_option_title">"فقط دعوتی"</string>
   <string name="screen_security_and_privacy_room_access_section_header">"دسترسی اتاق"</string>
-  <string name="screen_security_and_privacy_room_access_space_members_option_title">"اعضای فضا"</string>
   <string name="screen_security_and_privacy_room_access_space_members_option_unavailable_description">"در حال حاضر فضاها پشتیبانی نمی‌شوند"</string>
   <string name="screen_security_and_privacy_room_address_section_header">"نشانی اتاق"</string>
   <string name="screen_security_and_privacy_room_history_anyone_option_title">"هرکسی"</string>

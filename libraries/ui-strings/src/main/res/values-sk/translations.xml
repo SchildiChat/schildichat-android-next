@@ -396,7 +396,7 @@ Dôvod: %1$s."</string>
   <string name="common_waiting_for_decryption_key">"Čaká sa na dešifrovací kľúč"</string>
   <string name="common_you">"Vy"</string>
   <string name="crypto_event_key_forwarded_known_profile_dialog_content">"%1$s (%2$s ) zdieľal túto správu v čase, keď ste neboli v miestnosti, keď bola odoslaná."</string>
-  <string name="crypto_event_key_forwarded_unknown_profile_dialog_content">"%1$s  zdieľal túto správu v čase, keď ste neboli v miestnosti, keď bola odoslaná."</string>
+  <string name="crypto_event_key_forwarded_unknown_profile_dialog_content">"%1$s zdieľal túto správu v čase, keď ste neboli v miestnosti, keď bola odoslaná."</string>
   <string name="crypto_history_visible">"Táto miestnosť bola nakonfigurovaná tak, aby si noví členovia mohli prečítať históriu. %1$s"</string>
   <string name="crypto_identity_change_pin_violation">"Totožnosť používateľa %1$s sa obnovila.%2$s"</string>
   <string name="crypto_identity_change_pin_violation_new">"Totožnosť používateľa %1$s %2$s bola obnovená. %3$s"</string>

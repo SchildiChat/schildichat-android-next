@@ -13,4 +13,5 @@ data class ElementWellKnown(
     val enforceElementPro: Boolean?,
     val rageshakeUrl: String?,
     val brandColor: String?,
+    val notificationSound: String?,
 )

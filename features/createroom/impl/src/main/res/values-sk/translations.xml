@@ -8,19 +8,15 @@
   <string name="screen_create_room_new_room_title">"Nová miestnosť"</string>
   <string name="screen_create_room_new_space_title">"Nový priestor"</string>
   <string name="screen_create_room_private_option_description">"Pripojiť sa môžu iba pozvaní ľudia."</string>
-  <string name="screen_create_room_private_option_title">"Súkromná"</string>
   <string name="screen_create_room_public_option_description">"Túto miestnosť môže nájsť ktokoľvek.
 Môžete to kedykoľvek zmeniť v nastaveniach miestnosti."</string>
   <string name="screen_create_room_public_option_short_description">"Pripojiť sa môže ktokoľvek."</string>
-  <string name="screen_create_room_public_option_title">"Verejná miestnosť"</string>
   <string name="screen_create_room_room_access_section_knocking_option_description">"O pripojenie sa môže požiadať ktokoľvek, ale žiadosť musí schváliť správca alebo moderátor."</string>
   <string name="screen_create_room_room_access_section_knocking_option_title">"Povoliť požiadať o vstup"</string>
   <string name="screen_create_room_room_access_section_knocking_restricted_option_description">"Ktokoľvek v %1$s sa môžu pripojiť, ale všetci ostatní musia požiadať o prístup."</string>
   <string name="screen_create_room_room_access_section_knocking_restricted_option_title">"Požiadať o pripojenie"</string>
   <string name="screen_create_room_room_access_section_private_option_description">"Pripojiť sa môžu iba pozvaní ľudia."</string>
-  <string name="screen_create_room_room_access_section_private_option_title">"Súkromná"</string>
   <string name="screen_create_room_room_access_section_public_option_description">"Pripojiť sa môže ktokoľvek."</string>
-  <string name="screen_create_room_room_access_section_public_option_title">"Ktokoľvek"</string>
   <string name="screen_create_room_room_access_section_restricted_option_description">"Ktokoľvek v %1$s sa môže pripojiť."</string>
   <string name="screen_create_room_room_access_section_restricted_option_title">"Štandardná"</string>
   <string name="screen_create_room_room_access_section_title">"Kto má prístup"</string>

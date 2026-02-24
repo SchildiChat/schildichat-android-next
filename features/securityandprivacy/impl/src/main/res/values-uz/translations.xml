@@ -15,7 +15,6 @@ Shu sababli, har kim topishi va qo‘shilishi mumkin bo‘lgan xonalar uchun shi
   <string name="screen_security_and_privacy_room_access_invite_only_option_description">"Odamlar faqat taklif qilingan taqdirdagina qo‘shilishi mumkin"</string>
   <string name="screen_security_and_privacy_room_access_invite_only_option_title">"Faqat taklif qilish"</string>
   <string name="screen_security_and_privacy_room_access_section_header">"Xonaga kirish huquqi"</string>
-  <string name="screen_security_and_privacy_room_access_space_members_option_title">"Maydon a’zolari"</string>
   <string name="screen_security_and_privacy_room_access_space_members_option_unavailable_description">"Hozirda maydonlar qo‘llab-quvvatlanmaydi"</string>
   <string name="screen_security_and_privacy_room_address_section_footer">"Katalogda ko‘rinadigan qilish uchun xona manzili kerak bo‘ladi."</string>
   <string name="screen_security_and_privacy_room_directory_visibility_section_footer">"Bu xonani %1$s umumiy xonalar ro‘yxatidan qidirib topish imkoniyatini berish"</string>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="screen_leave_space_choose_owners_action">"گزینش مالکان"</string>
   <string name="screen_leave_space_last_admin_info">"‏%1$s (مدیر)"</string>
   <string name="screen_leave_space_subtitle_last_admin">"پیش از ترک باید مدیری دیگر به این فضا تخصیص دهید."</string>
   <string name="screen_leave_space_subtitle_only_last_admin">"از اتاق(های) زیر برداشته نخواهید شد؛ چرا که تنها مدیر هستید:"</string>

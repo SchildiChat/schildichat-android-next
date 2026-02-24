@@ -8,19 +8,15 @@
   <string name="screen_create_room_new_room_title">"Nova sala"</string>
   <string name="screen_create_room_new_space_title">"Novo espaço"</string>
   <string name="screen_create_room_private_option_description">"Apenas pessoas convidadas podem entrar."</string>
-  <string name="screen_create_room_private_option_title">"Privada"</string>
   <string name="screen_create_room_public_option_description">"Qualquer um pode encontrar esta sala.
 Você pode mudar isso a qualquer momento nas configurações da sala."</string>
   <string name="screen_create_room_public_option_short_description">"Qualquer um pode entrar."</string>
-  <string name="screen_create_room_public_option_title">"Publica"</string>
   <string name="screen_create_room_room_access_section_knocking_option_description">"Qualquer um pode pedir para entrar, mas um administrador ou moderador deve aceitar a solicitação"</string>
   <string name="screen_create_room_room_access_section_knocking_option_title">"Permitir pedir para entrar"</string>
   <string name="screen_create_room_room_access_section_knocking_restricted_option_description">"Qualquer um em %1$s pode entrar, mas todos os outros devem pedir acesso."</string>
   <string name="screen_create_room_room_access_section_knocking_restricted_option_title">"Pedir para entrar"</string>
   <string name="screen_create_room_room_access_section_private_option_description">"Apenas pessoas convidadas podem entrar."</string>
-  <string name="screen_create_room_room_access_section_private_option_title">"Privada"</string>
   <string name="screen_create_room_room_access_section_public_option_description">"Qualquer um pode entrar."</string>
-  <string name="screen_create_room_room_access_section_public_option_title">"Qualquer pessoa"</string>
   <string name="screen_create_room_room_access_section_restricted_option_description">"Qualquer um em %1$s pode participar."</string>
   <string name="screen_create_room_room_access_section_restricted_option_title">"Normal"</string>
   <string name="screen_create_room_room_access_section_title">"Quem tem acesso"</string>

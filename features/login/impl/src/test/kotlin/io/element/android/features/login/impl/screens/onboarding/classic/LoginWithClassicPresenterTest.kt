@@ -13,6 +13,7 @@ import com.google.common.truth.Truth.assertThat
 import io.element.android.libraries.featureflag.api.FeatureFlagService
 import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.featureflag.test.FakeFeatureFlagService
+import io.element.android.libraries.matrix.test.A_SECRET
 import io.element.android.libraries.matrix.test.A_USER_ID
 import io.element.android.libraries.sessionstorage.api.SessionStore
 import io.element.android.libraries.sessionstorage.test.InMemorySessionStore
@@ -114,7 +115,7 @@ class LoginWithClassicPresenterTest {
         presenter.test {
             skipItems(2)
             elementClassicConnection.emitState(
-                ElementClassicConnectionState.ElementClassicReady(userId = A_USER_ID)
+                ElementClassicConnectionState.ElementClassicReady(userId = A_USER_ID, secrets = A_SECRET)
             )
             val readyState = awaitItem()
             assertThat(readyState.canLoginWithClassic).isTrue()
@@ -140,7 +141,7 @@ class LoginWithClassicPresenterTest {
         presenter.test {
             skipItems(2)
             elementClassicConnection.emitState(
-                ElementClassicConnectionState.ElementClassicReady(userId = A_USER_ID)
+                ElementClassicConnectionState.ElementClassicReady(userId = A_USER_ID, secrets = A_SECRET)
             )
             val readyState = awaitItem()
             assertThat(readyState.canLoginWithClassic).isTrue()
@@ -175,7 +176,7 @@ class LoginWithClassicPresenterTest {
         presenter.test {
             skipItems(2)
             elementClassicConnection.emitState(
-                ElementClassicConnectionState.ElementClassicReady(userId = A_USER_ID)
+                ElementClassicConnectionState.ElementClassicReady(userId = A_USER_ID, secrets = A_SECRET)
             )
             // No new item, because canLoginWithClassic is still false
         }
@@ -192,7 +193,7 @@ class LoginWithClassicPresenterTest {
             skipItems(1)
             // Note: it should not happen IRL
             elementClassicConnection.emitState(
-                ElementClassicConnectionState.ElementClassicReady(userId = A_USER_ID)
+                ElementClassicConnectionState.ElementClassicReady(userId = A_USER_ID, secrets = A_SECRET)
             )
             // No new item, because canLoginWithClassic is still false
         }

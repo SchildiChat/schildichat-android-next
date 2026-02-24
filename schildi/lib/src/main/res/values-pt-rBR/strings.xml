@@ -20,7 +20,7 @@
     <string name="sc_compact_root_spaces_title">Espaços raiz compactos</string>
     <string name="sc_space_unread_counts_mode_title">Contagens agregados de não lidos</string>
     <string name="sc_space_unread_counts_mode_messages">Contar mensagens não lidas</string>
-    <string name="sc_pref_pl_display_name_title">Nomear cores por nível de poder</string>
+    <string name="sc_pref_pl_display_name_title">Colorir apelidos de acordo com seus papéis</string>
     <string name="sc_pref_pin_favorites_title">Fixar favoritos</string>
     <string name="sc_pref_client_side_sort_title">Classificação pelo lado do cliente</string>
     <string name="sc_pref_client_side_sort_title_short">Classificação pelo cliente</string>

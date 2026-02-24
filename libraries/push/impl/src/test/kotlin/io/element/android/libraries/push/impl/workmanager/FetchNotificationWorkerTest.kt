@@ -29,9 +29,9 @@ import io.element.android.libraries.push.test.notifications.FakeNotificationReso
 import io.element.android.libraries.workmanager.api.WorkManagerRequest
 import io.element.android.libraries.workmanager.api.di.MetroWorkerFactory
 import io.element.android.libraries.workmanager.test.FakeWorkManagerScheduler
+import io.element.android.services.analytics.test.FakeAnalyticsService
 import io.element.android.services.toolbox.test.sdk.FakeBuildVersionSdkIntProvider
 import io.element.android.tests.testutils.lambda.lambdaRecorder
-import io.element.android.tests.testutils.testCoroutineDispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
@@ -168,6 +168,7 @@ class FetchNotificationWorkerTest {
         ),
         workManagerScheduler: FakeWorkManagerScheduler = FakeWorkManagerScheduler(),
         syncOnNotifiableEvent: SyncOnNotifiableEvent = SyncOnNotifiableEvent {},
+        analyticsService: FakeAnalyticsService = FakeAnalyticsService(),
     ) = FetchNotificationsWorker(
         workerParams = createWorkerParams(workDataOf("requests" to input)),
         context = InstrumentationRegistry.getInstrumentation().context,
@@ -176,9 +177,9 @@ class FetchNotificationWorkerTest {
         queue = queue,
         workManagerScheduler = workManagerScheduler,
         syncOnNotifiableEvent = syncOnNotifiableEvent,
-        coroutineDispatchers = testCoroutineDispatchers(),
         workerDataConverter = SyncNotificationsWorkerDataConverter(DefaultJsonProvider()),
         buildVersionSdkIntProvider = FakeBuildVersionSdkIntProvider(33),
+        analyticsService = analyticsService,
     )
 
     private fun TestScope.createWorkerParams(

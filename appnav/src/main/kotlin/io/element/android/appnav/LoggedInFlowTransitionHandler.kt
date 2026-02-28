@@ -46,10 +46,10 @@ class LoggedInFlowTransitionHandler(
 fun rememberLoggedInFlowTransitionHandler(
     backstack: BackStack<LoggedInFlowNode.NavTarget>,
 ): ModifierTransitionHandler<LoggedInFlowNode.NavTarget, BackStack.State> {
-    val slider = rememberBackstackSlider<LoggedInFlowNode.NavTarget>(
+    val slider = scBackstackSlider() ?: rememberBackstackSlider<LoggedInFlowNode.NavTarget>(
         transitionSpec = { spring(stiffness = Spring.StiffnessMediumLow) },
     )
-    val fader = rememberBackstackFader<LoggedInFlowNode.NavTarget>(
+    val fader = scBackstackFader() ?: rememberBackstackFader<LoggedInFlowNode.NavTarget>(
         transitionSpec = { spring(stiffness = Spring.StiffnessMediumLow) },
     )
     return remember(backstack, slider, fader) {

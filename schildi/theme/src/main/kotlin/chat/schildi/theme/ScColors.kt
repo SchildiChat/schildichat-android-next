@@ -37,6 +37,7 @@ internal object ScColors {
     val colorGray_42 = Color(0xff424242)
     val colorGray_61 = Color(0xff616161)
     val colorGray_73 = Color(0xff737373)
+    val colorGray_80 = Color(0xff808080)
 }
 
 data class PowerLevelColors(

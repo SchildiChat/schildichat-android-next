@@ -93,6 +93,7 @@ internal val scdExposures = ScThemeExposures(
     composerBlockBg = scd_bgFloating,
     composerBlockFg = scd_fgPrimary,
     spaceBarBg = scd_bg,
+    tertiaryFgNoAlpha = ScColors.colorGray_80,
 )
 
 @OptIn(CoreColorToken::class)

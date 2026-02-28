@@ -43,6 +43,7 @@ class ScThemeExposures(
     composerBlockBg: Color?,
     composerBlockFg: Color?,
     spaceBarBg: Color?,
+    tertiaryFgNoAlpha: Color,
 ) {
     var isScTheme by mutableStateOf(isScTheme)
         private set
@@ -98,6 +99,8 @@ class ScThemeExposures(
         private set
     var spaceBarBg by mutableStateOf(spaceBarBg)
         private set
+    var tertiaryFgNoAlpha by mutableStateOf(tertiaryFgNoAlpha)
+        private set
 
     fun copy(
         isScTheme: Boolean = this.isScTheme,
@@ -127,6 +130,7 @@ class ScThemeExposures(
         composerBlockBg: Color? = this.composerBlockBg,
         composerBlockFg: Color? = this.composerBlockFg,
         spaceBarBg: Color? = this.spaceBarBg,
+        tertiaryFgNoAlpha: Color = this.tertiaryFgNoAlpha,
     ) = ScThemeExposures(
         isScTheme = isScTheme,
         horizontalDividerThickness = horizontalDividerThickness,
@@ -155,6 +159,7 @@ class ScThemeExposures(
         composerBlockBg = composerBlockBg,
         composerBlockFg = composerBlockFg,
         spaceBarBg = spaceBarBg,
+        tertiaryFgNoAlpha = tertiaryFgNoAlpha,
     )
 
     fun updateColorsFrom(other: ScThemeExposures) {
@@ -185,6 +190,7 @@ class ScThemeExposures(
         composerBlockBg = other.composerBlockBg
         composerBlockFg = other.composerBlockFg
         spaceBarBg = other.spaceBarBg
+        tertiaryFgNoAlpha = other.tertiaryFgNoAlpha
     }
 }
 
@@ -217,6 +223,7 @@ internal val elementLightScExposures = ScThemeExposures(
     composerBlockBg = null,
     composerBlockFg = null,
     spaceBarBg = null,
+    tertiaryFgNoAlpha = LightColorTokens.colorGray1100,
 )
 
 @OptIn(CoreColorToken::class)
@@ -248,4 +255,5 @@ internal val elementDarkScExposures = ScThemeExposures(
     composerBlockBg = null,
     composerBlockFg = null,
     spaceBarBg = null,
+    tertiaryFgNoAlpha = DarkColorTokens.colorGray1100,
 )

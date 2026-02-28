@@ -7,7 +7,7 @@ android_gradle_plugin = "8.13.2"
 # When updateing this, please also update the version in the file ./idea/kotlinc.xml
 kotlin = "2.3.10"
 kotlinpoet = "2.2.0"
-ksp = "2.3.5"
+ksp = "2.3.6"
 firebaseAppDistribution = "5.2.1"
 
 # AndroidX
@@ -16,13 +16,13 @@ datastore = "1.2.0"
 constraintlayout = "2.2.1"
 constraintlayout_compose = "1.1.1"
 lifecycle = "2.10.0"
-activity = "1.12.3"
+activity = "1.12.4"
 media3 = "1.9.2"
 camera = "1.5.3"
 work = "2.11.1"
 
 # Compose
-compose_bom = "2026.01.00"
+compose_bom = "2026.02.00"
 
 # Coroutines
 coroutines = "1.10.2"
@@ -32,7 +32,7 @@ accompanist = "0.37.3"
 
 # Test
 test_core = "1.7.0"
-roborazzi = "1.58.0"
+roborazzi = "1.59.0"
 
 # Jetbrain
 datetime = "0.7.1"
@@ -42,6 +42,8 @@ serialization_json = "1.10.0"
 coil = "3.3.0"
 # Rollback to 1.0.4, 1.0.5 has this issue: https://github.com/airbnb/Showkase/issues/420
 showkase = "1.0.5"
+# There is some custom logic in `RootFlowNode` that may break because it reuses some Appyx internal APIs.
+# When upgrading this version, check state restoration still works fine.
 appyx = "1.7.1"
 sqldelight = "2.2.1"
 wysiwyg = "3.1.13"
@@ -52,7 +54,7 @@ haze = "1.7.2"
 dependencyAnalysis = "3.5.1"
 
 # DI
-metro = "0.10.3"
+metro = "0.10.4"
 
 # Auto service
 autoservice = "1.1.1"
@@ -126,7 +128,6 @@ androidx_compose_ui_tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx_compose_ui_tooling_preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 androidx_compose_ui_test_manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 androidx_compose_ui_test_junit = { module = "androidx.compose.ui:ui-test-junit4-android" }
-androidx_compose_material = { module = "androidx.compose.material:material" }
 androidx_compose_material_icons = { module = "androidx.compose.material:material-icons-extended" }
 
 # Coroutines
@@ -177,7 +178,7 @@ test_detekt_test = { module = "io.gitlab.arturbosch.detekt:detekt-test", version
 # https://github.com/matrix-org/matrix-rust-components-kotlin/commits/main/sdk/sdk-android/src/main/kotlin/org/matrix/rustcomponents/sdk/matrix_sdk_ffi.kt
 # All new features should not be implemented in the pull request that upgrades the version, developers should
 # only fix API breaks and may add some TODOs.
-matrix_sdk = "chat.schildi.rustcomponents:sdk-android:0.4.32"
+matrix_sdk = "chat.schildi.rustcomponents:sdk-android:0.4.33"
 
 # Others
 coil = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
@@ -201,7 +202,7 @@ sqldelight-driver-jvm = { module = "app.cash.sqldelight:sqlite-driver", version.
 sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
 sqlcipher = "net.zetetic:sqlcipher-android:4.13.0"
 sqlite = "androidx.sqlite:sqlite-ktx:2.6.2"
-unifiedpush = "org.unifiedpush.android:connector:3.2.0"
+unifiedpush = "org.unifiedpush.android:connector:3.3.1"
 vanniktech_blurhash = "com.vanniktech:blurhash:0.3.0"
 telephoto_zoomableimage = { module = "me.saket.telephoto:zoomable-image-coil", version.ref = "telephoto" }
 telephoto_flick = { module = "me.saket.telephoto:flick-android", version.ref = "telephoto" }
@@ -210,7 +211,7 @@ maplibre = "org.maplibre.gl:android-sdk:12.3.1"
 maplibre_ktx = "org.maplibre.gl:android-sdk-ktx-v7:3.0.2"
 maplibre_annotation = "org.maplibre.gl:android-plugin-annotation-v9:3.0.2"
 opusencoder = "io.element.android:opusencoder:1.2.0"
-zxing_cpp = "io.github.zxing-cpp:android:2.3.0"
+zxing_cpp = "io.github.zxing-cpp:android:3.0.2"
 google_zxing = "com.google.zxing:core:3.5.4"
 
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
@@ -218,8 +219,8 @@ haze_materials = { module = "dev.chrisbanes.haze:haze-materials", version.ref = 
 color_picker = "io.mhssn:colorpicker:1.0.0"
 
 # Analytics
-posthog = "com.posthog:posthog-android:3.31.0"
-sentry = "io.sentry:sentry-android:8.32.0"
+posthog = "com.posthog:posthog-android:3.32.2"
+sentry = "io.sentry:sentry-android:8.33.0"
 # main branch can be tested replacing the version with main-SNAPSHOT
 matrix_analytics_events = "com.github.matrix-org:matrix-analytics-events:0.29.2"
 

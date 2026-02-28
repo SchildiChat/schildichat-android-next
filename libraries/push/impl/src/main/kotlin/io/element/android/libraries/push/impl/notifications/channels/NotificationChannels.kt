@@ -23,7 +23,9 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.SingleIn
 import io.element.android.appconfig.NotificationConfig
+import io.element.android.features.enterprise.api.EnterpriseService
 import io.element.android.libraries.di.annotations.ApplicationContext
+import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.push.impl.R
 import io.element.android.services.toolbox.api.strings.StringProvider
 
@@ -48,9 +50,10 @@ interface NotificationChannels {
 
     /**
      * Get the channel for messages.
+     * @param sessionId the session the message belongs to.
      * @param noisy true if the notification should have sound and vibration.
      */
-    fun getChannelIdForMessage(noisy: Boolean): String
+    fun getChannelIdForMessage(sessionId: SessionId, noisy: Boolean): String
 
     /**
      * Get the channel for test notifications.
@@ -68,6 +71,7 @@ class DefaultNotificationChannels(
     private val stringProvider: StringProvider,
     @ApplicationContext
     private val context: Context,
+    private val enterpriseService: EnterpriseService,
 ) : NotificationChannels {
     init {
         createNotificationChannels()
@@ -117,7 +121,7 @@ class DefaultNotificationChannels(
                 .setSound(
                     Uri.Builder()
                         .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
-                        // Strangely wwe have to provide a "//" before the package name
+                        // Strangely we have to provide a "//" before the package name
                         .path("//" + context.packageName + "/" + R.raw.message)
                         .build(),
                     AudioAttributes.Builder()
@@ -192,8 +196,13 @@ class DefaultNotificationChannels(
         return if (ring) RINGING_CALL_NOTIFICATION_CHANNEL_ID else CALL_NOTIFICATION_CHANNEL_ID
     }
 
-    override fun getChannelIdForMessage(noisy: Boolean): String {
-        return if (noisy) NOISY_NOTIFICATION_CHANNEL_ID else SILENT_NOTIFICATION_CHANNEL_ID
+    override fun getChannelIdForMessage(sessionId: SessionId, noisy: Boolean): String {
+        return if (noisy) {
+            enterpriseService.getNoisyNotificationChannelId(sessionId)
+                ?: NOISY_NOTIFICATION_CHANNEL_ID
+        } else {
+            SILENT_NOTIFICATION_CHANNEL_ID
+        }
     }
 
     override fun getChannelIdForTest(): String = NOISY_NOTIFICATION_CHANNEL_ID

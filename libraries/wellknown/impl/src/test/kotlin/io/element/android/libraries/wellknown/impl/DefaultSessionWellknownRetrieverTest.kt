@@ -35,6 +35,7 @@ class DefaultSessionWellknownRetrieverTest {
                     enforceElementPro = null,
                     rageshakeUrl = null,
                     brandColor = null,
+                    notificationSound = null,
                 )
             )
         )
@@ -51,7 +52,8 @@ class DefaultSessionWellknownRetrieverTest {
                     "registration_helper_url": "a_registration_url",
                     "enforce_element_pro": true,
                     "rageshake_url": "a_rageshake_url",
-                    "brand_color": "#FF0000"
+                    "brand_color": "#FF0000",
+                    "notification_sound": "a_notification_sound.flac"
                 }""".trimIndent().toByteArray()
                 )
             }
@@ -63,6 +65,7 @@ class DefaultSessionWellknownRetrieverTest {
                     enforceElementPro = true,
                     rageshakeUrl = "a_rageshake_url",
                     brandColor = "#FF0000",
+                    notificationSound = "a_notification_sound.flac",
                 )
             )
         )
@@ -89,6 +92,7 @@ class DefaultSessionWellknownRetrieverTest {
                     enforceElementPro = true,
                     rageshakeUrl = "a_rageshake_url",
                     brandColor = null,
+                    notificationSound = null,
                 )
             )
         )

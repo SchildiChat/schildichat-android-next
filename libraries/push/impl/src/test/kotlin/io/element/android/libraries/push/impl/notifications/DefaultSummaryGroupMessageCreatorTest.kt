@@ -39,7 +39,6 @@ class DefaultSummaryGroupMessageCreatorTest {
                 RoomNotification(
                     notification = Notification(),
                     roomId = A_ROOM_ID,
-                    summaryLine = "",
                     messageCount = 1,
                     latestTimestamp = A_FAKE_TIMESTAMP + 10,
                     shouldBing = true,
@@ -48,7 +47,6 @@ class DefaultSummaryGroupMessageCreatorTest {
             ),
             invitationNotifications = emptyList(),
             simpleNotifications = emptyList(),
-            fallbackNotifications = emptyList(),
         )
 
         notificationCreator.createSummaryListNotificationResult.assertions()

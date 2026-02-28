@@ -290,8 +290,10 @@ Důvod: %1$s."</string>
   </plurals>
   <string name="common_preparing">"Příprava…"</string>
   <string name="common_privacy_policy">"Zásady ochrany osobních údajů"</string>
+  <string name="common_private">"Soukromé"</string>
   <string name="common_private_room">"Soukromá místnost"</string>
   <string name="common_private_space">"Soukromý prostor"</string>
+  <string name="common_public">"Veřejné"</string>
   <string name="common_public_room">"Veřejná místnost"</string>
   <string name="common_public_space">"Veřejný prostor"</string>
   <string name="common_reaction">"Reakce"</string>
@@ -347,6 +349,7 @@ Důvod: %1$s."</string>
   <string name="common_something_went_wrong">"Něco se nepovedlo"</string>
   <string name="common_something_went_wrong_message">"Narazili jsme na problém. Zkuste to prosím znovu."</string>
   <string name="common_space">"Prostor"</string>
+  <string name="common_space_members">"Členové prostoru"</string>
   <string name="common_space_topic_placeholder">"O čem je tento prostor?"</string>
   <plurals name="common_spaces">
     <item quantity="one">"%1$d prostor"</item>

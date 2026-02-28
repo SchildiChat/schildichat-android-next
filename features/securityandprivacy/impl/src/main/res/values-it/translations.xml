@@ -18,7 +18,6 @@ Non consigliamo di attivare la crittografia per le stanze che chiunque può trov
   <string name="screen_security_and_privacy_room_access_invite_only_option_description">"Solo le persone invitate possono entrare."</string>
   <string name="screen_security_and_privacy_room_access_invite_only_option_title">"Solo su invito"</string>
   <string name="screen_security_and_privacy_room_access_section_header">"Accesso"</string>
-  <string name="screen_security_and_privacy_room_access_space_members_option_title">"Membri dello spazio"</string>
   <string name="screen_security_and_privacy_room_access_space_members_option_unavailable_description">"Gli spazi non sono attualmente supportati"</string>
   <string name="screen_security_and_privacy_room_address_section_footer">"Per renderlo visibile nell\'elenco pubblico, avrai bisogno di un indirizzo."</string>
   <string name="screen_security_and_privacy_room_address_section_header">"Indirizzo"</string>

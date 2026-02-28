@@ -13,7 +13,7 @@
   <string name="a11y_encryption_details">"Detalhes de cifragem"</string>
   <string name="a11y_expand_message_text_field">"Expandir campo de texto da mensagem"</string>
   <string name="a11y_hide_password">"Ocultar palavra-passe"</string>
-  <string name="a11y_join_call">"Juntar-se à chamada"</string>
+  <string name="a11y_join_call">"Entrar na chamada"</string>
   <string name="a11y_jump_to_bottom">"Saltar para o fundo"</string>
   <string name="a11y_move_the_map_to_my_location">"Mover o mapa para a minha localização"</string>
   <string name="a11y_notifications_mentions_only">"Apenas menções"</string>
@@ -74,7 +74,7 @@
   <string name="action_copy_link_to_message">"Copiar ligação da mensagem"</string>
   <string name="action_copy_text">"Copiar texto"</string>
   <string name="action_create">"Criar"</string>
-  <string name="action_create_room">"Criar uma sala"</string>
+  <string name="action_create_room">"Criar sala"</string>
   <string name="action_deactivate">"Desativar"</string>
   <string name="action_deactivate_account">"Desativar conta"</string>
   <string name="action_decline">"Recusar"</string>
@@ -95,6 +95,8 @@
   <string name="action_forgot_password">"Esqueceu-se da palavra-passe?"</string>
   <string name="action_forward">"Reencaminhar"</string>
   <string name="action_go_back">"Voltar"</string>
+  <string name="action_go_to_roles_and_permissions">"Ir para cargos e permissões"</string>
+  <string name="action_go_to_settings">"Ir para as configurações"</string>
   <string name="action_ignore">"Ignorar"</string>
   <string name="action_invite">"Convidar"</string>
   <string name="action_invite_friends">"Convidar pessoas"</string>
@@ -110,7 +112,9 @@
   <string name="action_load_more">"Carregar mais"</string>
   <string name="action_manage_account">"Gerir conta"</string>
   <string name="action_manage_devices">"Gerir dispositivos"</string>
+  <string name="action_manage_rooms">"Gerir salas"</string>
   <string name="action_message">"Enviar mensagem"</string>
+  <string name="action_minimize">"Minimizar"</string>
   <string name="action_next">"Próximo"</string>
   <string name="action_no">"Não"</string>
   <string name="action_not_now">"Agora não"</string>
@@ -179,6 +183,7 @@
   <string name="common_android_shortcuts_remove_reason_session_logged_out">"A tua sessão foi terminada"</string>
   <string name="common_appearance">"Aparência"</string>
   <string name="common_audio">"Áudio"</string>
+  <string name="common_beta">"Beta"</string>
   <string name="common_blocked_users">"Utilizadores bloqueados"</string>
   <string name="common_bubbles">"Bolhas"</string>
   <string name="common_call_started">"Chamada iniciada"</string>
@@ -227,6 +232,7 @@ Razão: %1$s."</string>
   <string name="common_install_apk_android">"Instalar APK"</string>
   <string name="common_invite_unknown_profile">"Não foi possível encontrar este ID Matrix, portanto o convite pode não ser recebido."</string>
   <string name="common_leaving_room">"A sair da sala"</string>
+  <string name="common_leaving_space">"A sair do espaço"</string>
   <string name="common_light">"Claro"</string>
   <string name="common_line_copied_to_clipboard">"Linha copiada para a área de transferência"</string>
   <string name="common_link_copied_to_clipboard">"Ligação copiada para a área de transferência"</string>
@@ -237,8 +243,8 @@ Razão: %1$s."</string>
     <item quantity="other">"%d outros"</item>
   </plurals>
   <plurals name="common_member_count">
-    <item quantity="one">"%1$d membro"</item>
-    <item quantity="other">"%1$d membros"</item>
+    <item quantity="one">"%1$d participante"</item>
+    <item quantity="other">"%1$d participantes"</item>
   </plurals>
   <string name="common_message">"Mensagem"</string>
   <string name="common_message_actions">"Ações de mensagem"</string>
@@ -315,6 +321,7 @@ Razão: %1$s."</string>
   <string name="common_settings">"Configurações"</string>
   <string name="common_share_space">"Partilhar espaço"</string>
   <string name="common_shared_location">"Localização partilhada"</string>
+  <string name="common_shared_space">"Espaço partilhado"</string>
   <string name="common_signing_out">"A terminar sessão"</string>
   <string name="common_something_went_wrong">"Algo correu mal"</string>
   <string name="common_something_went_wrong_message">"Encontramos um erro. Por favor, tenta novamente."</string>

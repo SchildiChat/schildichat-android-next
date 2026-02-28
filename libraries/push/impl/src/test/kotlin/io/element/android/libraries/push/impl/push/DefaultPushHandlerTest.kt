@@ -40,9 +40,9 @@ import io.element.android.libraries.push.impl.notifications.DefaultNotificationR
 import io.element.android.libraries.push.impl.notifications.FakeNotifiableEventResolver
 import io.element.android.libraries.push.impl.notifications.FallbackNotificationFactory
 import io.element.android.libraries.push.impl.notifications.channels.FakeNotificationChannels
+import io.element.android.libraries.push.impl.notifications.fixtures.aFallbackNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.fixtures.aNotifiableCallEvent
 import io.element.android.libraries.push.impl.notifications.fixtures.aNotifiableMessageEvent
-import io.element.android.libraries.push.impl.notifications.model.FallbackNotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.NotifiableEvent
 import io.element.android.libraries.push.impl.notifications.model.ResolvedPushEvent
 import io.element.android.libraries.push.impl.test.DefaultTestPush
@@ -56,8 +56,8 @@ import io.element.android.libraries.pushstore.test.userpushstore.FakeUserPushSto
 import io.element.android.libraries.pushstore.test.userpushstore.clientsecret.FakePushClientSecret
 import io.element.android.libraries.workmanager.api.WorkManagerRequest
 import io.element.android.libraries.workmanager.test.FakeWorkManagerScheduler
+import io.element.android.services.analytics.test.FakeAnalyticsService
 import io.element.android.services.toolbox.test.sdk.FakeBuildVersionSdkIntProvider
-import io.element.android.services.toolbox.test.strings.FakeStringProvider
 import io.element.android.services.toolbox.test.systemclock.FakeSystemClock
 import io.element.android.tests.testutils.lambda.any
 import io.element.android.tests.testutils.lambda.lambdaError
@@ -627,18 +627,7 @@ class DefaultPushHandlerTest {
 
     @Test
     fun `when receiving a fallback event, we notify the push history service about it not being resolved`() = runTest {
-        val aNotifiableFallbackEvent = FallbackNotifiableEvent(
-            sessionId = A_SESSION_ID,
-            roomId = A_ROOM_ID,
-            eventId = AN_EVENT_ID,
-            editedEventId = null,
-            description = "A fallback notification",
-            canBeReplaced = false,
-            isRedacted = false,
-            isUpdated = false,
-            timestamp = 0L,
-            cause = "Unable to decrypt event",
-        )
+        val aNotifiableFallbackEvent = aFallbackNotifiableEvent()
         val notifiableEventResult =
             lambdaRecorder<SessionId, List<NotificationEventRequest>, Result<Map<NotificationEventRequest, Result<ResolvedPushEvent>>>> { _, _ ->
                 val request = NotificationEventRequest(A_SESSION_ID, A_ROOM_ID, AN_EVENT_ID, A_PUSHER_INFO)
@@ -695,6 +684,7 @@ class DefaultPushHandlerTest {
         syncOnNotifiableEvent: SyncOnNotifiableEvent = SyncOnNotifiableEvent {},
         featureFlagService: FakeFeatureFlagService = FakeFeatureFlagService(initialState = mapOf(FeatureFlags.SyncNotificationsWithWorkManager.key to false)),
         workManagerScheduler: FakeWorkManagerScheduler = FakeWorkManagerScheduler(),
+        analyticsService: FakeAnalyticsService = FakeAnalyticsService(),
     ): DefaultPushHandler {
         return DefaultPushHandler(
             onNotifiableEventReceived = FakeOnNotifiableEventReceived(onNotifiableEventsReceived),
@@ -724,10 +714,10 @@ class DefaultPushHandlerTest {
             appCoroutineScope = backgroundScope,
             fallbackNotificationFactory = FallbackNotificationFactory(
                 clock = FakeSystemClock(),
-                stringProvider = FakeStringProvider(),
             ),
             syncOnNotifiableEvent = syncOnNotifiableEvent,
             featureFlagService = featureFlagService,
+            analyticsService = analyticsService,
         )
     }
 }

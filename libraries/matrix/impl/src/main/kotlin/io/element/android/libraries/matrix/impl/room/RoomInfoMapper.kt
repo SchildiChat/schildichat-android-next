@@ -74,12 +74,12 @@ class RoomInfoMapper {
             spaceChildren = it.spaceChildren.map(MatrixSpaceChildInfoMapper::map),
             canUserManageSpaces = it.canUserManageSpaces,
             unreadCount = it.unreadCount.toLong(),
-            isLowPriority = it.isLowPriority,
             // SC end
             historyVisibility = it.historyVisibility.map(),
             successorRoom = it.successorRoom?.map(),
             roomVersion = it.roomVersion,
             privilegedCreatorRole = it.privilegedCreatorsRole,
+            isLowPriority = it.isLowPriority,
         )
     }
 }

@@ -128,7 +128,6 @@
   <string name="screen_security_and_privacy_room_access_invite_only_option_description">"只有受邀者才能加入"</string>
   <string name="screen_security_and_privacy_room_access_invite_only_option_title">"仅限邀请"</string>
   <string name="screen_security_and_privacy_room_access_section_header">"房间访问权限"</string>
-  <string name="screen_security_and_privacy_room_access_space_members_option_title">"空间成员"</string>
   <string name="screen_security_and_privacy_room_access_space_members_option_unavailable_description">"目前不支持空间"</string>
   <string name="screen_security_and_privacy_room_address_section_footer">"你需要房间地址才能使其在目录中可见。"</string>
   <string name="screen_security_and_privacy_room_address_section_header">"房间地址"</string>

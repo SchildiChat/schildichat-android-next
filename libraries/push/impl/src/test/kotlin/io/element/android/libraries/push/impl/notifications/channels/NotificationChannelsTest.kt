@@ -12,6 +12,9 @@ import android.os.Build
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.common.truth.Truth.assertThat
+import io.element.android.features.enterprise.api.EnterpriseService
+import io.element.android.features.enterprise.test.FakeEnterpriseService
+import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.services.toolbox.test.strings.FakeStringProvider
 import io.mockk.every
 import io.mockk.mockk
@@ -50,10 +53,28 @@ class NotificationChannelsTest {
 
     @Test
     fun `getChannelIdForMessage - returns the right channel`() {
-        val notificationChannels = createNotificationChannels()
+        val notificationChannels = createNotificationChannels(
+            enterpriseService = FakeEnterpriseService(
+                getNoisyNotificationChannelIdResult = { null }
+            ),
+        )
+        assertThat(notificationChannels.getChannelIdForMessage(sessionId = A_SESSION_ID, noisy = true))
+            .isEqualTo(NOISY_NOTIFICATION_CHANNEL_ID)
+        assertThat(notificationChannels.getChannelIdForMessage(sessionId = A_SESSION_ID, noisy = false))
+            .isEqualTo(SILENT_NOTIFICATION_CHANNEL_ID)
+    }
 
-        assertThat(notificationChannels.getChannelIdForMessage(noisy = true)).isEqualTo(NOISY_NOTIFICATION_CHANNEL_ID)
-        assertThat(notificationChannels.getChannelIdForMessage(noisy = false)).isEqualTo(SILENT_NOTIFICATION_CHANNEL_ID)
+    @Test
+    fun `getChannelIdForMessage - returns the right channel when enterprise service override the result`() {
+        val notificationChannels = createNotificationChannels(
+            enterpriseService = FakeEnterpriseService(
+                getNoisyNotificationChannelIdResult = { "A_CHANNEL_ID" }
+            ),
+        )
+        assertThat(notificationChannels.getChannelIdForMessage(sessionId = A_SESSION_ID, noisy = true))
+            .isEqualTo("A_CHANNEL_ID")
+        assertThat(notificationChannels.getChannelIdForMessage(sessionId = A_SESSION_ID, noisy = false))
+            .isEqualTo(SILENT_NOTIFICATION_CHANNEL_ID)
     }
 
     @Test
@@ -65,9 +86,11 @@ class NotificationChannelsTest {
 
     private fun createNotificationChannels(
         notificationManager: NotificationManagerCompat = mockk(relaxed = true),
+        enterpriseService: EnterpriseService = FakeEnterpriseService(),
     ) = DefaultNotificationChannels(
         notificationManager = notificationManager,
         stringProvider = FakeStringProvider(),
         context = RuntimeEnvironment.getApplication(),
+        enterpriseService = enterpriseService,
     )
 }

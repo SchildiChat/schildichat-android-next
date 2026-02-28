@@ -73,7 +73,6 @@ data class RoomInfo(
     val spaceChildren: List<MatrixSpaceChildInfo> = emptyList(),
     val canUserManageSpaces: Boolean = false,
     val unreadCount: Long = 0,
-    val isLowPriority: Boolean = false,
     // SC end
     val heroes: ImmutableList<MatrixUser>,
     val pinnedEventIds: ImmutableList<EventId>,
@@ -82,6 +81,7 @@ data class RoomInfo(
     val successorRoom: SuccessorRoom?,
     val roomVersion: String?,
     val privilegedCreatorRole: Boolean,
+    val isLowPriority: Boolean,
 ) {
     val aliases: List<RoomAlias>
         get() = listOfNotNull(canonicalAlias) + alternativeAliases

@@ -11,6 +11,7 @@ package io.element.android.libraries.audio.api
 enum class AudioFocusRequester {
     ElementCall,
     VoiceMessage,
+    RecordVoiceMessage,
     MediaViewer,
 }
 

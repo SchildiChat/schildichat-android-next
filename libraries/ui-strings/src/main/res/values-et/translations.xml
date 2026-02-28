@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="a11y_add_reaction">"Reageeri: %1$s"</string>
+  <string name="a11y_address">"Aadress"</string>
   <string name="a11y_avatar">"Tunnuspilt"</string>
   <string name="a11y_collapse_message_text_field">"Vähenda tekstivälja"</string>
   <string name="a11y_delete">"Kustuta"</string>
@@ -29,6 +30,7 @@
   <string name="a11y_play">"Esita"</string>
   <string name="a11y_poll">"Küsitlus"</string>
   <string name="a11y_poll_end">"Lõppenud küsitlus"</string>
+  <string name="a11y_qr_code">"QR-kood"</string>
   <string name="a11y_react_with">"Reageeri emotikoniga %1$s"</string>
   <string name="a11y_react_with_other_emojis">"Reageeri mõne muu emotikoniga"</string>
   <string name="a11y_read_receipts_multiple">"Seda lugesid %1$s ja %2$s"</string>
@@ -224,7 +226,7 @@ Põhjus: %1$s."</string>
   <string name="common_everyone">"Kõik"</string>
   <string name="common_failed">"Ei õnnestunud"</string>
   <string name="common_favourite">"Lemmik"</string>
-  <string name="common_favourited">"Lemmikuks määratud"</string>
+  <string name="common_favourited">"Märgitud lemmikuks"</string>
   <string name="common_file">"Fail"</string>
   <string name="common_file_deleted">"Fail on kustutatud"</string>
   <string name="common_file_saved">"Fail on salvestatud"</string>
@@ -285,8 +287,10 @@ Põhjus: %1$s."</string>
   </plurals>
   <string name="common_preparing">"Ettevalmistamisel…"</string>
   <string name="common_privacy_policy">"Privaatsuspoliitika"</string>
+  <string name="common_private">"Privaatne"</string>
   <string name="common_private_room">"Privaatne jututuba"</string>
   <string name="common_private_space">"Privaatne kogukond"</string>
+  <string name="common_public">"Avalik"</string>
   <string name="common_public_room">"Avalik jututuba"</string>
   <string name="common_public_space">"Avalik kogukond"</string>
   <string name="common_reaction">"Reaktsioon"</string>
@@ -341,6 +345,7 @@ Põhjus: %1$s."</string>
   <string name="common_something_went_wrong">"Midagi läks valesti"</string>
   <string name="common_something_went_wrong_message">"Tekkis viga. Palun proovi uuesti."</string>
   <string name="common_space">"Kogukond"</string>
+  <string name="common_space_members">"Kogukonna liikmed"</string>
   <string name="common_space_topic_placeholder">"Mida selles kogukonnas tehakse?"</string>
   <plurals name="common_spaces">
     <item quantity="one">"%1$d kogukond"</item>

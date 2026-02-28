@@ -29,6 +29,7 @@ class FakeEnterpriseService(
     private val overrideBrandColorResult: (SessionId?, String?) -> Unit = { _, _ -> lambdaError() },
     private val firebasePushGatewayResult: () -> String? = { lambdaError() },
     private val unifiedPushDefaultPushGatewayResult: () -> String? = { lambdaError() },
+    private val getNoisyNotificationChannelIdResult: (SessionId?) -> String? = { lambdaError() },
 ) : EnterpriseService {
     private val brandColorState = MutableStateFlow(initialBrandColor)
     private val semanticColorsState = MutableStateFlow(initialSemanticColors)
@@ -68,5 +69,9 @@ class FakeEnterpriseService(
     val bugReportUrlMutableFlow = MutableStateFlow<BugReportUrl>(BugReportUrl.UseDefault)
     override fun bugReportUrlFlow(sessionId: SessionId?): Flow<BugReportUrl> {
         return bugReportUrlMutableFlow.asStateFlow()
+    }
+
+    override fun getNoisyNotificationChannelId(sessionId: SessionId): String? {
+        return getNoisyNotificationChannelIdResult(sessionId)
     }
 }

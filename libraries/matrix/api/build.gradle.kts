@@ -34,11 +34,11 @@ android {
         )
         buildConfigFieldStr(
             name = "TOS_URI",
-            value = BuildTimeConfig.URL_ACCEPTABLE_USE ?: "https://schildi.chat/android/next/privacy/"
+            value = BuildTimeConfig.URL_ACCEPTABLE_USE ?: "https://schildi.chat/next/privacy//"
         )
         buildConfigFieldStr(
             name = "POLICY_URI",
-            value = BuildTimeConfig.URL_POLICY ?: "https://schildi.chat/android/next/privacy/"
+            value = BuildTimeConfig.URL_POLICY ?: "https://schildi.chat/next/privacy//"
         )
     }
 }

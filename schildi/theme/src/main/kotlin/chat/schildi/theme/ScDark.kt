@@ -6,14 +6,6 @@ import androidx.compose.ui.unit.dp
 import io.element.android.compound.annotations.CoreColorToken
 import io.element.android.compound.tokens.generated.SemanticColors
 import io.element.android.compound.tokens.generated.internal.DarkColorTokens
-import io.element.android.compound.tokens.generated.internal.DarkColorTokens.colorBlue200
-import io.element.android.compound.tokens.generated.internal.DarkColorTokens.colorBlue500
-import io.element.android.compound.tokens.generated.internal.DarkColorTokens.colorBlue900
-import io.element.android.compound.tokens.generated.internal.DarkColorTokens.colorRed1000
-import io.element.android.compound.tokens.generated.internal.DarkColorTokens.colorRed200
-import io.element.android.compound.tokens.generated.internal.DarkColorTokens.colorRed300
-import io.element.android.compound.tokens.generated.internal.DarkColorTokens.colorRed500
-import io.element.android.compound.tokens.generated.internal.DarkColorTokens.colorRed900
 import io.element.android.compound.tokens.generated.internal.LightColorTokens
 
 val scd_fgPrimary = ScColors.colorWhite
@@ -129,21 +121,21 @@ internal val scdSemanticColors = SemanticColors(
     bgBadgeAccent = ScColors.colorAccentGreenAlpha_30,
     bgBadgeDefault = ScColors.colorGray_61,
     bgBadgeInfo = DarkColorTokens.colorAlphaBlue300, // TODO?
-    bgCriticalPrimary = colorRed900, // TODO
-    bgCriticalHovered = colorRed1000, // TODO
-    bgCriticalSubtle = colorRed200, // TODO
-    bgCriticalSubtleHovered = colorRed300, // TODO
+    bgCriticalPrimary = DarkColorTokens.colorRed900, // TODO
+    bgCriticalHovered = DarkColorTokens.colorRed1000, // TODO
+    bgCriticalSubtle = DarkColorTokens.colorRed200, // TODO
+    bgCriticalSubtleHovered = DarkColorTokens.colorRed300, // TODO
     borderAccentSubtle = scd_accent,
     bgSuccessSubtle = ScColors.colorAccentGreen.copy(alpha=0.2f),
     bgInfoSubtle = ScColors.colorAccentBlueDark,
     borderDisabled = scd_divider,
-    borderFocused = colorBlue900, // TODO
+    borderFocused = DarkColorTokens.colorBlue900, // TODO
     borderInteractivePrimary = scd_fgSecondary,
     borderInteractiveSecondary = scd_fgTertiary,
     borderInteractiveHovered = scd_fgPrimary,
-    borderCriticalPrimary = colorRed900, // TODO
-    borderCriticalHovered = colorRed1000, // TODO
-    borderCriticalSubtle = colorRed500, // TODO
+    borderCriticalPrimary = DarkColorTokens.colorRed900, // TODO
+    borderCriticalHovered = DarkColorTokens.colorRed1000, // TODO
+    borderCriticalSubtle = DarkColorTokens.colorRed500, // TODO
     borderSuccessSubtle = ScColors.colorAccentGreen,
     borderInfoSubtle = ScColors.colorAccentBlueDark,
     iconPrimary = scd_fgPrimary,
@@ -170,12 +162,10 @@ internal val scdSemanticColors = SemanticColors(
     gradientActionStop2 = DarkColorTokens.colorGreen900,
     gradientActionStop3 = DarkColorTokens.colorGreen700,
     gradientActionStop4 = DarkColorTokens.colorGreen500,
+    gradientCriticalStop1 = DarkColorTokens.colorRed200, // TODO?
+    gradientCriticalStop2 = scd_bg,
     gradientInfoStop1 = DarkColorTokens.colorAlphaBlue500,
     gradientInfoStop2 = DarkColorTokens.colorAlphaBlue400,
-    gradientInfoStop3 = DarkColorTokens.colorAlphaBlue300,
-    gradientInfoStop4 = DarkColorTokens.colorAlphaBlue200,
-    gradientInfoStop5 = DarkColorTokens.colorAlphaBlue100,
-    gradientInfoStop6 = DarkColorTokens.colorTransparent,
     gradientSubtleStop1 = DarkColorTokens.colorAlphaGreen500,
     gradientSubtleStop2 = DarkColorTokens.colorAlphaGreen400,
     gradientSubtleStop3 = DarkColorTokens.colorAlphaGreen300,

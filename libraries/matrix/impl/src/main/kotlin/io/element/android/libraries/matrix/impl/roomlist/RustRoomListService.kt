@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.stateIn
 import org.matrix.rustcomponents.sdk.RoomListServiceState
 import org.matrix.rustcomponents.sdk.RoomListServiceSyncIndicator
 import timber.log.Timber
+import java.util.concurrent.atomic.AtomicBoolean
 import org.matrix.rustcomponents.sdk.RoomListService as InnerRustRoomListService
 
 internal class RustRoomListService(
@@ -39,6 +40,8 @@ internal class RustRoomListService(
     private val scPreferencesStore: ScPreferencesStore,
     private val sessionCoroutineScope: CoroutineScope,
 ) : RoomListService {
+    private val _isInitialSyncDone = AtomicBoolean(false)
+    override val isInitialSyncDone: Boolean get() = _isInitialSyncDone.get()
 
     override fun createRoomList(
         pageSize: Int,
@@ -103,6 +106,9 @@ internal class RustRoomListService(
             .map { it.toRoomListState() }
             .onEach { state ->
                 Timber.d("RoomList state=$state")
+                if (state == RoomListService.State.Running) {
+                    _isInitialSyncDone.set(true)
+                }
             }
             .distinctUntilChanged()
             .stateIn(sessionCoroutineScope, SharingStarted.Eagerly, RoomListService.State.Idle)

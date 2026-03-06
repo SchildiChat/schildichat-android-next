@@ -169,6 +169,6 @@ class LoggedInPresenter(
 
     private fun CoroutineScope.preloadAccountManagementUrl() = launch {
         matrixClient.getAccountManagementUrl(AccountManagementAction.Profile)
-        matrixClient.getAccountManagementUrl(AccountManagementAction.SessionsList)
+        matrixClient.getAccountManagementUrl(AccountManagementAction.DevicesList)
     }
 }

@@ -15,6 +15,7 @@ import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -254,6 +255,9 @@ private fun ColumnScope.SpacesPager(
                         onSpaceClick = onUpstreamSpaceClick,
                         onCreateSpaceClick = onCreateSpaceClick,
                         onExploreClick = onExploreClick,
+                        contentPadding = PaddingValues(
+                            bottom = if (ScPrefs.SNC_FAB.value()) 96.dp else 0.dp,
+                        ),
                     )
                 } else {
                     content(Modifier.fillMaxWidth())

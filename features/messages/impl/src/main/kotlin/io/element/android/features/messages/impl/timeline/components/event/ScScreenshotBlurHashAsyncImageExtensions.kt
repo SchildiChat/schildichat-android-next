@@ -17,7 +17,7 @@ import kotlinx.coroutines.runBlocking
 
 @Composable
 fun shouldDrawScPreviewMedia(mediaSource: MediaSource): Boolean {
-    return LocalInspectionMode.current && mediaSource.url.startsWith("mxc://")
+    return LocalInspectionMode.current && mediaSource.safeUrl.startsWith("mxc://")
 }
 
 @Composable

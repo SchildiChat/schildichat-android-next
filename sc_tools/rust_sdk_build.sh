@@ -39,7 +39,7 @@ echo "ANDROID_NDK_HOME=$ANDROID_NDK_HOME"
 RUSTFLAGS="$RUSTFLAGS --remap-path-prefix=$HOME/.cargo/=.cargo/"
 RUSTFLAGS="$RUSTFLAGS --remap-path-prefix=$(realpath "$SDK_DIR")/=."
 RUSTFLAGS="$RUSTFLAGS --remap-path-prefix=$HOME/.rustup/=.rustup/"
-export RUSTUP_TOOLCHAIN=1.90.0
+export RUSTUP_TOOLCHAIN=1.93.0
 export RUSTFLAGS
 echo "RUSTFLAGS=$RUSTFLAGS"
 

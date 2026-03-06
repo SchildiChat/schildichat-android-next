@@ -97,9 +97,7 @@ fun HomeTopBar(
     onMenuActionClick: (RoomListMenuAction) -> Unit,
     onOpenSettings: () -> Unit,
     onAccountSwitch: (SessionId) -> Unit,
-    onCreateSpace: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
-    canCreateSpaces: Boolean,
     canReportBug: Boolean,
     displayFilters: Boolean,
     filtersState: RoomListFiltersState,
@@ -153,17 +151,13 @@ fun HomeTopBar(
                 )
             },
             actions = {
-                when (selectedNavigationItem) {
-                    HomeNavigationBarItem.Chats -> RoomListMenuItems(
+                if (selectedNavigationItem == HomeNavigationBarItem.Chats) {
+                    RoomListMenuItems(
                         onStartChatClick = onStartChatClick, // SC
                         onToggleSearch = onToggleSearch,
                         onMenuActionClick = onMenuActionClick,
                         canReportBug = canReportBug,
                         spaceFiltersState = spaceFiltersState,
-                    )
-                    HomeNavigationBarItem.Spaces -> SpacesMenuItems(
-                        canCreateSpaces = canCreateSpaces,
-                        onCreateSpace = onCreateSpace
                     )
                 }
             },
@@ -249,21 +243,6 @@ private fun RoomListMenuItems(
                 )
             }
             ScRoomListDropdownEntriesBottom(onClick = { showMenu = false }, onMenuActionClick = onMenuActionClick)
-        }
-    }
-}
-
-@Composable
-private fun SpacesMenuItems(
-    canCreateSpaces: Boolean,
-    onCreateSpace: () -> Unit
-) {
-    if (canCreateSpaces) {
-        IconButton(onClick = onCreateSpace) {
-            Icon(
-                imageVector = CompoundIcons.Plus(),
-                contentDescription = stringResource(CommonStrings.action_create_space)
-            )
         }
     }
 }
@@ -389,8 +368,6 @@ internal fun HomeTopBarPreview() = ElementPreview {
         onOpenSettings = {},
         onAccountSwitch = {},
         onToggleSearch = {},
-        onCreateSpace = {},
-        canCreateSpaces = true,
         canReportBug = true,
         displayFilters = true,
         filtersState = aRoomListFiltersState(),
@@ -413,8 +390,6 @@ internal fun HomeTopBarSpaceFiltersSelectedPreview() = ElementPreview {
         onOpenSettings = {},
         onAccountSwitch = {},
         onToggleSearch = {},
-        onCreateSpace = {},
-        canCreateSpaces = true,
         canReportBug = true,
         displayFilters = true,
         filtersState = aRoomListFiltersState(),
@@ -437,8 +412,6 @@ internal fun HomeTopBarSpacesPreview() = ElementPreview {
         onOpenSettings = {},
         onAccountSwitch = {},
         onToggleSearch = {},
-        onCreateSpace = {},
-        canCreateSpaces = true,
         canReportBug = true,
         displayFilters = false,
         filtersState = aRoomListFiltersState(),
@@ -461,8 +434,6 @@ internal fun HomeTopBarWithIndicatorPreview() = ElementPreview {
         onOpenSettings = {},
         onAccountSwitch = {},
         onToggleSearch = {},
-        onCreateSpace = {},
-        canCreateSpaces = true,
         canReportBug = true,
         displayFilters = true,
         filtersState = aRoomListFiltersState(),
@@ -485,8 +456,6 @@ internal fun HomeTopBarMultiAccountPreview() = ElementPreview {
         onOpenSettings = {},
         onAccountSwitch = {},
         onToggleSearch = {},
-        onCreateSpace = {},
-        canCreateSpaces = true,
         canReportBug = true,
         displayFilters = true,
         filtersState = aRoomListFiltersState(),

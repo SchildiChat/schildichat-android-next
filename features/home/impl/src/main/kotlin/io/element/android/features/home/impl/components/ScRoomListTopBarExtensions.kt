@@ -20,6 +20,7 @@ fun ScRoomListDropdownEntriesTop(
     onClick: () -> Unit,
     onMenuActionClick: (RoomListMenuAction) -> Unit,
     onStartChatClick: () -> Unit,
+    onCreateSpaceClick: (() -> Unit)?,
 ) {
     if (!ScPrefs.SNC_FAB.value()) {
         DropdownMenuItem(
@@ -36,6 +37,24 @@ fun ScRoomListDropdownEntriesTop(
                 )
             }
         )
+    }
+    if (ScPrefs.SPACE_NAV.value()) {
+        if (onCreateSpaceClick != null) {
+            DropdownMenuItem(
+                onClick = {
+                    onClick()
+                    onCreateSpaceClick()
+                },
+                text = { Text(stringResource(id = io.element.android.libraries.ui.strings.R.string.action_create_space)) },
+                leadingIcon = {
+                    Icon(
+                        imageVector = CompoundIcons.SpaceSolid(),
+                        tint = ElementTheme.materialColors.secondary,
+                        contentDescription = null,
+                    )
+                }
+            )
+        }
     }
     DropdownMenuItem(
         onClick = {

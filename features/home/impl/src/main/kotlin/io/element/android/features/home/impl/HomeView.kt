@@ -201,6 +201,7 @@ private fun HomeScaffold(
                 // SC start
                 selectedSpaceName = state.roomListState.resolveSpaceName(),
                 onStartChatClick = onStartChatClick,
+                onCreateSpaceClick = onCreateSpaceClick.takeIf { state.homeSpacesState.canCreateSpaces },
                 // SC end
                 onToggleSearch = { roomListState.eventSink(RoomListEvent.ToggleSearchResults) },
                 onMenuActionClick = onMenuActionClick,

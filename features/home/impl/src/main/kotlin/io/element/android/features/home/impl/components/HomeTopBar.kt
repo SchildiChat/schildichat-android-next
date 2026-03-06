@@ -92,6 +92,7 @@ fun HomeTopBar(
     // SC start
     selectedSpaceName: String?,
     onStartChatClick: () -> Unit,
+    onCreateSpaceClick: (() -> Unit)?,
     // SC end
     onToggleSearch: () -> Unit,
     onMenuActionClick: (RoomListMenuAction) -> Unit,
@@ -154,6 +155,7 @@ fun HomeTopBar(
                 if (selectedNavigationItem == HomeNavigationBarItem.Chats) {
                     RoomListMenuItems(
                         onStartChatClick = onStartChatClick, // SC
+                        onCreateSpaceClick = onCreateSpaceClick, // SC
                         onToggleSearch = onToggleSearch,
                         onMenuActionClick = onMenuActionClick,
                         canReportBug = canReportBug,
@@ -181,6 +183,7 @@ fun HomeTopBar(
 @Composable
 private fun RoomListMenuItems(
     onStartChatClick: () -> Unit, // SC
+    onCreateSpaceClick: (() -> Unit)?, // SC
     onToggleSearch: () -> Unit,
     onMenuActionClick: (RoomListMenuAction) -> Unit,
     canReportBug: Boolean,
@@ -209,7 +212,7 @@ private fun RoomListMenuItems(
             expanded = showMenu,
             onDismissRequest = { showMenu = false }
         ) {
-            ScRoomListDropdownEntriesTop(onClick = { showMenu = false }, onMenuActionClick = onMenuActionClick, onStartChatClick = onStartChatClick)
+            ScRoomListDropdownEntriesTop(onClick = { showMenu = false }, onMenuActionClick = onMenuActionClick, onStartChatClick = onStartChatClick, onCreateSpaceClick = onCreateSpaceClick)
             if (RoomListConfig.SHOW_INVITE_MENU_ITEM) {
                 DropdownMenuItem(
                     onClick = {
@@ -359,7 +362,7 @@ private fun AccountIcon(
 @Composable
 internal fun HomeTopBarPreview() = ElementPreview {
     HomeTopBar(
-        selectedSpaceName = null, onStartChatClick = {}, // SC
+        selectedSpaceName = null, onStartChatClick = {}, onCreateSpaceClick = {}, // SC
         selectedNavigationItem = HomeNavigationBarItem.Chats,
         currentUserAndNeighbors = persistentListOf(MatrixUser(UserId("@id:domain"), "Alice")),
         showAvatarIndicator = false,
@@ -381,7 +384,7 @@ internal fun HomeTopBarPreview() = ElementPreview {
 @Composable
 internal fun HomeTopBarSpaceFiltersSelectedPreview() = ElementPreview {
     HomeTopBar(
-        selectedSpaceName = null, onStartChatClick = {}, // SC
+        selectedSpaceName = null, onStartChatClick = {}, onCreateSpaceClick = {}, // SC
         selectedNavigationItem = HomeNavigationBarItem.Chats,
         currentUserAndNeighbors = persistentListOf(MatrixUser(UserId("@id:domain"), "Alice")),
         showAvatarIndicator = false,
@@ -403,7 +406,7 @@ internal fun HomeTopBarSpaceFiltersSelectedPreview() = ElementPreview {
 @Composable
 internal fun HomeTopBarSpacesPreview() = ElementPreview {
     HomeTopBar(
-        selectedSpaceName = null, onStartChatClick = {}, // SC
+        selectedSpaceName = null, onStartChatClick = {}, onCreateSpaceClick = {}, // SC
         selectedNavigationItem = HomeNavigationBarItem.Spaces,
         currentUserAndNeighbors = persistentListOf(MatrixUser(UserId("@id:domain"), "Alice")),
         showAvatarIndicator = false,
@@ -425,7 +428,7 @@ internal fun HomeTopBarSpacesPreview() = ElementPreview {
 @Composable
 internal fun HomeTopBarWithIndicatorPreview() = ElementPreview {
     HomeTopBar(
-        selectedSpaceName = null, onStartChatClick = {}, // SC
+        selectedSpaceName = null, onStartChatClick = {}, onCreateSpaceClick = {}, // SC
         selectedNavigationItem = HomeNavigationBarItem.Chats,
         currentUserAndNeighbors = persistentListOf(MatrixUser(UserId("@id:domain"), "Alice")),
         showAvatarIndicator = true,
@@ -447,7 +450,7 @@ internal fun HomeTopBarWithIndicatorPreview() = ElementPreview {
 @Composable
 internal fun HomeTopBarMultiAccountPreview() = ElementPreview {
     HomeTopBar(
-        selectedSpaceName = null, onStartChatClick = {}, // SC
+        selectedSpaceName = null, onStartChatClick = {}, onCreateSpaceClick = {}, // SC
         selectedNavigationItem = HomeNavigationBarItem.Chats,
         currentUserAndNeighbors = aMatrixUserList().take(3).toImmutableList(),
         showAvatarIndicator = false,

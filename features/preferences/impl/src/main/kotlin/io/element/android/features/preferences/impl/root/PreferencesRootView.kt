@@ -92,19 +92,19 @@ fun PreferencesRootView(
             user = state.myUser,
         )
 
-        // SC tweaks
-        ListItem(
-            headlineContent = { Text(stringResource(id = chat.schildi.lib.R.string.sc_pref_tweaks_title)) },
-            leadingContent = ListItemContent.Icon(IconSource.Vector(Icons.Outlined.PrecisionManufacturing)),
-            onClick = { navigateToScTweaks(null) },
-        )
-
         if (state.isMultiAccountEnabled) {
             MultiAccountSection(
                 state = state,
                 onAddAccountClick = onAddAccountClick,
             )
         }
+
+        // SC tweaks
+        ListItem(
+            headlineContent = { Text(stringResource(id = chat.schildi.lib.R.string.sc_pref_tweaks_title)) },
+            leadingContent = ListItemContent.Icon(IconSource.Vector(Icons.Outlined.PrecisionManufacturing)),
+            onClick = { navigateToScTweaks(null) },
+        )
 
         // 'Manage my app' section
         ManageAppSection(

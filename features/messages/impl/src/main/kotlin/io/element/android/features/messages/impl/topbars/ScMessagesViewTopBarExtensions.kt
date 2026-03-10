@@ -67,7 +67,7 @@ internal fun ScNotEncryptedIndicator(isRoomEncrypted: Boolean?) {
 internal fun RowScope.scMessagesViewTopBarActions(
     state: MessagesState,
     callState: RoomCallState,
-    onJoinCallClicked: () -> Unit,
+    onJoinCallClicked: (isAudioCall: Boolean) -> Unit,
     onViewAllPinnedMessagesClick: () -> Unit,
 ) {
     val markAsReadAsQuickAction = showMarkAsReadQuickAction()
@@ -123,10 +123,19 @@ internal fun RowScope.scMessagesViewTopBarActions(
             onDismissRequest = { showMenu = false }
         ) {
             if (callItemInOverflow) {
+                if (callState.isDM) {
+                    DropdownMenuItem(
+                        onClick = {
+                            showMenu = false
+                            onJoinCallClicked(true)
+                        },
+                        text = { Text(stringResource(CommonStrings.a11y_start_voice_call)) },
+                    )
+                }
                 DropdownMenuItem(
                     onClick = {
                         showMenu = false
-                        onJoinCallClicked()
+                        onJoinCallClicked(false)
                     },
                     text = { Text(stringResource(CommonStrings.a11y_start_call)) },
                 )

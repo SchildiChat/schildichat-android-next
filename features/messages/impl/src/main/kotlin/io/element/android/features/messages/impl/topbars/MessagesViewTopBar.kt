@@ -71,7 +71,7 @@ internal fun MessagesViewTopBar(
     dmUserIdentityState: IdentityState?,
     sharedHistoryIcon: SharedHistoryIcon,
     onRoomDetailsClick: () -> Unit,
-    onJoinCallClick: () -> Unit,
+    onJoinCallClick: (isAudioCall: Boolean) -> Unit,
     onBackClick: () -> Unit,
     state: MessagesState, // SC
     onViewAllPinnedMessagesClick: () -> Unit, // SC

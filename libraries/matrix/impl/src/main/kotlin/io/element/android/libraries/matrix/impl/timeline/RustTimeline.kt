@@ -44,6 +44,7 @@ import io.element.android.libraries.matrix.impl.timeline.reply.InReplyToMapper
 import io.element.android.libraries.matrix.impl.util.EmoteEventContent
 import io.element.android.libraries.matrix.impl.util.MessageEventContent
 import io.element.android.libraries.matrix.impl.util.NoticeEventContent
+import io.element.android.libraries.matrix.impl.util.ScMessageEventContent
 import io.element.android.services.toolbox.api.systemclock.SystemClock
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -273,9 +274,10 @@ class RustTimeline(
     override suspend fun sendMessage(
         body: String,
         htmlBody: String?,
+        plaintext: Boolean,  // SC
         intentionalMentions: List<IntentionalMention>,
     ): Result<Unit> = withContext(dispatcher) {
-        MessageEventContent.from(body, htmlBody, intentionalMentions).use { content ->
+        ScMessageEventContent.from(body, htmlBody, plaintext, intentionalMentions).use { content ->
             runCatchingExceptions<Unit> {
                 inner.send(content)
             }
@@ -285,10 +287,11 @@ class RustTimeline(
     override suspend fun sendNotice( // SC
         body: String,
         htmlBody: String?,
+        plaintext: Boolean,  // SC
         intentionalMentions: List<IntentionalMention>,
         inReplyToEventId: EventId?
     ): Result<Unit> = withContext(dispatcher) {
-        NoticeEventContent.from(body, htmlBody, intentionalMentions).use { content ->
+        NoticeEventContent.from(body, htmlBody, plaintext, intentionalMentions).use { content ->
             runCatchingExceptions<Unit> {
                 if (inReplyToEventId == null) {
                     inner.send(content)
@@ -302,10 +305,11 @@ class RustTimeline(
     override suspend fun sendEmote( // SC
         body: String,
         htmlBody: String?,
+        plaintext: Boolean,
         intentionalMentions: List<IntentionalMention>,
         inReplyToEventId: EventId?
     ): Result<Unit> = withContext(dispatcher) {
-        EmoteEventContent.from(body, htmlBody, intentionalMentions).use { content ->
+        EmoteEventContent.from(body, htmlBody, plaintext, intentionalMentions).use { content ->
             runCatchingExceptions<Unit> {
                 if (inReplyToEventId == null) {
                     inner.send(content)
@@ -330,12 +334,14 @@ class RustTimeline(
         body: String,
         htmlBody: String?,
         intentionalMentions: List<IntentionalMention>,
+        plaintext: Boolean,  // SC
     ): Result<Unit> = withContext(dispatcher) {
         runCatchingExceptions {
             val editedContent = EditedContent.RoomMessage(
-                content = MessageEventContent.from(
+                content = ScMessageEventContent.from(
                     body = body,
                     htmlBody = htmlBody,
+                    plaintext = plaintext, // SC
                     intentionalMentions = intentionalMentions
                 ),
             )
@@ -350,6 +356,7 @@ class RustTimeline(
         eventOrTransactionId: EventOrTransactionId,
         caption: String?,
         formattedCaption: String?,
+        plaintext: Boolean,  // SC
     ): Result<Unit> = withContext(dispatcher) {
         runCatchingExceptions<Unit> {
             val editedContent = EditedContent.MediaCaption(
@@ -372,11 +379,12 @@ class RustTimeline(
         repliedToEventId: EventId,
         body: String,
         htmlBody: String?,
+        plaintext: Boolean,  // SC
         intentionalMentions: List<IntentionalMention>,
         fromNotification: Boolean,
     ): Result<Unit> = withContext(dispatcher) {
         runCatchingExceptions {
-            val msg = MessageEventContent.from(body, htmlBody, intentionalMentions)
+            val msg = ScMessageEventContent.from(body, htmlBody, plaintext, intentionalMentions)
             inner.sendReply(
                 msg = msg,
                 eventId = repliedToEventId.value,
@@ -390,6 +398,7 @@ class RustTimeline(
         imageInfo: ImageInfo,
         caption: String?,
         formattedCaption: String?,
+        plaintext: Boolean,  // SC
         inReplyToEventId: EventId?,
     ): Result<MediaUploadHandler> {
         Timber.d("Sending image ${file.path.hash()}")
@@ -416,6 +425,7 @@ class RustTimeline(
         videoInfo: VideoInfo,
         caption: String?,
         formattedCaption: String?,
+        plaintext: Boolean,  // SC
         inReplyToEventId: EventId?,
     ): Result<MediaUploadHandler> {
         Timber.d("Sending video ${file.path.hash()}")
@@ -441,6 +451,7 @@ class RustTimeline(
         audioInfo: AudioInfo,
         caption: String?,
         formattedCaption: String?,
+        plaintext: Boolean,  // SC
         inReplyToEventId: EventId?,
     ): Result<MediaUploadHandler> {
         Timber.d("Sending audio ${file.path.hash()}")
@@ -465,6 +476,7 @@ class RustTimeline(
         fileInfo: FileInfo,
         caption: String?,
         formattedCaption: String?,
+        plaintext: Boolean,  // SC
         inReplyToEventId: EventId?,
     ): Result<MediaUploadHandler> {
         Timber.d("Sending file ${file.path.hash()}")
@@ -497,7 +509,7 @@ class RustTimeline(
         runCatchingExceptions {
             roomContentForwarder.forward(fromTimeline = inner, eventId = eventId, toRoomIds = roomIds)
         }.onFailure {
-            Timber.e(it)
+            Timber.e(it, "Failed to forward event")
         }
     }
 

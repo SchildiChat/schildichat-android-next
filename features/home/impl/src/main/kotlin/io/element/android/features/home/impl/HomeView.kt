@@ -267,7 +267,7 @@ private fun HomeScaffold(
         floatingActionButtonPosition = if (state.showNavigationBar && !ScPrefs.SPACE_NAV.value()) FabPosition.Center else FabPosition.End,
         content = { padding ->
             val contentPadding = PaddingValues(
-                bottom = (if (ScPrefs.SPACE_NAV.value()) 96.dp else 0.dp),
+                bottom = (if (ScPrefs.SNC_FAB.value()) 96.dp else 0.dp),
             )
             when (state.currentHomeNavigationBarItem) {
                 HomeNavigationBarItem.Chats -> {

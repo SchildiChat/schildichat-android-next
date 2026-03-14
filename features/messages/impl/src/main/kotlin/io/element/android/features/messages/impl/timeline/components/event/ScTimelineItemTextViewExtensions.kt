@@ -43,8 +43,8 @@ import io.element.android.wysiwyg.link.Link
 import kotlin.math.roundToInt
 
 // All values in DP here
-private const val MAX_IMAGE_WIDTH = 128
-private const val MAX_IMAGE_HEIGHT = 128
+private const val MAX_IMAGE_WIDTH = 300
+private const val MAX_IMAGE_HEIGHT = 250
 private const val MIN_IMAGE_WIDTH = 8
 private const val MIN_IMAGE_HEIGHT = 8
 

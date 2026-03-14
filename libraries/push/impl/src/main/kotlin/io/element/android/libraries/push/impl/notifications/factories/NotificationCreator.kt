@@ -523,8 +523,10 @@ class DefaultNotificationCreator(
         ).also {
             it.conversationTitle = if (isThread) {
                 stringProvider.getString(R.string.notification_thread_in_room, roomName)
-            } else {
+            } else if  (!roomIsGroup || roomName != user.displayName) { // SC
                 roomName
+            } else {
+                null // SC
             }
             // So the avatar is displayed even if they're part of a conversation
             it.isGroupConversation = roomIsGroup || isThread

@@ -1,0 +1,5 @@
+- Update codebase to Element X v26.03.3
+- New rewritten formatted message rendering to improve display of inline images, collapsible messages, spoilers and more
+- Hide spoiler content in room previews and notifications
+- Add setting to hide deleted messages
+- Add setting for two letter initials fallback avatars

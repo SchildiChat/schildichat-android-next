@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.first
  * @param activeMembersCount the number of active members in the room (joined or invited)
  */
 fun isDm(isDirect: Boolean, activeMembersCount: Int): Boolean {
-    return isDirect && activeMembersCount <= 2
+    return isDirect //&& activeMembersCount <= 2
 }
 
 /**

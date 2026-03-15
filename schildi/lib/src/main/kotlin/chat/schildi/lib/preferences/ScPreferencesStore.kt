@@ -79,15 +79,20 @@ class DefaultScPreferencesStore(
         setSetting(scPref, v)
     }
 
+    private fun <T> lookupPref(scPref: ScPref<T>, prefs: Preferences): T {
+        val key = scPref.key ?: return scPref.defaultValue
+        val disabledValue = scPref.disabledValue
+        return if (isEnabled(scPref) { lookupPref(it, prefs) } || disabledValue == null) {
+            prefs[key] ?: scPref.defaultValue
+        } else {
+            disabledValue
+        }
+    }
+
     override fun <T> settingFlow(scPref: ScPref<T>): Flow<T> {
-        val key = scPref.key ?: return emptyFlow()
+        scPref.key ?: return emptyFlow()
         return store.data.map { prefs ->
-            val disabledValue = scPref.disabledValue
-            if (isEnabled(prefs, scPref) || disabledValue == null) {
-                prefs[key] ?: scPref.defaultValue
-            } else {
-                disabledValue
-            }
+            lookupPref(scPref, prefs)
         }
     }
 
@@ -95,16 +100,10 @@ class DefaultScPreferencesStore(
         return store.data.map {  prefs ->
             transform(
                 { scPref ->
-                    val key = scPref.key ?: return@transform scPref.defaultValue
-                    val disabledValue = scPref.disabledValue
-                    if (isEnabled(prefs, scPref) || disabledValue == null) {
-                        prefs[key] ?: scPref.defaultValue
-                    } else {
-                        disabledValue
-                    }
+                    lookupPref(scPref, prefs)
                 },
                 { scPref ->
-                    isEnabled(prefs, scPref)
+                    isEnabled(scPref) { lookupPref(it, prefs) }
                 }
             )
         }
@@ -116,13 +115,13 @@ class DefaultScPreferencesStore(
 
     override fun isEnabledFlow(scPref: AbstractScPref): Flow<Boolean> {
         return store.data.map { prefs ->
-            isEnabled(prefs, scPref)
+            isEnabled(scPref) { lookupPref(it, prefs) }
         }
     }
 
-    private fun isEnabled(prefs: Preferences, scPref: AbstractScPref): Boolean {
+    private fun isEnabled(scPref: AbstractScPref, getPref: (ScPref<*>) -> Any?): Boolean {
         return scPref.dependencies.all {
-            it.fulfilledFor(prefs)
+            it.fulfilledFor(getPref)
         }
     }
 

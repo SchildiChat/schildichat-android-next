@@ -14,7 +14,7 @@ object ScPrefs {
     // Developer options
     private const val SC_DEVELOPER_OPTIONS_CATEGORY_KEY = "SC_DEVELOPER_OPTIONS_CATEGORY"
     private val SC_DANGER_ZONE = ScBoolPref("SC_DANGER_ZONE", false, R.string.sc_pref_danger_zone, R.string.sc_pref_danger_zone_summary, authorsChoice = true)
-    val SC_THEME = ScBoolPref("SC_THEMES", true, R.string.sc_pref_sc_themes_title, R.string.sc_pref_sc_themes_summary, upstreamChoice = false, dependencies = SC_DANGER_ZONE.asDependencies())
+    val EL_THEME = ScBoolPref("EL_THEME", false, R.string.sc_pref_el_theme_title, R.string.sc_pref_el_theme_summary, upstreamChoice = true, dependencies = SC_DANGER_ZONE.asDependencies())
     val SC_PUSH_INFO = ScActionablePref("SC_PUSH_INFO", R.string.sc_push_info_title, R.string.sc_push_info_summary)
     val SC_USER_CHANGED_SETTINGS = ScActionablePref("SC_USER_CHANGED_SETTINGS", R.string.sc_pref_user_changed_prefs_title, R.string.sc_pref_user_changed_prefs_summary)
     val SC_DEV_QUICK_OPTIONS = ScBoolPref("SC_DEV_QUICK_OPTIONS", false, R.string.sc_pref_dev_quick_options, authorsChoice = true)
@@ -25,6 +25,7 @@ object ScPrefs {
     val SC_RESTORE_AUTHORS_CHOICE = ScActionablePref("SC_RESTORE_AUTHORS_CHOICE", R.string.sc_pref_restore_authors_choice, dependencies = SC_DANGER_ZONE.asDependencies())
 
     // Appearance
+    val BLACK_THEME = ScBoolPref("BLACK_THEME", false, R.string.sc_pref_black_theme_title, R.string.sc_pref_black_theme_summary, dependencies = listOf(ScPrefNotDependency(EL_THEME.toDependency())))
     val EL_TYPOGRAPHY = ScBoolPref("EL_TYPOGRAPHY", false, R.string.sc_pref_el_typography_title, R.string.sc_pref_el_typography_summary, upstreamChoice = true)
     val TWO_INITIALS_AVATAR_FALLBACK = ScBoolPref("TWO_INITIALS_AVATAR_FALLBACK", false, R.string.sc_pref_two_initials_avatar_fallback_title, R.string.sc_pref_two_initials_avatar_fallback_summary, upstreamChoice = false, authorsChoice = true)
 
@@ -140,6 +141,7 @@ object ScPrefs {
     val scTweaks = ScPrefScreen(R.string.sc_pref_tweaks_title, null, listOf<AbstractScPref>(
         ScPrefScreen(R.string.sc_pref_category_general, R.string.sc_pref_category_general_summary, listOf(
             ScPrefCategory(R.string.sc_pref_category_general_appearance, null, listOf(
+                BLACK_THEME,
                 EL_TYPOGRAPHY,
                 TWO_INITIALS_AVATAR_FALLBACK,
                 ScPrefScreen(R.string.sc_pref_screen_advanced_theming_title, R.string.sc_pref_screen_advanced_theming_summary, listOf(
@@ -238,9 +240,9 @@ object ScPrefs {
             VIEW_HIDDEN_EVENTS,
             READ_MARKER_DEBUG,
             SC_DANGER_ZONE,
-            SC_THEME,
             ScPrefScreen(R.string.sc_pref_chamber_of_secrets_title, null, listOf(
                 ScDisclaimerPref("SC_CHAMBER_OF_SECRETS_DISCLAIMER", R.string.sc_pref_chamber_of_secrets_summary),
+                EL_THEME,
                 CLIENT_GENERATED_UNREAD_COUNTS,
                 SYNC_READ_RECEIPT_AND_MARKER,
                 MARK_READ_REQUIRES_SEEN_UNREAD_LINE,
@@ -271,8 +273,9 @@ object ScPrefs {
             BURY_LOW_PRIORITY,
         )),
         ScPrefCategory(R.string.sc_pref_category_general_appearance, null, listOf(
-            SC_THEME,
             SC_OVERVIEW_LAYOUT.copy(titleRes = R.string.sc_pref_sc_layout_title),
+            BLACK_THEME,
+            EL_THEME,
             EL_TYPOGRAPHY,
             TWO_INITIALS_AVATAR_FALLBACK,
         )),
@@ -302,7 +305,8 @@ object ScPrefs {
     )
 
     val devQuickTweaksTimeline = listOf(
-        SC_THEME,
+        BLACK_THEME,
+        EL_THEME,
         EL_TYPOGRAPHY,
         SC_TIMELINE_LAYOUT.copy(titleRes = R.string.sc_pref_sc_layout_title),
         HIDE_CALL_TOOLBAR_ACTION,

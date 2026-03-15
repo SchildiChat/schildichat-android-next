@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 sealed interface ScPrefDependency : Parcelable {
-    fun fulfilledFor(preferences: Preferences): Boolean
+    fun fulfilledFor(getPref: (ScPref<*>) -> Any?): Boolean
 }
 
 @Parcelize
@@ -15,21 +15,21 @@ data class ScPrefEnabledDependency(
     val expect: Boolean = true,
 ) : ScPrefDependency {
     private fun fulfilledFor(value: Boolean): Boolean = value == expect
-    override fun fulfilledFor(preferences: Preferences): Boolean = fulfilledFor(preferences[pref.key!!] ?: pref.defaultValue)
+    override fun fulfilledFor(getPref: (ScPref<*>) -> Any?): Boolean = fulfilledFor(pref.safeLookup(getPref))
 }
 
 @Parcelize
 data class ScPrefFulfilledForAnyDependency(
     val dependencies: List<ScPrefDependency>,
 ) : ScPrefDependency {
-    override fun fulfilledFor(preferences: Preferences): Boolean = dependencies.any { it.fulfilledFor(preferences) }
+    override fun fulfilledFor(getPref: (ScPref<*>) -> Any?): Boolean = dependencies.any { it.fulfilledFor(getPref) }
 }
 
 @Parcelize
 data class ScPrefNotDependency(
     val dependency: ScPrefDependency,
 ) : ScPrefDependency {
-    override fun fulfilledFor(preferences: Preferences): Boolean = !dependency.fulfilledFor(preferences)
+    override fun fulfilledFor(getPref: (ScPref<*>) -> Any?): Boolean = !dependency.fulfilledFor(getPref)
 }
 
 fun ScPref<Boolean>.toDependency(expect: Boolean = true): ScPrefDependency = ScPrefEnabledDependency(this, expect)

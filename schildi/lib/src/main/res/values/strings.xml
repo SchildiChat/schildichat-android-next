@@ -12,6 +12,10 @@
     <string name="sc_pref_tweaks_title">Turtle tweaks</string>
     <string name="sc_pref_sc_themes_title">SC theme</string>
     <string name="sc_pref_sc_themes_summary">Disable to follow Element\'s theme.</string>
+    <string name="sc_pref_el_theme_title">Element theme</string>
+    <string name="sc_pref_el_theme_summary">Prefer color scheme from Element X</string>
+    <string name="sc_pref_black_theme_title">Black theme</string>
+    <string name="sc_pref_black_theme_summary">Black background while in dark theme</string>
     <string name="sc_pref_sc_layout_title">SC layout</string>
     <string name="sc_pref_sc_layout_summary">Disable to follow Element\'s layout.</string>
     <string name="sc_pref_sc_overview_layout_title">SC overview layout</string>

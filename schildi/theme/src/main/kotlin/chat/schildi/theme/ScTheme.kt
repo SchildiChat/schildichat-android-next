@@ -53,11 +53,10 @@ object ScTheme {
 // Element defaults to light compound colors, so follow that as fallback default for exposures as well
 internal val LocalScExposures = staticCompositionLocalOf { elementLightScExposures }
 
-fun getThemeExposures(darkTheme: Boolean, useScTheme: Boolean) = when {
-    darkTheme && useScTheme -> scdExposures
-    !darkTheme && useScTheme -> sclExposures
-    darkTheme && !useScTheme -> elementDarkScExposures
-    else -> elementLightScExposures
+fun getThemeExposures(darkTheme: Boolean, useElTheme: Boolean, useBlackTheme: Boolean) = when {
+    useElTheme -> if (darkTheme) elementDarkScExposures else elementLightScExposures
+    darkTheme -> if (useBlackTheme) scbExposures else scdExposures
+    else -> sclExposures
 }
 
 @Composable
@@ -66,17 +65,18 @@ fun ScTheme(
     applySystemBarsUpdate: Boolean = true,
     lightStatusBar: Boolean = !darkTheme,
     dynamicColor: Boolean = false, /* true to enable MaterialYou */
-    useScTheme: Boolean = ScPrefs.SC_THEME.value(),
     useElTypography: Boolean = ScPrefs.EL_TYPOGRAPHY.value(),
     content: @Composable () -> Unit,
 ) {
     val typography = if (useElTypography) elTypography else scTypography
     val typographyTokens = if (useElTypography) ElTypographyTokens else ScTypographyTokens
+    val useElTheme = ScPrefs.EL_THEME.value()
+    val useBlackTheme = ScPrefs.BLACK_THEME.value()
 
     val currentExposures = remember {
         // EleLight is default
         elementLightScExposures.copy()
-    }.apply { updateColorsFrom(getThemeExposures(darkTheme, useScTheme)) }
+    }.apply { updateColorsFrom(getThemeExposures(darkTheme, useElTheme, useBlackTheme)) }
 
     CompositionLocalProvider(
         LocalScExposures provides currentExposures
@@ -86,10 +86,10 @@ fun ScTheme(
             applySystemBarsUpdate = applySystemBarsUpdate,
             lightStatusBar = lightStatusBar,
             dynamicColor = dynamicColor,
-            compoundLight = if (useScTheme) sclSemanticColors else elColorsLight,
-            compoundDark = if (useScTheme) scdSemanticColors else elColorsDark,
-            materialColorsLight = if (useScTheme) sclMaterialColorScheme else elMaterialColorSchemeLight,
-            materialColorsDark = if (useScTheme) scdMaterialColorScheme else elMaterialColorSchemeDark,
+            compoundLight = if (useElTheme) elColorsLight else sclSemanticColors,
+            compoundDark = if (useElTheme) elColorsDark else if (useBlackTheme) scbSemanticColors else scdSemanticColors,
+            materialColorsLight = if (useElTheme) elMaterialColorSchemeLight else sclMaterialColorScheme,
+            materialColorsDark = if (useElTheme) elMaterialColorSchemeDark else if (useBlackTheme) scbMaterialColorScheme else scdMaterialColorScheme,
             typography = typography,
             typographyTokens = typographyTokens,
             content = content,
@@ -105,7 +105,6 @@ fun ScTheme(
 @Composable
 fun ForcedDarkScTheme(
     lightStatusBar: Boolean = false,
-    useScTheme: Boolean = ScPrefs.SC_THEME.value(),
     content: @Composable () -> Unit,
 ) {
     val colorScheme = MaterialTheme.colorScheme
@@ -129,7 +128,7 @@ fun ForcedDarkScTheme(
             )
         }
     }
-    ScTheme(darkTheme = true, lightStatusBar = lightStatusBar, useScTheme = useScTheme, content = content)
+    ScTheme(darkTheme = true, lightStatusBar = lightStatusBar, content = content)
 }
 
 // Calculate the color as if with alpha on white background

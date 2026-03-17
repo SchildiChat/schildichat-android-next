@@ -12,6 +12,7 @@ import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomAlias
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.UserId
+import io.element.android.libraries.matrix.api.room.BridgeState
 import io.element.android.libraries.matrix.api.room.CurrentUserMembership
 import io.element.android.libraries.matrix.api.room.RoomInfo
 import io.element.android.libraries.matrix.api.room.RoomNotificationMode
@@ -74,6 +75,7 @@ class RoomInfoMapper {
             spaceChildren = it.spaceChildren.map(MatrixSpaceChildInfoMapper::map),
             canUserManageSpaces = it.canUserManageSpaces,
             unreadCount = it.unreadCount.toLong(),
+            bridgeState = it.bridgeStates.map(BridgeState::from),
             // SC end
             historyVisibility = it.historyVisibility.map(),
             successorRoom = it.successorRoom?.map(),

@@ -363,7 +363,16 @@ class RustMatrixClient(
         runCatching {
             innerClient.setAccountData(eventType, content)
         }
-        Unit
+    }
+    override suspend fun getGlobalAccountData() = withContext(sessionDispatcher) {
+        runCatching {
+            innerClient.accountDataEvents()
+        }
+    }
+    override suspend fun getRoomAccountData(roomId: RoomId) = withContext(sessionDispatcher) {
+        runCatching {
+            innerClient.roomAccountDataEvents(roomId.value)
+        }
     }
 
     override suspend fun getUrlPreviewJson(url: String): String = withContext(sessionDispatcher) {

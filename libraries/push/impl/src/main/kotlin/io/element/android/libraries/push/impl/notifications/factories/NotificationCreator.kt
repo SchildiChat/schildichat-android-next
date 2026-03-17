@@ -194,6 +194,7 @@ class DefaultNotificationCreator(
             MessagingStyle.extractMessagingStyleFromNotification(it)
         } ?: createMessagingStyleFromCurrentUser(
             user = notificationAccountParams.user,
+            senderName = events.map { it.senderDisambiguatedDisplayName }.distinct().takeIf { it.size == 1 }?.firstOrNull(), // SC
             imageLoader = imageLoader,
             roomName = roomInfo.roomDisplayName,
             isThread = threadId != null,
@@ -503,6 +504,7 @@ class DefaultNotificationCreator(
 
     private suspend fun createMessagingStyleFromCurrentUser(
         user: MatrixUser,
+        senderName: String?, // SC
         imageLoader: ImageLoader,
         roomName: String,
         isThread: Boolean,
@@ -523,7 +525,7 @@ class DefaultNotificationCreator(
         ).also {
             it.conversationTitle = if (isThread) {
                 stringProvider.getString(R.string.notification_thread_in_room, roomName)
-            } else if  (roomIsGroup || roomName != user.displayName) { // SC
+            } else if (roomIsGroup || roomName != senderName) { // SC
                 roomName
             } else {
                 null // SC

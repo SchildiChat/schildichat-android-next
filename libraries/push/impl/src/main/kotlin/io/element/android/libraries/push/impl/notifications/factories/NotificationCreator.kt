@@ -523,7 +523,7 @@ class DefaultNotificationCreator(
         ).also {
             it.conversationTitle = if (isThread) {
                 stringProvider.getString(R.string.notification_thread_in_room, roomName)
-            } else if  (!roomIsGroup || roomName != user.displayName) { // SC
+            } else if  (roomIsGroup || roomName != user.displayName) { // SC
                 roomName
             } else {
                 null // SC

@@ -366,12 +366,12 @@ class RustMatrixClient(
     }
     override suspend fun getGlobalAccountData() = withContext(sessionDispatcher) {
         runCatching {
-            innerClient.accountDataEvents()
+            innerClient.accountDataEvents().map(::mapRustAccountDataRawEvent)
         }
     }
     override suspend fun getRoomAccountData(roomId: RoomId) = withContext(sessionDispatcher) {
         runCatching {
-            innerClient.roomAccountDataEvents(roomId.value)
+            innerClient.roomAccountDataEvents(roomId.value).map(::mapRustAccountDataRawEvent)
         }
     }
 

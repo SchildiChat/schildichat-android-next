@@ -49,7 +49,6 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import org.matrix.rustcomponents.sdk.AccountDataRawEvent
 import java.util.Optional
 
 interface MatrixClient {

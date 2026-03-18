@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PushPin
@@ -42,6 +43,10 @@ import io.element.android.features.messages.impl.showMarkAsReadQuickAction
 import io.element.android.features.messages.impl.takeIfIsValidEventId
 import io.element.android.features.messages.impl.timeline.TimelineEvent
 import io.element.android.features.roomcall.api.RoomCallState
+import io.element.android.libraries.designsystem.components.avatar.Avatar
+import io.element.android.libraries.designsystem.components.avatar.AvatarData
+import io.element.android.libraries.designsystem.components.avatar.AvatarSize
+import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.icons.CompoundDrawables
 import io.element.android.libraries.designsystem.theme.components.DropdownMenu
 import io.element.android.libraries.designsystem.theme.components.DropdownMenuItem
@@ -52,6 +57,12 @@ import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.ui.strings.CommonStrings
 
 @Composable
+internal fun ScTitleAdditions(state: MessagesState) {
+    ScBridgeAvatar(state)
+    ScNotEncryptedIndicator(state.isRoomEncrypted)
+}
+
+@Composable
 internal fun ScNotEncryptedIndicator(isRoomEncrypted: Boolean?) {
     if (isRoomEncrypted == false && ScPrefs.SC_TIMELINE_LAYOUT.value()) {
         Icon(
@@ -60,6 +71,23 @@ internal fun ScNotEncryptedIndicator(isRoomEncrypted: Boolean?) {
             contentDescription = null,
             tint = ElementTheme.colors.iconInfoPrimary,
         )
+    }
+}
+
+@Composable
+internal fun ScBridgeAvatar(state: MessagesState?) {
+    state?.bridgeState?.firstOrNull { it.protocol?.avatarUrl != null }?.protocol?.let { protocol ->
+        protocol.avatarUrl?.let { bridgeAvatar ->
+            Avatar(
+                avatarData = AvatarData(
+                    id = protocol.id ?: "",
+                    name = protocol.displayName,
+                    url = bridgeAvatar,
+                    size = AvatarSize.InviteSender,
+                ),
+                avatarType = AvatarType.Sc(CircleShape),
+            )
+        }
     }
 }
 

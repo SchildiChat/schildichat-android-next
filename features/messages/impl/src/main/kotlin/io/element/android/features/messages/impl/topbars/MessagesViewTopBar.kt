@@ -118,7 +118,7 @@ internal fun MessagesViewTopBar(
                     else -> Unit
                 }
 
-                ScNotEncryptedIndicator(state.isRoomEncrypted)
+                ScTitleAdditions(state)
 
                 when (sharedHistoryIcon) {
                     SharedHistoryIcon.NONE -> Unit

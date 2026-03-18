@@ -10,6 +10,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Faster screen transitions †
 - App icon & branding ⸸
 - Customizable colors for message bubbles †
+- Render bridge icons in inbox † and chat title
 
 
 ## Chat overview ("room list")

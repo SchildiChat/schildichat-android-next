@@ -315,6 +315,7 @@ class MessagesPresenter(
             pinnedMessagesBannerState = pinnedMessagesBannerState,
             dmUserVerificationState = dmUserVerificationState,
             isRoomEncrypted = roomInfo.isEncrypted, // SC
+            bridgeState = roomInfo.bridgeState.toImmutableList(), // SC
             roomMemberModerationState = roomMemberModerationState,
             topBarSharedHistoryIcon = topBarSharedHistoryIcon,
             successorRoom = roomInfo.successorRoom,

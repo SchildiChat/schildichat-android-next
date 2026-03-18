@@ -42,12 +42,13 @@ class RoomListRoomSummaryFactory(
             numberOfUnreadNotifications = roomInfo.numUnreadNotifications,
             // SC start
             canUserManageSpaces = roomInfo.canUserManageSpaces,
-            spaceChildren = roomInfo.spaceChildren,
+            spaceChildren = roomInfo.spaceChildren.toImmutableList(),
             notificationCount = roomInfo.notificationCount,
             highlightCount = roomInfo.highlightCount,
             unreadCount = roomInfo.unreadCount,
             lastMessageTimestamp = roomSummary.latestEventTimestamp,
             isLowPriority = roomInfo.isLowPriority,
+            bridgeState = roomInfo.bridgeState.toImmutableList(),
             // SC end
             isMarkedUnread = roomInfo.isMarkedUnread,
             timestamp = dateFormatter.format(

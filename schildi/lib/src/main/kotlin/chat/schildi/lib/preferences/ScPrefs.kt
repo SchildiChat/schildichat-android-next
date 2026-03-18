@@ -57,6 +57,7 @@ object ScPrefs {
     )
     val DUAL_MENTION_UNREAD_COUNTS = ScBoolPref("DUAL_MENTION_UNREAD_COUNTS", false, R.string.sc_pref_dual_mention_unread_counts_title, R.string.sc_pref_dual_mention_unread_counts_summary, authorsChoice = true, dependencies = SC_OVERVIEW_LAYOUT.asDependencies())
     val HIDE_INVITES = ScBoolPref("HIDE_INVITES", false, R.string.sc_pref_hide_invites_title, R.string.sc_pref_hide_invites_summary)
+    val INBOX_BRIDGE_AVATARS = ScBoolPref("INBOX_BRIDGE_AVATARS", true, R.string.sc_pref_inbox_bridge_avatars_title, R.string.sc_pref_inbox_bridge_avatars_summary, authorsChoice = true, upstreamChoice = false, dependencies = SC_OVERVIEW_LAYOUT.asDependencies())
 
     // Spaces
     val SPACE_NAV = ScBoolPref("SPACE_NAV", true, R.string.sc_space_nav_title, R.string.sc_space_nav_summary, upstreamChoice = false, authorsChoice = true)
@@ -158,6 +159,7 @@ object ScPrefs {
             ELEMENT_ROOM_LIST_FILTERS,
             SNC_FAB,
             HIDE_INVITES,
+            INBOX_BRIDGE_AVATARS,
             ScPrefCategory(R.string.sc_pref_category_chat_sorting, null, listOf(
                 SORT_BY_UNREAD,
                 SORT_WITH_SILENT_UNREAD,
@@ -261,6 +263,7 @@ object ScPrefs {
         ELEMENT_ROOM_LIST_FILTERS, // Used to be: ScUpstreamFeatureFlagAliasPref(FeatureFlags.RoomListFilters, R.string.sc_upstream_feature_flag_room_list_filters),
         SNC_FAB.copy(titleRes = R.string.sc_pref_snc_fab_title_short),
         RENDER_SILENT_UNREAD,
+        INBOX_BRIDGE_AVATARS,
         // Timeline settings that don't reload live while the room is open
         ScPrefCategory(R.string.sc_pref_category_timeline_short, null, listOf(
             VIEW_REDACTIONS,

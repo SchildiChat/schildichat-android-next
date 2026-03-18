@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Archive
@@ -64,6 +65,8 @@ import io.element.android.features.home.impl.model.RoomListRoomSummaryProvider
 import io.element.android.features.home.impl.model.RoomSummaryDisplayType
 import io.element.android.features.home.impl.roomlist.RoomListEvent
 import io.element.android.libraries.designsystem.components.avatar.Avatar
+import io.element.android.libraries.designsystem.components.avatar.AvatarData
+import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
@@ -142,14 +145,32 @@ private fun ScRoomSummaryRealRow(
             .padding(horizontal = 16.dp, vertical = 11.dp)
             .height(IntrinsicSize.Min),
     ) {
-        Avatar(
-            avatarData = room.avatarData,
-            avatarType = AvatarType.Room(
-                isTombstoned = room.isTombstoned,
-                heroes = room.heroes,
-            ),
-            modifier = Modifier.align(Alignment.CenterVertically)
-        )
+        Box(Modifier.align(Alignment.CenterVertically)) {
+            Avatar(
+                avatarData = room.avatarData,
+                avatarType = AvatarType.Room(
+                    isTombstoned = room.isTombstoned,
+                    heroes = room.heroes,
+                ),
+            )
+            if (ScPrefs.INBOX_BRIDGE_AVATARS.value()) {
+                room.bridgeState.firstOrNull { it.protocol?.avatarUrl != null }?.protocol?.let { protocol ->
+                    protocol.avatarUrl?.let { bridgeAvatar ->
+                        Avatar(
+                            avatarData = AvatarData(
+                                id = protocol.id ?: "",
+                                name = protocol.displayName,
+                                url = bridgeAvatar,
+                                size = AvatarSize.InviteSender,
+                            ),
+                            avatarType = AvatarType.Sc(CircleShape),
+                            modifier = Modifier.align(Alignment.BottomEnd),
+                        )
+                    }
+                }
+            }
+
+        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()

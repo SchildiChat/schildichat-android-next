@@ -13,10 +13,12 @@ import io.element.android.features.invite.api.InviteData
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.matrix.api.core.RoomAlias
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.room.BridgeState
 import io.element.android.libraries.matrix.api.room.MatrixSpaceChildInfo
 import io.element.android.libraries.matrix.api.room.RoomNotificationMode
 import io.element.android.libraries.matrix.ui.model.InviteSender
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Immutable
 data class RoomListRoomSummary(
@@ -29,7 +31,7 @@ data class RoomListRoomSummary(
     val numberOfUnreadMentions: Long,
     val numberOfUnreadNotifications: Long,
     // SC: spaces
-    val spaceChildren: List<MatrixSpaceChildInfo> = emptyList(),
+    val spaceChildren: ImmutableList<MatrixSpaceChildInfo> = persistentListOf(),
     val canUserManageSpaces: Boolean = false,
     // SC: server-reported values compared to client-generated above
     val notificationCount: Long = 0,
@@ -38,6 +40,7 @@ data class RoomListRoomSummary(
     // SC client-side sorting
     val lastMessageTimestamp: Long? = null,
     val isLowPriority: Boolean = false,
+    val bridgeState: ImmutableList<BridgeState> = persistentListOf(),
     // SC end
     val isMarkedUnread: Boolean,
     val timestamp: String?,

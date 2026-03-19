@@ -133,6 +133,7 @@ private fun List<Reaction>?.map(): ImmutableList<EventReaction> {
     return this?.map {
         EventReaction(
             key = it.key,
+            shortcode = it.shortcode, // SC
             senders = it.senders.map { sender ->
                 ReactionSender(
                     senderId = UserId(sender.senderId),

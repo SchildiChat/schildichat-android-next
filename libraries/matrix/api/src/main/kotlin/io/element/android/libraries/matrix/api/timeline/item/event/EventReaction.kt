@@ -12,5 +12,6 @@ import kotlinx.collections.immutable.ImmutableList
 
 data class EventReaction(
     val key: String,
+    val shortcode: String?, // SC
     val senders: ImmutableList<ReactionSender>
 )

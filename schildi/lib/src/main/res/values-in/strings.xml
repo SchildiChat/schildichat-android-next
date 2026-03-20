@@ -7,7 +7,7 @@
     <string name="sc_pref_sc_layout_title">Tata letak SC</string>
     <string name="sc_pref_sc_overview_layout_title">Tata letak ikhtisar SC</string>
     <string name="sc_pref_sc_floating_date_title">Tanggal mengambang</string>
-    <string name="sc_pref_pl_display_name_title">Warna nama berdasarkan tingkat daya</string>
+    <string name="sc_pref_pl_display_name_title">Warna nama panggilan berbeda berdasarkan peran</string>
     <string name="sc_pref_pl_display_name_summary_warning">Tidak bekerja secara andal ketika daftar anggota belum sepenuhnya didapatkan</string>
     <string name="sc_pref_el_typography_title">Tipografi Element</string>
     <string name="sc_pref_el_typography_summary">Gunakan pengaturan fon Element dengan teks pesan yang lebih besar</string>
@@ -68,4 +68,9 @@
     <string name="sc_client_generated_unread_counts_summary">Hitung nilai belum dibaca di perangkat ini daripada menggunakan nilai dari server</string>
     <string name="sc_push_info_summary">Tampilkan info awakutu berkaitan dengan notifikasi dorong</string>
     <string name="sc_pref_notification_only_alert_once_title">Hanya ingatkan sekali</string>
+    <string name="sc_pref_el_theme_title">Tema Element</string>
+    <string name="sc_pref_el_theme_summary">Utamakan skema warna dari Element X</string>
+    <string name="sc_pref_black_theme_title">Tema hitam</string>
+    <string name="sc_pref_black_theme_summary">Latar belakang hitam saat dalam tema gelap</string>
+    <string name="sc_pref_notification_only_alert_once_summary">Hilangkan suara peringatan untuk pesan baru jika sudah ada notifikasi terbuka untuk pesan tersebut</string>
 </resources>

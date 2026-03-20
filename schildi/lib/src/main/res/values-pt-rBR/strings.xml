@@ -194,4 +194,10 @@
     <string name="sc_pref_view_redactions_summary">Renderizar espaço reservado para mensagens excluídas em vez de as esconder completamente</string>
     <string name="sc_pref_legacy_message_rendering_title">Renderizador legado de mensagens</string>
     <string name="sc_pref_legacy_message_rendering_summary">Maneira do Element de renderizar mensagens formatadas</string>
+    <string name="sc_pref_el_theme_title">Tema do Element</string>
+    <string name="sc_pref_el_theme_summary">Priorizar o esquema de cores do Element X</string>
+    <string name="sc_pref_black_theme_title">Tema preto</string>
+    <string name="sc_pref_black_theme_summary">Usar fundo preto no tema escuro</string>
+    <string name="sc_pref_inbox_bridge_avatars_title">Mostrar avatares da ponte</string>
+    <string name="sc_pref_inbox_bridge_avatars_summary">Renderizar avatares da ponte em conversas com pontes</string>
 </resources>

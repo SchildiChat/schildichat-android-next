@@ -30,6 +30,8 @@ dependencies {
     } else {
         debugImplementation(libs.matrix.sdk)
     }
+    implementation(files("libs/rustls-platform-verifier-android.aar"))
+
     implementation(projects.appconfig)
     implementation(projects.libraries.androidutils)
     implementation(projects.libraries.di)

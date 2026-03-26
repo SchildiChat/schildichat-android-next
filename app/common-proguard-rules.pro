@@ -75,7 +75,10 @@
 # Keep Metro classes
 -keep,allowoptimization,allowshrinking class dev.zacsweers.metro.** { *; }
 
-# Unneeded messageformat htmlcompressor dependencies
+# SC: Unneeded messageformat htmlcompressor dependencies
 -dontwarn com.yahoo.platform.yui.compressor.CssCompressor
 -dontwarn com.yahoo.platform.yui.compressor.JavaScriptCompressor
 -dontwarn org.mozilla.javascript.ErrorReporter
+
+# Rustls Platform Verifier
+-keep, includedescriptorclasses class org.rustls.platformverifier.** { *; }

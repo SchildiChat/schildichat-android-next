@@ -59,6 +59,8 @@ interface NotificationChannels {
      * Get the channel for test notifications.
      */
     fun getChannelIdForTest(): String
+
+    fun getSilentChannelId(): String = SILENT_NOTIFICATION_CHANNEL_ID
 }
 
 @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.O)

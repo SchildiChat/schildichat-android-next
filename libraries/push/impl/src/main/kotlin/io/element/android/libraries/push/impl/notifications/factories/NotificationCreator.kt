@@ -11,11 +11,11 @@ package io.element.android.libraries.push.impl.notifications.factories
 import android.app.Notification
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.Bundle
 import androidx.annotation.ColorInt
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.MessagingStyle
 import androidx.core.app.Person
-import androidx.core.os.bundleOf
 import coil3.ImageLoader
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
@@ -147,7 +147,7 @@ class DefaultNotificationCreator(
                 sessionId = roomInfo.sessionId,
                 roomId = roomInfo.roomId,
                 eventId = eventId,
-                extras = bundleOf(ROOM_OPENED_FROM_NOTIFICATION to true),
+                extras = Bundle().apply { putBoolean(ROOM_OPENED_FROM_NOTIFICATION, true) },
             )
         }
         val containsMissedCall = events.any { it.type == EventType.RTC_NOTIFICATION }
@@ -297,7 +297,7 @@ class DefaultNotificationCreator(
                     sessionId = simpleNotifiableEvent.sessionId,
                     roomId = simpleNotifiableEvent.roomId,
                     eventId = null,
-                    extras = bundleOf(ROOM_OPENED_FROM_NOTIFICATION to true),
+                    extras = Bundle().apply { putBoolean(ROOM_OPENED_FROM_NOTIFICATION, true) },
                 )
             )
             .apply {
@@ -335,9 +335,7 @@ class DefaultNotificationCreator(
                     .annotateForDebug(8)
             )
             .setExtras(
-                bundleOf(
-                    FALLBACK_COUNTER_EXTRA to counter
-                )
+                Bundle().apply { putInt(FALLBACK_COUNTER_EXTRA, counter) },
             )
             .setNumber(counter)
             .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)

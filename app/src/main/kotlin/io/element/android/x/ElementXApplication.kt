@@ -8,6 +8,9 @@
 
 package io.element.android.x
 
+import android.app.Application
+import androidx.compose.material3.ComposeMaterial3Flags.isAnchoredDraggableComponentsStrictOffsetCheckEnabled
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.text.EmojiCompat
 import androidx.startup.AppInitializer
@@ -28,6 +31,7 @@ class ElementXApplication : ScApplication(), DependencyInjectionGraphOwner, Conf
         .setWorkerFactory(MetroWorkerFactory(graph.workerProviders))
         .build()
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate() {
         super.onCreate()
         AppInitializer.getInstance(this).apply {
@@ -39,5 +43,9 @@ class ElementXApplication : ScApplication(), DependencyInjectionGraphOwner, Conf
         EmojiCompat.init(BundledEmojiCompatConfig(this)) // SC
 
         logApplicationInfo(this)
+
+        // Disable the strict offset check for anchored draggable components, as it can cause issues with bottom sheets.
+        // Remove once https://issuetracker.google.com/issues/477038695 is fixed.
+        isAnchoredDraggableComponentsStrictOffsetCheckEnabled = false
     }
 }

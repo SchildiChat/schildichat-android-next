@@ -168,6 +168,7 @@ git_changelog() {
         | grep -v "Translated using Weblate" \
         | grep -v "weblate/main" \
         | grep -v "\\[.*merge.*\\]" \
+        | grep -v "\\[.*sdk.*\\]" \
         | grep -v "Disable Android Auto supports" \
         | grep -v "Switch to alternative Schil" \
         | grep -vi "fastlane" \

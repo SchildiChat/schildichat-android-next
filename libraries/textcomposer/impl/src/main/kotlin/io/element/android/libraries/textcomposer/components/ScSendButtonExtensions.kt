@@ -7,8 +7,14 @@ import chat.schildi.theme.ScTheme
 import io.element.android.compound.theme.ElementTheme
 
 @Composable
-fun scButtonBackgroundModifier(canSendMessage: Boolean) = when {
+fun scSendButtonBackgroundModifier(canSendMessage: Boolean) = when {
     !ScTheme.yes -> null
     canSendMessage -> Modifier.background(ElementTheme.colors.bgAccentRest)
     else -> Modifier
+}
+
+@Composable
+fun scSendButtonTint() = when {
+    !ScTheme.yes -> null
+    else -> ScTheme.exposures.colorOnAccent
 }

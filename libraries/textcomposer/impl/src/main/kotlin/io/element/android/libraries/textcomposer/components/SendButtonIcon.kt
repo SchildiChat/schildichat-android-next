@@ -55,7 +55,7 @@ internal fun SendButtonIcon(
             .clip(CircleShape)
             .size(36.dp)
             .then(
-                scButtonBackgroundModifier(canSendMessage) ?: Modifier.background(backgroundColor)
+                scSendButtonBackgroundModifier(canSendMessage) ?: Modifier.background(backgroundColor)
             )
     ) {
         Icon(
@@ -65,7 +65,7 @@ internal fun SendButtonIcon(
             imageVector = iconVector,
             // Note: accessibility is managed in TextComposer.
             contentDescription = null,
-            tint = if (canSendMessage) {
+            tint = scSendButtonTint() ?: if (canSendMessage) {
                 ElementTheme.colors.iconOnSolidPrimary
             } else {
                 ElementTheme.colors.iconQuaternary

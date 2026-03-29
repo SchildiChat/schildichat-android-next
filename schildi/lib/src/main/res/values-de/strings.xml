@@ -186,4 +186,8 @@
     <string name="sc_notification_lookup_failure_summary">Fehler beim Nachschlagen von Benachrichtigungen</string>
     <string name="sc_bg_notification_channel">Hintergrundservice</string>
     <string name="sc_push_failure_notification_channel">Benachrichtigungsfehler</string>
+    <string name="sc_pref_el_theme_title">Element Design</string>
+    <string name="sc_pref_el_theme_summary">Bevorzuge Farbschema von Element X</string>
+    <string name="sc_pref_black_theme_title">Schwarzes Design</string>
+    <string name="sc_pref_black_theme_summary">Schwarzer Hintergrund während dem dunklen Design</string>
 </resources>

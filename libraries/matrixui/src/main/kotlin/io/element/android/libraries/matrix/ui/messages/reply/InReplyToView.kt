@@ -203,7 +203,7 @@ private fun ReplyToContentText(metadata: InReplyToMetadata?) {
             fontStyle = fontStyle,
             textAlign = TextAlign.Start,
             color = ElementTheme.colors.textSecondary,
-            maxLines = ScPrefs.REPLY_PREVIEW_LINE_COUNT.value(),
+            maxLines = if (LocalIsInComposer.current) 1 else ScPrefs.REPLY_PREVIEW_LINE_COUNT.value(),
             overflow = TextOverflow.Ellipsis,
         )
     }

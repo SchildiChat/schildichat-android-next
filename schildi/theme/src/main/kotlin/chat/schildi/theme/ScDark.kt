@@ -103,8 +103,8 @@ internal val scdSemanticColors = SemanticColors(
     textBadgeInfo = scd_fgPrimary,
     textBadgeAccent = scd_fgPrimary,
     bgSubtlePrimary = scd_bg,
-    bgSubtleSecondary =  scd_bgFloating,
-    bgSubtleSecondaryLevel0 =  scd_bg,
+    bgSubtleSecondary = scd_bgFloating,
+    bgSubtleSecondaryLevel0 = scd_bg,
     bgCanvasDefault = scd_bg,
     bgCanvasDefaultLevel1 = scd_bgFloating,
     bgCanvasDisabled = scd_bgDarker,
@@ -121,12 +121,15 @@ internal val scdSemanticColors = SemanticColors(
     bgBadgeAccent = ScColors.colorAccentGreenAlpha_30,
     bgBadgeDefault = ScColors.colorGray_61,
     bgBadgeInfo = DarkColorTokens.colorAlphaBlue300, // TODO?
+    bgBadgeCritical = DarkColorTokens.colorRed900, // TODO
+    bgBadgePrimary = scd_bg,
+    bgBadgeSecondary = scd_bgFloating,
     bgCriticalPrimary = DarkColorTokens.colorRed900, // TODO
     bgCriticalHovered = DarkColorTokens.colorRed1000, // TODO
     bgCriticalSubtle = DarkColorTokens.colorRed200, // TODO
     bgCriticalSubtleHovered = DarkColorTokens.colorRed300, // TODO
     borderAccentSubtle = scd_accent,
-    bgSuccessSubtle = ScColors.colorAccentGreen.copy(alpha=0.2f),
+    bgSuccessSubtle = ScColors.colorAccentGreen.copy(alpha = 0.2f),
     bgInfoSubtle = ScColors.colorAccentBlueDark,
     borderDisabled = scd_divider,
     borderFocused = DarkColorTokens.colorBlue900, // TODO

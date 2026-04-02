@@ -148,7 +148,7 @@ interface BaseRoom : Closeable {
     suspend fun setIsLowPriority(isLowPriority: Boolean): Result<Unit>
     suspend fun forceSendSingleReadReceipt(receiptType: ReceiptType, eventId: EventId): Result<Unit>
     suspend fun sendRaw(eventType: String, content: String): Result<Unit>
-    suspend fun sendRawState(eventType: String, stateKey: String, content: String): Result<Unit>
+    suspend fun sendRawState(eventType: String, stateKey: String, content: String): Result<String>
     suspend fun getRawState(eventType: String, stateKey: String): Result<String?>
     suspend fun getRawState(eventType: String): Result<List<String>>
     suspend fun fetchFullRoomState(): Result<List<String>>

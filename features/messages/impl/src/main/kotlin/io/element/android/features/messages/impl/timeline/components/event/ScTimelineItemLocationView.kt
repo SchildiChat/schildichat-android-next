@@ -36,6 +36,8 @@ import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.placeholderBackground
+import io.element.android.libraries.matrix.api.core.UserId
+import io.element.android.libraries.matrix.api.timeline.item.event.ProfileDetails
 import io.element.android.libraries.textcomposer.ElementRichTextEditorStyle
 import io.element.android.wysiwyg.compose.EditorStyledText
 
@@ -105,8 +107,11 @@ fun ScTimelineItemLocationPreview() = ElementPreview {
         ScTimelineItemLocationView(
             content = TimelineItemLocationContent(
                 "Body",
+                UserId("@nobody"),
+                ProfileDetails.Unavailable,
                 Location(0.0, 0.0, 0f),
-                "Description"
+                "Description",
+                mode = TimelineItemLocationContent.Mode.Static,
             ),
             onContentLayoutChange = {},
         )

@@ -66,7 +66,7 @@ class TimelineItemEventFactory(
             timestamp = currentTimelineItem.event.timestamp,
             mode = DateFormatterMode.TimeOnly,
         )
-        val sentDate = dateFormatter.format( // SC
+        val sentDate = dateFormatter.format(
             timestamp = currentTimelineItem.event.timestamp,
             mode = DateFormatterMode.Day,
             useRelative = true,
@@ -115,7 +115,7 @@ class TimelineItemEventFactory(
             canBeRepliedTo = currentTimelineItem.event.canBeRepliedTo,
             sentTimeMillis = currentTimelineItem.event.timestamp,
             sentTime = sentTime,
-            sentDate = sentDate, // SC
+            sentDate = sentDate,
             groupPosition = groupPosition,
             reactionsState = currentTimelineItem.computeReactionsState(),
             readReceiptState = currentTimelineItem.computeReadReceiptState(roomMembers),

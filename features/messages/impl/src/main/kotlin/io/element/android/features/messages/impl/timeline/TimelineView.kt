@@ -47,6 +47,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import chat.schildi.lib.preferences.ScPrefs.FLOATING_DATE
 import chat.schildi.lib.preferences.value
@@ -55,6 +56,7 @@ import com.google.common.primitives.Ints.min
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.messages.impl.crypto.sendfailure.resolve.ResolveVerifiedUserSendFailureView
+import io.element.android.features.messages.impl.timeline.components.FloatingDateBadgeOverlay
 import io.element.android.features.messages.impl.timeline.components.TimelineItemRow
 import io.element.android.features.messages.impl.timeline.components.toText
 import io.element.android.features.messages.impl.timeline.di.LocalTimelineItemPresenterFactories
@@ -109,6 +111,7 @@ fun TimelineView(
     lazyListState: LazyListState = rememberLazyListState(),
     forceJumpToBottomVisibility: Boolean = false,
     nestedScrollConnection: NestedScrollConnection = rememberNestedScrollInteropConnection(),
+    floatingDateTopOffset: Dp = 0.dp,
 ) {
     fun clearFocusRequestState() {
         state.eventSink(TimelineEvent.ClearFocusRequestState)
@@ -221,8 +224,17 @@ fun TimelineView(
                 onJumpToLive = ::onJumpToLive,
                 onFocusEventRender = ::onFocusEventRender,
             )
-            if (FLOATING_DATE.value()) {
+
+            if (FLOATING_DATE.value() && useReverseLayout) {
+                // The SC variant - upstream added theirs later
                 FloatingDateHeader(lazyListState, state.timelineItems)
+            } else if (state.displayFloatingDateBadge && useReverseLayout) {
+                FloatingDateBadgeOverlay(
+                    lazyListState = lazyListState,
+                    timelineItems = state.timelineItems,
+                    isLive = state.isLive,
+                    topOffset = floatingDateTopOffset,
+                )
             }
         }
     }

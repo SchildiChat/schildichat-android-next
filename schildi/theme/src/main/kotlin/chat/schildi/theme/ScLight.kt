@@ -5,6 +5,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.annotations.CoreColorToken
 import io.element.android.compound.tokens.generated.SemanticColors
+import io.element.android.compound.tokens.generated.internal.DarkColorTokens
 import io.element.android.compound.tokens.generated.internal.LightColorTokens
 
 val scl_fgPrimary = ScColors.colorBlackAlpha_de
@@ -156,6 +157,9 @@ internal val sclSemanticColors = SemanticColors(
     bgBadgeAccent = ScColors.colorAccentGreenAlpha_21,
     bgBadgeDefault = ScColors.colorWhite_e0,
     bgBadgeInfo = LightColorTokens.colorAlphaBlue1100, // TODO?
+    bgBadgeCritical = LightColorTokens.colorRed200, // TODO?
+    bgBadgePrimary = scl_bg,
+    bgBadgeSecondary = scl_bgFloating,
     // TODO-start
     gradientActionStop1 = LightColorTokens.colorGreen500,
     gradientActionStop2 = LightColorTokens.colorGreen700,

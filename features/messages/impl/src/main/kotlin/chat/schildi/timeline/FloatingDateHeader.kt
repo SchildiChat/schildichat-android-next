@@ -70,7 +70,7 @@ fun BoxScope.FloatingDateHeader(
 
     // Render date header
     AnimatedVisibility(
-        visible = renderedDate != null && isScrolling && listState.canScrollForward, // "forward" = up / towards past (if false, then reached top / no need for date header!)
+        visible = !renderedDate.isNullOrEmpty() && isScrolling && listState.canScrollForward, // "forward" = up / towards past (if false, then reached top / no need for date header!)
         enter = fadeIn(),
         exit = fadeOut(),
         modifier = Modifier

@@ -68,8 +68,9 @@ interface Timeline : AutoCloseable {
     suspend fun sendMessage(
         body: String,
         htmlBody: String?,
-        plaintext: Boolean = false, // SC
         intentionalMentions: List<IntentionalMention>,
+        msgType: MsgType = MsgType.MSG_TYPE_TEXT,
+        asPlainText: Boolean = false,
     ): Result<Unit>
 
     suspend fun sendNotice( // SC
@@ -110,6 +111,7 @@ interface Timeline : AutoCloseable {
         plaintext: Boolean = false,  // SC
         intentionalMentions: List<IntentionalMention>,
         fromNotification: Boolean = false,
+        msgType: MsgType = MsgType.MSG_TYPE_TEXT,
     ): Result<Unit>
 
     suspend fun sendImage(

@@ -23,6 +23,7 @@ import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.room.isDm
 import io.element.android.libraries.matrix.api.room.location.AssetType
 import io.element.android.libraries.matrix.api.timeline.MatrixTimelineItem
+import io.element.android.libraries.matrix.api.timeline.MsgType
 import io.element.android.libraries.matrix.api.timeline.ReceiptType
 import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.matrix.api.timeline.TimelineException
@@ -274,10 +275,17 @@ class RustTimeline(
     override suspend fun sendMessage(
         body: String,
         htmlBody: String?,
-        plaintext: Boolean,  // SC
         intentionalMentions: List<IntentionalMention>,
+        msgType: MsgType,
+        asPlainText: Boolean,
     ): Result<Unit> = withContext(dispatcher) {
-        ScMessageEventContent.from(body, htmlBody, plaintext, intentionalMentions).use { content ->
+        MessageEventContent.from(
+            body = body,
+            htmlBody = htmlBody,
+            intentionalMentions = intentionalMentions,
+            msgType = msgType,
+            asPlainText = asPlainText,
+        ).use { content ->
             runCatchingExceptions<Unit> {
                 inner.send(content)
             }
@@ -382,9 +390,16 @@ class RustTimeline(
         plaintext: Boolean,  // SC
         intentionalMentions: List<IntentionalMention>,
         fromNotification: Boolean,
+        msgType: MsgType,
     ): Result<Unit> = withContext(dispatcher) {
         runCatchingExceptions {
-            val msg = ScMessageEventContent.from(body, htmlBody, plaintext, intentionalMentions)
+            val msg = MessageEventContent.from(
+                body = body,
+                htmlBody = htmlBody,
+                intentionalMentions = intentionalMentions,
+                msgType = msgType,
+                asPlainText = plaintext, // SC
+            )
             inner.sendReply(
                 msg = msg,
                 eventId = repliedToEventId.value,

@@ -84,9 +84,7 @@ internal class RustRoomListService(
     override val allSpaces: DynamicRoomList = roomListFactory.createRoomList(
         pageSize = Integer.MAX_VALUE,
         isSpaceList = true,
-        initialFilter = RoomListFilter.all(
-            RoomListFilter.Category.Space,
-        ),
+        initialFilter = RoomListFilter.all(),
         coroutineContext = sessionDispatcher,
         coroutineScope = sessionCoroutineScope,
     ) {

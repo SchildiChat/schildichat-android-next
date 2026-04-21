@@ -34,6 +34,7 @@ import chat.schildi.theme.ScTheme
 import com.godaddy.android.colorpicker.ClassicColorPicker
 import com.godaddy.android.colorpicker.HsvColor
 import io.element.android.compound.theme.ElementTheme
+import io.element.android.compound.theme.Theme
 import io.element.android.libraries.designsystem.atomic.atoms.RedIndicatorAtom
 import io.element.android.libraries.designsystem.components.list.ListItemContent
 import io.element.android.libraries.designsystem.components.preferences.components.preferenceIcon
@@ -48,7 +49,12 @@ import io.element.android.libraries.designsystem.toSecondaryEnabledColor
 @Composable
 private fun resolveColorPrefInTheme(darkTheme: Boolean, resolve: @Composable () -> Color?): Color? {
     var resolved by remember { mutableStateOf<Color?>(null) }
-    ScTheme(darkTheme = darkTheme, applySystemBarsUpdate = false) {
+    val theme = if (darkTheme) {
+        Theme.Dark
+    } else {
+        Theme.Light
+    }
+    ScTheme(theme, applySystemBarsUpdate = false) {
         resolved = resolve()
     }
     return resolved

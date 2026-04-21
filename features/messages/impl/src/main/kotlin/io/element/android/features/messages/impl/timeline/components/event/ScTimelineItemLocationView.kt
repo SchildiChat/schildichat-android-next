@@ -2,7 +2,6 @@ package io.element.android.features.messages.impl.timeline.components.event
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -25,19 +24,12 @@ import androidx.compose.ui.unit.dp
 import chat.schildi.lib.R
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
-import chat.schildi.theme.ScTheme
 import com.beeper.android.messageformat.MatrixBodyParseResult
 import io.element.android.compound.theme.ElementTheme
-import io.element.android.features.location.api.Location
 import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayout
 import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayoutData
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemLocationContent
-import io.element.android.libraries.designsystem.preview.ElementPreview
-import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.Icon
-import io.element.android.libraries.designsystem.theme.placeholderBackground
-import io.element.android.libraries.matrix.api.core.UserId
-import io.element.android.libraries.matrix.api.timeline.item.event.ProfileDetails
 import io.element.android.libraries.textcomposer.ElementRichTextEditorStyle
 import io.element.android.wysiwyg.compose.EditorStyledText
 
@@ -71,7 +63,7 @@ fun ScTimelineItemLocationView(
                 .padding(ICON_PADDING)
         )
         Spacer(Modifier.width(ICON_MARGIN))
-        val text = (content.description ?: content.body).takeIf { it.isNotBlank() } ?: stringResource(R.string.event_placeholder_location)
+        val text = content.description?.takeIf { it.isNotBlank() } ?: stringResource(R.string.event_placeholder_location)
         CompositionLocalProvider(
             LocalContentColor provides ElementTheme.colors.textPrimary,
             LocalTextStyle provides if (ScPrefs.EL_TYPOGRAPHY.value()) ElementTheme.typography.fontBodyLgRegular else ElementTheme.typography.fontBodyMdRegular
@@ -97,23 +89,5 @@ fun ScTimelineItemLocationView(
                 )
             }
         }
-    }
-}
-
-@PreviewsDayNight
-@Composable
-fun ScTimelineItemLocationPreview() = ElementPreview {
-    Column(Modifier.background(ScTheme.exposures.bubbleBgIncoming ?: ElementTheme.colors.placeholderBackground)) {
-        ScTimelineItemLocationView(
-            content = TimelineItemLocationContent(
-                "Body",
-                UserId("@nobody"),
-                ProfileDetails.Unavailable,
-                Location(0.0, 0.0, 0f),
-                "Description",
-                mode = TimelineItemLocationContent.Mode.Static,
-            ),
-            onContentLayoutChange = {},
-        )
     }
 }

@@ -19,6 +19,8 @@ import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.userColor
 import chat.schildi.lib.preferences.value
 import io.element.android.compound.theme.ElementTheme
+import io.element.android.compound.theme.Theme
+import io.element.android.compound.theme.isDark
 import io.element.android.compound.tokens.sc.ElTypographyTokens
 import io.element.android.compound.tokens.sc.ExposedTypographyTokens
 
@@ -61,13 +63,14 @@ fun getThemeExposures(darkTheme: Boolean, useElTheme: Boolean, useBlackTheme: Bo
 
 @Composable
 fun ScTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    theme: Theme = if (isSystemInDarkTheme()) Theme.Dark else Theme.Light,
     applySystemBarsUpdate: Boolean = true,
-    lightStatusBar: Boolean = !darkTheme,
+    lightStatusBar: Boolean = !theme.isDark(),
     dynamicColor: Boolean = false, /* true to enable MaterialYou */
     useElTypography: Boolean = ScPrefs.EL_TYPOGRAPHY.value(),
     content: @Composable () -> Unit,
 ) {
+    val darkTheme = theme.isDark()
     val typography = if (useElTypography) elTypography else scTypography
     val typographyTokens = if (useElTypography) ElTypographyTokens else ScTypographyTokens
     val useElTheme = ScPrefs.EL_THEME.value()
@@ -82,7 +85,7 @@ fun ScTheme(
         LocalScExposures provides currentExposures
     ) {
         ElementTheme(
-            darkTheme = darkTheme,
+            theme = theme,
             applySystemBarsUpdate = applySystemBarsUpdate,
             lightStatusBar = lightStatusBar,
             dynamicColor = dynamicColor,
@@ -128,7 +131,7 @@ fun ForcedDarkScTheme(
             )
         }
     }
-    ScTheme(darkTheme = true, lightStatusBar = lightStatusBar, content = content)
+    ScTheme(theme = Theme.Dark, lightStatusBar = lightStatusBar, content = content)
 }
 
 // Calculate the color as if with alpha on white background

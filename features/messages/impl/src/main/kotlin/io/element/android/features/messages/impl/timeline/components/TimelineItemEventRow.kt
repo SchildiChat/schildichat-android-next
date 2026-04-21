@@ -82,6 +82,7 @@ import io.element.android.features.messages.impl.timeline.model.event.TimelineIt
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemVoiceContent
 import io.element.android.features.messages.impl.timeline.model.event.aTimelineItemImageContent
 import io.element.android.features.messages.impl.timeline.model.event.aTimelineItemTextContent
+import io.element.android.features.messages.impl.timeline.model.event.ensureActiveLiveLocation
 import io.element.android.features.messages.impl.timeline.protection.TimelineProtectionEvent
 import io.element.android.features.messages.impl.timeline.protection.TimelineProtectionState
 import io.element.android.features.messages.impl.timeline.protection.mustBeProtected
@@ -691,6 +692,7 @@ private fun MessageEventBubbleContent(
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     )
                 }
+            TimestampPosition.Hidden -> Box(modifier) { content {} }
         }
     }
 
@@ -788,11 +790,18 @@ private fun MessageEventBubbleContent(
         }
     }
 
-    val timestampPosition = when (event.content) {
-        is TimelineItemImageContent -> if (event.content.showCaption) TimestampPosition.Aligned else TimestampPosition.Overlay
-        is TimelineItemVideoContent -> if (event.content.showCaption) TimestampPosition.Aligned else TimestampPosition.Overlay
-        is TimelineItemStickerContent -> TimestampPosition.Overlay
+    val timestampPosition = when (val content = event.content) {
         is TimelineItemLocationContent -> TimestampPosition.Aligned // SC location
+        is TimelineItemImageContent -> if (content.showCaption) TimestampPosition.Aligned else TimestampPosition.Overlay
+        is TimelineItemVideoContent -> if (content.showCaption) TimestampPosition.Aligned else TimestampPosition.Overlay
+        is TimelineItemStickerContent -> TimestampPosition.Overlay
+        is TimelineItemLocationContent -> {
+            val content = content.ensureActiveLiveLocation()
+            val shouldHide = content.mode is TimelineItemLocationContent.Mode.Live &&
+                content.mode.isActive &&
+                content.mode.canStop
+            if (shouldHide) TimestampPosition.Hidden else TimestampPosition.Overlay
+        }
         is TimelineItemPollContent -> TimestampPosition.Below
         else -> TimestampPosition.Default
     }

@@ -61,4 +61,6 @@ sealed interface TimelineEvent {
     data class EditPoll(
         val pollStartId: EventId,
     ) : TimelineItemPollEvent
+
+    data object StopLiveLocationShare : TimelineItemEvent
 }

@@ -33,7 +33,6 @@ import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.encryption.EncryptionService
 import io.element.android.libraries.matrix.api.encryption.RecoveryState
-import io.element.android.libraries.matrix.api.oidc.AccountManagementAction
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
 import io.element.android.libraries.matrix.api.sync.SlidingSyncVersion
 import io.element.android.libraries.matrix.api.sync.SyncService
@@ -179,7 +178,6 @@ class LoggedInPresenter(
     }
 
     private fun CoroutineScope.preloadAccountManagementUrl() = launch {
-        matrixClient.getAccountManagementUrl(AccountManagementAction.Profile)
-        matrixClient.getAccountManagementUrl(AccountManagementAction.DevicesList)
+        matrixClient.getAccountManagementUrl(null)
     }
 }

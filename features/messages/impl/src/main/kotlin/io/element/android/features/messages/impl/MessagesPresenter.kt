@@ -271,14 +271,20 @@ class MessagesPresenter(
                 }
                 is MessagesEvent.MarkAsFullyReadAndExit -> if (!markingAsReadAndExiting.getAndSet(true)) {
                     coroutineScope.launch {
-                        val latestEventId = room.liveTimeline.getLatestEventId().getOrElse {
+                        val syncMarkers = scPreferencesStore.getSetting(ScPrefs.SYNC_READ_RECEIPT_AND_MARKER)
+                        val requireFullyRead = scPreferencesStore.getSetting(ScPrefs.MARK_READ_REQUIRES_SEEN_UNREAD_LINE)
+                        if (requireFullyRead && !event.scReadState.sawUnreadLine.value) {
+                            navigator.close()
+                            return@launch
+                        }
+                        val latestEventId = event.scReadState.readMarkerToSet.value ?: if (syncMarkers) null else room.liveTimeline.getLatestEventId().getOrElse {
                             Timber.w(it, "Failed to get latest event id to mark as fully read")
                             null
                         }
                         latestEventId?.let { eventId ->
                             sessionCoroutineScope.launch {
                                 // SC start
-                                if (scPreferencesStore.getSetting(ScPrefs.SYNC_READ_RECEIPT_AND_MARKER)) {
+                                if (syncMarkers) {
                                     val isSendPublicReadReceiptsEnabled =
                                         sessionPreferencesStore.isSendPublicReadReceiptsEnabled().first()
                                     markAsFullyRead(
@@ -289,6 +295,7 @@ class MessagesPresenter(
                                         else
                                             ReceiptType.READ_PRIVATE,
                                     )
+                                    return@launch
                                 }
                                 // SC end
                                 markAsFullyRead(room.roomId, eventId, null)

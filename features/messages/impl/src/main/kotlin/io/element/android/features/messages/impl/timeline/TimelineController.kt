@@ -8,6 +8,8 @@
 
 package io.element.android.features.messages.impl.timeline
 
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.SingleIn
 import dev.zacsweers.metro.binding
@@ -35,6 +37,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.io.Closeable
 import java.util.Optional
 
@@ -52,6 +55,19 @@ class TimelineController(
 
     private val liveTimelineFlow = flowOf(liveTimeline)
     private val detachedTimelineFlow = MutableStateFlow<Optional<Timeline>>(Optional.empty())
+
+    // SC start
+    val scReadState = ScReadState(
+        mutableIntStateOf(Integer.MAX_VALUE),
+        mutableStateOf(null),
+        mutableStateOf(null),
+        mutableStateOf(false),
+        mutableStateOf(null),
+    )
+    init {
+        coroutineScope.launch { scReadState.fullyReadEventId.value = liveTimeline.fullyReadEventId() }
+    }
+    // SC end
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun timelineItems(): Flow<List<MatrixTimelineItem>> {

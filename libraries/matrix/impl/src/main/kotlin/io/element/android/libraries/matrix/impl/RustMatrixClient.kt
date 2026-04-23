@@ -826,7 +826,7 @@ class RustMatrixClient(
             val room = innerClient.getRoom(roomId.value) ?: error("Could not fetch associated room")
             room.markAsFullyReadUnchecked(eventId.value)
             if (withReadReceipt != null) { // SC
-                room.markAsRead(receiptType = withReadReceipt.toRustReceiptType())
+                room.forceSendSingleReceipt(withReadReceipt.toRustReceiptType(), eventId.value)
             }
         }
     }

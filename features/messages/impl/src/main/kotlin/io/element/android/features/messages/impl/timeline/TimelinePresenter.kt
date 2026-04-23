@@ -151,7 +151,6 @@ class TimelinePresenter(
         }.collectAsState(initial = true)
 
         // SC start
-        val scReadState = createScReadState(room.liveTimeline)
         val syncReadReceiptAndMarker = ScPrefs.SYNC_READ_RECEIPT_AND_MARKER.state()
         val context = LocalContext.current
         // SC end
@@ -166,8 +165,8 @@ class TimelinePresenter(
         fun handleEvent(event: TimelineEvent) {
             when (event) {
                 // SC start
-                is TimelineEvent.OnUnreadLineVisible -> scReadState.sawUnreadLine.value = true
-                is TimelineEvent.MarkAsRead -> forceSetReceipts(context, sessionCoroutineScope, room, scReadState, isSendPublicReadReceiptsEnabled)
+                is TimelineEvent.OnUnreadLineVisible -> timelineController.scReadState.sawUnreadLine.value = true
+                is TimelineEvent.MarkAsRead -> forceSetReceipts(context, sessionCoroutineScope, room, timelineController.scReadState, isSendPublicReadReceiptsEnabled)
                 // SC end
                 is TimelineEvent.LoadMore -> {
                     if (event.direction == Timeline.PaginationDirection.FORWARDS && timelineMode is Timeline.Mode.Thread) {
@@ -187,7 +186,7 @@ class TimelinePresenter(
                         if (syncReadReceiptAndMarker.value) { // SC block
                             sessionCoroutineScope.scOnScrollFinished(
                                 dispatchers = dispatchers,
-                                scReadState = scReadState,
+                                scReadState = timelineController.scReadState,
                                 firstVisibleIndex = event.firstIndex,
                                 timelineItems = timelineItems,
                             )
@@ -334,7 +333,7 @@ class TimelinePresenter(
         }
 
         return TimelineState(
-            scReadState = scReadState,
+            scReadState = timelineController.scReadState,
             timelineItems = timelineItems,
             timelineMode = timelineMode,
             timelineRoomInfo = timelineRoomInfo,

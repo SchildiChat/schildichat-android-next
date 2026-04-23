@@ -30,33 +30,15 @@ data class ScReadState(
 
 fun forceSetReceipts(context: Context, appScope: CoroutineScope, room: BaseRoom, scReadState: ScReadState, isSendPublicReadReceiptsEnabled: Boolean) {
     scReadState.sawUnreadLine.value = true
+    val eventId = scReadState.readMarkerToSet.value ?: return
     appScope.launch {
         val toast = Toast.makeText(context, chat.schildi.lib.R.string.sc_set_read_marker_implicit_toast_start, Toast.LENGTH_LONG)
         toast.show()
-        room.markAsRead(if (isSendPublicReadReceiptsEnabled) ReceiptType.READ else ReceiptType.READ_PRIVATE)
-        room.markAsRead(ReceiptType.FULLY_READ)
+        room.forceSendSingleReadReceipt(if (isSendPublicReadReceiptsEnabled) ReceiptType.READ else ReceiptType.READ_PRIVATE, eventId)
+        room.forceSendSingleReadReceipt(ReceiptType.FULLY_READ, eventId)
         room.setUnreadFlag(false)
         toast.cancel()
     }
-}
-
-@Composable
-fun createScReadState(timeline: Timeline): ScReadState {
-    val lastReadMarkerIndex = remember { mutableIntStateOf(Int.MAX_VALUE) }
-    val lastReadMarkerId = remember { mutableStateOf<EventId?>(null) }
-    val readMarkerToSet = remember { mutableStateOf<EventId?>(null) }
-    val sawUnreadLine = remember { mutableStateOf(false) }
-    val fullyReadEventId = remember { mutableStateOf<String?>(null) }
-    LaunchedEffect(Unit) {
-        fullyReadEventId.value = timeline.fullyReadEventId()
-    }
-    return ScReadState(
-        lastReadMarkerIndex,
-        lastReadMarkerId,
-        readMarkerToSet,
-        sawUnreadLine,
-        fullyReadEventId,
-    )
 }
 
 // Use this to define some offset next time upstream adds individual `item()` calls in the lazy column below the actual timeline's `items()` call.
@@ -86,9 +68,14 @@ fun CoroutineScope.scOnScrollFinished(
 
 private fun getLastEventIdBeforeOrAt(index: Int, items: ImmutableList<TimelineItem>): EventId? {
     for (i in index until items.count()) {
-        val item = items[i]
-        if (item is TimelineItem.Event) {
-            return item.eventId
+        when (val item = items[i]) {
+            is TimelineItem.Event -> item.eventId?.let { return it }
+            is TimelineItem.GroupedEvents -> item.events.reversed().forEach { event ->
+                event.eventId?.let {
+                    return it
+                }
+            }
+            else -> {}
         }
     }
     return null

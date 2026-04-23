@@ -320,7 +320,7 @@ class MessagesNode(
             //val state = presenter.present()
 
             BackHandler {
-                state.eventSink(MessagesEvent.MarkAsFullyReadAndExit)
+                state.eventSink(MessagesEvent.MarkAsFullyReadAndExit(timelineController.scReadState))
             }
 
             OnLifecycleEvent { _, event ->
@@ -331,7 +331,7 @@ class MessagesNode(
             }
             MessagesView(
                 state = state,
-                onBackClick = { state.eventSink(MessagesEvent.MarkAsFullyReadAndExit) },
+                onBackClick = { state.eventSink(MessagesEvent.MarkAsFullyReadAndExit(timelineController.scReadState)) },
                 onRoomDetailsClick = callback::navigateToRoomDetails,
                 onEventContentClick = { isLive, event ->
                     if (isLive) {

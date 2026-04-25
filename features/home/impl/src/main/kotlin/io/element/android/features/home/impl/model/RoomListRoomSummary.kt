@@ -17,6 +17,7 @@ import io.element.android.libraries.matrix.api.notification.CallIntent
 import io.element.android.libraries.matrix.api.room.BridgeState
 import io.element.android.libraries.matrix.api.room.MatrixSpaceChildInfo
 import io.element.android.libraries.matrix.api.room.RoomNotificationMode
+import io.element.android.libraries.matrix.api.room.SpaceCatchAllInfo
 import io.element.android.libraries.matrix.ui.model.InviteSender
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -33,6 +34,7 @@ data class RoomListRoomSummary(
     val numberOfUnreadNotifications: Long,
     // SC: spaces
     val spaceChildren: ImmutableList<MatrixSpaceChildInfo> = persistentListOf(),
+    val spaceCatchAll: SpaceCatchAllInfo? = null,
     val canUserManageSpaces: Boolean = false,
     // SC: server-reported values compared to client-generated above
     val notificationCount: Long = 0,

@@ -20,6 +20,7 @@ import org.matrix.rustcomponents.sdk.RoomMember
 import org.matrix.rustcomponents.sdk.RoomNotificationMode
 import org.matrix.rustcomponents.sdk.RoomPowerLevels
 import org.matrix.rustcomponents.sdk.RtcCallIntentConsensus
+import org.matrix.rustcomponents.sdk.SpaceCatchAllInfo
 import org.matrix.rustcomponents.sdk.SuccessorRoom
 import uniffi.matrix_sdk_base.EncryptionState
 
@@ -52,6 +53,7 @@ internal fun aRustRoomInfo(
     numUnreadMessages: ULong = 0uL,
     numUnreadNotifications: ULong = 0uL,
     numUnreadMentions: ULong = 0uL,
+    spaceCatchAll: SpaceCatchAllInfo? = null,
     pinnedEventIds: List<String> = listOf(),
     roomCreators: List<String>? = emptyList(),
     joinRule: JoinRule? = null,
@@ -91,6 +93,7 @@ internal fun aRustRoomInfo(
     numUnreadMessages = numUnreadMessages,
     numUnreadNotifications = numUnreadNotifications,
     numUnreadMentions = numUnreadMentions,
+    spaceCatchAll = spaceCatchAll,
     pinnedEventIds = pinnedEventIds,
     creators = roomCreators,
     joinRule = joinRule,

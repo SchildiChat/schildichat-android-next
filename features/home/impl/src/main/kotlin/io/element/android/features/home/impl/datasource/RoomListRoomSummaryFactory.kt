@@ -44,6 +44,7 @@ class RoomListRoomSummaryFactory(
             // SC start
             canUserManageSpaces = roomInfo.canUserManageSpaces,
             spaceChildren = roomInfo.spaceChildren.toImmutableList(),
+            spaceCatchAll = roomInfo.spaceCatchAll,
             notificationCount = roomInfo.notificationCount,
             highlightCount = roomInfo.highlightCount,
             unreadCount = roomInfo.unreadCount,

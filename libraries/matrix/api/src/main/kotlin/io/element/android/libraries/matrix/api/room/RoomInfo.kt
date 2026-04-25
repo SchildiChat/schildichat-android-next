@@ -71,6 +71,7 @@ data class RoomInfo(
     val numUnreadMentions: Long,
     // SC: start
     val spaceChildren: List<MatrixSpaceChildInfo> = emptyList(),
+    val spaceCatchAll: SpaceCatchAllInfo? = null,
     val canUserManageSpaces: Boolean = false,
     val unreadCount: Long = 0,
     val bridgeState: List<BridgeState> = emptyList(),
@@ -89,3 +90,8 @@ data class RoomInfo(
     val aliases: List<RoomAlias>
         get() = listOfNotNull(canonicalAlias) + alternativeAliases
 }
+
+data class SpaceCatchAllInfo(
+    val includeOrphans: Boolean,
+    val filterIsDirect: Boolean?,
+)

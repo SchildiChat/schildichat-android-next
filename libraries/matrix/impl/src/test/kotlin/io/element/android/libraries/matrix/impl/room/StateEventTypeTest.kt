@@ -37,6 +37,7 @@ class StateEventTypeTest {
         assertThat(RustStateEventType.RoomTopic.map()).isEqualTo(StateEventType.RoomTopic)
         assertThat(RustStateEventType.SpaceChild.map()).isEqualTo(StateEventType.SpaceChild)
         assertThat(RustStateEventType.SpaceParent.map()).isEqualTo(StateEventType.SpaceParent)
+        assertThat(RustStateEventType.SpaceCatchAll.map()).isEqualTo(StateEventType.SpaceCatchAll)
         assertThat(RustStateEventType.Custom("foo").map()).isEqualTo(StateEventType.Custom("foo"))
     }
 
@@ -63,6 +64,7 @@ class StateEventTypeTest {
         assertThat(StateEventType.RoomTopic.map()).isEqualTo(RustStateEventType.RoomTopic)
         assertThat(StateEventType.SpaceChild.map()).isEqualTo(RustStateEventType.SpaceChild)
         assertThat(StateEventType.SpaceParent.map()).isEqualTo(RustStateEventType.SpaceParent)
+        assertThat(StateEventType.SpaceCatchAll.map()).isEqualTo(RustStateEventType.SpaceCatchAll)
         assertThat(StateEventType.Custom("foo").map()).isEqualTo(RustStateEventType.Custom("foo"))
     }
 }

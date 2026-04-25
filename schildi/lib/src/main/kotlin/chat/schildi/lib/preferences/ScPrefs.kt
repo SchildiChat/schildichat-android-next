@@ -109,7 +109,7 @@ object ScPrefs {
     val FLOATING_DATE = ScBoolPref("FLOATING_DATE", true, R.string.sc_pref_sc_floating_date_title, R.string.sc_pref_sc_floating_date_summary, upstreamChoice = false)
     val PL_DISPLAY_NAME = ScBoolPref("PL_DISPLAY_NAME", false, R.string.sc_pref_pl_display_name_title, R.string.sc_pref_pl_display_name_summary_warning, authorsChoice = false, upstreamChoice = false)
     val SYNC_READ_RECEIPT_AND_MARKER = ScBoolPref("SYNC_READ_RECEIPT_AND_MARKER", false, R.string.sc_sync_read_receipt_and_marker_title, R.string.sc_sync_read_receipt_and_marker_summary, authorsChoice = true, dependencies = SC_DANGER_ZONE.asDependencies())
-    val MARK_READ_REQUIRES_SEEN_UNREAD_LINE = ScBoolPref("MARK_READ_REQUIRES_SEEN_UNREAD_LINE", true, R.string.sc_pref_mark_read_requires_seen_unread_line_title, R.string.sc_pref_mark_read_requires_seen_unread_line_summary, authorsChoice = false, dependencies = SYNC_READ_RECEIPT_AND_MARKER.asDependencies())
+    val MARK_READ_REQUIRES_SEEN_UNREAD_LINE = ScBoolPref("MARK_READ_REQUIRES_SEEN_UNREAD_LINE", false, R.string.sc_pref_mark_read_requires_seen_unread_line_title, R.string.sc_pref_mark_read_requires_seen_unread_line_summary, authorsChoice = false, dependencies = SYNC_READ_RECEIPT_AND_MARKER.asDependencies())
     val PREFER_FREEFORM_REACTIONS = ScBoolPref("PREFER_FREEFORM_REACTIONS", false, R.string.sc_pref_prefer_freeform_reactions_title, R.string.sc_pref_prefer_freeform_reactions_summary, authorsChoice = false)
     val PREFER_FULLSCREEN_REACTION_SHEET = ScBoolPref("PREFER_FULLSCREEN_REACTION_SHEET", false, R.string.sc_pref_prefer_fullscreen_reaction_sheet_title, R.string.sc_pref_prefer_fullscreen_reaction_sheet_summary, authorsChoice = false, upstreamChoice = false)
     val ALWAYS_SHOW_REACTION_SEARCH_BAR = ScBoolPref("ALWAYS_SHOW_REACTION_SEARCH_BAR", false, R.string.sc_pref_always_show_reaction_search_bar_title, R.string.sc_pref_always_show_reaction_search_bar_summary, authorsChoice = false, upstreamChoice = true)
@@ -247,6 +247,8 @@ object ScPrefs {
             ScPrefCategory(R.string.sc_pref_category_general_behaviour, null, listOf(
                 SHOW_SYNCING_INDICATOR,
                 DEBOUNCE_OFFLINE_STATE,
+                SYNC_READ_RECEIPT_AND_MARKER,
+                MARK_READ_REQUIRES_SEEN_UNREAD_LINE,
             )),
         )),
         ScPrefCategory(R.string.sc_pref_category_debug_infos, null, listOf(
@@ -262,8 +264,6 @@ object ScPrefs {
                 ScDisclaimerPref("SC_CHAMBER_OF_SECRETS_DISCLAIMER", R.string.sc_pref_chamber_of_secrets_summary),
                 EL_THEME,
                 CLIENT_GENERATED_UNREAD_COUNTS,
-                SYNC_READ_RECEIPT_AND_MARKER,
-                MARK_READ_REQUIRES_SEEN_UNREAD_LINE,
             ), dependencies = SC_DANGER_ZONE.asDependencies()),
             SC_RESTORE_DEFAULTS,
             SC_RESTORE_UPSTREAM,

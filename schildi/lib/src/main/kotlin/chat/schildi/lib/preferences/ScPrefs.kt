@@ -285,6 +285,8 @@ object ScPrefs {
         ScPrefCategory(R.string.sc_pref_category_timeline_short, null, listOf(
             VIEW_REDACTIONS,
             VIEW_HIDDEN_EVENTS,
+            SYNC_READ_RECEIPT_AND_MARKER.copy(titleRes = R.string.sc_sync_read_receipt_and_marker_title_short),
+            MARK_READ_REQUIRES_SEEN_UNREAD_LINE.copy(titleRes = R.string.sc_pref_mark_read_requires_seen_unread_line_title_short),
         )),
         ScPrefCategory(R.string.sc_pref_category_chat_sorting, null, listOf(
             SORT_BY_UNREAD,
@@ -319,8 +321,6 @@ object ScPrefs {
             HIDE_INVITES,
             DUAL_MENTION_UNREAD_COUNTS.copy(titleRes = R.string.sc_pref_dual_mention_unread_counts_title_short),
             CLIENT_GENERATED_UNREAD_COUNTS,
-            SYNC_READ_RECEIPT_AND_MARKER.copy(titleRes = R.string.sc_sync_read_receipt_and_marker_title_short),
-            MARK_READ_REQUIRES_SEEN_UNREAD_LINE.copy(titleRes = R.string.sc_pref_mark_read_requires_seen_unread_line_title_short),
         )),
     )
 

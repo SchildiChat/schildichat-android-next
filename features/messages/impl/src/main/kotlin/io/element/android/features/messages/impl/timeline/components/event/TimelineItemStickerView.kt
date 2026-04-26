@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import chat.schildi.theme.ScTheme
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemStickerContent
@@ -67,7 +68,7 @@ fun TimelineItemStickerView(
                 AsyncImage(
                     modifier = Modifier
                         .fillMaxSize()
-                        .then(if (isLoaded) Modifier.background(Color.White) else Modifier)
+                        .then(if (isLoaded && !ScTheme.yes) Modifier.background(Color.White) else Modifier)
                         .then(
                             if (onContentClick != null) {
                                 Modifier

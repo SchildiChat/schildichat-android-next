@@ -244,7 +244,7 @@ androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version
 
 # SC additions
 colorpicker = "com.godaddy.android.colorpicker:compose-color-picker:0.7.0"
-beeper-messageformat = { module = "com.github.beeper.matrix-messageformat-compose:messageformat-android", version = "f09b5646f9df0f1ef37d6a557a6bef03cd33906f" }
+beeper-messageformat = { module = "com.github.beeper.matrix-messageformat-compose:messageformat-android", version = "10242add9dbeefe02c8d63e8392ffe5343becf93" }
 #beeper-messageformat = { module = "com.beeper.android.messageformat:messageformat-android", version = "1.0" }
 unifiedpush_fcm = "org.unifiedpush.android:embedded-fcm-distributor:3.0.0"
 androidx_emoji2 = "androidx.emoji2:emoji2:1.6.0"

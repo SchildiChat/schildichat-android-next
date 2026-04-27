@@ -5,9 +5,12 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
@@ -21,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import chat.schildi.theme.ScTheme
 import chat.schildi.theme.scBubbleFont
 import com.beeper.android.messageformat.DefaultMatrixBodyStyledFormatter
+import com.beeper.android.messageformat.DrawPosition
 import com.beeper.android.messageformat.MENTION_ROOM
 import com.beeper.android.messageformat.MatrixBodyDrawStyle
 import com.beeper.android.messageformat.MatrixBodyParseResult
@@ -36,6 +40,8 @@ import io.element.android.libraries.matrix.api.timeline.item.event.TextLikeMessa
 import org.jsoup.nodes.Document
 
 private const val ALLOW_PREPARSED = true
+private const val MENTION_BG_RADIUS = 8f
+private const val MENTION_BG_RADIUS_ON_LINE_BREAK = 2f
 
 object MessageFormatDefaults {
     val blockIndention = 16.sp
@@ -183,11 +189,11 @@ fun matrixBodyDrawStyle(sessionId: SessionId? = LocalSessionId.current): MatrixB
         MatrixBodyDrawStyle(
             defaultForegroundColor = onSurfaceVariant,
             drawBehindRoomMention = { position ->
-                drawRoundRect(
-                    mentionHighlightColor,
-                    topLeft = position.rect.topLeft,
-                    size = position.rect.size,
-                    cornerRadius = mentionBgRadius(),
+                drawInlineRoundRect(
+                    position = position,
+                    color = mentionHighlightColor,
+                    cornerRadius = MENTION_BG_RADIUS,
+                    cornerRadiusOnLineBreak = MENTION_BG_RADIUS_ON_LINE_BREAK,
                 )
             },
             drawBehindUserMention = { mention, position ->
@@ -196,11 +202,11 @@ fun matrixBodyDrawStyle(sessionId: SessionId? = LocalSessionId.current): MatrixB
                 } else {
                     mentionColor
                 }
-                drawRoundRect(
-                    color,
-                    topLeft = position.rect.topLeft,
-                    size = position.rect.size,
-                    cornerRadius = mentionBgRadius(),
+                drawInlineRoundRect(
+                    position = position,
+                    color = color,
+                    cornerRadius = MENTION_BG_RADIUS,
+                    cornerRadiusOnLineBreak = MENTION_BG_RADIUS_ON_LINE_BREAK,
                 )
             },
             drawBehindBlockQuote = { depth, position ->
@@ -251,8 +257,35 @@ fun matrixBodyDrawStyle(sessionId: SessionId? = LocalSessionId.current): MatrixB
     }
 }
 
-private fun DrawScope.mentionBgRadius(): CornerRadius {
-    val radius = 8f * density
-    return CornerRadius(radius, radius)
+private fun DrawScope.drawInlineRoundRect(
+    position: DrawPosition.InLine,
+    color: Color,
+    cornerRadius: Float,
+    cornerRadiusOnLineBreak: Float,
+) {
+    val rect = position.rect
+    val leftRadius = density * if (position.leftHasContinuation) {
+        cornerRadiusOnLineBreak
+    } else {
+        cornerRadius
+    }
+    val rightRadius = density * if (position.rightHasContinuation) {
+        cornerRadiusOnLineBreak
+    } else {
+        cornerRadius
+    }
+    drawIntoCanvas {
+        val path = Path().apply {
+            addRoundRect(
+                RoundRect(
+                    rect = rect,
+                    topLeft = CornerRadius(leftRadius, leftRadius),
+                    bottomLeft = CornerRadius(leftRadius, leftRadius),
+                    topRight = CornerRadius(rightRadius, rightRadius),
+                    bottomRight = CornerRadius(rightRadius, rightRadius),
+                ),
+            )
+        }
+        drawPath(path, color = color)
+    }
 }
-

@@ -69,6 +69,7 @@ fun TimelineItemStateEventRow(
             ) {
                 TimelineItemEventContentView(
                     content = event.content,
+                    debugInfoProvider = event.timelineItemDebugInfoProvider, // SC
                     onLinkClick = {},
                     onLinkLongClick = {},
                     hideMediaContent = false,

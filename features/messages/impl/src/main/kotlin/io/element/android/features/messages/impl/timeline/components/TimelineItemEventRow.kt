@@ -169,6 +169,7 @@ fun TimelineItemEventRow(
 
         TimelineItemEventContentView(
             content = event.content,
+            debugInfoProvider = event.timelineItemDebugInfoProvider, // SC
             hideMediaContent = timelineProtectionState.hideMediaContent(event.eventId),
             onContentClick = onContentClick,
             onShowContentClick = { timelineProtectionState.eventSink(TimelineProtectionEvent.ShowContent(event.eventId)) },

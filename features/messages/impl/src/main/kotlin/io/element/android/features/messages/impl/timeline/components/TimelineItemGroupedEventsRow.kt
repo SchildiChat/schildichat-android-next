@@ -63,6 +63,7 @@ fun TimelineItemGroupedEventsRow(
         { event, contentModifier, onContentLayoutChange ->
             TimelineItemEventContentView(
                 content = event.content,
+                debugInfoProvider = event.timelineItemDebugInfoProvider, // SC
                 hideMediaContent = timelineProtectionState.hideMediaContent(event.eventId),
                 onShowContentClick = { timelineProtectionState.eventSink(TimelineProtectionEvent.ShowContent(event.eventId)) },
                 onLinkClick = onLinkClick,
@@ -136,6 +137,7 @@ private fun TimelineItemGroupedEventsRowContent(
         { event, contentModifier, onContentLayoutChange ->
             TimelineItemEventContentView(
                 content = event.content,
+                debugInfoProvider = event.timelineItemDebugInfoProvider, // SC
                 hideMediaContent = timelineProtectionState.hideMediaContent(event.eventId),
                 onShowContentClick = { timelineProtectionState.eventSink(TimelineProtectionEvent.ShowContent(event.eventId)) },
                 onLinkClick = onLinkClick,

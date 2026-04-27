@@ -35,12 +35,14 @@ import io.element.android.features.messages.impl.timeline.model.event.TimelineIt
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemVoiceContent
 import io.element.android.features.messages.impl.timeline.model.event.ensureActiveLiveLocation
 import io.element.android.libraries.architecture.Presenter
+import io.element.android.libraries.matrix.api.timeline.item.event.TimelineItemDebugInfoProvider
 import io.element.android.libraries.voiceplayer.api.VoiceMessageState
 import io.element.android.wysiwyg.link.Link
 
 @Composable
 fun TimelineItemEventContentView(
     content: TimelineItemEventContent,
+    debugInfoProvider: TimelineItemDebugInfoProvider?, // SC
     hideMediaContent: Boolean,
     onContentClick: (() -> Unit)?,
     onLongClick:(() -> Unit), // SC: non-null
@@ -70,8 +72,9 @@ fun TimelineItemEventContentView(
             onLinkLongClick = onLinkLongClick,
             onContentLayoutChange = onContentLayoutChange
         )
-        is TimelineItemUnknownContent -> TimelineItemUnknownView(
+        is TimelineItemUnknownContent -> ScTimelineItemUnknownView(
             content = content,
+            debugInfoProvider = debugInfoProvider, // SC
             onContentLayoutChange = onContentLayoutChange,
             modifier = modifier
         )

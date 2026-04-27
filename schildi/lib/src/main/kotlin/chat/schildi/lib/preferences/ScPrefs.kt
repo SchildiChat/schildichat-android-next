@@ -121,8 +121,8 @@ object ScPrefs {
     val REPLY_PREVIEW_LINE_COUNT = ScIntPref("REPLY_PREVIEW_LINE_COUNT", 4, R.string.sc_reply_preview_line_count_title, R.string.sc_reply_preview_line_count_summary, minValue = 1, authorsChoice = 4, upstreamChoice = 2)
     val FULLY_EXPAND_MESSAGE_MENU = ScBoolPref("FULLY_EXPAND_MESSAGE_MENU", false, R.string.sc_pref_fully_expand_message_menu_title, R.string.sc_pref_fully_expand_message_menu_summary, authorsChoice = true, upstreamChoice = false)
     val MESSAGE_CONTEXT_MENU_TEXT_SELECTABLE = ScBoolPref("MESSAGE_CONTEXT_MENU_TEXT_SELECTABLE", true, R.string.sc_pref_message_context_menu_text_selectable_title, R.string.sc_pref_message_context_menu_text_selectable_summary, authorsChoice = true, upstreamChoice = false)
-    val VIEW_HIDDEN_EVENTS = ScBoolPref("VIEW_HIDDEN_EVENTS", false, R.string.sc_pref_view_hidden_events_title, authorsChoice = true, upstreamChoice = false)
-    val VIEW_REDACTIONS = ScBoolPref("VIEW_REDACTIONS", true, R.string.sc_pref_view_redactions_title, R.string.sc_pref_view_redactions_summary, /*dependencies = listOf(VIEW_HIDDEN_EVENTS.toDependency(expect = false)),*/ disabledValue = true, upstreamChoice = true)
+    val VIEW_HIDDEN_EVENTS = ScBoolPref("VIEW_HIDDEN_EVENTS", false, R.string.sc_pref_view_hidden_events_title, authorsChoice = false, upstreamChoice = false)
+    val VIEW_REDACTIONS = ScBoolPref("VIEW_REDACTIONS", true, R.string.sc_pref_view_redactions_title, R.string.sc_pref_view_redactions_summary, dependencies = listOf(VIEW_HIDDEN_EVENTS.toDependency(expect = false)), disabledValue = true, upstreamChoice = true)
     val LEGACY_MESSAGE_RENDERING = ScBoolPref("LEGACY_MESSAGE_RENDERING", false, R.string.sc_pref_legacy_message_rendering_title, R.string.sc_pref_legacy_message_rendering_summary, authorsChoice = false, upstreamChoice = true)
 
     // Advanced theming options - Light theme

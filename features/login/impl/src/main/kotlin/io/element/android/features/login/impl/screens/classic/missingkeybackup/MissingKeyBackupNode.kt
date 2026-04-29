@@ -21,6 +21,7 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.features.login.impl.BuildConfig
+import io.element.android.features.login.impl.classic.ScLegacyPackageProvider
 import io.element.android.libraries.architecture.callback
 import timber.log.Timber
 
@@ -30,6 +31,7 @@ class MissingKeyBackupNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
     private val presenter: MissingKeyBackupPresenter,
+    private val scLegacyPackageProvider: ScLegacyPackageProvider,
 ) : Node(buildContext, plugins = plugins) {
     interface Callback : Plugin {
         fun navigateBack()
@@ -42,7 +44,7 @@ class MissingKeyBackupNode(
      */
     private fun openClassic(context: Context) {
         context.packageManager.getLaunchIntentForPackage(
-            BuildConfig.elementClassicPackage,
+            scLegacyPackageProvider.get(),
         )?.let { intent ->
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             try {

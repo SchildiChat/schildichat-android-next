@@ -16,6 +16,14 @@
 
         <!-- To be able to start the service exported by Element Classic -->
         <package android:name="${elementClassicPackage}" />
+
+        <!-- SchildiChat data migration matching the elementClassicPackage approach but allowing multiple packages -->
+        <package android:name="de.spiritcroc.riotx" />
+        <package android:name="de.spiritcroc.riotx.fcm" />
+        <package android:name="de.spiritcroc.riotx.foss" />
+        <package android:name="de.spiritcroc.riotx.testing.fcm" />
+        <package android:name="de.spiritcroc.riotx.testing.foss" />
+        <package android:name="de.spiritcroc.riotx.debug" />
     </queries>
 
 </manifest>

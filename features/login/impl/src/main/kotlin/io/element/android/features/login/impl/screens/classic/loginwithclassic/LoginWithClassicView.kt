@@ -79,6 +79,7 @@ fun LoginWithClassicView(
         background = { OnboardingBackground() },
         isScrollable = true,
         header = {
+            if (true) return@HeaderFooterPage // SC
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),

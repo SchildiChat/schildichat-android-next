@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
@@ -165,6 +166,18 @@ object FakeScPreferencesStore : ScPreferencesStore {
 
     override suspend fun reset() = shouldNotUsedInProduction()
     override suspend fun prefetch() = shouldNotUsedInProduction()
+}
+
+object PreviewScPreferencesStore : ScPreferencesStore {
+    override suspend fun <T> setSetting(scPref: ScPref<T>, value: T) {}
+    override suspend fun <T> setSettingTypesafe(scPref: ScPref<T>, value: Any?) {}
+    override fun <T> settingFlow(scPref: ScPref<T>): Flow<T> = flowOf(scPref.defaultValue)
+    override fun <T> combinedSettingValueAndEnabledFlow(transform: ((ScPref<*>) -> Any?, (ScPref<*>) -> Boolean) -> T): Flow<T> = flowOf(transform({ it.defaultValue }, { true }))
+    override fun isEnabledFlow(scPref: AbstractScPref): Flow<Boolean> = flowOf(true)
+    override fun <T> getCachedOrDefaultValue(scPref: ScPref<T>): T = scPref.defaultValue
+
+    override suspend fun reset() {}
+    override suspend fun prefetch() {}
 }
 
 @Composable

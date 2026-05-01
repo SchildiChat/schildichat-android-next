@@ -14,6 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.res.ResourcesCompat
+import chat.schildi.lib.preferences.LocalScPreferencesStore
+import chat.schildi.lib.preferences.NotExactlyACompositionLocal
+import chat.schildi.lib.preferences.PreviewScPreferencesStore
 import chat.schildi.theme.ScTheme
 import coil3.annotation.ExperimentalCoilApi
 import coil3.asImage
@@ -35,6 +38,7 @@ fun ElementPreview(
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
+    LocalScPreferencesStore = NotExactlyACompositionLocal(PreviewScPreferencesStore)
     CompositionLocalProvider(
         LocalAsyncImagePreviewHandler provides AsyncImagePreviewHandler {
             ResourcesCompat.getDrawable(context.resources, drawableFallbackForImages, null)!!.asImage()

@@ -12,7 +12,7 @@ mydir="."
 # Element -> SchildiChat, but restore Element where it makes sense
 # After resoring some "Element Call" things, redo those call-related stringt pointing to "Element X" anyway
 find "$mydir" -not -path "./schildi/**" \
-    -name translations.xml -exec \
+    \( -name translations.xml -o -name localazy.xml \) -exec \
     sed -i 's|Element|SchildiChat|g;
             s|SchildiChat X|SchildiChat Next|g;
             s/SchildiChat \(Web\|iOS\|Desktop\)/Element \1/g;
@@ -26,6 +26,6 @@ find "$mydir" -not -path "./schildi/**" \
             s/SchildiChat Classic/SchildiChat Legacy/g;
             s/SchildiChat\( \|-\)Call/Element\1Call/g' '{}' \;
 
-git --no-pager diff \*/translations.xml
+git --no-pager diff -- '*/translations.xml' '*/localazy.xml'
 
 popd > /dev/null

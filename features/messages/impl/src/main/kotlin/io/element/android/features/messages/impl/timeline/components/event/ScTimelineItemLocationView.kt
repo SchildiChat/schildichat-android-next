@@ -63,7 +63,10 @@ fun ScTimelineItemLocationView(
                 .padding(ICON_PADDING)
         )
         Spacer(Modifier.width(ICON_MARGIN))
-        val text = content.description?.takeIf { it.isNotBlank() } ?: stringResource(R.string.event_placeholder_location)
+        val text = when (content.mode) {
+            is TimelineItemLocationContent.Mode.Live -> stringResource(io.element.android.libraries.ui.strings.R.string.common_live_location)
+            is TimelineItemLocationContent.Mode.Static -> stringResource(R.string.event_placeholder_location)
+        }
         CompositionLocalProvider(
             LocalContentColor provides ElementTheme.colors.textPrimary,
             LocalTextStyle provides if (ScPrefs.EL_TYPOGRAPHY.value()) ElementTheme.typography.fontBodyLgRegular else ElementTheme.typography.fontBodyMdRegular

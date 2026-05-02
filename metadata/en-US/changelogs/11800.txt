@@ -1,0 +1,7 @@
+- Update codebase to Element X v26.04.4
+- Improve notification contents and ensure proper notification channel usage
+- Add black theme
+- Allow rendering bridge icons in the chat list (requires manually clearing cache on upgrade for existing chats)
+- Experimental option to show when unread counts may be incomplete
+- Get "View hidden events" developer option to actually work
+- Misc improvements & bug fixes

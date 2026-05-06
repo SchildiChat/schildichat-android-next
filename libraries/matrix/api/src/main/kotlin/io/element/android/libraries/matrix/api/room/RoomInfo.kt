@@ -70,6 +70,7 @@ data class RoomInfo(
      */
     val numUnreadMentions: Long,
     // SC: start
+    val privateRoomName: String? = null,
     val spaceChildren: List<MatrixSpaceChildInfo> = emptyList(),
     val spaceCatchAll: SpaceCatchAllInfo? = null,
     val canUserManageSpaces: Boolean = false,

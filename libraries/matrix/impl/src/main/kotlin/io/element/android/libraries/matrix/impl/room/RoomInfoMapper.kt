@@ -74,6 +74,7 @@ class RoomInfoMapper {
             numUnreadMentions = it.numUnreadMentions.toLong(),
             numUnreadNotifications = it.numUnreadNotifications.toLong(),
             // SC start
+            privateRoomName = it.privateRoomName,
             spaceChildren = it.spaceChildren.map(MatrixSpaceChildInfoMapper::map),
             spaceCatchAll = it.spaceCatchAll?.let(::mapRustSpaceCatchAll),
             canUserManageSpaces = it.canUserManageSpaces,

@@ -11,6 +11,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - App icon & branding ⸸
 - Customizable colors for message bubbles †
 - Render bridge icons in inbox † and chat title
+- Render [MSC4431](https://github.com/matrix-org/matrix-spec-proposals/pull/4431) personal room name overrides
 
 
 ## Chat overview ("room list")

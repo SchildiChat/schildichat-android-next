@@ -32,6 +32,9 @@ data class RoomListRoomSummary(
     val numberOfUnreadMessages: Long,
     val numberOfUnreadMentions: Long,
     val numberOfUnreadNotifications: Long,
+    // SC start
+    val privateRoomName: String? = null,
+    val rawRoomName: String? = null,
     // SC: spaces
     val spaceChildren: ImmutableList<MatrixSpaceChildInfo> = persistentListOf(),
     val spaceCatchAll: SpaceCatchAllInfo? = null,

@@ -309,7 +309,7 @@ class MessagesPresenter(
 
         return MessagesState(
             roomId = room.roomId,
-            roomName = roomInfo.name,
+            roomName = roomInfo.scRoomDisplayNameOverride() ?: roomInfo.name,
             roomAvatar = roomAvatar,
             heroes = heroes,
             userEventPermissions = userEventPermissions,

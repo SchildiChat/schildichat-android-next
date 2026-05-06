@@ -53,6 +53,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import chat.schildi.lib.compose.thenIf
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import chat.schildi.lib.util.formatUnreadCount
@@ -188,18 +189,41 @@ private fun ScRoomSummaryRealRow(
 
 @Composable
 private fun RowScope.ScNameAndTimestampRow(room: RoomListRoomSummary) {
+    val primaryName = room.privateRoomName ?: room.name ?: stringResource(id = CommonStrings.common_no_room_name)
+    val secondaryName = if (room.privateRoomName != null && room.name != null && room.name != room.privateRoomName) {
+        room.name
+    } else {
+        null
+    }
+
     // Name
     Text(
         modifier = Modifier
-            .weight(1f)
-            .padding(end = 16.dp),
+            .thenIf(secondaryName == null) {
+                weight(1f)
+            },
         style = ElementTheme.typography.fontBodyLgMedium,
-        text = room.name ?: stringResource(id = CommonStrings.common_no_room_name),
+        text = primaryName,
         color = ElementTheme.colors.roomListRoomName,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis
     )
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    if (secondaryName != null) {
+        Text(
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .weight(1f),
+            style = ElementTheme.typography.fontBodyLgMedium,
+            text = secondaryName,
+            color = ElementTheme.colors.textSecondary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(start = 16.dp),
+    ) {
         // Message send status
         when (room.latestEvent) {
             is LatestEvent.Sending -> {

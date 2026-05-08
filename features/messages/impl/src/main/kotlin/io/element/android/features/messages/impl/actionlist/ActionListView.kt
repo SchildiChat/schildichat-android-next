@@ -158,6 +158,7 @@ fun ActionListView(
             sheetState = sheetState,
             onDismissRequest = ::onDismiss,
             modifier = modifier,
+            scrollable = false,
         ) {
             ActionListViewContent(
                 state = state,

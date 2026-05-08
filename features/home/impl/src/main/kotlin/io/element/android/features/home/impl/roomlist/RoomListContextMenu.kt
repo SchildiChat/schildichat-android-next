@@ -11,8 +11,9 @@ package io.element.android.features.home.impl.roomlist
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.NewReleases
 import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -55,7 +56,8 @@ fun RoomListContextMenu(
 ) {
     ModalBottomSheet(
         onDismissRequest = { eventSink(RoomListEvent.HideContextMenu) },
-        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = ScPrefs.FULLY_EXPAND_MESSAGE_MENU.value()),
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = ScPrefs.FULLY_EXPAND_MESSAGE_MENU.value()), // SC
+        scrollable = false,
     ) {
         RoomListModalBottomSheetContent(
             contextMenu = contextMenu,
@@ -110,7 +112,9 @@ private fun RoomListModalBottomSheetContent(
     onReportRoomClick: () -> Unit,
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
     ) {
         ListItem(
             headlineContent = {
@@ -235,26 +239,18 @@ private fun RoomListModalBottomSheetContent(
     }
 }
 
-// TODO This component should be seen in [RoomListView] @Preview but it doesn't show up.
-// see: https://issuetracker.google.com/issues/283843380
-// Remove this preview when the issue is fixed.
 @PreviewsDayNight
 @Composable
-internal fun RoomListModalBottomSheetContentPreview(
+internal fun RoomListContextMenuPreview(
     @PreviewParameter(RoomListStateContextMenuShownProvider::class) contextMenu: RoomListState.ContextMenu.Shown
 ) = ElementPreview {
-    RoomListModalBottomSheetContent(
+    RoomListContextMenu(
         contextMenu = contextMenu,
         roomListState = aRoomListState(), // SC
         matrixClient = null, // SC
-        onLowPriorityChange = {}, // SC
         canReportRoom = true,
-        onRoomMarkReadClick = {},
-        onRoomMarkUnreadClick = {},
         onRoomSettingsClick = {},
-        onLeaveRoomClick = {},
-        onFavoriteChange = {},
-        onClearCacheRoomClick = {},
         onReportRoomClick = {},
+        eventSink = {},
     )
 }

@@ -10,8 +10,6 @@ package io.element.android.features.startchat.impl.root
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -24,9 +22,6 @@ import io.element.android.features.startchat.impl.userlist.UserListPresenterArgs
 import io.element.android.libraries.architecture.AsyncAction
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.core.meta.BuildMeta
-import io.element.android.libraries.core.meta.isGplayBuild
-import io.element.android.libraries.featureflag.api.FeatureFlagService
-import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.usersearch.api.UserRepository
 import kotlinx.coroutines.launch
@@ -38,7 +33,6 @@ class StartChatPresenter(
     userListDataStore: UserListDataStore,
     private val startDMAction: StartDMAction,
     private val buildMeta: BuildMeta,
-    private val featureFlagService: FeatureFlagService,
 ) : Presenter<StartChatState> {
     private val presenter = presenterFactory.create(
         UserListPresenterArgs(
@@ -54,12 +48,6 @@ class StartChatPresenter(
 
         val localCoroutineScope = rememberCoroutineScope()
         val startDmActionState: MutableState<AsyncAction<RoomId>> = remember { mutableStateOf(AsyncAction.Uninitialized) }
-
-        val isRoomDirectorySearchEnabled by remember {
-            featureFlagService.isFeatureEnabledFlow(FeatureFlags.RoomDirectorySearch)
-        }.collectAsState(initial = false)
-
-        val enableKeyShareOnInvite = featureFlagService.isFeatureEnabledFlow(FeatureFlags.EnableKeyShareOnInvite).collectAsState(false)
 
         fun handleEvent(event: StartChatEvents) {
             when (event) {
@@ -78,8 +66,6 @@ class StartChatPresenter(
             applicationName = buildMeta.applicationName,
             userListState = userListState,
             startDmAction = startDmActionState.value,
-            isRoomDirectorySearchEnabled = isRoomDirectorySearchEnabled && !buildMeta.isGplayBuild,
-            enableKeyShareOnInvite = enableKeyShareOnInvite.value,
             eventSink = ::handleEvent,
         )
     }

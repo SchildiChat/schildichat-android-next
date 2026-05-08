@@ -522,10 +522,10 @@ class JoinedRustRoom(
         return innerRoom.liveLocationSharesFlow().timedByExpiry(systemClock::epochMillis)
     }
 
-    override suspend fun startLiveLocationShare(durationMillis: Long): Result<Unit> = withContext(roomDispatcher) {
+    override suspend fun startLiveLocationShare(durationMillis: Long): Result<EventId> = withContext(roomDispatcher) {
         runCatchingExceptions {
             innerRoom.startLiveLocationShare(durationMillis.toULong())
-        }
+        }.map(::EventId)
     }
 
     override suspend fun stopLiveLocationShare(): Result<Unit> = withContext(roomDispatcher) {
@@ -544,7 +544,7 @@ class JoinedRustRoom(
 
     override fun destroy() {
         baseRoom.destroy()
-        liveInnerTimeline.destroy()
+        liveTimeline.close()
         threadsListService.destroy()
         Timber.d("Room $roomId destroyed")
     }

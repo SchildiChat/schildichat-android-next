@@ -26,4 +26,5 @@ dependencies {
     implementation(projects.libraries.di)
     implementation(projects.libraries.core)
     implementation(projects.libraries.matrix.api)
+    implementation(projects.libraries.sessionStorage.api)
 }

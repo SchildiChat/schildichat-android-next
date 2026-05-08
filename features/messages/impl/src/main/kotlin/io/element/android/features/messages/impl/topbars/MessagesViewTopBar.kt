@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -48,6 +49,7 @@ import io.element.android.libraries.designsystem.components.avatar.anAvatarData
 import io.element.android.libraries.designsystem.components.button.BackButton
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
+import io.element.android.libraries.designsystem.preview.ROOM_NAME
 import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.Text
@@ -98,9 +100,12 @@ internal fun MessagesViewTopBar(
                     modifier = titleModifier.thenIf(ScPrefs.SC_TIMELINE_LAYOUT.value()) { weight(1f, fill = false) }
                 )
 
+                val iconModifier = Modifier.size(16.dp)
+
                 when (dmUserIdentityState) {
                     IdentityState.Verified -> {
                         Icon(
+                            modifier = iconModifier,
                             imageVector = CompoundIcons.Verified(),
                             tint = ElementTheme.colors.iconSuccessPrimary,
                             contentDescription = null,
@@ -108,6 +113,7 @@ internal fun MessagesViewTopBar(
                     }
                     IdentityState.VerificationViolation -> {
                         Icon(
+                            modifier = iconModifier,
                             imageVector = CompoundIcons.ErrorSolid(),
                             tint = ElementTheme.colors.iconCriticalPrimary,
                             contentDescription = null,
@@ -121,11 +127,13 @@ internal fun MessagesViewTopBar(
                 when (sharedHistoryIcon) {
                     SharedHistoryIcon.NONE -> Unit
                     SharedHistoryIcon.SHARED -> Icon(
+                        modifier = iconModifier,
                         imageVector = CompoundIcons.History(),
                         tint = ElementTheme.colors.iconInfoPrimary,
                         contentDescription = stringResource(CommonStrings.common_shared_history),
                     )
                     SharedHistoryIcon.WORLD_READABLE -> Icon(
+                        modifier = iconModifier,
                         imageVector = CompoundIcons.UserProfileSolid(),
                         tint = ElementTheme.colors.iconInfoPrimary,
                         contentDescription = stringResource(CommonStrings.common_world_readable_history),
@@ -159,7 +167,7 @@ private fun RoomAvatarAndNameRow(
         )
         Text(
             modifier = Modifier
-                .padding(horizontal = 8.dp)
+                .padding(start = 8.dp)
                 .semantics {
                     heading()
                 },
@@ -177,9 +185,9 @@ private fun RoomAvatarAndNameRow(
 internal fun MessagesViewTopBarPreview() = ElementPreview {
     @Composable
     fun AMessagesViewTopBar(
-        roomName: String? = "Room name",
+        roomName: String? = ROOM_NAME,
         roomAvatar: AvatarData = anAvatarData(
-            name = "Room name",
+            name = ROOM_NAME,
             size = AvatarSize.TimelineRoom,
         ),
         isTombstoned: Boolean = false,

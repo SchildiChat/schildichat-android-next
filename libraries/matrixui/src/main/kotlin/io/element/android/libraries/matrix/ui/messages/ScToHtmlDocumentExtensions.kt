@@ -31,7 +31,7 @@ object ScHtmlToDomParser {
         .addTags(
             "a", "b", "strong", "i", "em", "u", "del", "code", "ul", "ol", "li", "pre",
             "blockquote", "p", "br", "img", "span", "h1", "h2", "h3", "h4", "h5", "h6", "s", "font",
-            "div", "hr", "details", "summary",
+            "div", "hr", "details", "summary", "mx-reply",
         )
         .addAttributes("a", "href", "data-mention-type", "contenteditable")
         .addAttributes("img", "src", "title", "alt", "width", "height", "data-mx-emoticon")

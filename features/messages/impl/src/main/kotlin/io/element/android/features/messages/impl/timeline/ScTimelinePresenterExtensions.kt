@@ -19,15 +19,6 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-data class ScReadState(
-    val lastReadMarkerIndex: MutableIntState,
-    val lastReadMarkerId: MutableState<EventId?>,
-    val readMarkerToSet: MutableState<EventId?>,
-    val sawUnreadLine: MutableState<Boolean>,
-    // For debugging
-    val fullyReadEventId: MutableState<String?>,
-)
-
 fun forceSetReceipts(context: Context, appScope: CoroutineScope, room: BaseRoom, scReadState: ScReadState, isSendPublicReadReceiptsEnabled: Boolean) {
     scReadState.sawUnreadLine.value = true
     val eventId = scReadState.readMarkerToSet.value ?: return

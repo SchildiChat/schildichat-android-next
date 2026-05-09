@@ -30,7 +30,7 @@ sealed interface StateEventType {
     data object RoomTopic : StateEventType
     data object SpaceChild : StateEventType
     data object SpaceParent : StateEventType
-    data object SpaceCatchAll : StateEventType
+    data object SpaceCatchAll : StateEventType // SC
     data object BeaconInfo : StateEventType
     data object MemberHints : StateEventType
     data object RoomImagePack : StateEventType

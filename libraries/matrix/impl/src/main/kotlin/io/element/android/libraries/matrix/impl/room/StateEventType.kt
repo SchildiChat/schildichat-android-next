@@ -33,7 +33,7 @@ fun StateEventType.map(): RustStateEventType = when (this) {
     StateEventType.RoomTopic -> RustStateEventType.RoomTopic
     StateEventType.SpaceChild -> RustStateEventType.SpaceChild
     StateEventType.SpaceParent -> RustStateEventType.SpaceParent
-    StateEventType.SpaceCatchAll -> RustStateEventType.SpaceCatchAll
+    StateEventType.SpaceCatchAll -> RustStateEventType.SpaceCatchAll // SC
     StateEventType.BeaconInfo -> RustStateEventType.BeaconInfo
     StateEventType.MemberHints -> RustStateEventType.MemberHints
     StateEventType.RoomImagePack -> RustStateEventType.RoomImagePack
@@ -63,7 +63,7 @@ fun RustStateEventType.map(): StateEventType = when (this) {
     RustStateEventType.RoomTopic -> StateEventType.RoomTopic
     RustStateEventType.SpaceChild -> StateEventType.SpaceChild
     RustStateEventType.SpaceParent -> StateEventType.SpaceParent
-    RustStateEventType.SpaceCatchAll -> StateEventType.SpaceCatchAll
+    RustStateEventType.SpaceCatchAll -> StateEventType.SpaceCatchAll // SC
     RustStateEventType.BeaconInfo -> StateEventType.BeaconInfo
     RustStateEventType.MemberHints -> StateEventType.MemberHints
     RustStateEventType.RoomImagePack -> StateEventType.RoomImagePack

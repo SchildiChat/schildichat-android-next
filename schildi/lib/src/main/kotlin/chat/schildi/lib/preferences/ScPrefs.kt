@@ -124,6 +124,7 @@ object ScPrefs {
     val VIEW_HIDDEN_EVENTS = ScBoolPref("VIEW_HIDDEN_EVENTS", false, R.string.sc_pref_view_hidden_events_title, authorsChoice = false, upstreamChoice = false)
     val VIEW_REDACTIONS = ScBoolPref("VIEW_REDACTIONS", true, R.string.sc_pref_view_redactions_title, R.string.sc_pref_view_redactions_summary, dependencies = listOf(VIEW_HIDDEN_EVENTS.toDependency(expect = false)), disabledValue = true, upstreamChoice = true)
     val LEGACY_MESSAGE_RENDERING = ScBoolPref("LEGACY_MESSAGE_RENDERING", false, R.string.sc_pref_legacy_message_rendering_title, R.string.sc_pref_legacy_message_rendering_summary, authorsChoice = false, upstreamChoice = true)
+    val VERBOSE_CONVERSATION_ICONS = ScBoolPref("VERBOSE_CONVERSATION_ICONS", false, R.string.sc_pref_verbose_room_title_icons_title, R.string.sc_pref_verbose_room_title_icons_summary, authorsChoice = false, upstreamChoice = true)
 
     // Advanced theming options - Light theme
     val BUBBLE_BG_LIGHT_OUTGOING = ScColorPref("BUBBLE_BG_LIGHT_OUTGOING", R.string.sc_pref_bubble_color_outgoing_title)
@@ -212,6 +213,7 @@ object ScPrefs {
             //RENDER_INLINE_IMAGES,
             FLOATING_DATE,
             HIDE_CALL_TOOLBAR_ACTION,
+            VERBOSE_CONVERSATION_ICONS,
             REPLY_PREVIEW_LINE_COUNT,
             LEGACY_MESSAGE_RENDERING,
             ScPrefCategory(R.string.sc_url_previews_title, null, listOf(
@@ -330,6 +332,7 @@ object ScPrefs {
         EL_TYPOGRAPHY,
         SC_TIMELINE_LAYOUT.copy(titleRes = R.string.sc_pref_sc_layout_title),
         HIDE_CALL_TOOLBAR_ACTION,
+        VERBOSE_CONVERSATION_ICONS,
         PINNED_MESSAGE_OVERLAY.copy(titleRes = R.string.sc_pref_pinned_message_overlay_title_short),
         PINNED_MESSAGE_TOOLBAR_ACTION.copy(titleRes = R.string.sc_pref_pinned_message_toolbar_title_short),
         //RENDER_INLINE_IMAGES,

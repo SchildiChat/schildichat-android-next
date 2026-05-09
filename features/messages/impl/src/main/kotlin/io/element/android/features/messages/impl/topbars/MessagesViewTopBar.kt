@@ -35,7 +35,6 @@ import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.messages.impl.MessagesMenuActions
 import io.element.android.features.messages.impl.MessagesState
-import io.element.android.features.messages.impl.ScTitleAdditions
 import io.element.android.features.messages.impl.SharedHistoryIcon
 import io.element.android.features.messages.impl.aMessagesState
 import io.element.android.features.roomcall.api.RoomCallState
@@ -102,7 +101,7 @@ internal fun MessagesViewTopBar(
 
                 val iconModifier = Modifier.size(16.dp)
 
-                when (dmUserIdentityState) {
+                when (dmUserIdentityState.scOverride()) {
                     IdentityState.Verified -> {
                         Icon(
                             modifier = iconModifier,
@@ -124,7 +123,7 @@ internal fun MessagesViewTopBar(
 
                 ScTitleAdditions(state)
 
-                when (sharedHistoryIcon) {
+                when (sharedHistoryIcon.scOverride()) {
                     SharedHistoryIcon.NONE -> Unit
                     SharedHistoryIcon.SHARED -> Icon(
                         modifier = iconModifier,

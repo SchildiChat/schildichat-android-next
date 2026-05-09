@@ -8,7 +8,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Schildi theme with more neutral colors and some design tweaks †
 - Schildi layout tweaks †
 - Faster screen transitions †
-- App icon & branding ⸸
+- App icon & branding
 - Customizable colors for message bubbles †
 - Render bridge icons in inbox † and chat title
 - Render [MSC4431](https://github.com/matrix-org/matrix-spec-proposals/pull/4431) personal room name overrides
@@ -16,9 +16,9 @@ Note that following list of changes compared to Element X is likely incomplete, 
 
 ## Chat overview ("room list")
 
-- Bottom space bar with swipe navigation, including support for hierarchical spaces †‡
+- Bottom space bar with swipe navigation, including support for hierarchical spaces †
 - Filter for favorites, unreads, DMs, and group chats via our spaces navigation
-- Configure room list sort order to optionally: †‡
+- Configure room list sort order to optionally: †
     - Show unread chats on top (while optionally ignoring muted unreads)
     - Pin favorites
     - Show low priority on bottom
@@ -46,6 +46,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
 
 - Disable Element's pinned message overlay on top of the conversation screen †
 - Access pinned messages via toolbar action when the pinned message overlay is disabled †
+- Hide some icons from the top app bar †
 
 
 ## Notifications
@@ -79,6 +80,4 @@ Note that following list of changes compared to Element X is likely incomplete, 
 - Non-expanding compact app bar in the chat overview, adopted by upstream in v25.11.2
 
 
-†: Can be partly enabled or disabled by user setting  
-‡: Powered by [our own rust-sdk fork](https://github.com/SchildiChat/matrix-rust-sdk)  
-⸸: Work in progress  
+†: Can be partly enabled or disabled by user setting

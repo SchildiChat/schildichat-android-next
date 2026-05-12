@@ -1,5 +1,6 @@
 package io.element.android.features.messages.impl.timeline.factories.event
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
@@ -11,7 +12,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.LinkAnnotation
@@ -21,6 +21,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.sp
+import androidx.core.util.PatternsCompat
 import chat.schildi.theme.ScTheme
 import chat.schildi.theme.scBubbleFont
 import com.beeper.android.messageformat.DefaultMatrixBodyStyledFormatter
@@ -46,7 +47,10 @@ private const val MENTION_BG_RADIUS_ON_LINE_BREAK = 2f
 object MessageFormatDefaults {
     val blockIndention = 16.sp
     val parser: MatrixHtmlParser = MatrixHtmlParser()
+    @SuppressLint("RestrictedApi")
     val parseStyle: MatrixBodyPreFormatStyle = MatrixBodyPreFormatStyle(
+        // The default / public regex likes to linkify also mid-word, better to use this "restricted API" one
+        autoLinkUrlPattern = PatternsCompat.AUTOLINK_WEB_URL,
         formatRoomMention = {
             // Wrap in non-breakable space to add padding for background
             "\u00A0$MENTION_ROOM\u00A0"

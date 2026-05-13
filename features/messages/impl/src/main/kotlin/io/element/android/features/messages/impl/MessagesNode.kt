@@ -143,6 +143,7 @@ class MessagesNode(
         fun navigateToSendLocation()
         fun navigateToCreatePoll()
         fun navigateToEditPoll(eventId: EventId)
+        fun navigateToCurrentLiveLocation()
         fun navigateToRoomCall(roomId: RoomId, isAudioCall: Boolean)
         fun navigateToThread(threadRootId: ThreadId, focusedEventId: EventId?)
         fun navigateToRoomDetails()
@@ -254,6 +255,10 @@ class MessagesNode(
 
     override fun navigateToDeveloperSettings() {
         callback.navigateToDeveloperSettings()
+    }
+
+    override fun navigateToCurrentLiveLocation() {
+        callback.navigateToCurrentLiveLocation()
     }
 
     private fun displaySameRoomToast() {

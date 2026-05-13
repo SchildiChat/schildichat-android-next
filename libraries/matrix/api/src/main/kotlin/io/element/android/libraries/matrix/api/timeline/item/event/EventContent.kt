@@ -127,7 +127,8 @@ data class LiveLocationContent(
 data object LegacyCallInviteContent : EventContent
 
 data class CallNotifyContent(
-    val callIntent: CallIntent
+    val callIntent: CallIntent,
+    val declinedBy: List<UserId>
 ) : EventContent
 
 data object UnknownContent : EventContent

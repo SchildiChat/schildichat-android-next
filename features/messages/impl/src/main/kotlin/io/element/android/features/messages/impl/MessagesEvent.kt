@@ -19,6 +19,8 @@ sealed interface MessagesEvent {
     data class ToggleReaction(val emoji: String, val eventOrTransactionId: EventOrTransactionId) : MessagesEvent
     data class InviteDialogDismissed(val action: InviteDialogAction) : MessagesEvent
     data class OnUserClicked(val user: MatrixUser) : MessagesEvent
+    data object StopLiveLocationShare : MessagesEvent
+    data object ShowLiveLocationShare : MessagesEvent
     data class MarkAsFullyReadAndExit(val scReadState: ScReadState) : MessagesEvent
 }
 

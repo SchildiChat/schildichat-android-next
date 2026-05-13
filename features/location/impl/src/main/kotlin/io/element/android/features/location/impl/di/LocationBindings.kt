@@ -5,13 +5,13 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.libraries.push.impl.di
+package io.element.android.features.location.impl.di
 
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
-import io.element.android.libraries.push.impl.push.FetchPushForegroundService
+import io.element.android.features.location.impl.live.service.LiveLocationSharingService
 
 @ContributesTo(AppScope::class)
-interface PushBindings {
-    fun inject(fetchPushForegroundService: FetchPushForegroundService)
+interface LocationBindings {
+    fun inject(service: LiveLocationSharingService)
 }

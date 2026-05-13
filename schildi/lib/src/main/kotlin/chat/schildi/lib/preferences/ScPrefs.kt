@@ -142,11 +142,11 @@ object ScPrefs {
     val scTweaksAdvancedTheming = ScPrefCollection(
         R.string.sc_pref_screen_advanced_theming_summary,
         listOf(
-            ScPrefCategory(io.element.android.libraries.ui.strings.R.string.common_light, null, listOf(
+            ScPrefCategory(R.string.sc_theme_category_light, null, listOf(
                 BUBBLE_BG_LIGHT_INCOMING,
                 BUBBLE_BG_LIGHT_OUTGOING,
             )),
-            ScPrefCategory(io.element.android.libraries.ui.strings.R.string.common_dark, null, listOf(
+            ScPrefCategory(R.string.sc_theme_category_dark, null, listOf(
                 BUBBLE_BG_DARK_INCOMING,
                 BUBBLE_BG_DARK_OUTGOING,
             )),

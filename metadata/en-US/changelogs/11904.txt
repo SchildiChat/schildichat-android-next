@@ -1,0 +1,4 @@
+- Update codebase to Element X v26.05.1
+- Make room title icons for history visibility and verified contacts opt-in
+- Render personalized room name overrides, when set by an MSC4431-compatible client
+- Improve link detection in messages

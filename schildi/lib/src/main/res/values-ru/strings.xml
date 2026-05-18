@@ -194,4 +194,17 @@
     <string name="sc_pref_view_redactions_summary">Отображать заполнители сообщений для удаленных сообщений, а не скрывать их полностью</string>
     <string name="sc_pref_legacy_message_rendering_title">Устаревшее отображение сообщений</string>
     <string name="sc_pref_legacy_message_rendering_summary">Способ отображения отформатированных сообщений из Element</string>
+    <string name="sc_pref_el_theme_title">Тема Element</string>
+    <string name="sc_pref_el_theme_summary">Предпочитать цветовую схему из Element X</string>
+    <string name="sc_pref_black_theme_title">Чёрная тема</string>
+    <string name="sc_pref_black_theme_summary">Чёрный фон при использовании чёрной темы</string>
+    <string name="sc_pref_indicate_unread_count_underestimates_title">Указывать на занижение количества непрочитанных</string>
+    <string name="sc_pref_indicate_unread_count_underestimates_title_short">Неустойчивость непрочитанных</string>
+    <string name="sc_pref_indicate_unread_count_underestimates_summary">Отображать вопросительный знак и плюсовые индикаторы для подсчета количества незавершенных непрочитанных сообщений</string>
+    <string name="sc_pref_inbox_bridge_avatars_title">Показывать аватар моста</string>
+    <string name="sc_pref_inbox_bridge_avatars_summary">Отображать аватары мостов для переброшенных чатов</string>
+    <string name="sc_pref_verbose_room_title_icons_title"></string>
+    <string name="sc_pref_verbose_room_title_icons_summary">Показывать значки рядом с названием комнаты, если включена функция обмена историей или контакт подтвержден</string>
+    <string name="sc_theme_category_light">Светлая</string>
+    <string name="sc_theme_category_dark">Тёмная</string>
 </resources>

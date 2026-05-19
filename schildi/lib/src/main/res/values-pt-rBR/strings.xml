@@ -202,4 +202,6 @@
     <string name="sc_pref_inbox_bridge_avatars_summary">Renderizar avatares da ponte em conversas com pontes</string>
     <string name="sc_pref_indicate_unread_count_underestimates_summary">Renderizar indicadores de ponto de interrogação e de mais para cálculos incompletos de contagens de não lidas</string>
     <string name="sc_pref_indicate_unread_count_underestimates_title">Indicar subestimações de contagem de não lidas</string>
+    <string name="sc_pref_verbose_room_title_icons_summary">Mostrar ícones ao lado do título da sala quando o compartilhamento de histórico estiver ativo ou um contato for verificado</string>
+    <string name="sc_pref_verbose_room_title_icons_title">Ícones detalhados do título da sala</string>
 </resources>

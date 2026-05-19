@@ -203,7 +203,6 @@
     <string name="sc_pref_indicate_unread_count_underestimates_summary">Отображать вопросительный знак и плюсовые индикаторы для подсчета количества незавершенных непрочитанных сообщений</string>
     <string name="sc_pref_inbox_bridge_avatars_title">Показывать аватар моста</string>
     <string name="sc_pref_inbox_bridge_avatars_summary">Отображать аватары мостов для переброшенных чатов</string>
-    <string name="sc_pref_verbose_room_title_icons_title"></string>
     <string name="sc_pref_verbose_room_title_icons_summary">Показывать значки рядом с названием комнаты, если включена функция обмена историей или контакт подтвержден</string>
     <string name="sc_theme_category_light">Светлая</string>
     <string name="sc_theme_category_dark">Тёмная</string>

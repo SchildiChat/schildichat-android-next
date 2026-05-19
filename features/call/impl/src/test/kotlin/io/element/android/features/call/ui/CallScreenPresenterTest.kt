@@ -10,6 +10,7 @@ package io.element.android.features.call.ui
 
 import app.cash.molecule.RecompositionMode
 import app.cash.molecule.moleculeFlow
+import app.cash.turbine.TurbineTestContext
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
 import im.vector.app.features.analytics.plan.MobileScreen
@@ -301,7 +302,105 @@ class CallScreenPresenterTest {
         }
     }
 
-    private fun TestScope.createCallScreenPresenter(
+    @Test
+    fun `present - areControlsVisible starts as true`() = runTest {
+        val widgetDriver = FakeMatrixWidgetDriver()
+        val presenter = createCallScreenPresenter(
+            callData = CallData(A_SESSION_ID, A_ROOM_ID, false),
+            widgetDriver = widgetDriver,
+            screenTracker = FakeScreenTracker {},
+        )
+        presenter.test {
+            advanceTimeBy(1.seconds)
+            val initialState = awaitItem()
+            assertThat(initialState.areControlsVisible).isTrue()
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `present - ScreenTapped resets timer and controls stay visible`() = runTest {
+        val widgetDriver = FakeMatrixWidgetDriver()
+        val presenter = createCallScreenPresenter(
+            callData = CallData(A_SESSION_ID, A_ROOM_ID, false),
+            widgetDriver = widgetDriver,
+            screenTracker = FakeScreenTracker {},
+        )
+        val messageInterceptor = FakeWidgetMessageInterceptor()
+        presenter.test {
+            val stateBeforeTap = simulateCallJoined(messageInterceptor)
+            assertThat(stateBeforeTap.areControlsVisible).isTrue()
+
+            // Tap the screen to reset the timer
+            stateBeforeTap.eventSink(CallScreenEvent.ScreenTapped)
+
+            // Advance time past the original 5s deadline (4 seconds after tap)
+            // The original timer was cancelled by the tap, so controls should still be visible
+            advanceTimeBy(4.seconds)
+            val stillVisible = awaitItem()
+            assertThat(stillVisible.areControlsVisible).isTrue()
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `present - controls auto-hide after timeout when user has joined`() = runTest {
+        val widgetDriver = FakeMatrixWidgetDriver()
+        val presenter = createCallScreenPresenter(
+            callData = CallData(A_SESSION_ID, A_ROOM_ID, false),
+            widgetDriver = widgetDriver,
+            screenTracker = FakeScreenTracker {},
+        )
+        val messageInterceptor = FakeWidgetMessageInterceptor()
+        presenter.test {
+            simulateCallJoined(messageInterceptor)
+
+            // Advance time past the 5s auto-hide timeout
+            advanceTimeBy(6.seconds)
+            val afterTimeout = awaitItem()
+            assertThat(afterTimeout.areControlsVisible).isFalse()
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+}
+
+private const val CONTENT_LOADED_JSON = """
+    {
+        "action":"content_loaded",
+        "api":"fromWidget",
+        "widgetId":"1",
+        "requestId":"1"
+    }
+"""
+
+private const val IO_ELEMENT_JOIN_JSON = """
+    {
+        "action":"io.element.join",
+        "api":"fromWidget",
+        "widgetId":"1",
+        "requestId":"1"
+    }
+"""
+
+/**
+ * Sets up the message interceptor, sends content_loaded and join messages,
+ * and returns the state after the join timer has started.
+ */
+private suspend fun TurbineTestContext<CallScreenState>.simulateCallJoined(
+    messageInterceptor: FakeWidgetMessageInterceptor,
+): CallScreenState {
+    advanceTimeBy(1.seconds)
+    val initialState = awaitItem()
+    initialState.eventSink(CallScreenEvent.SetupMessageChannels(messageInterceptor))
+    messageInterceptor.givenInterceptedMessage(CONTENT_LOADED_JSON.trimIndent())
+    skipItems(2)
+    messageInterceptor.givenInterceptedMessage(IO_ELEMENT_JOIN_JSON.trimIndent())
+    return awaitItem()
+}
+
+private fun TestScope.createCallScreenPresenter(
         callData: CallData,
         navigator: CallScreenNavigator = FakeCallScreenNavigator(),
         widgetDriver: FakeMatrixWidgetDriver = FakeMatrixWidgetDriver(),

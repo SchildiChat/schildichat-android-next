@@ -9,6 +9,7 @@
 package io.element.android.features.call.impl.ui
 
 import android.annotation.SuppressLint
+import android.view.MotionEvent
 import android.view.ViewGroup
 import android.webkit.ConsoleMessage
 import android.webkit.JavascriptInterface
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -98,59 +100,176 @@ internal fun CallScreenView(
             }
         }
 
-        CallWebView(
-            modifier = modifier.consumeWindowInsets(WindowInsets.systemBars).fillMaxSize(),
-            url = state.urlState,
-            userAgent = state.userAgent,
-            onPermissionsRequest = { request ->
-                val androidPermissions = mapWebkitPermissions(request.resources)
-                val callback: RequestPermissionCallback = { request.grant(it) }
-                requestPermissions(androidPermissions.toTypedArray(), callback)
-            },
-            onConsoleMessage = onConsoleMessage,
-            onCreateWebView = { webView ->
-                callWebView = webView
-                webView.addBackHandler(onBackPressed = ::handleBack)
-                val interceptor = WebViewWidgetMessageInterceptor(
-                    webView = webView,
-                    onUrlLoaded = { url ->
-                        webView.evaluateJavascript("controls.onBackButtonPressed = () => { backHandler.onBackPressed() }", null)
-                        if (webViewAudioManager?.isInCallMode?.get() == false) {
-                            Timber.d("URL $url is loaded, starting in-call audio mode")
-                            webViewAudioManager?.onCallStarted()
-                        } else {
-                            Timber.d("Can't start in-call audio mode since the app is already in it.")
+        Box(modifier = modifier.fillMaxSize()) {
+            CallWebView(
+                modifier = Modifier
+                    .consumeWindowInsets(WindowInsets.systemBars)
+                    .fillMaxSize(),
+                url = state.urlState,
+                userAgent = state.userAgent,
+                onPermissionsRequest = { request ->
+                    val androidPermissions = mapWebkitPermissions(request.resources)
+                    val callback: RequestPermissionCallback = { request.grant(it) }
+                    requestPermissions(androidPermissions.toTypedArray(), callback)
+                },
+                onConsoleMessage = onConsoleMessage,
+                onCreateWebView = { webView ->
+                    callWebView = webView
+                    webView.addBackHandler(onBackPressed = ::handleBack)
+
+                    // Native touch listener: every tap on the WebView resets the auto-hide timer.
+                    // Returns false so the WebView processes the touch normally.
+                    // This catches touches at the Android View level, before Element Call's JS
+                    // can intercept them (Element Call suppresses click event synthesis).
+                    webView.setOnTouchListener { _, event ->
+                        if (event.action == MotionEvent.ACTION_UP) {
+                            state.eventSink(CallScreenEvent.ScreenTapped)
                         }
-                    },
-                    onError = { state.eventSink(CallScreenEvent.OnWebViewError(it)) },
-                )
-                webViewAudioManager = WebViewAudioManager(
-                    webView = webView,
-                    coroutineScope = coroutineScope,
-                    onInvalidAudioDeviceAdded = { invalidAudioDeviceReason = it },
-                )
-                state.eventSink(CallScreenEvent.SetupMessageChannels(interceptor))
-                val pipController = WebViewPipController(webView)
-                pipState.eventSink(PictureInPictureEvent.SetPipController(pipController))
-            },
-            onDestroyWebView = {
-                callWebView = null
-                // Reset audio mode
-                webViewAudioManager?.onCallStopped()
+                        false
+                    }
+
+                    val interceptor = WebViewWidgetMessageInterceptor(
+                        webView = webView,
+                        onUrlLoaded = { url ->
+                            webView.evaluateJavascript("controls.onBackButtonPressed = () => { backHandler.onBackPressed() }", null)
+                            if (webViewAudioManager?.isInCallMode?.get() == false) {
+                                Timber.d("URL $url is loaded, starting in-call audio mode")
+                                webViewAudioManager?.onCallStarted()
+                            } else {
+                                Timber.d("Can't start in-call audio mode since the app is already in it.")
+                            }
+                        },
+                        onError = { state.eventSink(CallScreenEvent.OnWebViewError(it)) },
+                    )
+                    webViewAudioManager = WebViewAudioManager(
+                        webView = webView,
+                        coroutineScope = coroutineScope,
+                        onInvalidAudioDeviceAdded = { invalidAudioDeviceReason = it },
+                    )
+                    state.eventSink(CallScreenEvent.SetupMessageChannels(interceptor))
+                    val pipController = WebViewPipController(webView)
+                    pipState.eventSink(PictureInPictureEvent.SetPipController(pipController))
+                },
+                onDestroyWebView = {
+                    callWebView = null
+                    webViewAudioManager?.onCallStopped()
+                }
+            )
+
+            // Inject CSS to animate Element Call controls. The OnTouchListener on the WebView
+            // (set up in onCreateWebView) handles tap detection for both showing controls
+            // and resetting the auto-hide timer — without blocking touches from reaching
+            // any visible elements underneath (menu items, buttons, etc.).
+            LaunchedEffect(state.areControlsVisible, callWebView) {
+                val webView = callWebView ?: return@LaunchedEffect
+                val visible = state.areControlsVisible
+                val js = """
+                    (function() {
+                        var VISIBLE = $visible;
+                        var HIDE_CLASS = 'sc-controls-hidden';
+                        var TOP_CLASS = 'sc-controls-top';
+                        var BOTTOM_CLASS = 'sc-controls-bottom';
+
+                        // Inject CSS once
+                        if (!document.getElementById('sc-controls-style')) {
+                            var style = document.createElement('style');
+                            style.id = 'sc-controls-style';
+                            style.textContent = [
+                                '.sc-controls-hidden {',
+                                '  opacity: 0 !important;',
+                                '  pointer-events: none !important;',
+                                '  transition: opacity 0.3s ease, transform 0.3s ease !important;',
+                                '}',
+                                '.sc-controls-top.sc-controls-hidden {',
+                                '  transform: translateY(-100%) !important;',
+                                '}',
+                                '.sc-controls-bottom.sc-controls-hidden {',
+                                '  transform: translateY(100%) !important;',
+                                '}',
+                                '.sc-controls-top, .sc-controls-bottom {',
+                                '  transition: opacity 0.3s ease, transform 0.3s ease !important;',
+                                '}',
+                            ].join('\n');
+                            document.head.appendChild(style);
+                        }
+
+                        // Only hide elements at screen edges (not mid-page menu/popup content)
+                        function isNearTop(el) {
+                            return el.getBoundingClientRect().top < 80;
+                        }
+                        function isNearBottom(el) {
+                            return el.getBoundingClientRect().bottom > window.innerHeight - 80;
+                        }
+
+                        var topSelectors = [
+                            'header', 'nav',
+                            '[class*="topBar"]', '[class*="TopBar"]',
+                            '[class*="headerBar"]', '[class*="HeaderBar"]',
+                            '[class*="topControls"]', '[class*="TopControls"]',
+                            '[class*="roomHeader"]', '[class*="RoomHeader"]',
+                            '[class*="callHeader"]', '[class*="CallHeader"]',
+                        ];
+
+                        var bottomSelectors = [
+                            '[class*="controlsBar"]', '[class*="ControlsBar"]',
+                            '[class*="bottomBar"]', '[class*="BottomBar"]',
+                            '[class*="callControls"]', '[class*="CallControls"]',
+                            '[class*="controlsContainer"]', '[class*="ControlsContainer"]',
+                            '[data-testid="call-controls"]',
+                            '[class*="actionBar"]', '[class*="ActionBar"]',
+                            '[class*="buttonBar"]', '[class*="ButtonBar"]',
+                            '[class*="footer"]', '[class*="Footer"]',
+                        ];
+
+                        function toggleAll(selectors, cls, posCheck) {
+                            for (var i = 0; i < selectors.length; i++) {
+                                var els = document.querySelectorAll(selectors[i]);
+                                for (var j = 0; j < els.length; j++) {
+                                    var el = els[j];
+                                    if (posCheck && !posCheck(el)) continue;
+                                    if (VISIBLE) {
+                                        el.classList.remove(HIDE_CLASS);
+                                        el.classList.remove(cls);
+                                    } else {
+                                        el.classList.add(HIDE_CLASS);
+                                        el.classList.add(cls);
+                                    }
+                                }
+                            }
+                        }
+
+                        toggleAll(topSelectors, TOP_CLASS, isNearTop);
+                        toggleAll(bottomSelectors, BOTTOM_CLASS, isNearBottom);
+
+                        // Camera switch button in video tile, no position check
+                        var cameraSelectors = [
+                            '[class*="switchCamera"]', '[class*="SwitchCamera"]',
+                        ];
+                        toggleAll(cameraSelectors, BOTTOM_CLASS, null);
+
+                        try {
+                            if (typeof controls !== 'undefined' && controls.setControlsVisible) {
+                                controls.setControlsVisible(VISIBLE);
+                            }
+                        } catch(e) {}
+                    })();
+                """.trimIndent()
+                webView.evaluateJavascript(js, null)
             }
-        )
-        when (state.urlState) {
-            AsyncData.Uninitialized,
-            is AsyncData.Loading ->
-                ProgressDialog(text = stringResource(id = CommonStrings.common_please_wait))
-            is AsyncData.Failure -> {
-                Timber.e(state.urlState.error, "WebView failed to load URL: ${state.urlState.error.message}")
-                ErrorDialog(
-                    content = state.urlState.error.message.orEmpty(),
-                    onSubmit = { state.eventSink(CallScreenEvent.Hangup) },
-                )
+
+            when (state.urlState) {
+                AsyncData.Uninitialized,
+                is AsyncData.Loading ->
+                    ProgressDialog(text = stringResource(id = CommonStrings.common_please_wait))
+                is AsyncData.Failure -> {
+                    Timber.e(state.urlState.error, "WebView failed to load URL: ${state.urlState.error.message}")
+                    ErrorDialog(
+                        content = state.urlState.error.message.orEmpty(),
+                        onSubmit = { state.eventSink(CallScreenEvent.Hangup) },
+                    )
+                }
+                is AsyncData.Success -> Unit
             }
-            is AsyncData.Success -> Unit
         }
     }
 }

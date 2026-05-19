@@ -93,6 +93,18 @@ class CallScreenViewTest {
         pipEvents.assertTrue(0) { it is PictureInPictureEvent.SetPipController }
         pipEvents.assertTrue(1) { it is PictureInPictureEvent.EnterPictureInPicture }
     }
+
+    @Test
+    fun `areControlsVisible false does not crash the view`() = runAndroidComposeUiTest {
+        setCallScreenView(
+            state = aCallScreenState(
+                areControlsVisible = false,
+                eventSink = EventsRecorder(),
+            ),
+            useInspectionMode = true,
+        )
+        // Verify that composing with areControlsVisible = false doesn't crash
+    }
 }
 
 @OptIn(ExperimentalTestApi::class)

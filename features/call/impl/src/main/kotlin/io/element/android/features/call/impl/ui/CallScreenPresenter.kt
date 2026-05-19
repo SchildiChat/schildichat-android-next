@@ -42,6 +42,7 @@ import io.element.android.services.analytics.api.ScreenTracker
 import io.element.android.services.appnavstate.api.AppForegroundStateService
 import io.element.android.services.toolbox.api.systemclock.SystemClock
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -49,6 +50,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.UUID
 import kotlin.time.Duration.Companion.seconds
+
+private val AUTO_HIDE_DELAY = 5.seconds
 
 @AssistedInject
 class CallScreenPresenter(
@@ -81,10 +84,32 @@ class CallScreenPresenter(
         val callWidgetDriver = remember { mutableStateOf<MatrixWidgetDriver?>(null) }
         val messageInterceptor = remember { mutableStateOf<WidgetMessageInterceptor?>(null) }
         var isWidgetLoaded by rememberSaveable { mutableStateOf(false) }
+        var hasCallJoined by remember { mutableStateOf(false) }
         var ignoreWebViewError by rememberSaveable { mutableStateOf(false) }
         var webViewError by remember { mutableStateOf<String?>(null) }
+        var areControlsVisible by remember { mutableStateOf(true) }
         val languageTag = languageTagProvider.provideLanguageTag()
         val theme = if (ElementTheme.isLightTheme) "light" else "dark"
+
+        // Auto-hide timer: resets on each user interaction
+        var autoHideJob by remember { mutableStateOf<Job?>(null) }
+
+        // Start the auto-hide timer when the call is active
+        fun startAutoHideTimer() {
+            autoHideJob?.cancel()
+            autoHideJob = coroutineScope.launch {
+                delay(AUTO_HIDE_DELAY)
+                areControlsVisible = false
+            }
+        }
+
+        fun resetAutoHideTimer() {
+            areControlsVisible = true
+            startAutoHideTimer()
+        }
+
+        // The auto-hide timer only starts when the user joins the call (Join message).
+        // On the lobby screen, taps via ScreenTapped are ignored (hasCallJoined == false).
 
         DisposableEffect(Unit) {
             coroutineScope.launch {
@@ -133,6 +158,10 @@ class CallScreenPresenter(
                                 close(callWidgetDriver.value, navigator)
                             } else if (parsedMessage.action == WidgetMessage.Action.ContentLoaded) {
                                 isWidgetLoaded = true
+                            } else if (parsedMessage.action == WidgetMessage.Action.Join) {
+                                // Start the auto-hide timer when the user actually joins the call
+                                hasCallJoined = true
+                                startAutoHideTimer()
                             }
                         }
                     }
@@ -155,6 +184,9 @@ class CallScreenPresenter(
         fun handleEvent(event: CallScreenEvent) {
             when (event) {
                 is CallScreenEvent.Hangup -> {
+                    // Cancel auto-hide timer when hanging up
+                    autoHideJob?.cancel()
+                    autoHideJob = null
                     val widgetId = callWidgetDriver.value?.id
                     val interceptor = messageInterceptor.value
                     if (widgetId != null && interceptor != null && isWidgetLoaded) {
@@ -183,6 +215,16 @@ class CallScreenPresenter(
                     }
                     // Else ignore the error, give a chance the Element Call to recover by itself.
                 }
+                is CallScreenEvent.ScreenTapped -> {
+                    // Don't start the auto-hide timer before the user has joined the call
+                    if (!hasCallJoined) return@handleEvent
+                    if (!areControlsVisible) {
+                        resetAutoHideTimer()
+                    } else {
+                        // Controls are already visible, just reset the timer
+                        startAutoHideTimer()
+                    }
+                }
             }
         }
 
@@ -191,6 +233,7 @@ class CallScreenPresenter(
             webViewError = webViewError,
             userAgent = userAgent,
             isCallActive = isWidgetLoaded,
+            areControlsVisible = areControlsVisible,
             eventSink = ::handleEvent,
         )
     }

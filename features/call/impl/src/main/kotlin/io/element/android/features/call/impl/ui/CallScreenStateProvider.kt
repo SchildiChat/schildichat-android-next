@@ -15,6 +15,7 @@ open class CallScreenStateProvider : PreviewParameterProvider<CallScreenState> {
     override val values: Sequence<CallScreenState>
         get() = sequenceOf(
             aCallScreenState(),
+            aCallScreenState(areControlsVisible = false),
             aCallScreenState(urlState = AsyncData.Loading()),
             aCallScreenState(urlState = AsyncData.Failure(Exception("An error occurred"))),
             aCallScreenState(webViewError = "Error details from WebView"),
@@ -26,6 +27,7 @@ internal fun aCallScreenState(
     webViewError: String? = null,
     userAgent: String = "",
     isCallActive: Boolean = true,
+    areControlsVisible: Boolean = true,
     eventSink: (CallScreenEvent) -> Unit = {},
 ): CallScreenState {
     return CallScreenState(
@@ -33,6 +35,7 @@ internal fun aCallScreenState(
         webViewError = webViewError,
         userAgent = userAgent,
         isCallActive = isCallActive,
+        areControlsVisible = areControlsVisible,
         eventSink = eventSink,
     )
 }

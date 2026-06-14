@@ -105,6 +105,7 @@ object ScPrefs {
     val PINNED_MESSAGE_OVERLAY = ScBoolPref("PINNED_MESSAGE_OVERLAY", false, R.string.sc_pref_pinned_message_overlay_title, R.string.sc_pref_pinned_message_overlay_summary, authorsChoice = false, upstreamChoice = true)
     val PINNED_MESSAGE_TOOLBAR_ACTION = ScBoolPref("PINNED_MESSAGE_TOOLBAR_ACTION", true, R.string.sc_pref_pinned_message_toolbar_title, R.string.sc_pref_pinned_message_toolbar_summary, authorsChoice = true, upstreamChoice = false, dependencies = PINNED_MESSAGE_OVERLAY.asDependencies(expect = false), disabledValue = false)
     val HIDE_CALL_TOOLBAR_ACTION = ScBoolPref("HIDE_CALL_TOOLBAR_ACTION", false, R.string.sc_pref_hide_call_toolbar_action_title, R.string.sc_pref_hide_call_toolbar_action_summary, authorsChoice = true, upstreamChoice = false)
+    val HIDE_VOICE_MESSAGE_BUTTON = ScBoolPref("HIDE_VOICE_MESSAGE_BUTTON", false, R.string.sc_pref_hide_voice_message_button_title, R.string.sc_pref_hide_voice_message_button_summary, authorsChoice = false, upstreamChoice = false)
     val SC_TIMELINE_LAYOUT = ScBoolPref("SC_TIMELINE_LAYOUT", true, R.string.sc_pref_sc_timeline_layout_title, R.string.sc_pref_sc_layout_summary, upstreamChoice = false)
     val FLOATING_DATE = ScBoolPref("FLOATING_DATE", true, R.string.sc_pref_sc_floating_date_title, R.string.sc_pref_sc_floating_date_summary, upstreamChoice = false)
     val PL_DISPLAY_NAME = ScBoolPref("PL_DISPLAY_NAME", false, R.string.sc_pref_pl_display_name_title, R.string.sc_pref_pl_display_name_summary_warning, authorsChoice = false, upstreamChoice = false)
@@ -213,6 +214,7 @@ object ScPrefs {
             //RENDER_INLINE_IMAGES,
             FLOATING_DATE,
             HIDE_CALL_TOOLBAR_ACTION,
+            HIDE_VOICE_MESSAGE_BUTTON,
             VERBOSE_CONVERSATION_ICONS,
             REPLY_PREVIEW_LINE_COUNT,
             LEGACY_MESSAGE_RENDERING,

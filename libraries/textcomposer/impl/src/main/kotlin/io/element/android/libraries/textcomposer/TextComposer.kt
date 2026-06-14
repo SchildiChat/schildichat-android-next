@@ -82,6 +82,7 @@ import io.element.android.libraries.matrix.ui.messages.reply.InReplyToDetailsPro
 import io.element.android.libraries.matrix.ui.messages.reply.aProfileDetailsReady
 import io.element.android.libraries.testtags.TestTags
 import io.element.android.libraries.testtags.testTag
+import io.element.android.libraries.textcomposer.components.scShowVoiceRecorderButton
 import io.element.android.libraries.textcomposer.components.SendButtonIcon
 import io.element.android.libraries.textcomposer.components.TextFormatting
 import io.element.android.libraries.textcomposer.components.VoiceMessageDeleteButtonIcon
@@ -238,13 +239,30 @@ fun TextComposer(
         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
     }
 
+    val scShowVoiceRecorderButton = scShowVoiceRecorderButton()
+
     @Composable
     fun rememberEndButtonParams() = remember(
         composerMode.isEditing,
         voiceMessageState.endButtonKey(),
         canSendTextMessage,
+        scShowVoiceRecorderButton,
     ) {
         when {
+            // SchildiChat: when the voice message button is hidden (issue #99), an empty composer in
+            // the idle state shows a (disabled) send button instead of the recorder, so the composer
+            // stays usable and tapping where the recorder used to be does not start a recording.
+            !canSendTextMessage && voiceMessageState == VoiceMessageState.Idle && !scShowVoiceRecorderButton ->
+                EndButtonParams(
+                    endButtonContentDescriptionResId = CommonStrings.action_send_message,
+                    endButtonClick = {},
+                    endButtonContent = @Composable {
+                        SendButtonIcon(
+                            canSendMessage = false,
+                            isEditing = false,
+                        )
+                    },
+                )
             !canSendTextMessage ->
                 when (voiceMessageState) {
                     VoiceMessageState.Idle -> EndButtonParams(

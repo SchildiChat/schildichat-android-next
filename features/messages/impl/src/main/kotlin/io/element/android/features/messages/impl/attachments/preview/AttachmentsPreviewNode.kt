@@ -31,6 +31,7 @@ import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.mediaviewer.api.local.LocalMediaRenderer
+import kotlinx.collections.immutable.ImmutableList
 
 @ContributesNode(RoomScope::class)
 @AssistedInject
@@ -43,7 +44,7 @@ class AttachmentsPreviewNode(
     private val enterpriseService: EnterpriseService,
 ) : Node(buildContext, plugins = plugins) {
     data class Inputs(
-        val attachment: Attachment,
+        val attachments: ImmutableList<Attachment>,
         val timelineMode: Timeline.Mode,
         val inReplyToEventId: EventId?,
     ) : NodeInputs
@@ -55,7 +56,7 @@ class AttachmentsPreviewNode(
     }
 
     private val presenter = presenterFactory.create(
-        attachment = inputs.attachment,
+        attachments = inputs.attachments,
         timelineMode = inputs.timelineMode,
         onDoneListener = onDoneListener,
         inReplyToEventId = inputs.inReplyToEventId,

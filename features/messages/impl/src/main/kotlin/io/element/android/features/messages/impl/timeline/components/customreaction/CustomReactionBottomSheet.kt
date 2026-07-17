@@ -10,13 +10,14 @@ package io.element.android.features.messages.impl.timeline.components.customreac
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.SheetValue
+import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import chat.schildi.lib.preferences.ScPrefs
-import chat.schildi.lib.preferences.value
+import chat.schildi.lib.preferences.fullyExpandBottomSheetValues
 import io.element.android.emojibasebindings.Emoji
 import io.element.android.features.messages.impl.timeline.components.customreaction.picker.EmojiPicker
 import io.element.android.features.messages.impl.timeline.components.customreaction.picker.EmojiPickerPresenter
@@ -33,7 +34,10 @@ fun CustomReactionBottomSheet(
     onSelectCustomEmoji: (EventOrTransactionId, String) -> Unit, // SC
     modifier: Modifier = Modifier,
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = ScPrefs.PREFER_FULLSCREEN_REACTION_SHEET.value())
+    val sheetState = rememberBottomSheetState(
+        initialValue = SheetValue.Hidden,
+        enabledValues = ScPrefs.PREFER_FULLSCREEN_REACTION_SHEET.fullyExpandBottomSheetValues(),
+    )
     val coroutineScope = rememberCoroutineScope()
     val target = state.target as? CustomReactionState.Target.Success
 

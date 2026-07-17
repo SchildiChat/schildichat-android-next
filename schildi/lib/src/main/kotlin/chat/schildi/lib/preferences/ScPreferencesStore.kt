@@ -1,12 +1,12 @@
 package chat.schildi.lib.preferences
 
 import android.content.Context
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
-import androidx.core.os.BuildCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -19,13 +19,13 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import io.element.android.libraries.di.annotations.ApplicationContext
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
+import kotlin.collections.listOf
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -213,6 +213,14 @@ var LocalScPreferencesStore = NotExactlyACompositionLocal<ScPreferencesStore>(Fa
 
 @Composable
 fun <T>ScPref<T>.value(): T = LocalScPreferencesStore.current.settingState(this).value
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ScPref<Boolean>.fullyExpandBottomSheetValues() = if (value()) {
+    setOf(SheetValue.Hidden, SheetValue.Expanded)
+} else {
+    setOf(SheetValue.Hidden, SheetValue.PartiallyExpanded, SheetValue.Expanded)
+}
 
 @Composable
 fun ScColorPref.userColor(): Color? = LocalScPreferencesStore.current.settingState(this).value.let { ScColorPref.valueToColor(it) }

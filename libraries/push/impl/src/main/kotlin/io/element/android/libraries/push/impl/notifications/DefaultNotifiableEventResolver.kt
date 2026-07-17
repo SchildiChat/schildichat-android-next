@@ -41,6 +41,7 @@ import io.element.android.libraries.matrix.api.timeline.item.event.AudioMessageT
 import io.element.android.libraries.matrix.api.timeline.item.event.EmoteMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.EventType
 import io.element.android.libraries.matrix.api.timeline.item.event.FileMessageType
+import io.element.android.libraries.matrix.api.timeline.item.event.GalleryMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.ImageMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.LocationMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageTypeWithAttachment
@@ -300,6 +301,10 @@ class DefaultNotifiableEventResolver(
                 Timber.tag(loggerTag.value).d("Ignoring notification for sticker")
                 throw NotificationResolverException.EventFilteredOut
             }
+            NotificationContent.MessageLike.Beacon -> {
+                Timber.tag(loggerTag.value).d("Ignoring notification for beacon")
+                throw NotificationResolverException.EventFilteredOut
+            }
             is NotificationContent.StateEvent.RoomMemberContent,
             NotificationContent.StateEvent.PolicyRuleRoom,
             NotificationContent.StateEvent.PolicyRuleServer,
@@ -320,7 +325,8 @@ class DefaultNotifiableEventResolver(
             is NotificationContent.StateEvent.RoomTopic,
             NotificationContent.StateEvent.SpaceChild,
             NotificationContent.StateEvent.SpaceParent,
-            NotificationContent.StateEvent.SpaceCatchAll -> {
+            NotificationContent.StateEvent.SpaceCatchAll,
+            NotificationContent.StateEvent.BeaconInfo -> {
                 Timber.tag(loggerTag.value).d("Ignoring notification for state event ${content.javaClass.simpleName}")
                 throw NotificationResolverException.EventFilteredOut
             }
@@ -347,6 +353,7 @@ class DefaultNotifiableEventResolver(
             is TextMessageType -> messageType.toPlainText(permalinkParser = permalinkParser)
             is VideoMessageType -> messageType.bestDescription
             is LocationMessageType -> messageType.body
+            is GalleryMessageType -> messageType.body
             is OtherMessageType -> messageType.body
         }
     }

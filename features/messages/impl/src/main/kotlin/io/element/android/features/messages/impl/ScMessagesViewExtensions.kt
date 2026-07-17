@@ -156,7 +156,7 @@ internal fun scMessagesViewTopBarActions(
 ) {
     val markAsReadAsQuickAction = showMarkAsReadQuickAction()
     if (markAsReadAsQuickAction) {
-        IconButton(onClick = { state.timelineState.eventSink(TimelineEvent.MarkAsRead) }) {
+        IconButton(onClick = { state.timelineState.eventSink(TimelineEvent.ForceMarkAsRead) }) {
             Icon(
                 imageVector = Icons.Default.RemoveRedEye,
                 contentDescription = stringResource(R.string.sc_action_mark_as_read),
@@ -229,7 +229,7 @@ internal fun scMessagesViewTopBarActions(
                     DropdownMenuItem(
                         onClick = {
                             showMenu = false
-                            state.timelineState.eventSink(TimelineEvent.MarkAsRead)
+                            state.timelineState.eventSink(TimelineEvent.ForceMarkAsRead)
                         },
                         text = { Text(stringResource(id = R.string.sc_action_mark_as_read)) },
                     )

@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import dev.zacsweers.metro.Inject
 import io.element.android.features.enterprise.api.SessionEnterpriseService
 import io.element.android.features.logout.api.direct.DirectLogoutState
+import io.element.android.features.preferences.impl.userstatus.UserStatusState
 import io.element.android.features.preferences.impl.utils.ShowDeveloperSettingsProvider
 import io.element.android.features.rageshake.api.RageshakeFeatureAvailability
 import io.element.android.libraries.architecture.Presenter
@@ -59,6 +60,7 @@ class PreferencesRootPresenter(
     private val featureFlagService: FeatureFlagService,
     private val sessionStore: SessionStore,
     private val sessionEnterpriseService: SessionEnterpriseService,
+    private val userStatusPresenter: Presenter<UserStatusState>,
 ) : Presenter<PreferencesRootState> {
     @Composable
     override fun present(): PreferencesRootState {
@@ -68,13 +70,14 @@ class PreferencesRootPresenter(
             // Force a refresh of the profile
             matrixClient.getUserProfile()
         }
-
         val isMultiAccountEnabled by remember {
             featureFlagService.isFeatureEnabledFlow(FeatureFlags.MultiAccount)
         }.collectAsState(initial = false)
         val showLinkNewDevice by remember {
             featureFlagService.isFeatureEnabledFlow(FeatureFlags.QrCodeLogin)
         }.collectAsState(initial = false)
+        val isUserStatusEnabled by featureFlagService.isFeatureEnabledFlow(FeatureFlags.UserStatus).collectAsState(initial = false)
+        val userStatusState = if (isUserStatusEnabled) userStatusPresenter.present() else null
 
         val otherSessions by remember {
             sessionStore.sessionsFlow().map { list ->
@@ -139,6 +142,7 @@ class PreferencesRootPresenter(
 
         return PreferencesRootState(
             myUser = matrixUser.value,
+            userStatusState = userStatusState,
             version = remember { versionFormatter.get() },
             buildMeta = buildMeta, // SC
             deviceId = matrixClient.deviceId,

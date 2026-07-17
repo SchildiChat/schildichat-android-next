@@ -10,6 +10,7 @@ package io.element.android.features.preferences.impl.root
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BugReport
@@ -28,6 +29,8 @@ import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.preferences.impl.R
 import io.element.android.features.preferences.impl.user.UserPreferences
+import io.element.android.features.preferences.impl.userstatus.UserStatusState
+import io.element.android.features.preferences.impl.userstatus.UserStatusView
 import io.element.android.libraries.architecture.coverage.ExcludeFromCoverage
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
@@ -93,8 +96,6 @@ fun PreferencesRootView(
                 state = state,
                 onAddAccountClick = onAddAccountClick,
             )
-        } else {
-            HorizontalDivider()
         }
 
         // SC tweaks
@@ -104,7 +105,9 @@ fun PreferencesRootView(
             onClick = { navigateToScTweaks(null) },
         )
 
-        // User status will be added here
+        if (state.userStatusState != null) {
+            UserStatusSection(state.userStatusState, showTopDivider = !state.isMultiAccountEnabled)
+        }
         // 'Account' section
         ManageAccountSection(
             state = state,
@@ -144,6 +147,27 @@ fun PreferencesRootView(
             }
         )
     }
+}
+
+@Composable
+private fun ColumnScope.UserStatusSection(
+    userStatusState: UserStatusState,
+    showTopDivider: Boolean,
+) {
+    if (showTopDivider) {
+        HorizontalDivider(
+            thickness = 8.dp,
+            color = ElementTheme.colors.bgSubtleSecondary,
+        )
+    }
+    UserStatusView(
+        state = userStatusState,
+        modifier = Modifier.fillMaxWidth(),
+    )
+    HorizontalDivider(
+        thickness = 1.dp,
+        color = ElementTheme.colors.bgSubtleSecondary,
+    )
 }
 
 @Composable

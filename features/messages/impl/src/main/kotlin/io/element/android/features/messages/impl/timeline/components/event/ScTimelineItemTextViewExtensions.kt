@@ -45,7 +45,6 @@ import io.element.android.features.messages.impl.timeline.factories.event.matrix
 import io.element.android.features.messages.impl.timeline.factories.event.matrixBodyFormatter
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemEventContentWithAttachment
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContent
-import io.element.android.features.messages.impl.utils.containsOnlyEmojis
 import io.element.android.libraries.matrix.api.media.MediaSource
 import io.element.android.libraries.matrix.ui.media.MediaRequestData
 import io.element.android.wysiwyg.link.Link
@@ -105,7 +104,7 @@ fun ScTimelineItemTextView(
     MatrixStyledFormattedText(
         content,
         color = textColor,
-        style = if (content.inlineImages.isEmpty()) {
+        style = if (content.inlineImages.isEmpty() && content.inlineTables.isEmpty()) {
             textStyle.copy(textDirection = TextDirection.Content)
         } else {
             // Allow inline images/content to increase the line height on demand by having this unspecified here
@@ -129,22 +128,24 @@ fun ScTimelineItemTextView(
                 )
             )
         },
-        inlineContent = content.inlineImages.toInlineContent(
-            density = LocalDensity.current,
-            defaultHeight = textStyle.lineHeight,
-            minWidth = MIN_IMAGE_WIDTH.dp,
-            maxWidth = MAX_IMAGE_WIDTH.dp,
-            minHeight = MIN_IMAGE_HEIGHT.dp,
-            maxHeight = MAX_IMAGE_HEIGHT.dp,
-            actualImageSizes = actualImageSizes,
-        ) { info, modifier ->
-            InlineImage(
-                info = info,
-                textStyle = textStyle,
-                textColor = textColor,
-                modifier = modifier,
-                onPainterSuccess = { result -> actualImageSizes[info.uri] = IntSize(result.image.width, result.image.height) },
-            )
+        inlineContent = { result ->
+            result.inlineImages.toInlineContent(
+                density = LocalDensity.current,
+                defaultHeight = textStyle.lineHeight,
+                minWidth = MIN_IMAGE_WIDTH.dp,
+                maxWidth = MAX_IMAGE_WIDTH.dp,
+                minHeight = MIN_IMAGE_HEIGHT.dp,
+                maxHeight = MAX_IMAGE_HEIGHT.dp,
+                actualImageSizes = actualImageSizes,
+            ) { info, modifier ->
+                InlineImage(
+                    info = info,
+                    textStyle = textStyle,
+                    textColor = textColor,
+                    modifier = modifier,
+                    onPainterSuccess = { result -> actualImageSizes[info.uri] = IntSize(result.image.width, result.image.height) },
+                )
+            }
         },
         onLinkLongPress = { link ->
             (link as? LinkAnnotation.Url)?.url?.let { url ->

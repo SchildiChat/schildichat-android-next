@@ -37,6 +37,7 @@ Note that following list of changes compared to Element X is likely incomplete, 
     - Render collapsible `<details>` tags in messages
     - Render reveal-able spoilers in messages
     - Render inline images such as custom emotes in text messages
+    - Render tables
 - URL previews (optionally also in encrypted chats) †
 - Hide deleted messages †
 

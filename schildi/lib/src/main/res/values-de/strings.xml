@@ -189,12 +189,12 @@
     <string name="sc_pref_el_theme_title">Element Design</string>
     <string name="sc_pref_el_theme_summary">Bevorzuge Farbschema von Element X</string>
     <string name="sc_pref_black_theme_title">Schwarzes Design</string>
-    <string name="sc_pref_black_theme_summary">Schwarzer Hintergrund während dem dunklen Design</string>
-    <string name="sc_pref_indicate_unread_count_underestimates_title">Anzahl ungelesener Nachrichten zu gering angegeben</string>
-    <string name="sc_pref_indicate_unread_count_underestimates_summary">Zeige Fragezeichen und Plus bei unvollständigen Berechnungen der Anzahl ungelesener Nachrichten</string>
-    <string name="sc_pref_two_initials_avatar_fallback_title">Zwei Zeichen Avatare</string>
-    <string name="sc_pref_two_initials_avatar_fallback_summary">Zeige Zwei Zeichen Avatar als Rückfall für Räume und Nutzer ohne Avatar</string>
-    <string name="sc_pref_category_timeline_short">Zeitleiste</string>
+    <string name="sc_pref_black_theme_summary">Schwarzer Hintergrund bei dunklem Design</string>
+    <string name="sc_pref_indicate_unread_count_underestimates_title">Über ungenau geschätzte Anzahl ungelesener Nachrichten informieren</string>
+    <string name="sc_pref_indicate_unread_count_underestimates_summary">Zeige Fragezeichen und Plus Symbole bei unvollständiger Berechnung der Anzahl ungelesener Nachrichten</string>
+    <string name="sc_pref_two_initials_avatar_fallback_title">Zwei Buchstaben Avatare</string>
+    <string name="sc_pref_two_initials_avatar_fallback_summary">Zeige zwei Buchstaben als Avatar Ersatz für Räume und Nutzer ohne Avatar</string>
+    <string name="sc_pref_category_timeline_short">Verlauf</string>
     <string name="sc_pref_view_hidden_events_title">Zeige versteckte Events</string>
     <string name="sc_pref_view_redactions_title">Zeige gelöschte Nachrichten</string>
     <string name="sc_pref_view_redactions_summary">Platzhalter für gelöschte Nachrichten anzeigen, anstatt sie vollständig auszublenden</string>
@@ -205,4 +205,10 @@
     <string name="sc_pref_verbose_room_title_icons_summary">Symbole neben dem Raumtitel anzeigen, wenn das Teilen des Verlaufs aktiviert ist oder ein Kontakt verifiziert wurde</string>
     <string name="sc_theme_category_light">Hell</string>
     <string name="sc_theme_category_dark">Dunkel</string>
+    <string name="sc_pref_category_timeline_event_visibility">Ereignis Sichtbarkeit</string>
+    <string name="sc_pref_verbose_room_title_icons_title">Ausführliche Raumtitel Symbole</string>
+    <string name="sc_pref_view_membership_events_in_public_rooms_title">Teilnehmer Veränderungen in öffentlichen Räumen</string>
+    <string name="sc_pref_view_membership_events_in_public_rooms_title_short">Öffentliche Teilnehmer</string>
+    <string name="sc_pref_view_membership_events_in_public_rooms_summary">In der Chat Ansicht öffentlicher Räume anzeigen wenn Mitglieder beitreten, verlassen oder ihr Profil verändern. In privaten Räume werden diese Änderungen unabhängig von dieser Einstellung angezeigt.</string>
+    <string name="sc_pref_indicate_unread_count_underestimates_title_short">Ungenaue Anzahl ungelesener Nachrichten</string>
 </resources>

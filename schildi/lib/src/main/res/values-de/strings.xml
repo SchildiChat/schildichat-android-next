@@ -33,7 +33,7 @@
     <string name="sc_pref_client_side_sort_title">Client-seitiges Sortieren</string>
     <string name="sc_pref_fast_transitions_summary">Beschleunigte Fensteranimation</string>
     <string name="sc_onboarding_welcome_summary">Bringt Schildkröten in die Matrix</string>
-    <string name="sc_pref_pl_display_name_title">Namensfarbe unterschiedlich je nach Rolle</string>
+    <string name="sc_pref_pl_display_name_title">Name je nach Rolle einfärben</string>
     <string name="sc_pref_compact_app_bar_title">Kompakte App-Leiste</string>
     <string name="sc_pref_compact_app_bar_summary">Niemals die obere App-Leiste erweitern</string>
     <string name="sc_space_nav_summary">Chats nach Spaces filtern</string>

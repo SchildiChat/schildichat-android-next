@@ -32,6 +32,7 @@ import io.element.android.features.messages.impl.timeline.model.event.aTimelineI
 import io.element.android.libraries.androidutils.text.LinkifyHelper
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
+import io.element.android.libraries.designsystem.utils.LocalUiTestMode
 import io.element.android.libraries.textcomposer.ElementRichTextEditorStyle
 import io.element.android.libraries.textcomposer.mentions.LocalMentionSpanUpdater
 import io.element.android.wysiwyg.compose.EditorStyledText
@@ -54,8 +55,12 @@ fun TimelineItemTextView(
         )
         return
     }
-    val emojiOnly = //content.formattedBody.toString() == content.body &&
-        containsOnlyEmojisOrEmotes(content.formattedBodySc.text, content.formattedBodySc.inlineImages)
+
+    // The View <-> Compose interop is not working well with Compose UI tests (it loops indefinitely), so we skip it in the UI test mode.
+    if (LocalUiTestMode.current) return
+
+    val emojiOnly = content.formattedBody.toString() == content.body &&
+        content.body.replace(" ", "").containsOnlyEmojis()
     val textStyle = when {
         emojiOnly -> ElementTheme.typography.fontHeadingXlRegular
         else -> ElementTheme.typography.scBubbleFont

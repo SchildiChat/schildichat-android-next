@@ -63,8 +63,8 @@ fun <T> SearchBar(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     showBackButton: Boolean = true,
-    focusRequester: FocusRequester = remember { FocusRequester() },
-    resultState: SearchBarResultState<T> = SearchBarResultState.Initial(),
+    focusRequester: FocusRequester = remember { FocusRequester() }, // SC
+    resultState: SearchBarResultState<T> = SearchBarResultState.Initial,
     shape: Shape = SearchBarDefaults.inputFieldShape,
     tonalElevation: Dp = SearchBarDefaults.TonalElevation,
     windowInsets: WindowInsets = SearchBarDefaults.windowInsets,
@@ -140,7 +140,7 @@ fun <T> SearchBar(
                     resultHandler(resultState.results)
                 }
 
-                is SearchBarResultState.NoResultsFound<T> -> {
+                is SearchBarResultState.NoResultsFound -> {
                     // No results found, show a message
                     Spacer(Modifier.size(80.dp))
 
@@ -206,12 +206,12 @@ object ElementSearchBarDefaults {
 }
 
 @Immutable
-sealed interface SearchBarResultState<in T> {
+sealed interface SearchBarResultState<out T> {
     /** No search results are available yet (e.g. because the user hasn't entered a search term). */
-    class Initial<T> : SearchBarResultState<T>
+    data object Initial : SearchBarResultState<Nothing>
 
     /** The search has completed, but no results were found. */
-    class NoResultsFound<T> : SearchBarResultState<T>
+    data object NoResultsFound : SearchBarResultState<Nothing>
 
     /** The search has completed, and some matching users were found. */
     data class Results<T>(val results: T) : SearchBarResultState<T>
@@ -255,7 +255,7 @@ internal fun SearchBarActiveWithNoResultsPreview() = ElementThemedPreview {
     ContentToPreview(
         initialQuery = "search term",
         active = true,
-        resultState = SearchBarResultState.NoResultsFound<String>(),
+        resultState = SearchBarResultState.NoResultsFound,
     )
 }
 
@@ -299,7 +299,7 @@ private fun ContentToPreview(
     initialQuery: String = "",
     active: Boolean = false,
     showBackButton: Boolean = true,
-    resultState: SearchBarResultState<String> = SearchBarResultState.Initial(),
+    resultState: SearchBarResultState<String> = SearchBarResultState.Initial,
     contentPrefix: @Composable ColumnScope.() -> Unit = {},
     contentSuffix: @Composable ColumnScope.() -> Unit = {},
     resultHandler: @Composable ColumnScope.(String) -> Unit = {},

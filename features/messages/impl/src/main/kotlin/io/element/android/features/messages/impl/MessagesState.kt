@@ -28,6 +28,7 @@ import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.encryption.identity.IdentityState
 import io.element.android.libraries.matrix.api.room.BridgeState
 import io.element.android.libraries.matrix.api.room.tombstone.SuccessorRoom
+import io.element.android.libraries.matrix.api.user.DisplayedStatus
 import kotlinx.collections.immutable.ImmutableList
 
 data class MessagesState(
@@ -56,6 +57,7 @@ data class MessagesState(
     val dmUserVerificationState: IdentityState?,
     val isRoomEncrypted: Boolean? = null, // SC
     val bridgeState: ImmutableList<BridgeState>? = null, // SC
+    val dmUserStatus: DisplayedStatus?,
     val roomMemberModerationState: RoomMemberModerationState,
     /** Type of "shared history" icon to show in the top bar. */
     val topBarSharedHistoryIcon: SharedHistoryIcon,

@@ -47,6 +47,8 @@ import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.utils.CommonDrawables
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarHost
 import io.element.android.libraries.designsystem.utils.snackbar.rememberSnackbarHostState
+import io.element.android.libraries.emoji.api.picker.EmojiPickerRenderer
+import io.element.android.libraries.emoji.api.picker.NoOpEmojiPickerRenderer
 import io.element.android.libraries.matrix.api.core.DeviceId
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.ui.components.MatrixUserRow
@@ -55,6 +57,7 @@ import io.element.android.libraries.ui.strings.CommonStrings
 @Composable
 fun PreferencesRootView(
     state: PreferencesRootState,
+    emojiPickerRenderer: EmojiPickerRenderer,
     onBackClick: () -> Unit,
     onAddAccountClick: () -> Unit,
     onSecureBackupClick: () -> Unit,
@@ -106,7 +109,11 @@ fun PreferencesRootView(
         )
 
         if (state.userStatusState != null) {
-            UserStatusSection(state.userStatusState, showTopDivider = !state.isMultiAccountEnabled)
+            UserStatusSection(
+                userStatusState = state.userStatusState,
+                emojiPickerRenderer = emojiPickerRenderer,
+                showTopDivider = !state.isMultiAccountEnabled,
+            )
         }
         // 'Account' section
         ManageAccountSection(
@@ -152,6 +159,7 @@ fun PreferencesRootView(
 @Composable
 private fun ColumnScope.UserStatusSection(
     userStatusState: UserStatusState,
+    emojiPickerRenderer: EmojiPickerRenderer,
     showTopDivider: Boolean,
 ) {
     if (showTopDivider) {
@@ -162,6 +170,7 @@ private fun ColumnScope.UserStatusSection(
     }
     UserStatusView(
         state = userStatusState,
+        emojiPickerRenderer = emojiPickerRenderer,
         modifier = Modifier.fillMaxWidth(),
     )
     HorizontalDivider(
@@ -387,6 +396,7 @@ internal fun PreferencesRootViewDarkPreview(@PreviewParameter(PreferencesRootSta
 private fun ContentToPreview(state: PreferencesRootState) {
     PreferencesRootView(
         state = state,
+        emojiPickerRenderer = NoOpEmojiPickerRenderer,
         onBackClick = {},
         onAddAccountClick = {},
         onOpenAnalytics = {},

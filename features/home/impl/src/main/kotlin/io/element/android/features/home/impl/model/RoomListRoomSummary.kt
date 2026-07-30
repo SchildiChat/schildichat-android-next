@@ -17,6 +17,7 @@ import io.element.android.libraries.matrix.api.notification.CallIntent
 import io.element.android.libraries.matrix.api.room.BridgeState
 import io.element.android.libraries.matrix.api.room.MatrixSpaceChildInfo
 import io.element.android.libraries.matrix.api.room.RoomNotificationMode
+import io.element.android.libraries.matrix.api.user.DisplayedStatus
 import io.element.android.libraries.matrix.api.room.SpaceCatchAllInfo
 import io.element.android.libraries.matrix.ui.model.InviteSender
 import kotlinx.collections.immutable.ImmutableList
@@ -63,6 +64,7 @@ data class RoomListRoomSummary(
     val isTombstoned: Boolean,
     val heroes: ImmutableList<AvatarData>,
     val isSpace: Boolean,
+    val dmUserStatus: DisplayedStatus?,
 ) {
     val isHighlighted = userDefinedNotificationMode != RoomNotificationMode.MUTE &&
         (numberOfUnreadNotifications > 0 || numberOfUnreadMentions > 0) ||

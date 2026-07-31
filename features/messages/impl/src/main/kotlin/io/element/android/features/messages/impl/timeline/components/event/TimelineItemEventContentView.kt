@@ -256,6 +256,7 @@ fun TimelineItemEventContentView(
             }
             CaptionView(
                 modifier = Modifier.padding(padding),
+                content = content, // SC
                 caption = caption,
                 formattedCaption = content.formattedCaptionOrNull(),
                 onLinkClick = onLinkClick,
@@ -268,6 +269,7 @@ fun TimelineItemEventContentView(
 
 @Composable
 private fun CaptionView(
+    content: TimelineItemEventContent, // SC
     caption: String,
     formattedCaption: CharSequence?,
     onLinkClick: (Link) -> Unit,
@@ -275,6 +277,7 @@ private fun CaptionView(
     onContentLayoutChange: (ContentAvoidingLayoutData) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    if (scRenderTimelineItemCaption(content, onLinkLongClick, modifier, onContentLayoutChange)) return
     val caption = if (LocalInspectionMode.current) {
         SpannedString(caption)
     } else {

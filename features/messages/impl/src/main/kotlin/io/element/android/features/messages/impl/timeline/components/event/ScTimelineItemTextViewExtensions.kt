@@ -24,6 +24,8 @@ import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.lib.preferences.value
 import chat.schildi.matrixsdk.containsOnlyEmojis
 import chat.schildi.theme.scBubbleFont
 import coil3.request.ImageRequest
@@ -43,6 +45,7 @@ import io.element.android.features.messages.impl.timeline.factories.event.LocalM
 import io.element.android.features.messages.impl.timeline.factories.event.LocalMatrixBodyFormatter
 import io.element.android.features.messages.impl.timeline.factories.event.matrixBodyDrawStyle
 import io.element.android.features.messages.impl.timeline.factories.event.matrixBodyFormatter
+import io.element.android.features.messages.impl.timeline.model.event.TimelineItemEventContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemEventContentWithAttachment
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContent
 import io.element.android.libraries.matrix.api.media.MediaSource
@@ -55,6 +58,25 @@ private const val MAX_IMAGE_WIDTH = 250
 private const val MAX_IMAGE_HEIGHT = 300
 private const val MIN_IMAGE_WIDTH = 8
 private const val MIN_IMAGE_HEIGHT = 8
+
+@Composable
+fun scRenderTimelineItemCaption(
+    content: TimelineItemEventContent,
+    onLinkLongClick: (Link) -> Unit,
+    modifier: Modifier = Modifier,
+    onContentLayoutChange: (ContentAvoidingLayoutData) -> Unit = {},
+): Boolean {
+    if (ScPrefs.LEGACY_MESSAGE_RENDERING.value() || content !is TimelineItemEventContentWithAttachment) {
+        return false
+    }
+    ScTimelineItemTextView(
+        content = content,
+        onLinkLongClick = onLinkLongClick,
+        modifier = modifier,
+        onContentLayoutChange = onContentLayoutChange,
+    )
+    return true
+}
 
 @Composable
 fun ScTimelineItemTextView(

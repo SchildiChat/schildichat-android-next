@@ -9,6 +9,7 @@
 package io.element.android.features.messages.impl.timeline.components.customreaction
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberBottomSheetState
@@ -65,7 +66,7 @@ fun CustomReactionBottomSheet(
             ModalBottomSheet(
                 onDismissRequest = ::onDismiss,
                 sheetState = sheetState,
-                modifier = modifier,
+                modifier = modifier.imePadding(), // SC: upstream missed padding?
                 scrollable = false,
             ) {
                 emojiPickerRenderer.Render(

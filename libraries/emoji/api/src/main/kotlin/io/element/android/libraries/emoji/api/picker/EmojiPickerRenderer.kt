@@ -26,6 +26,7 @@ interface EmojiPickerRenderer {
     fun Render(
         state: EmojiPickerState,
         onSelectEmoji: (Emoji) -> Unit,
+        onSelectCustomEmoji: (String) -> Unit, // SC
         selectedEmojis: ImmutableSet<String>,
         modifier: Modifier = Modifier,
         contentDescription: @Composable (Emoji, Boolean) -> String = { emoji, _ -> emoji.unicode },
@@ -37,6 +38,7 @@ object NoOpEmojiPickerRenderer : EmojiPickerRenderer {
     override fun Render(
         state: EmojiPickerState,
         onSelectEmoji: (Emoji) -> Unit,
+        onSelectCustomEmoji: (String) -> Unit, // SC
         selectedEmojis: ImmutableSet<String>,
         modifier: Modifier,
         contentDescription: @Composable (Emoji, Boolean) -> String,

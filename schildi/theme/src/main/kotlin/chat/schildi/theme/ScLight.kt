@@ -1,11 +1,9 @@
 package chat.schildi.theme
 
-import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.annotations.CoreColorToken
 import io.element.android.compound.tokens.generated.SemanticColors
-import io.element.android.compound.tokens.generated.internal.DarkColorTokens
 import io.element.android.compound.tokens.generated.internal.LightColorTokens
 
 val scl_fgPrimary = ScColors.colorBlackAlpha_de
@@ -94,9 +92,11 @@ internal val sclSemanticColors = SemanticColors(
     textDisabled = scl_fgDisabled,
     textActionPrimary = scl_fgPrimary,
     textActionAccent = scl_accent,
+    textActionSuccess = scl_accent,
     textLinkExternal = ScColors.colorAccentBlue,
     textCriticalPrimary = ScColors.colorAccentRed,
     textSuccessPrimary = ScColors.colorAccentGreen,
+    textWarningPrimary = LightColorTokens.colorOrange900,
     textInfoPrimary = ScColors.colorAccentBlueLight,
     textOnSolidPrimary = scd_fgPrimary,
     textBadgeInfo = scd_fgPrimary,
@@ -104,6 +104,7 @@ internal val sclSemanticColors = SemanticColors(
     bgSubtlePrimary = scl_bgDarker,
     bgSubtleSecondary =  scl_bgBlack,
     bgSubtleSecondaryLevel0 =  scl_bg,
+    bgSubtleTertiary = scl_bgBlack,
     bgCanvasDefault = scl_bg,
     bgCanvasDefaultLevel1 = scl_bgFloating,
     bgCanvasDisabled = scl_bgDarker,
@@ -123,6 +124,10 @@ internal val sclSemanticColors = SemanticColors(
     bgCriticalSubtleHovered = LightColorTokens.colorRed300, // TODO
     borderAccentPrimary = scl_accent,
     borderAccentSubtle = scl_accent,
+    bgAccentSubtle = scl_accent.copy(alpha = 0.2f),
+    bgSuccessRest = scl_accent,
+    bgSuccessHovered = scl_accent,
+    bgSuccessPressed = scl_accent,
     bgSuccessSubtle = ScColors.colorAccentGreen.copy(alpha=0.2f),
     bgInfoSubtle = ScColors.colorAccentBluePale,
     borderDisabled = scl_divider,
@@ -133,6 +138,7 @@ internal val sclSemanticColors = SemanticColors(
     borderCriticalPrimary = LightColorTokens.colorRed900, // TODO
     borderCriticalHovered = LightColorTokens.colorRed1000, // TODO
     borderCriticalSubtle = LightColorTokens.colorRed500, // TODO
+    borderSuccessPrimary = scl_accent,
     borderSuccessSubtle = ScColors.colorAccentGreen,
     borderInfoSubtle = ScColors.colorAccentBluePale,
     iconPrimary = scl_fgPrimary,
@@ -148,6 +154,7 @@ internal val sclSemanticColors = SemanticColors(
     iconAccentTertiary = scl_accent,
     iconCriticalPrimary = ScColors.colorAccentRed, // TODO align with other colorRed900?
     iconSuccessPrimary = ScColors.colorAccentGreen,
+    iconWarningPrimary = LightColorTokens.colorOrange900,
     iconInfoPrimary = ScColors.colorAccentBlue,
     iconOnSolidPrimary = scd_fgPrimary,
     bgAccentRest = scl_accent,

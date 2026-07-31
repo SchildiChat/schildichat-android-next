@@ -22,6 +22,7 @@ class DefaultEmojiPickerRenderer : EmojiPickerRenderer {
     override fun Render(
         state: EmojiPickerState,
         onSelectEmoji: (Emoji) -> Unit,
+        onSelectCustomEmoji: (String) -> Unit, // SC
         selectedEmojis: ImmutableSet<String>,
         modifier: Modifier,
         contentDescription: @Composable (Emoji, Boolean) -> String,
@@ -30,6 +31,7 @@ class DefaultEmojiPickerRenderer : EmojiPickerRenderer {
             EmojiPickerView(
                 state = state,
                 onSelectEmoji = onSelectEmoji,
+                onSelectCustomEmoji = onSelectCustomEmoji, // SC
                 selectedEmojis = selectedEmojis,
                 contentDescription = contentDescription,
                 modifier = modifier,

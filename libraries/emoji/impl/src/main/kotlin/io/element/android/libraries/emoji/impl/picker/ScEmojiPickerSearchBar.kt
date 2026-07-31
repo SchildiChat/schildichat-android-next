@@ -23,7 +23,7 @@ fun <T> ScEmojiPickerSearchBar(
     onActiveChange: (Boolean) -> Unit,
     placeHolderTitle: String,
     modifier: Modifier = Modifier,
-    resultState: SearchBarResultState<T> = SearchBarResultState.Initial(),
+    resultState: SearchBarResultState<T> = SearchBarResultState.Initial,
     windowInsets: WindowInsets = SearchBarDefaults.windowInsets,
     resultHandler: @Composable ColumnScope.(T) -> Unit = {},
 ) {

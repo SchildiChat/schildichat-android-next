@@ -117,6 +117,7 @@ fun UserStatusView(
                     pickerState = sheet.state,
                     emojiPickerRenderer = emojiPickerRenderer,
                     onSelectEmoji = { emoji -> state.eventSink(UserStatusEvent.UpdateCustomEmoji(emoji.unicode)) },
+                    onSelectCustomEmoji = { emoji -> state.eventSink(UserStatusEvent.UpdateCustomEmoji(emoji)) }, // SC
                     onDismiss = { state.eventSink(UserStatusEvent.DismissEmojiPicker) },
                 )
             }
@@ -330,6 +331,7 @@ private fun EmojiPickerBottomSheet(
     pickerState: io.element.android.libraries.emoji.api.picker.EmojiPickerState,
     emojiPickerRenderer: EmojiPickerRenderer,
     onSelectEmoji: (io.element.android.emojibasebindings.Emoji) -> Unit,
+    onSelectCustomEmoji: (String) -> Unit, // SC
     onDismiss: () -> Unit,
 ) {
     val sheetState = rememberBottomSheetState(initialValue = SheetValue.Hidden)
@@ -344,6 +346,11 @@ private fun EmojiPickerBottomSheet(
             onSelectEmoji = { emoji ->
                 sheetState.hide(coroutineScope) {
                     onSelectEmoji(emoji)
+                }
+            },
+            onSelectCustomEmoji = { emoji ->
+                sheetState.hide(coroutineScope) {
+                    onSelectCustomEmoji(emoji)
                 }
             },
             selectedEmojis = persistentSetOf(),

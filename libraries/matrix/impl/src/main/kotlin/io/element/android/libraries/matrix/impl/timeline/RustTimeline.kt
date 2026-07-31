@@ -442,6 +442,7 @@ class RustTimeline(
                     formattedCaption = formattedCaption?.let {
                         FormattedBody(body = it, format = MessageFormat.Html)
                     },
+                    skipCaptionAutoformat = plaintext, // SC
                     mentions = null,
                     inReplyTo = inReplyToEventId?.value,
                 ),
@@ -469,6 +470,7 @@ class RustTimeline(
                     formattedCaption = formattedCaption?.let {
                         FormattedBody(body = it, format = MessageFormat.Html)
                     },
+                    skipCaptionAutoformat = plaintext, // SC
                     mentions = null,
                     inReplyTo = inReplyToEventId?.value,
                 ),
@@ -495,6 +497,7 @@ class RustTimeline(
                     formattedCaption = formattedCaption?.let {
                         FormattedBody(body = it, format = MessageFormat.Html)
                     },
+                    skipCaptionAutoformat = plaintext, // SC
                     mentions = null,
                     inReplyTo = inReplyToEventId?.value,
                 ),
@@ -520,6 +523,7 @@ class RustTimeline(
                     formattedCaption = formattedCaption?.let {
                         FormattedBody(body = it, format = MessageFormat.Html)
                     },
+                    skipCaptionAutoformat = plaintext, // SC
                     mentions = null,
                     inReplyTo = inReplyToEventId?.value,
                 ),
@@ -578,6 +582,7 @@ class RustTimeline(
                     // Maybe allow a caption in the future?
                     caption = null,
                     formattedCaption = null,
+                    skipCaptionAutoformat = false, // SC
                     mentions = null,
                     inReplyTo = inReplyToEventId?.value,
                 ),

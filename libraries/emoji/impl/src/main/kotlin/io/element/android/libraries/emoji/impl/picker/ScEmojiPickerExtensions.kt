@@ -43,15 +43,15 @@ import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.coroutines.launch
 
 @Composable
-fun EmojiPickerState.scEmojiPickerSize() = categories.size + 1 + (if (ScPrefs.ALWAYS_SHOW_REACTION_SEARCH_BAR.value()) 0 else 1)
-fun EmojiPickerState.pageFreeformReactionIndex() = categories.size
-fun EmojiPickerState.pageSearchIndex() = categories.size + 1
-fun Int.removeScPickerOffset() = this //- 1
-fun Int.addScPickerOffset() = this //+ 1
+internal fun DefaultEmojiPickerState.scEmojiPickerSize() = categories.size + 1 + (if (ScPrefs.ALWAYS_SHOW_REACTION_SEARCH_BAR.value()) 0 else 1)
+internal fun DefaultEmojiPickerState.pageFreeformReactionIndex() = categories.size
+internal fun DefaultEmojiPickerState.pageSearchIndex() = categories.size + 1
+internal fun Int.removeScPickerOffset() = this //- 1
+internal fun Int.addScPickerOffset() = this //+ 1
 
 @Composable
-fun ScEmojiPickerTabsEnd(
-    state: EmojiPickerState,
+internal fun ScEmojiPickerTabsEnd(
+    state: DefaultEmojiPickerState,
     pagerState: PagerState,
     launchSearch: () -> Unit
 ) {
@@ -83,8 +83,8 @@ fun ScEmojiPickerTabsEnd(
 }
 
 @Composable
-fun scEmojiPickerPage(
-    state: EmojiPickerState,
+internal fun scEmojiPickerPage(
+    state: DefaultEmojiPickerState,
     index: Int,
     selectedIndex: Int,
     onSelectCustomEmoji: (String) -> Unit,

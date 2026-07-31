@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -226,12 +227,13 @@ private fun HomeScaffold(
         floatingActionButton = {
             if (ScPrefs.SPACE_NAV.value()) {
                 if (ScPrefs.SNC_FAB.value()) {
-                    HomeFloatingActionButton(spaceBarHeight, onStartChatClick, CommonStrings.action_create_room)
+                    HomeFloatingActionButton(spaceBarHeight, onStartChatClick, CommonStrings.action_create_room, Modifier.navigationBarsPadding())
                 }
                 return@Scaffold
             }
             val coroutineScope = rememberCoroutineScope()
             HomeBottomBar(
+                modifier = Modifier.navigationBarsPadding(), // SC: upstream forgot this possibly?
                 currentHomeNavigationBarItem = state.currentHomeNavigationBarItem,
                 onItemClick = { item ->
                     // scroll to top if selecting the same item
@@ -271,7 +273,7 @@ private fun HomeScaffold(
                 start = padding.calculateStartPadding(LocalLayoutDirection.current),
                 end = padding.calculateEndPadding(LocalLayoutDirection.current),
                 // Remove these two lines once https://issuetracker.google.com/issues/436432313 has been fixed
-                bottom = padding.calculateBottomPadding(),
+                bottom = if (ScPrefs.SPACE_NAV.value()) lazyColumnContentPadding.calculateBottomPadding() else padding.calculateBottomPadding(),
                 top = padding.calculateTopPadding()
             )
             val contentPadding = PaddingValues(

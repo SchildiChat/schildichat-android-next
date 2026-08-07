@@ -33,7 +33,7 @@ object ScHtmlToDomParser {
         .addTags(
             "a", "b", "strong", "i", "em", "u", "del", "code", "ul", "ol", "li", "pre",
             "blockquote", "p", "br", "img", "span", "h1", "h2", "h3", "h4", "h5", "h6", "s", "font",
-            "table", "thead", "tbody", "tr", "th", "td", "caption",
+            "table", "thead", "tbody", "tr", "th", "td", "caption", "sub", "sup",
             "div", "hr", "details", "summary", "mx-reply",
         )
         .addAttributes("a", "href", "data-mention-type", "contenteditable")

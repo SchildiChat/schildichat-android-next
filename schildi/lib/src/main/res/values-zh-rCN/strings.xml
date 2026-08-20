@@ -190,4 +190,5 @@
     <string name="sc_push_handler_notification_summary">获取消息中</string>
     <string name="sc_notification_lookup_failure_title">你可能有未读消息</string>
     <string name="sc_notification_lookup_failure_summary">无法查找到通知对应的消息</string>
+    <string name="sc_push_failure_notification_channel">通知推送失败</string>
 </resources>

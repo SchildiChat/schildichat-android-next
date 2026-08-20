@@ -175,8 +175,8 @@
     <string name="sc_pref_view_redactions_summary">为已删除消息渲染占位提示而不是将其完全隐藏</string>
     <string name="sc_pref_legacy_message_rendering_title">旧式消息渲染器</string>
     <string name="sc_pref_legacy_message_rendering_summary">Element 客户端渲染格式化消息的方式</string>
-    <string name="sc_pref_inbox_bridge_avatars_title">显示桥接头像</string>
-    <string name="sc_pref_inbox_bridge_avatars_summary">为已桥接的聊天渲染桥接头像</string>
+    <string name="sc_pref_inbox_bridge_avatars_title">显示桥接图标</string>
+    <string name="sc_pref_inbox_bridge_avatars_summary">为已桥接的聊天渲染桥接图标</string>
     <string name="sc_pref_verbose_room_title_icons_summary">当启用分享聊天记录或联系人经过验证时在房间标题旁显示图标</string>
     <string name="sc_theme_category_light">亮色</string>
     <string name="sc_theme_category_dark">深色</string>

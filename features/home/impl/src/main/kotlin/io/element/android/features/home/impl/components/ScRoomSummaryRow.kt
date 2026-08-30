@@ -51,7 +51,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import chat.schildi.lib.compose.thenIf
 import chat.schildi.lib.preferences.ScPrefs
@@ -62,15 +61,12 @@ import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.home.impl.model.LatestEvent
 import io.element.android.features.home.impl.model.RoomListRoomSummary
-import io.element.android.features.home.impl.model.RoomListRoomSummaryProvider
 import io.element.android.features.home.impl.model.RoomSummaryDisplayType
 import io.element.android.features.home.impl.roomlist.RoomListEvent
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarData
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.components.avatar.AvatarType
-import io.element.android.libraries.designsystem.preview.ElementPreview
-import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.Text
@@ -390,17 +386,4 @@ private fun ScUnreadCounter(room: RoomListRoomSummary, isInviteSeen: Boolean) {
                 .padding(horizontal = 4.dp)
         )
     }
-}
-
-@PreviewsDayNight
-@Composable
-internal fun ScRoomSummaryRowPreview(@PreviewParameter(RoomListRoomSummaryProvider::class) data: RoomListRoomSummary) = ElementPreview {
-    ScRoomSummaryRow(
-        room = data,
-        onClick = {},
-        eventSink = {},
-        hideInviteAvatars = false,
-        isInviteSeen = false,
-        isLastIndex = false,
-    )
 }

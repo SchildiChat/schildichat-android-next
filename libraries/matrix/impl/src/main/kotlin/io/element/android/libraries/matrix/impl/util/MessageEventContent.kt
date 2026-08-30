@@ -44,6 +44,7 @@ object MessageEventContent {
                     body = body,
                     isEdited = false,
                     mentions = null,
+                    perMessageProfile = null, // SC
                 )
             )
             htmlBody != null -> if (msgType == MsgType.MSG_TYPE_EMOTE) {

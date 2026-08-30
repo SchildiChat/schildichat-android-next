@@ -332,6 +332,9 @@ class ThreadedMessagesNode(
                             onSelectEmoji = { uniqueId, emoji ->
                                 state.eventSink(MessagesEvent.ToggleReaction(emoji.unicode, uniqueId))
                             },
+                            onSelectCustomEmoji = { uniqueId, emoji ->
+                                state.eventSink(MessagesEvent.ToggleReaction(emoji, uniqueId))
+                            },
                             emojiPickerRenderer = emojiPickerRenderer,
                         )
                     },

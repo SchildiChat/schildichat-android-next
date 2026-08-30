@@ -129,7 +129,7 @@ fun PreferencesRootView(
 
             // SC tweaks
             ListItem(
-                headlineContent = { Text(stringResource(id = chat.schildi.lib.R.string.sc_pref_tweaks_title)) },
+                content = { Text(stringResource(id = chat.schildi.lib.R.string.sc_pref_tweaks_title)) },
                 leadingContent = ListItemContent.Icon(IconSource.Vector(Icons.Outlined.PrecisionManufacturing)),
                 onClick = { navigateToScTweaks(null) },
             )

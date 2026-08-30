@@ -402,20 +402,10 @@ class RustMatrixClient(
     }
 
     // SC additions
-    override suspend fun getAccountData(eventType: String): String? = withContext(sessionDispatcher) {
-        runCatching {
-            innerClient.accountData(eventType)
-        }.getOrNull()
-    }
     override suspend fun getRoomAccountData(roomId: RoomId, eventType: String): String? = withContext(sessionDispatcher) {
         runCatching {
             innerClient.roomAccountData(roomId.value, eventType)
         }.getOrNull()
-    }
-    override suspend fun setAccountData(eventType: String, content: String) = withContext(sessionDispatcher) {
-        runCatching {
-            innerClient.setAccountData(eventType, content)
-        }
     }
     override suspend fun setRoomAccountData(roomId: RoomId, eventType: String, content: String) = withContext(sessionDispatcher) {
         runCatching {

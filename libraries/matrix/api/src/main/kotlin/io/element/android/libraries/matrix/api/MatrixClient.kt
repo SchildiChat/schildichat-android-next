@@ -136,11 +136,9 @@ interface MatrixClient : ClientUrlContentFetcher {
     val contentScanner: ContentScanner?
 
     // SC start
-    suspend fun getAccountData(eventType: String): String?
     suspend fun getGlobalAccountData(): Result<List<AccountDataRawEvent>>
     suspend fun getRoomAccountData(roomId: RoomId): Result<List<AccountDataRawEvent>>
     suspend fun getRoomAccountData(roomId: RoomId, eventType: String): String?
-    suspend fun setAccountData(eventType: String, content: String): Result<Unit>
     suspend fun setRoomAccountData(roomId: RoomId, eventType: String, content: String): Result<Unit>
     suspend fun getUrlPreviewJson(url: String): String
     suspend fun shutdownClient()
@@ -156,7 +154,7 @@ interface MatrixClient : ClientUrlContentFetcher {
      * @param roomId the id of the room to open.
      * @return the room, or `null` if it is unknown to the client or the user is not joined.
      */
-    suspend fun getJoinedRoom(roomId: RoomId): JoinedRoom?
+    suspend fun getJoinedRoom(roomId: RoomId, scTimelineFilterSettings: ScTimelineFilterSettings = ScTimelineFilterSettings()): JoinedRoom?
 
     /**
      * Returns the room with the given id whatever the current membership is, without building a timeline.

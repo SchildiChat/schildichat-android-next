@@ -88,7 +88,7 @@ class BugReportPresenter(
 
         fun handleEvent(event: BugReportEvent) {
             when (event) {
-                BugReportEvents.SendBugReport -> {
+                BugReportEvent.SendBugReport -> {
                     if (formState.value.description.length < buildMeta.minBugReportLength && formState.value.ghIssueNumber == null) {
                         sendingAction.value = AsyncAction.Failure(BugReportFormError.DescriptionTooShort)
                     } else {

@@ -149,7 +149,7 @@ fun ScPrefScreen.Rendered(
 ) {
     val enabled = LocalScPreferencesStore.current.enabledState(this).value
     ListItem(
-        headlineContent = {
+        content = {
             Text(stringResource(id = titleRes))
         },
         supportingContent = summaryRes?.let {
@@ -170,7 +170,7 @@ fun ScActionablePref.Rendered(
 ) {
     val enabled = LocalScPreferencesStore.current.enabledState(this).value
     ListItem(
-        headlineContent = {
+        content = {
             Text(stringResource(id = titleRes))
         },
         supportingContent = summaryRes?.let {
@@ -225,7 +225,7 @@ fun ScIntPref.Rendered(initial: Any, onChange: (Any) -> Unit) {
     val value = v ?: defaultValue
 
     ListItem(
-        headlineContent = {
+        content = {
             Text(stringResource(id = titleRes))
         },
         supportingContent = summaryRes?.let {
@@ -313,7 +313,7 @@ fun <T>ScListPref<T>.Rendered(initial: Any, onChange: (Any) -> Unit) {
     val enabled = LocalScPreferencesStore.current.enabledState(this).value
 
     ListItem(
-        headlineContent = {
+        content = {
             Text(stringResource(id = titleRes))
         },
         supportingContent = summaryRes?.let {

@@ -107,7 +107,7 @@ fun PreferenceColorPreview(
             showIconAreaIfNoIcon = showIconAreaIfNoIcon,
             tintColor = tintColor,
         ),
-        headlineContent = {
+        content = {
             Text(
                 style = ElementTheme.typography.fontBodyLgRegular,
                 text = title,

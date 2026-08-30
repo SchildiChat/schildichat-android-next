@@ -113,9 +113,9 @@ fun HomeTopBar(
     showAvatarIndicator: Boolean,
     areSearchResultsDisplayed: Boolean,
     // SC start
-    selectedSpaceName: String?,
-    onStartChatClick: () -> Unit,
-    onCreateSpaceClick: (() -> Unit)?,
+    selectedSpaceName: String? = null,
+    onStartChatClick: () -> Unit = {},
+    onCreateSpaceClick: (() -> Unit)? = null,
     // SC end
     onToggleSearch: () -> Unit,
     onMenuActionClick: (RoomListMenuAction) -> Unit,

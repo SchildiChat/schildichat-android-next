@@ -390,6 +390,7 @@ class RustTimeline(
                 formattedCaption = formattedCaption?.let {
                     FormattedBody(body = it, format = MessageFormat.Html)
                 },
+                skipCaptionAutoformat = plaintext,
                 mentions = null,
             )
             withContext(Dispatchers.IO) {

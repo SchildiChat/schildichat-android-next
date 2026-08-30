@@ -64,7 +64,7 @@ fun LowPriorityRoomListContextMenuItem(
 ) {
     if (ScPrefs.BURY_LOW_PRIORITY.value()) {
         ListItem(
-            headlineContent = {
+            content = {
                 Text(
                     text = stringResource(id = chat.schildi.lib.R.string.sc_action_low_priority),
                     style = MaterialTheme.typography.bodyLarge,
@@ -126,7 +126,7 @@ fun ManageSpacesRoomListContextMenuItems(
             )
         }
         ListItem(
-            headlineContent = {
+            content = {
                 Text(
                     text = stringResource(chat.schildi.lib.R.string.sc_action_space_management),
                     style = MaterialTheme.typography.bodyLarge,

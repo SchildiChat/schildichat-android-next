@@ -49,6 +49,8 @@ class RoomListSearchDataSource(
         coroutineScope = coroutineScope
     )
 
+    val loadingState = roomList.loadingState
+
     val roomSummaries/*: Flow<ImmutableList<RoomListRoomSummary>>*/ = roomList.summaries
         .map { roomSummaries ->
             roomSummaries

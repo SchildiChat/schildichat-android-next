@@ -16,7 +16,7 @@ if [ ! -d "$COMPONENTS_DIR" ]; then
 fi
 
 if [ -z "$JAVA_HOME" ]; then
-    JAVA_HOME=/opt/android-studio/jbr
+    JAVA_HOME=/usr/lib/jvm/java-21-openjdk
     if [ -d "$JAVA_HOME" ]; then
         export JAVA_HOME
     else

@@ -14,6 +14,7 @@ import chat.schildi.features.home.spaces.SpaceUnreadCountsDataSource
 import io.element.android.features.home.impl.filters.RoomListFiltersState
 import io.element.android.features.home.impl.isShowingUpstreamSpaceList
 import io.element.android.features.home.impl.model.RoomListRoomSummary
+import io.element.android.features.home.impl.search.GlobalSearchState
 import io.element.android.features.home.impl.search.RoomListSearchState
 import io.element.android.features.home.impl.spacefilters.SpaceFiltersState
 import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteState
@@ -33,6 +34,7 @@ data class RoomListState(
     val leaveRoomState: LeaveRoomState,
     val filtersState: RoomListFiltersState,
     val searchState: RoomListSearchState,
+    val globalSearchState: GlobalSearchState,
     val spaceFiltersState: SpaceFiltersState,
     val contentState: RoomListContentState,
     val acceptDeclineInviteState: AcceptDeclineInviteState,

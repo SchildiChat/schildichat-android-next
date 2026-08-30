@@ -61,15 +61,15 @@ class OnBoardingPresenter(
     override fun present(): OnBoardingState {
         val localCoroutineScope = rememberCoroutineScope()
         val forcedAccountProvider = remember {
-            // If defaultHomeserverList() returns a singleton list, this is the default account provider.
+            // If homeserverAllowList() returns a singleton list, this is the default account provider.
             // In this case, the user can sign in using this homeserver, or use QrCode login
-            enterpriseService.defaultHomeserverList().singleOrNull()
+            enterpriseService.homeserverAllowList().singleOrNull()
         }
         val canConnectToAnyHomeserver = remember {
             enterpriseService.canConnectToAnyHomeserver()
         }
         val mustChooseAccountProvider = remember {
-            !canConnectToAnyHomeserver && enterpriseService.defaultHomeserverList().size > 1
+            !canConnectToAnyHomeserver && enterpriseService.homeserverAllowList().size > 1
         }
         val linkAccountProvider by produceState<String?>(initialValue = null) {
             // Account provider from the link, if allowed by the enterprise service
@@ -102,9 +102,9 @@ class OnBoardingPresenter(
 
         val loginModeState = loginModePresenter.present()
 
-        fun handleEvent(event: OnBoardingEvents) {
+        fun handleEvent(event: OnBoardingEvent) {
             when (event) {
-                is OnBoardingEvents.OnSignIn -> localCoroutineScope.launch {
+                is OnBoardingEvent.OnSignIn -> localCoroutineScope.launch {
                     // Ensure that the current account provider is set
                     accountProviderDataSource.setUrl(event.defaultAccountProvider)
                     loginModeState.eventSink(
@@ -116,8 +116,8 @@ class OnBoardingPresenter(
                         )
                     )
                 }
-                OnBoardingEvents.ClearError -> loginModeState.eventSink(LoginModeEvent.ClearError)
-                OnBoardingEvents.OnVersionClick -> {
+                OnBoardingEvent.ClearError -> loginModeState.eventSink(LoginModeEvent.ClearError)
+                OnBoardingEvent.OnVersionClick -> {
                     if (canReportBug) {
                         if (multipleTapToUnlock.unlock(localCoroutineScope)) {
                             showReportBug = true

@@ -188,7 +188,7 @@ private fun EmojiResults(
 
 @PreviewsDayNight
 @Composable
-internal fun EmojiPickerViewPreview(@PreviewParameter(DefaultEmojiPickerStateProvider::class) state: DefaultEmojiPickerState) = ElementPreview {
+internal fun EmojiPickerViewPreview(@PreviewParameter(DefaultEmojiPickerStatePreviewParam::class) state: DefaultEmojiPickerState) = ElementPreview {
     EmojiPickerView(
         state = state,
         onSelectEmoji = {},

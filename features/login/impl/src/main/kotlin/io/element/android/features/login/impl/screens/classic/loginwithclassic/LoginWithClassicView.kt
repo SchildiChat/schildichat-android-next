@@ -64,7 +64,6 @@ fun LoginWithClassicView(
     onOAuthDetails: (OAuthDetails) -> Unit,
     onNeedLoginPassword: () -> Unit,
     onLearnMoreClick: () -> Unit,
-    onCreateAccountContinue: (url: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val isLoading by remember(state.loginModeState.loginMode) {
@@ -205,7 +204,6 @@ fun LoginWithClassicView(
         onLearnMoreClick = onLearnMoreClick,
         onOAuthDetails = onOAuthDetails,
         onNeedLoginPassword = onNeedLoginPassword,
-        onCreateAccountContinue = onCreateAccountContinue,
     )
     LocalNetworkPermissionDialogView(
         dialog = state.loginModeState.localNetworkPermissionDialog,
@@ -220,13 +218,12 @@ fun LoginWithClassicView(
 
 @PreviewsDayNight
 @Composable
-internal fun LoginWithClassicViewPreview(@PreviewParameter(LoginWithClassicStateProvider::class) state: LoginWithClassicState) = ElementPreview {
+internal fun LoginWithClassicViewPreview(@PreviewParameter(LoginWithClassicStatePreviewParam::class) state: LoginWithClassicState) = ElementPreview {
     LoginWithClassicView(
         state = state,
         onOtherOptionsClick = {},
         onOAuthDetails = {},
         onNeedLoginPassword = {},
         onLearnMoreClick = {},
-        onCreateAccountContinue = {},
     )
 }

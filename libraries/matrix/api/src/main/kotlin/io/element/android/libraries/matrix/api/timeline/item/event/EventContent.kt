@@ -40,7 +40,9 @@ data class MessageContent(
     override val isRoomMention: Boolean? = null, // SC
 ) : EventContent, EventCanBeEdited, CanMentionRoom
 
-data object RedactedContent : EventContent
+data class RedactedContent(
+    val threadInfo: EventThreadInfo?,
+) : EventContent
 
 data class StickerContent(
     val filename: String,

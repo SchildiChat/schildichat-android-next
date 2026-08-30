@@ -32,7 +32,7 @@ object ScPrefs {
     // General behavior
     val FAST_TRANSITIONS = ScBoolPref("FAST_TRANSITIONS", true, R.string.sc_pref_fast_transitions_title, R.string.sc_pref_fast_transitions_summary, upstreamChoice = false)
     val NOTIFICATION_ONLY_ALERT_ONCE = ScBoolPref("NOTIFICATION_ONLY_ALERT_ONCE", false, R.string.sc_pref_notification_only_alert_once_title, R.string.sc_pref_notification_only_alert_once_summary, upstreamChoice = false)
-    val SHOW_SYNCING_INDICATOR = ScBoolPref("SHOW_SYNCING_INDICATOR", true, R.string.sc_pref_syncing_indicator_title, R.string.sc_pref_syncing_indicator_summary, upstreamChoice = true, authorsChoice = true)
+    //val SHOW_SYNCING_INDICATOR = ScBoolPref("SHOW_SYNCING_INDICATOR", true, R.string.sc_pref_syncing_indicator_title, R.string.sc_pref_syncing_indicator_summary, upstreamChoice = true, authorsChoice = true)
     val DEBOUNCE_OFFLINE_STATE = ScBoolPref("DEBOUNCE_OFFLINE_STATE", true, R.string.sc_pref_debounce_offline_state_title, R.string.sc_pref_debounce_offline_state_summary, authorsChoice = null, upstreamChoice = false)
 
     // Chat overview
@@ -250,7 +250,7 @@ object ScPrefs {
                 JUMP_TO_UNREAD,
             )),
             ScPrefCategory(R.string.sc_pref_category_general_behaviour, null, listOf(
-                SHOW_SYNCING_INDICATOR,
+                //SHOW_SYNCING_INDICATOR,
                 DEBOUNCE_OFFLINE_STATE,
                 SYNC_READ_RECEIPT_AND_MARKER,
                 MARK_READ_REQUIRES_SEEN_UNREAD_LINE,

@@ -40,6 +40,7 @@ fun StateEventType.map(): RustStateEventType = when (this) {
     StateEventType.RoomImagePack -> RustStateEventType.RoomImagePack
     StateEventType.RoomLanguage -> RustStateEventType.RoomLanguage
     StateEventType.RoomPolicy -> RustStateEventType.RoomPolicy
+    StateEventType.RoomRetention -> RustStateEventType.RoomRetention
     is StateEventType.Custom -> stateEventTypeFromString(type)
 }
 
@@ -72,5 +73,6 @@ fun RustStateEventType.map(): StateEventType = when (this) {
     RustStateEventType.RoomLanguage -> StateEventType.RoomLanguage
     RustStateEventType.RoomPolicy -> StateEventType.RoomPolicy
     RustStateEventType.Bridge, // SC
+    RustStateEventType.RoomRetention -> StateEventType.RoomRetention
     is RustStateEventType.Custom -> StateEventType.Custom(this.toString())
 }

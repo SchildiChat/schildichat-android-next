@@ -161,7 +161,7 @@ class DefaultBugReporter(
                         append("\n\n\n\n--------------------------------- crash call stack ---------------------------------\n")
                         append(crashCallStack.take(5000))
                     }
-                }
+                }.truncateDescription()
                 val gzippedFiles = mutableListOf<File>()
                 var filesTooBig = emptyList<String>()
 
@@ -544,6 +544,15 @@ class DefaultBugReporter(
 
     private fun countLogLines(file: File): Int {
         return file.reader().useLines { it.count() }
+    }
+
+    private fun String.truncateDescription(): String {
+        return if (length <= RageshakeConfig.MAX_DESCRIPTION_SIZE) {
+            this
+        } else {
+            take(RageshakeConfig.MAX_DESCRIPTION_SIZE) +
+                "\n\n--------------------------------- truncated, see the attached logs ---------------------------------"
+        }
     }
 }
 

@@ -52,7 +52,7 @@ import io.element.android.features.messages.impl.timeline.factories.event.matrix
 import io.element.android.features.messages.impl.timeline.factories.event.matrixBodyFormatter
 import io.element.android.features.messages.impl.timeline.model.TimelineItem
 import io.element.android.features.roommembermoderation.api.ModerationAction
-import io.element.android.features.roommembermoderation.api.RoomMemberModerationEvents
+import io.element.android.features.roommembermoderation.api.RoomMemberModerationEvent
 import io.element.android.features.roommembermoderation.api.RoomMemberModerationRenderer
 import io.element.android.libraries.androidutils.browser.openUrlInChromeCustomTab
 import io.element.android.libraries.androidutils.system.openUrlInExternalApp
@@ -420,7 +420,7 @@ class MessagesNode(
                 onSelectAction = { action, target ->
                     when (action) {
                         is ModerationAction.DisplayProfile -> callback.navigateToRoomMemberDetails(target.userId)
-                        else -> state.roomMemberModerationState.eventSink(RoomMemberModerationEvents.ProcessAction(action, target))
+                        else -> state.roomMemberModerationState.eventSink(RoomMemberModerationEvent.ProcessAction(action, target))
                     }
                 },
                 onAvatarClick = { user ->

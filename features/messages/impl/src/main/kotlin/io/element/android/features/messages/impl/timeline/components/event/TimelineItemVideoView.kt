@@ -41,7 +41,7 @@ import chat.schildi.theme.scBubbleFont
 import coil3.compose.AsyncImage
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemVideoContent
-import io.element.android.features.messages.impl.timeline.model.event.TimelineItemVideoContentProvider
+import io.element.android.features.messages.impl.timeline.model.event.TimelineItemVideoContentPreviewParam
 import io.element.android.features.messages.impl.timeline.model.event.aTimelineItemVideoContent
 import io.element.android.features.messages.impl.timeline.protection.ProtectedView
 import io.element.android.features.messages.impl.timeline.protection.coerceRatioWhenHidingContent
@@ -154,7 +154,7 @@ fun TimelineItemVideoView(
 
 @PreviewsDayNight
 @Composable
-internal fun TimelineItemVideoViewPreview(@PreviewParameter(TimelineItemVideoContentProvider::class) content: TimelineItemVideoContent) = ElementPreview {
+internal fun TimelineItemVideoViewPreview(@PreviewParameter(TimelineItemVideoContentPreviewParam::class) content: TimelineItemVideoContent) = ElementPreview {
     TimelineItemVideoView(
         content = content,
         hideMediaContent = false,

@@ -18,7 +18,11 @@ private fun String.removeUpstreamVersionString(): String {
     }
 }
 
-private fun buildVersionString(context: Context, buildMeta: BuildMeta, deviceId: DeviceId?) = buildString {
+private fun buildVersionString(
+    context: Context,
+    buildMeta: BuildMeta,
+    deviceId: DeviceId? = null,
+) = buildString {
     // Main SC version & variant
     append(
         context.getString(
@@ -52,7 +56,7 @@ private fun buildVersionString(context: Context, buildMeta: BuildMeta, deviceId:
 @Composable
 internal fun buildScVersionString(
     buildMeta: BuildMeta?,
-    deviceId: DeviceId?,
+    deviceId: DeviceId? = null,
 ): String? {
     buildMeta ?: return null
     val context = LocalContext.current

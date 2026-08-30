@@ -40,11 +40,11 @@ class TimelineEventToNotificationContentMapper {
 private fun TimelineEventContent.toContent(senderId: UserId): NotificationContent {
     return when (this) {
         is TimelineEventContent.MessageLike -> content.toContent(senderId)
-        is TimelineEventContent.State -> content.toContent()
+        is TimelineEventContent.State -> content.toContent(senderId)
     }
 }
 
-private fun StateEventContent.toContent(): NotificationContent.StateEvent {
+private fun StateEventContent.toContent(senderId: UserId): NotificationContent.StateEvent {
     return when (this) {
         StateEventContent.PolicyRuleRoom -> NotificationContent.StateEvent.PolicyRuleRoom
         StateEventContent.PolicyRuleServer -> NotificationContent.StateEvent.PolicyRuleServer
@@ -72,7 +72,7 @@ private fun StateEventContent.toContent(): NotificationContent.StateEvent {
         StateEventContent.SpaceChild -> NotificationContent.StateEvent.SpaceChild
         StateEventContent.SpaceParent -> NotificationContent.StateEvent.SpaceParent
         StateEventContent.SpaceCatchAll -> NotificationContent.StateEvent.SpaceCatchAll // SC
-        StateEventContent.BeaconInfo -> NotificationContent.StateEvent.BeaconInfo
+        StateEventContent.BeaconInfo -> NotificationContent.StateEvent.BeaconInfo(senderId)
     }
 }
 

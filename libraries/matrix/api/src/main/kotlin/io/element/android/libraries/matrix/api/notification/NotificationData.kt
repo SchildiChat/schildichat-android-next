@@ -119,7 +119,7 @@ sealed interface NotificationContent {
         data object SpaceChild : StateEvent
         data object SpaceParent : StateEvent
         data object SpaceCatchAll : StateEvent // SC
-        data object BeaconInfo : StateEvent
+        data class BeaconInfo(val senderId: UserId) : StateEvent
     }
 
     data class Invite(

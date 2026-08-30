@@ -84,6 +84,7 @@ import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.preview.USER_NAME_ALICE
 import io.element.android.libraries.designsystem.text.AdaptativeTitle
+import io.element.android.libraries.designsystem.theme.aliasScreenTitle
 import io.element.android.libraries.designsystem.theme.components.DropdownMenu
 import io.element.android.libraries.designsystem.theme.components.DropdownMenuItem
 import io.element.android.libraries.designsystem.theme.components.Icon
@@ -156,7 +157,7 @@ fun HomeTopBar(
                 }
                 Crossfade(targetState = selectedSpaceName ?: displayTitle, label = "spaceText",) { displayTitle -> // SC purposedly bad indention
                 displayTitle?.let {
-                    val style = when (spaceFiltersState) {
+                    val style = if (ScTheme.yes) ElementTheme.typography.aliasScreenTitle else when (spaceFiltersState) {
                         // Space name
                         is SpaceFiltersState.Selected -> ElementTheme.typography.fontHeadingSmMedium
                         // "Chats"

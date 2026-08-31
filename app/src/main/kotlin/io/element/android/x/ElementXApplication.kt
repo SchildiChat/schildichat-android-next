@@ -15,10 +15,14 @@ import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.text.EmojiCompat
 import androidx.startup.AppInitializer
 import androidx.work.Configuration
+import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.createGraphFactory
+import io.element.android.libraries.architecture.bindings
 import io.element.android.libraries.di.DependencyInjectionGraphOwner
+import io.element.android.libraries.matrix.api.SdkMetadata
 import io.element.android.libraries.workmanager.api.di.MetroWorkerFactory
 import io.element.android.x.di.AppGraph
+import io.element.android.x.di.ApplicationBindings
 import io.element.android.x.info.logApplicationInfo
 import io.element.android.x.initializer.CacheCleanerInitializer
 import io.element.android.x.initializer.CrashInitializer
@@ -31,6 +35,8 @@ class ElementXApplication : ScApplication(), DependencyInjectionGraphOwner, Conf
         .setWorkerFactory(MetroWorkerFactory(graph.workerProviders))
         .build()
 
+    @Inject lateinit var sdkMetadata: SdkMetadata
+
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate() {
         super.onCreate()
@@ -42,7 +48,8 @@ class ElementXApplication : ScApplication(), DependencyInjectionGraphOwner, Conf
         }
         EmojiCompat.init(BundledEmojiCompatConfig(this)) // SC
 
-        logApplicationInfo(this)
+        bindings<ApplicationBindings>().inject(this)
+        logApplicationInfo(this, sdkMetadata.sdkGitSha)
 
         // Disable the strict offset check for anchored draggable components, as it can cause issues with bottom sheets.
         // Remove once https://issuetracker.google.com/issues/477038695 is fixed.

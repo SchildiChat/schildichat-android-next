@@ -300,6 +300,7 @@ class DefaultNotifiableEventResolver(
                     roomId = roomId,
                     eventId = eventId,
                     cause = "Unable to decrypt event content",
+                    noisy = isNoisy,
                 )
                 ResolvedPushEvent.Event(fallbackNotifiableEvent)
             }

@@ -44,17 +44,6 @@ fun AdaptativeTitle(
     twoLinesStyle: TextStyle,
     modifier: Modifier = Modifier,
 ) {
-    if (ScTheme.yes) {
-        Text(
-            modifier = Modifier.semantics {
-                heading()
-            },
-            style = style,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            text = title,
-        )
-    }
     // If style and twoLinesStyle are the same, we don't need to measure the text.
     if (style == twoLinesStyle) {
         Text(
@@ -63,6 +52,7 @@ fun AdaptativeTitle(
             },
             style = style,
             maxLines = 2,
+            overflow = TextOverflow.Ellipsis, // SC
             text = title,
         )
     } else {

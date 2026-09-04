@@ -25,6 +25,12 @@ repository](https://s2.spiritcroc.de/testing/fdroid/repo/?fingerprint=52d03f2fab
 under a different package name, and can thus be installed next to the stable release.
 
 
+#### Current state of development
+
+Since Android support has landed in [SchildiChat Revenge](https://github.com/SchildiChat/schildi-revenge), Next is no longer my main focus for Android.  
+This means, for now Next will still receive updates (including upstream merges / Element X updates), but likely will not gain any significant new Schildi-specific features.
+
+
 ## Translations
 
 If you want to translate SchildiChat, visit [our weblate](https://weblate.spiritcroc.de/projects/schildichat/schildichat-android-next/).  

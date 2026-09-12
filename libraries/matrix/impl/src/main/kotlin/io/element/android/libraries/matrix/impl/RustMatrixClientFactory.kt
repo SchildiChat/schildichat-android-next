@@ -101,6 +101,7 @@ class RustMatrixClientFactory(
             isMessageSearchAvailable = isMessageSearchAvailable,
         )
             .homeserverUrl(sessionData.homeserverUrl)
+            .enableAutomaticBackPagination(featureFlagService.isFeatureEnabled(FeatureFlags.AutomaticBackPagination))
             .let { (clientBuilderEnterpriseHook(RustMatrixClientBuilder(it), SessionId(sessionData.userId)) as RustMatrixClientBuilder).inner }
             .use { it.build() }
 
@@ -129,17 +130,11 @@ class RustMatrixClientFactory(
     ): RustMatrixClient {
         val (anonymizedAccessToken, anonymizedRefreshToken) = client.session().anonymizedTokens()
 
-        // Must be called before creating the sync service, timelines etc.
-        if (featureFlagService.isFeatureEnabled(FeatureFlags.AutomaticBackPagination)) {
-            client.enableAutomaticBackpagination()
-        }
-
         client.setUtdDelegate(UtdTracker(analyticsService))
 
         val syncService = client.syncService()
             .withSharePos(true)
             .withOfflineMode()
-            .withProfilesExtension()
             .finish()
 
         return RustMatrixClient(

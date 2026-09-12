@@ -42,7 +42,19 @@ dependencyResolutionManagement {
             }
         }
         // SC forks end
-        google()
+        // Check for official Android-related packages only in Google's maven repo
+        exclusiveContent {
+            forRepository {
+                google()
+            }
+            filter {
+                includeGroupByRegex("android\\..*")
+                includeGroupByRegex("androidx\\..*")
+                includeGroupByRegex("com\\.android\\.tools.*")
+                includeGroupByRegex("com\\.google\\.firebase.*")
+                includeGroupByRegex("com\\.google\\.android.*")
+            }
+        }
         mavenCentral()
         maven {
             url = uri("https://repo1.maven.org/maven2/")

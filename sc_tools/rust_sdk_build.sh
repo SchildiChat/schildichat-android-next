@@ -25,7 +25,7 @@ if [ -z "$JAVA_HOME" ]; then
     fi
 fi
 if [ -z "$ANDROID_NDK_HOME" ]; then
-    ANDROID_NDK_HOME="$HOME/AndroidSdk/ndk/29.0.14206865"
+    ANDROID_NDK_HOME="$HOME/AndroidSdk/ndk/30.0.16248370"
     if [ -d "$ANDROID_NDK_HOME" ]; then
         export ANDROID_NDK_HOME="$ANDROID_NDK_HOME"
     else
@@ -39,7 +39,7 @@ echo "ANDROID_NDK_HOME=$ANDROID_NDK_HOME"
 RUSTFLAGS="$RUSTFLAGS --remap-path-prefix=$HOME/.cargo/=.cargo/"
 RUSTFLAGS="$RUSTFLAGS --remap-path-prefix=$(realpath "$SDK_DIR")/=."
 RUSTFLAGS="$RUSTFLAGS --remap-path-prefix=$HOME/.rustup/=.rustup/"
-export RUSTUP_TOOLCHAIN=1.96.0
+export RUSTUP_TOOLCHAIN=1.98.1
 export RUSTFLAGS
 echo "RUSTFLAGS=$RUSTFLAGS"
 

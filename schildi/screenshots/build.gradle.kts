@@ -52,7 +52,7 @@ dependencies {
     testImplementation(libs.test.turbine)
     testImplementation(projects.libraries.matrix.test)
 
-    ksp(libs.showkase.processor)
+    //ksp(libs.showkase.processor)
     //koverDependencies()
 
     implementation(projects.libraries.testtags)

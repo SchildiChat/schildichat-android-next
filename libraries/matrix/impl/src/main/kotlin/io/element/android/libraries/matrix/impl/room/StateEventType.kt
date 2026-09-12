@@ -74,8 +74,8 @@ fun RustStateEventType.map(): StateEventType = when (this) {
     RustStateEventType.RoomImagePack -> StateEventType.RoomImagePack
     RustStateEventType.RoomLanguage -> StateEventType.RoomLanguage
     RustStateEventType.RoomPolicy -> StateEventType.RoomPolicy
-    RustStateEventType.Bridge, // SC
     RustStateEventType.RoomRetention -> StateEventType.RoomRetention
+    RustStateEventType.Bridge, // SC
     is RustStateEventType.Custom -> StateEventType.Custom(this.toString())
 }
 
@@ -101,6 +101,7 @@ fun TimelineEventType.Companion.fromState(stateEventType: StateEventType): Timel
     StateEventType.RoomTopic -> TimelineEventType.RoomTopic
     StateEventType.SpaceChild -> TimelineEventType.SpaceChild
     StateEventType.SpaceParent -> TimelineEventType.SpaceParent
+    StateEventType.SpaceCatchAll -> TimelineEventType.SpaceCatchAll // SC
     StateEventType.BeaconInfo -> TimelineEventType.BeaconInfo
     StateEventType.MemberHints -> TimelineEventType.MemberHints
     StateEventType.RoomImagePack -> TimelineEventType.RoomImagePack

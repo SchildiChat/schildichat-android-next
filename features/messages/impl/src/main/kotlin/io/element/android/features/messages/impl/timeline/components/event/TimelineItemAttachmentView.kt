@@ -24,12 +24,12 @@ import androidx.compose.ui.unit.dp
 import chat.schildi.theme.scBubbleFont
 import chat.schildi.theme.scBubbleSmallFont
 import io.element.android.compound.theme.ElementTheme
-import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayout
-import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayoutData
 import io.element.android.libraries.designsystem.theme.components.CircularProgressIndicator
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.matrix.ui.media.contentvalidation.ContentValidationValue
+import io.element.android.libraries.ui.common.layout.ContentAvoidingLayout
+import io.element.android.libraries.ui.common.layout.ContentAvoidingLayoutData
 
 /**
  * package-private, you should only use TimelineItemFileView and TimelineItemAudioView.

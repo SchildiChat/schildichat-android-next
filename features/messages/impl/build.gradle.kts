@@ -52,6 +52,7 @@ dependencies {
     implementation(projects.libraries.uiStrings)
     implementation(projects.libraries.dateformatter.api)
     implementation(projects.libraries.eventformatter.api)
+    implementation(projects.libraries.htmlrenderer.api)
     implementation(projects.libraries.mediapickers.api)
     implementation(projects.libraries.mediaviewer.api)
     implementation(projects.libraries.featureflag.api)
@@ -66,6 +67,7 @@ dependencies {
     implementation(projects.libraries.voicerecorder.api)
     implementation(projects.libraries.mediaplayer.api)
     implementation(projects.libraries.push.api)
+    implementation(projects.libraries.uiCommon)
     implementation(projects.libraries.uiUtils)
     implementation(projects.libraries.testtags)
     implementation(projects.libraries.wellknown.api)
@@ -117,4 +119,5 @@ dependencies {
     testImplementation(projects.libraries.emoji.impl)
     testImplementation(projects.libraries.emoji.test)
     testImplementation(projects.libraries.slashcommands.test)
+    testImplementation(projects.libraries.htmlrenderer.test)
 }

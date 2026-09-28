@@ -279,5 +279,6 @@ private fun RoomListFilter.removeSpaceFilter(): RoomListFilter? = when (this) {
     RoomListFilter.None,
     is RoomListFilter.NormalizedMatchRoomName,
     RoomListFilter.Mentions,
+    RoomListFilter.Joined,
     RoomListFilter.Unread -> this
 }

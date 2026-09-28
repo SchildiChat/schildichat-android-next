@@ -40,7 +40,6 @@ import com.beeper.android.messageformat.MatrixBodyParseResult
 import com.beeper.android.messageformat.MatrixStyledFormattedText
 import com.beeper.android.messageformat.toInlineContent
 import io.element.android.compound.theme.ElementTheme
-import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayoutData
 import io.element.android.features.messages.impl.timeline.factories.event.LocalMatrixBodyDrawStyle
 import io.element.android.features.messages.impl.timeline.factories.event.LocalMatrixBodyFormatter
 import io.element.android.features.messages.impl.timeline.factories.event.matrixBodyDrawStyle
@@ -50,6 +49,7 @@ import io.element.android.features.messages.impl.timeline.model.event.TimelineIt
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContent
 import io.element.android.libraries.matrix.api.media.MediaSource
 import io.element.android.libraries.matrix.ui.media.MediaRequestData
+import io.element.android.libraries.ui.common.layout.ContentAvoidingLayoutData
 import io.element.android.wysiwyg.link.Link
 import kotlin.math.roundToInt
 

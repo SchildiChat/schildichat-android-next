@@ -19,6 +19,12 @@ android {
     buildFeatures {
         buildConfig = true
     }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -40,7 +46,7 @@ dependencies {
     implementation(projects.libraries.testtags)
     implementation(projects.libraries.uiStrings)
 
-    testCommonDependencies(libs)
+    testCommonDependencies(libs, true)
 }
 
 // SC resource override

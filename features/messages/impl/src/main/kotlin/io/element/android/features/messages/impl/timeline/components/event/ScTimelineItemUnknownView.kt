@@ -6,10 +6,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
-import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayoutData
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemUnknownContent
 import io.element.android.libraries.designsystem.icons.CompoundDrawables
 import io.element.android.libraries.matrix.api.timeline.item.event.TimelineItemDebugInfoProvider
+import io.element.android.libraries.ui.common.layout.ContentAvoidingLayoutData
 import io.element.android.libraries.ui.strings.CommonStrings
 
 @Composable

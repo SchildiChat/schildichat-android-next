@@ -26,11 +26,11 @@ import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import com.beeper.android.messageformat.MatrixBodyParseResult
 import io.element.android.compound.theme.ElementTheme
-import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayout
-import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayoutData
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemLocationContent
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.textcomposer.ElementRichTextEditorStyle
+import io.element.android.libraries.ui.common.layout.ContentAvoidingLayout
+import io.element.android.libraries.ui.common.layout.ContentAvoidingLayoutData
 import io.element.android.wysiwyg.compose.EditorStyledText
 
 private val ICON_SIZE = 24.dp

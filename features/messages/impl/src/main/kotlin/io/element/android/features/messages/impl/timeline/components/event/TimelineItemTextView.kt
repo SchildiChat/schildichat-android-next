@@ -26,8 +26,7 @@ import chat.schildi.lib.preferences.ScPrefs
 import chat.schildi.lib.preferences.value
 import chat.schildi.theme.scBubbleFont
 import io.element.android.compound.theme.ElementTheme
-import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayout
-import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayoutData
+import io.element.android.features.messages.impl.timeline.LocalTimelineEventRendererConfig
 import io.element.android.features.messages.impl.timeline.model.event.AN_EMOJI_ONLY_TEXT
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextBasedContentPreviewParam
@@ -37,8 +36,11 @@ import io.element.android.libraries.androidutils.text.LinkifyHelper
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.utils.LocalUiTestMode
+import io.element.android.libraries.htmlrenderer.api.ui.HtmlMessageContent
 import io.element.android.libraries.textcomposer.ElementRichTextEditorStyle
 import io.element.android.libraries.textcomposer.mentions.LocalMentionSpanUpdater
+import io.element.android.libraries.ui.common.layout.ContentAvoidingLayout
+import io.element.android.libraries.ui.common.layout.ContentAvoidingLayoutData
 import io.element.android.wysiwyg.compose.EditorStyledText
 import io.element.android.wysiwyg.link.Link
 
@@ -62,6 +64,31 @@ fun TimelineItemTextView(
 
     // The View <-> Compose interop is not working well with Compose UI tests (it loops indefinitely), so we skip it in the UI test mode.
     if (LocalUiTestMode.current) return
+
+    // When the new timeline event renderer is enabled and the message has a parsed tree, render it
+    // natively with Compose. Otherwise fall back to the legacy rich text editor view below.
+    val messageTree = content.messageTree
+    if (LocalTimelineEventRendererConfig.current.isComposeRendererEnabled && messageTree != null) {
+        Box(modifier.semantics { contentDescription = content.plainText }) {
+            HtmlMessageContent(
+                node = messageTree,
+                currentUserId = LocalTimelineEventRendererConfig.current.currentUserId,
+                onLinkClick = { url, text -> onLinkClick(Link(url = url, text = text)) },
+                onLinkLongClick = { url, text -> onLinkLongClick(Link(url = url, text = text)) },
+                onContentLayoutChange = { data ->
+                    onContentLayoutChange(
+                        ContentAvoidingLayoutData(
+                            contentWidth = data.contentWidth,
+                            contentHeight = data.contentHeight,
+                            nonOverlappingContentWidth = data.nonOverlappingContentWidth,
+                            nonOverlappingContentHeight = data.nonOverlappingContentHeight,
+                        )
+                    )
+                },
+            )
+        }
+        return
+    }
 
     val isInPreview = LocalInspectionMode.current
     val emojiOnly = remember(content.body, content.formattedBody, isInPreview) {

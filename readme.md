@@ -1,4 +1,4 @@
-[![Translation status](https://weblate.spiritcroc.de/widgets/schildichat/-/schildichat-android-next/svg-badge.svg)](https://weblate.spiritcroc.de/projects/schildichat/schildichat-android-next/)
+[![Translation status](https://weblate.spiritcroc.de/widget/schildichat/schildichat-android-next/svg-badge.svg)](https://weblate.spiritcroc.de/projects/schildichat/schildichat-android-next/)
 [![SchildiChat-Android Matrix room #android:schildi.chat](https://img.shields.io/matrix/android:schildi.chat.svg?label=%23android:schildi.chat&logo=matrix&server_fqdn=matrix.org)](https://matrix.to/#/#android:schildi.chat)
 
 # SchildiChat Android Next

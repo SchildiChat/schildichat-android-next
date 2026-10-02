@@ -1,0 +1,2 @@
+- Update codebase to Element X v26.09.4
+- Support rendering sub and sup tags

@@ -62,7 +62,7 @@ dependencies {
     implementation(libs.element.call.api)
     implementation(projects.features.callnative.api)
     implementation(libs.element.call.matrix) {
-        if (usesLocalRustSdk) {
+        if (usesLocalRustSdk || true) { // SC rustcomponents beats bundled from call
             exclude(group = "org.matrix.rustcomponents", module = "sdk-android")
         }
     }

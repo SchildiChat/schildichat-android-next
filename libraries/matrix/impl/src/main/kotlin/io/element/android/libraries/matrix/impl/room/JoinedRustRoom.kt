@@ -8,8 +8,7 @@
 
 package io.element.android.libraries.matrix.impl.room
 
-import chat.schildi.lib.preferences.ScPreferencesStore
-import chat.schildi.lib.preferences.ScPrefs
+import chat.schildi.matrixsdk.ScTimelineFilterSettings
 import io.element.android.appconfig.TimelineConfig
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.core.coroutine.childScope
@@ -106,7 +105,6 @@ class JoinedRustRoom(
     private val coroutineDispatchers: CoroutineDispatchers,
     private val systemClock: SystemClock,
     private val roomContentForwarder: RoomContentForwarder,
-    private val scPreferencesStore: ScPreferencesStore, // SC
     private val featureFlagService: FeatureFlagService,
 ) : JoinedRoom, BaseRoom by baseRoom {
     // Create a dispatcher for all room methods...
@@ -161,6 +159,7 @@ class JoinedRustRoom(
         inner = innerRoom.threadListService(),
         contentMapper = TimelineEventContentMapper(),
         roomCoroutineScope = roomCoroutineScope,
+        roomDispatcher = roomDispatcher,
     )
 
     override val syncUpdateFlow = flow {
@@ -194,6 +193,7 @@ class JoinedRustRoom(
 
     override suspend fun createTimeline(
         createTimelineParams: CreateTimelineParams,
+        scTimelineFilterSettings: ScTimelineFilterSettings,
     ): Result<Timeline> = withContext(roomDispatcher) {
         val hideThreadedEvents = featureFlagService.isFeatureEnabled(FeatureFlags.Threads)
         val focus = when (createTimelineParams) {
@@ -230,7 +230,7 @@ class JoinedRustRoom(
             CreateTimelineParams.PinnedOnly,
             is CreateTimelineParams.Threaded -> {
                 RustTimelineEventFilterFactory().create(
-                    hideMembershipInPublicChats = !scPreferencesStore.getSetting(ScPrefs.VIEW_MEMBERSHIP_EVENTS_IN_PUBLIC_ROOMS),
+                    hideMembershipInPublicChats = !scTimelineFilterSettings.showMembershipEventsInPublicRooms,
                     joinRule = roomInfoFlow.value.joinRule,
                     isEncrypted = roomInfoFlow.value.isEncrypted,
                     excludedStateTypes = TimelineConfig.excludedEvents,

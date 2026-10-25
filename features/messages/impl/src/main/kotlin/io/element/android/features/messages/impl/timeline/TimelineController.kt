@@ -10,6 +10,8 @@ package io.element.android.features.messages.impl.timeline
 
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import chat.schildi.lib.preferences.ScPreferencesStore
+import chat.schildi.lib.preferences.lookupScTimelineFilterSettings
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.SingleIn
 import dev.zacsweers.metro.binding
@@ -25,6 +27,8 @@ import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.timeline.MatrixTimelineItem
 import io.element.android.libraries.matrix.api.timeline.Timeline
 import io.element.android.libraries.matrix.api.timeline.TimelineProvider
+import io.element.android.libraries.matrix.api.timeline.item.SendTarget
+import io.element.android.libraries.matrix.api.timeline.item.event.EventOrTransactionId
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,6 +38,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.getAndUpdate
@@ -53,6 +58,7 @@ class TimelineController(
     private val room: JoinedRoom,
     @LiveTimeline private val liveTimeline: Timeline,
     @RoomCoroutineScope private val roomCoroutineScope: CoroutineScope,
+    private val scPreferencesStore: ScPreferencesStore,
     dispatchers: CoroutineDispatchers,
 ) : Closeable, TimelineProvider {
     private val coroutineScope = roomCoroutineScope.childScope(dispatchers.computation, "TimelineController")
@@ -98,7 +104,7 @@ class TimelineController(
         return if (threadRootId != null) {
             Result.success(EventFocusResult.IsInThread(threadRootId))
         } else {
-            room.createTimeline(CreateTimelineParams.Focused(eventId))
+            room.createTimeline(CreateTimelineParams.Focused(eventId), lookupScTimelineFilterSettings { scPreferencesStore.getSetting(it) })
                 .onFailure {
                     if (it is CancellationException) {
                         throw it
@@ -148,6 +154,14 @@ class TimelineController(
                     focusOnLive()
                 }
             }
+    }
+
+    suspend fun retrySend(eventOrTransactionId: EventOrTransactionId, sendTarget: SendTarget): Result<Boolean> {
+        return currentTimelineFlow.first().retrySend(eventOrTransactionId, sendTarget)
+    }
+
+    suspend fun abortSend(eventOrTransactionId: EventOrTransactionId, sendTarget: SendTarget): Result<Boolean> {
+        return currentTimelineFlow.first().abortSend(eventOrTransactionId, sendTarget)
     }
 
     private val currentTimelineFlow = combine(liveTimelineFlow, detachedTimelineFlow) { live, detached ->

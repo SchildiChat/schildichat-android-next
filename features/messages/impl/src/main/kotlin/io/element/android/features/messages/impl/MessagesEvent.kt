@@ -24,6 +24,7 @@ sealed interface MessagesEvent {
     data object StopLiveLocationShare : MessagesEvent
     data object ShowLiveLocationShare : MessagesEvent
     data class MarkAsFullyReadAndExit(val scReadState: ScReadState) : MessagesEvent
+    data object ConfirmSelectionAction : MessagesEvent
 }
 
 enum class InviteDialogAction {

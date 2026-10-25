@@ -48,7 +48,7 @@ interface ScPreferencesStore {
     suspend fun <T>getSetting(scPref: ScPref<T>): T = settingFlow(scPref).first()
 }
 
-fun <T>ScPref<T>.safeLookup(getPref: (ScPref<*>) -> Any?): T {
+inline fun <T>ScPref<T>.safeLookup(getPref: (ScPref<*>) -> Any?): T {
     return ensureType(getPref(this)) ?: defaultValue
 }
 
@@ -228,18 +228,18 @@ fun ScColorPref.userColor(): Color? = LocalScPreferencesStore.current.settingSta
 @Composable
 fun scTimelineFilterSettings(): State<ScTimelineFilterSettings> {
     val store = LocalScPreferencesStore.current
-    return store.combinedSettingFlow { lookup ->
-        ScTimelineFilterSettings(
-            showHiddenEvents = ScPrefs.VIEW_HIDDEN_EVENTS.safeLookup(lookup),
-            showRedactions = ScPrefs.VIEW_REDACTIONS.safeLookup(lookup),
-        )
-    }.collectAsState(
-        ScTimelineFilterSettings(
-            showHiddenEvents = ScPrefs.VIEW_HIDDEN_EVENTS.safeLookup { store.getCachedOrDefaultValue(it) },
-            showRedactions = ScPrefs.VIEW_REDACTIONS.safeLookup { store.getCachedOrDefaultValue(it) },
-        )
+    return store.combinedSettingFlow(::lookupScTimelineFilterSettings).collectAsState(
+        lookupScTimelineFilterSettings {
+            store.getCachedOrDefaultValue(it)
+        }
     )
 }
+
+inline fun lookupScTimelineFilterSettings(lookup: (ScPref<*>) -> Any?) = ScTimelineFilterSettings(
+    showHiddenEvents = ScPrefs.VIEW_HIDDEN_EVENTS.safeLookup(lookup),
+    showRedactions = ScPrefs.VIEW_REDACTIONS.safeLookup(lookup),
+    showMembershipEventsInPublicRooms = ScPrefs.VIEW_MEMBERSHIP_EVENTS_IN_PUBLIC_ROOMS.safeLookup(lookup),
+)
 
 @Composable
 fun <T>ScPref<T>.state(): State<T> = LocalScPreferencesStore.current.settingState(this)

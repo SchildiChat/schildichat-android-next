@@ -77,7 +77,6 @@ import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.text.toPx
-import io.element.android.libraries.designsystem.theme.unreadIndicator
 import io.element.android.libraries.designsystem.utils.OnLifecycleEvent
 import io.element.android.libraries.matrix.api.core.RoomId
 import kotlinx.collections.immutable.ImmutableList
@@ -584,7 +583,7 @@ private fun UnreadCountBox(unreadCounts: SpaceUnreadCountsDataSource.SpaceUnread
     when {
         unreadCounts.notifiedMessages > 0 -> {
             count = if (countChats) unreadCounts.notifiedChats else unreadCounts.notifiedMessages
-            badgeColor = if (unreadCounts.mentionedMessages > 0) ElementTheme.colors.bgCriticalPrimary else ElementTheme.colors.unreadIndicator
+            badgeColor = if (unreadCounts.mentionedMessages > 0) ElementTheme.colors.bgCriticalPrimary else ElementTheme.colors.textActionAccent
         }
         unreadCounts.mentionedMessages > 0 -> {
             count = if (countChats) unreadCounts.mentionedChats else unreadCounts.mentionedMessages
@@ -592,7 +591,7 @@ private fun UnreadCountBox(unreadCounts: SpaceUnreadCountsDataSource.SpaceUnread
         }
         unreadCounts.markedUnreadChats > 0 -> {
             count = unreadCounts.markedUnreadChats
-            badgeColor = ElementTheme.colors.unreadIndicator
+            badgeColor = ElementTheme.colors.textActionAccent
             outlinedBadge = true
         }
         unreadCounts.unreadMessages > 0 && ScPrefs.RENDER_SILENT_UNREAD.value() -> {

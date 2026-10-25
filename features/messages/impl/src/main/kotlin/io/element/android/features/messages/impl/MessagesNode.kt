@@ -21,6 +21,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
+import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.matrixsdk.urlpreview.UrlPreviewProvider
 import chat.schildi.matrixsdk.urlpreview.UrlPreviewStateProvider
 import com.beeper.android.messageformat.MatrixToLink
@@ -41,6 +42,7 @@ import io.element.android.features.messages.impl.messagecomposer.MessageComposer
 import io.element.android.features.messages.impl.timeline.TimelineController
 import io.element.android.features.messages.impl.timeline.TimelineEvent
 import io.element.android.features.messages.impl.timeline.TimelinePresenter
+import io.element.android.features.messages.impl.timeline.TimelineSelectionOwner
 import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionBottomSheet
 import io.element.android.features.messages.impl.timeline.di.LocalTimelineItemPresenterFactories
 import io.element.android.features.messages.impl.timeline.di.LocalUrlPreviewStateProvider
@@ -113,13 +115,14 @@ class MessagesNode(
     private val timelineItemPresenterFactories: TimelineItemPresenterFactories,
     private val mediaPlayer: MediaPlayer,
     urlPreviewProvider: UrlPreviewProvider, // SC
+    scPreferencesStore: ScPreferencesStore, // SC
     private val permalinkParser: PermalinkParser,
     private val knockRequestsBannerRenderer: KnockRequestsBannerRenderer,
     private val roomMemberModerationRenderer: RoomMemberModerationRenderer,
     private val eventContentValidationCache: EventContentValidationCache,
     private val emojiPickerRenderer: EmojiPickerRenderer,
     private val dispatchers: CoroutineDispatchers,
-) : Node(buildContext, plugins = plugins), MessagesNavigator {
+) : Node(buildContext, plugins = plugins), MessagesNavigator, TimelineSelectionOwner {
     data class Inputs(
         val focusedEventId: EventId?,
     ) : NodeInputs
@@ -132,11 +135,13 @@ class MessagesNode(
         liveTimeline = room.liveTimeline,
         roomCoroutineScope = room.roomCoroutineScope,
         dispatchers = dispatchers,
+        scPreferencesStore = scPreferencesStore,
     )
+    private val timelinePresenter = timelinePresenterFactory.create(timelineController = timelineController, this)
     private val presenter = presenterFactory.create(
         navigator = this,
         composerPresenter = messageComposerPresenterFactory.create(timelineController, this, threadRoot = null),
-        timelinePresenter = timelinePresenterFactory.create(timelineController = timelineController, this),
+        timelinePresenter = timelinePresenter,
         actionListPresenter = actionListPresenterFactory.create(
             postProcessor = TimelineItemActionPostProcessor.Default,
             timelineMode = timelineController.mainTimelineMode(),
@@ -154,7 +159,7 @@ class MessagesNode(
         fun navigateToRoomMemberDetails(userId: UserId)
         fun handlePermalinkClick(data: PermalinkData)
         fun navigateToEventDebugInfo(eventId: EventId?, debugInfo: TimelineItemDebugInfo)
-        fun forwardEvent(eventId: EventId, timelineProvider: TimelineProvider)
+        fun forwardEvents(eventIds: List<EventId>, timelineProvider: TimelineProvider)
         fun navigateToReportMessage(eventId: EventId, senderId: UserId)
         fun navigateToSendLocation()
         fun navigateToCreatePoll()
@@ -238,8 +243,12 @@ class MessagesNode(
         callback.navigateToEventDebugInfo(eventId, debugInfo)
     }
 
-    override fun forwardEvent(eventId: EventId, timelineProvider: TimelineProvider) {
-        callback.forwardEvent(eventId, timelineProvider)
+    override fun forwardEvents(eventIds: List<EventId>, timelineProvider: TimelineProvider) {
+        callback.forwardEvents(eventIds, timelineProvider)
+    }
+
+    override fun exitTimelineSelection() {
+        timelinePresenter.exitSelectionMode()
     }
 
     override fun navigateToReportMessage(eventId: EventId, senderId: UserId) {

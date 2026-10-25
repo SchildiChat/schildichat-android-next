@@ -14,6 +14,7 @@ import androidx.core.text.toSpannable
 import dev.zacsweers.metro.Inject
 import io.element.android.features.location.api.Location
 import io.element.android.features.messages.api.timeline.HtmlConverterProvider
+import io.element.android.features.messages.api.timeline.TextPillificator
 import io.element.android.features.messages.impl.timeline.model.event.AttachmentItem
 import io.element.android.features.messages.impl.timeline.model.event.GalleryItem
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemAttachmentsContent
@@ -29,7 +30,6 @@ import io.element.android.features.messages.impl.timeline.model.event.TimelineIt
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemVideoContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemVoiceContent
-import io.element.android.features.messages.impl.utils.TextPillificationHelper
 import io.element.android.libraries.androidutils.filesize.FileSizeFormatter
 import io.element.android.libraries.androidutils.text.safeLinkify
 import io.element.android.libraries.core.mimetype.MimeTypes
@@ -47,6 +47,7 @@ import io.element.android.libraries.matrix.api.timeline.item.event.GalleryMessag
 import io.element.android.libraries.matrix.api.timeline.item.event.ImageMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.LocationMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageContent
+import io.element.android.libraries.matrix.api.timeline.item.event.MessageFormat
 import io.element.android.libraries.matrix.api.timeline.item.event.NoticeMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.OtherMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.ProfileDetails
@@ -73,7 +74,7 @@ class TimelineItemContentMessageFactory(
     private val fileExtensionExtractor: FileExtensionExtractor,
     private val htmlConverterProvider: HtmlConverterProvider,
     private val permalinkParser: PermalinkParser,
-    private val textPillificationHelper: TextPillificationHelper,
+    private val textPillificator: TextPillificator,
     private val htmlMessageParser: HtmlMessageParser,
     private val featureFlagService: FeatureFlagService,
 ) {
@@ -92,7 +93,7 @@ class TimelineItemContentMessageFactory(
                     prefix = "* $senderDisambiguatedDisplayName",
                 )
                 val formattedBody = dom?.let(::parseHtml)
-                    ?: textPillificationHelper.pillify(emoteBody).safeLinkify()
+                    ?: textPillificator.pillify(emoteBody).safeLinkify()
                 TimelineItemEmoteContent(
                     body = emoteBody,
                     htmlDocument = dom,
@@ -110,7 +111,7 @@ class TimelineItemContentMessageFactory(
                 val body = messageType.body.trimEnd()
                 val htmlDocument = messageType.formatted?.toHtmlDocument(permalinkParser = permalinkParser)
                 val formattedBody = htmlDocument?.let(::parseHtml)
-                    ?: textPillificationHelper.pillify(body).safeLinkify()
+                    ?: textPillificator.pillify(body).safeLinkify()
                 TimelineItemTextContent(
                     body = body,
                     htmlDocument = htmlDocument,
@@ -138,7 +139,7 @@ class TimelineItemContentMessageFactory(
                     caption = messageType.caption?.trimEnd(),
                     formattedCaption = formattedCaption,
                     formattedCaptionSc = scFormattedBody(messageType, dom, content.isRoomMention),
-                    htmlCaption = messageType.formattedCaption?.body,
+                    htmlCaption = messageType.formattedCaption?.body?.takeIf { messageType.formattedCaption?.format == MessageFormat.HTML },
                     isEdited = content.isEdited,
                     mediaSource = messageType.source,
                     thumbnailSource = messageType.info?.thumbnailSource,
@@ -164,7 +165,7 @@ class TimelineItemContentMessageFactory(
                     caption = messageType.caption?.trimEnd(),
                     formattedCaption = formattedCaption,
                     formattedCaptionSc = scFormattedBody(messageType, dom, content.isRoomMention),
-                    htmlCaption = messageType.formattedCaption?.body,
+                    htmlCaption = messageType.formattedCaption?.body?.takeIf { messageType.formattedCaption?.format == MessageFormat.HTML },
                     isEdited = content.isEdited,
                     mediaSource = messageType.source,
                     thumbnailSource = messageType.info?.thumbnailSource,
@@ -209,7 +210,7 @@ class TimelineItemContentMessageFactory(
                     caption = messageType.caption?.trimEnd(),
                     formattedCaption = formattedCaption,
                     formattedCaptionSc = scFormattedBody(messageType, dom, content.isRoomMention),
-                    htmlCaption = messageType.formattedCaption?.body,
+                    htmlCaption = messageType.formattedCaption?.body?.takeIf { messageType.formattedCaption?.format == MessageFormat.HTML },
                     isEdited = content.isEdited,
                     thumbnailSource = messageType.info?.thumbnailSource,
                     mediaSource = messageType.source,
@@ -235,7 +236,7 @@ class TimelineItemContentMessageFactory(
                     caption = messageType.caption?.trimEnd(),
                     formattedCaption = formattedCaption,
                     formattedCaptionSc = scFormattedBody(messageType, dom, content.isRoomMention),
-                    htmlCaption = messageType.formattedCaption?.body,
+                    htmlCaption = messageType.formattedCaption?.body?.takeIf { messageType.formattedCaption?.format == MessageFormat.HTML },
                     isEdited = content.isEdited,
                     mediaSource = messageType.source,
                     duration = messageType.info?.duration ?: Duration.ZERO,
@@ -255,7 +256,7 @@ class TimelineItemContentMessageFactory(
                     caption = messageType.caption?.trimEnd(),
                     formattedCaption = formattedCaption,
                     formattedCaptionSc = scFormattedBody(messageType, dom, content.isRoomMention),
-                    htmlCaption = messageType.formattedCaption?.body,
+                    htmlCaption = messageType.formattedCaption?.body?.takeIf { messageType.formattedCaption?.format == MessageFormat.HTML },
                     isEdited = content.isEdited,
                     mediaSource = messageType.source,
                     duration = messageType.info?.duration ?: Duration.ZERO,
@@ -276,7 +277,7 @@ class TimelineItemContentMessageFactory(
                     caption = messageType.caption?.trimEnd(),
                     formattedCaption = formattedCaption,
                     formattedCaptionSc = scFormattedBody(messageType, dom, content.isRoomMention),
-                    htmlCaption = messageType.formattedCaption?.body,
+                    htmlCaption = messageType.formattedCaption?.body?.takeIf { messageType.formattedCaption?.format == MessageFormat.HTML },
                     isEdited = content.isEdited,
                     thumbnailSource = messageType.info?.thumbnailSource,
                     mediaSource = messageType.source,
@@ -289,7 +290,7 @@ class TimelineItemContentMessageFactory(
                 val body = messageType.body.trimEnd()
                 val htmlDocument = messageType.formatted?.toHtmlDocument(permalinkParser = permalinkParser)
                 val formattedBody = htmlDocument?.let(::parseHtml)
-                    ?: textPillificationHelper.pillify(body).safeLinkify()
+                    ?: textPillificator.pillify(body).safeLinkify()
                 TimelineItemNoticeContent(
                     body = body,
                     htmlDocument = htmlDocument,
@@ -375,7 +376,7 @@ class TimelineItemContentMessageFactory(
                         body = messageType.body,
                         caption = messageType.body.trimEnd().takeIf { it.isNotEmpty() },
                         formattedCaption = formattedCaption,
-                        htmlCaption = messageType.formatted?.body,
+                        htmlCaption = messageType.formatted?.body?.takeIf { messageType.formatted?.format == MessageFormat.HTML },
                         isEdited = content.isEdited,
                         items = galleryItems.toImmutableList(),
                     )
@@ -433,7 +434,7 @@ class TimelineItemContentMessageFactory(
                         body = messageType.body,
                         caption = messageType.body.trimEnd().takeIf { it.isNotEmpty() },
                         formattedCaption = formattedCaption,
-                        htmlCaption = messageType.formatted?.body,
+                        htmlCaption = messageType.formatted?.body?.takeIf { messageType.formatted?.format == MessageFormat.HTML },
                         isEdited = content.isEdited,
                         attachments = attachments.toImmutableList(),
                     )
@@ -444,7 +445,7 @@ class TimelineItemContentMessageFactory(
                 TimelineItemTextContent(
                     body = body,
                     htmlDocument = null,
-                    formattedBody = textPillificationHelper.pillify(body).safeLinkify(),
+                    formattedBody = textPillificator.pillify(body).safeLinkify(),
                     formattedBodySc = scFormattedPlaintextBody(body, content.isRoomMention),
                     isEdited = content.isEdited,
                 )
@@ -465,7 +466,7 @@ class TimelineItemContentMessageFactory(
     private fun parseHtml(document: Document): CharSequence? {
         return htmlConverterProvider.provide()
             .fromDocumentToSpans(document)
-            .let { textPillificationHelper.pillify(it) }
+            .let { textPillificator.pillify(it) }
             .safeLinkify()
     }
 }

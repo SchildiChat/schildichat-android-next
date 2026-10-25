@@ -9,6 +9,7 @@
 package io.element.android.libraries.matrix.impl.roomlist
 
 import io.element.android.libraries.core.data.tryOrNull
+import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.roomlist.ScSdkInboxSettings
 import io.element.android.libraries.matrix.impl.util.cancelAndDestroy
 import io.element.android.libraries.matrix.impl.util.mxCallbackFlow
@@ -59,7 +60,7 @@ internal fun RoomListInterface.entriesFlow(
     pageSize: Int,
     initialFilterKind: RoomListEntriesDynamicFilterKind,
     initialInboxSettings: ScSdkInboxSettings? = null,
-    onControllerCreated: (RoomListDynamicEntriesController) -> Unit,
+    onControllerCreated: suspend (RoomListDynamicEntriesController) -> Unit,
 ): Flow<List<RoomListEntriesUpdate>> =
     callbackFlow {
         val listener = object : RoomListEntriesListener {
@@ -72,13 +73,17 @@ internal fun RoomListInterface.entriesFlow(
             listener = listener,
         )
         val controller = result.controller()
-        if (initialInboxSettings == null) {
-            controller.setFilter(initialFilterKind)
-        } else {
-            controller.setScInboxSettings(initialFilterKind, initialInboxSettings.toSdkSettings())
-        }
-        onControllerCreated(controller)
-        awaitClose {
+        // Use try/finally rather than awaitClose's block, so that the resources are released even if
+        // onControllerCreated is cancelled or throws before awaitClose is reached
+        try {
+            if (initialInboxSettings == null) {
+                controller.setFilter(initialFilterKind)
+            } else {
+                controller.setScInboxSettings(initialFilterKind, initialInboxSettings.toSdkSettings())
+            }
+            onControllerCreated(controller)
+            awaitClose()
+        } finally {
             result.entriesStream().cancelAndDestroy()
             controller.destroy()
             result.destroy()
@@ -111,10 +116,10 @@ internal fun RoomListServiceInterface.syncIndicator(): Flow<RoomListServiceSyncI
         )
     }.buffer(Channel.UNLIMITED)
 
-internal fun RoomListServiceInterface.roomOrNull(roomId: String): Room? {
+internal fun RoomListServiceInterface.roomOrNull(roomId: RoomId): Room? {
     return tryOrNull(
         onException = { Timber.e(it, "Failed finding room with id=$roomId.") }
     ) {
-        room(roomId)
+        room(roomId.value)
     }
 }

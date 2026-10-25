@@ -80,6 +80,7 @@ sealed interface RoomListContentState {
         val fullScreenIntentPermissionsState: FullScreenIntentPermissionsState,
         val batteryOptimizationState: BatteryOptimizationState,
         val showNewNotificationSoundBanner: Boolean,
+        val showSwipeAvatarBanner: Boolean,
         val showUnreadCount: Boolean,
         val summaries: ImmutableList<RoomListRoomSummary>,
         // SC additions
@@ -88,5 +89,6 @@ sealed interface RoomListContentState {
         val totalUnreadCounts: SpaceUnreadCountsDataSource.SpaceUnreadCounts? = null,
         // SC additions end
         val seenRoomInvites: ImmutableSet<RoomId>,
+        val showAllActivity: Boolean,
     ) : RoomListContentState
 }

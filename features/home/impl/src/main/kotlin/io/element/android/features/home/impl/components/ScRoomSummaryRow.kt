@@ -73,7 +73,6 @@ import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.roomListRoomMessage
 import io.element.android.libraries.designsystem.theme.roomListRoomMessageDate
 import io.element.android.libraries.designsystem.theme.roomListRoomName
-import io.element.android.libraries.designsystem.theme.unreadIndicator
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlin.math.max
 
@@ -304,7 +303,7 @@ private fun RowScope.ScLastMessageAndIndicatorRow(room: RoomListRoomSummary, isI
                 modifier = Modifier.size(16.dp),
                 imageVector = CompoundIcons.VideoCallSolid(),
                 contentDescription = null,
-                tint = ElementTheme.colors.unreadIndicator,
+                tint = ElementTheme.colors.textActionAccent,
             )
         }
         ScUnreadCounter(room, isInviteSeen)
@@ -341,7 +340,7 @@ private fun ScUnreadCounter(room: RoomListRoomSummary, isInviteSeen: Boolean) {
         }
         notificationCount > 0 -> {
             count = formatUnreadCount(notificationCount, underestimate)
-            badgeColor = if (highlightCount > 0) ElementTheme.colors.bgCriticalPrimary else ElementTheme.colors.unreadIndicator
+            badgeColor = if (highlightCount > 0) ElementTheme.colors.bgCriticalPrimary else ElementTheme.colors.textActionAccent
         }
         highlightCount > 0 -> {
             count = formatUnreadCount(highlightCount, underestimate)
@@ -349,7 +348,7 @@ private fun ScUnreadCounter(room: RoomListRoomSummary, isInviteSeen: Boolean) {
         }
         room.isMarkedUnread -> {
             count = "!"
-            badgeColor = ElementTheme.colors.unreadIndicator
+            badgeColor = ElementTheme.colors.textActionAccent
             outlinedBadge = true
         }
         unreadCount > 0 -> {

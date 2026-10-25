@@ -26,10 +26,29 @@ internal class RustDynamicRoomList(
     private val processor: RoomSummaryListProcessor,
     override val pageSize: Int,
     private val isSpaceList: Boolean = false, // SC
-    private val dynamicController: () -> RoomListDynamicEntriesController?,
+    initialFilter: RoomListFilter,
     private val addPagesCount: Int = DEFAULT_ADD_PAGES_COUNT
 ) : DynamicRoomList {
     private val mutex = Mutex()
+
+    // The controller is created asynchronously, once the entries of the room list are observed
+    private var dynamicController: RoomListDynamicEntriesController? = null
+
+    // The last requested filter, so that it can be applied when the controller is created
+    private var currentFilter: RoomListFilter = initialFilter
+
+    /**
+     * To be called when the controller is created. The controller already has the initial filter set, so apply the filter
+     * only if it has been updated in the meantime.
+     */
+    suspend fun onControllerCreated(controller: RoomListDynamicEntriesController, initialFilter: RoomListFilter) {
+        mutex.withLock {
+            dynamicController = controller
+            if (currentFilter != initialFilter) {
+                controller.applyFilter(currentFilter)
+            }
+        }
+    }
 
     override suspend fun rebuildSummaries() {
         processor.rebuildRoomSummaries()
@@ -37,39 +56,43 @@ internal class RustDynamicRoomList(
 
     override suspend fun updateFilter(filter: RoomListFilter) {
         mutex.withLock {
-            dynamicController()?.let { controller ->
-                // Reset pagination when filter changes
-                controller.resetToOnePage()
-                val rustFilter = RoomListFilterMapper.toRustFilter(filter, isSpaceList)
-                controller.setFilter(rustFilter)
-                // Then preload some pages
-                controller.addPages(addPagesCount)
-            }
+            currentFilter = filter
+            dynamicController?.applyFilter(filter)
         }
     }
 
     override suspend fun updateSettings(filter: RoomListFilter, settings: ScSdkInboxSettings) {
         mutex.withLock {
-            dynamicController()?.let { controller ->
-                // Reset pagination when settings change
-                controller.resetToOnePage()
+            dynamicController?.run {
+                currentFilter = filter
+                // Copy what applyFilter() does, but use SC inbox settings call.
+                // Reset pagination when filter changes
+                resetToOnePage()
                 val rustFilter = RoomListFilterMapper.toRustFilter(filter, isSpaceList)
-                controller.setScInboxSettings(rustFilter, settings.toSdkSettings())
+                setScInboxSettings(rustFilter, settings.toSdkSettings())
                 // Then preload some pages
-                controller.addPages(addPagesCount)
+                addPages(addPagesCount)
             }
         }
     }
 
+    private fun RoomListDynamicEntriesController.applyFilter(filter: RoomListFilter) {
+        // Reset pagination when filter changes
+        resetToOnePage()
+        setFilter(RoomListFilterMapper.toRustFilter(filter, isSpaceList))
+        // Then preload some pages
+        addPages(addPagesCount)
+    }
+
     override suspend fun loadMore() {
         mutex.withLock {
-            dynamicController()?.addPages(addPagesCount)
+            dynamicController?.addPages(addPagesCount)
         }
     }
 
     override suspend fun reset() {
         mutex.withLock {
-            dynamicController()?.resetToOnePage()
+            dynamicController?.resetToOnePage()
         }
     }
 

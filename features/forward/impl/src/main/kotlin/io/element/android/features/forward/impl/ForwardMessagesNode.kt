@@ -28,10 +28,13 @@ import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.timeline.TimelineProvider
 import io.element.android.libraries.roomselect.api.RoomSelectEntryPoint
 import io.element.android.libraries.roomselect.api.RoomSelectMode
 import kotlinx.parcelize.Parcelize
+
+private const val MAX_NUMBER_OF_ROOMS = 5
 
 @ContributesNode(SessionScope::class)
 @AssistedInject
@@ -40,6 +43,7 @@ class ForwardMessagesNode(
     @Assisted plugins: List<Plugin>,
     presenterFactory: ForwardMessagesPresenter.Factory,
     private val roomSelectEntryPoint: RoomSelectEntryPoint,
+    private val sessionId: SessionId,
 ) : ParentNode<ForwardMessagesNode.NavTarget>(
     navModel = PermanentNavModel(
         navTargets = setOf(NavTarget),
@@ -52,22 +56,28 @@ class ForwardMessagesNode(
     object NavTarget : Parcelable
 
     data class Inputs(
-        val eventId: EventId,
+        val eventIds: List<EventId>,
         val timelineProvider: TimelineProvider,
+        val fromRoomId: RoomId,
     ) : NodeInputs
 
     private val inputs = inputs<Inputs>()
     private val callback: ForwardEntryPoint.Callback = callback()
-    private val presenter = presenterFactory.create(inputs.eventId.value, inputs.timelineProvider)
+    private val presenter = presenterFactory.create(inputs.eventIds, inputs.timelineProvider)
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         val callback = object : RoomSelectEntryPoint.Callback {
-            override fun onRoomSelected(roomIds: List<RoomId>) {
+            override fun onRoomSelected(sessionId: SessionId, roomIds: List<RoomId>) {
+                // In Forward mode, the session cannot be changed
                 presenter.onRoomSelected(roomIds)
             }
 
             override fun onCancel() {
                 callback.onDone(emptyList())
+            }
+
+            override fun onSessionVerificationRequired(sessionId: SessionId) {
+                // Only called in Share mode
             }
         }
 
@@ -75,8 +85,9 @@ class ForwardMessagesNode(
             parentNode = this,
             buildContext = buildContext,
             params = RoomSelectEntryPoint.Params(
-                mode = RoomSelectMode.Forward,
-                maxNumberOfRooms = RoomSelectEntryPoint.DEFAULT_MAX_NUMBER_OF_ROOMS,
+                sessionId = sessionId,
+                mode = RoomSelectMode.Forward(fromRoomId = inputs.fromRoomId),
+                maxNumberOfRooms = MAX_NUMBER_OF_ROOMS,
             ),
             callback = callback,
         )

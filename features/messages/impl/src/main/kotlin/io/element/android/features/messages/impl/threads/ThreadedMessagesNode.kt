@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import chat.schildi.lib.preferences.ScPreferencesStore
 import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
@@ -41,6 +42,7 @@ import io.element.android.features.messages.impl.messagecomposer.MessageComposer
 import io.element.android.features.messages.impl.timeline.TimelineController
 import io.element.android.features.messages.impl.timeline.TimelineEvent
 import io.element.android.features.messages.impl.timeline.TimelinePresenter
+import io.element.android.features.messages.impl.timeline.TimelineSelectionOwner
 import io.element.android.features.messages.impl.timeline.components.customreaction.CustomReactionBottomSheet
 import io.element.android.features.messages.impl.timeline.di.LocalTimelineItemPresenterFactories
 import io.element.android.features.messages.impl.timeline.di.TimelineItemPresenterFactories
@@ -97,8 +99,9 @@ class ThreadedMessagesNode(
     private val appNavigationStateService: AppNavigationStateService,
     private val roomMemberModerationRenderer: RoomMemberModerationRenderer,
     private val emojiPickerRenderer: EmojiPickerRenderer,
+    private val scPreferencesStore: ScPreferencesStore, // SC
     private val dispatchers: CoroutineDispatchers,
-) : Node(buildContext, plugins = plugins), MessagesNavigator {
+) : Node(buildContext, plugins = plugins), MessagesNavigator, TimelineSelectionOwner {
     data class Inputs(
         val threadRootEventId: ThreadId,
         val focusedEventId: EventId?,
@@ -109,6 +112,7 @@ class ThreadedMessagesNode(
 
     private var timelineController: TimelineController? by mutableStateOf(null)
     private var presenter: Presenter<MessagesState>? by mutableStateOf(null)
+    private var timelinePresenter: TimelinePresenter? = null
 
     /**
      * This should be fast to load, but not faster than several UI frames, which will cause ANRs.
@@ -121,12 +125,15 @@ class ThreadedMessagesNode(
             liveTimeline = threadedTimeline,
             roomCoroutineScope = room.roomCoroutineScope,
             dispatchers = dispatchers,
+            scPreferencesStore = scPreferencesStore,
         )
         this.timelineController = timelineController
+        val timelinePresenter = timelinePresenterFactory.create(timelineController = timelineController, this)
+        this.timelinePresenter = timelinePresenter
         return presenterFactory.create(
             navigator = this,
             composerPresenter = messageComposerPresenterFactory.create(timelineController, this, threadRoot = inputs.threadRootEventId),
-            timelinePresenter = timelinePresenterFactory.create(timelineController = timelineController, this),
+            timelinePresenter = timelinePresenter,
             // TODO add special processor for threaded timeline
             actionListPresenter = actionListPresenterFactory.create(
                 postProcessor = TimelineItemActionPostProcessor.Default,
@@ -143,7 +150,7 @@ class ThreadedMessagesNode(
         fun navigateToRoomMemberDetails(userId: UserId)
         fun handlePermalinkClick(data: PermalinkData)
         fun navigateToEventDebugInfo(eventId: EventId?, debugInfo: TimelineItemDebugInfo)
-        fun handleForwardEventClick(eventId: EventId, timelineProvider: TimelineProvider)
+        fun handleForwardEventClick(eventIds: List<EventId>, timelineProvider: TimelineProvider)
         fun navigateToReportMessage(eventId: EventId, senderId: UserId)
         fun navigateToSendLocation()
         fun navigateToCreatePoll()
@@ -227,8 +234,12 @@ class ThreadedMessagesNode(
         callback.navigateToEventDebugInfo(eventId, debugInfo)
     }
 
-    override fun forwardEvent(eventId: EventId, timelineProvider: TimelineProvider) {
-        callback.handleForwardEventClick(eventId, timelineProvider)
+    override fun forwardEvents(eventIds: List<EventId>, timelineProvider: TimelineProvider) {
+        callback.handleForwardEventClick(eventIds, timelineProvider)
+    }
+
+    override fun exitTimelineSelection() {
+        timelinePresenter?.exitSelectionMode()
     }
 
     override fun navigateToReportMessage(eventId: EventId, senderId: UserId) {

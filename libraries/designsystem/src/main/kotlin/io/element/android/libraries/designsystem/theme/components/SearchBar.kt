@@ -84,6 +84,9 @@ fun <T> SearchBar(
         }
     }
 
+    // TODO Migrate to the SearchBarState API. The replacement (ExpandedFullScreenSearchBar) displays the results in a dialog,
+    //  which would change the UX, in particular for the emoji picker bottom sheet.
+    @Suppress("DEPRECATION")
     SearchBar(
         inputField = {
             SearchBarDefaults.InputField(
@@ -162,7 +165,6 @@ fun <T> SearchBar(
 }
 
 object ElementSearchBarDefaults {
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun inactiveColors() = SearchBarDefaults.colors(
         containerColor = Color.Transparent,
@@ -182,7 +184,6 @@ object ElementSearchBarDefaults {
         errorContainerColor = ElementTheme.colors.bgSubtleSecondary,
     )
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun activeColors() = SearchBarDefaults.colors(
         containerColor = Color.Transparent,
@@ -292,7 +293,6 @@ internal fun SearchBarActiveWithContentPreview() = ElementThemedPreview {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @ExcludeFromCoverage
 private fun ContentToPreview(

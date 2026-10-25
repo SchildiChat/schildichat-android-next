@@ -18,7 +18,9 @@ data class AvatarData(
     val name: String?,
     val url: String? = null,
     val size: AvatarSize,
-    val powerLevel: Long? = null,
+    val powerLevel: Long? = null, // SC
+    /** Base64 encoded thumbnail of [url], stored locally, used as a fallback when the avatar cannot be loaded. */
+    val thumbnail: String? = null,
 ) {
     val scPreviewLetters by lazy { scPreviewLetters() }
     val initialLetter by lazy {

@@ -26,7 +26,6 @@ dependencies {
     implementation(projects.libraries.core)
     implementation(projects.libraries.matrix.api)
     implementation(projects.libraries.push.api)
-    implementation(projects.libraries.uiStrings)
     api(projects.libraries.troubleshoot.api)
 
     implementation(projects.libraries.pushstore.api)
@@ -48,8 +47,6 @@ dependencies {
     implementation(libs.unifiedpush.fcm)
 
     testCommonDependencies(libs)
-    testImplementation(libs.kotlinx.collections.immutable)
-    testImplementation(projects.features.enterprise.test)
     testImplementation(projects.libraries.matrix.test)
     testImplementation(projects.libraries.push.test)
     testImplementation(projects.libraries.pushproviders.test)

@@ -8,6 +8,7 @@
 
 package io.element.android.libraries.matrix.api.room
 
+import chat.schildi.matrixsdk.ScTimelineFilterSettings
 import io.element.android.libraries.matrix.api.core.DeviceId
 import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomAlias
@@ -71,6 +72,7 @@ interface JoinedRoom : BaseRoom {
      */
     suspend fun createTimeline(
         createTimelineParams: CreateTimelineParams,
+        scTimelineFilterSettings: ScTimelineFilterSettings = ScTimelineFilterSettings(),
     ): Result<Timeline>
 
     /**

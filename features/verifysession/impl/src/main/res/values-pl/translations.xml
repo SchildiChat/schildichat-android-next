@@ -2,6 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="screen_identity_confirmation_cannot_confirm">"Nie możesz potwierdzić?"</string>
   <string name="screen_identity_confirmation_create_new_recovery_key">"Utwórz nowy klucz przywracania"</string>
+  <string name="screen_identity_confirmation_sign_out">"Wyloguj"</string>
   <string name="screen_identity_confirmation_subtitle">"Wybierz sposób weryfikacji, aby skonfigurować bezpieczne wiadomości."</string>
   <string name="screen_identity_confirmation_title">"Potwierdź swoją tożsamość cyfrową"</string>
   <string name="screen_identity_confirmation_use_another_device">"Użyj innego urządzenia"</string>
@@ -44,6 +45,7 @@
   <string name="screen_session_verification_use_another_device_title">"Otwórz aplikację na drugim zweryfikowanym urządzeniu"</string>
   <string name="screen_session_verification_user_initiator_subtitle">"Dla dodatkowej ochrony, zweryfikuj tego użytkownika, porównując zestaw emoji na obu urządzeniach. Zrób to, korzystając z zaufanej metody komunikacji."</string>
   <string name="screen_session_verification_user_initiator_title">"Zweryfikować tego użytkownika?"</string>
+  <string name="screen_session_verification_user_requesting_verification">"Użytkownik proszący o weryfikację:"</string>
   <string name="screen_session_verification_user_responder_subtitle">"Dla dodatkowej ochrony, inny użytkownik chce zweryfikować Twoją tożsamość. Pojawi się unikalny zestaw emoji do porównania."</string>
   <string name="screen_session_verification_waiting_another_device_subtitle">"Powinno wyskoczyć okno na drugim urządzeniu. Rozpocznij tam weryfikację."</string>
   <string name="screen_session_verification_waiting_another_device_title">"Rozpocznij weryfikację na drugim urządzeniu"</string>

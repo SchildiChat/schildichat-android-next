@@ -8,6 +8,8 @@
   <string name="banner_set_up_recovery_content">"Ваші бесіди автоматично резервуються з використанням наскрізного шифрування. Щоб відновити цю резервну копію та зберегти свою цифрову ідентичність у разі втрати доступу до всіх своїх пристроїв, вам знадобиться ключ відновлення."</string>
   <string name="banner_set_up_recovery_submit">"Отримати ключ відновлення"</string>
   <string name="banner_set_up_recovery_title">"Створити резервну копію своїх бесід"</string>
+  <string name="banner_swipe_avatar_content">"Проведіть пальцем вгору або вниз по своєму аватару, щоб перемикатися між обліковими записами без переходу до налаштувань застосунку."</string>
+  <string name="banner_swipe_avatar_title">"Перемикатися між обліковими записами проведенням пальця по аватару"</string>
   <string name="confirm_recovery_key_banner_message">"Підтвердіть свій ключ відновлення, щоб мати доступ до сховища ключів та історії повідомлень."</string>
   <string name="confirm_recovery_key_banner_primary_button_title">"Введіть ключ відновлення"</string>
   <string name="confirm_recovery_key_banner_secondary_button_title">"Забули ключ відновлення?"</string>
@@ -24,6 +26,9 @@
   <string name="screen_invites_invited_you">"%1$s (%2$s) запрошує вас"</string>
   <string name="screen_migration_message">"Це одноразовий процес, дякую за очікування."</string>
   <string name="screen_migration_title">"Налаштування облікового запису."</string>
+  <string name="screen_multi_account_announcement_action">"Додати обліковий запис"</string>
+  <string name="screen_multi_account_announcement_description">"Перейдіть до %1$s, щоб увійти в інший обліковий запис. Після цього ви зможете легко перемикатися між ними."</string>
+  <string name="screen_multi_account_announcement_title">"Відтепер ви можете додавати кілька облікових записів"</string>
   <string name="screen_roomlist_a11y_create_message">"Створити нову розмову або кімнату"</string>
   <string name="screen_roomlist_clear_filters">"Очистити фільтри"</string>
   <string name="screen_roomlist_empty_message">"Почніть з обміну повідомленнями з кимось."</string>

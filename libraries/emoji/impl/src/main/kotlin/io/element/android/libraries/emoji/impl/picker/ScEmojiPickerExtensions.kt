@@ -39,7 +39,6 @@ import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconButton
-import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.coroutines.launch
 
 @Composable
@@ -162,7 +161,7 @@ private fun SendButton(
                     .padding(start = 2.dp)
                     .align(Alignment.Center),
                 imageVector = CompoundIcons.Send(),
-                contentDescription = stringResource(CommonStrings.action_send),
+                contentDescription = stringResource(io.element.android.libraries.ui.strings.R.string.action_send),
                 tint = Color.White,
             )
         }

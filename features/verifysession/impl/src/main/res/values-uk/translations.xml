@@ -2,6 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="screen_identity_confirmation_cannot_confirm">"Не можете підтвердити?"</string>
   <string name="screen_identity_confirmation_create_new_recovery_key">"Створити новий ключ відновлення"</string>
+  <string name="screen_identity_confirmation_sign_out">"Вийти"</string>
   <string name="screen_identity_confirmation_subtitle">"Виберіть спосіб звіряння, щоб налаштувати безпечний обмін повідомленнями."</string>
   <string name="screen_identity_confirmation_title">"Підтвердьте свою цифрову ідентичність"</string>
   <string name="screen_identity_confirmation_use_another_device">"Використовуйте інший пристрій"</string>
@@ -44,6 +45,7 @@
   <string name="screen_session_verification_use_another_device_title">"Відкрийте застосунок на іншому звіреному пристрої"</string>
   <string name="screen_session_verification_user_initiator_subtitle">"Для додаткової безпеки звірте цього користувача, порівнявши набір емоджі на ваших пристроях. Зробіть це, використовуючи надійний спосіб спілкування."</string>
   <string name="screen_session_verification_user_initiator_title">"Звірити цього користувача?"</string>
+  <string name="screen_session_verification_user_requesting_verification">"Користувач, який запитує звірку:"</string>
   <string name="screen_session_verification_user_responder_subtitle">"Для додаткової безпеки інший користувач хоче звірити вашу цифрову ідентичність. Вам буде показано набір емодзі для порівняння."</string>
   <string name="screen_session_verification_waiting_another_device_subtitle">"На іншому пристрої має з’явитися спливне вікно. Розпочніть звіряння звідти."</string>
   <string name="screen_session_verification_waiting_another_device_title">"Розпочати звіряння на іншому пристрої"</string>

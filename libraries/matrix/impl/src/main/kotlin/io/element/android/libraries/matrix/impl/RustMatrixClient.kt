@@ -10,6 +10,9 @@ package io.element.android.libraries.matrix.impl
 
 import chat.schildi.lib.preferences.ScPreferencesStore
 import chat.schildi.matrixsdk.ScTimelineFilterSettings
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import io.element.android.libraries.androidutils.file.getSizeOfFiles
 import io.element.android.libraries.core.bool.orFalse
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
@@ -18,7 +21,9 @@ import io.element.android.libraries.core.data.bytes
 import io.element.android.libraries.core.data.tryOrNull
 import io.element.android.libraries.core.extensions.mapFailure
 import io.element.android.libraries.core.extensions.runCatchingExceptions
+import io.element.android.libraries.di.annotations.AppCoroutineScope
 import io.element.android.libraries.featureflag.api.FeatureFlagService
+import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.matrix.api.HomeserverCapabilitiesProvider
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.analytics.SdkStoreSizes
@@ -33,6 +38,7 @@ import io.element.android.libraries.matrix.api.createroom.RoomPreset
 import io.element.android.libraries.matrix.api.linknewdevice.LinkDesktopHandler
 import io.element.android.libraries.matrix.api.linknewdevice.LinkMobileHandler
 import io.element.android.libraries.matrix.api.media.MatrixMediaLoader
+import io.element.android.libraries.matrix.api.media.MediaSource
 import io.element.android.libraries.matrix.api.oauth.AccountManagementAction
 import io.element.android.libraries.matrix.api.paths.SessionPaths
 import io.element.android.libraries.matrix.api.room.BaseRoom
@@ -48,6 +54,7 @@ import io.element.android.libraries.matrix.api.room.join.JoinRule
 import io.element.android.libraries.matrix.api.roomdirectory.RoomVisibility
 import io.element.android.libraries.matrix.api.roomlist.RoomListService
 import io.element.android.libraries.matrix.api.scanner.ContentScanner
+import io.element.android.libraries.matrix.api.search.SearchBackfillStrategy
 import io.element.android.libraries.matrix.api.spaces.SpaceService
 import io.element.android.libraries.matrix.api.sync.SlidingSyncVersion
 import io.element.android.libraries.matrix.api.sync.SyncState
@@ -83,6 +90,8 @@ import io.element.android.libraries.matrix.impl.roomlist.RoomListFactory
 import io.element.android.libraries.matrix.impl.roomlist.RustRoomListService
 import io.element.android.libraries.matrix.impl.roomlist.roomOrNull
 import io.element.android.libraries.matrix.impl.search.RustMessageSearchService
+import io.element.android.libraries.matrix.impl.search.RustSearchBackfillService
+import io.element.android.libraries.matrix.impl.search.map
 import io.element.android.libraries.matrix.impl.spaces.RustSpaceService
 import io.element.android.libraries.matrix.impl.sync.RustSyncService
 import io.element.android.libraries.matrix.impl.sync.map
@@ -108,20 +117,20 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import org.matrix.rustcomponents.sdk.AuthData
-import org.matrix.rustcomponents.sdk.AuthDataPasswordDetails
 import org.matrix.rustcomponents.sdk.BeaconInfoListener
 import org.matrix.rustcomponents.sdk.BeaconInfoUpdate
 import org.matrix.rustcomponents.sdk.Client
@@ -140,6 +149,7 @@ import timber.log.Timber
 import java.io.File
 import java.util.Optional
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.io.encoding.Base64
 import kotlin.jvm.optionals.getOrNull
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -147,25 +157,42 @@ import org.matrix.rustcomponents.sdk.CreateRoomParameters as RustCreateRoomParam
 import org.matrix.rustcomponents.sdk.RoomPreset as RustRoomPreset
 import org.matrix.rustcomponents.sdk.SyncService as ClientSyncService
 
+// Same value as AVATAR_THUMBNAIL_SIZE_IN_PIXEL in the matrixmedia module
+private const val AVATAR_THUMBNAIL_SIZE_IN_PIXEL = 240L
+
 @Suppress("LargeClass")
+@AssistedInject
 class RustMatrixClient(
-    override val sessionPaths: SessionPaths,
-    val innerClient: Client,
+    @Assisted override val sessionPaths: SessionPaths,
+    @Assisted val innerClient: Client,
+    @Assisted private val innerSyncService: ClientSyncService,
+    @Assisted baseCacheDirectory: File,
+    @Assisted override val contentScanner: ContentScanner?,
+    @Assisted override val isMessageSearchAvailable: Boolean,
+    @Assisted private val sessionDelegate: RustClientSessionDelegate,
     private val sessionStore: SessionStore,
-    private val sessionDelegate: RustClientSessionDelegate,
     private val scPreferencesStore: ScPreferencesStore,
-    private val innerSyncService: ClientSyncService,
-    appCoroutineScope: CoroutineScope,
+    @AppCoroutineScope appCoroutineScope: CoroutineScope,
     dispatchers: CoroutineDispatchers,
-    baseCacheDirectory: File,
     clock: SystemClock,
     timelineEventFilterFactory: TimelineEventFilterFactory,
     private val featureFlagService: FeatureFlagService,
     private val analyticsService: AnalyticsService,
     private val workManagerScheduler: WorkManagerScheduler,
-    override val contentScanner: ContentScanner?,
-    override val isMessageSearchAvailable: Boolean,
+    private val searchBackfillServiceFactory: RustSearchBackfillService.Factory,
 ) : MatrixClient {
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            sessionPaths: SessionPaths,
+            innerClient: Client,
+            innerSyncService: ClientSyncService,
+            baseCacheDirectory: File,
+            contentScanner: ContentScanner?,
+            isMessageSearchAvailable: Boolean,
+            sessionDelegate: RustClientSessionDelegate,
+        ): RustMatrixClient
+    }
     override val sessionId: UserId = UserId(innerClient.userId())
     override val deviceId: DeviceId = DeviceId(innerClient.deviceId())
     override val server: String? = innerClient.server()
@@ -264,7 +291,6 @@ class RustMatrixClient(
         timelineEventFilterFactory = timelineEventFilterFactory,
         roomMembershipObserver = roomMembershipObserver,
         roomInfoMapper = roomInfoMapper,
-        scPreferencesStore = scPreferencesStore, // SC
         featureFlagService = featureFlagService,
         analyticsService = analyticsService,
     )
@@ -283,6 +309,8 @@ class RustMatrixClient(
 
     private var clientDelegateTaskHandle: TaskHandle? = innerClient.setDelegate(sessionDelegate)
 
+    override val searchBackfillService = searchBackfillServiceFactory.create(innerClient)
+
     private val _userProfile: MutableStateFlow<MatrixUser> = MutableStateFlow(
         MatrixUser(
             userId = sessionId,
@@ -297,22 +325,24 @@ class RustMatrixClient(
 
     private val ownProfileListener = object : ProfileListener {
         override fun onUpdate(profile: UserProfile) {
-            _userProfile.tryEmit(profile.map())
+            val matrixUser = profile.map()
+            _userProfile.tryEmit(matrixUser)
+            sessionCoroutineScope.launch(sessionDispatcher) {
+                storeUserProfile(matrixUser)
+            }
         }
     }
 
-    override val ignoredUsersFlow = mxCallbackFlow<ImmutableList<UserId>> {
-        // Fetch the initial value manually, the SDK won't return it automatically
-        channel.trySend(innerClient.ignoredUsers().map(::UserId).toImmutableList())
+    private val _ignoredUsersFlow = MutableStateFlow<ImmutableList<UserId>>(persistentListOf())
+    override val ignoredUsersFlow: StateFlow<ImmutableList<UserId>> = _ignoredUsersFlow.asStateFlow()
 
-        innerClient.subscribeToIgnoredUsers(object : IgnoredUsersListener {
-            override fun call(ignoredUserIds: List<String>) {
-                channel.trySend(ignoredUserIds.map(::UserId).toImmutableList())
-            }
-        })
-    }
-        .buffer(Channel.UNLIMITED)
-        .stateIn(sessionCoroutineScope, started = SharingStarted.Eagerly, initialValue = persistentListOf())
+    // Subscribe before fetching the ignored users from the server: the SDK immediately emits its in-memory value, which is
+    // empty until the account data is received by the sync, so it must not override the value fetched from the server.
+    private val ignoredUsersTaskHandle: TaskHandle = innerClient.subscribeToIgnoredUsers(object : IgnoredUsersListener {
+        override fun call(ignoredUserIds: List<String>) {
+            _ignoredUsersFlow.value = ignoredUserIds.map(::UserId).toImmutableList()
+        }
+    })
 
     private val _isShuttingDown = AtomicBoolean(false)
     override val isShuttingDown: Boolean
@@ -321,6 +351,13 @@ class RustMatrixClient(
     init {
         // Make sure the session delegate has a reference to the client to be able to logout on auth error
         sessionDelegate.bindClient(this)
+
+        // The SDK does not restore the ignored users list from its store at startup, and the sync will usually not send
+        // the account data again if it has not changed, so the list would stay empty. Fetch it from the server instead.
+        // This can be removed once https://github.com/matrix-org/matrix-rust-sdk/issues/7299 is fixed.
+        sessionCoroutineScope.launch(sessionDispatcher) {
+            refreshIgnoredUsers()
+        }
 
         sessionCoroutineScope.launch {
             // Start notification settings
@@ -331,6 +368,9 @@ class RustMatrixClient(
 
         // Schedule regular database vacuuming to ensure DB performance remains optimal
         scheduleDatabaseVacuum()
+
+        // Schedule background search backfill if needed
+        scheduleBackgroundSearchBackfill()
     }
 
     private suspend fun setupUserProfile() {
@@ -455,6 +495,16 @@ class RustMatrixClient(
         }
     }
 
+    private suspend fun refreshIgnoredUsers() {
+        runCatchingExceptions {
+            innerClient.ignoredUsers()
+        }.onSuccess { ignoredUserIds ->
+            _ignoredUsersFlow.value = ignoredUserIds.map(::UserId).toImmutableList()
+        }.onFailure {
+            Timber.w(it, "Failed to fetch the ignored users")
+        }
+    }
+
     override suspend fun createRoom(createRoomParams: CreateRoomParameters): Result<RoomId> = withContext(sessionDispatcher) {
         runCatchingExceptions {
             val hasPublicAccess = createRoomParams.preset == RoomPreset.PUBLIC_CHAT || createRoomParams.joinRuleOverride == JoinRule.Public
@@ -520,12 +570,36 @@ class RustMatrixClient(
         .onSuccess { matrixUser ->
             // Also update our session storage
             _userProfile.emit(matrixUser)
-            sessionStore.updateUserProfile(
-                sessionId = sessionId.value,
-                displayName = matrixUser.displayName,
-                avatarUrl = matrixUser.avatarUrl,
-            )
+            storeUserProfile(matrixUser)
         }
+
+    /**
+     * Store the user profile in the session storage, including a base64 encoded thumbnail of the avatar,
+     * so that the avatar can be rendered without having to use this client.
+     */
+    private suspend fun storeUserProfile(matrixUser: MatrixUser) = withContext(sessionDispatcher) {
+        val avatarUrl = matrixUser.avatarUrl
+        val storedSession = sessionStore.getSession(sessionId.value)
+        val avatarData = when {
+            avatarUrl == null -> null
+            // Avatar has not changed, no need to download it again
+            avatarUrl == storedSession?.userAvatarUrl && storedSession.userAvatarData != null -> storedSession.userAvatarData
+            else -> matrixMediaLoader.loadMediaThumbnail(
+                source = MediaSource(avatarUrl),
+                width = AVATAR_THUMBNAIL_SIZE_IN_PIXEL,
+                height = AVATAR_THUMBNAIL_SIZE_IN_PIXEL,
+            )
+                .map { Base64.encode(it) }
+                .onFailure { Timber.w(it, "Unable to load the avatar thumbnail of the user") }
+                .getOrNull()
+        }
+        sessionStore.updateUserProfile(
+            sessionId = sessionId.value,
+            displayName = matrixUser.displayName,
+            avatarUrl = avatarUrl,
+            avatarData = avatarData,
+        )
+    }
 
     override suspend fun searchUsers(searchTerm: String, limit: Long): Result<MatrixSearchUserResults> =
         withContext(sessionDispatcher) {
@@ -689,6 +763,8 @@ class RustMatrixClient(
         sessionCoroutineScope.cancel()
         clientDelegateTaskHandle?.cancelAndDestroy()
         ownProfileTaskHandle?.cancelAndDestroy()
+        ignoredUsersTaskHandle.cancelAndDestroy()
+        searchBackfillService.cancelSearchBackfill()
         sessionVerificationService.destroy()
 
         sessionDelegate.clearCurrentClient()
@@ -710,6 +786,7 @@ class RustMatrixClient(
                 eventCacheStore = eventCacheStore?.bytes,
                 mediaStore = mediaStore?.bytes,
                 cryptoStore = cryptoStore?.bytes,
+                searchIndex = searchIndex?.bytes,
             )
         }
     }
@@ -766,33 +843,10 @@ class RustMatrixClient(
         clientDelegateTaskHandle?.cancelAndDestroy()
         clientDelegateTaskHandle = null
         runCatchingExceptions {
-            // First call without AuthData, should fail
-            val firstAttempt = runCatchingExceptions {
-                innerClient.deactivateAccount(
-                    authData = null,
-                    eraseData = eraseData,
-                )
-            }
-            if (firstAttempt.isFailure) {
-                Timber.w(firstAttempt.exceptionOrNull(), "Expected failure, try again")
-                // This is expected, try again with the password
-                runCatchingExceptions {
-                    innerClient.deactivateAccount(
-                        authData = AuthData.Password(
-                            passwordDetails = AuthDataPasswordDetails(
-                                identifier = sessionId.value,
-                                password = password,
-                            ),
-                        ),
-                        eraseData = eraseData,
-                    )
-                }.onFailure {
-                    Timber.e(it, "Failed to deactivate account")
-                    // If the deactivation failed we need to restore the delegate
-                    clientDelegateTaskHandle = innerClient.setDelegate(sessionDelegate)
-                    throw it
-                }
-            }
+            innerClient.deactivateAccount(
+                password = password,
+                eraseData = eraseData,
+            )
             destroy()
             deleteSessionDirectory()
             sessionStore.removeSession(sessionId.value)
@@ -816,7 +870,7 @@ class RustMatrixClient(
 
     override suspend fun getRoomInfo(roomId: RoomId): Result<RoomInfo?> = withContext(sessionDispatcher) {
         runCatchingExceptions {
-            innerRoomListService.roomOrNull(roomId.value)?.use { room ->
+            innerRoomListService.roomOrNull(roomId)?.use { room ->
                 roomInfoMapper.map(room.roomInfo())
             }
         }
@@ -824,7 +878,7 @@ class RustMatrixClient(
 
     override fun getRoomInfoFlow(roomId: RoomId): Flow<Optional<RoomInfo>> {
         return mxCallbackFlow {
-            val roomNotFound = innerRoomListService.roomOrNull(roomId.value).use { it == null }
+            val roomNotFound = innerRoomListService.roomOrNull(roomId).use { it == null }
             if (roomNotFound) {
                 channel.send(Optional.empty())
             }
@@ -849,6 +903,7 @@ class RustMatrixClient(
     override fun sendQueueDisabledFlow(): Flow<RoomId> = mxCallbackFlow {
         innerClient.subscribeToSendQueueStatus(object : SendQueueRoomErrorListener {
             override fun onError(roomId: String, error: ClientException) {
+                Timber.e(error, "Send queue error for room $roomId")
                 trySend(RoomId(roomId))
             }
         })
@@ -998,6 +1053,25 @@ class RustMatrixClient(
 
     override fun homeserverCapabilities(): HomeserverCapabilitiesProvider {
         return RustHomeserverCapabilitiesProvider(innerClient.homeserverCapabilities())
+    }
+
+    override fun totalUnreadCount(): Result<Long> = runCatchingExceptions {
+        innerClient.totalUnreadNotifications().toLong()
+    }
+
+    private fun scheduleBackgroundSearchBackfill() {
+        featureFlagService.isFeatureEnabledFlow(FeatureFlags.MessageSearch)
+            .distinctUntilChanged()
+            .onEach { isEnabled ->
+                if (isEnabled) {
+                    searchBackfillService.schedulePeriodicSearchBackfill(SearchBackfillStrategy.BACKGROUND)
+                } else {
+                    searchBackfillService.cancelPeriodicSearchBackfill()
+                }
+            }
+            // Checking the pending work is a blocking call, do not do it on the main thread
+            .flowOn(sessionDispatcher)
+            .launchIn(sessionCoroutineScope)
     }
 }
 

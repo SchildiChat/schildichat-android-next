@@ -14,6 +14,7 @@ import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.bumble.appyx.core.modality.AncestryInfo
 import com.bumble.appyx.core.modality.BuildContext
+import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.node.node
 import com.bumble.appyx.navmodel.backstack.activeElement
 import com.bumble.appyx.testing.junit4.util.MainDispatcherRule
@@ -25,31 +26,41 @@ import io.element.android.appnav.root.RootNavStateFlowFactory
 import io.element.android.appnav.root.RootPresenter
 import io.element.android.appnav.session.FakeSyncOrchestratorFactory
 import io.element.android.appnav.session.MatrixSessionCache
+import io.element.android.appnav.verification.IncomingVerificationRequestObserver
+import io.element.android.features.announcement.test.FakeAnnouncementService
 import io.element.android.features.login.api.LoginEntryPoint
 import io.element.android.features.login.api.LoginParams
+import io.element.android.features.login.api.accesscontrol.AccountProviderAccessControl
 import io.element.android.features.login.test.FakeLoginEntryPoint
 import io.element.android.features.login.test.FakeLoginIntentResolver
 import io.element.android.features.login.test.accesscontrol.FakeAccountProviderAccessControl
 import io.element.android.features.preferences.test.FakeCacheService
 import io.element.android.features.rageshake.test.FakeBugReportEntryPoint
-import io.element.android.features.rageshake.test.logs.FakeAnnouncementService
+import io.element.android.features.share.api.ShareEntryPoint
 import io.element.android.features.share.test.FakeShareIntentHandler
 import io.element.android.features.signedout.test.FakeSignedOutEntryPoint
 import io.element.android.libraries.accountselect.test.FakeAccountSelectEntryPoint
 import io.element.android.libraries.architecture.AssistedNodeFactory
+import io.element.android.libraries.featureflag.api.FeatureFlagService
+import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.featureflag.test.FakeFeatureFlagService
 import io.element.android.libraries.matrix.test.FakeSdkMetadata
 import io.element.android.libraries.matrix.test.auth.FakeMatrixAuthenticationService
 import io.element.android.libraries.matrix.test.permalink.FakePermalinkParser
-import io.element.android.libraries.matrix.ui.media.test.FakeImageLoaderHolder
+import io.element.android.libraries.matrixmedia.test.FakeImageLoaderHolder
 import io.element.android.libraries.oauth.test.FakeOAuthActionFlow
 import io.element.android.libraries.oauth.test.FakeOAuthIntentResolver
 import io.element.android.libraries.preferences.test.FakeSessionPreferencesStoreFactory
 import io.element.android.libraries.sessionstorage.api.SessionStore
 import io.element.android.libraries.sessionstorage.test.InMemorySessionStore
+import io.element.android.libraries.sessionstorage.test.aSessionData
 import io.element.android.services.analytics.test.FakeAnalyticsService
 import io.element.android.services.analytics.test.watchers.FakeAnalyticsColdStartWatcher
 import io.element.android.services.apperror.test.FakeAppErrorStateService
+import io.element.android.services.appnavstate.test.FakeAppForegroundStateService
+import io.element.android.tests.testutils.lambda.lambdaError
+import io.element.android.tests.testutils.lambda.lambdaRecorder
+import io.element.android.tests.testutils.lambda.value
 import io.element.android.tests.testutils.node.FakeNodeFactoriesBindings
 import io.element.android.tests.testutils.node.FakeParentNode
 import io.element.android.tests.testutils.presenter.NotUsedPresenter
@@ -118,11 +129,59 @@ class RootFlowNodeTest : RobolectricTest() {
         assertThat(loginEntryPointParams).isEqualTo(A_LOGIN_ENTRY_POINT_PARAMS)
     }
 
+    @Test
+    fun `given a session matching the login hint and multi account enabled, when a login link is handled, then the session becomes the latest one`() = runTest {
+        val setLatestSessionResult = lambdaRecorder<String, Unit> { }
+        val rootFlowNode = createRootFlowNode(
+            loginEntryPoint = FakeLoginEntryPoint(),
+            sessionStore = InMemorySessionStore(
+                initialList = listOf(
+                    aSessionData(sessionId = "@bob:example.com"),
+                    aSessionData(sessionId = "@alice:example.com"),
+                ),
+                setLatestSessionResult = setLatestSessionResult,
+            ),
+            featureFlagService = FakeFeatureFlagService(mapOf(FeatureFlags.MultiAccount.key to true)),
+        )
+        rootFlowNode.parentNodeTestHelper()
+        rootFlowNode.handleIntent(aLoginIntent())
+        setLatestSessionResult.assertions().isCalledOnce().with(value("@alice:example.com"))
+        assertThat(rootFlowNode.backstack.activeElement).isNotEqualTo(RootFlowNode.NavTarget.NotLoggedInFlow(A_LOGIN_PARAMS))
+    }
+
+    @Test
+    fun `given a session and multi account disabled, when a login link is handled, then the login link is ignored`() = runTest {
+        val rootFlowNode = createRootFlowNode(
+            loginEntryPoint = FakeLoginEntryPoint(),
+            sessionStore = InMemorySessionStore(
+                initialList = listOf(aSessionData(sessionId = "@alice:example.com")),
+            ),
+            featureFlagService = FakeFeatureFlagService(mapOf(FeatureFlags.MultiAccount.key to false)),
+        )
+        rootFlowNode.parentNodeTestHelper()
+        rootFlowNode.handleIntent(aLoginIntent())
+        assertThat(rootFlowNode.backstack.activeElement).isNotEqualTo(RootFlowNode.NavTarget.NotLoggedInFlow(A_LOGIN_PARAMS))
+    }
+
+    @Test
+    fun `given no session, when a login link to a not allowed account provider is handled, then the login link is ignored`() = runTest {
+        val rootFlowNode = createRootFlowNode(
+            loginEntryPoint = FakeLoginEntryPoint { buildContext, _ -> node(buildContext) {} },
+            accountProviderAccessControl = FakeAccountProviderAccessControl { false },
+        )
+        rootFlowNode.parentNodeTestHelper()
+        rootFlowNode.handleIntent(aLoginIntent())
+        runCurrent()
+        assertThat(rootFlowNode.backstack.activeElement).isEqualTo(RootFlowNode.NavTarget.NotLoggedInFlow(null))
+    }
+
     private fun aLoginIntent() = Intent(Intent.ACTION_VIEW, Uri.parse(A_LOGIN_LINK))
 
     private fun TestScope.createRootFlowNode(
         loginEntryPoint: LoginEntryPoint,
         sessionStore: SessionStore = InMemorySessionStore(),
+        featureFlagService: FeatureFlagService = FakeFeatureFlagService(),
+        accountProviderAccessControl: AccountProviderAccessControl = FakeAccountProviderAccessControl { true },
     ): RootFlowNode {
         val matrixSessionCache = MatrixSessionCache(
             authenticationService = FakeMatrixAuthenticationService(),
@@ -139,6 +198,8 @@ class RootFlowNodeTest : RobolectricTest() {
                             loginEntryPoint = loginEntryPoint,
                             imageLoaderHolder = FakeImageLoaderHolder(),
                             analyticsColdStartWatcher = FakeAnalyticsColdStartWatcher(),
+                            featureFlagService = FakeFeatureFlagService(),
+                            announcementService = FakeAnnouncementService(),
                         )
                     }
                 )
@@ -152,7 +213,7 @@ class RootFlowNodeTest : RobolectricTest() {
             ),
             plugins = emptyList(),
             sessionStore = sessionStore,
-            accountProviderAccessControl = FakeAccountProviderAccessControl { true },
+            accountProviderAccessControl = accountProviderAccessControl,
             navStateFlowFactory = RootNavStateFlowFactory(
                 sessionStore = sessionStore,
                 cacheService = FakeCacheService(),
@@ -179,11 +240,23 @@ class RootFlowNodeTest : RobolectricTest() {
                 shareIntentHandler = FakeShareIntentHandler(),
             ),
             oAuthActionFlow = FakeOAuthActionFlow(),
-            featureFlagService = FakeFeatureFlagService(),
+            featureFlagService = featureFlagService,
             announcementService = FakeAnnouncementService(),
             analyticsService = FakeAnalyticsService(),
             analyticsColdStartWatcher = FakeAnalyticsColdStartWatcher(),
+            incomingVerificationRequestObserver = IncomingVerificationRequestObserver(
+                matrixSessionCache = matrixSessionCache,
+                appForegroundStateService = FakeAppForegroundStateService(),
+            ),
             appCoroutineScope = backgroundScope,
+            shareEntryPoint = object : ShareEntryPoint {
+                override fun createNode(
+                    parentNode: Node,
+                    buildContext: BuildContext,
+                    params: ShareEntryPoint.Params,
+                    callback: ShareEntryPoint.Callback,
+                ): Node = lambdaError()
+            },
         )
     }
 }

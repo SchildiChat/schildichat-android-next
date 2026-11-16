@@ -10,6 +10,8 @@ package io.element.android.libraries.matrix.ui.room
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import chat.schildi.lib.preferences.ScPreferencesStore
+import chat.schildi.lib.preferences.lookupScTimelineFilterSettings
 import dev.zacsweers.metro.Inject
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
@@ -39,7 +41,10 @@ open class LoadingRoomStatePreviewParam : PreviewParameterProvider<LoadingRoomSt
 }
 
 @Inject
-class LoadingRoomStateFlowFactory(private val matrixClient: MatrixClient) {
+class LoadingRoomStateFlowFactory(
+    private val matrixClient: MatrixClient,
+    private val scPreferencesStore: ScPreferencesStore, // SC
+) {
     fun create(lifecycleScope: CoroutineScope, roomId: RoomId, joinedRoom: JoinedRoom?): StateFlow<LoadingRoomState> {
         return if (joinedRoom != null) {
             MutableStateFlow<LoadingRoomState>(LoadingRoomState.Loaded(joinedRoom))
@@ -57,7 +62,10 @@ class LoadingRoomStateFlowFactory(private val matrixClient: MatrixClient) {
     }
 
     private fun getJoinedRoomFlow(roomId: RoomId): Flow<JoinedRoom?> = suspend {
-        matrixClient.getJoinedRoom(roomId = roomId)
+        matrixClient.getJoinedRoom(
+            roomId = roomId,
+            scTimelineFilterSettings = lookupScTimelineFilterSettings { scPreferencesStore.getSetting(it) }, // SC
+        )
     }
         .asFlow()
 }

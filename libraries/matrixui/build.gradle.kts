@@ -26,6 +26,7 @@ android {
 setupDependencyInjection()
 
 dependencies {
+    implementation(projects.schildi.lib)
     implementation(projects.libraries.di)
     implementation(projects.libraries.architecture)
     implementation(projects.libraries.androidutils)

@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import chat.schildi.lib.preferences.ScPreferencesStore
+import chat.schildi.lib.preferences.lookupScTimelineFilterSettings
 import com.bumble.appyx.core.lifecycle.subscribe
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
@@ -119,7 +120,10 @@ class ThreadedMessagesNode(
      * We'll load the [presenter] in an async way to prevent this.
      */
     private suspend fun createPresenter(): Presenter<MessagesState> {
-        threadedTimeline = room.createTimeline(CreateTimelineParams.Threaded(threadRootEventId = inputs.threadRootEventId)).getOrThrow()
+        threadedTimeline = room.createTimeline(
+            CreateTimelineParams.Threaded(threadRootEventId = inputs.threadRootEventId),
+            lookupScTimelineFilterSettings { scPreferencesStore.getSetting(it) },
+        ).getOrThrow()
         val timelineController = TimelineController(
             room,
             liveTimeline = threadedTimeline,

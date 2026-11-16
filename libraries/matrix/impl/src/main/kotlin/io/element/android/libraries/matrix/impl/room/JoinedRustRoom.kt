@@ -234,7 +234,8 @@ class JoinedRustRoom(
                     joinRule = roomInfoFlow.value.joinRule,
                     isEncrypted = roomInfoFlow.value.isEncrypted,
                     excludedStateTypes = TimelineConfig.excludedEvents,
-                )?.let(TimelineFilter::EventFilter) ?: TimelineFilter.All
+                //)?.let(TimelineFilter::EventFilter) ?: TimelineFilter.All
+                ).scTimelineFilter(scTimelineFilterSettings)
             }
         }
 

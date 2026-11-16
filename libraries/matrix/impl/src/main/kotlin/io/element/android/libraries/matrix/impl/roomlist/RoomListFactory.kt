@@ -73,7 +73,10 @@ internal class RoomListFactory(
                     initialInboxSettings = initialInboxSettings,
                     onControllerCreated = { controller ->
                         dynamicRoomList.onControllerCreated(controller, initialFilter)
-                    }
+                    },
+                    onControllerDestroyed = { controller ->
+                        dynamicRoomList.onControllerDestroyed(controller)
+                    },
                 ).onEach { update ->
                     if (!firstRoomsTransaction.isFinished()) {
                         analyticsService.finishLongRunningTransaction(AnalyticsLongRunningTransaction.FirstRoomsDisplayed)

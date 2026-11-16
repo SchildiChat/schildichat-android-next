@@ -42,7 +42,6 @@ import io.element.android.libraries.matrix.api.scanner.ContentScanner
 import io.element.android.libraries.matrix.api.search.MessageSearchService
 import io.element.android.libraries.matrix.api.search.SearchBackfillService
 import io.element.android.libraries.matrix.api.spaces.SpaceService
-import io.element.android.libraries.matrix.api.sync.SlidingSyncVersion
 import io.element.android.libraries.matrix.api.sync.SyncService
 import io.element.android.libraries.matrix.api.timeline.ReceiptType
 import io.element.android.libraries.matrix.api.user.DisplayedStatus
@@ -77,7 +76,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.TestScope
 import java.io.File
 import java.util.Optional
-import kotlin.jvm.optionals.getOrNull
 
 class FakeMatrixClient(
     override val sessionId: SessionId = A_SESSION_ID,
@@ -117,7 +115,6 @@ class FakeMatrixClient(
     private val getUrlLambda: (String) -> Result<ByteArray> = { lambdaError() },
     private val canDeactivateAccountResult: () -> Boolean = { lambdaError() },
     private val deactivateAccountResult: (String, Boolean) -> Result<Unit> = { _, _ -> lambdaError() },
-    private val currentSlidingSyncVersionLambda: () -> Result<SlidingSyncVersion> = { lambdaError() },
     private val ignoreUserResult: (UserId) -> Result<Unit> = { lambdaError() },
     private val canLinkNewDeviceResult: () -> Result<Boolean> = { lambdaError() },
     private val createLinkMobileHandlerResult: () -> Result<LinkMobileHandler> = { lambdaError() },
@@ -143,6 +140,7 @@ class FakeMatrixClient(
     override val contentScanner: ContentScanner? = null,
     private val isShuttingDownResult: () -> Boolean = { false },
 ) : MatrixClient {
+    override val totalUnreadCountFlow = MutableStateFlow(0L)
     var setDisplayNameCalled: Boolean = false
         private set
     var uploadAvatarCalled: Boolean = false
@@ -377,6 +375,10 @@ class FakeMatrixClient(
         removeAvatarResult = result
     }
 
+    fun givenTotalUnreadCount(value: Long) {
+        totalUnreadCountFlow.value = value
+    }
+
     private val visitedRoomsId: MutableList<RoomId> = mutableListOf()
 
     override suspend fun trackRecentlyVisitedRoom(roomId: RoomId): Result<Unit> {
@@ -416,10 +418,6 @@ class FakeMatrixClient(
 
     override suspend fun getUrl(url: String): Result<ByteArray> {
         return getUrlLambda(url)
-    }
-
-    override suspend fun currentSlidingSyncVersion(): Result<SlidingSyncVersion> {
-        return currentSlidingSyncVersionLambda()
     }
 
     override suspend fun canReportRoom(): Boolean {

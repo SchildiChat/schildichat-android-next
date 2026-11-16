@@ -34,6 +34,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.toInt
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
@@ -294,7 +295,7 @@ private fun HomeScaffold(
                         }
                     }
                 },
-                totalUnreadCount = state.totalUnreadCount,
+                totalUnreadCount = state.totalUnreadCount.toInt(),
             )
         },
         floatingActionButtonPosition = if (ScPrefs.SPACE_NAV.value()) FabPosition.End else FabPosition.Center,

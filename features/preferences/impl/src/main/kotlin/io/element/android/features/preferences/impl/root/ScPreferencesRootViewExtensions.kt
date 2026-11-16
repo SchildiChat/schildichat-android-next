@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import io.element.android.features.preferences.impl.R
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.core.meta.isGplayBuild
 import io.element.android.libraries.matrix.api.core.DeviceId
@@ -26,7 +27,7 @@ private fun buildVersionString(
     // Main SC version & variant
     append(
         context.getString(
-            CommonStrings.settings_version_number,
+            R.string.settings_version_number,
             buildMeta.versionName.removeUpstreamVersionString(),
             buildMeta.scBuildMeta.scVariant?.let {
                 "${buildMeta.versionCode}, $it"

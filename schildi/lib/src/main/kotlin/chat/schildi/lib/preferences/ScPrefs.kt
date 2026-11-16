@@ -107,7 +107,7 @@ object ScPrefs {
     val HIDE_CALL_TOOLBAR_ACTION = ScBoolPref("HIDE_CALL_TOOLBAR_ACTION", false, R.string.sc_pref_hide_call_toolbar_action_title, R.string.sc_pref_hide_call_toolbar_action_summary, authorsChoice = true, upstreamChoice = false)
     val SC_TIMELINE_LAYOUT = ScBoolPref("SC_TIMELINE_LAYOUT", true, R.string.sc_pref_sc_timeline_layout_title, R.string.sc_pref_sc_layout_summary, upstreamChoice = false)
     val FLOATING_DATE = ScBoolPref("FLOATING_DATE", true, R.string.sc_pref_sc_floating_date_title, R.string.sc_pref_sc_floating_date_summary, upstreamChoice = false)
-    val PL_DISPLAY_NAME = ScBoolPref("PL_DISPLAY_NAME", false, R.string.sc_pref_pl_display_name_title, R.string.sc_pref_pl_display_name_summary_warning, authorsChoice = false, upstreamChoice = false)
+    //val PL_DISPLAY_NAME = ScBoolPref("PL_DISPLAY_NAME", false, R.string.sc_pref_pl_display_name_title, R.string.sc_pref_pl_display_name_summary_warning, authorsChoice = false, upstreamChoice = false)
     val SYNC_READ_RECEIPT_AND_MARKER = ScBoolPref("SYNC_READ_RECEIPT_AND_MARKER", false, R.string.sc_sync_read_receipt_and_marker_title, R.string.sc_sync_read_receipt_and_marker_summary, authorsChoice = true)
     val MARK_READ_REQUIRES_SEEN_UNREAD_LINE = ScBoolPref("MARK_READ_REQUIRES_SEEN_UNREAD_LINE", false, R.string.sc_pref_mark_read_requires_seen_unread_line_title, R.string.sc_pref_mark_read_requires_seen_unread_line_summary, authorsChoice = false, dependencies = SYNC_READ_RECEIPT_AND_MARKER.asDependencies())
     val PREFER_FREEFORM_REACTIONS = ScBoolPref("PREFER_FREEFORM_REACTIONS", false, R.string.sc_pref_prefer_freeform_reactions_title, R.string.sc_pref_prefer_freeform_reactions_summary, authorsChoice = false)
@@ -246,7 +246,7 @@ object ScPrefs {
                 INDICATE_UNREAD_COUNT_UNDERESTIMATES,
             )),
             ScPrefCategory(R.string.sc_pref_category_timeline, null, listOf(
-                PL_DISPLAY_NAME,
+                //PL_DISPLAY_NAME,
                 JUMP_TO_UNREAD,
             )),
             ScPrefCategory(R.string.sc_pref_category_general_behaviour, null, listOf(
@@ -352,7 +352,7 @@ object ScPrefs {
             URL_PREVIEWS,
             URL_PREVIEWS_IN_E2EE_ROOMS.copy(titleRes = R.string.sc_url_previews_in_e2ee_rooms_title_short),
             URL_PREVIEWS_REQUIRE_EXPLICIT_LINKS.copy(titleRes = R.string.sc_url_previews_require_explicit_links_title_short),
-            PL_DISPLAY_NAME,
+            //PL_DISPLAY_NAME,
             READ_MARKER_DEBUG,
         )),
     )

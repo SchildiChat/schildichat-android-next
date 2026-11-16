@@ -8,13 +8,19 @@
 
 package io.element.android.features.messages.impl.di
 
+import chat.schildi.lib.preferences.ScPreferencesStore
 import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
+import dev.zacsweers.metro.SingleIn
+import io.element.android.features.messages.impl.timeline.TimelineController
 import io.element.android.features.messages.impl.timeline.di.LiveTimeline
+import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.di.RoomScope
+import io.element.android.libraries.di.annotations.RoomCoroutineScope
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.timeline.Timeline
+import kotlinx.coroutines.CoroutineScope
 
 @ContributesTo(RoomScope::class)
 @BindingContainer
@@ -22,4 +28,14 @@ object MessagesProvidesBindingContainer {
     @Provides
     @LiveTimeline
     fun providesLiveTimeline(joinedRoom: JoinedRoom): Timeline = joinedRoom.liveTimeline
+
+    @Provides
+    @SingleIn(RoomScope::class)
+    fun providesTimelineController(
+        joinedRoom: JoinedRoom,
+        @LiveTimeline liveTimeline: Timeline,
+        @RoomCoroutineScope roomCoroutineScope: CoroutineScope,
+        dispatchers: CoroutineDispatchers,
+        scPreferencesStore: ScPreferencesStore,
+    ): TimelineController = TimelineController(joinedRoom, liveTimeline, roomCoroutineScope, scPreferencesStore, dispatchers)
 }

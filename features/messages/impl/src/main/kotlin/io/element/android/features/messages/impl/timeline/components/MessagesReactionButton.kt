@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
@@ -88,6 +89,7 @@ fun MessagesReactionButton(
         }
     }
 
+    val innerShape = RoundedCornerShape(corner = CornerSize(12.dp))
     Surface(
         modifier = modifier
             .background(Color.Transparent)
@@ -98,8 +100,11 @@ fun MessagesReactionButton(
             )
             .padding(vertical = 2.dp, horizontal = 2.dp)
             // Clip click indicator inside the outer border
-            .clip(RoundedCornerShape(corner = CornerSize(12.dp)))
+            .clip(innerShape)
             .combinedClickable(
+                interactionSource = null,
+                // Use the same shape for the focus ring, so that it is not cut by the clip
+                indication = ripple(focusRingShape = innerShape),
                 onClick = onClick,
                 onClickLabel = (content as? MessagesReactionsButtonContent.Reaction)?.let {
                     a11yReactionAction(
@@ -112,8 +117,8 @@ fun MessagesReactionButton(
             )
             .onKeyboardContextMenuAction(onLongClick)
             // Inner border, to highlight when selected
-            .border(BorderStroke(1.dp, borderColor), RoundedCornerShape(corner = CornerSize(12.dp)))
-            .background(buttonColor, RoundedCornerShape(corner = CornerSize(12.dp)))
+            .border(BorderStroke(1.dp, borderColor), innerShape)
+            .background(buttonColor, innerShape)
             .padding(vertical = 4.dp, horizontal = 10.dp)
             .clearAndSetSemantics {
                 contentDescription = a11yText
@@ -189,14 +194,12 @@ private fun ReactionContent(
             ),
         )
     }
-    if (reaction.count > 1) {
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(
-            text = reaction.count.toString(),
-            color = if (reaction.isHighlighted) ElementTheme.colors.textPrimary else ElementTheme.colors.textSecondary,
-            style = ElementTheme.typography.fontBodyMdRegular,
-        )
-    }
+    Spacer(modifier = Modifier.width(4.dp))
+    Text(
+        text = reaction.count.toString(),
+        color = if (reaction.isHighlighted) ElementTheme.colors.textPrimary else ElementTheme.colors.textSecondary,
+        style = ElementTheme.typography.fontBodyMdRegular,
+    )
 }
 
 @PreviewsDayNight

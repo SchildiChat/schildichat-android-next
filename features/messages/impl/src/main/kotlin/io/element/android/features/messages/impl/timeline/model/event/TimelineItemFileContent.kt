@@ -9,6 +9,7 @@
 package io.element.android.features.messages.impl.timeline.model.event
 
 import com.beeper.android.messageformat.MatrixBodyParseResult
+import io.element.android.libraries.htmlrenderer.api.DocumentNode
 import io.element.android.libraries.matrix.api.media.MediaSource
 import io.element.android.libraries.mediaviewer.api.helper.formatFileExtensionAndSize
 
@@ -19,6 +20,7 @@ data class TimelineItemFileContent(
     override val formattedCaption: CharSequence?,
     override val formattedCaptionSc: MatrixBodyParseResult?,
     override val htmlCaption: String? = null,
+    override val captionTree: DocumentNode? = null,
     override val isEdited: Boolean,
     override val mediaSource: MediaSource,
     val thumbnailSource: MediaSource?,

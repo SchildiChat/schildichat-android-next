@@ -13,6 +13,7 @@ import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.roomlist.ScSdkInboxSettings
 import io.element.android.libraries.matrix.impl.util.cancelAndDestroy
 import io.element.android.libraries.matrix.impl.util.mxCallbackFlow
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.withContext
 import org.matrix.rustcomponents.sdk.Room
 import org.matrix.rustcomponents.sdk.RoomListDynamicEntriesController
 import org.matrix.rustcomponents.sdk.RoomListEntriesDynamicFilterKind
@@ -61,6 +63,7 @@ internal fun RoomListInterface.entriesFlow(
     initialFilterKind: RoomListEntriesDynamicFilterKind,
     initialInboxSettings: ScSdkInboxSettings? = null,
     onControllerCreated: suspend (RoomListDynamicEntriesController) -> Unit,
+    onControllerDestroyed: suspend (RoomListDynamicEntriesController) -> Unit,
 ): Flow<List<RoomListEntriesUpdate>> =
     callbackFlow {
         val listener = object : RoomListEntriesListener {
@@ -84,6 +87,10 @@ internal fun RoomListInterface.entriesFlow(
             onControllerCreated(controller)
             awaitClose()
         } finally {
+            // Let the owner drop its reference before destroying the controller, so that it's not used afterwards
+            withContext(NonCancellable) {
+                onControllerDestroyed(controller)
+            }
             result.entriesStream().cancelAndDestroy()
             controller.destroy()
             result.destroy()

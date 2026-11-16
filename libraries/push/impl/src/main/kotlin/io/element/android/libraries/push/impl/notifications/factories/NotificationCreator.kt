@@ -190,15 +190,6 @@ class DefaultNotificationCreator(
         } else {
             NotificationCompat.Builder(context, channelId)
                 .setOnlyAlertOnce(forceOnlyAlertOnce) // SC
-                // ID of the corresponding shortcut, for conversation features under API 30+
-                // Must match those created in the ShortcutInfoCompat.Builder()
-                // for the notification to appear as a "Conversation":
-                // https://developer.android.com/develop/ui/views/notifications/conversations
-                .apply {
-                    if (threadId == null) {
-                        setShortcutId(createShortcutId(roomInfo.sessionId, roomInfo.roomId))
-                    }
-                }
                 .setGroupSummary(false)
                 // In order to avoid notification making sound twice (due to the summary notification)
                 .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
@@ -209,12 +200,13 @@ class DefaultNotificationCreator(
             MessagingStyle.extractMessagingStyleFromNotification(it)
         } ?: createMessagingStyleFromCurrentUser(
             user = notificationAccountParams.user,
-            senderName = events.map { it.senderDisambiguatedDisplayName }.distinct().takeIf { it.size == 1 }?.firstOrNull(), // SC
             imageLoader = imageLoader,
-            roomName = roomInfo.roomDisplayName,
             isThread = threadId != null,
             roomIsGroup = !roomInfo.isDm,
         )
+        // Always set it, since the style may have been extracted from an existing notification
+        val senderName = events.map { it.senderDisambiguatedDisplayName }.distinct().takeIf { it.size == 1 }?.firstOrNull() // SC
+        messagingStyle.conversationTitle = createConversationTitle(roomInfo, threadId, senderName)
         val newEvents = messagingStyle.filterOutAlreadyDisplayedEvents(events)
         messagingStyle.addMessagesFromEvents(newEvents, imageLoader)
         return builder
@@ -225,6 +217,22 @@ class DefaultNotificationCreator(
             // MESSAGING_STYLE sets title and content for API 16 and above devices.
             .setStyle(messagingStyle)
             .configureWith(notificationAccountParams)
+            // Only display the account information if the room is also joined by another account.
+            // Always set it, since the builder may have been created from an existing notification.
+            .setSubText(roomInfo.sessionId.value.takeIf { roomInfo.showSessionId })
+            // ID of the corresponding shortcut, for conversation features under API 30+
+            // Must match those created in the ShortcutInfoCompat.Builder()
+            // for the notification to appear as a "Conversation":
+            // https://developer.android.com/develop/ui/views/notifications/conversations
+            // The system does not render the subText of conversation notifications, so when the account
+            // information has to be displayed, the notification is not rendered as a conversation.
+            .setShortcutId(
+                if (threadId == null && !roomInfo.showSessionId) {
+                    createShortcutId(roomInfo.sessionId, roomInfo.roomId)
+                } else {
+                    null
+                }
+            )
             // Mark room/thread as read
             .addAction(markAsReadActionFactory.create(roomInfo, threadId))
             .setContentIntent(openIntent)
@@ -527,9 +535,7 @@ class DefaultNotificationCreator(
 
     private suspend fun createMessagingStyleFromCurrentUser(
         user: MatrixUser,
-        senderName: String?, // SC
         imageLoader: ImageLoader,
-        roomName: String,
         isThread: Boolean,
         roomIsGroup: Boolean
     ): MessagingStyle {
@@ -546,15 +552,25 @@ class DefaultNotificationCreator(
                 .setKey(user.userId.value)
                 .build()
         ).also {
-            it.conversationTitle = if (isThread) {
-                stringProvider.getString(R.string.notification_thread_in_room, roomName)
-            } else if (roomIsGroup || roomName != senderName) { // SC
-                roomName
-            } else {
-                null // SC
-            }
             // So the avatar is displayed even if they're part of a conversation
             it.isGroupConversation = roomIsGroup || isThread
+        }
+    }
+
+    private fun createConversationTitle(roomInfo: RoomEventGroupInfo, threadId: ThreadId?, /* SC */ senderName: String?): String? {
+        val title = if (threadId != null) {
+            stringProvider.getString(R.string.notification_thread_in_room, roomInfo.roomDisplayName)
+        } else if (!roomInfo.isDm || roomInfo.roomDisplayName != senderName) { // SC
+            roomInfo.roomDisplayName
+        } else {
+            return null // SC
+        }
+        // The system displays the conversation title instead of the subText in the header of the notification,
+        // so add the account information to the conversation title when it has to be displayed.
+        return if (roomInfo.showSessionId) {
+            "${roomInfo.sessionId.value} · $title"
+        } else {
+            title
         }
     }
 

@@ -25,6 +25,7 @@ class DefaultEmojiPickerRenderer : EmojiPickerRenderer {
         onSelectCustomEmoji: (String) -> Unit, // SC
         selectedEmojis: ImmutableSet<String>,
         modifier: Modifier,
+        onBackspace: (() -> Unit)?,
         contentDescription: @Composable (Emoji, Boolean) -> String,
     ) {
         if (state is DefaultEmojiPickerState) {
@@ -35,6 +36,7 @@ class DefaultEmojiPickerRenderer : EmojiPickerRenderer {
                 selectedEmojis = selectedEmojis,
                 contentDescription = contentDescription,
                 modifier = modifier,
+                onBackspace = onBackspace,
             )
         } else {
             error("Unsupported state type: ${state::class.java}")

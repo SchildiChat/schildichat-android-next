@@ -40,6 +40,7 @@ import io.element.android.features.messages.impl.actionlist.model.TimelineItemAc
 import io.element.android.features.messages.impl.attachments.Attachment
 import io.element.android.features.messages.impl.messagecomposer.MessageComposerEvent
 import io.element.android.features.messages.impl.messagecomposer.MessageComposerPresenter
+import io.element.android.features.messages.impl.messagecomposer.composerEmojiPickerContent
 import io.element.android.features.messages.impl.timeline.TimelineController
 import io.element.android.features.messages.impl.timeline.TimelineEvent
 import io.element.android.features.messages.impl.timeline.TimelinePresenter
@@ -362,6 +363,7 @@ class ThreadedMessagesNode(
                             emojiPickerRenderer = emojiPickerRenderer,
                         )
                     },
+                    composerEmojiPicker = composerEmojiPickerContent(state.composerState, emojiPickerRenderer),
                     onThreadsListClick = {},
                 )
 

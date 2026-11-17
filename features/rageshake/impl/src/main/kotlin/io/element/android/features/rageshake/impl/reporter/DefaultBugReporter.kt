@@ -23,6 +23,7 @@ import io.element.android.appconfig.RageshakeConfig
 import io.element.android.features.rageshake.api.reporter.BugReporter
 import io.element.android.features.rageshake.api.reporter.BugReporterListener
 import io.element.android.features.rageshake.impl.crash.CrashDataStore
+import io.element.android.features.rageshake.impl.logs.LOG_DIRECTORY_NAME
 import io.element.android.features.rageshake.impl.screenshot.ScreenshotHolder
 import io.element.android.libraries.androidutils.file.compressFile
 import io.element.android.libraries.androidutils.file.safeDelete
@@ -89,7 +90,6 @@ class DefaultBugReporter(
     companion object {
         // filenames
         private const val LOG_CAT_FILENAME = "logcat.log"
-        private const val LOG_DIRECTORY_NAME = "logs"
     }
 
     private val logcatCommandDebug = arrayOf("logcat", "-d", "-v", "threadtime", "*:*")
@@ -425,27 +425,6 @@ class DefaultBugReporter(
     override fun logDirectory(): File {
         return baseLogDirectory.apply {
             mkdirs()
-        }
-    }
-
-    suspend fun deleteAllFiles(predicate: (File) -> Boolean) {
-        withContext(coroutineDispatchers.io) {
-            deleteAllFilesRecursive(baseLogDirectory, predicate)
-        }
-    }
-
-    private fun deleteAllFilesRecursive(
-        directory: File,
-        predicate: (File) -> Boolean,
-    ) {
-        directory.listFiles()?.forEach { file ->
-            if (file.isDirectory) {
-                deleteAllFilesRecursive(file, predicate)
-            } else {
-                if (predicate(file)) {
-                    file.safeDelete()
-                }
-            }
         }
     }
 

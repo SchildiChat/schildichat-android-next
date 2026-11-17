@@ -18,7 +18,7 @@ object ModulesConfig {
         includeUnifiedPush = true,
     )
 
-    val analyticsConfig: AnalyticsConfig = if (true) AnalyticsConfig.Disabled else if (isEnterpriseBuild) {
+    fun analyticsConfig(isEnterpriseBuild: Boolean): AnalyticsConfig = if (true) AnalyticsConfig.Disabled else if (isEnterpriseBuild) {
         // Is Posthog configuration available?
         val withPosthog = BuildTimeConfig.SERVICES_POSTHOG_APIKEY.isNullOrEmpty().not() &&
             BuildTimeConfig.SERVICES_POSTHOG_HOST.isNullOrEmpty().not()

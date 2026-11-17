@@ -11,6 +11,7 @@ rootProject.name = "SchildiNext_plugins"
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
+        google()
     }
     versionCatalogs {
         create("libs") {

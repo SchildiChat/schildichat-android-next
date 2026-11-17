@@ -8,9 +8,9 @@
 
 @file:Suppress("UnstableApiUsage")
 
+import com.android.build.api.variant.BuildConfigField
 import com.android.build.api.variant.FilterConfiguration.FilterType.ABI
 import com.android.build.gradle.internal.tasks.factory.dependsOn
-import com.android.build.gradle.tasks.GenerateBuildConfig
 import com.google.firebase.appdistribution.gradle.firebaseAppDistribution
 import config.BuildTimeConfig
 import extension.AssetCopyTask
@@ -48,6 +48,15 @@ android {
         versionCode = 1260
         versionName = "0.11.8-ex_26_10_1"
         targetSdk = Versions.TARGET_SDK
+
+        // Used by the activity-alias ".ElementLinksActivity" in AndroidManifest.xml
+        manifestPlaceholders["elementLinksEnabled"] = BuildTimeConfig.ELEMENT_LINKS_ENABLED.toString()
+        val elementMobileLinkPath = BuildTimeConfig.ELEMENT_MOBILE_LINK_PATH
+        // The value is used with android:path, which is an exact match, so ensure it is a valid exact path.
+        require(elementMobileLinkPath.startsWith("/") && elementMobileLinkPath.none { it == '*' || it.isWhitespace() }) {
+            "BuildTimeConfig.ELEMENT_MOBILE_LINK_PATH must be an exact path starting with '/' and without wildcard, got '$elementMobileLinkPath'"
+        }
+        manifestPlaceholders["elementMobileLinkPath"] = elementMobileLinkPath
 
         // Keep abiFilter for the universalApk
         ndk {
@@ -281,7 +290,16 @@ androidComponents {
         "x86_64" to 4,
     )
 
+    // Keep the git info lazy: these providers are only evaluated when the BuildConfig task runs, so they're task inputs
+    // and not configuration cache inputs. Calling `.get()` at configuration time would invalidate the configuration cache
+    // on every commit or branch switch.
+    val gitRevision = providers.of(GitRevisionValueSource::class.java) {}
+    val gitBranchName = providers.of(GitBranchNameValueSource::class.java) {}
+
     onVariants { variant ->
+        variant.buildConfigFields?.put("GIT_REVISION", gitRevision.map { BuildConfigField("String", "\"$it\"", null) })
+        variant.buildConfigFields?.put("GIT_BRANCH_NAME", gitBranchName.map { BuildConfigField("String", "\"$it\"", null) })
+
         // Register the R8 keep rules source folders for optimized build types (release, nightly).
         // Replaces the deprecated `optimization.keepRules.files` DSL (AGP 9+).
         if (variant.buildType != "debug") {
@@ -325,10 +343,10 @@ androidComponents {
 
 // Configure the SonarQube plugin to wait for the resource generation tasks to complete before running the analysis.
 tasks.withType<SonarResolverTask>().configureEach {
-    dependsOn("generateGplayDebugResValues", "generateGplayDebugAndroidTestResValues")
+    dependsOn("generateGplayDebugResValues")
 }
 
-setupDependencyInjection()
+setupDependencyInjection(generateNodeFactories = false)
 
 dependencies {
     implementation(projects.schildi.theme)
@@ -337,7 +355,7 @@ dependencies {
     implementation(libs.androidx.emoji2)
     implementation(libs.androidx.emoji2.bundled)
     allLibrariesImpl()
-    allServicesImpl()
+    allServicesImpl(project)
     if (isEnterpriseBuild) {
         allEnterpriseImpl(project)
         implementation(projects.appicon.enterprise)
@@ -377,14 +395,6 @@ dependencies {
     testCommonDependencies(libs)
     testImplementation(projects.libraries.matrix.test)
     testImplementation(projects.services.toolbox.test)
-}
-
-tasks.withType<GenerateBuildConfig>().configureEach {
-    outputs.upToDateWhen { false }
-    val gitRevision = providers.of(GitRevisionValueSource::class.java) {}.get()
-    val gitBranchName = providers.of(GitBranchNameValueSource::class.java) {}.get()
-    android.defaultConfig.buildConfigFieldStr("GIT_REVISION", gitRevision)
-    android.defaultConfig.buildConfigFieldStr("GIT_BRANCH_NAME", gitBranchName)
 }
 
 licensee {

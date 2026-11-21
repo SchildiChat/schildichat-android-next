@@ -82,7 +82,7 @@ internal fun EmojiPickerView(
 
     val pagerState = rememberPagerState(
         pageCount = state.scEmojiPickerSize().let {{ it }},
-        initialPage = if (ScPrefs.PREFER_FREEFORM_REACTIONS.value()) state.pageFreeformReactionIndex() else 0,
+        initialPage = if (ScPrefs.PREFER_FREEFORM_REACTIONS.value()) (state.pageFreeformReactionIndex(onBackspace) ?: 0) else 0,
     )
 
     var skinPickerEmoji by remember { mutableStateOf<Emoji?>(null) }
@@ -133,7 +133,7 @@ internal fun EmojiPickerView(
                         }
                     )
                 }
-                ScEmojiPickerTabsEnd(state, pagerState) { state.eventSink(EmojiPickerEvent.ToggleSearchActive(true)) }
+                ScEmojiPickerTabsEnd(state, pagerState, onBackspace) { state.eventSink(EmojiPickerEvent.ToggleSearchActive(true)) }
                 if (onBackspace != null) {
                     BackspaceTab(onBackspace = onBackspace)
                 }
@@ -148,6 +148,7 @@ internal fun EmojiPickerView(
                         state,
                         scIndex,
                         pagerState.currentPage,
+                        onBackspace,
                         onSelectCustomEmoji
                 ) {
                     state.eventSink(EmojiPickerEvent.ToggleSearchActive(true))

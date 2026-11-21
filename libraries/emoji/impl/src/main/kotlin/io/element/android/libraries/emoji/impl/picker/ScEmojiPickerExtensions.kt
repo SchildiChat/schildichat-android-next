@@ -41,10 +41,13 @@ import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconButton
 import kotlinx.coroutines.launch
 
+private fun Any?.oneIfNull() = if (this == null) 1 else 0
 @Composable
-internal fun DefaultEmojiPickerState.scEmojiPickerSize() = categories.size + 1 + (if (ScPrefs.ALWAYS_SHOW_REACTION_SEARCH_BAR.value()) 0 else 1)
-internal fun DefaultEmojiPickerState.pageFreeformReactionIndex() = categories.size
-internal fun DefaultEmojiPickerState.pageSearchIndex() = categories.size + 1
+internal fun DefaultEmojiPickerState.scEmojiPickerSize(
+    onBackspace: Any? = null,
+) = categories.size + onBackspace.oneIfNull() + (if (ScPrefs.ALWAYS_SHOW_REACTION_SEARCH_BAR.value()) 0 else 1)
+internal fun DefaultEmojiPickerState.pageFreeformReactionIndex(onBackspace: Any?) = if (onBackspace == null) categories.size else null
+internal fun DefaultEmojiPickerState.pageSearchIndex(onBackspace: Any?) = categories.size + onBackspace.oneIfNull()
 internal fun Int.removeScPickerOffset() = this //- 1
 internal fun Int.addScPickerOffset() = this //+ 1
 
@@ -52,21 +55,24 @@ internal fun Int.addScPickerOffset() = this //+ 1
 internal fun ScEmojiPickerTabsEnd(
     state: DefaultEmojiPickerState,
     pagerState: PagerState,
+    onBackspace: Any?,
     launchSearch: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
-    Tab(
-        icon = {
-            Icon(
-                imageVector = Icons.Default.TextFields,
-                contentDescription = stringResource(id = R.string.sc_freeform_reaction),
-            )
-        },
-        selected = pagerState.currentPage == state.pageFreeformReactionIndex(),
-        onClick = {
-            coroutineScope.launch { pagerState.animateScrollToPage(state.pageFreeformReactionIndex()) }
-        }
-    )
+    if (onBackspace == null) {
+        Tab(
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.TextFields,
+                    contentDescription = stringResource(id = R.string.sc_freeform_reaction),
+                )
+            },
+            selected = pagerState.currentPage == state.pageFreeformReactionIndex(onBackspace),
+            onClick = {
+                coroutineScope.launch { pagerState.animateScrollToPage(state.pageFreeformReactionIndex(onBackspace)!!) }
+            }
+        )
+    }
     if (!ScPrefs.ALWAYS_SHOW_REACTION_SEARCH_BAR.value()) {
         Tab(
             icon = {
@@ -75,7 +81,7 @@ internal fun ScEmojiPickerTabsEnd(
                     contentDescription = stringResource(id = io.element.android.libraries.ui.strings.R.string.action_search),
                 )
             },
-            selected = pagerState.currentPage == state.pageSearchIndex(),
+            selected = pagerState.currentPage == state.pageSearchIndex(onBackspace),
             onClick = launchSearch,
         )
     }
@@ -86,11 +92,12 @@ internal fun scEmojiPickerPage(
     state: DefaultEmojiPickerState,
     index: Int,
     selectedIndex: Int,
+    onBackspace: Any?,
     onSelectCustomEmoji: (String) -> Unit,
     launchSearch: () -> Unit,
 ): Boolean {
     return when (index) {
-        state.pageFreeformReactionIndex() -> {
+        state.pageFreeformReactionIndex(onBackspace) -> {
             val text = remember { mutableStateOf("") }
             val focusRequester = remember { FocusRequester() }
             val focusManager = LocalFocusManager.current
@@ -119,8 +126,8 @@ internal fun scEmojiPickerPage(
                     onSelectCustomEmoji(text.value)
                 }
             }
-            LaunchedEffect(selectedIndex == state.pageFreeformReactionIndex()) {
-                if (selectedIndex == state.pageFreeformReactionIndex()) {
+            LaunchedEffect(selectedIndex == state.pageFreeformReactionIndex(onBackspace)) {
+                if (selectedIndex == state.pageFreeformReactionIndex(onBackspace)) {
                     focusRequester.requestFocus()
                 } else {
                     focusManager.clearFocus()
@@ -128,7 +135,7 @@ internal fun scEmojiPickerPage(
             }
             true
         }
-        state.pageSearchIndex() -> {
+        state.pageSearchIndex(onBackspace) -> {
             // Shouldn't be reachable by clicking the search icon, but still by swiping
             if (selectedIndex == index) {
                 LaunchedEffect(Unit) { launchSearch() }
